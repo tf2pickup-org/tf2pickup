@@ -1,19 +1,22 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@tsconfig/strictest/tsconfig.json",
   "compilerOptions": {
     "incremental": true,
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
     "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "skipLibCheck": true,
+    "verbatimModuleSyntax": false,
+    "allowSyntheticDefaultImports": true,
+    "preserveSymlinks": true,
     "forceConsistentCasingInFileNames": true,
-    "verbatimModuleSyntax": true,
-    "rootDir": ".",
-    "outDir": "build",
+    "sourceMap": true,
+    "outDir": "./build",
+    "importHelpers": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@kitajs/html",
     "plugins": [{ "name": "@kitajs/ts-html-plugin" }],
     "types": ["@kitajs/html/htmx.d.ts"]
-  }
+  },
+  "include": ["src"]
 }

@@ -1,0 +1,41 @@
+.queue-slot {
+  background-color: theme(colors.abru.light.30);
+  color: theme(colors.abru.light.50);
+  height: 58px;
+  border-radius: 8px;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  overflow: hidden;
+
+  .join-queue-button {
+    @apply transition-colors;
+    @apply duration-75;
+
+    display: flex;
+    flex: 1 1 0%;
+    align-items: center;
+    justify-content: center;
+
+    background-color: theme(colors.abru.light.30);
+    color: theme(colors.abru.light.30);
+
+    &:hover {
+      background-color: theme(colors.abru.light.25);
+      color: theme(colors.abru.light.60);
+    }
+  }
+
+  .taken {
+    background-color: theme(colors.abru.light.60);
+
+    &.my-slot {
+      background-color: theme(colors.abru.light.75);
+    }
+
+    &.ready {
+      background-color: #0a955b;
+    }
+  }
+}

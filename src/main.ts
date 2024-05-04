@@ -1,19 +1,15 @@
 import fastify from 'fastify'
 import kitaHtml from '@kitajs/fastify-html-plugin'
-import view from '@fastify/view'
-import handlebars from 'handlebars'
-import { resolve } from 'node:path'
-import { client } from './database'
-import type { QueueSlotModel } from './queue/models/queue-slot.model'
-import { queue } from './queue/views/queue'
+import queue from './queue/plugin'
+import { resolve } from 'path'
 
-const app = fastify({ logger: true })
-await app.register(kitaHtml)
+const app = fastify({ logger: { transport: { target: 'pino-pretty' } } })
 
-app.get('/', async (req, reply) => {
-  const collection = client.db().collection<QueueSlotModel>('queue.slots')
-  const slots = await collection.find().toArray()
-  return reply.html(queue())
+await app.register(await import('@fastify/static'), {
+  root: resolve(import.meta.dirname, '..', 'public'),
+  prefix: '/',
 })
 
+await app.register(kitaHtml)
+await app.register(queue)
 await app.listen({ port: 3000 })

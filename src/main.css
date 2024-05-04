@@ -1,0 +1,72 @@
+@import url('satoshi.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #221d24;
+  background-image: url('/bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+@media only screen and (min-width: 1700px) {
+  body {
+    background-image: url('/bg@2x.png');
+  }
+}
+
+dialog::backdrop {
+  background: theme(colors.abru.dark.3 / 50%);
+  backdrop-filter: blur(1px);
+}
+
+.button {
+  @apply transition-colors;
+  @apply duration-75;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  padding: 12px 24px;
+  font-size: 16px;
+  line-height: normal;
+  font-weight: 700;
+  border-radius: 4px;
+
+  text-transform: uppercase;
+
+  color: theme(colors.ash);
+
+  background-color: theme(colors.abru.light.15);
+  &:hover {
+    background-color: darken(theme(colors.abru.light.15), 5%);
+  }
+
+  &:disabled {
+    background-color: theme(colors.abru.light.35);
+    color: theme(colors.abru.light.60);
+
+    &:hover {
+      background-color: theme(colors.abru.light.35);
+      color: theme(colors.abru.light.60);
+    }
+  }
+
+  &--accent {
+    background-color: theme(colors.accent.DEFAULT);
+    &:hover {
+      background-color: darken(theme(colors.accent.DEFAULT), 10%);
+    }
+  }
+}
