@@ -9,12 +9,12 @@ import { parse } from 'path'
 export async function style(fileName: string) {
   const css = await readFile(fileName)
   const { name, ext } = parse(fileName)
-  const style = (await postcss([tailwindcssNesting, tailwindcss, lightenDarken, autoprefixer])
-    .process(css, { from: `${name}.${ext}`, to: `${name}.min${ext}` })).css
-  
-  return (
-    <style type="text/css">
-      {style}
-    </style>
-  )
+  const style = (
+    await postcss([tailwindcssNesting, tailwindcss, lightenDarken, autoprefixer]).process(css, {
+      from: `${name}.${ext}`,
+      to: `${name}.min${ext}`,
+    })
+  ).css
+
+  return <style type="text/css">{style}</style>
 }

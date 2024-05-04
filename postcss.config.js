@@ -5,6 +5,5 @@ export default {
     tailwindcss: {},
     'postcss-lighten-darken': {},
     autoprefixer: {},
-    cssnano: {},
   },
 }

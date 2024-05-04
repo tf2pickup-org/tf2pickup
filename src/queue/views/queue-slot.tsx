@@ -1,24 +1,22 @@
-import { PlayerModel } from "../../models/player.model";
-import { QueueSlotWithPlayer } from "../pipelines/queue-with-players";
+import { PlayerModel } from '../../database/models/player.model'
+import { QueueSlotWithPlayer } from '../pipelines/queue-with-players'
 
-export async function queueSlot(slot: QueueSlotWithPlayer) {
+export async function QueueSlot(slot: QueueSlotWithPlayer) {
   let slotContent = <></>
   if (slot.player) {
     slotContent = playerInfo(slot.player)
   } else {
     slotContent = joinButton()
   }
-  return (
-    <div class="queue-slot">
-      {slotContent}
-    </div>
-  )
+  return <div class="queue-slot">{slotContent}</div>
 }
 
 function joinButton() {
-  return (<button class="join-queue-button">
-    join
-  </button>)
+  return (
+    <button class="join-queue-button">
+      <i class="ti ti-plus text-2xl"></i>
+    </button>
+  )
 }
 
 function playerInfo(player: PlayerModel) {
@@ -28,16 +26,16 @@ function playerInfo(player: PlayerModel) {
         src={player.avatar.medium}
         width="64"
         height="64"
-        alt="{player.name}'s name"
+        alt={`${player.name}'s name`}
         class="h-[42px] w-[42px] rounded"
       />
       <a
         class="text-abru-dark-3 flex-1 overflow-hidden whitespace-nowrap text-center text-xl font-bold hover:underline"
-        href="/players/{player.steamId}">{player.name}</a
+        href={`/players/${player.steamId}`}
       >
-      <div class="w-[42px] px-1">
-
-      </div>
+        {player.name}
+      </a>
+      <div class="w-[42px] px-1"></div>
     </div>
   )
 }

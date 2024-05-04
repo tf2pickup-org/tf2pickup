@@ -70,3 +70,69 @@ dialog::backdrop {
     }
   }
 }
+
+.menu-item {
+  @apply transition-colors;
+  @apply duration-75;
+
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 4px;
+
+  background-color: theme(colors.abru.dark.29);
+  color: theme(colors.abru.light.75);
+
+  font-size: 36px;
+  font-weight: 500;
+
+  border-radius: 10px;
+  padding: 7px 34px;
+
+  &:hover {
+    background-color: theme(colors.abru.dark.20 / 40%);
+  }
+
+  @media screen(lg) {
+    background-color: initial;
+
+    font-size: 18px;
+
+    border-radius: 4px;
+    padding: 4px 10px;
+  }
+
+  &.active {
+    background-color: theme(colors.abru.dark.20);
+  }
+}
+
+.steam-button {
+  background-color: theme(colors.steam);
+  color: #ffffff;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  padding: 10px 16px;
+  gap: 8px;
+  align-items: center;
+
+  span {
+    font-size: 18px;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+
+    @media screen(lg) {
+      font-size: 16px;
+    }
+  }
+
+  .icon {
+    background-color: #ffffff;
+    color: theme(colors.steam);
+    border-radius: 3px;
+    padding: 1px;
+  }
+}

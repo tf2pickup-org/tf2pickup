@@ -1,29 +1,54 @@
-import { client } from '../../database'
+import { collections } from '../../database/collections'
 import { Layout } from '../../views/layout'
-import { navigationBar } from '../../views/navigation-bar'
+import { NavigationBar } from '../../views/navigation-bar'
 import { style } from '../../views/style'
 import { QueueSlotWithPlayer, queueWithPlayers } from '../pipelines/queue-with-players'
-import { queueSlot } from './queue-slot'
+import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
+import { QueueState } from './queue-state'
+import { config } from '../config'
+import { GameClassIcon } from '../../views/game-class-icon'
+import { Page } from '../../views/page'
 
 export async function queue() {
-  const slots = await client.db().collection('queue.slots').aggregate<QueueSlotWithPlayer>(queueWithPlayers).toArray()
+  const slots = await collections.queueSlots
+    .aggregate<QueueSlotWithPlayer>(queueWithPlayers)
+    .toArray()
+
+  const current = slots.filter(slots => Boolean(slots.player)).length
+  const required = slots.length
+
   return (
     <>
-      <Layout title={`[${current(slots)}/${required(slots)}]`} head={style(resolve(import.meta.dirname, 'queue.css'))}>
-        {navigationBar()}
-        <div class="flex flex-col gap-8">
-          {slots.map(slot => queueSlot(slot))}
-        </div>
+      <Layout
+        title={`[${current}/${required}]`}
+        head={style(resolve(import.meta.dirname, 'queue.css'))}
+      >
+        <NavigationBar />
+        <Page>
+          <div class="order-2 lg:col-span-3">
+            <div class="flex flex-col gap-8">
+              <QueueState current={current} required={required} />
+              <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+                {config.classes
+                  .map(gc => gc.name)
+                  .map(gameClass => (
+                    <div class="flex flex-col gap-4">
+                      <div class="flex flex-row items-center justify-center gap-2">
+                        <GameClassIcon gameClass={gameClass} size={32} />
+                        <span class="text-center text-2xl font-bold text-white">{gameClass}</span>
+                      </div>
+
+                      {slots
+                        .filter(slot => slot.gameClass === gameClass)
+                        .map(slot => QueueSlot(slot))}
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </Page>
       </Layout>
     </>
   )
-}
-
-function current(slots: QueueSlotWithPlayer[]): number {
-  return slots.filter(slots => Boolean(slots.player)).length
-}
-
-function required(slots: QueueSlotWithPlayer[]): number {
-  return slots.length
 }

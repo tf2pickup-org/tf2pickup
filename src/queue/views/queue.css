@@ -10,9 +10,6 @@
   overflow: hidden;
 
   .join-queue-button {
-    @apply transition-colors;
-    @apply duration-75;
-
     display: flex;
     flex: 1 1 0%;
     align-items: center;
