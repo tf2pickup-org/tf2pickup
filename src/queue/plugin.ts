@@ -7,6 +7,6 @@ export default fp(async app => {
   await initialize()
 
   app.get('/', async (req, res) => {
-    res.status(200).html(await queue())
+    res.status(200).html(await queue(req.user))
   })
 })

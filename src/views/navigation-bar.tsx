@@ -1,4 +1,7 @@
-export function NavigationBar() {
+import { User } from '../auth/types/user'
+import { Profile } from './profile'
+
+export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
   return (
     <nav class="flex h-[95px] flex-row justify-center">
       <div class="container flex flex-row items-center justify-between">
@@ -7,14 +10,20 @@ export function NavigationBar() {
         </a>
 
         <div class="hidden flex-row items-center gap-5 font-medium lg:flex">
-          <Menu />
+          <Menu {...props} />
         </div>
       </div>
     </nav>
   )
 }
 
-function Menu() {
+function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
+  const { user } = props
+  let btn = <SteamButton />
+  if (user) {
+    btn = <Profile {...user.player} />
+  }
+
   return (
     <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
       <MenuItem href="/games">Games</MenuItem>
@@ -52,7 +61,7 @@ function Menu() {
       <div class="hidden w-2 lg:block" />
       <div class="bg-abru-light-15 my-2 h-[2px] grow lg:hidden" />
 
-      <SteamButton />
+      {btn}
     </div>
   )
 }
