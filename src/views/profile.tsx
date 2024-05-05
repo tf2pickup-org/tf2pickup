@@ -14,7 +14,7 @@ export async function Profile(player: PlayerModel) {
           {player.name}
         </span>
         <div class="relative rotate-0 transition-transform duration-100 group-hover:rotate-45">
-          <div class="{menuOpen ? 'opacity-0' : 'opacity-100'} transition-opacity duration-100">
+          <div class="opacity-100 transition-opacity duration-100">
             <i class="ti ti-settings text-2xl"></i>
           </div>
         </div>

@@ -29,7 +29,12 @@ export async function queue(user?: User) {
         <div class="order-2 lg:col-span-3">
           <div class="flex flex-col gap-8">
             <QueueState current={current} required={required} />
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
+            <form
+              class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+              hx-ext="ws"
+              ws-connect="/queue/ws"
+              ws-send
+            >
               {config.classes
                 .map(gc => gc.name)
                 .map(gameClass => (
@@ -41,10 +46,10 @@ export async function queue(user?: User) {
 
                     {slots
                       .filter(slot => slot.gameClass === gameClass)
-                      .map(slot => QueueSlot(slot))}
+                      .map(slot => QueueSlot(slot, user))}
                   </div>
                 ))}
-            </div>
+            </form>
           </div>
         </div>
       </Page>

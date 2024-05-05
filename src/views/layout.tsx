@@ -11,6 +11,8 @@ export function Layout(
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css"
           ></link>
+          <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+          <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
           <link href="/main.css" rel="stylesheet"></link>
           <title>{props?.title ?? 'Hello World!'}</title>
           {props?.head}

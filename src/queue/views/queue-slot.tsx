@@ -1,19 +1,21 @@
+import { User } from '../../auth/types/user'
 import { PlayerModel } from '../../database/models/player.model'
 import { QueueSlotWithPlayer } from '../pipelines/queue-with-players'
 
-export async function QueueSlot(slot: QueueSlotWithPlayer) {
+export async function QueueSlot(slot: QueueSlotWithPlayer, user?: User) {
   let slotContent = <></>
   if (slot.player) {
     slotContent = playerInfo(slot.player)
-  } else {
-    slotContent = joinButton()
+  } else if (user?.player) {
+    slotContent = joinButton(slot.id)
   }
+
   return <div class="queue-slot">{slotContent}</div>
 }
 
-function joinButton() {
+function joinButton(slotId: number) {
   return (
-    <button class="join-queue-button">
+    <button class="join-queue-button" name="join" value={`${slotId}`}>
       <i class="ti ti-plus text-2xl"></i>
     </button>
   )
