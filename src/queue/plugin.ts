@@ -7,6 +7,7 @@ import { WebSocket } from 'ws'
 import { QueueSlot } from './views/queue-slot'
 import { leave } from './leave'
 import { QueueState } from './views/queue-state'
+import { OnlinePlayerList } from '../online-players/views/online-player-list'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -21,6 +22,7 @@ export default fp(async app => {
       socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
     })
     socket.send(await QueueState())
+    socket.send(await OnlinePlayerList())
   })
 
   app.gateway.on('queue:join', async (socket, slotId) => {

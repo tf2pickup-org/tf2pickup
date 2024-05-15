@@ -1,6 +1,9 @@
+import { environment } from '../environment'
+
 export function Layout(
   props?: Html.PropsWithChildren<{ title?: string; head?: string | Promise<string> }>,
 ) {
+  const safeHead = props?.head ?? ''
   return (
     <>
       <html lang="en">
@@ -14,10 +17,10 @@ export function Layout(
           <script src="https://unpkg.com/htmx.org@1.9.12"></script>
           <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
           <link href="/main.css" rel="stylesheet"></link>
-          <title>{props?.title ?? 'Hello World!'}</title>
-          {props?.head}
+          <title>{props?.title ?? environment.WEBSITE_NAME}</title>
+          {safeHead}
         </head>
-        <body hx-ext="ws" ws-connect="/ws">
+        <body hx-boost="true" hx-ext="ws" ws-connect="/ws">
           {props?.children}
         </body>
       </html>

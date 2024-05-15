@@ -76,7 +76,7 @@ function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) 
 
 function SteamButton() {
   return (
-    <a href="/auth/steam" class="steam-button">
+    <a href="/auth/steam" class="steam-button" hx-boost="false">
       <span>Sign in through Steam</span>
       <div class="icon">
         <i class="ti ti-brand-steam"></i>

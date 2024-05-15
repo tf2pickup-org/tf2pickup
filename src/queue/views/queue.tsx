@@ -1,7 +1,7 @@
 import { collections } from '../../database/collections'
 import { Layout } from '../../views/layout'
 import { NavigationBar } from '../../views/navigation-bar'
-import { style } from '../../views/style'
+import { Style } from '../../views/style'
 import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
 import { QueueState } from './queue-state'
@@ -9,6 +9,8 @@ import { config } from '../config'
 import { GameClassIcon } from '../../views/game-class-icon'
 import { Page } from '../../views/page'
 import { User } from '../../auth/types/user'
+import { environment } from '../../environment'
+import { OnlinePlayerList } from '../../online-players/views/online-player-list'
 
 export async function Queue(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -18,8 +20,13 @@ export async function Queue(user?: User) {
 
   return (
     <Layout
-      title={`[${current}/${required}]`}
-      head={style(resolve(import.meta.dirname, 'queue.css'))}
+      title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
+      head={
+        <>
+          <Style fileName={resolve(import.meta.dirname, 'queue.css')} />
+          <Style fileName={resolve(import.meta.dirname, '../../online-players/views/style.css')} />
+        </>
+      }
     >
       <NavigationBar user={user} />
       <Page>
@@ -48,6 +55,10 @@ export async function Queue(user?: User) {
                 ))}
             </form>
           </div>
+        </div>
+
+        <div class="order-last lg:order-3 lg:row-span-2">
+          <OnlinePlayerList />
         </div>
       </Page>
     </Layout>

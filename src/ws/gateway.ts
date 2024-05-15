@@ -3,7 +3,7 @@ import { WebSocket } from 'ws'
 import { z } from 'zod'
 
 export interface ClientToServerEvents {
-  connected: () => void
+  connected: (ipAddress: string) => void
   'queue:join': (slotId: number) => void
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void

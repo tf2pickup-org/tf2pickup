@@ -2,6 +2,7 @@ import fp from 'fastify-plugin'
 import { logger } from '../logger'
 import { Gateway } from './gateway'
 import { SteamId64 } from '../shared/types/steam-id-64'
+import { extractClientIp } from './extract-client-ip'
 
 declare module 'ws' {
   interface WebSocket {
@@ -33,7 +34,6 @@ export default fp(async app => {
       socket.player = {
         steamId: req.user.player.steamId,
       }
-      logger.info(`${req.user.player.name} connected`)
 
       socket.on('message', message => {
         logger.trace(`${req.user!.player.name}: ${message.toLocaleString()}`)
@@ -42,6 +42,7 @@ export default fp(async app => {
       })
     }
 
-    gateway.emit('connected', socket)
+    const ipAddress = extractClientIp(req.headers) ?? req.socket.remoteAddress
+    gateway.emit('connected', socket, ipAddress)
   })
 })

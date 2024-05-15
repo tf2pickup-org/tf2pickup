@@ -6,9 +6,9 @@ import autoprefixer from 'autoprefixer'
 import { readFile } from 'fs/promises'
 import { parse } from 'path'
 
-export async function style(fileName: string) {
-  const css = await readFile(fileName)
-  const { name, ext } = parse(fileName)
+export async function Style(props: { fileName: string }) {
+  const css = await readFile(props.fileName)
+  const { name, ext } = parse(props.fileName)
   const style = (
     await postcss([tailwindcssNesting, tailwindcss, lightenDarken, autoprefixer]).process(css, {
       from: `${name}.${ext}`,
@@ -16,5 +16,9 @@ export async function style(fileName: string) {
     })
   ).css
 
-  return <style type="text/css">{style}</style>
+  return (
+    <style type="text/css" safe>
+      {style}
+    </style>
+  )
 }
