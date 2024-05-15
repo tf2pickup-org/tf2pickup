@@ -3,6 +3,7 @@ import { logger } from '../logger'
 import { Gateway } from './gateway'
 import { SteamId64 } from '../shared/types/steam-id-64'
 import { extractClientIp } from './extract-client-ip'
+import websocket from '@fastify/websocket'
 
 declare module 'ws' {
   interface WebSocket {
@@ -12,15 +13,9 @@ declare module 'ws' {
   }
 }
 
-declare module 'fastify' {
-  interface FastifyInstance {
-    gateway: Gateway
-  }
-}
-
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
-  await app.register(await import('@fastify/websocket'), {
+  await app.register(websocket, {
     options: {
       clientTracking: true,
     },

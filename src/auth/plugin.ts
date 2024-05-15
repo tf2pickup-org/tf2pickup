@@ -9,13 +9,6 @@ import { secondsInWeek } from 'date-fns/constants'
 import { assertIsError } from '../utils/assert-is-error'
 import { SteamId64 } from '../shared/types/steam-id-64'
 import { collections } from '../database/collections'
-import { User } from './types/user'
-
-declare module 'fastify' {
-  interface FastifyRequest {
-    user?: User
-  }
-}
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
 

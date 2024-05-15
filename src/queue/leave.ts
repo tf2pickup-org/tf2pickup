@@ -1,6 +1,7 @@
 import { collections } from '../database/collections'
 import { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
+import { events } from '../events'
 import { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { mutex } from './mutex'
@@ -27,6 +28,7 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
     if (!slot) {
       throw new Error('player not in the queue')
     }
+    events.emit('queue/slots:updated', { slots: [slot] })
     return slot
   })
 }

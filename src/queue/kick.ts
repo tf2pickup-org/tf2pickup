@@ -1,6 +1,7 @@
 import { collections } from '../database/collections'
 import { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
+import { events } from '../events'
 import { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { mutex } from './mutex'
@@ -32,6 +33,10 @@ export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> 
 
       // await collections.queueMapVotes.deleteMany({ player: steamId })
       slots.push(slot)
+    }
+
+    if (slots.length > 0) {
+      events.emit('queue/slots:updated', { slots })
     }
 
     return slots

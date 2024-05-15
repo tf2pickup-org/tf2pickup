@@ -5,11 +5,12 @@ import { SteamId64 } from '../shared/types/steam-id-64'
 import { logger } from '../logger'
 import { OnlinePlayerList } from './views/online-player-list'
 import { events } from '../events'
+import { WebSocket } from 'ws'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     // verify the player is online
     async function verifyPlayer(steamId: SteamId64) {
@@ -28,7 +29,7 @@ export default fp(
       }
 
       const cmp = await OnlinePlayerList()
-      app.websocketServer.clients.forEach(client => {
+      app.websocketServer.clients.forEach((client: WebSocket) => {
         client.send(cmp)
       })
     }
@@ -76,7 +77,7 @@ export default fp(
         })
 
         const cmp = await OnlinePlayerList()
-        app.websocketServer.clients.forEach(client => {
+        app.websocketServer.clients.forEach((client: WebSocket) => {
           client.send(cmp)
         })
       }
