@@ -10,7 +10,7 @@ import { parse, resolve } from 'path'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
-  app.get('/main.css', async (request, reply) => {
+  app.get('/main.css', async (_request, reply) => {
     const file = resolve(import.meta.dirname, 'main.css')
     const css = await readFile(file)
     const { name, ext } = parse(file)

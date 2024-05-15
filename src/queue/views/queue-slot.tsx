@@ -1,19 +1,28 @@
-import { User } from '../../auth/types/user'
+import { collections } from '../../database/collections'
 import { PlayerModel } from '../../database/models/player.model'
-import { QueueSlotWithPlayer } from '../pipelines/queue-with-players'
+import { QueueSlotModel } from '../../database/models/queue-slot.model'
+import { SteamId64 } from '../../shared/types/steam-id-64'
 
-export async function QueueSlot(slot: QueueSlotWithPlayer, user?: User) {
+export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
   let slotContent = <></>
-  if (slot.player) {
-    slotContent = playerInfo(slot.player)
-  } else if (user?.player) {
-    slotContent = joinButton(slot.id)
+  if (props.slot.player) {
+    const player = await collections.players.findOne({ steamId: props.slot.player })
+    if (!player) {
+      throw new Error(`player does not exist: ${props.slot.player}`)
+    }
+    slotContent = PlayerInfo(player)
+  } else if (props.actor) {
+    slotContent = JoinButton(props.slot.id)
   }
 
-  return <div class="queue-slot">{slotContent}</div>
+  return (
+    <div class="queue-slot" id={`queue-slot-${props.slot.id}`}>
+      {slotContent}
+    </div>
+  )
 }
 
-function joinButton(slotId: number) {
+function JoinButton(slotId: number) {
   return (
     <button class="join-queue-button" name="join" value={`${slotId}`}>
       <i class="ti ti-plus text-2xl"></i>
@@ -21,7 +30,7 @@ function joinButton(slotId: number) {
   )
 }
 
-function playerInfo(player: PlayerModel) {
+function PlayerInfo(player: PlayerModel) {
   return (
     <div class="taken flex flex-1 flex-row items-center justify-center p-2">
       <img
@@ -34,6 +43,7 @@ function playerInfo(player: PlayerModel) {
       <a
         class="text-abru-dark-3 flex-1 overflow-hidden whitespace-nowrap text-center text-xl font-bold hover:underline"
         href={`/players/${player.steamId}`}
+        safe
       >
         {player.name}
       </a>

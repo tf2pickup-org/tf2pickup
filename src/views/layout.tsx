@@ -17,7 +17,9 @@ export function Layout(
           <title>{props?.title ?? 'Hello World!'}</title>
           {props?.head}
         </head>
-        <body>{props?.children}</body>
+        <body hx-ext="ws" ws-connect="/ws">
+          {props?.children}
+        </body>
       </html>
     </>
   )

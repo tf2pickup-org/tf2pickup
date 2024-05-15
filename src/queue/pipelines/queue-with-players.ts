@@ -5,8 +5,25 @@ export const queueWithPlayers = [
   {
     $lookup: {
       from: 'players',
-      localField: 'player',
-      foreignField: 'steamId',
+      let: {
+        steamId: '$player',
+      },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $and: [
+                {
+                  $ne: ['$$steamId', null],
+                },
+                {
+                  $eq: ['$steamId', '$$steamId'],
+                },
+              ],
+            },
+          },
+        },
+      ],
       as: 'player',
     },
   },

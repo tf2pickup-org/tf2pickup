@@ -1,9 +1,10 @@
 import fastify from 'fastify'
 import kitaHtml from '@kitajs/fastify-html-plugin'
 import postcss from './postcss'
+import ws from './ws/plugin'
 import auth from './auth/plugin'
 import queue from './queue/plugin'
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { logger } from './logger'
 
 const app = fastify({ logger })
@@ -21,6 +22,7 @@ await app.register(await import('@fastify/static'), {
   prefix: '/',
 })
 
+await app.register(ws)
 await app.register(kitaHtml)
 await app.register(auth)
 await app.register(queue)

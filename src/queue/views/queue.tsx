@@ -2,7 +2,6 @@ import { collections } from '../../database/collections'
 import { Layout } from '../../views/layout'
 import { NavigationBar } from '../../views/navigation-bar'
 import { style } from '../../views/style'
-import { QueueSlotWithPlayer, queueWithPlayers } from '../pipelines/queue-with-players'
 import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
 import { QueueState } from './queue-state'
@@ -12,9 +11,7 @@ import { Page } from '../../views/page'
 import { User } from '../../auth/types/user'
 
 export async function queue(user?: User) {
-  const slots = await collections.queueSlots
-    .aggregate<QueueSlotWithPlayer>(queueWithPlayers)
-    .toArray()
+  const slots = await collections.queueSlots.find().toArray()
 
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
@@ -29,12 +26,7 @@ export async function queue(user?: User) {
         <div class="order-2 lg:col-span-3">
           <div class="flex flex-col gap-8">
             <QueueState current={current} required={required} />
-            <form
-              class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
-              hx-ext="ws"
-              ws-connect="/queue/ws"
-              ws-send
-            >
+            <form class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" ws-send>
               {config.classes
                 .map(gc => gc.name)
                 .map(gameClass => (
@@ -46,7 +38,9 @@ export async function queue(user?: User) {
 
                     {slots
                       .filter(slot => slot.gameClass === gameClass)
-                      .map(slot => QueueSlot(slot, user))}
+                      .map(slot => (
+                        <QueueSlot slot={slot} actor={user?.player.steamId} />
+                      ))}
                   </div>
                 ))}
             </form>
