@@ -25,7 +25,10 @@ export async function queue(user?: User) {
       <Page>
         <div class="order-2 lg:col-span-3">
           <div class="flex flex-col gap-8">
-            <QueueState current={current} required={required} />
+            <div class="bg-abru-light-70 relative flex h-[55px] flex-row items-center justify-center rounded-lg p-2 shadow-md sm:py-2">
+              <QueueState />
+            </div>
+
             <form class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" ws-send>
               {config.classes
                 .map(gc => gc.name)

@@ -25,6 +25,13 @@ const joinQueue = z.object({
   HEADERS: htmxHeaders,
 })
 
+const leaveQueue = z.object({
+  leave: z.literal(''),
+  HEADERS: htmxHeaders,
+})
+
+const clientMessage = z.union([joinQueue, leaveQueue])
+
 export class Gateway extends EventEmitter {
   override on<T extends keyof GatewayEvents>(
     eventName: T,
@@ -36,8 +43,12 @@ export class Gateway extends EventEmitter {
 
   parse(socket: WebSocket, message: string) {
     try {
-      const parsed = joinQueue.parse(JSON.parse(message))
-      this.emit('queue:join', socket, parsed.join)
+      const parsed = clientMessage.parse(JSON.parse(message))
+      if ('join' in parsed) {
+        this.emit('queue:join', socket, parsed.join)
+      } else if ('leave' in parsed) {
+        this.emit('queue:leave', socket)
+      }
     } catch (error) {
       console.error(error)
     }

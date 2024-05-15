@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
-    "build:css": "postcss src/main.css --dir public",
     "test": "xss-scan",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write ."

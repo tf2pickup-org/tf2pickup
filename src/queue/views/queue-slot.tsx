@@ -10,7 +10,7 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     if (!player) {
       throw new Error(`player does not exist: ${props.slot.player}`)
     }
-    slotContent = PlayerInfo(player)
+    slotContent = PlayerInfo(player, props.actor === props.slot.player)
   } else if (props.actor) {
     slotContent = JoinButton(props.slot.id)
   }
@@ -30,7 +30,16 @@ function JoinButton(slotId: number) {
   )
 }
 
-function PlayerInfo(player: PlayerModel) {
+function PlayerInfo(player: PlayerModel, renderLeaveButton: boolean) {
+  let leaveButton = <></>
+  if (renderLeaveButton) {
+    leaveButton = (
+      <button class="leave-queue-button" name="leave" value="">
+        <i class="ti ti-minus text-2xl"></i>
+      </button>
+    )
+  }
+
   return (
     <div class="taken flex flex-1 flex-row items-center justify-center p-2">
       <img
@@ -47,7 +56,7 @@ function PlayerInfo(player: PlayerModel) {
       >
         {player.name}
       </a>
-      <div class="w-[42px] px-1"></div>
+      <div class="w-[42px] px-1">{leaveButton}</div>
     </div>
   )
 }
