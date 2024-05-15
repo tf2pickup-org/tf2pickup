@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { queue } from './views/queue'
+import { Queue } from './views/queue'
 import { collections } from '../database/collections'
 import { reset } from './reset'
 import { join } from './join'
@@ -54,6 +54,6 @@ export default fp(async app => {
   })
 
   app.get('/', async (req, reply) => {
-    reply.status(200).html(await queue(req.user))
+    reply.status(200).html(await Queue(req.user))
   })
 })

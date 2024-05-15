@@ -10,7 +10,7 @@ import { GameClassIcon } from '../../views/game-class-icon'
 import { Page } from '../../views/page'
 import { User } from '../../auth/types/user'
 
-export async function queue(user?: User) {
+export async function Queue(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
 
   const current = slots.filter(slots => Boolean(slots.player)).length

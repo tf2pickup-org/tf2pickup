@@ -4,6 +4,7 @@ import postcss from './postcss'
 import ws from './ws/plugin'
 import auth from './auth/plugin'
 import queue from './queue/plugin'
+import players from './players/plugin'
 import { resolve } from 'node:path'
 import { logger } from './logger'
 
@@ -25,5 +26,6 @@ await app.register(kitaHtml)
 await app.register(ws)
 await app.register(auth)
 await app.register(queue)
+await app.register(players)
 
 await app.listen({ port: 3000 })
