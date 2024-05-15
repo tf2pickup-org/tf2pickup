@@ -19,6 +19,12 @@ declare module 'fastify' {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
+  await app.register(await import('@fastify/websocket'), {
+    options: {
+      clientTracking: true,
+    },
+  })
+
   const gateway = new Gateway()
   app.decorate('gateway', gateway)
 
@@ -28,11 +34,14 @@ export default fp(async app => {
         steamId: req.user.player.steamId,
       }
       logger.info(`${req.user.player.name} connected`)
+
       socket.on('message', message => {
         logger.trace(`${req.user!.player.name}: ${message.toLocaleString()}`)
         // eslint-disable-next-line @typescript-eslint/no-base-to-string
         gateway.parse(socket, message.toString())
       })
     }
+
+    gateway.emit('connected', socket)
   })
 })

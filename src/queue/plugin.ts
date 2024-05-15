@@ -15,6 +15,14 @@ export default fp(async app => {
     await reset()
   }
 
+  app.gateway.on('connected', async socket => {
+    const slots = await collections.queueSlots.find().toArray()
+    slots.forEach(async slot => {
+      socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
+    })
+    socket.send(await QueueState())
+  })
+
   app.gateway.on('queue:join', async (socket, slotId) => {
     if (!socket.player) {
       return

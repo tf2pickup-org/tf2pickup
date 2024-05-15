@@ -14,7 +14,6 @@ await app.register(await import('@fastify/cookie'), {
   hook: 'onRequest',
 })
 
-await app.register(await import('@fastify/websocket'))
 await app.register(postcss)
 
 await app.register(await import('@fastify/static'), {
@@ -22,8 +21,8 @@ await app.register(await import('@fastify/static'), {
   prefix: '/',
 })
 
-await app.register(ws)
 await app.register(kitaHtml)
+await app.register(ws)
 await app.register(auth)
 await app.register(queue)
 

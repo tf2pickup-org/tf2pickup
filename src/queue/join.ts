@@ -14,9 +14,9 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
       throw new Error(`player does not exist: ${steamId}`)
     }
 
-    if (!player.hasAcceptedRules) {
-      throw new Error(`player has not accepted rules`)
-    }
+    // if (!player.hasAcceptedRules) {
+    //   throw new Error(`player has not accepted rules`)
+    // }
 
     const state = await getState()
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
