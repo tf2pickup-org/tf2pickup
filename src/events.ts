@@ -3,6 +3,7 @@ import { SteamId64 } from './shared/types/steam-id-64'
 import { UserMetadata } from './shared/types/user-metadata'
 import { logger } from './logger'
 import { QueueSlotModel } from './database/models/queue-slot.model'
+import { QueueState } from './database/models/queue-state.model'
 
 export interface Events {
   'player:connected': {
@@ -15,6 +16,9 @@ export interface Events {
 
   'queue/slots:updated': {
     slots: QueueSlotModel[]
+  }
+  'queue/state:updated': {
+    state: QueueState
   }
 }
 

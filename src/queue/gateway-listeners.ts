@@ -5,6 +5,7 @@ import { QueueState } from './views/queue-state'
 import { OnlinePlayerList } from '../online-players/views/online-player-list'
 import { join } from './join'
 import { leave } from './leave'
+import { readyUp } from './ready-up'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -32,6 +33,14 @@ export default fp(
       }
 
       await leave(socket.player.steamId)
+    })
+
+    app.gateway.on('queue:readyup', async socket => {
+      if (!socket.player) {
+        return
+      }
+
+      await readyUp(socket.player.steamId)
     })
   },
   { name: 'queue-gateway-listeners' },

@@ -19,6 +19,15 @@ export default fp(
     app.get('/', async (req, reply) => {
       reply.status(200).html(await Queue(req.user))
     })
+
+    // function showReadyUpDialog() {
+    //   const clients = [...app.websocketServer.clients].filter(
+    //     client => client.player?.steamId === '76561198074409147',
+    //   )
+    //   clients.forEach(async c => c.send(await Show()))
+    // }
+
+    // setTimeout(() => showReadyUpDialog(), secondsToMilliseconds(10))
   },
   {
     name: 'queue',

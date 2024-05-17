@@ -25,6 +25,7 @@
     "fastify": "4.26.2",
     "jsonwebtoken": "9.0.2",
     "mongodb": "6.5.0",
+    "nanoid": "^5.0.7",
     "openid": "2.0.12",
     "pino": "9.0.0",
     "pino-pretty": "^11.0.0",

@@ -1,27 +1,19 @@
 import fp from 'fastify-plugin'
 import { logger } from '../logger'
 import { Gateway } from './gateway'
-import { SteamId64 } from '../shared/types/steam-id-64'
 import { extractClientIp } from './extract-client-ip'
 import websocket from '@fastify/websocket'
-
-declare module 'ws' {
-  interface WebSocket {
-    player?: {
-      steamId: SteamId64
-    }
-  }
-}
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
   await app.register(websocket, {
     options: {
       clientTracking: true,
+      perMessageDeflate: false,
     },
   })
 
-  const gateway = new Gateway()
+  const gateway = new Gateway(app)
   app.decorate('gateway', gateway)
 
   app.get('/ws', { websocket: true }, (socket, req) => {
