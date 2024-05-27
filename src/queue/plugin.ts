@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { Queue } from './views/html/queue'
+import { QueuePage } from './views/html/queue.page'
 import { collections } from '../database/collections'
 import { reset } from './reset'
 import gatewayListeners from './gateway-listeners'
@@ -17,7 +17,7 @@ export default fp(
     await app.register(eventListeners)
 
     app.get('/', async (req, reply) => {
-      reply.status(200).html(await Queue(req.user))
+      reply.status(200).html(await QueuePage(req.user))
     })
   },
   {

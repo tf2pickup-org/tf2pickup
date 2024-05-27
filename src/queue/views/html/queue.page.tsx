@@ -12,7 +12,7 @@ import { User } from '../../../auth/types/user'
 import { environment } from '../../../environment'
 import { OnlinePlayerList } from '../../../online-players/views/html/online-player-list'
 
-export async function Queue(user?: User) {
+export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
 
   const current = slots.filter(slots => Boolean(slots.player)).length
