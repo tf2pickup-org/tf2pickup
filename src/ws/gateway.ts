@@ -63,11 +63,24 @@ export class Gateway extends EventEmitter {
   broadcast(messageFn: MessageFn) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     ;(this.app.websocketServer.clients as Set<WebSocket>).forEach(async client => {
+      const send = async (msg: string) =>
+        new Promise<void>((resolve, reject) => {
+          client.send(msg, err => {
+            if (err) {
+              reject(err)
+            } else {
+              resolve()
+            }
+          })
+        })
+
       const message = await messageFn(client.player?.steamId)
       if (Array.isArray(message)) {
-        message.forEach(msg => client.send(msg))
+        for (const msg of message) {
+          await send(msg)
+        }
       } else {
-        client.send(message)
+        await send(message)
       }
     })
   }
