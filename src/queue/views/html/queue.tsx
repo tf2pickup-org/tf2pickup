@@ -24,7 +24,9 @@ export async function Queue(user?: User) {
       head={
         <>
           <Style fileName={resolve(import.meta.dirname, 'queue.css')} />
-          <Style fileName={resolve(import.meta.dirname, '../../online-players/views/style.css')} />
+          <Style
+            fileName={resolve(import.meta.dirname, '../../../online-players/views/html/style.css')}
+          />
         </>
       }
     >
