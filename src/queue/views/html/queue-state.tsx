@@ -1,4 +1,4 @@
-import { collections } from '../../database/collections'
+import { collections } from '../../../database/collections'
 
 export async function QueueState() {
   const current = await collections.queueSlots.countDocuments({ player: { $ne: null } })

@@ -1,4 +1,4 @@
-import { User } from '../auth/types/user'
+import { User } from '../../auth/types/user'
 import { Profile } from './profile'
 
 export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {

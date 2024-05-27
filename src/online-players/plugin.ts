@@ -3,7 +3,7 @@ import { collections } from '../database/collections'
 import { secondsToMilliseconds } from 'date-fns'
 import { SteamId64 } from '../shared/types/steam-id-64'
 import { logger } from '../logger'
-import { OnlinePlayerList } from './views/online-player-list'
+import { OnlinePlayerList } from './views/html/online-player-list'
 import { events } from '../events'
 import { WebSocket } from 'ws'
 

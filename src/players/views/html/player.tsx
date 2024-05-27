@@ -1,8 +1,8 @@
-import { User } from '../../auth/types/user'
-import { collections } from '../../database/collections'
-import { SteamId64 } from '../../shared/types/steam-id-64'
-import { Layout } from '../../views/layout'
-import { NavigationBar } from '../../views/navigation-bar'
+import { User } from '../../../auth/types/user'
+import { collections } from '../../../database/collections'
+import { SteamId64 } from '../../../shared/types/steam-id-64'
+import { Layout } from '../../../html/layout'
+import { NavigationBar } from '../../../html/components/navigation-bar'
 
 export async function Player(steamId: SteamId64, user?: User) {
   const player = await collections.players.findOne({ steamId })

@@ -1,5 +1,5 @@
-import { collections } from '../../database/collections'
-import { SteamId64 } from '../../shared/types/steam-id-64'
+import { collections } from '../../../database/collections'
+import { SteamId64 } from '../../../shared/types/steam-id-64'
 
 interface OnlinePlayer {
   steamId: SteamId64

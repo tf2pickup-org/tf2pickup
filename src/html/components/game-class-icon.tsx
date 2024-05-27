@@ -1,4 +1,4 @@
-import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
 export function GameClassIcon(props: { gameClass: Tf2ClassName; size?: number }) {
   const size = props.size ?? 64

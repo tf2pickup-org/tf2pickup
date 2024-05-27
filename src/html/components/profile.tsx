@@ -1,4 +1,4 @@
-import { PlayerModel } from '../database/models/player.model'
+import { PlayerModel } from '../../database/models/player.model'
 
 export async function Profile(player: PlayerModel) {
   return (

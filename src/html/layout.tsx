@@ -1,5 +1,5 @@
 import { environment } from '../environment'
-import { ReadyUpDialog } from '../queue/views/ready-up-dialog'
+import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
 
 export function Layout(
   props?: Html.PropsWithChildren<{ title?: string; head?: string | Promise<string> }>,

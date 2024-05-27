@@ -50,3 +50,12 @@ export function Show() {
     </div>
   )
 }
+
+export function Close() {
+  const id = nanoid()
+  return (
+    <div id="notify-container" hx-swap-oob="beforeend">
+      <div id={id} _={`on load trigger close on #${dialogId} then remove me`}></div>
+    </div>
+  )
+}

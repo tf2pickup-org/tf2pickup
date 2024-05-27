@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { Player } from './views/player'
+import { Player } from './views/html/player'
 import { SteamId64 } from '../shared/types/steam-id-64'
 
 // eslint-disable-next-line @typescript-eslint/require-await

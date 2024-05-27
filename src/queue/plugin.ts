@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { Queue } from './views/queue'
+import { Queue } from './views/html/queue'
 import { collections } from '../database/collections'
 import { reset } from './reset'
 import gatewayListeners from './gateway-listeners'
@@ -19,15 +19,6 @@ export default fp(
     app.get('/', async (req, reply) => {
       reply.status(200).html(await Queue(req.user))
     })
-
-    // function showReadyUpDialog() {
-    //   const clients = [...app.websocketServer.clients].filter(
-    //     client => client.player?.steamId === '76561198074409147',
-    //   )
-    //   clients.forEach(async c => c.send(await Show()))
-    // }
-
-    // setTimeout(() => showReadyUpDialog(), secondsToMilliseconds(10))
   },
   {
     name: 'queue',

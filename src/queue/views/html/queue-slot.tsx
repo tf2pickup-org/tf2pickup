@@ -1,7 +1,7 @@
-import { collections } from '../../database/collections'
-import { PlayerModel } from '../../database/models/player.model'
-import { QueueSlotModel } from '../../database/models/queue-slot.model'
-import { SteamId64 } from '../../shared/types/steam-id-64'
+import { collections } from '../../../database/collections'
+import { PlayerModel } from '../../../database/models/player.model'
+import { QueueSlotModel } from '../../../database/models/queue-slot.model'
+import { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
   let slotContent = <></>
