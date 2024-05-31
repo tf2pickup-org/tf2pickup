@@ -1,5 +1,5 @@
-import { authUsers, expect } from './fixtures/auth-users'
-import { users, type User } from './data'
+import { authUsers, expect } from '../fixtures/auth-users'
+import { users, type User } from '../data'
 
 interface QueueUser extends User {
   slotId: number
@@ -20,7 +20,6 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
 
       // wait for ready-up
       await page.getByRole('button', { name: `I'M READY` }).click()
-      // await expect(page.getByRole('button', { name: `I'M READY` })).toBeDisabled()
       await page.waitForURL(/games\/(\d+)/)
 
       await page.goto('/')
