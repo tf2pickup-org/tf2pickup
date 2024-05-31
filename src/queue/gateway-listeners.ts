@@ -6,6 +6,7 @@ import { OnlinePlayerList } from '../online-players/views/html/online-player-lis
 import { join } from './join'
 import { leave } from './leave'
 import { readyUp } from './ready-up'
+import { ReadyUpDialog } from './views/html/ready-up-dialog'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -17,6 +18,8 @@ export default fp(
       })
       socket.send(await QueueState())
       socket.send(await OnlinePlayerList())
+
+      // setTimeout(async () => socket.send(await ReadyUpDialog.show()), 3000)
     })
 
     app.gateway.on('queue:join', async (socket, slotId) => {
@@ -32,7 +35,11 @@ export default fp(
         return
       }
 
-      await leave(socket.player.steamId)
+      const slot = await leave(socket.player.steamId)
+      if (slot.ready) {
+        const close = await ReadyUpDialog.close()
+        app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+      }
     })
 
     app.gateway.on('queue:readyup', async socket => {
@@ -40,7 +47,8 @@ export default fp(
         return
       }
 
-      await readyUp(socket.player.steamId)
+      const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
+      app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
     })
   },
   { name: 'queue-gateway-listeners' },

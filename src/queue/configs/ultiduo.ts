@@ -1,5 +1,5 @@
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
-import { QueueConfig } from '../types/queue-config'
+import type { QueueConfig } from '../types/queue-config'
 
 export const ultiduo: QueueConfig = {
   teamCount: 2,

@@ -3,7 +3,7 @@ import { test } from './test'
 import { _9v9 } from './9v9'
 import { bball } from './bball'
 import { ultiduo } from './ultiduo'
-import { QueueConfig } from '../types/queue-config'
+import type { QueueConfig } from '../types/queue-config'
 import { environment } from '../../environment'
 
 export const queueConfigs: Record<typeof environment.QUEUE_CONFIG, QueueConfig> = {

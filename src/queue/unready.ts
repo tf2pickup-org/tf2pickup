@@ -1,7 +1,7 @@
 import { collections } from '../database/collections'
-import { QueueSlotModel } from '../database/models/queue-slot.model'
+import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
-import { SteamId64 } from '../shared/types/steam-id-64'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 import { mutex } from './mutex'
 
 export async function unready(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {

@@ -1,5 +1,5 @@
-import { PlayerAvatar } from '../../database/models/player.model'
-import { SteamId64 } from '../../shared/types/steam-id-64'
+import type { PlayerAvatar } from '../../database/models/player.model'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export interface CreatePlayerParams {
   steamId: SteamId64

@@ -1,2 +1,3 @@
 postcss.config.js
+playwright.config.ts
 tailwind.config.js

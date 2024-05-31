@@ -1,5 +1,5 @@
-import { PlayerModel } from '../../database/models/player.model'
-import { QueueSlotModel } from '../../database/models/queue-slot.model'
+import type { PlayerModel } from '../../database/models/player.model'
+import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 
 export const queueWithPlayers = [
   {

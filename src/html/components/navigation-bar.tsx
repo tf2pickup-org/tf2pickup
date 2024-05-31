@@ -1,4 +1,5 @@
-import { User } from '../../auth/types/user'
+import type { User } from '../../auth/types/user'
+import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
 
 export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
@@ -79,7 +80,7 @@ function SteamButton() {
     <a href="/auth/steam" class="steam-button" hx-boost="false">
       <span>Sign in through Steam</span>
       <div class="icon">
-        <i class="ti ti-brand-steam"></i>
+        <IconBrandSteam />
       </div>
     </a>
   )

@@ -1,4 +1,4 @@
-import { IncomingHttpHeaders } from 'node:http'
+import type { IncomingHttpHeaders } from 'node:http'
 
 export function extractClientIp(headers: IncomingHttpHeaders): string | undefined {
   if (headers['x-forwarded-for']) {

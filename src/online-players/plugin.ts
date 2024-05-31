@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin'
 import { collections } from '../database/collections'
 import { secondsToMilliseconds } from 'date-fns'
-import { SteamId64 } from '../shared/types/steam-id-64'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 import { logger } from '../logger'
 import { OnlinePlayerList } from './views/html/online-player-list'
 import { events } from '../events'

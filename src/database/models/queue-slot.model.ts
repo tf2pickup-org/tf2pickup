@@ -1,4 +1,4 @@
-import { SteamId64 } from '../../shared/types/steam-id-64'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
 export interface QueueSlotModel {

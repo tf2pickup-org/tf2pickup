@@ -6,6 +6,7 @@ import auth from './auth/plugin'
 import queue from './queue/plugin'
 import onlinePlayers from './online-players/plugin'
 import players from './players/plugin'
+import games from './games/plugin'
 import { resolve } from 'node:path'
 import { logger } from './logger'
 
@@ -29,5 +30,6 @@ await app.register(auth)
 await app.register(queue)
 await app.register(onlinePlayers)
 await app.register(players)
+await app.register(games)
 
 await app.listen({ port: 3000 })

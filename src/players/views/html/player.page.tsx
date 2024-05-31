@@ -1,6 +1,6 @@
-import { User } from '../../../auth/types/user'
+import type { User } from '../../../auth/types/user'
 import { collections } from '../../../database/collections'
-import { SteamId64 } from '../../../shared/types/steam-id-64'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 

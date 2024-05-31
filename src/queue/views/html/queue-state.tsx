@@ -5,13 +5,12 @@ export async function QueueState() {
   const required = await collections.queueSlots.countDocuments()
   return (
     <div
-      class="mx-4 flex-1 text-xl font-bold lg:text-center flex-row flex gap-2 justify-center items-center"
+      class="bg-abru-light-70 relative flex h-[55px] flex-row items-center justify-center rounded-lg p-2 shadow-md sm:py-2"
       id="queue-state"
     >
-      <span>Players:</span>
-      <span>
-        {current}/{required}
-      </span>
+      <h3 class="mx-4 flex-1 text-xl font-bold lg:text-center">
+        Players: {current}/{required}
+      </h3>
     </div>
   )
 }

@@ -3,3 +3,7 @@ node_modules
 .env
 *.code-workspace
 build
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -1,5 +1,5 @@
 import { collections } from '../database/collections'
-import { QueueSlotModel } from '../database/models/queue-slot.model'
+import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { logger } from '../logger'
 import { config } from './config'

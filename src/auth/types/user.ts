@@ -1,4 +1,4 @@
-import { PlayerModel } from '../../database/models/player.model'
+import type { PlayerModel } from '../../database/models/player.model'
 
 export interface User {
   player: PlayerModel

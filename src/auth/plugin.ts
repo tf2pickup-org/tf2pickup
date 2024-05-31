@@ -7,7 +7,7 @@ import { logger } from '../logger'
 import { upsertPlayer } from '../players/upsert-player'
 import { secondsInWeek } from 'date-fns/constants'
 import { assertIsError } from '../utils/assert-is-error'
-import { SteamId64 } from '../shared/types/steam-id-64'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 import { collections } from '../database/collections'
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
@@ -73,7 +73,7 @@ export default fp(async app => {
       logger.debug(`user ${user.nickname} logged in`)
       const player = await upsertPlayer(user)
 
-      const token = jwt.sign({ id: player.steamId }, 'dupa13', { expiresIn: '7d' })
+      const token = jwt.sign({ id: player.steamId }, environment.AUTH_SECRET, { expiresIn: '7d' })
 
       let returnUrl = request.cookies['return_url']
       if (returnUrl) {
@@ -100,7 +100,7 @@ export default fp(async app => {
     const token = request.cookies['token']
     if (token) {
       try {
-        const { id } = jwt.verify(token, 'dupa13') as { id: SteamId64 }
+        const { id } = jwt.verify(token, environment.AUTH_SECRET) as { id: SteamId64 }
         const player = await collections.players.findOne({ steamId: id })
         if (!player) {
           throw new Error('Player not found')

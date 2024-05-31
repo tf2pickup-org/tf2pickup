@@ -24,33 +24,33 @@
     }
   }
 
+  .leave-queue-button {
+    display: flex;
+    flex: 1 1 0%;
+    align-items: center;
+    justify-content: center;
+
+    height: 34px;
+    width: 34px;
+    border-radius: 4px;
+
+    background-color: theme(colors.abru.light.30);
+    color: theme(colors.white);
+
+    &:hover {
+      background-color: theme(colors.abru.light.35);
+    }
+  }
+
   .taken {
     background-color: theme(colors.abru.light.60);
+  }
 
-    &.my-slot {
-      background-color: theme(colors.abru.light.75);
-    }
+  .my-slot {
+    background-color: theme(colors.abru.light.75);
+  }
 
-    &.ready {
-      background-color: #0a955b;
-    }
-
-    .leave-queue-button {
-      display: flex;
-      flex: 1 1 0%;
-      align-items: center;
-      justify-content: center;
-
-      height: 34px;
-      width: 34px;
-      border-radius: 4px;
-
-      background-color: theme(colors.abru.light.30);
-      color: theme(colors.white);
-
-      &:hover {
-        background-color: theme(colors.abru.light.35);
-      }
-    }
+  .ready {
+    background-color: #0a955b;
   }
 }

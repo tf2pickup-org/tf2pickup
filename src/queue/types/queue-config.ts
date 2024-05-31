@@ -1,4 +1,4 @@
-import { GameClass } from './game-class'
+import type { GameClass } from './game-class'
 
 export interface QueueConfig {
   /* This is always 2 */

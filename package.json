@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
-    "test": "xss-scan",
+    "check": "xss-scan",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
-    "build": "tsc"
+    "test:e2e": "playwright test",
+    "build": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
     "@fastify/cookie": "9.3.1",
@@ -24,6 +25,7 @@
     "dotenv": "16.4.5",
     "fastify": "4.26.2",
     "jsonwebtoken": "9.0.2",
+    "lodash-es": "^4.17.21",
     "mongodb": "6.5.0",
     "nanoid": "^5.0.7",
     "openid": "2.0.12",
@@ -31,11 +33,14 @@
     "pino-pretty": "^11.0.0",
     "postcss-import": "16.1.0",
     "steamapi": "3.0.8",
+    "ws": "^8.17.0",
     "zod": "3.23.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.44.1",
     "@tsconfig/strictest": "^2.0.5",
     "@types/jsonwebtoken": "9.0.6",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "20.12.7",
     "@types/openid": "2.0.5",
     "@types/postcss-import": "14.0.3",
@@ -53,7 +58,7 @@
     "postcss-lighten-darken": "^0.9.0",
     "prettier": "3.2.5",
     "tailwindcss": "^3.4.3",
-    "tsx": "4.7.3",
+    "tsx": "4.11.0",
     "typescript": "5.4.5"
   },
   "pnpm": {

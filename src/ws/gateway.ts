@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify'
+import type { FastifyInstance } from 'fastify'
 import EventEmitter from 'node:events'
 import { WebSocket } from 'ws'
 import { z } from 'zod'
@@ -47,7 +47,7 @@ interface Broadcaster {
   broadcast: (messageFn: MessageFn) => void
 }
 
-export class Gateway extends EventEmitter {
+export class Gateway extends EventEmitter implements Broadcaster {
   constructor(public readonly app: FastifyInstance) {
     super()
   }
@@ -91,11 +91,24 @@ export class Gateway extends EventEmitter {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (this.app.websocketServer.clients as Set<WebSocket>).forEach(async client => {
           if (client.player && players.includes(client.player?.steamId)) {
+            const send = async (msg: string) =>
+              new Promise<void>((resolve, reject) => {
+                client.send(msg, err => {
+                  if (err) {
+                    reject(err)
+                  } else {
+                    resolve()
+                  }
+                })
+              })
+
             const message = await messageFn(client.player.steamId)
             if (Array.isArray(message)) {
-              message.forEach(msg => client.send(msg))
+              for (const msg of message) {
+                await send(msg)
+              }
             } else {
-              client.send(message)
+              await send(message)
             }
           }
         }),
@@ -110,7 +123,7 @@ export class Gateway extends EventEmitter {
       } else if ('leave' in parsed) {
         this.emit('queue:leave', socket)
       } else if ('ready' in parsed) {
-        this.emit('readyup', socket)
+        this.emit('queue:readyup', socket)
       }
     } catch (error) {
       console.error(error)

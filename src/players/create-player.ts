@@ -1,6 +1,6 @@
 import { collections } from '../database/collections'
-import { PlayerModel } from '../database/models/player.model'
-import { CreatePlayerParams } from './types/create-player-params'
+import type { PlayerModel } from '../database/models/player.model'
+import type { CreatePlayerParams } from './types/create-player-params'
 
 export async function createPlayer({
   steamId,

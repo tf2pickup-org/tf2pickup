@@ -1,9 +1,9 @@
 import { collections } from '../database/collections'
-import { QueueSlotModel } from '../database/models/queue-slot.model'
+import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { events } from '../events'
 import { logger } from '../logger'
-import { SteamId64 } from '../shared/types/steam-id-64'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { mutex } from './mutex'
 

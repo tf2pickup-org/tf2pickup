@@ -1,5 +1,6 @@
-import { SteamId64 } from '../../shared/types/steam-id-64'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import type { GameNumber } from './game.model'
 
 export interface PlayerAvatar {
   small: string
@@ -22,6 +23,6 @@ export interface PlayerModel {
   hasAcceptedRules: boolean
   etf2lProfileId?: number
   cooldownLevel: number
-  activeGame?: number
+  activeGame?: GameNumber
   skill?: Record<Tf2ClassName, number>
 }

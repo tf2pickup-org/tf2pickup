@@ -1,0 +1,43 @@
+import type { GameSlotModel } from './game-slot.model'
+import type { GameEventModel } from './game-event.model'
+import type { Tf2Team } from '../../shared/types/tf2-team'
+
+declare const _gameNumber: unique symbol
+export type GameNumber = number & { [_gameNumber]: never }
+
+export enum GameState {
+  // the game has been created and is awaiting to be assigned a gameserver
+  created = 'created',
+
+  // the game has been assigned a gameserver and it is being configured
+  configuring = 'configuring',
+
+  // the gameserver is fully configured and is waiting for the match to start
+  launching = 'launching',
+
+  // the match is in progress
+  started = 'started',
+
+  // the match has ended
+  ended = 'ended',
+
+  // the match has been interrupted by an admin (or another factor)
+  interrupted = 'interrupted',
+}
+
+export interface GameModel {
+  number: GameNumber
+  map: string
+  state: GameState
+
+  slots: GameSlotModel[]
+  events: GameEventModel[]
+
+  logsUrl?: string
+  demoUrl?: string
+  score?: Record<Tf2Team, number>
+
+  logSecret?: string
+  connectString?: string
+  stvConnectString?: string
+}
