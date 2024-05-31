@@ -1,6 +1,7 @@
-import { Tf2ClassName, type SteamId64 } from '@tf2pickup-org/types'
 import { describe, expect, it } from 'vitest'
 import { pickTeams, type PlayerSlot, type TeamOverrides } from './pick-teams'
+import type { SteamId64 } from '../shared/types/steam-id-64'
+import { Tf2ClassName } from '../shared/types/tf2-class-name'
 
 function randomSteamId() {
   const chars = '0123456789'

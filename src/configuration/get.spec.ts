@@ -1,16 +1,18 @@
-import { collections, configurationSchema } from '@tf2pickup-org/database'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { get } from './get'
+import { collections } from '../database/collections'
 
-vi.mock('@tf2pickup-org/database', async () => ({
+vi.mock('../database/collections', async () => ({
   collections: {
     configuration: {
       findOne: vi.fn(),
     },
   },
-  configurationSchema: (
-    await import('@tf2pickup-org/database/src/models/configuration-entry.model')
-  ).configurationSchema,
+}))
+
+vi.mock('../database/models/configuration-entry.model', async () => ({
+  configurationSchema: (await import('../database/models/configuration-entry.model'))
+    .configurationSchema,
 }))
 
 describe('when the configuration entry is found', () => {
