@@ -1,6 +1,7 @@
 import { collections } from '../../../database/collections'
 import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
+import { IconMinus, IconPlus } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
@@ -40,7 +41,7 @@ function JoinButton(slotId: number) {
       value={`${slotId}`}
       aria-label={`Join queue on slot ${slotId}`}
     >
-      <i class="ti ti-plus text-2xl"></i>
+      <IconPlus />
     </button>
   )
 }
@@ -50,7 +51,7 @@ function PlayerInfo(props: { player: PlayerModel; isActorsSlot: boolean; ready: 
   if (props.isActorsSlot) {
     leaveButton = (
       <button class="leave-queue-button" name="leave" value="">
-        <i class="ti ti-minus text-2xl"></i>
+        <IconMinus />
       </button>
     )
   }

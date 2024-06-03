@@ -1,4 +1,5 @@
 import type { PlayerModel } from '../../database/models/player.model'
+import { IconSettings } from './icons'
 
 export async function Profile(player: PlayerModel) {
   return (
@@ -15,7 +16,7 @@ export async function Profile(player: PlayerModel) {
         </span>
         <div class="relative rotate-0 transition-transform duration-100 group-hover:rotate-45">
           <div class="opacity-100 transition-opacity duration-100">
-            <i class="ti ti-settings text-2xl"></i>
+            <IconSettings />
           </div>
         </div>
       </button>

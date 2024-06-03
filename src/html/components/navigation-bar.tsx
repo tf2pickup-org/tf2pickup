@@ -1,4 +1,5 @@
 import type { User } from '../../auth/types/user'
+import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
 import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
 
@@ -32,12 +33,12 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
       <MenuItem href="/rules">Rules</MenuItem>
 
       <MenuItem href="/hall-of-fame">
-        <i class="ti ti-crown text-2xl"></i>
+        <IconCrown />
         HOF
       </MenuItem>
 
       <MenuItem href="/statistics">
-        <i class="ti ti-chart-pie text-2xl"></i>
+        <IconChartPie />
         Stats
       </MenuItem>
 
@@ -48,7 +49,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
         class="text-abru-light-75 hidden hover:text-slate-200 xl:inline-block"
         target="_blank"
       >
-        <i class="ti ti-brand-discord text-4xl"></i>
+        <IconBrandDiscord size={32} />
       </a>
 
       <a
@@ -56,7 +57,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
         class="text-abru-light-75 hidden hover:text-slate-200 xl:inline-block"
         target="_blank"
       >
-        <i class="ti ti-heart text-4xl"></i>
+        <IconHeart size={32} />
       </a>
 
       <div class="hidden w-2 lg:block" />
