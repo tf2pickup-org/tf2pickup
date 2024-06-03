@@ -1,0 +1,75 @@
+.game-summary-caption {
+  background: linear-gradient(
+    180deg,
+    theme(colors.transparent) 35%,
+    theme(colors.abru.dark.29) 90%
+  );
+
+  .floating-label {
+    background-color: theme(colors.abru.DEFAULT/90);
+    position: absolute;
+    height: 28px;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 3px;
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 16px;
+    line-height: 16px;
+    font-weight: 700;
+
+    @apply shadow;
+  }
+}
+
+.game-info {
+  display: flex;
+  flex-flow: column nowrap;
+
+  color: theme(colors.abru.light.75);
+
+  .label {
+    font-weight: 300;
+  }
+
+  .value {
+    font-weight: 500;
+  }
+}
+
+.score-header {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 7px 24px 8px 24px;
+  font-size: 48px;
+  line-height: normal;
+  font-weight: 700;
+
+  color: theme('colors.ash');
+
+  &.blu {
+    background-color: theme('colors.team-blu');
+    padding-right: 34px;
+    border-top-left-radius: 8px;
+    flex-direction: row;
+  }
+
+  &.red {
+    background-color: theme('colors.team-red');
+    padding-left: 34px;
+    border-top-right-radius: 8px;
+    flex-direction: row-reverse;
+  }
+}
+
+.slot-list {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  border-radius: 0 0 8px 8px;
+  background-color: rgb(0 0 0 / 0.4);
+  padding: 10px;
+}
