@@ -22,6 +22,10 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
       await page.getByRole('button', { name: `I'M READY` }).click()
       await page.waitForURL(/games\/(\d+)/)
 
+      const slot = page.getByRole('link', { name: user.name })
+      await expect(slot).toBeVisible()
+      expect(await slot.getAttribute('href')).toMatch(`/players/${user.steamId}`)
+
       await page.goto('/')
       await expect(page.getByRole('link', { name: 'Go back to the game' })).toBeVisible()
     }),

@@ -1,8 +1,11 @@
 import { collections } from '../database/collections'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
+import { events } from '../events'
 import { logger } from '../logger'
 import { config } from './config'
+import { getSlots } from './get-slots'
+import { getState } from './get-state'
 
 type EmptyQueueSlot = Omit<QueueSlotModel, 'player'> & { player: null }
 
@@ -41,5 +44,7 @@ export async function reset() {
       upsert: true,
     },
   )
+  events.emit('queue/slots:updated', { slots: await getSlots() })
+  events.emit('queue/state:updated', { state: await getState() })
   logger.info('queue reset')
 }
