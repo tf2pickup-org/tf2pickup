@@ -3,6 +3,8 @@ import type { ConfigurationEntryModel } from './models/configuration-entry.model
 import type { GameModel } from './models/game.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
 import type { PlayerModel } from './models/player.model'
+import type { QueueMapOptionModel } from './models/queue-map-option.model'
+import type { QueueMapVoteModel } from './models/queue-map-vote.model'
 import type { QueueSlotModel } from './models/queue-slot.model'
 import type { QueueStateModel } from './models/queue-state.model'
 
@@ -13,4 +15,6 @@ export const collections = {
   players: database.collection<PlayerModel>('players'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),
   queueState: database.collection<QueueStateModel>('queue.state'),
+  queueMapOptions: database.collection<QueueMapOptionModel>('queue.mapoptions'),
+  queueMapVotes: database.collection<QueueMapVoteModel>('queue.mapvotes'),
 }

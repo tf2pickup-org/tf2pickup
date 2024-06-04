@@ -38,7 +38,12 @@ const readyUp = z.object({
   HEADERS: htmxHeaders,
 })
 
-const clientMessage = z.union([joinQueue, leaveQueue, readyUp])
+const voteMap = z.object({
+  votemap: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const clientMessage = z.union([joinQueue, leaveQueue, readyUp, voteMap])
 
 type MessageFn = (
   player: SteamId64 | undefined,
@@ -65,8 +70,17 @@ export class Gateway extends EventEmitter implements Broadcaster {
     ;(this.app.websocketServer.clients as Set<WebSocket>).forEach(async client => {
       const send = async (msg: string) =>
         new Promise<void>((resolve, reject) => {
+          if (client.readyState !== WebSocket.OPEN) {
+            return resolve()
+          }
+
           client.send(msg, err => {
             if (err) {
+              if ('code' in err && err.code === 'EPIPE') {
+                client.terminate()
+                return resolve()
+              }
+
               reject(err)
             } else {
               resolve()
@@ -93,8 +107,17 @@ export class Gateway extends EventEmitter implements Broadcaster {
           if (client.player && players.includes(client.player?.steamId)) {
             const send = async (msg: string) =>
               new Promise<void>((resolve, reject) => {
+                if (client.readyState !== WebSocket.OPEN) {
+                  return resolve()
+                }
+
                 client.send(msg, err => {
                   if (err) {
+                    if ('code' in err && err.code === 'EPIPE') {
+                      client.terminate()
+                      return resolve()
+                    }
+
                     reject(err)
                   } else {
                     resolve()
@@ -124,6 +147,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:leave', socket)
       } else if ('ready' in parsed) {
         this.emit('queue:readyup', socket)
+      } else if ('votemap' in parsed) {
+        this.emit('queue:votemap', socket, parsed.votemap)
       }
     } catch (error) {
       console.error(error)

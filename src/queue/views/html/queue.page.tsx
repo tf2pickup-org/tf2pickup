@@ -12,6 +12,7 @@ import type { User } from '../../../auth/types/user'
 import { environment } from '../../../environment'
 import { OnlinePlayerList } from '../../../online-players/views/html/online-player-list'
 import { RunningGameSnackbar } from './running-game-snackbar'
+import { MapVote } from './map-vote'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -56,6 +57,10 @@ export async function QueuePage(user?: User) {
                 ))}
             </form>
           </div>
+        </div>
+
+        <div class="order-4 col-span-3">
+          <MapVote actor={user?.player.steamId} />
         </div>
 
         <div class="order-last lg:order-3 lg:row-span-2">

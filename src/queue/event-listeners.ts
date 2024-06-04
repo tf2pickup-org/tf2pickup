@@ -9,6 +9,7 @@ import { ReadyUpDialog } from './views/html/ready-up-dialog'
 import { QueueState } from '../database/models/queue-state.model'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { MapVote } from './views/html/map-vote'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -45,17 +46,37 @@ export default fp(
     })
 
     events.on('queue/state:updated', async ({ state }) => {
-      if (state === QueueState.ready) {
-        const players = (
-          await collections.queueSlots
-            .find({ player: { $ne: null }, ready: { $eq: false } })
-            .toArray()
-        )
-          .map(s => s.player)
-          .filter(Boolean) as SteamId64[]
+      try {
+        if (state === QueueState.ready) {
+          const players = (
+            await collections.queueSlots
+              .find({ player: { $ne: null }, ready: { $eq: false } })
+              .toArray()
+          )
+            .map(s => s.player)
+            .filter(Boolean) as SteamId64[]
 
-        const show = await ReadyUpDialog.show()
-        app.gateway.toPlayers(...players).broadcast(() => show)
+          const show = await ReadyUpDialog.show()
+          app.gateway.toPlayers(...players).broadcast(() => show)
+        }
+      } catch (error) {
+        logger.error(error)
+      }
+    })
+
+    events.on('queue/mapOptions:reset', () => {
+      try {
+        app.gateway.broadcast(async player => await MapVote({ actor: player }))
+      } catch (error) {
+        logger.error(error)
+      }
+    })
+
+    events.on('queue/mapVoteResults:updated', () => {
+      try {
+        app.gateway.broadcast(async player => await MapVote({ actor: player }))
+      } catch (error) {
+        logger.error(error)
       }
     })
   },

@@ -1,0 +1,29 @@
+import { collections } from '../database/collections'
+import { events } from '../events'
+import type { SteamId64 } from '../shared/types/steam-id-64'
+import { getMapVoteResults } from './get-map-vote-results'
+import { mutex } from './mutex'
+
+export async function voteMap(steamId: SteamId64, map: string): Promise<Record<string, number>> {
+  return await mutex.runExclusive(async () => {
+    const mapCount = await collections.queueMapOptions.countDocuments({ name: map })
+    if (mapCount === 0) {
+      throw new Error('this map not an option in the vote')
+    }
+
+    const slotCount = await collections.queueSlots.countDocuments({ player: steamId })
+    if (slotCount === 0) {
+      throw new Error('player not in the queue')
+    }
+
+    await collections.queueMapVotes.findOneAndUpdate(
+      { player: steamId },
+      { $set: { map } },
+      { upsert: true },
+    )
+
+    const results = await getMapVoteResults()
+    events.emit('queue/mapVoteResults:updated', { results })
+    return results
+  })
+}

@@ -30,6 +30,12 @@ export interface Events {
   'queue/state:updated': {
     state: QueueState
   }
+  'queue/mapOptions:reset': {
+    mapOptions: string[]
+  }
+  'queue/mapVoteResults:updated': {
+    results: Record<string, number>
+  }
 }
 
 class TypedEventEmitter extends EventEmitter {

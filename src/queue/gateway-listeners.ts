@@ -7,6 +7,9 @@ import { join } from './join'
 import { leave } from './leave'
 import { readyUp } from './ready-up'
 import { ReadyUpDialog } from './views/html/ready-up-dialog'
+import { voteMap } from './vote-map'
+import { logger } from '../logger'
+import { MapVote } from './views/html/map-vote'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -18,8 +21,6 @@ export default fp(
       })
       socket.send(await QueueState())
       socket.send(await OnlinePlayerList())
-
-      // setTimeout(async () => socket.send(await ReadyUpDialog.show()), 3000)
     })
 
     app.gateway.on('queue:join', async (socket, slotId) => {
@@ -27,7 +28,14 @@ export default fp(
         return
       }
 
-      await join(slotId, socket.player.steamId)
+      try {
+        await join(slotId, socket.player.steamId)
+        app.gateway
+          .toPlayers(socket.player.steamId)
+          .broadcast(async player => await MapVote({ actor: player }))
+      } catch (error) {
+        logger.error(error)
+      }
     })
 
     app.gateway.on('queue:leave', async socket => {
@@ -35,10 +43,18 @@ export default fp(
         return
       }
 
-      const slot = await leave(socket.player.steamId)
-      if (slot.ready) {
-        const close = await ReadyUpDialog.close()
-        app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+      try {
+        const slot = await leave(socket.player.steamId)
+        app.gateway
+          .toPlayers(socket.player.steamId)
+          .broadcast(async player => await MapVote({ actor: player }))
+
+        if (slot.ready) {
+          const close = await ReadyUpDialog.close()
+          app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+        }
+      } catch (error) {
+        logger.error(error)
       }
     })
 
@@ -47,8 +63,24 @@ export default fp(
         return
       }
 
-      const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
-      app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+      try {
+        const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
+        app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+      } catch (error) {
+        logger.error(error)
+      }
+    })
+
+    app.gateway.on('queue:votemap', async (socket, map) => {
+      if (!socket.player) {
+        return
+      }
+
+      try {
+        await voteMap(socket.player.steamId, map)
+      } catch (error) {
+        logger.error(error)
+      }
     })
   },
   { name: 'queue-gateway-listeners' },
