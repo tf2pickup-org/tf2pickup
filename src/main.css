@@ -192,3 +192,33 @@ dialog::backdrop {
 
   padding: 32px 42px;
 }
+
+.page {
+  height: 32px;
+  min-width: 28px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  vertical-align: middle;
+  font-weight: 500;
+  border-radius: 4px;
+  color: theme(colors.white);
+  cursor: pointer;
+
+  &:hover {
+    background-color: theme(colors.abru.light.10);
+  }
+}
+
+.page--active {
+  background-color: theme(colors.abru.light.15);
+}
+
+.page--disabled {
+  color: theme(colors.abru.light.15);
+  cursor: default;
+
+  &:hover {
+    background-color: initial;
+  }
+}

@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import type { User } from '../../../auth/types/user'
 import { collections } from '../../../database/collections'
 import type { GameNumber } from '../../../database/models/game.model'

@@ -11,18 +11,16 @@ export function Layout(
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          {/* <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css"
-          ></link> */}
           <script src="https://unpkg.com/htmx.org@1.9.12"></script>
           <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
+          <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/head-support.js"></script>
           <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+          <script src="/map-thumbnail.js"></script>
           <link href="/main.css" rel="stylesheet"></link>
           <title>{props?.title ?? environment.WEBSITE_NAME}</title>
           {safeHead}
         </head>
-        <body hx-boost="true" hx-ext="ws" ws-connect="/ws">
+        <body hx-boost="true" hx-ext="ws,head-support" ws-connect="/ws">
           {props?.children}
           <div id="notify-container"></div>
           <ReadyUpDialog />
