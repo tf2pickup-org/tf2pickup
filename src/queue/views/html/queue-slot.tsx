@@ -50,7 +50,7 @@ function PlayerInfo(props: { player: PlayerModel; isActorsSlot: boolean; ready: 
   let leaveButton = <></>
   if (props.isActorsSlot) {
     leaveButton = (
-      <button class="leave-queue-button" name="leave" value="">
+      <button class="leave-queue-button" name="leave" value="" aria-label="Leave queue">
         <IconMinus />
       </button>
     )

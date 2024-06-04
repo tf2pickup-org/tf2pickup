@@ -23,3 +23,9 @@ test('has 12 queue slots and no join buttons', async ({ page }) => {
   await expect(slots.filter({ hasNot: page.getByRole('button') })).toHaveCount(12)
   await expect(slots.filter({ has: page.getByRole('button') })).toHaveCount(0)
 })
+
+test('has 3 map vote buttons', async ({ page }) => {
+  await page.goto('/')
+  const mapVoteButtons = page.getByLabel(/Vote for map/)
+  await expect(mapVoteButtons).toHaveCount(3)
+})

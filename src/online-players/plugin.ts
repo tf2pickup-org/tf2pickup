@@ -34,6 +34,11 @@ export default fp(
       })
     }
 
+    const onlinePlayers = (await collections.onlinePlayers.find().toArray()).map(p => p.steamId)
+    for (const steamId of onlinePlayers) {
+      setTimeout(() => verifyPlayer(steamId), verifyPlayerTimeout)
+    }
+
     app.gateway.on('connected', async (socket, ipAddress) => {
       if (socket.player) {
         const player = await collections.players.findOne({ steamId: socket.player.steamId })

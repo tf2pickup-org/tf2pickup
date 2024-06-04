@@ -32,10 +32,19 @@ async function MapVoteButton(props: { map: string; actor?: SteamId64 | undefined
   const votePercent = totalVotes === 0 ? 0 : Math.round((mapVotes / totalVotes) * 100)
 
   return (
-    <button class="map-vote-button text-white" disabled={disabled} name="votemap" value={props.map}>
+    <button
+      class="map-vote-button text-white"
+      disabled={disabled}
+      name="votemap"
+      value={props.map}
+      aria-label={`Vote for map ${props.map}`}
+      aria-checked={`${selected}`}
+    >
       <div class="grow"></div>
       <span class="text-2xl font-bold leading-4">{votePercent}%</span>
-      <span class="text-2xl font-normal">{props.map}</span>
+      <span class="text-2xl font-normal" safe>
+        {props.map}
+      </span>
 
       <div class="absolute bottom-0 left-1/3 right-0 top-0 -z-10">
         <MapThumbnail map={props.map} />
