@@ -6,6 +6,7 @@ import type { QueueSlotModel } from './database/models/queue-slot.model'
 import { QueueState } from './database/models/queue-state.model'
 import type { GameModel } from './database/models/game.model'
 import type { PlayerModel } from './database/models/player.model'
+import type { MapPoolEntry } from './database/models/map-pool-entry.model'
 
 export interface Events {
   'game:created': {
@@ -24,6 +25,9 @@ export interface Events {
     after: PlayerModel
   }
 
+  'queue/mapPool:reset': {
+    maps: MapPoolEntry[]
+  }
   'queue/slots:updated': {
     slots: QueueSlotModel[]
   }
