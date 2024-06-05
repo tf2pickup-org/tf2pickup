@@ -31,8 +31,11 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
     }
     events.emit('queue/slots:updated', { slots: [slot] })
 
-    await collections.queueMapVotes.deleteMany({ player: steamId })
-    events.emit('queue/mapVoteResults:updated', { results: await getMapVoteResults() })
+    const { deletedCount } = await collections.queueMapVotes.deleteMany({ player: steamId })
+    if (deletedCount > 0) {
+      events.emit('queue/mapVoteResults:updated', { results: await getMapVoteResults() })
+    }
+
     return slot
   })
 }
