@@ -11,6 +11,7 @@ declare module 'fastify' {
 declare module 'ws' {
   import * as WebSocket from 'ws'
   interface WebSocket {
+    isAlive: boolean
     player?: {
       steamId: SteamId64
     }
