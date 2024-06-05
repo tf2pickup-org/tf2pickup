@@ -1,6 +1,7 @@
 export function OfflineAlert() {
   return (
     <div
+      style="display: none;"
       role="alert"
       _="
       on htmx:wsClose from <body/> show me
