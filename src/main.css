@@ -71,6 +71,26 @@ dialog::backdrop {
   }
 }
 
+.banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 18px;
+  font-weight: 500;
+  color: theme(colors.abru.dark.3);
+
+  @media screen(md) {
+    flex-direction: row;
+  }
+
+  &--warning {
+    background-color: theme(colors.accent.600);
+    color: theme(colors.abru.dark.3);
+  }
+}
+
 .menu-item {
   @apply transition-colors;
   @apply duration-75;

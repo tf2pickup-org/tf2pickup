@@ -13,6 +13,7 @@ import { environment } from '../../../environment'
 import { OnlinePlayerList } from '../../../online-players/views/html/online-player-list'
 import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
+import { OfflineAlert } from './offline-alert'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -34,6 +35,10 @@ export async function QueuePage(user?: User) {
     >
       <NavigationBar user={user} />
       <Page>
+        <div class="order-1 lg:col-span-4">
+          <OfflineAlert />
+        </div>
+
         <div class="order-2 lg:col-span-3">
           <div class="flex flex-col gap-8">
             <QueueState />
