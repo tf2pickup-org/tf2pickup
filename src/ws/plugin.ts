@@ -6,7 +6,6 @@ import websocket from '@fastify/websocket'
 import { WebSocket } from 'ws'
 import { secondsToMilliseconds } from 'date-fns'
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
   await app.register(websocket, {
     options: {
@@ -18,8 +17,9 @@ export default fp(async app => {
     logger.trace('ws ping')
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     ;(app.websocketServer.clients as Set<WebSocket>).forEach(client => {
-      if (client.isAlive === false) {
-        return client.terminate()
+      if (!client.isAlive) {
+        client.terminate()
+        return
       }
 
       client.isAlive = false
@@ -35,7 +35,9 @@ export default fp(async app => {
   })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  app.websocketServer.on('close', () => clearInterval(isAliveInterval))
+  app.websocketServer.on('close', () => {
+    clearInterval(isAliveInterval)
+  })
 
   const gateway = new Gateway(app)
   app.decorate('gateway', gateway)
@@ -47,9 +49,16 @@ export default fp(async app => {
       }
 
       socket.on('message', message => {
-        logger.trace(`${req.user!.player.name}: ${message.toLocaleString()}`)
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string
-        gateway.parse(socket, message.toString())
+        let messageString: string
+        if (Array.isArray(message)) {
+          messageString = Buffer.concat(message).toString()
+        } else if (message instanceof ArrayBuffer) {
+          messageString = Buffer.from(message).toString()
+        } else {
+          messageString = message.toString()
+        }
+        logger.trace(`${req.user!.player.name}: ${messageString}`)
+        gateway.parse(socket, messageString)
       })
     }
 

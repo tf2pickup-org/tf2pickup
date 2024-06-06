@@ -15,12 +15,14 @@ const resizeObserver = new ResizeObserver(entries => {
 
     const mapName = entry.target.getAttribute('data-map-name')
     if (!mapName) {
+      // eslint-disable-next-line no-undef
       console.warn('No map name found for map thumbnail')
       continue
     }
 
     const urlTemplate = entry.target.getAttribute('data-map-url-template')
     if (!urlTemplate) {
+      // eslint-disable-next-line no-undef
       console.warn('No map url template found for map thumbnail')
       continue
     }

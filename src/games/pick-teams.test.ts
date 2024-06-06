@@ -15,6 +15,7 @@ function randomSteamId() {
 
 describe('pickTeams', () => {
   describe('for 2v2', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [a, b, c, d] = Array.from(Array(4)).map(_ => randomSteamId())
 
     const players: PlayerSlot[] = [
@@ -129,6 +130,7 @@ describe('pickTeams', () => {
   })
 
   describe('for 6v6', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [a, b, c, d, e, f, g, h, i, j, k, l] = Array.from(Array(12)).map(_ => randomSteamId())
 
     const players: PlayerSlot[] = [
@@ -294,6 +296,7 @@ describe('pickTeams', () => {
         graba,
         crzje,
         loww,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       ] = Array.from(Array(12)).map(_ => randomSteamId())
 
       const players: PlayerSlot[] = [
@@ -399,6 +402,7 @@ describe('pickTeams', () => {
   })
 
   describe('for 9v9', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r] = Array.from(Array(18)).map(_ =>
       randomSteamId(),
     )
@@ -489,6 +493,7 @@ describe('pickTeams', () => {
   })
 
   it('should throw an error if trying to make teams of 3 players the same class', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [a, b, c, d, e, f] = Array.from(Array(6)).map(_ => randomSteamId())
 
     const players: PlayerSlot[] = [
@@ -504,6 +509,7 @@ describe('pickTeams', () => {
   })
 
   it('should throw an error if player count is not even', () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [a, b, c] = Array.from(Array(3)).map(_ => randomSteamId())
 
     const players: PlayerSlot[] = [

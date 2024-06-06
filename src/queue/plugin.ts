@@ -3,7 +3,6 @@ import { QueuePage } from './views/html/queue.page'
 import gatewayListeners from './gateway-listeners'
 import eventListeners from './event-listeners'
 
-// eslint-disable-next-line @typescript-eslint/require-await
 export default fp(
   async app => {
     await import('./initialize')

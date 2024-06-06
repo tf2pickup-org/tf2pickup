@@ -1,7 +1,11 @@
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { GameEvent } from '../database/models/game-event.model'
-import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
+import {
+  PlayerConnectionStatus,
+  SlotStatus,
+  type GameSlotModel,
+} from '../database/models/game-slot.model'
 import { GameState, type GameNumber } from '../database/models/game.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
@@ -18,6 +22,7 @@ export async function create(
   const playerSlots: PlayerSlot[] = await Promise.all(queueSlots.map(queueSlotToPlayerSlot))
   const slots = pickTeams(playerSlots, { friends })
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { insertedId } = await collections.games.insertOne({
     number: await getNextGameNumber(),
     map,
@@ -30,13 +35,14 @@ export async function create(
         }
 
         return {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           player: player._id,
           team: slot.team,
           gameClass: slot.gameClass,
           status: SlotStatus.active,
           connectionStatus: PlayerConnectionStatus.offline,
           skill: slot.skill,
-        }
+        } as GameSlotModel
       }),
     ),
     events: [
@@ -47,6 +53,7 @@ export async function create(
     ],
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const game = await collections.games.findOne({ _id: insertedId })
   if (!game) {
     throw new Error('failed creating game')

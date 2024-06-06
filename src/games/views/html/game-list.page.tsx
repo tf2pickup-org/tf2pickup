@@ -82,7 +82,7 @@ function GameListItem(props: { game: GameModel; classPlayed?: Tf2ClassName }) {
   let gameLabel = <div class="col-span-2"></div>
   if (props.game.state === GameState.interrupted) {
     gameLabel = <div class="label label--interrupted">force-ended</div>
-  } else if (props.game.score?.blu !== undefined && props.game.score?.red !== undefined) {
+  } else if (props.game.score?.blu !== undefined) {
     gameLabel = (
       <>
         <div class="label label--blu">blu: {props.game.score.blu}</div>

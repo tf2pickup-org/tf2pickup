@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { get } from './get'
 import { collections } from '../database/collections'
 
-vi.mock('../database/collections', async () => ({
+vi.mock('../database/collections', () => ({
   collections: {
     configuration: {
       findOne: vi.fn(),

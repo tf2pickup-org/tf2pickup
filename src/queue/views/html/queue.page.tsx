@@ -73,7 +73,7 @@ export async function QueuePage(user?: User) {
         </div>
       </Page>
 
-      {user?.player?.activeGame && RunningGameSnackbar(user.player.activeGame)}
+      {user?.player.activeGame && RunningGameSnackbar(user.player.activeGame)}
     </Layout>
   )
 }

@@ -71,14 +71,16 @@ export class Gateway extends EventEmitter implements Broadcaster {
       const send = async (msg: string) =>
         new Promise<void>((resolve, reject) => {
           if (client.readyState !== WebSocket.OPEN) {
-            return resolve()
+            resolve()
+            return
           }
 
           client.send(msg, err => {
             if (err) {
               if ('code' in err && err.code === 'EPIPE') {
                 client.terminate()
-                return resolve()
+                resolve()
+                return
               }
 
               reject(err)
@@ -101,21 +103,23 @@ export class Gateway extends EventEmitter implements Broadcaster {
 
   toPlayers(...players: SteamId64[]): Broadcaster {
     return {
-      broadcast: (messageFn: MessageFn) =>
+      broadcast: (messageFn: MessageFn) => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        (this.app.websocketServer.clients as Set<WebSocket>).forEach(async client => {
-          if (client.player && players.includes(client.player?.steamId)) {
+        ;(this.app.websocketServer.clients as Set<WebSocket>).forEach(async client => {
+          if (client.player && players.includes(client.player.steamId)) {
             const send = async (msg: string) =>
               new Promise<void>((resolve, reject) => {
                 if (client.readyState !== WebSocket.OPEN) {
-                  return resolve()
+                  resolve()
+                  return
                 }
 
                 client.send(msg, err => {
                   if (err) {
                     if ('code' in err && err.code === 'EPIPE') {
                       client.terminate()
-                      return resolve()
+                      resolve()
+                      return
                     }
 
                     reject(err)
@@ -134,7 +138,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
               await send(message)
             }
           }
-        }),
+        })
+      },
     }
   }
 

@@ -16,14 +16,16 @@ const getSteamLoginUrl = async (): Promise<string> =>
   new Promise((resolve, reject) => {
     openId.authenticate('https://steamcommunity.com/openid', false, (err, authUrl) => {
       if (err) {
-        return reject(err)
+        reject(new Error(err.message))
+        return
       }
 
       if (!authUrl) {
-        return reject(new Error(`Authentication failed: authUrl is empty`))
+        reject(new Error(`Authentication failed: authUrl is empty`))
+        return
       }
 
-      return resolve(authUrl)
+      resolve(authUrl)
     })
   })
 
@@ -31,27 +33,32 @@ const verifySteamCallback = (url: string): Promise<string> =>
   new Promise((resolve, reject) => {
     openId.verifyAssertion(url, (err, result) => {
       if (err) {
-        return reject(err)
+        reject(new Error(err.message))
+        return
       }
 
       if (result?.claimedIdentifier === undefined) {
-        return reject(new Error(`no auth info from Steam API`))
+        reject(new Error(`no auth info from Steam API`))
+        return
       }
 
       if (!result.authenticated) {
-        return reject(new Error(`not authenticated`))
+        reject(new Error(`not authenticated`))
+        return
       }
 
       if (!/^https?:\/\/steamcommunity\.com\/openid\/id\/\d{17}$/.test(result.claimedIdentifier)) {
-        return reject(new Error('invalid claimedIdentifier'))
+        reject(new Error('invalid claimedIdentifier'))
+        return
       }
 
       const steamId = result.claimedIdentifier.split('/').pop()
       if (!steamId) {
-        return reject(new Error('invalid claimIdentifier'))
+        reject(new Error('invalid claimIdentifier'))
+        return
       }
 
-      return resolve(steamId)
+      resolve(steamId)
     })
   })
 

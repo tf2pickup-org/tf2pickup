@@ -5,7 +5,6 @@ import { launchNewGame } from './launch-new-game'
 import { GameListPage } from './views/html/game-list.page'
 
 export default fp(
-  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     await app.register(launchNewGame)
 

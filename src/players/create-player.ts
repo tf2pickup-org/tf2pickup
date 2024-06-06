@@ -7,6 +7,7 @@ export async function createPlayer({
   name,
   avatar,
 }: CreatePlayerParams): Promise<PlayerModel> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { insertedId } = await collections.players.insertOne({
     name,
     steamId,
@@ -16,5 +17,6 @@ export async function createPlayer({
     hasAcceptedRules: false,
     cooldownLevel: 0,
   })
-  return (await collections.players.findOne(insertedId))!
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  return (await collections.players.findOne({ _id: insertedId }))!
 }

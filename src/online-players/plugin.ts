@@ -10,11 +10,12 @@ import { WebSocket } from 'ws'
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
 export default fp(
-  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     // verify the player is online
     async function verifyPlayer(steamId: SteamId64) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const playerSockets = [...app.websocketServer.clients].filter(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         socket => socket.player?.steamId === steamId,
       )
       logger.debug(`verify online status for ${steamId} (${playerSockets.length} sockets)`)
@@ -29,6 +30,7 @@ export default fp(
       }
 
       const cmp = await OnlinePlayerList()
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       app.websocketServer.clients.forEach((client: WebSocket) => {
         client.send(cmp)
       })
@@ -82,6 +84,7 @@ export default fp(
         })
 
         const cmp = await OnlinePlayerList()
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         app.websocketServer.clients.forEach((client: WebSocket) => {
           client.send(cmp)
         })

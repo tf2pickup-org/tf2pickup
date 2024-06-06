@@ -46,6 +46,7 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
     )
 
     targetSlot = await collections.queueSlots.findOneAndUpdate(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       { _id: targetSlot._id },
       {
         $set: {
