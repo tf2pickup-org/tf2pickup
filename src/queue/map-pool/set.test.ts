@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { set } from './set'
-import { mapPoolSchema, type MapPoolEntry } from '../../database'
+import { mapPoolSchema, type MapPoolEntry } from '../../database/models/map-pool-entry.model'
 
 const events = vi.hoisted(() => {
   return {
@@ -8,7 +8,7 @@ const events = vi.hoisted(() => {
   }
 })
 
-vi.mock('../../database', () => {
+vi.mock('../../database/models/map-pool-entry.model', () => {
   let maps: MapPoolEntry[] = []
   return {
     collections: {
