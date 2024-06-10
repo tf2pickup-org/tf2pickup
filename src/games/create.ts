@@ -1,6 +1,6 @@
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
-import { GameEvent } from '../database/models/game-event.model'
+import { GameEventType } from '../database/models/game-event.model'
 import {
   PlayerConnectionStatus,
   SlotStatus,
@@ -48,7 +48,7 @@ export async function create(
     events: [
       {
         at: new Date(),
-        event: GameEvent.gameCreated,
+        event: GameEventType.gameCreated,
       },
     ],
   })

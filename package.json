@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@fastify/cookie": "9.3.1",
+    "@fastify/formbody": "7.4.0",
     "@fastify/static": "^7.0.3",
     "@fastify/websocket": "10.0.1",
     "@kitajs/fastify-html-plugin": "4.1.0",
@@ -25,6 +26,8 @@
     "date-fns": "3.6.0",
     "dotenv": "16.4.5",
     "fastify": "4.26.2",
+    "fastify-type-provider-zod": "1.2.0",
+    "generate-password": "1.7.1",
     "jsonwebtoken": "9.0.2",
     "lodash-es": "^4.17.21",
     "mongodb": "6.5.0",
@@ -33,6 +36,7 @@
     "pino": "9.0.0",
     "pino-pretty": "^11.0.0",
     "postcss-import": "16.1.0",
+    "rcon-client": "4.2.4",
     "steamapi": "3.0.8",
     "ws": "^8.17.0",
     "zod": "3.23.4"

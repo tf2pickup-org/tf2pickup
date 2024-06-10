@@ -16,6 +16,9 @@ importers:
       '@fastify/cookie':
         specifier: 9.3.1
         version: 9.3.1
+      '@fastify/formbody':
+        specifier: 7.4.0
+        version: 7.4.0
       '@fastify/static':
         specifier: ^7.0.3
         version: 7.0.3
@@ -46,6 +49,12 @@ importers:
       fastify:
         specifier: 4.26.2
         version: 4.26.2
+      fastify-type-provider-zod:
+        specifier: 1.2.0
+        version: 1.2.0(fastify@4.26.2)(zod@3.23.4)
+      generate-password:
+        specifier: 1.7.1
+        version: 1.7.1
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
@@ -70,6 +79,9 @@ importers:
       postcss-import:
         specifier: 16.1.0
         version: 16.1.0(postcss@8.4.38)
+      rcon-client:
+        specifier: 4.2.4
+        version: 4.2.4
       steamapi:
         specifier: 3.0.8
         version: 3.0.8
@@ -335,6 +347,9 @@ packages:
 
   '@fastify/fast-json-stringify-compiler@4.3.0':
     resolution: {integrity: sha512-aZAXGYo6m22Fk1zZzEUKBvut/CIIQe/BapEORnxiD5Qr0kPHqqI69NtEMCme74h+at72sPhbkb4ZrLd1W3KRLA==}
+
+  '@fastify/formbody@7.4.0':
+    resolution: {integrity: sha512-H3C6h1GN56/SMrZS8N2vCT2cZr7mIHzBHzOBa5OPpjfB/D6FzP9mMpE02ZzrFX0ANeh0BAJdoXKOF2e7IbV+Og==}
 
   '@fastify/merge-json-schemas@0.1.1':
     resolution: {integrity: sha512-fERDVz7topgNjtXsJTTW1JKLy0rhuLRcquYqNR9rF7OcVpCa2OVW49ZPDIhaRRCaUuvVxI+N416xUoF76HNSXA==}
@@ -1142,6 +1157,12 @@ packages:
   fastify-plugin@4.5.1:
     resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
 
+  fastify-type-provider-zod@1.2.0:
+    resolution: {integrity: sha512-2zkPEWFIBYzkGQ0kmn8gOW5tlQOmdDWn5edF5LQ2r0RiydFGhD86FVZX6wLraXAmdFm8P1CMmo19lwlGb0mZrA==}
+    peerDependencies:
+      fastify: ^4.0.0
+      zod: ^3.14.2
+
   fastify@4.26.2:
     resolution: {integrity: sha512-90pjTuPGrfVKtdpLeLzND5nyC4woXZN5VadiNQCicj/iJU4viNHKhsAnb7jmv1vu2IzkLXyBiCzdWuzeXgQ5Ug==}
 
@@ -1219,6 +1240,9 @@ packages:
 
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
+
+  generate-password@1.7.1:
+    resolution: {integrity: sha512-9bVYY+16m7W7GczRBDqXE+VVuCX+bWNrfYKC/2p2JkZukFb2sKxT6E3zZ3mJGz7GMe5iRK0A/WawSL3jQfJuNQ==}
 
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -2041,6 +2065,9 @@ packages:
   quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
 
+  rcon-client@4.2.4:
+    resolution: {integrity: sha512-sTHYLbcu2qrrOX4TOD3rvcLZNs7xiAhTsnZZIvxviSpa0yeV63sPAVI0PeScn5IvhKOCMURGt1NmnQ8h/GxjtA==}
+
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
@@ -2317,6 +2344,9 @@ packages:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
     engines: {node: '>=4'}
 
+  typed-emitter@0.1.0:
+    resolution: {integrity: sha512-Tfay0l6gJMP5rkil8CzGbLthukn+9BN/VXWcABVFPjOoelJ+koW8BuPZYk+h/L+lEeIp1fSzVRiWRPIjKVjPdg==}
+
   typescript-eslint@7.12.0:
     resolution: {integrity: sha512-D6HKNbQcnNu3BaN4HkQCR16tgG8Q2AMUWPgvhrJksOXu+d6ys07yC06ONiV2kcsEfWC22voB6C3PvK2MqlBZ7w==}
     engines: {node: ^18.18.0 || >=20.0.0}
@@ -2493,6 +2523,11 @@ packages:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
 
+  zod-to-json-schema@3.23.0:
+    resolution: {integrity: sha512-az0uJ243PxsRIa2x1WmNE/pnuA05gUq/JB8Lwe1EDCCL/Fz9MgjYQ0fPlyc2Tcv6aF2ZA7WM5TWaRZVEFaAIag==}
+    peerDependencies:
+      zod: ^3.23.3
+
   zod@3.23.4:
     resolution: {integrity: sha512-/AtWOKbBgjzEYYQRNfoGKHObgfAZag6qUJX1VbHo2PRBgS+wfWagEY2mizjfyAPcGesrJOcx/wcl0L9WnVrHFw==}
 
@@ -2620,6 +2655,11 @@ snapshots:
   '@fastify/fast-json-stringify-compiler@4.3.0':
     dependencies:
       fast-json-stringify: 5.15.0
+
+  '@fastify/formbody@7.4.0':
+    dependencies:
+      fast-querystring: 1.1.2
+      fastify-plugin: 4.5.1
 
   '@fastify/merge-json-schemas@0.1.1':
     dependencies:
@@ -3504,6 +3544,12 @@ snapshots:
 
   fastify-plugin@4.5.1: {}
 
+  fastify-type-provider-zod@1.2.0(fastify@4.26.2)(zod@3.23.4):
+    dependencies:
+      fastify: 4.26.2
+      zod: 3.23.4
+      zod-to-json-schema: 3.23.0(zod@3.23.4)
+
   fastify@4.26.2:
     dependencies:
       '@fastify/ajv-compiler': 3.5.0
@@ -3594,6 +3640,8 @@ snapshots:
     optional: true
 
   function-bind@1.1.2: {}
+
+  generate-password@1.7.1: {}
 
   get-caller-file@2.0.5: {}
 
@@ -4360,6 +4408,10 @@ snapshots:
 
   quick-format-unescaped@4.0.4: {}
 
+  rcon-client@4.2.4:
+    dependencies:
+      typed-emitter: 0.1.0
+
   react-is@18.3.1: {}
 
   read-cache@1.0.0:
@@ -4653,6 +4705,8 @@ snapshots:
 
   type-detect@4.0.8: {}
 
+  typed-emitter@0.1.0: {}
+
   typescript-eslint@7.12.0(eslint@9.4.0)(typescript@5.4.5):
     dependencies:
       '@typescript-eslint/eslint-plugin': 7.12.0(@typescript-eslint/parser@7.12.0(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5)
@@ -4802,5 +4856,9 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.0.0: {}
+
+  zod-to-json-schema@3.23.0(zod@3.23.4):
+    dependencies:
+      zod: 3.23.4
 
   zod@3.23.4: {}

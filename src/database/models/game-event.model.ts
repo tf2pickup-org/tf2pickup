@@ -1,6 +1,6 @@
 import type { ObjectId } from 'mongodb'
 
-export enum GameEvent {
+export enum GameEventType {
   gameCreated = 'created',
   gameStarted = 'started',
   gameEnded = 'ended',
@@ -18,13 +18,9 @@ export enum GameEvent {
   roundEnded = 'round ended',
 }
 
-export interface GameEventModel {
+export interface GameCreated {
+  event: GameEventType.gameCreated
   at: Date
-  event: GameEvent
-}
-
-export interface GameCreated extends GameEventModel {
-  event: GameEvent.gameCreated
 }
 
 export enum GameEndedReason {
@@ -32,8 +28,33 @@ export enum GameEndedReason {
   interrupted = 'interrupted',
 }
 
-export interface GameEnded extends GameEventModel {
-  event: GameEvent.gameEnded
+export interface GameEnded {
+  event: GameEventType.gameEnded
+  at: Date
   reason: GameEndedReason
   actor?: ObjectId
 }
+
+export interface GameStarted {
+  event: GameEventType.gameStarted
+  at: Date
+}
+
+export interface GameServerAssigned {
+  event: GameEventType.gameServerAssigned
+  at: Date
+  gameServerName: string
+  actor?: ObjectId
+}
+
+export interface GameServerInitialized {
+  event: GameEventType.gameServerInitialized
+  at: Date
+}
+
+export type GameEventModel =
+  | GameCreated
+  | GameStarted
+  | GameEnded
+  | GameServerAssigned
+  | GameServerInitialized

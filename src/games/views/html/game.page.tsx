@@ -23,7 +23,7 @@ export async function GamePage(number: GameNumber, user?: User) {
       <NavigationBar user={user} />
       <Page>
         <div>
-          <GameSummary game={game} />
+          <GameSummary game={game} actor={user?.player.steamId} />
         </div>
 
         <div class="col-span-3">

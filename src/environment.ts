@@ -12,6 +12,9 @@ const environmentSchema = z.object({
   STEAM_API_KEY: z.string(),
   QUEUE_CONFIG: z.enum(['test', '6v6', '9v9', 'bball', 'ultiduo']).default('6v6'),
   AUTH_SECRET: z.string(),
+  LOG_RELAY_ADDRESS: z.string(),
+  LOG_RELAY_PORT: z.coerce.number(),
+  GAME_SERVER_SECRET: z.string(),
   THUMBNAIL_SERVICE_URL: z.string().url(),
 })
 

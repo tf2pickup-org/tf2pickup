@@ -25,6 +25,19 @@ export enum GameState {
   interrupted = 'interrupted',
 }
 
+export enum GameServerProvider {
+  static = 'static',
+  servemeTf = 'serveme.tf',
+}
+
+export interface GameServer {
+  id: string
+  provider: GameServerProvider
+  name: string
+  address: string
+  port: string
+}
+
 export interface GameModel {
   number: GameNumber
   map: string
@@ -32,6 +45,7 @@ export interface GameModel {
 
   slots: GameSlotModel[]
   events: GameEventModel[]
+  gameServer?: GameServer
 
   logsUrl?: string
   demoUrl?: string

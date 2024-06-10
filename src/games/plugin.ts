@@ -1,22 +1,30 @@
 import fp from 'fastify-plugin'
 import { GamePage } from './views/html/game.page'
 import type { GameNumber } from '../database/models/game.model'
-import { launchNewGame } from './launch-new-game'
+import launchNewGame from './launch-new-game'
 import { GameListPage } from './views/html/game-list.page'
+import { events } from '../events'
+import { GameSummary } from './views/html/game-summary'
+import configure from './configure'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { z } from 'zod'
 
 export default fp(
   async app => {
     await app.register(launchNewGame)
+    await app.register(configure)
 
-    app.get<{
-      Querystring: { page?: number }
-    }>(
+    events.on('game:updated', ({ after }) => {
+      app.gateway.broadcast(async actor => await GameSummary({ game: after, actor }))
+    })
+
+    app.withTypeProvider<ZodTypeProvider>().get(
       '/games',
       {
         schema: {
-          querystring: {
-            page: { type: 'number' },
-          },
+          querystring: z.object({
+            page: z.coerce.number().optional(),
+          }),
         },
       },
       async (req, reply) => {

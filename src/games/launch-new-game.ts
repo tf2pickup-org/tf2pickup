@@ -12,7 +12,7 @@ async function launchGame() {
   await create(slots, 'cp_badlands')
 }
 
-export const launchNewGame = fp(
+export default fp(
   async () => {
     events.on('queue/state:updated', async ({ state }) => {
       if (state === QueueState.launching) {

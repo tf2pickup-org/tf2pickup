@@ -253,3 +253,43 @@
     }
   }
 }
+
+.connect-string {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: theme(colors.abru.light.25);
+  background-color: theme(colors.abru.light.5);
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  color: theme(colors.abru.light.75);
+
+  .fade {
+    mask-image: linear-gradient(90deg, #000 80%, transparent);
+  }
+}
+
+.game-summary-link {
+  @apply transition-colors;
+  @apply duration-75;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+
+  background-color: theme(colors.abru.light.3);
+
+  &:hover {
+    background-color: theme(colors.abru.light.5);
+  }
+}

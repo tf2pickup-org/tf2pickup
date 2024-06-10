@@ -7,9 +7,17 @@ import { QueueState } from './database/models/queue-state.model'
 import type { GameModel } from './database/models/game.model'
 import type { PlayerModel } from './database/models/player.model'
 import type { MapPoolEntry } from './database/models/map-pool-entry.model'
+import type { StaticGameServerModel } from './database/models/static-game-server.model'
 
 export interface Events {
   'game:created': {
+    game: GameModel
+  }
+  'game:updated': {
+    before: GameModel
+    after: GameModel
+  }
+  'game:gameServerAssigned': {
     game: GameModel
   }
 
@@ -40,11 +48,19 @@ export interface Events {
   'queue/mapVoteResults:updated': {
     results: Record<string, number>
   }
+
+  'staticGameServer:added': {
+    gameServer: StaticGameServerModel
+  }
+  'staticGameServer:updated': {
+    before: StaticGameServerModel
+    after: StaticGameServerModel
+  }
 }
 
 class TypedEventEmitter extends EventEmitter {
   override emit<K extends keyof Events>(event: K, params: Events[K]): boolean {
-    logger.trace(event)
+    logger.trace(params, event)
     return super.emit(event, params)
   }
 
