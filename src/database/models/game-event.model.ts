@@ -52,9 +52,31 @@ export interface GameServerInitialized {
   at: Date
 }
 
+export interface PlayerJoinedGameServer {
+  event: GameEventType.playerJoinedGameServer
+  at: Date
+  player: ObjectId
+}
+
+export interface PlayerJoinedGameServerTeam {
+  event: GameEventType.playerJoinedGameServerTeam
+  at: Date
+  player: ObjectId
+  team: 'red' | 'blue'
+}
+
+export interface PlayerLeftGameServer {
+  event: GameEventType.playerLeftGameServer
+  at: Date
+  player: ObjectId
+}
+
 export type GameEventModel =
   | GameCreated
   | GameStarted
   | GameEnded
   | GameServerAssigned
   | GameServerInitialized
+  | PlayerJoinedGameServer
+  | PlayerJoinedGameServerTeam
+  | PlayerLeftGameServer

@@ -85,6 +85,9 @@ importers:
       steamapi:
         specifier: 3.0.8
         version: 3.0.8
+      steamid:
+        specifier: 2.0.0
+        version: 2.0.0
       ws:
         specifier: ^8.17.0
         version: 8.17.0
@@ -119,6 +122,9 @@ importers:
       '@types/postcss-import':
         specifier: 14.0.3
         version: 14.0.3
+      '@types/steamid':
+        specifier: 2.0.3
+        version: 2.0.3
       '@types/ws':
         specifier: 8.5.10
         version: 8.5.10
@@ -573,6 +579,9 @@ packages:
 
   '@types/postcss-import@14.0.3':
     resolution: {integrity: sha512-raZhRVTf6Vw5+QbmQ7LOHSDML71A5rj4+EqDzAbrZPfxfoGzFxMHRCq16VlddGIZpHELw0BG4G0YE2ANkdZiIQ==}
+
+  '@types/steamid@2.0.3':
+    resolution: {integrity: sha512-ozNMQViUYLU+NBN4v7X0bV1O8uTL1bA+WvfHtt9IKcydS4tyYKH7w1vq+xcPGWGL0PRhGtY7C1Zhaeyj2IsETw==}
 
   '@types/webidl-conversions@7.0.3':
     resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
@@ -2865,6 +2874,8 @@ snapshots:
   '@types/postcss-import@14.0.3':
     dependencies:
       postcss: 8.4.38
+
+  '@types/steamid@2.0.3': {}
 
   '@types/webidl-conversions@7.0.3': {}
 

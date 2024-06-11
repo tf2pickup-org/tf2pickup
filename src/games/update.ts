@@ -1,24 +1,33 @@
-import type { StrictUpdateFilter } from 'mongodb'
+import type { FindOneAndUpdateOptions, StrictFilter, StrictUpdateFilter } from 'mongodb'
 import type { GameModel, GameNumber } from '../database/models/game.model'
 import { collections } from '../database/collections'
 import { events } from '../events'
 import { mutex } from './mutex'
 
 export async function update(
-  number: GameNumber,
+  numberOrFilter: GameNumber | StrictFilter<GameModel>,
   update: StrictUpdateFilter<GameModel>,
+  options?: FindOneAndUpdateOptions,
 ): Promise<GameModel> {
   return await mutex.runExclusive(async () => {
-    const before = await collections.games.findOne({ number })
-    if (!before) {
-      throw new Error(`game ${number} not found`)
+    let filter: StrictFilter<GameModel>
+    if (Number.isInteger(numberOrFilter)) {
+      filter = { number: numberOrFilter }
+    } else {
+      filter = numberOrFilter as StrictFilter<GameModel>
     }
 
-    const after = await collections.games.findOneAndUpdate({ number }, update, {
+    const before = await collections.games.findOne(filter)
+    if (!before) {
+      throw new Error(`game (${JSON.stringify(filter)}) not found`)
+    }
+
+    const after = await collections.games.findOneAndUpdate(filter, update, {
       returnDocument: 'after',
+      ...options,
     })
     if (!after) {
-      throw new Error(`can't update game ${number}`)
+      throw new Error(`can't update game ${JSON.stringify(filter)}`)
     }
 
     events.emit('game:updated', { before, after })

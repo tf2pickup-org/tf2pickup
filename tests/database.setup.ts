@@ -5,10 +5,11 @@ import { users } from './data'
 const client = new MongoClient(process.env['MONGODB_URI']!)
 await client.connect()
 const db = client.db()
-const collection = db.collection('players')
+const players = db.collection('players')
+const games = db.collection('games')
 
 async function upsertPlayer(steamId: string, name: string) {
-  await collection.updateOne(
+  await players.updateOne(
     { steamId },
     {
       $set: {
@@ -37,6 +38,8 @@ async function upsertPlayer(steamId: string, name: string) {
 }
 
 setup('create test users accounts', async () => {
+  await games.updateMany({ state: 'launching' }, { $set: { status: 'interrupted' } })
+
   for (const user of users) {
     await upsertPlayer(user.steamId, user.name)
   }

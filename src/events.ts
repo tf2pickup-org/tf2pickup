@@ -4,10 +4,12 @@ import type { UserMetadata } from './shared/types/user-metadata'
 import { logger } from './logger'
 import type { QueueSlotModel } from './database/models/queue-slot.model'
 import { QueueState } from './database/models/queue-state.model'
-import type { GameModel } from './database/models/game.model'
+import type { GameModel, GameNumber } from './database/models/game.model'
 import type { PlayerModel } from './database/models/player.model'
 import type { MapPoolEntry } from './database/models/map-pool-entry.model'
 import type { StaticGameServerModel } from './database/models/static-game-server.model'
+import type { LogMessage } from './log-receiver/parse-log-message'
+import type { Tf2Team } from './shared/types/tf2-team'
 
 export interface Events {
   'game:created': {
@@ -19,6 +21,62 @@ export interface Events {
   }
   'game:gameServerAssigned': {
     game: GameModel
+  }
+
+  'gamelog:message': {
+    message: LogMessage
+  }
+
+  'match:started': {
+    gameNumber: GameNumber
+  }
+  'match:roundWon': {
+    gameNumber: GameNumber
+    winner: Tf2Team
+  }
+  'match:roundLength': {
+    gameNumber: GameNumber
+    lengthMs: number
+  }
+  'match:ended': {
+    gameNumber: GameNumber
+  }
+  'match/player:connected': {
+    gameNumber: GameNumber
+    steamId: SteamId64
+    ipAddress: string
+  }
+  'match/player:joinedTeam': {
+    gameNumber: GameNumber
+    steamId: SteamId64
+    team: Tf2Team
+  }
+  'match/player:disconnected': {
+    gameNumber: GameNumber
+    steamId: SteamId64
+  }
+  'match/player:said': {
+    gameNumber: GameNumber
+    steamId: SteamId64
+    message: string
+  }
+  'match/score:reported': {
+    gameNumber: GameNumber
+    teamName: Tf2Team
+    score: number
+  }
+  'match/score:final': {
+    gameNumber: GameNumber
+    team: Tf2Team
+    score: number
+  }
+  'match/logs:uploaded': {
+    gameNumber: GameNumber
+    logsUrl: string
+  }
+  'match/demo:uploaded': {
+    gameNumber: GameNumber
+    demoUrl: string
   }
 
   'player:connected': {

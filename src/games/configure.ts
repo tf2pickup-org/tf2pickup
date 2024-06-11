@@ -167,14 +167,20 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
 
 const waitABit = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-// eslint-disable-next-line @typescript-eslint/require-await
-export default fp(async () => {
-  events.on('game:gameServerAssigned', async ({ game }) => {
-    try {
-      await configure(game)
-    } catch (error) {
-      assertIsError(error)
-      logger.error(`game ${game.number}: error configuring: ${error.message}`)
-    }
-  })
-})
+export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async () => {
+    events.on('game:gameServerAssigned', async ({ game }) => {
+      try {
+        await configure(game)
+      } catch (error) {
+        assertIsError(error)
+        logger.error(`game ${game.number}: error configuring: ${error.message}`)
+      }
+    })
+  },
+  {
+    name: 'configure',
+    encapsulate: true,
+  },
+)
