@@ -1,0 +1,3 @@
+.player-group {
+  grid-template-columns: subgrid;
+}
