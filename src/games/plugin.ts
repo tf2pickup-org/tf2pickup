@@ -8,6 +8,7 @@ export default fp(
     await app.register((await import('./configure')).default)
     await app.register((await import('./match-event-listener')).default)
     await app.register((await import('./match-event-handler')).default)
+    await app.register((await import('./game-log-collector')).default)
 
     events.on('game:updated', ({ after }) => {
       app.gateway.broadcast(async actor => await GameSummary({ game: after, actor }))

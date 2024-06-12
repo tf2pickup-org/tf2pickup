@@ -1,6 +1,7 @@
 import { database } from './database'
 import type { ConfigurationEntryModel } from './models/configuration-entry.model'
 import type { DocumentModel } from './models/document.model'
+import type { GameLogsModel } from './models/game-logs.model'
 import type { GameModel } from './models/game.model'
 import type { MapPoolEntry } from './models/map-pool-entry.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
@@ -14,6 +15,7 @@ import type { StaticGameServerModel } from './models/static-game-server.model'
 export const collections = {
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
   documents: database.collection<DocumentModel>('documents'),
+  gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
