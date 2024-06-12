@@ -11,6 +11,8 @@ import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import { IconChevronLeft, IconChevronRight } from '../../../html/components/icons'
+import { Page } from '../../../html/components/page'
+import { Footer } from '../../../html/components/footer'
 
 const itemsPerPage = 8
 
@@ -25,16 +27,19 @@ export async function GameListPage(user?: User, page = 1) {
   return (
     <Layout title="games" head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}>
       <NavigationBar user={user} />
-      <div class="container mx-auto">
-        <div class="text-abru-light-75 my-9 text-[48px] font-bold">Games</div>
+      <Page>
+        <div class="container mx-auto">
+          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Games</div>
 
-        <div class="game-list">
-          {games.map(game => (
-            <GameListItem game={game} />
-          ))}
+          <div class="game-list">
+            {games.map(game => (
+              <GameListItem game={game} />
+            ))}
+          </div>
+          <Pagination lastPage={last} currentPage={page} around={around} />
         </div>
-        <Pagination lastPage={last} currentPage={page} around={around} />
-      </div>
+      </Page>
+      <Footer user={user} />
     </Layout>
   )
 }

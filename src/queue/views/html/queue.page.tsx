@@ -14,6 +14,7 @@ import { OnlinePlayerList } from '../../../online-players/views/html/online-play
 import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
 import { OfflineAlert } from './offline-alert'
+import { Footer } from '../../../html/components/footer'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -35,43 +36,46 @@ export async function QueuePage(user?: User) {
     >
       <NavigationBar user={user} />
       <Page>
-        <div class="order-1 lg:col-span-4">
-          <OfflineAlert />
-        </div>
+        <div class="container mx-auto grid gap-x-4 gap-y-8 p-2 lg:grid-cols-4 lg:p-0">
+          <div class="order-1 lg:col-span-4">
+            <OfflineAlert />
+          </div>
 
-        <div class="order-2 lg:col-span-3">
-          <div class="flex flex-col gap-8">
-            <QueueState />
+          <div class="order-2 lg:col-span-3">
+            <div class="flex flex-col gap-8">
+              <QueueState />
 
-            <form class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" ws-send>
-              {config.classes
-                .map(gc => gc.name)
-                .map(gameClass => (
-                  <div class="flex flex-col gap-4">
-                    <div class="flex flex-row items-center justify-center gap-2">
-                      <GameClassIcon gameClass={gameClass} size={32} />
-                      <span class="text-center text-2xl font-bold text-white">{gameClass}</span>
+              <form class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" ws-send>
+                {config.classes
+                  .map(gc => gc.name)
+                  .map(gameClass => (
+                    <div class="flex flex-col gap-4">
+                      <div class="flex flex-row items-center justify-center gap-2">
+                        <GameClassIcon gameClass={gameClass} size={32} />
+                        <span class="text-center text-2xl font-bold text-white">{gameClass}</span>
+                      </div>
+
+                      {slots
+                        .filter(slot => slot.gameClass === gameClass)
+                        .map(slot => (
+                          <QueueSlot slot={slot} actor={user?.player.steamId} />
+                        ))}
                     </div>
+                  ))}
+              </form>
+            </div>
+          </div>
 
-                    {slots
-                      .filter(slot => slot.gameClass === gameClass)
-                      .map(slot => (
-                        <QueueSlot slot={slot} actor={user?.player.steamId} />
-                      ))}
-                  </div>
-                ))}
-            </form>
+          <div class="order-4 col-span-3">
+            <MapVote actor={user?.player.steamId} />
+          </div>
+
+          <div class="order-last lg:order-3 lg:row-span-2">
+            <OnlinePlayerList />
           </div>
         </div>
-
-        <div class="order-4 col-span-3">
-          <MapVote actor={user?.player.steamId} />
-        </div>
-
-        <div class="order-last lg:order-3 lg:row-span-2">
-          <OnlinePlayerList />
-        </div>
       </Page>
+      <Footer user={user} />
 
       {user?.player.activeGame && RunningGameSnackbar(user.player.activeGame)}
     </Layout>

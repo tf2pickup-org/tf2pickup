@@ -12,6 +12,8 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { IconAlignBoxBottomRight, IconBrandSteam, IconStars } from '../../../html/components/icons'
 import { Style } from '../../../html/components/style'
 import { resolve } from 'node:path'
+import { Page } from '../../../html/components/page'
+import { Footer } from '../../../html/components/footer'
 
 export async function PlayerPage(steamId: SteamId64, user?: User) {
   const player = await collections.players.findOne({ steamId })
@@ -32,13 +34,16 @@ export async function PlayerPage(steamId: SteamId64, user?: User) {
       head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}
     >
       <NavigationBar user={user} />
-      <div class="container mx-auto mt-12 flex flex-col gap-[30px] p-2 lg:p-0">
-        <PlayerPresentation
-          player={player}
-          gameCount={gameCount}
-          gameCountOnClasses={gameCountOnClasses}
-        />
-      </div>
+      <Page>
+        <div class="container mx-auto mt-12 flex flex-col gap-[30px] p-2 lg:p-0">
+          <PlayerPresentation
+            player={player}
+            gameCount={gameCount}
+            gameCountOnClasses={gameCountOnClasses}
+          />
+        </div>
+      </Page>
+      <Footer user={user} />
     </Layout>
   )
 }

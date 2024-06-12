@@ -20,8 +20,8 @@ export function Layout(
           <title>{props?.title ?? environment.WEBSITE_NAME}</title>
           {safeHead}
         </head>
-        <body hx-boost="true" hx-ext="ws,head-support" ws-connect="/ws">
-          {props?.children}
+        <body hx-boost="true" hx-ext="ws,head-support" ws-connect="/ws" class="h-screen">
+          <div class="flex h-full flex-col">{props?.children}</div>
           <div id="notify-container"></div>
           <ReadyUpDialog />
         </body>
