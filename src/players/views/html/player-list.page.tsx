@@ -5,17 +5,18 @@ import { Layout } from '../../../html/layout'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { deburr } from 'lodash-es'
 import { collections } from '../../../database/collections'
+import type { User } from '../../../auth/types/user'
 
 const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
 const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 
-export async function PlayerListPage() {
+export async function PlayerListPage(user?: User) {
   const players = await collections.players.find().toArray()
   const groupedPlayers = groupPlayers(players)
 
   return (
     <Layout title="players" head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}>
-      <NavigationBar />
+      <NavigationBar user={user} />
       <div class="container mx-auto">
         <div class="text-abru-light-75 my-9 text-[48px] font-bold">Players</div>
 

@@ -61,6 +61,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.17.21
+      marked:
+        specifier: 13.0.0
+        version: 13.0.0
       mongodb:
         specifier: 6.5.0
         version: 6.5.0
@@ -1524,6 +1527,11 @@ packages:
 
   magic-string@0.30.10:
     resolution: {integrity: sha512-iIRwTIf0QKV3UAnYK4PU8uiEc4SRh5jX0mwpIwETPpHdhVM4f53RSwS/vXvN1JhGX+Cs7B8qIq3d6AH49O5fAQ==}
+
+  marked@13.0.0:
+    resolution: {integrity: sha512-VTeDCd9txf4KLLljUZ0nljE/Incb9SrWuueE44QVuU0pkOdh4sfCeW1Z6lPcxyDRSVY6rm8db/0OPaN75RNUmw==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   mdn-data@2.0.28:
     resolution: {integrity: sha512-aylIc7Z9y4yzHYAJNuESG3hfhC+0Ibp/MAMiaOZgNv4pmEdFyfZhhhny4MNiAfWdBQ1RQ2mfDWmM1x8SvGyp8g==}
@@ -3910,6 +3918,8 @@ snapshots:
   magic-string@0.30.10:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.15
+
+  marked@13.0.0: {}
 
   mdn-data@2.0.28: {}
 

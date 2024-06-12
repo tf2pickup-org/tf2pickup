@@ -14,8 +14,8 @@ export default fp(async app => {
     }
   })
 
-  app.get('/players', async (_req, reply) => {
-    reply.status(200).html(await PlayerListPage())
+  app.get('/players', async (req, reply) => {
+    reply.status(200).html(await PlayerListPage(req.user))
   })
 
   app.get<{

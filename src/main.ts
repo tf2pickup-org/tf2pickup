@@ -41,5 +41,6 @@ await app.register(games)
 await app.register(staticGameServers)
 await app.register(gameServers)
 await app.register((await import('./log-receiver')).default)
+await app.register((await import('./documents')).default)
 
 await app.listen({ port: 3000 })
