@@ -9,7 +9,7 @@ import { ReadyUpDialog } from './views/html/ready-up-dialog'
 import { QueueState } from '../database/models/queue-state.model'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { MapVote } from './views/html/map-vote'
+import { MapResult, MapVote } from './views/html/map-vote'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -72,9 +72,13 @@ export default fp(
       }
     })
 
-    events.on('queue/mapVoteResults:updated', () => {
+    events.on('queue/mapVoteResults:updated', async ({ results }) => {
       try {
-        app.gateway.broadcast(async player => await MapVote({ actor: player }))
+        // app.gateway.broadcast(async player => await MapVote({ actor: player }))
+        const mapOptions = await collections.queueMapOptions.find().toArray()
+        for (const map of mapOptions.map(option => option.name)) {
+          app.gateway.broadcast(async () => MapResult({ results, map }))
+        }
       } catch (error) {
         logger.error(error)
       }

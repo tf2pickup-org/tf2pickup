@@ -6,6 +6,7 @@ import { getMapVoteResults } from '../../get-map-vote-results'
 
 export async function MapVote(props: { actor?: SteamId64 | undefined }) {
   const mapOptions = await collections.queueMapOptions.find().toArray()
+  const results = await getMapVoteResults()
   return (
     <form
       class="grid gap-4 grid-cols-3"
@@ -17,7 +18,7 @@ export async function MapVote(props: { actor?: SteamId64 | undefined }) {
     `}
     >
       {mapOptions.map(option => (
-        <MapVoteButton map={option.name} actor={props.actor}></MapVoteButton>
+        <MapVoteButton results={results} map={option.name} actor={props.actor}></MapVoteButton>
       ))}
     </form>
   )
@@ -41,7 +42,18 @@ MapVote.disable = () => {
   )
 }
 
-async function MapVoteButton(props: { map: string; actor?: SteamId64 | undefined }) {
+export function MapResult(props: { results: Record<string, number>; map: string }) {
+  const totalVotes = Object.values(props.results).reduce((acc, votes) => acc + votes, 0)
+  const mapVotes = props.results[props.map] ?? 0
+  const votePercent = totalVotes === 0 ? 0 : Math.round((mapVotes / totalVotes) * 100)
+  return <span id={`map-result-${props.map}`}>{votePercent}</span>
+}
+
+async function MapVoteButton(props: {
+  results: Record<string, number>
+  map: string
+  actor?: SteamId64 | undefined
+}) {
   let mapVote: string | undefined = undefined
   let disabled = true
 
@@ -53,11 +65,6 @@ async function MapVoteButton(props: { map: string; actor?: SteamId64 | undefined
 
   const selected = mapVote === props.map
 
-  const results = await getMapVoteResults()
-  const totalVotes = Object.values(results).reduce((acc, votes) => acc + votes, 0)
-  const mapVotes = results[props.map] ?? 0
-  const votePercent = totalVotes === 0 ? 0 : Math.round((mapVotes / totalVotes) * 100)
-
   return (
     <button
       class="map-vote-button text-white"
@@ -68,7 +75,9 @@ async function MapVoteButton(props: { map: string; actor?: SteamId64 | undefined
       aria-checked={`${selected}`}
     >
       <div class="grow"></div>
-      <span class="text-2xl font-bold leading-4">{votePercent}%</span>
+      <div class="text-2xl font-bold leading-4">
+        <MapResult results={props.results} map={props.map} />%
+      </div>
       <span class="text-2xl font-normal" safe>
         {props.map}
       </span>

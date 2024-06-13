@@ -45,6 +45,10 @@ export default fp(
         const slot = await leave(socket.player.steamId)
         app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.disable())
 
+        app.gateway
+          .toPlayers(socket.player.steamId)
+          .broadcast(async actor => await MapVote({ actor }))
+
         if (slot.ready) {
           const close = await ReadyUpDialog.close()
           app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
@@ -74,6 +78,9 @@ export default fp(
 
       try {
         await voteMap(socket.player.steamId, map)
+        app.gateway
+          .toPlayers(socket.player.steamId)
+          .broadcast(async actor => await MapVote({ actor }))
       } catch (error) {
         logger.error(error)
       }
