@@ -30,9 +30,7 @@ export default fp(
 
       try {
         await join(slotId, socket.player.steamId)
-        app.gateway
-          .toPlayers(socket.player.steamId)
-          .broadcast(async player => await MapVote({ actor: player }))
+        app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.enable())
       } catch (error) {
         logger.error(error)
       }
@@ -45,9 +43,7 @@ export default fp(
 
       try {
         const slot = await leave(socket.player.steamId)
-        app.gateway
-          .toPlayers(socket.player.steamId)
-          .broadcast(async player => await MapVote({ actor: player }))
+        app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.disable())
 
         if (slot.ready) {
           const close = await ReadyUpDialog.close()

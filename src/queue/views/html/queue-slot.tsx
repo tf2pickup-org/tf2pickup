@@ -40,10 +40,6 @@ function JoinButton(slotId: number) {
       name="join"
       value={`${slotId}`}
       aria-label={`Join queue on slot ${slotId}`}
-      _="
-      on htmx:wsClose from <body/> add @disabled to me
-      on htmx:wsOpen from <body/> remove @disabled from me
-      "
     >
       <IconPlus />
     </button>
@@ -54,16 +50,7 @@ function PlayerInfo(props: { player: PlayerModel; isActorsSlot: boolean; ready: 
   let leaveButton = <></>
   if (props.isActorsSlot) {
     leaveButton = (
-      <button
-        class="leave-queue-button"
-        name="leave"
-        value=""
-        aria-label="Leave queue"
-        _="
-      on htmx:wsClose from <body/> add @disabled to me
-      on htmx:wsOpen from <body/> remove @disabled from me
-      "
-      >
+      <button class="leave-queue-button" name="leave" value="" aria-label="Leave queue">
         <IconMinus />
       </button>
     )

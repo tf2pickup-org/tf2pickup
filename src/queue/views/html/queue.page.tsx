@@ -15,6 +15,8 @@ import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
 import { OfflineAlert } from './offline-alert'
 import { Footer } from '../../../html/components/footer'
+import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -44,25 +46,7 @@ export async function QueuePage(user?: User) {
           <div class="order-2 lg:col-span-3">
             <div class="flex flex-col gap-8">
               <QueueState />
-
-              <form class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4" ws-send>
-                {config.classes
-                  .map(gc => gc.name)
-                  .map(gameClass => (
-                    <div class="flex flex-col gap-4">
-                      <div class="flex flex-row items-center justify-center gap-2">
-                        <GameClassIcon gameClass={gameClass} size={32} />
-                        <span class="text-center text-2xl font-bold text-white">{gameClass}</span>
-                      </div>
-
-                      {slots
-                        .filter(slot => slot.gameClass === gameClass)
-                        .map(slot => (
-                          <QueueSlot slot={slot} actor={user?.player.steamId} />
-                        ))}
-                    </div>
-                  ))}
-              </form>
+              <Queue slots={slots} actor={user?.player.steamId} />
             </div>
           </div>
 
@@ -79,5 +63,35 @@ export async function QueuePage(user?: User) {
 
       {user?.player.activeGame && RunningGameSnackbar(user.player.activeGame)}
     </Layout>
+  )
+}
+
+function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }) {
+  return (
+    <form
+      class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+      ws-send
+      _="
+      on htmx:wsClose from <body/> add @disabled to <button/> in me
+      on htmx:wsOpen from <body/> remove @disabled from <button/> in me
+      "
+    >
+      {config.classes
+        .map(gc => gc.name)
+        .map(gameClass => (
+          <div class="flex flex-col gap-4">
+            <div class="flex flex-row items-center justify-center gap-2">
+              <GameClassIcon gameClass={gameClass} size={32} />
+              <span class="text-center text-2xl font-bold text-white">{gameClass}</span>
+            </div>
+
+            {props.slots
+              .filter(slot => slot.gameClass === gameClass)
+              .map(slot => (
+                <QueueSlot slot={slot} actor={props.actor} />
+              ))}
+          </div>
+        ))}
+    </form>
   )
 }
