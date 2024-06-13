@@ -11,7 +11,12 @@ export async function StatisticsPage(user?: User) {
       title="statistics"
       head={
         <>
-          <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+          <script
+            id="chartjs"
+            async
+            src="https://cdn.jsdelivr.net/npm/chart.js"
+            hx-preserve="true"
+          ></script>
         </>
       }
     >

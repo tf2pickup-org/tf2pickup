@@ -11,10 +11,12 @@ export async function PlayedMapsCount() {
       <canvas id="played-maps-count"></canvas>
       <script>
         {`
-        const data = ${JSON.stringify(data)};
-
         (async function() {
-          new Chart(document.getElementById('played-maps-count'), {
+          const data = ${JSON.stringify(data)};
+          const script = document.querySelector('#chartjs');
+
+          const loadChart = () => {
+            new Chart(document.getElementById('played-maps-count'), {
                 type: 'pie',
                 data: data,
                 options: {
@@ -34,6 +36,13 @@ export async function PlayedMapsCount() {
                   },
                 },
               });
+          }
+
+          if (typeof Chart === 'undefined') {
+            script.addEventListener('load', loadChart);
+          } else {
+            loadChart();
+          }
         })();
         `}
       </script>
