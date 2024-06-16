@@ -1,14 +1,12 @@
-import fp from 'fastify-plugin'
-import { GameState, type GameModel } from '../database/models/game.model'
+import { type GameModel } from '../database/models/game.model'
 import { games } from '../games'
 import { staticGameServers } from '../static-game-servers'
 import { mutex } from './mutex'
 import { events } from '../events'
 import { GameEventType } from '../database/models/game-event.model'
 import { logger } from '../logger'
-import { collections } from '../database/collections'
 
-export async function assignGameServer(game: GameModel) {
+export async function assign(game: GameModel) {
   await mutex.runExclusive(async () => {
     const freeServer = await staticGameServers.findFree()
     if (!freeServer) {
@@ -34,24 +32,7 @@ export async function assignGameServer(game: GameModel) {
         },
       },
     })
-    logger.info(`game ${game.number} assigned to game server ${freeServer.name}`)
+    logger.info({ game }, `game ${game.number} assigned to game server ${freeServer.name}`)
     events.emit('game:gameServerAssigned', { game })
   })
 }
-
-async function getOrphanedGames() {
-  return await collections.games
-    .find({ state: GameState.created, gameServer: { $exists: false } })
-    .toArray()
-}
-
-export default fp(async () => {
-  events.on('game:created', async ({ game }) => {
-    await assignGameServer(game)
-  })
-
-  const orphanedGames = await getOrphanedGames()
-  for (const game of orphanedGames) {
-    await assignGameServer(game)
-  }
-})

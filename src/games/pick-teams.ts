@@ -108,7 +108,6 @@ interface TeamLineupWithSkillAverage extends TeamLineup {
 }
 
 function calculateAverageSkill(lineup: TeamLineup): TeamLineupWithSkillAverage {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   return { ...lineup, skillAverage: meanBy(lineup.lineup, 'skill') }
 }
 

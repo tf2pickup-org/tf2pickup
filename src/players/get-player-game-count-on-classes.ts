@@ -5,7 +5,7 @@ import { GameState } from '../database/models/game.model'
 
 type PlayerPlayedClassCount = { [gameClass in Tf2ClassName]?: number }
 
-export async function getPlayerGameCountOnClass(
+export async function getPlayerGameCountOnClasses(
   playerId: ObjectId,
 ): Promise<PlayerPlayedClassCount> {
   return (
@@ -23,6 +23,7 @@ export async function getPlayerGameCountOnClass(
               'slots.status': {
                 $in: [null, 'active'],
               },
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               'slots.player': playerId,
             },
           },

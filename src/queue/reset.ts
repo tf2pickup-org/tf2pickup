@@ -10,6 +10,27 @@ import { getSlots } from './get-slots'
 import { getState } from './get-state'
 import { mapPool } from './map-pool'
 
+export async function reset() {
+  const slots = generateEmptyQueue()
+  await collections.queueSlots.deleteMany({})
+  await collections.queueSlots.insertMany(slots)
+  await collections.queueState.updateOne(
+    {},
+    {
+      $set: {
+        state: QueueState.waiting,
+      },
+    },
+    {
+      upsert: true,
+    },
+  )
+  events.emit('queue/slots:updated', { slots: await getSlots() })
+  events.emit('queue/state:updated', { state: await getState() })
+  await resetMapOptions()
+  logger.info('queue reset')
+}
+
 type EmptyQueueSlot = Omit<QueueSlotModel, 'player'> & { player: null }
 
 function generateEmptyQueue(): EmptyQueueSlot[] {
@@ -64,25 +85,4 @@ async function resetMapOptions() {
   events.emit('queue/mapOptions:reset', { mapOptions: choices.map(({ name }) => name) })
   const results = await getMapVoteResults()
   events.emit('queue/mapVoteResults:updated', { results })
-}
-
-export async function reset() {
-  const slots = generateEmptyQueue()
-  await collections.queueSlots.deleteMany({})
-  await collections.queueSlots.insertMany(slots)
-  await collections.queueState.updateOne(
-    {},
-    {
-      $set: {
-        state: QueueState.waiting,
-      },
-    },
-    {
-      upsert: true,
-    },
-  )
-  events.emit('queue/slots:updated', { slots: await getSlots() })
-  events.emit('queue/state:updated', { state: await getState() })
-  await resetMapOptions()
-  logger.info('queue reset')
 }

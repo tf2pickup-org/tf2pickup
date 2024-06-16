@@ -26,6 +26,6 @@ export default fp(
     })
   },
   {
-    name: 'log-receiver',
+    name: 'log receiver',
   },
 )

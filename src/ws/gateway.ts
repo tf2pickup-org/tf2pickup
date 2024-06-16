@@ -5,7 +5,7 @@ import { z } from 'zod'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
 export interface ClientToServerEvents {
-  connected: (ipAddress: string) => void
+  connected: (ipAddress: string, userAgent?: string) => void
   'queue:join': (slotId: number) => void
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void

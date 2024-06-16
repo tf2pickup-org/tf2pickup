@@ -10,7 +10,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { Page } from '../../../html/components/page'
 import type { User } from '../../../auth/types/user'
 import { environment } from '../../../environment'
-import { OnlinePlayerList } from '../../../online-players/views/html/online-player-list'
+import { OnlinePlayerList } from './online-player-list'
 import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
 import { OfflineAlert } from './offline-alert'
@@ -27,14 +27,7 @@ export async function QueuePage(user?: User) {
   return (
     <Layout
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      head={
-        <>
-          <Style fileName={resolve(import.meta.dirname, 'queue.css')} />
-          <Style
-            fileName={resolve(import.meta.dirname, '../../../online-players/views/html/style.css')}
-          />
-        </>
-      }
+      head={<Style fileName={resolve(import.meta.dirname, 'queue.css')} />}
     >
       <NavigationBar user={user} />
       <Page>

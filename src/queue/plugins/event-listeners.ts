@@ -1,21 +1,33 @@
 import fp from 'fastify-plugin'
-import { events } from '../events'
-import { QueueState as QueueStateCmp } from './views/html/queue-state'
-import { QueueSlot } from './views/html/queue-slot'
-import { kick } from './kick'
-import { maybeUpdateQueueState } from './maybe-update-queue-state'
-import { collections } from '../database/collections'
-import { ReadyUpDialog } from './views/html/ready-up-dialog'
-import { QueueState } from '../database/models/queue-state.model'
-import { logger } from '../logger'
-import type { SteamId64 } from '../shared/types/steam-id-64'
-import { MapResult, MapVote } from './views/html/map-vote'
+import { events } from '../../events'
+import { QueueState as QueueStateCmp } from '../views/html/queue-state'
+import { QueueSlot } from '../views/html/queue-slot'
+import { kick } from '../kick'
+import { maybeUpdateQueueState } from '../maybe-update-queue-state'
+import { collections } from '../../database/collections'
+import { ReadyUpDialog } from '../views/html/ready-up-dialog'
+import { QueueState } from '../../database/models/queue-state.model'
+import { logger } from '../../logger'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { MapResult, MapVote } from '../views/html/map-vote'
+import { OnlinePlayerList } from '../views/html/online-player-list'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    events.on('player:connected', async () => {
+      try {
+        const cmp = await OnlinePlayerList()
+        app.gateway.broadcast(() => cmp)
+      } catch (error) {
+        logger.error(error)
+      }
+    })
+
     events.on('player:disconnected', async ({ steamId }) => {
       try {
+        const cmp = await OnlinePlayerList()
+        app.gateway.broadcast(() => cmp)
         await kick(steamId)
       } catch (error) {
         logger.error(error)
@@ -66,7 +78,7 @@ export default fp(
 
     events.on('queue/mapOptions:reset', () => {
       try {
-        app.gateway.broadcast(async player => await MapVote({ actor: player }))
+        app.gateway.broadcast(async actor => await MapVote({ actor }))
       } catch (error) {
         logger.error(error)
       }
@@ -74,7 +86,6 @@ export default fp(
 
     events.on('queue/mapVoteResults:updated', async ({ results }) => {
       try {
-        // app.gateway.broadcast(async player => await MapVote({ actor: player }))
         const mapOptions = await collections.queueMapOptions.find().toArray()
         for (const map of mapOptions.map(option => option.name)) {
           app.gateway.broadcast(async () => MapResult({ results, map }))
@@ -84,5 +95,5 @@ export default fp(
       }
     })
   },
-  { name: 'queue-event-listeners' },
+  { name: 'queue event listeners' },
 )

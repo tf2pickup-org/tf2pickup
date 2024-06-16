@@ -6,7 +6,7 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { format } from 'date-fns'
 import { GameState, type GameModel } from '../../../database/models/game.model'
-import { getPlayerGameCountOnClass } from '../../get-player-game-count-on-class'
+import { getPlayerGameCountOnClasses } from '../../get-player-game-count-on-classes'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { IconAlignBoxBottomRight, IconBrandSteam, IconStars } from '../../../html/components/icons'
@@ -26,7 +26,7 @@ export async function PlayerPage(steamId: SteamId64, user?: User) {
     $and: [{ state: GameState.ended }, { ['slots.player' as keyof GameModel]: player._id }],
   })
 
-  const gameCountOnClasses = await getPlayerGameCountOnClass(player._id)
+  const gameCountOnClasses = await getPlayerGameCountOnClasses(player._id)
 
   return (
     <Layout

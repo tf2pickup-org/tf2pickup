@@ -9,7 +9,7 @@ import { mutex } from './mutex'
 
 export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlotModel[]> {
   return await mutex.runExclusive(async () => {
-    logger.info(`player ${steamId} joining slot ${slotId}`)
+    logger.info({ steamId, slotId }, `join queue`)
     const player = await collections.players.findOne({ steamId })
     if (!player) {
       throw new Error(`player does not exist: ${steamId}`)

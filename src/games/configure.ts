@@ -1,47 +1,45 @@
-import fp from 'fastify-plugin'
+import { secondsToMilliseconds } from 'date-fns'
 import { deburr } from 'lodash-es'
+import { Rcon } from 'rcon-client'
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
+import { GameEventType } from '../database/models/game-event.model'
 import { SlotStatus } from '../database/models/game-slot.model'
-import { GameServerProvider, GameState, type GameModel } from '../database/models/game.model'
+import { type GameModel, GameServerProvider, GameState } from '../database/models/game.model'
 import { environment } from '../environment'
 import { logger } from '../logger'
-import { generateGameserverPassword } from '../utils/generate-game-server-password'
-import {
-  addGamePlayer,
-  changelevel,
-  enablePlayerWhitelist,
-  kickAll,
-  logAddressAdd,
-  logsTfAutoupload,
-  logsTfTitle,
-  setPassword,
-  tftrueWhitelistId,
-} from './rcon-commands'
 import { LogsTfUploadMethod } from '../shared/types/logs-tf-upload-method'
-import { Rcon } from 'rcon-client'
-import { update } from './update'
 import { assertIsError } from '../utils/assert-is-error'
-import { secondsToMilliseconds } from 'date-fns'
+import { generateGameserverPassword } from '../utils/generate-game-server-password'
 import { makeConnectString } from './make-connect-string'
-import { GameEventType } from '../database/models/game-event.model'
-import { events } from '../events'
+import {
+  logAddressAdd,
+  kickAll,
+  changelevel,
+  tftrueWhitelistId,
+  setPassword,
+  addGamePlayer,
+  enablePlayerWhitelist,
+  logsTfTitle,
+  logsTfAutoupload,
+} from './rcon-commands'
+import { update } from './update'
 
 export async function configure(game: GameModel) {
   if (game.gameServer === undefined) {
-    throw new Error(`game ${game.number}: gameServer is undefined`)
+    throw new Error(`gameServer is undefined`)
   }
   if (game.gameServer.provider !== GameServerProvider.static) {
-    throw new Error(`game ${game.number}: gameServer provider not supported`)
+    throw new Error(`gameServer provider not supported`)
   }
 
-  logger.info(`configuring game ${game.number}...`)
+  logger.info({ game }, `configuring game ${game.number}...`)
 
   const password = generateGameserverPassword()
   const configLines = await compileConfig(game, password)
   const gameServer = await collections.staticGameServers.findOne({ id: game.gameServer.id })
   if (gameServer === null) {
-    throw new Error(`game ${game.number}: gameServer not found`)
+    throw new Error(`gameServer not found`)
   }
   let rcon: Rcon | undefined = undefined
   try {
@@ -52,7 +50,7 @@ export async function configure(game: GameModel) {
     })
     rcon.on('error', error => {
       assertIsError(error)
-      logger.error(`game ${game.number}: rcon error: ${error.message}`)
+      logger.error(error, `game #${game.number}: rcon error`)
     })
 
     game = await update(game.number, {
@@ -77,7 +75,7 @@ export async function configure(game: GameModel) {
       }
     }
 
-    logger.info(`game ${game.number} configured`)
+    logger.info(game, `game ${game.number} configured`)
 
     const connectString = makeConnectString({
       address: gameServer.address,
@@ -104,7 +102,7 @@ export async function configure(game: GameModel) {
     }
   } catch (error) {
     assertIsError(error)
-    logger.error(`game ${game.number}: error configuring: ${error.message}`)
+    logger.error(error, `error configuring game #${game.number}`)
     throw error
   } finally {
     await rcon?.end()
@@ -149,7 +147,6 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
               // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
               throw new Error(`player ${slot.player.toString()} not found`)
             }
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
             return addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass)
           }),
       ),
@@ -166,21 +163,3 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
 }
 
 const waitABit = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
-
-export default fp(
-  // eslint-disable-next-line @typescript-eslint/require-await
-  async () => {
-    events.on('game:gameServerAssigned', async ({ game }) => {
-      try {
-        await configure(game)
-      } catch (error) {
-        assertIsError(error)
-        logger.error(`game ${game.number}: error configuring: ${error.message}`)
-      }
-    })
-  },
-  {
-    name: 'configure',
-    encapsulate: true,
-  },
-)

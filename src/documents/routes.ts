@@ -3,11 +3,12 @@ import { collections } from '../database/collections'
 import { DocumentPage } from './views/html/document.page'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     app.get('/rules', async (req, reply) => {
       const rules = await collections.documents.findOne({ name: 'rules' })
       if (rules === null) {
-        reply.status(404).send()
+        await reply.status(404).send()
         return
       }
 

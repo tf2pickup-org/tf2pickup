@@ -3,9 +3,7 @@ import { collections } from '../database/collections'
 import { secondsToMilliseconds } from 'date-fns'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { logger } from '../logger'
-import { OnlinePlayerList } from './views/html/online-player-list'
 import { events } from '../events'
-import { WebSocket } from 'ws'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
@@ -28,12 +26,6 @@ export default fp(
       if (deletedCount > 0) {
         events.emit('player:disconnected', { steamId })
       }
-
-      const cmp = await OnlinePlayerList()
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      app.websocketServer.clients.forEach((client: WebSocket) => {
-        client.send(cmp)
-      })
     }
 
     const onlinePlayers = (await collections.onlinePlayers.find().toArray()).map(p => p.steamId)
@@ -41,7 +33,7 @@ export default fp(
       setTimeout(() => verifyPlayer(steamId), verifyPlayerTimeout)
     }
 
-    app.gateway.on('connected', async (socket, ipAddress) => {
+    app.gateway.on('connected', async (socket, ipAddress, userAgent) => {
       if (socket.player) {
         const player = await collections.players.findOne({ steamId: socket.player.steamId })
         if (!player) {
@@ -83,13 +75,15 @@ export default fp(
           setTimeout(() => verifyPlayer(player.steamId), verifyPlayerTimeout)
         })
 
-        const cmp = await OnlinePlayerList()
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        app.websocketServer.clients.forEach((client: WebSocket) => {
-          client.send(cmp)
+        events.emit('player:connected', {
+          steamId: player.steamId,
+          metadata: {
+            ipAddress,
+            userAgent,
+          },
         })
       }
     })
   },
-  { name: 'online-players' },
+  { name: 'online players' },
 )

@@ -1,4 +1,4 @@
 export interface UserMetadata {
-  ipAddress?: string
-  userAgent?: string
+  ipAddress?: string | undefined
+  userAgent?: string | undefined
 }

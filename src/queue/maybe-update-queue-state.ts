@@ -9,6 +9,40 @@ import { unready } from './unready'
 
 let timer: ReturnType<typeof setTimeout> | undefined
 
+export async function maybeUpdateQueueState() {
+  const state = await getState()
+  const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
+    collections.queueSlots.countDocuments({ player: { $ne: null } }),
+    collections.queueSlots.countDocuments({ ready: { $eq: true } }),
+    collections.queueSlots.countDocuments(),
+  ])
+
+  logger.debug(`${currentPlayerCount}/${requiredPlayerCount}`)
+
+  switch (state) {
+    case QueueState.waiting: {
+      if (currentPlayerCount === requiredPlayerCount) {
+        logger.info('queue full, wait for players to ready up')
+        await readyUp()
+      }
+
+      break
+    }
+
+    case QueueState.ready: {
+      if (currentPlayerCount === 0) {
+        await unreadyQueue()
+      } else if (readyPlayerCount === requiredPlayerCount) {
+        logger.info('all players ready, queue ready')
+        await setState(QueueState.launching)
+        clearTimeout(timer)
+      }
+
+      break
+    }
+  }
+}
+
 async function kickUnreadyPlayers() {
   const unreadyPlayers = (
     await collections.queueSlots.find({ player: { $ne: null }, ready: { $eq: false } }).toArray()
@@ -52,38 +86,4 @@ async function readyUp() {
 
   clearTimeout(timer)
   timer = setTimeout(readyUpTimeout, timeout)
-}
-
-export async function maybeUpdateQueueState() {
-  const state = await getState()
-  const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
-    collections.queueSlots.countDocuments({ player: { $ne: null } }),
-    collections.queueSlots.countDocuments({ ready: { $eq: true } }),
-    collections.queueSlots.countDocuments(),
-  ])
-
-  logger.debug(`${currentPlayerCount}/${requiredPlayerCount}`)
-
-  switch (state) {
-    case QueueState.waiting: {
-      if (currentPlayerCount === requiredPlayerCount) {
-        logger.info('queue full, wait for players to ready up')
-        await readyUp()
-      }
-
-      break
-    }
-
-    case QueueState.ready: {
-      if (currentPlayerCount === 0) {
-        await unreadyQueue()
-      } else if (readyPlayerCount === requiredPlayerCount) {
-        logger.info('all players ready, queue ready')
-        await setState(QueueState.launching)
-        clearTimeout(timer)
-      }
-
-      break
-    }
-  }
 }

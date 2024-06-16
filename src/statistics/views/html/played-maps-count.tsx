@@ -66,15 +66,15 @@ function toChartData(data: PlayedMapCount[]) {
   const lastFewMaps = takeRight(data, Math.max(0, data.length - 8))
   const other: PlayedMapCount = {
     mapName: 'other',
-    count: lastFewMaps.reduce((sum, d) => sum + d.count, 0),
+    count: lastFewMaps.reduce((sum: number, d: PlayedMapCount) => sum + d.count, 0),
   }
   const topMaps = concat(dropRight(data, Math.max(0, data.length - 8)), other)
 
   return {
-    labels: topMaps.map(d => d.mapName),
+    labels: topMaps.map((d: PlayedMapCount) => d.mapName),
     datasets: [
       {
-        data: topMaps.map(d => d.count),
+        data: topMaps.map((d: PlayedMapCount) => d.count),
         backgroundColor,
         borderWidth: 2,
         borderColor: '#141115',

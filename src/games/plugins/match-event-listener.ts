@@ -1,11 +1,11 @@
 import fp from 'fastify-plugin'
-import type { GameNumber } from '../database/models/game.model'
-import { events } from '../events'
-import type { SteamId64 } from '../shared/types/steam-id-64'
-import type { Tf2Team } from '../shared/types/tf2-team'
+import type { GameNumber } from '../../database/models/game.model'
+import { events } from '../../events'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import type { Tf2Team } from '../../shared/types/tf2-team'
 import SteamID from 'steamid'
-import { collections } from '../database/collections'
-import { logger } from '../logger'
+import { collections } from '../../database/collections'
+import { logger } from '../../logger'
 
 interface GameEvent {
   /* name of the game event */
@@ -191,7 +191,7 @@ async function testForGameEvent(message: string, logSecret: string) {
     if (matches) {
       const game = await collections.games.findOne({ logSecret })
       if (game === null) {
-        logger.warn(`error handling event (${message})`)
+        logger.warn({ message }, `error handling game event: no such game`)
         return
       }
       logger.debug(`#${game.number}: ${gameEvent.name}`)
@@ -209,7 +209,7 @@ export default fp(
     })
   },
   {
-    name: 'match-event-listener',
+    name: 'match event listener',
     encapsulate: true,
   },
 )

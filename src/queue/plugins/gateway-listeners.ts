@@ -1,15 +1,15 @@
 import fp from 'fastify-plugin'
-import { collections } from '../database/collections'
-import { QueueSlot } from './views/html/queue-slot'
-import { QueueState } from './views/html/queue-state'
-import { OnlinePlayerList } from '../online-players/views/html/online-player-list'
-import { join } from './join'
-import { leave } from './leave'
-import { readyUp } from './ready-up'
-import { ReadyUpDialog } from './views/html/ready-up-dialog'
-import { voteMap } from './vote-map'
-import { logger } from '../logger'
-import { MapVote } from './views/html/map-vote'
+import { collections } from '../../database/collections'
+import { QueueSlot } from '../views/html/queue-slot'
+import { QueueState } from '../views/html/queue-state'
+import { OnlinePlayerList } from '../views/html/online-player-list'
+import { join } from '../join'
+import { leave } from '../leave'
+import { readyUp } from '../ready-up'
+import { ReadyUpDialog } from '../views/html/ready-up-dialog'
+import { voteMap } from '../vote-map'
+import { logger } from '../../logger'
+import { MapVote } from '../views/html/map-vote'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -86,5 +86,5 @@ export default fp(
       }
     })
   },
-  { name: 'queue-gateway-listeners' },
+  { name: 'queue gateway listeners' },
 )
