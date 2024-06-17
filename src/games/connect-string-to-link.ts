@@ -6,7 +6,7 @@ interface SteamConnect {
 
 const parseConnectString = (connect: string): SteamConnect | undefined => {
   const match = connect.match(/^connect (.[^:;]+):?(\d+)?(?:;\s?password\s(.+))?$/)
-  if (match && match[1]) {
+  if (match?.[1]) {
     const ret: SteamConnect = { server: match[1] }
 
     if (match[2]) {
@@ -27,7 +27,7 @@ export const connectStringToLink = (connectString: string): string | undefined =
   if (c) {
     let url = c.server
     if (c.port) {
-      url += ':' + c.port
+      url += `:${c.port}`
     }
 
     if (c.password) {
