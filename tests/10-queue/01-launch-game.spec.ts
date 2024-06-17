@@ -55,6 +55,7 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
       await expect(connectString).toHaveText(/^connect (.+);\s?password (.+)$/, {
         timeout: secondsToMilliseconds(30),
       })
+      await expect(page.getByRole('link', { name: 'join game' })).toBeVisible()
 
       await expect(slot.getByTitle('Player connection status')).toHaveClass(/offline/)
     }),
@@ -62,6 +63,7 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
 
   await page.goto(`/games/${gameNo}`)
   await expect(page.getByLabel('Connect string')).toHaveText(/^connect ([a-z0-9\s.:]+)$/) // verify no password is leaking
+  await expect(page.getByRole('link', { name: 'watch stv' })).toBeVisible()
 
   // extract gameserver secret
   const client = new MongoClient(process.env['MONGODB_URI']!)

@@ -1,19 +1,35 @@
 import { collections } from '../../../database/collections'
 import { GameState, type GameModel } from '../../../database/models/game.model'
-import { IconCopy } from '../../../html/components/icons'
+import {
+  IconCopy,
+  IconEye,
+  IconLoader3,
+  IconPlayerPlayFilled,
+} from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { connectStringToLink } from '../../connect-string-to-link'
 
 export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefined }) {
-  const csBoxVisible = [
+  const connectInfoVisible = [
     GameState.created,
     GameState.configuring,
     GameState.launching,
     GameState.started,
   ].includes(props.game.state)
 
+  let connectInfo = <></>
+  if (connectInfoVisible) {
+    connectInfo = (
+      <>
+        <ConnectString game={props.game} actor={props.actor} />
+        <JoinGameButton game={props.game} actor={props.actor} />
+      </>
+    )
+  }
+
   return (
     <div id={`game-${props.game.number}-connect-info`} class="flex flex-col gap-2">
-      {csBoxVisible ? <ConnectString game={props.game} actor={props.actor} /> : <></>}
+      {connectInfo}
     </div>
   )
 }
@@ -62,6 +78,35 @@ async function ConnectString(props: { game: GameModel; actor: SteamId64 | undefi
 
       {csBtn}
     </div>
+  )
+}
+
+async function JoinGameButton(props: { game: GameModel; actor: SteamId64 | undefined }) {
+  let btnContent: JSX.Element
+  let connectLink: string | undefined
+  if ([GameState.created, GameState.configuring].includes(props.game.state)) {
+    btnContent = <IconLoader3 size={24} class="animate-spin" />
+  } else {
+    const isInGame = await actorInGame(props.game, props.actor)
+    const connectString = (isInGame ? props.game.connectString : props.game.stvConnectString) ?? ''
+    connectLink = connectStringToLink(connectString)
+    btnContent = isInGame ? (
+      <>
+        <IconPlayerPlayFilled size={16} />
+        join game
+      </>
+    ) : (
+      <>
+        <IconEye size={24} />
+        watch stv
+      </>
+    )
+  }
+
+  return (
+    <a href={connectLink} class="button button--accent join-game-button">
+      {btnContent}
+    </a>
   )
 }
 

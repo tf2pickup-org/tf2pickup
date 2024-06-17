@@ -321,3 +321,7 @@
     background-color: theme(colors.abru.light.5);
   }
 }
+
+.join-game-button {
+  font-size: 18px;
+}
