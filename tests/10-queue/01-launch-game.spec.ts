@@ -1,6 +1,10 @@
 import { authUsers, expect } from '../fixtures/auth-users'
 import { users, type User } from '../data'
 import { secondsToMilliseconds } from 'date-fns'
+import { MongoClient } from 'mongodb'
+import { GameServerSimulator } from '../game-server-simulator'
+import SteamID from 'steamid'
+import { waitABit } from '../utils/wait-a-bit'
 
 interface QueueUser extends User {
   slotId: number
@@ -51,6 +55,64 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
       await expect(connectString).toHaveText(/^connect (.+);\s?password (.+)$/, {
         timeout: secondsToMilliseconds(30),
       })
+
+      await expect(slot.getByTitle('Player connection status')).toHaveClass(/offline/)
+    }),
+  )
+
+  await page.goto(`/games/${gameNo}`)
+  await expect(page.getByLabel('Connect string')).toHaveText(/^connect ([a-z0-9\s.:]+)$/) // verify no password is leaking
+
+  // extract gameserver secret
+  const client = new MongoClient(process.env['MONGODB_URI']!)
+  await client.connect()
+  const db = client.db()
+  const games = db.collection('games')
+  const game = await games.findOne({ number: gameNo })
+  expect(game).toBeTruthy()
+
+  const secret = game!['logSecret']! as string
+  expect(secret).toBeTruthy()
+
+  const simulator = new GameServerSimulator()
+  simulator.password = secret
+
+  await Promise.all(
+    queueUsers.map(async user => {
+      const page = pages.get(user.steamId)!
+      const slot = page.getByRole('link', { name: user.name })
+      await expect(slot).toBeVisible()
+
+      const steamId = new SteamID(user.steamId)
+      simulator.send(
+        '127.0.0.1',
+        9871,
+        `"${user.name}< ><21><${steamId.steam3()}><>" connected, address "127.0.0.1:27005"`,
+      )
+
+      await expect(slot.getByTitle('Player connection status')).toHaveClass(/joining/)
+
+      simulator.send(
+        '127.0.0.1',
+        9871,
+        `"${user.name}<21><${steamId.steam3()}><Unassigned>" joined team "Red"`,
+      )
+
+      await expect(slot.getByTitle('Player connection status')).toHaveClass(/connected/)
+    }),
+  )
+
+  simulator.send('127.0.0.1', 9871, 'World triggered "Round_Start"')
+  await waitABit(secondsToMilliseconds(10))
+  simulator.send('127.0.0.1', 9871, 'World triggered "Game_Over" reason "Reached Win Limit"')
+  simulator.send('127.0.0.1', 9871, 'Team "Red" final score "5" with "6" players')
+  simulator.send('127.0.0.1', 9871, 'Team "Blue" final score "0" with "6" players')
+
+  await Promise.all(
+    queueUsers.map(async user => {
+      const page = pages.get(user.steamId)!
+      const gameState = page.getByLabel('Game status')
+      await expect(gameState).not.toBeVisible()
     }),
   )
 })

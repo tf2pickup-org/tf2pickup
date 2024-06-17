@@ -113,7 +113,7 @@ export default fp(
           gameNumber,
           {
             $set: {
-              'slots.$[element].status': SlotStatus.active,
+              'slots.$[element].connectionStatus': PlayerConnectionStatus.connected,
             },
             $push: {
               events: {

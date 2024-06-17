@@ -24,9 +24,11 @@ import {
   logsTfAutoupload,
   tvPort,
   tvPassword,
+  svLogsecret,
 } from './rcon-commands'
 import { update } from './update'
 import { extractConVarValue } from './extract-con-var-value'
+import { generate } from 'generate-password'
 
 export async function configure(game: GameModel) {
   if (game.gameServer === undefined) {
@@ -56,9 +58,20 @@ export async function configure(game: GameModel) {
       logger.error(error, `game #${game.number}: rcon error`)
     })
 
+    const logSecret = generate({
+      length: 16,
+      numbers: true,
+      symbols: false,
+      lowercase: false,
+      uppercase: false,
+    })
+
+    await rcon.send(svLogsecret(logSecret))
+
     game = await update(game.number, {
       $set: {
         state: GameState.configuring,
+        logSecret,
       },
       $unset: {
         connectString: 1,

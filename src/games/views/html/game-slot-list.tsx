@@ -29,7 +29,7 @@ export function GameSlotList(props: { game: GameModel }) {
         </div>
       </div>
 
-      <div class="slot-list">
+      <div class="slot-list" id={`game-${props.game.number}-slots`}>
         {slotPairs.map(({ red, blu, gameClass }) => (
           <>
             <GameSlot slot={blu!} side="left" gameState={props.game.state} />
@@ -79,7 +79,7 @@ async function GameSlot(props: {
     <a
       href={`/players/${player.steamId}`}
       class={[
-        'bg-abru-light-75 hover:bg-abru-light-70 flex items-center gap-2.5 rounded p-2.5 transition-colors duration-75',
+        'slot',
         props.side === 'right' && 'flex-row',
         props.side === 'left' && 'flex-row-reverse',
       ]}
@@ -90,15 +90,18 @@ async function GameSlot(props: {
       </span>
       {showConnectionState ? (
         <div
+          title="Player connection status"
           class={[
             '-m-1 w-[6px] self-stretch rounded',
             {
-              [PlayerConnectionStatus.connected]: 'online',
+              [PlayerConnectionStatus.connected]: 'connected',
               [PlayerConnectionStatus.joining]: 'joining',
               [PlayerConnectionStatus.offline]: 'offline',
             }[props.slot.connectionStatus],
           ]}
-        />
+        >
+          <span class="sr-only">Player is {props.slot.connectionStatus}</span>
+        </div>
       ) : (
         <></>
       )}
