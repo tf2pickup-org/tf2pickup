@@ -10,6 +10,7 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { collections } from '../../../database/collections'
 
 export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefined }) {
   const launchedAt = props.game.events.find(e => e.event === GameEventType.gameCreated)?.at
@@ -19,11 +20,7 @@ export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefi
   let gameState = <></>
   let connectInfo = <></>
 
-  if (
-    [GameState.created, GameState.configuring, GameState.launching, GameState.started].includes(
-      props.game.state,
-    )
-  ) {
+  if (gameIsLive(props.game.state)) {
     gameState = (
       <div class="floating-label text-accent-600 right-[10px] top-[10px]" aria-label="Game status">
         <GameLiveIndicator />
@@ -100,6 +97,15 @@ export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefi
   )
 }
 
+function gameIsLive(gameState: GameState) {
+  return [
+    GameState.created,
+    GameState.configuring,
+    GameState.launching,
+    GameState.started,
+  ].includes(gameState)
+}
+
 function GameConnectInfo(props: { game: GameModel }) {
   return (
     <div class="flex flex-col gap-2">
@@ -108,8 +114,22 @@ function GameConnectInfo(props: { game: GameModel }) {
   )
 }
 
-function ConnectString(props: { game: GameModel }) {
+async function ConnectString(props: { game: GameModel; actor?: SteamId64 | undefined }) {
+  const playerId = (async (steamId?: SteamId64) => {
+    if (!steamId) {
+      return undefined
+    }
+
+    const player = await collections.players.findOne({ steamId })
+    if (player === null) {
+      throw new Error(`player ${steamId} does not exist`)
+    }
+
+    return player
+  })(props.actor)
+
   let csBoxContent: JSX.Element
+  let csBtn = <></>
   switch (props.game.state) {
     case GameState.created:
       csBoxContent = <i>waiting for server...</i>
@@ -117,22 +137,27 @@ function ConnectString(props: { game: GameModel }) {
     case GameState.configuring:
       csBoxContent = <i>configuring server...</i>
       break
-    default:
-      csBoxContent = props.game.connectString ?? ''
-  }
-
-  const csBtn = (
-    <button
-      class="hover:text-abru-light-85"
-      _={`
+    default: {
+      const connectString =
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        (props.game.slots.some(slot => slot.player.equals(playerId))
+          ? props.game.connectString
+          : props.game.stvConnectString) ?? ''
+      csBoxContent = connectString
+      csBtn = (
+        <button
+          class="hover:text-abru-light-85"
+          _={`
       on click js
-        navigator.clipboard.writeText("${props.game.connectString}").then(() => console.log('copied'))
+        navigator.clipboard.writeText("${connectString}").then(() => console.log('copied'))
       end
       `}
-    >
-      <IconCopy size={24} />
-    </button>
-  )
+        >
+          <IconCopy size={24} />
+        </button>
+      )
+    }
+  }
 
   return (
     <div class="connect-string">
