@@ -64,12 +64,12 @@ export function tftrueWhitelistId(whitelistId: string) {
   return `tftrue_whitelist_id ${whitelistId}`
 }
 
-export function tvPort(port: string) {
-  return `tv_port ${port}`
+export function tvPort(port?: string) {
+  return `tv_port ${port ?? ''}`
 }
 
-export function tvPassword(password: string) {
-  return `tv_password ${password}`
+export function tvPassword(password?: string) {
+  return `tv_password ${password ?? ''}`
 }
 
 export function say(message: string) {

@@ -1,4 +1,5 @@
 import type { ObjectId } from 'mongodb'
+import type { Tf2Team } from '../../shared/types/tf2-team'
 
 export enum GameEventType {
   gameCreated = 'created',
@@ -62,7 +63,7 @@ export interface PlayerJoinedGameServerTeam {
   event: GameEventType.playerJoinedGameServerTeam
   at: Date
   player: ObjectId
-  team: 'red' | 'blue'
+  team: Tf2Team
 }
 
 export interface PlayerLeftGameServer {

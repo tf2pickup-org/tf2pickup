@@ -8,7 +8,7 @@ interface HeartbeatProps {
   port: string
   rconPassword: string
   priority: number
-  internalIpAddress?: string
+  internalIpAddress: string
 }
 
 export async function heartbeat({

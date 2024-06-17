@@ -27,7 +27,7 @@ export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefi
         <span class="uppercase">live</span>
       </div>
     )
-    connectInfo = <GameConnectInfo game={props.game} />
+    connectInfo = <GameConnectInfo game={props.game} actor={props.actor} />
   } else if (props.game.state === GameState.interrupted) {
     gameState = (
       <div class="floating-label text-accent-600 right-[10px] top-[10px]" aria-label="Game status">
@@ -106,28 +106,28 @@ function gameIsLive(gameState: GameState) {
   ].includes(gameState)
 }
 
-function GameConnectInfo(props: { game: GameModel }) {
+function GameConnectInfo(props: { game: GameModel; actor?: SteamId64 | undefined }) {
   return (
     <div class="flex flex-col gap-2">
-      <ConnectString game={props.game} />
+      <ConnectString {...props} />
     </div>
   )
 }
 
+async function actorInGame(game: GameModel, actor?: SteamId64) {
+  if (!actor) {
+    return false
+  }
+
+  const player = await collections.players.findOne({ steamId: actor })
+  if (player === null) {
+    throw new Error(`player ${actor} does not exist`)
+  }
+
+  return game.slots.some(slot => slot.player.equals(player._id))
+}
+
 async function ConnectString(props: { game: GameModel; actor?: SteamId64 | undefined }) {
-  const playerId = (async (steamId?: SteamId64) => {
-    if (!steamId) {
-      return undefined
-    }
-
-    const player = await collections.players.findOne({ steamId })
-    if (player === null) {
-      throw new Error(`player ${steamId} does not exist`)
-    }
-
-    return player
-  })(props.actor)
-
   let csBoxContent: JSX.Element
   let csBtn = <></>
   switch (props.game.state) {
@@ -139,8 +139,7 @@ async function ConnectString(props: { game: GameModel; actor?: SteamId64 | undef
       break
     default: {
       const connectString =
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        (props.game.slots.some(slot => slot.player.equals(playerId))
+        ((await actorInGame(props.game, props.actor))
           ? props.game.connectString
           : props.game.stvConnectString) ?? ''
       csBoxContent = connectString
@@ -154,6 +153,7 @@ async function ConnectString(props: { game: GameModel; actor?: SteamId64 | undef
       `}
         >
           <IconCopy size={24} />
+          <span class="sr-only">Copy connect string</span>
         </button>
       )
     }
@@ -163,6 +163,7 @@ async function ConnectString(props: { game: GameModel; actor?: SteamId64 | undef
     <div class="connect-string">
       <div
         class="fade block flex-1 cursor-text select-all overflow-hidden whitespace-nowrap bg-abru-light-5 text-base text-abru-light-75"
+        aria-label="Connect string"
         aria-readonly
       >
         {csBoxContent}

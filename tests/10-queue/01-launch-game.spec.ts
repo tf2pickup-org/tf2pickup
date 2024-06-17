@@ -1,5 +1,6 @@
 import { authUsers, expect } from '../fixtures/auth-users'
 import { users, type User } from '../data'
+import { secondsToMilliseconds } from 'date-fns'
 
 interface QueueUser extends User {
   slotId: number
@@ -42,6 +43,14 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
       const gameState = page.getByLabel('Game status')
       await expect(gameState).toBeVisible()
       await expect(gameState).toContainText('live', { ignoreCase: true })
+
+      const connectString = page.getByLabel('Connect string')
+      await expect(connectString).toBeVisible()
+      await expect(connectString).toHaveText('configuring server...')
+
+      await expect(connectString).toHaveText(/^connect (.+);\s?password (.+)$/, {
+        timeout: secondsToMilliseconds(30),
+      })
     }),
   )
 })

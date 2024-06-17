@@ -22,7 +22,6 @@ export async function create(
   const playerSlots: PlayerSlot[] = await Promise.all(queueSlots.map(queueSlotToPlayerSlot))
   const slots = pickTeams(playerSlots, { friends })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { insertedId } = await collections.games.insertOne({
     number: await getNextGameNumber(),
     map,
@@ -35,7 +34,6 @@ export async function create(
         }
 
         return {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           player: player._id,
           team: slot.team,
           gameClass: slot.gameClass,
@@ -53,7 +51,6 @@ export async function create(
     ],
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const game = await collections.games.findOne({ _id: insertedId })
   if (!game) {
     throw new Error('failed creating game')

@@ -88,13 +88,11 @@ export default fp(
               events: {
                 at: new Date(),
                 event: GameEventType.playerJoinedGameServer,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 player: player._id,
               },
             },
           },
           {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             arrayFilters: [{ 'element.player': { $eq: player._id } }],
           },
         )
@@ -121,14 +119,12 @@ export default fp(
               events: {
                 at: new Date(),
                 event: GameEventType.playerJoinedGameServerTeam,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 player: player._id,
                 team,
               },
             },
           },
           {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             arrayFilters: [{ 'element.player': { $eq: player._id } }],
           },
         )
@@ -155,13 +151,11 @@ export default fp(
               events: {
                 at: new Date(),
                 event: GameEventType.playerLeftGameServer,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 player: player._id,
               },
             },
           },
           {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             arrayFilters: [{ 'element.player': { $eq: player._id } }],
           },
         )

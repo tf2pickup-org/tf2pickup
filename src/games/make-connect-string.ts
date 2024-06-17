@@ -1,7 +1,7 @@
 interface MakeConnectStringProps {
   address: string
   port: string | number
-  password?: string
+  password: string | undefined
 }
 
 export function makeConnectString(props: MakeConnectStringProps) {

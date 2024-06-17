@@ -23,7 +23,6 @@ export async function getPlayerGameCountOnClasses(
               'slots.status': {
                 $in: [null, 'active'],
               },
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               'slots.player': playerId,
             },
           },

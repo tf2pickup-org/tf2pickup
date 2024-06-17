@@ -22,7 +22,6 @@ export async function PlayerPage(steamId: SteamId64, user?: User) {
   }
 
   const gameCount = await collections.games.countDocuments({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     $and: [{ state: GameState.ended }, { ['slots.player' as keyof GameModel]: player._id }],
   })
 

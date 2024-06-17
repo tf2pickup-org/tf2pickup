@@ -69,10 +69,9 @@ async function GameSlot(props: {
   side: 'left' | 'right'
   gameState: GameState
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const player = await collections.players.findOne({ _id: props.slot.player })
   if (!player) {
-    throw new Error(`no such player: ${props.slot.player}`)
+    throw new Error(`no such player: ${props.slot.player.toString()}`)
   }
 
   const showConnectionState = [GameState.launching, GameState.started].includes(props.gameState)

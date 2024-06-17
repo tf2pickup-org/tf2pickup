@@ -3,6 +3,8 @@ import EventEmitter from 'node:events'
 import { WebSocket } from 'ws'
 import { z } from 'zod'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { assertIsError } from '../utils/assert-is-error'
+import { logger } from '../logger'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
@@ -90,13 +92,18 @@ export class Gateway extends EventEmitter implements Broadcaster {
           })
         })
 
-      const message = await messageFn(client.player?.steamId)
-      if (Array.isArray(message)) {
-        for (const msg of message) {
-          await send(msg)
+      try {
+        const message = await messageFn(client.player?.steamId)
+        if (Array.isArray(message)) {
+          for (const msg of message) {
+            await send(msg)
+          }
+        } else {
+          await send(message)
         }
-      } else {
-        await send(message)
+      } catch (error) {
+        assertIsError(error)
+        logger.error(error)
       }
     })
   }
@@ -129,13 +136,18 @@ export class Gateway extends EventEmitter implements Broadcaster {
                 })
               })
 
-            const message = await messageFn(client.player.steamId)
-            if (Array.isArray(message)) {
-              for (const msg of message) {
-                await send(msg)
+            try {
+              const message = await messageFn(client.player.steamId)
+              if (Array.isArray(message)) {
+                for (const msg of message) {
+                  await send(msg)
+                }
+              } else {
+                await send(message)
               }
-            } else {
-              await send(message)
+            } catch (error) {
+              assertIsError(error)
+              logger.error(error)
             }
           }
         })

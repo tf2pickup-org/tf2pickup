@@ -22,8 +22,11 @@ import {
   enablePlayerWhitelist,
   logsTfTitle,
   logsTfAutoupload,
+  tvPort,
+  tvPassword,
 } from './rcon-commands'
 import { update } from './update'
+import { extractConVarValue } from './extract-con-var-value'
 
 export async function configure(game: GameModel) {
   if (game.gameServer === undefined) {
@@ -82,11 +85,19 @@ export async function configure(game: GameModel) {
       port: gameServer.port,
       password,
     })
-    logger.info(`game ${game.number} connect string: ${connectString}`)
+    logger.info(game, `connect string: ${connectString}`)
+
+    const stvConnectString = makeConnectString({
+      address: gameServer.address,
+      port: extractConVarValue(await rcon.send(tvPort())) ?? 27020,
+      password: extractConVarValue(await rcon.send(tvPassword())),
+    })
+    logger.info(game, `stv connect string: ${stvConnectString}`)
 
     game = await update(game.number, {
       $set: {
         connectString,
+        stvConnectString,
         state: GameState.launching,
       },
       $push: {
@@ -141,10 +152,8 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
         game.slots
           .filter(slot => slot.status !== SlotStatus.replaced)
           .map(async slot => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const player = await collections.players.findOne({ _id: slot.player })
             if (player === null) {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
               throw new Error(`player ${slot.player.toString()} not found`)
             }
             return addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass)
