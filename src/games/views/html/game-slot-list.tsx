@@ -1,13 +1,9 @@
-import { collections } from '../../../database/collections'
-import {
-  PlayerConnectionStatus,
-  SlotStatus,
-  type GameSlotModel,
-} from '../../../database/models/game-slot.model'
-import { GameState, type GameModel } from '../../../database/models/game.model'
+import { SlotStatus, type GameSlotModel } from '../../../database/models/game-slot.model'
+import { type GameModel } from '../../../database/models/game.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { tf2ClassOrder } from '../../../shared/tf2-class-order'
 import { Tf2Team } from '../../../shared/types/tf2-team'
+import { GameSlot } from './game-slot'
 
 export function GameSlotList(props: { game: GameModel }) {
   const activeSlots = props.game.slots.filter(slot =>
@@ -32,9 +28,9 @@ export function GameSlotList(props: { game: GameModel }) {
       <div class="slot-list" id={`game-${props.game.number}-slots`}>
         {slotPairs.map(({ red, blu, gameClass }) => (
           <>
-            <GameSlot slot={blu!} side="left" gameState={props.game.state} />
+            <GameSlot slot={blu!} gameState={props.game.state} />
             <GameClassIcon gameClass={gameClass} size={32} />
-            <GameSlot slot={red!} side="right" gameState={props.game.state} />
+            <GameSlot slot={red!} gameState={props.game.state} />
           </>
         ))}
       </div>
@@ -62,49 +58,4 @@ function makeSlotPairs(slots: GameSlotModel[]) {
   }
 
   return ret
-}
-
-async function GameSlot(props: {
-  slot: GameSlotModel
-  side: 'left' | 'right'
-  gameState: GameState
-}) {
-  const player = await collections.players.findOne({ _id: props.slot.player })
-  if (!player) {
-    throw new Error(`no such player: ${props.slot.player.toString()}`)
-  }
-
-  const showConnectionState = [GameState.launching, GameState.started].includes(props.gameState)
-  return (
-    <a
-      href={`/players/${player.steamId}`}
-      class={[
-        'slot',
-        props.side === 'right' && 'flex-row',
-        props.side === 'left' && 'flex-row-reverse',
-      ]}
-    >
-      <img src={player.avatar.medium} width="38" height="38" alt={`${player.name}'s avatar`} />
-      <span class={['flex-1 text-xl font-medium', props.side === 'left' && 'text-end']} safe>
-        {player.name}
-      </span>
-      {showConnectionState ? (
-        <div
-          title="Player connection status"
-          class={[
-            '-m-1 w-[6px] self-stretch rounded',
-            {
-              [PlayerConnectionStatus.connected]: 'connected',
-              [PlayerConnectionStatus.joining]: 'joining',
-              [PlayerConnectionStatus.offline]: 'offline',
-            }[props.slot.connectionStatus],
-          ]}
-        >
-          <span class="sr-only">Player is {props.slot.connectionStatus}</span>
-        </div>
-      ) : (
-        <></>
-      )}
-    </a>
-  )
 }

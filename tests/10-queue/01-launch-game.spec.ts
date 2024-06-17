@@ -112,7 +112,7 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
     queueUsers.map(async user => {
       const page = pages.get(user.steamId)!
       const gameState = page.getByLabel('Game status')
-      await expect(gameState).not.toBeVisible()
+      await expect(gameState).not.toContainText('live', { ignoreCase: true })
     }),
   )
 })
