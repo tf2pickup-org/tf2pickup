@@ -10,10 +10,18 @@ import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { voteMap } from '../vote-map'
 import { logger } from '../../logger'
 import { MapVote } from '../views/html/map-vote'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { markAsFriend } from '../mark-as-friend'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    async function refreshTakenSlots(actor: SteamId64) {
+      const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
+      const cmps = await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor })))
+      app.gateway.toPlayers(actor).broadcast(() => cmps)
+    }
+
     app.gateway.on('connected', async socket => {
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(async slot => {
@@ -29,8 +37,12 @@ export default fp(
       }
 
       try {
-        await join(slotId, socket.player.steamId)
+        const slots = await join(slotId, socket.player.steamId)
         app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.enable())
+
+        if (slots.find(s => s.canMakeFriendsWith?.length)) {
+          await refreshTakenSlots(socket.player.steamId)
+        }
       } catch (error) {
         logger.error(error)
       }
@@ -48,6 +60,10 @@ export default fp(
         app.gateway
           .toPlayers(socket.player.steamId)
           .broadcast(async actor => await MapVote({ actor }))
+
+        if (slot.canMakeFriendsWith?.length) {
+          await refreshTakenSlots(socket.player.steamId)
+        }
 
         if (slot.ready) {
           const close = await ReadyUpDialog.close()
@@ -81,6 +97,18 @@ export default fp(
         app.gateway
           .toPlayers(socket.player.steamId)
           .broadcast(async actor => await MapVote({ actor }))
+      } catch (error) {
+        logger.error(error)
+      }
+    })
+
+    app.gateway.on('queue:markasfriend', async (socket, steamId) => {
+      if (!socket.player) {
+        return
+      }
+
+      try {
+        await markAsFriend(socket.player.steamId, steamId)
       } catch (error) {
         logger.error(error)
       }

@@ -106,6 +106,21 @@ export interface Events {
   'queue/mapVoteResults:updated': {
     results: Record<string, number>
   }
+  'queue/friendship:created': {
+    source: SteamId64
+    target: SteamId64
+  }
+  'queue/friendship:updated': {
+    source: SteamId64
+    target: {
+      before: SteamId64
+      after: SteamId64
+    }
+  }
+  'queue/friendship:removed': {
+    source: SteamId64
+    target: SteamId64
+  }
 
   'staticGameServer:added': {
     gameServer: StaticGameServerModel

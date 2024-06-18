@@ -38,6 +38,12 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
       events.emit('queue/mapVoteResults:updated', { results: await getMapVoteResults() })
     }
 
+    const friendship = await collections.queueFriends.findOne({ source: steamId })
+    if (friendship) {
+      await collections.queueFriends.deleteMany({ source: steamId })
+      events.emit('queue/friendship:removed', { source: steamId, target: friendship.target })
+    }
+
     return slot
   })
 }

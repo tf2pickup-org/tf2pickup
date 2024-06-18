@@ -25,6 +25,9 @@
   }
 
   .leave-queue-button {
+    @apply transition-colors;
+    @apply duration-75;
+
     display: flex;
     flex: 1 1 0%;
     align-items: center;
@@ -39,6 +42,35 @@
 
     &:hover:enabled {
       background-color: theme(colors.abru.light.35);
+    }
+  }
+
+  .mark-as-friend-button {
+    @apply transition-colors;
+    @apply duration-75;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    height: 34px;
+    width: 34px;
+
+    border-radius: 4px;
+
+    color: theme(colors.black);
+    background-color: theme(colors.abru.light.75);
+
+    &:disabled {
+      color: theme(colors.abru.light.60);
+    }
+
+    &:hover {
+      background-color: theme(colors.abru.light.70);
+    }
+
+    &.selected {
+      color: theme(colors.accent.600);
     }
   }
 

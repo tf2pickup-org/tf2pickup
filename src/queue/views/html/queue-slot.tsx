@@ -1,8 +1,14 @@
 import { collections } from '../../../database/collections'
 import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
-import { IconMinus, IconPlus } from '../../../html/components/icons'
+import { IconHeart, IconHeartFilled, IconMinus, IconPlus } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+
+enum MarkAsFriendButtonState {
+  enabled,
+  disabled, // marked by another player
+  selected, // marked by me
+}
 
 export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
   let slotContent = <></>
@@ -11,15 +17,35 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     if (!player) {
       throw new Error(`player does not exist: ${props.slot.player}`)
     }
+
+    let markAsFriendButtonState: MarkAsFriendButtonState | undefined = undefined
+
+    if (props.actor) {
+      const actorsSlot = await collections.queueSlots.findOne({ player: props.actor })
+      if (actorsSlot?.canMakeFriendsWith?.includes(props.slot.gameClass)) {
+        const friendship = await collections.queueFriends.findOne({
+          target: props.slot.player,
+        })
+        if (friendship === null) {
+          markAsFriendButtonState = MarkAsFriendButtonState.enabled
+        } else if (friendship.source === props.actor) {
+          markAsFriendButtonState = MarkAsFriendButtonState.selected
+        } else {
+          markAsFriendButtonState = MarkAsFriendButtonState.disabled
+        }
+      }
+    }
+
     slotContent = (
       <PlayerInfo
         player={player}
         isActorsSlot={props.actor === props.slot.player}
         ready={props.slot.ready}
+        markAsFriendButtonState={markAsFriendButtonState}
       />
     )
   } else if (props.actor) {
-    slotContent = JoinButton(props.slot.id)
+    slotContent = <JoinButton slotId={props.slot.id} />
   }
 
   return (
@@ -33,25 +59,57 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
   )
 }
 
-function JoinButton(slotId: number) {
+function JoinButton(props: { slotId: number }) {
   return (
     <button
       class="join-queue-button"
       name="join"
-      value={`${slotId}`}
-      aria-label={`Join queue on slot ${slotId}`}
+      value={`${props.slotId}`}
+      aria-label={`Join queue on slot ${props.slotId}`}
     >
       <IconPlus />
     </button>
   )
 }
 
-function PlayerInfo(props: { player: PlayerModel; isActorsSlot: boolean; ready: boolean }) {
-  let leaveButton = <></>
+function PlayerInfo(props: {
+  player: PlayerModel
+  isActorsSlot: boolean
+  ready: boolean
+  markAsFriendButtonState: MarkAsFriendButtonState | undefined
+}) {
+  let slotButton = <></>
   if (props.isActorsSlot) {
-    leaveButton = (
+    slotButton = (
       <button class="leave-queue-button" name="leave" value="" aria-label="Leave queue">
         <IconMinus />
+      </button>
+    )
+  } else if (props.markAsFriendButtonState !== undefined) {
+    slotButton = (
+      <button
+        class={[
+          'mark-as-friend-button',
+          props.markAsFriendButtonState === MarkAsFriendButtonState.selected && 'selected',
+        ]}
+        disabled={props.markAsFriendButtonState === MarkAsFriendButtonState.disabled}
+        name="markasfriend"
+        value={
+          props.markAsFriendButtonState === MarkAsFriendButtonState.selected
+            ? ''
+            : props.player.steamId
+        }
+        aria-label={
+          props.markAsFriendButtonState === MarkAsFriendButtonState.selected
+            ? 'Unfriend'
+            : 'Mark as friend'
+        }
+      >
+        {props.markAsFriendButtonState === MarkAsFriendButtonState.selected ? (
+          <IconHeartFilled />
+        ) : (
+          <IconHeart />
+        )}
       </button>
     )
   }
@@ -79,7 +137,7 @@ function PlayerInfo(props: { player: PlayerModel; isActorsSlot: boolean; ready: 
       >
         {props.player.name}
       </a>
-      <div class="w-[42px] px-1">{leaveButton}</div>
+      <div class="w-[42px] px-1">{slotButton}</div>
     </div>
   )
 }

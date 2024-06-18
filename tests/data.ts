@@ -4,7 +4,7 @@ export interface User {
 }
 
 // list of test users
-export const users: User[] = [
+export const users = [
   { steamId: '76561199195756652', name: 'Promenader' },
   { steamId: '76561199195935001', name: 'Mayflower' },
   { steamId: '76561199195486701', name: 'Polemic' },
@@ -17,4 +17,4 @@ export const users: User[] = [
   { steamId: '76561199196157187', name: 'Blacklight' },
   { steamId: '76561199195855422', name: 'AstraGirl' },
   { steamId: '76561199195188363', name: 'BellBoy' },
-]
+] as const

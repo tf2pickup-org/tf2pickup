@@ -12,6 +12,7 @@ export interface ClientToServerEvents {
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void
   'queue:readyup': () => void
+  'queue:markasfriend': (steamId: SteamId64 | null) => void
 }
 
 type GatewayEvents = ClientToServerEvents
@@ -45,7 +46,12 @@ const voteMap = z.object({
   HEADERS: htmxHeaders,
 })
 
-const clientMessage = z.union([joinQueue, leaveQueue, readyUp, voteMap])
+const markAsFriend = z.object({
+  markasfriend: z.union([z.string(), z.literal('')]),
+  HEADERS: htmxHeaders,
+})
+
+const clientMessage = z.union([joinQueue, leaveQueue, readyUp, voteMap, markAsFriend])
 
 type MessageFn = (
   player: SteamId64 | undefined,
@@ -166,6 +172,12 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:readyup', socket)
       } else if ('votemap' in parsed) {
         this.emit('queue:votemap', socket, parsed.votemap)
+      } else if ('markasfriend' in parsed) {
+        this.emit(
+          'queue:markasfriend',
+          socket,
+          parsed.markasfriend === '' ? null : parsed.markasfriend,
+        )
       }
     } catch (error) {
       console.error(error)

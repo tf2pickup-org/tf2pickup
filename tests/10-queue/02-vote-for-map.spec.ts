@@ -1,7 +1,7 @@
 import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
 
-const user = users[0]!
+const user = users[0]
 
 authUsers(user.steamId)('vote for map', async ({ pages }) => {
   const page = pages.get(user.steamId)!

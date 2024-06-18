@@ -11,6 +11,7 @@ import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { MapResult, MapVote } from '../views/html/map-vote'
 import { OnlinePlayerList } from '../views/html/online-player-list'
+import { safe } from '../../utils/safe'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -93,6 +94,53 @@ export default fp(
       } catch (error) {
         logger.error(error)
       }
+    })
+
+    events.on('queue/friendship:created', async ({ target }) => {
+      await safe(async () => {
+        const slot = await collections.queueSlots.findOne({ player: target })
+        if (!slot) {
+          return
+        }
+        const actors = await collections.queueSlots
+          .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+          .toArray()
+        app.gateway
+          .toPlayers(...actors.map(a => a.player!))
+          .broadcast(async actor => await QueueSlot({ slot, actor }))
+      })
+    })
+
+    events.on('queue/friendship:updated', async ({ target }) => {
+      await safe(async () => {
+        const actors = await collections.queueSlots
+          .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+          .toArray()
+
+        const slots = await collections.queueSlots
+          .find({ player: { $in: [target.before, target.after] } })
+          .toArray()
+        slots.forEach(slot => {
+          app.gateway
+            .toPlayers(...actors.map(a => a.player!))
+            .broadcast(async actor => await QueueSlot({ slot, actor }))
+        })
+      })
+    })
+
+    events.on('queue/friendship:removed', async ({ target }) => {
+      await safe(async () => {
+        const slot = await collections.queueSlots.findOne({ player: target })
+        if (!slot) {
+          return
+        }
+        const actors = await collections.queueSlots
+          .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+          .toArray()
+        app.gateway
+          .toPlayers(...actors.map(a => a.player!))
+          .broadcast(async actor => await QueueSlot({ slot, actor }))
+      })
     })
   },
   { name: 'queue event listeners' },

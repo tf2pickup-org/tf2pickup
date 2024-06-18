@@ -6,6 +6,7 @@ import type { GameModel } from './models/game.model'
 import type { MapPoolEntry } from './models/map-pool-entry.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
 import type { PlayerModel } from './models/player.model'
+import type { QueueFriendshipModel } from './models/queue-friendship.model'
 import type { QueueMapOptionModel } from './models/queue-map-option.model'
 import type { QueueMapVoteModel } from './models/queue-map-vote.model'
 import type { QueueSlotModel } from './models/queue-slot.model'
@@ -20,6 +21,7 @@ export const collections = {
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
   players: database.collection<PlayerModel>('players'),
+  queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),
   queueState: database.collection<QueueStateModel>('queue.state'),
   queueMapOptions: database.collection<QueueMapOptionModel>('queue.mapoptions'),
