@@ -1,8 +1,6 @@
 import fp from 'fastify-plugin'
 import { collections } from '../../database/collections'
 import { QueueSlot } from '../views/html/queue-slot'
-import { QueueState } from '../views/html/queue-state'
-import { OnlinePlayerList } from '../views/html/online-player-list'
 import { join } from '../join'
 import { leave } from '../leave'
 import { readyUp } from '../ready-up'
@@ -21,15 +19,6 @@ export default fp(
       const cmps = await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor })))
       app.gateway.toPlayers(actor).broadcast(() => cmps)
     }
-
-    app.gateway.on('connected', async socket => {
-      const slots = await collections.queueSlots.find().toArray()
-      slots.forEach(async slot => {
-        socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
-      })
-      socket.send(await QueueState())
-      socket.send(await OnlinePlayerList())
-    })
 
     app.gateway.on('queue:join', async (socket, slotId) => {
       if (!socket.player) {

@@ -1,42 +1,43 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { QueueState as QueueStateCmp } from '../views/html/queue-state'
-import { QueueSlot } from '../views/html/queue-slot'
-import { kick } from '../kick'
-import { maybeUpdateQueueState } from '../maybe-update-queue-state'
-import { collections } from '../../database/collections'
-import { ReadyUpDialog } from '../views/html/ready-up-dialog'
-import { QueueState } from '../../database/models/queue-state.model'
-import { logger } from '../../logger'
-import type { SteamId64 } from '../../shared/types/steam-id-64'
-import { MapResult, MapVote } from '../views/html/map-vote'
 import { OnlinePlayerList } from '../views/html/online-player-list'
 import { safe } from '../../utils/safe'
+import { QueueState as QueueStateCmp } from '../views/html/queue-state'
+import { QueueSlot } from '../views/html/queue-slot'
+import { collections } from '../../database/collections'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { ReadyUpDialog } from '../views/html/ready-up-dialog'
+import { QueueState } from '../../database/models/queue-state.model'
+import { MapResult, MapVote } from '../views/html/map-vote'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    events.on('player:connected', async () => {
-      try {
-        const cmp = await OnlinePlayerList()
-        app.gateway.broadcast(() => cmp)
-      } catch (error) {
-        logger.error(error)
-      }
+    app.gateway.on('connected', async socket => {
+      const slots = await collections.queueSlots.find().toArray()
+      slots.forEach(async slot => {
+        socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
+      })
+      socket.send(await QueueStateCmp())
+      socket.send(await OnlinePlayerList())
     })
 
-    events.on('player:disconnected', async ({ steamId }) => {
-      try {
+    events.on('player:connected', async () => {
+      await safe(async () => {
         const cmp = await OnlinePlayerList()
         app.gateway.broadcast(() => cmp)
-        await kick(steamId)
-      } catch (error) {
-        logger.error(error)
-      }
+      })
+    })
+
+    events.on('player:disconnected', async () => {
+      await safe(async () => {
+        const cmp = await OnlinePlayerList()
+        app.gateway.broadcast(() => cmp)
+      })
     })
 
     events.on('queue/slots:updated', async ({ slots }) => {
-      try {
+      await safe(async () => {
         const queueState = await QueueStateCmp()
         app.gateway.broadcast(
           async player =>
@@ -45,21 +46,11 @@ export default fp(
               queueState,
             ]),
         )
-      } catch (error) {
-        logger.error(error)
-      }
-    })
-
-    events.on('queue/slots:updated', async () => {
-      try {
-        await maybeUpdateQueueState()
-      } catch (error) {
-        logger.error(error)
-      }
+      })
     })
 
     events.on('queue/state:updated', async ({ state }) => {
-      try {
+      await safe(async () => {
         if (state === QueueState.ready) {
           const players = (
             await collections.queueSlots
@@ -72,28 +63,20 @@ export default fp(
           const show = await ReadyUpDialog.show()
           app.gateway.toPlayers(...players).broadcast(() => show)
         }
-      } catch (error) {
-        logger.error(error)
-      }
+      })
     })
 
     events.on('queue/mapOptions:reset', () => {
-      try {
-        app.gateway.broadcast(async actor => await MapVote({ actor }))
-      } catch (error) {
-        logger.error(error)
-      }
+      app.gateway.broadcast(async actor => await MapVote({ actor }))
     })
 
     events.on('queue/mapVoteResults:updated', async ({ results }) => {
-      try {
+      await safe(async () => {
         const mapOptions = await collections.queueMapOptions.find().toArray()
         for (const map of mapOptions.map(option => option.name)) {
           app.gateway.broadcast(async () => MapResult({ results, map }))
         }
-      } catch (error) {
-        logger.error(error)
-      }
+      })
     })
 
     events.on('queue/friendship:created', async ({ target }) => {
@@ -143,5 +126,5 @@ export default fp(
       })
     })
   },
-  { name: 'queue event listeners' },
+  { name: 'update clients' },
 )
