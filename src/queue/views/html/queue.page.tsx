@@ -54,6 +54,7 @@ export async function QueuePage(user?: User) {
       </Page>
       <Footer user={user} />
 
+      <div id="queue-notify-container"></div>
       {user?.player.activeGame && RunningGameSnackbar(user.player.activeGame)}
     </Layout>
   )

@@ -9,6 +9,7 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../database/models/queue-state.model'
 import { MapResult, MapVote } from '../views/html/map-vote'
+import { SetTitle } from '../views/html/set-title'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -46,6 +47,12 @@ export default fp(
               queueState,
             ]),
         )
+
+        const [current, required] = await Promise.all([
+          collections.queueSlots.countDocuments({ player: { $ne: null } }),
+          collections.queueSlots.countDocuments(),
+        ])
+        app.gateway.broadcast(async () => await SetTitle({ current, required }))
       })
     })
 
