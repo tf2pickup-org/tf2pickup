@@ -14,12 +14,31 @@ import { Style } from '../../../html/components/style'
 import { resolve } from 'node:path'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
+import { GameListItem } from '../../../games/views/html/game-list-item'
+import { Pagination, paginate } from '../../../html/components/pagination'
 
-export async function PlayerPage(steamId: SteamId64, user?: User) {
+const gamesPerPage = 5
+
+export async function PlayerPage(steamId: SteamId64, user?: User, page = 1) {
   const player = await collections.players.findOne({ steamId })
   if (!player) {
     throw new Error(`player not found: ${steamId}`)
   }
+
+  const skip = (page - 1) * gamesPerPage
+
+  const games = await collections.games
+    .find(
+      { 'slots.player': player._id },
+      { limit: gamesPerPage, skip, sort: { 'events.0.at': -1 } },
+    )
+    .toArray()
+
+  const { last, around } = paginate(
+    page,
+    gamesPerPage,
+    await collections.games.countDocuments({ 'slots.player': player._id }),
+  )
 
   const gameCount = await collections.games.countDocuments({
     $and: [{ state: GameState.ended }, { ['slots.player' as keyof GameModel]: player._id }],
@@ -30,7 +49,14 @@ export async function PlayerPage(steamId: SteamId64, user?: User) {
   return (
     <Layout
       title={player.name}
-      head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}
+      head={
+        <>
+          <Style fileName={resolve(import.meta.dirname, 'style.css')} />
+          <Style
+            fileName={resolve(import.meta.dirname, '../../../games/views/html/game-list.css')}
+          />
+        </>
+      }
     >
       <NavigationBar user={user} />
       <Page>
@@ -39,6 +65,23 @@ export async function PlayerPage(steamId: SteamId64, user?: User) {
             player={player}
             gameCount={gameCount}
             gameCountOnClasses={gameCountOnClasses}
+          />
+
+          <div class="text-abru-light-75 text-2xl font-bold">Game history</div>
+          <div class="game-list">
+            {games.map(game => (
+              <GameListItem
+                game={game}
+                classPlayed={game.slots.find(s => s.player.equals(player._id))!.gameClass}
+              />
+            ))}
+          </div>
+
+          <Pagination
+            hrefFn={page => `/players/${player.steamId}?gamespage=${page}`}
+            lastPage={last}
+            currentPage={page}
+            around={around}
           />
         </div>
       </Page>

@@ -1,7 +1,9 @@
 import fp from 'fastify-plugin'
-import type { SteamId64 } from '../shared/types/steam-id-64'
 import { PlayerListPage } from './views/html/player-list.page'
 import { PlayerPage } from './views/html/player.page'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { z } from 'zod'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -10,12 +12,28 @@ export default fp(
       reply.status(200).html(await PlayerListPage(req.user))
     })
 
-    app.get<{
-      Params: { steamId: SteamId64 }
-    }>('/players/:steamId', async (req, reply) => {
-      const { steamId } = req.params
-      reply.status(200).html(await PlayerPage(steamId, req.user))
-    })
+    app.withTypeProvider<ZodTypeProvider>().get(
+      '/players/:steamId',
+      {
+        schema: {
+          params: z.object({
+            steamId: z
+              .string()
+              .regex(/[0-9]{17}/)
+              .transform(value => value as SteamId64),
+          }),
+          querystring: z.object({
+            gamespage: z.coerce.number().optional(),
+          }),
+        },
+      },
+      async (req, reply) => {
+        const { steamId } = req.params
+        reply
+          .status(200)
+          .html(await PlayerPage(steamId, req.user, Number(req.query.gamespage) || 1))
+      },
+    )
   },
   { name: 'players routes' },
 )
