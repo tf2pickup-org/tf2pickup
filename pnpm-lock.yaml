@@ -27,13 +27,13 @@ importers:
         version: 10.0.1
       '@kitajs/fastify-html-plugin':
         specifier: 4.1.0
-        version: 4.1.0(@kitajs/html@4.1.0)(@kitajs/ts-html-plugin@4.0.1)
+        version: 4.1.0(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(@kitajs/ts-html-plugin@4.0.1(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(typescript@5.4.5))
       '@kitajs/html':
         specifier: ^4.1.0
         version: 4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq)
       '@kitajs/ts-html-plugin':
         specifier: 4.0.1
-        version: 4.0.1(@kitajs/html@4.1.0)(typescript@5.4.5)
+        version: 4.0.1(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(typescript@5.4.5)
       '@tailwindcss/typography':
         specifier: ^0.5.13
         version: 0.5.13(tailwindcss@3.4.3)
@@ -146,12 +146,15 @@ importers:
       fastify-plugin:
         specifier: ^4.5.1
         version: 4.5.1
+      globals:
+        specifier: 15.6.0
+        version: 15.6.0
       postcss:
         specifier: ^8.4.38
         version: 8.4.38
       postcss-cli:
         specifier: ^11.0.0
-        version: 11.0.0(postcss@8.4.38)(tsx@4.11.0)
+        version: 11.0.0(jiti@1.21.0)(postcss@8.4.38)(tsx@4.11.0)
       postcss-lighten-darken:
         specifier: ^0.9.0
         version: 0.9.0(postcss@8.4.38)
@@ -1300,6 +1303,10 @@ packages:
 
   globals@14.0.0:
     resolution: {integrity: sha512-oahGvuMGQlPw/ivIYBjVSrWAfWLBeku5tpPE2fOPLi+WHffIWbuh2tCjhyQhTBPMf5E9jDEH4FOmTYgYwbKwtQ==}
+    engines: {node: '>=18'}
+
+  globals@15.6.0:
+    resolution: {integrity: sha512-UzcJi88Hw//CurUIRa9Jxb0vgOCcuD/MNjwmXp633cyaRKkCWACkoqHCtfZv43b1kqXGg/fpOa8bwgacCeXsVg==}
     engines: {node: '>=18'}
 
   globby@11.1.0:
@@ -2747,17 +2754,18 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  '@kitajs/fastify-html-plugin@4.1.0(@kitajs/html@4.1.0)(@kitajs/ts-html-plugin@4.0.1)':
+  '@kitajs/fastify-html-plugin@4.1.0(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(@kitajs/ts-html-plugin@4.0.1(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(typescript@5.4.5))':
     dependencies:
       '@kitajs/html': 4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq)
-      '@kitajs/ts-html-plugin': 4.0.1(@kitajs/html@4.1.0)(typescript@5.4.5)
       fastify-plugin: 4.5.1
+    optionalDependencies:
+      '@kitajs/ts-html-plugin': 4.0.1(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(typescript@5.4.5)
 
   '@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq)':
     dependencies:
       csstype: 3.1.3
 
-  '@kitajs/ts-html-plugin@4.0.1(@kitajs/html@4.1.0)(typescript@5.4.5)':
+  '@kitajs/ts-html-plugin@4.0.1(@kitajs/html@4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq))(typescript@5.4.5)':
     dependencies:
       '@kitajs/html': 4.1.0(patch_hash=2pgj3eiag55phj2txl6xycuvkq)
       chalk: 4.1.2
@@ -2899,7 +2907,7 @@ snapshots:
     dependencies:
       '@types/node': 20.12.7
 
-  '@typescript-eslint/eslint-plugin@7.12.0(@typescript-eslint/parser@7.12.0)(eslint@9.4.0)(typescript@5.4.5)':
+  '@typescript-eslint/eslint-plugin@7.12.0(@typescript-eslint/parser@7.12.0(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5)':
     dependencies:
       '@eslint-community/regexpp': 4.10.0
       '@typescript-eslint/parser': 7.12.0(eslint@9.4.0)(typescript@5.4.5)
@@ -2912,6 +2920,7 @@ snapshots:
       ignore: 5.3.1
       natural-compare: 1.4.0
       ts-api-utils: 1.3.0(typescript@5.4.5)
+    optionalDependencies:
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
@@ -2924,6 +2933,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 7.12.0
       debug: 4.3.4
       eslint: 9.4.0
+    optionalDependencies:
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
@@ -2940,6 +2950,7 @@ snapshots:
       debug: 4.3.4
       eslint: 9.4.0
       ts-api-utils: 1.3.0(typescript@5.4.5)
+    optionalDependencies:
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
@@ -2956,6 +2967,7 @@ snapshots:
       minimatch: 9.0.4
       semver: 7.6.0
       ts-api-utils: 1.3.0(typescript@5.4.5)
+    optionalDependencies:
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
@@ -3020,11 +3032,11 @@ snapshots:
   acorn@8.11.3: {}
 
   ajv-formats@2.1.1(ajv@8.12.0):
-    dependencies:
+    optionalDependencies:
       ajv: 8.12.0
 
   ajv-formats@3.0.1(ajv@8.12.0):
-    dependencies:
+    optionalDependencies:
       ajv: 8.12.0
 
   ajv@6.12.6:
@@ -3700,6 +3712,8 @@ snapshots:
 
   globals@14.0.0: {}
 
+  globals@15.6.0: {}
+
   globby@11.1.0:
     dependencies:
       array-union: 2.1.0
@@ -4161,7 +4175,7 @@ snapshots:
       postcss-selector-parser: 6.0.16
       postcss-value-parser: 4.2.0
 
-  postcss-cli@11.0.0(postcss@8.4.38)(tsx@4.11.0):
+  postcss-cli@11.0.0(jiti@1.21.0)(postcss@8.4.38)(tsx@4.11.0):
     dependencies:
       chokidar: 3.6.0
       dependency-graph: 0.11.0
@@ -4170,7 +4184,7 @@ snapshots:
       globby: 14.0.1
       picocolors: 1.0.0
       postcss: 8.4.38
-      postcss-load-config: 5.1.0(postcss@8.4.38)(tsx@4.11.0)
+      postcss-load-config: 5.1.0(jiti@1.21.0)(postcss@8.4.38)(tsx@4.11.0)
       postcss-reporter: 7.1.0(postcss@8.4.38)
       pretty-hrtime: 1.0.3
       read-cache: 1.0.0
@@ -4238,15 +4252,18 @@ snapshots:
   postcss-load-config@4.0.2(postcss@8.4.38):
     dependencies:
       lilconfig: 3.1.1
-      postcss: 8.4.38
       yaml: 2.4.2
+    optionalDependencies:
+      postcss: 8.4.38
 
-  postcss-load-config@5.1.0(postcss@8.4.38)(tsx@4.11.0):
+  postcss-load-config@5.1.0(jiti@1.21.0)(postcss@8.4.38)(tsx@4.11.0):
     dependencies:
       lilconfig: 3.1.1
+      yaml: 2.4.2
+    optionalDependencies:
+      jiti: 1.21.0
       postcss: 8.4.38
       tsx: 4.11.0
-      yaml: 2.4.2
 
   postcss-merge-longhand@7.0.0(postcss@8.4.38):
     dependencies:
@@ -4727,10 +4744,11 @@ snapshots:
 
   typescript-eslint@7.12.0(eslint@9.4.0)(typescript@5.4.5):
     dependencies:
-      '@typescript-eslint/eslint-plugin': 7.12.0(@typescript-eslint/parser@7.12.0)(eslint@9.4.0)(typescript@5.4.5)
+      '@typescript-eslint/eslint-plugin': 7.12.0(@typescript-eslint/parser@7.12.0(eslint@9.4.0)(typescript@5.4.5))(eslint@9.4.0)(typescript@5.4.5)
       '@typescript-eslint/parser': 7.12.0(eslint@9.4.0)(typescript@5.4.5)
       '@typescript-eslint/utils': 7.12.0(eslint@9.4.0)(typescript@5.4.5)
       eslint: 9.4.0
+    optionalDependencies:
       typescript: 5.4.5
     transitivePeerDependencies:
       - supports-color
@@ -4776,16 +4794,15 @@ snapshots:
 
   vite@5.2.12(@types/node@20.12.7):
     dependencies:
-      '@types/node': 20.12.7
       esbuild: 0.20.2
       postcss: 8.4.38
       rollup: 4.18.0
     optionalDependencies:
+      '@types/node': 20.12.7
       fsevents: 2.3.3
 
   vitest@1.6.0(@types/node@20.12.7):
     dependencies:
-      '@types/node': 20.12.7
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
       '@vitest/snapshot': 1.6.0
@@ -4806,6 +4823,8 @@ snapshots:
       vite: 5.2.12(@types/node@20.12.7)
       vite-node: 1.6.0(@types/node@20.12.7)
       why-is-node-running: 2.2.2
+    optionalDependencies:
+      '@types/node': 20.12.7
     transitivePeerDependencies:
       - less
       - lightningcss

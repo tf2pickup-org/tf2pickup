@@ -16,6 +16,7 @@ export function Layout(
           <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/head-support.js"></script>
           <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
           <script src="/map-thumbnail.js"></script>
+          <script src="/request-notification-permissions.js"></script>
           <link href="/main.css" rel="stylesheet"></link>
           <title>{props?.title ?? environment.WEBSITE_NAME}</title>
           {safeHead}

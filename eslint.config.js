@@ -1,5 +1,6 @@
 import eslint from '@eslint/js'
 import tseslint from 'typescript-eslint'
+import globals from 'globals'
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -33,6 +34,15 @@ export default tseslint.config(
   {
     files: ['**/*.test.ts'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    files: ['public/**/*.js'],
+    ...tseslint.configs.disableTypeChecked,
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
   },
   {
     ignores: [

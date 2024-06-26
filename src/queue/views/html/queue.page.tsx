@@ -17,6 +17,7 @@ import { OfflineAlert } from './offline-alert'
 import { Footer } from '../../../html/components/footer'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { RequestNotificationPermissions } from './request-notification-permissions'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -32,8 +33,9 @@ export async function QueuePage(user?: User) {
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto grid gap-x-4 gap-y-8 p-2 lg:grid-cols-4 lg:p-0">
-          <div class="order-1 lg:col-span-4">
+          <div class="order-1 lg:col-span-4 flex flex-col gap-y-2">
             <OfflineAlert />
+            <RequestNotificationPermissions />
           </div>
 
           <div class="order-2 lg:col-span-3">
