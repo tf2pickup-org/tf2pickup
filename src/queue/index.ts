@@ -1,11 +1,13 @@
 import fp from 'fastify-plugin'
 import { config } from './config'
-import { reset } from './reset'
 import { QueuePage } from './views/html/queue.page'
+import { getSlots } from './get-slots'
+import { getState } from './get-state'
 
 export const queue = {
   config,
-  reset,
+  getSlots,
+  getState,
 } as const
 
 export default fp(
@@ -16,6 +18,7 @@ export default fp(
     await app.register((await import('./plugins/kick-disconnected-players')).default)
     await app.register((await import('./plugins/auto-update-queue-state')).default)
     await app.register((await import('./plugins/update-clients')).default)
+    await app.register((await import('./plugins/auto-reset')).default)
 
     app.get('/', async (req, reply) => {
       reply.status(200).html(await QueuePage(req.user))

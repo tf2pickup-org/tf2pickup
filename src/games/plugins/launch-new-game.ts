@@ -2,13 +2,12 @@ import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
-import { getState } from '../../queue/get-state'
-import { getSlots } from '../../queue/get-slots'
 import { create } from '../create'
+import { queue } from '../../queue'
 
 async function launchGame() {
   logger.info('launching game')
-  const slots = await getSlots()
+  const slots = await queue.getSlots()
   await create(slots, 'cp_badlands')
 }
 
@@ -26,7 +25,7 @@ export default fp(
     })
 
     app.addHook('onListen', async () => {
-      if ((await getState()) === QueueState.launching) {
+      if ((await queue.getState()) === QueueState.launching) {
         await launchGame()
       }
     })
