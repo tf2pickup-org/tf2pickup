@@ -5,6 +5,7 @@ import { MongoClient } from 'mongodb'
 import { GameServerSimulator } from '../game-server-simulator'
 import SteamID from 'steamid'
 import { waitABit } from '../utils/wait-a-bit'
+import { Mutex } from 'async-mutex'
 
 interface QueueUser extends User {
   slotId: number
@@ -18,15 +19,24 @@ authUsers(...queueUsers.map(u => u.steamId))('launch game', async ({ pages, page
   // no players are in the queue
   await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 0/12')
 
+  const mutex = new Mutex()
+
   await Promise.all(
     queueUsers.map(async user => {
       const page = pages.get(user.steamId)!
 
-      // join the queue
-      await page.getByLabel(`Join queue on slot ${user.slotId}`, { exact: true }).click()
+      await mutex.runExclusive(async () => {
+        // join the queue
+        await page.getByLabel(`Join queue on slot ${user.slotId}`, { exact: true }).click()
+        expect(await page.title()).toMatch(/^\[\d+\/12\]/)
+      })
 
-      // wait for ready-up
-      await page.getByRole('button', { name: `I'M READY` }).click()
+      // last player joining the queue is ready by default
+      if (user.slotId !== 11) {
+        // wait for ready-up
+        await page.getByRole('button', { name: `I'M READY` }).click()
+      }
+
       await page.waitForURL(/games\/(\d+)/)
       const matches = page.url().match(/games\/(\d+)/)
       if (matches) {

@@ -33,6 +33,11 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
       throw new Error('slot occupied')
     }
 
+    const [currentPlayerCount, requiredPlayerCount] = await Promise.all([
+      collections.queueSlots.countDocuments({ player: { $ne: null } }),
+      collections.queueSlots.countDocuments(),
+    ])
+
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
         player: player.steamId,
@@ -50,7 +55,7 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
       {
         $set: {
           player: player.steamId,
-          ready: state === QueueState.ready,
+          ready: requiredPlayerCount - currentPlayerCount <= 1 || state === QueueState.ready,
         },
       },
       {
