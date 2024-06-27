@@ -7,7 +7,7 @@ interface QueueUser extends User {
 
 const queueUsers: QueueUser[] = users.map((user, i) => ({ ...user, slotId: i }))
 
-authUsers(...queueUsers.map(u => u.steamId))('everybody leaves', async ({ pages, page }) => {
+authUsers(...queueUsers.map(u => u.steamId))('everybody leaves', async ({ pages }) => {
   await Promise.all(
     queueUsers.map(async user => {
       const page = pages.get(user.steamId)!

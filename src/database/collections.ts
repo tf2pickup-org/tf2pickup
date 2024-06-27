@@ -12,6 +12,7 @@ import type { QueueMapVoteModel } from './models/queue-map-vote.model'
 import type { QueueSlotModel } from './models/queue-slot.model'
 import type { QueueStateModel } from './models/queue-state.model'
 import type { StaticGameServerModel } from './models/static-game-server.model'
+import type { TaskModel } from './models/task.model'
 
 export const collections = {
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
@@ -27,4 +28,5 @@ export const collections = {
   queueMapOptions: database.collection<QueueMapOptionModel>('queue.mapoptions'),
   queueMapVotes: database.collection<QueueMapVoteModel>('queue.mapvotes'),
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
+  tasks: database.collection<TaskModel>('tasks'),
 }

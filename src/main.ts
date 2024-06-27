@@ -23,6 +23,7 @@ await app.register(await import('@fastify/static'), {
 
 await app.register((await import('@kitajs/fastify-html-plugin')).default)
 
+await app.register((await import('./tasks')).default)
 await app.register((await import('./ws')).default)
 await app.register((await import('./auth')).default)
 await app.register((await import('./queue')).default)

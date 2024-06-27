@@ -1,13 +1,14 @@
 import fp from 'fastify-plugin'
 import { collections } from '../database/collections'
-import { secondsToMilliseconds } from 'date-fns'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { logger } from '../logger'
 import { events } from '../events'
+import { secondsToMilliseconds } from 'date-fns'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     // verify the player is online
     async function verifyPlayer(steamId: SteamId64) {
@@ -27,11 +28,7 @@ export default fp(
         events.emit('player:disconnected', { steamId })
       }
     }
-
-    const onlinePlayers = (await collections.onlinePlayers.find().toArray()).map(p => p.steamId)
-    for (const steamId of onlinePlayers) {
-      setTimeout(() => verifyPlayer(steamId), verifyPlayerTimeout)
-    }
+    app.registerTask('onlinePlayers:validatePlayer', verifyPlayer)
 
     app.gateway.on('connected', async (socket, ipAddress, userAgent) => {
       if (socket.player) {
@@ -72,7 +69,11 @@ export default fp(
           )
 
           app.log.debug(`${player.steamId} (${player.name}) disconnected`)
-          setTimeout(() => verifyPlayer(player.steamId), verifyPlayerTimeout)
+          await app.scheduleTask(
+            'onlinePlayers:validatePlayer',
+            verifyPlayerTimeout,
+            player.steamId,
+          )
         })
 
         events.emit('player:connected', {

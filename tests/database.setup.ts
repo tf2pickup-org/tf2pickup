@@ -39,7 +39,7 @@ async function upsertPlayer(steamId: string, name: string) {
 
 setup('create test users accounts', async () => {
   await games.updateMany(
-    { state: { $in: ['launching', 'configuring'] } },
+    { state: { $in: ['created', 'launching', 'configuring'] } },
     { $set: { state: 'interrupted' } },
   )
 
