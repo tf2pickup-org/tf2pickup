@@ -3,9 +3,11 @@ import { config } from './config'
 import { QueuePage } from './views/html/queue.page'
 import { getSlots } from './get-slots'
 import { getState } from './get-state'
+import { getMapWinner } from './get-map-winner'
 
 export const queue = {
   config,
+  getMapWinner,
   getSlots,
   getState,
 } as const

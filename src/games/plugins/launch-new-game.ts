@@ -8,7 +8,8 @@ import { queue } from '../../queue'
 async function launchGame() {
   logger.info('launching game')
   const slots = await queue.getSlots()
-  await create(slots, 'cp_badlands')
+  const map = await queue.getMapWinner()
+  await create(slots, map)
 }
 
 export default fp(
