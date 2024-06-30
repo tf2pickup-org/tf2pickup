@@ -124,10 +124,6 @@ export async function configure(game: GameModel) {
     return {
       connectString,
     }
-  } catch (error) {
-    assertIsError(error)
-    logger.error(error, `error configuring game #${game.number}`)
-    throw error
   } finally {
     await rcon?.end()
   }

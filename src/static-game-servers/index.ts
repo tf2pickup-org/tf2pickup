@@ -10,7 +10,6 @@ export const staticGameServers = {
 } as const
 
 export default fp(
-  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     const gameServerHeartbeatSchema = z.object({
       name: z.string(),
@@ -45,6 +44,8 @@ export default fp(
         await reply.status(200).send()
       },
     )
+
+    await app.register((await import('./plugins/remove-dead-game-servers')).default)
   },
   { name: 'static game servers' },
 )
