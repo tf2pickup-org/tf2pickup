@@ -1,7 +1,6 @@
 import { authUsers, expect } from '../fixtures/auth-users'
 import { users, type User } from '../data'
 import { secondsToMilliseconds } from 'date-fns'
-import { MongoClient } from 'mongodb'
 import SteamID from 'steamid'
 import { waitABit } from '../utils/wait-a-bit'
 import { Mutex } from 'async-mutex'
@@ -73,30 +72,27 @@ test('launch game', async ({ pages, page, gameServer }) => {
       await expect(connectString).toBeVisible()
       await expect(connectString).toHaveText('configuring server...')
 
-      await expect(connectString).toHaveText(/^connect (.+);\s?password (.+)$/, {
+      await expect(connectString).toHaveText(/^connect .+;\s?password (.+)$/, {
         timeout: secondsToMilliseconds(30),
       })
+
+      const [, password] =
+        (await connectString.innerText()).match(/^connect .+;\s?password (.+)$/) ?? []
+      expect(gameServer.cvar('sv_password').value).toEqual(password)
+
       await expect(page.getByRole('link', { name: 'join game' })).toBeVisible()
 
       await expect(slot.getByTitle('Player connection status')).toHaveClass(/offline/)
+      expect(
+        gameServer.commands.some(cmd => cmd.includes(`sm_game_player_add ${user.steamId}`)),
+      ).toBe(true)
     }),
   )
 
-  await expect(page.getByLabel('Connect string')).toHaveText(/^connect ([a-z0-9\s.:]+)$/) // verify no password is leaking
+  await expect(page.getByLabel('Connect string')).toHaveText(
+    /^connect ([a-z0-9\s.:]+)(;\s?password tv)?$/,
+  ) // verify no password is leaking
   await expect(page.getByRole('link', { name: 'watch stv' })).toBeVisible()
-
-  // extract gameserver secret
-  const client = new MongoClient(process.env['MONGODB_URI']!)
-  await client.connect()
-  const db = client.db()
-  const games = db.collection('games')
-  const game = await games.findOne({ number: gameNo })
-  expect(game).toBeTruthy()
-
-  const secret = game!['logSecret']! as string
-  expect(secret).toBeTruthy()
-
-  gameServer.logSecret = secret
 
   await Promise.all(
     queueUsers.map(async user => {
@@ -108,11 +104,9 @@ test('launch game', async ({ pages, page, gameServer }) => {
       gameServer.log(
         `"${user.name}< ><21><${steamId.steam3()}><>" connected, address "127.0.0.1:27005"`,
       )
-
       await expect(slot.getByTitle('Player connection status')).toHaveClass(/joining/)
 
       gameServer.log(`"${user.name}<21><${steamId.steam3()}><Unassigned>" joined team "Red"`)
-
       await expect(slot.getByTitle('Player connection status')).toHaveClass(/connected/)
     }),
   )
