@@ -9,6 +9,7 @@ import { Layout } from '../../../html/layout'
 import { GameSummary } from './game-summary'
 import { GameSlotList } from './game-slot-list'
 import { Footer } from '../../../html/components/footer'
+import { GameEventList } from './game-event-list'
 
 export async function GamePage(number: GameNumber, user?: User) {
   const game = await collections.games.findOne({ number })
@@ -24,8 +25,13 @@ export async function GamePage(number: GameNumber, user?: User) {
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto grid grid-cols-4 gap-x-4">
-          <div>
+          <div class="order-first flex flex-col">
             <GameSummary game={game} actor={user?.player.steamId} />
+            <span class="col-span-2 mb-0 mt-8 text-2xl font-bold text-white">Game events</span>
+
+            {/* <div class="max-h-[260px] overflow-y-scroll"> */}
+            <GameEventList game={game} />
+            {/* </div> */}
           </div>
 
           <div class="col-span-3">

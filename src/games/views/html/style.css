@@ -145,3 +145,44 @@
 .join-game-button {
   font-size: 18px;
 }
+
+.game-event-list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+
+  .game-event {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 12px;
+
+    border-radius: 8px;
+    background-color: theme(colors.abru.dark.15);
+
+    padding: 10px;
+
+    font-size: 16px;
+    font-weight: 500;
+    color: theme(colors.abru.light.75);
+    line-height: normal;
+
+    border: 1px solid theme(colors.abru.light.25);
+
+    .at {
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    &--success {
+      border-color: #0a955b;
+    }
+
+    &--info {
+      border-color: #17a6ff;
+    }
+
+    &--warning {
+      border-color: #ff9e1f;
+    }
+  }
+}
