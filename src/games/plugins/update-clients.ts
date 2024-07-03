@@ -9,6 +9,7 @@ import { GameSlotList } from '../views/html/game-slot-list'
 import { GameStateIndicator } from '../views/html/game-state-indicator'
 import { LogsLink } from '../views/html/logs-link'
 import { PlayerConnectionStatusIndicator } from '../views/html/player-connection-status-indicator'
+import { GameEventList } from '../views/html/game-event-list'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -35,6 +36,10 @@ export default fp(async app => {
 
     if (before.demoUrl !== after.demoUrl) {
       app.gateway.broadcast(async () => await DemoLink({ game: after }))
+    }
+
+    if (before.events.length < after.events.length) {
+      app.gateway.broadcast(async () => await GameEventList({ game: after }))
     }
   })
 

@@ -68,9 +68,13 @@ test('launch game', async ({ pages, page, gameServer }) => {
       await expect(gameState).toBeVisible()
       await expect(gameState).toContainText('live', { ignoreCase: true })
 
+      const events = page.getByLabel('Game events')
+      await expect(events.getByText('Game created')).toBeVisible()
+
       const connectString = page.getByLabel('Connect string')
       await expect(connectString).toBeVisible()
       await expect(connectString).toHaveText('configuring server...')
+      await expect(events.getByText('Game server assigned')).toBeVisible()
 
       await expect(connectString).toHaveText(/^connect .+;\s?password (.+)$/, {
         timeout: secondsToMilliseconds(30),
@@ -81,6 +85,7 @@ test('launch game', async ({ pages, page, gameServer }) => {
       expect(gameServer.cvar('sv_password').value).toEqual(password)
 
       await expect(page.getByRole('link', { name: 'join game' })).toBeVisible()
+      await expect(events.getByText('Game server initialized')).toBeVisible()
 
       await expect(slot.getByTitle('Player connection status')).toHaveClass(/offline/)
       expect(
@@ -92,6 +97,7 @@ test('launch game', async ({ pages, page, gameServer }) => {
   await expect(page.getByLabel('Connect string')).toHaveText(
     /^connect ([a-z0-9\s.:]+)(;\s?password tv)?$/,
   ) // verify no password is leaking
+  await expect(page.getByLabel('Game events').getByText('Game server initialized')).toBeVisible()
   await expect(page.getByRole('link', { name: 'watch stv' })).toBeVisible()
 
   await Promise.all(
@@ -112,10 +118,12 @@ test('launch game', async ({ pages, page, gameServer }) => {
   )
 
   gameServer.log('World triggered "Round_Start"')
+  await expect(page.getByLabel('Game events').getByText('Game started')).toBeVisible()
   await waitABit(secondsToMilliseconds(10))
   gameServer.log('World triggered "Game_Over" reason "Reached Win Limit"')
   gameServer.log('Team "Red" final score "5" with "6" players')
   gameServer.log('Team "Blue" final score "0" with "6" players')
+  await expect(page.getByLabel('Game events').getByText('Game ended')).toBeVisible()
 
   await Promise.all(
     queueUsers.map(async user => {
