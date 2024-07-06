@@ -14,15 +14,18 @@ export async function GameSlot(props: { slot: GameSlotModel; gameState: GameStat
 
   const showConnectionState = [GameState.launching, GameState.started].includes(props.gameState)
   return (
-    <a
+    <div
       id={`game-slot-${player.steamId}`}
-      href={`/players/${player.steamId}`}
       class={['slot', side === 'right' && 'flex-row', side === 'left' && 'flex-row-reverse']}
     >
       <img src={player.avatar.medium} width="38" height="38" alt={`${player.name}'s avatar`} />
-      <span class={['flex-1 text-xl font-medium', side === 'left' && 'text-end']} safe>
+      <a
+        href={`/players/${player.steamId}`}
+        class={['flex-1 text-xl font-medium', side === 'left' && 'text-end']}
+        safe
+      >
         {player.name}
-      </span>
+      </a>
       {showConnectionState ? (
         <PlayerConnectionStatusIndicator
           steamId={player.steamId}
@@ -31,6 +34,6 @@ export async function GameSlot(props: { slot: GameSlotModel; gameState: GameStat
       ) : (
         <></>
       )}
-    </a>
+    </div>
   )
 }

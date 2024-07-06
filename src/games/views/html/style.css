@@ -78,14 +78,16 @@
     @apply duration-75;
 
     display: flex;
-    background-color: theme(colors.abru.light.75);
+    background-color: theme(colors.abru.light.60);
     align-items: center;
     gap: 10px;
     border-radius: 4px;
     padding: 10px;
 
-    &:hover {
-      background-color: theme(colors.abru.light.70);
+    a {
+      &:hover {
+        text-decoration: underline;
+      }
     }
 
     .connected {
