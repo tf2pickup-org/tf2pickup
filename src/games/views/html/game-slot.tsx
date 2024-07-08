@@ -120,7 +120,7 @@ function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
       class="bg-abru-light-85 rounded-sm p-2 hover:bg-abru-light-75 transition-colors duration-75"
-      hx-put={`/games/${props.number}/substitute-player`}
+      hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"
     >

@@ -7,7 +7,7 @@ import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { update } from './update'
 
-export async function substitutePlayer({
+export async function requestSubstitute({
   number,
   replacee,
   actor,

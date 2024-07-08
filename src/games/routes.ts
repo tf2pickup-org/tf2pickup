@@ -6,7 +6,7 @@ import { GamePage } from './views/html/game.page'
 import type { GameNumber } from '../database/models/game.model'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import { gameNumber } from './schemas/game-number'
-import { substitutePlayer } from './substitute-player'
+import { requestSubstitute } from './request-substitute'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -40,7 +40,7 @@ export default fp(
         },
       )
       .put(
-        '/games/:number/substitute-player',
+        '/games/:number/request-substitute',
         {
           schema: {
             params: z.object({
@@ -63,7 +63,7 @@ export default fp(
           const number = request.params.number
           const replacee = request.body.player
 
-          await substitutePlayer({ number, replacee, actor: request.user!.player.steamId })
+          await requestSubstitute({ number, replacee, actor: request.user!.player.steamId })
           await reply.status(204).send()
         },
       )
