@@ -54,9 +54,9 @@ test('launch game', async ({ pages, page, gameServer }) => {
     queueUsers.map(async user => {
       const page = pages.get(user.steamId)!
 
-      const slot = page.getByRole('link', { name: user.name })
-      await expect(slot).toBeVisible()
-      expect(await slot.getAttribute('href')).toMatch(`/players/${user.steamId}`)
+      const playerLink = page.getByRole('link', { name: user.name })
+      await expect(playerLink).toBeVisible()
+      expect(await playerLink.getAttribute('href')).toMatch(`/players/${user.steamId}`)
 
       await page.goto('/')
       const goBackLink = page.getByRole('link', { name: 'Go back to the game' })
@@ -87,7 +87,9 @@ test('launch game', async ({ pages, page, gameServer }) => {
       await expect(page.getByRole('link', { name: 'join game' })).toBeVisible()
       await expect(events.getByText('Game server initialized')).toBeVisible()
 
-      await expect(slot.getByTitle('Player connection status')).toHaveClass(/offline/)
+      await expect(
+        page.getByLabel(`${user.name}'s slot`).getByLabel('Player connection status'),
+      ).toHaveClass(/offline/)
       expect(
         gameServer.commands.some(cmd => cmd.includes(`sm_game_player_add ${user.steamId}`)),
       ).toBe(true)
@@ -103,17 +105,19 @@ test('launch game', async ({ pages, page, gameServer }) => {
   await Promise.all(
     queueUsers.map(async user => {
       const page = pages.get(user.steamId)!
-      const slot = page.getByRole('link', { name: user.name })
+      const slot = page.getByLabel(`${user.name}'s slot`)
       await expect(slot).toBeVisible()
+
+      await expect(slot.getByRole('link', { name: user.name })).toBeVisible()
 
       const steamId = new SteamID(user.steamId)
       gameServer.log(
         `"${user.name}< ><21><${steamId.steam3()}><>" connected, address "127.0.0.1:27005"`,
       )
-      await expect(slot.getByTitle('Player connection status')).toHaveClass(/joining/)
+      await expect(slot.getByLabel('Player connection status')).toHaveClass(/joining/)
 
       gameServer.log(`"${user.name}<21><${steamId.steam3()}><Unassigned>" joined team "Red"`)
-      await expect(slot.getByTitle('Player connection status')).toHaveClass(/connected/)
+      await expect(slot.getByLabel('Player connection status')).toHaveClass(/connected/)
     }),
   )
 
@@ -133,3 +137,5 @@ test('launch game', async ({ pages, page, gameServer }) => {
     }),
   )
 })
+
+export { expect } from '@playwright/test'

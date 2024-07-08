@@ -1,10 +1,17 @@
 import { collections } from '../../../database/collections'
-import { type GameSlotModel } from '../../../database/models/game-slot.model'
-import { GameState } from '../../../database/models/game.model'
+import { SlotStatus, type GameSlotModel } from '../../../database/models/game-slot.model'
+import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
+import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2Team } from '../../../shared/types/tf2-team'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 
-export async function GameSlot(props: { slot: GameSlotModel; gameState: GameState }) {
+export async function GameSlot(props: {
+  game: GameModel
+  slot: GameSlotModel
+  actor: SteamId64 | undefined
+}) {
   const player = await collections.players.findOne({ _id: props.slot.player })
   if (!player) {
     throw new Error(`no such player: ${props.slot.player.toString()}`)
@@ -12,28 +19,112 @@ export async function GameSlot(props: { slot: GameSlotModel; gameState: GameStat
 
   const side = props.slot.team === Tf2Team.blu ? 'left' : 'right'
 
-  const showConnectionState = [GameState.launching, GameState.started].includes(props.gameState)
   return (
-    <div
+    <form
       id={`game-slot-${player.steamId}`}
-      class={['slot', side === 'right' && 'flex-row', side === 'left' && 'flex-row-reverse']}
+      aria-label={`${player.name}'s slot`}
+      class={[
+        'slot',
+        side === 'right' && 'flex-row',
+        side === 'left' && 'flex-row-reverse',
+        {
+          [SlotStatus.active]: 'active',
+          [SlotStatus.waitingForSubstitute]: 'waiting-for-substitute',
+          [SlotStatus.replaced]: 'replaced',
+        }[props.slot.status],
+      ]}
     >
-      <img src={player.avatar.medium} width="38" height="38" alt={`${player.name}'s avatar`} />
-      <a
-        href={`/players/${player.steamId}`}
-        class={['flex-1 text-xl font-medium', side === 'left' && 'text-end']}
-        safe
-      >
-        {player.name}
-      </a>
-      {showConnectionState ? (
-        <PlayerConnectionStatusIndicator
-          steamId={player.steamId}
-          connectionStatus={props.slot.connectionStatus}
-        />
-      ) : (
-        <></>
-      )}
-    </div>
+      <span class="sr-only">{player.name}'s slot</span>
+      <input type="hidden" name="player" value={player.steamId} />
+      <GameSlotContent
+        game={props.game}
+        side={side}
+        slot={props.slot}
+        player={player}
+        actor={props.actor}
+      />
+    </form>
+  )
+}
+
+async function GameSlotContent(props: {
+  game: GameModel
+  side: 'left' | 'right'
+  slot: GameSlotModel
+  player: PlayerModel
+  actor: SteamId64 | undefined
+}) {
+  const a = props.actor ? await collections.players.findOne({ steamId: props.actor }) : null
+  const isAdmin = a?.roles.includes(PlayerRole.admin)
+
+  const showConnectionState = [GameState.launching, GameState.started].includes(props.game.state)
+  const showRequestSubstituteButton =
+    isAdmin &&
+    [GameState.created, GameState.configuring, GameState.launching, GameState.started].includes(
+      props.game.state,
+    )
+
+  switch (props.slot.status) {
+    case SlotStatus.active:
+      return (
+        <>
+          <img
+            src={props.player.avatar.medium}
+            width="38"
+            height="38"
+            alt={`${props.player.name}'s avatar`}
+          />
+          <a
+            href={`/players/${props.player.steamId}`}
+            class={['flex-1 text-xl font-medium', props.side === 'left' && 'text-end']}
+            safe
+          >
+            {props.player.name}
+          </a>
+
+          {showRequestSubstituteButton ? (
+            <RequestSubstituteButton number={props.game.number} />
+          ) : (
+            <></>
+          )}
+
+          {showConnectionState ? (
+            <PlayerConnectionStatusIndicator
+              steamId={props.player.steamId}
+              connectionStatus={props.slot.connectionStatus}
+            />
+          ) : (
+            <></>
+          )}
+        </>
+      )
+
+    case SlotStatus.waitingForSubstitute: {
+      if (a && a.activeGame === undefined) {
+        return (
+          <button class="flex-1 flex justify-center text-abru-light-60 hover:text-abru-light-70">
+            <IconPlus size={32} />
+          </button>
+        )
+      } else {
+        return <></>
+      }
+    }
+
+    default:
+      return <></>
+  }
+}
+
+function RequestSubstituteButton(props: { number: GameNumber }) {
+  return (
+    <button
+      class="bg-abru-light-85 rounded-sm p-2 hover:bg-abru-light-75 transition-colors duration-75"
+      hx-put={`/games/${props.number}/substitute-player`}
+      hx-trigger="click"
+      aria-label="Request substitute"
+    >
+      <IconReplaceFilled />
+    </button>
   )
 }

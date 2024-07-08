@@ -5,7 +5,7 @@ export interface User {
 
 // list of test users
 export const users = [
-  { steamId: '76561199195756652', name: 'Promenader' },
+  { steamId: '76561199195756652', name: 'Promenader', roles: ['admin'] },
   { steamId: '76561199195935001', name: 'Mayflower' },
   { steamId: '76561199195486701', name: 'Polemic' },
   { steamId: '76561199195468328', name: 'Shadowhunter' },

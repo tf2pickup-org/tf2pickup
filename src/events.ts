@@ -22,6 +22,12 @@ export interface Events {
   'game:gameServerAssigned': {
     game: GameModel
   }
+  'game:substituteRequested': {
+    game: GameModel
+    replacee: SteamId64
+    actor?: SteamId64
+    reason?: string
+  }
 
   'gamelog:message': {
     message: LogMessage

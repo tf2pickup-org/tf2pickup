@@ -35,7 +35,7 @@ authUsers(...queueUsers.map(u => u.steamId))(
 
     // player gets kicked
     await expect(
-      pages.get(queueUsers[11].steamId).getByLabel(`Join queue on slot 11`, { exact: true }),
+      pages.get(queueUsers[11]!.steamId).getByLabel(`Join queue on slot 11`, { exact: true }),
     ).toBeVisible()
   },
 )

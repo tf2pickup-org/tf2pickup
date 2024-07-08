@@ -8,7 +8,15 @@ const db = client.db()
 const players = db.collection('players')
 const games = db.collection('games')
 
-async function upsertPlayer(steamId: string, name: string) {
+async function upsertPlayer({
+  steamId,
+  name,
+  roles,
+}: {
+  steamId: string
+  name: string
+  roles?: readonly string[]
+}) {
   await players.updateOne(
     { steamId },
     {
@@ -22,7 +30,7 @@ async function upsertPlayer(steamId: string, name: string) {
           large:
             'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg',
         },
-        roles: [],
+        roles: roles ?? [],
         hasAcceptedRules: true,
         cooldownLevel: 0,
       },
@@ -44,6 +52,6 @@ setup('create test users accounts', async () => {
   )
 
   for (const user of users) {
-    await upsertPlayer(user.steamId, user.name)
+    await upsertPlayer(user)
   }
 })

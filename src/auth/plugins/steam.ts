@@ -104,7 +104,7 @@ export default fp(
 
     app.decorateRequest('user', undefined)
 
-    app.addHook('preHandler', async (request, reply) => {
+    app.addHook('onRequest', async (request, reply) => {
       const token = request.cookies['token']
       if (token) {
         try {

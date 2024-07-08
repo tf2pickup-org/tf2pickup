@@ -8,7 +8,7 @@ export function PlayerConnectionStatusIndicator(props: {
   return (
     <div
       id={`player-${props.steamId}-connection-status`}
-      title="Player connection status"
+      aria-label="Player connection status"
       class={[
         '-m-1 w-[6px] self-stretch rounded',
         {

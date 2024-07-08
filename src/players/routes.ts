@@ -3,7 +3,7 @@ import { PlayerListPage } from './views/html/player-list.page'
 import { PlayerPage } from './views/html/player.page'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
-import type { SteamId64 } from '../shared/types/steam-id-64'
+import { steamId64 } from '../shared/schemas/steam-id-64'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -17,10 +17,7 @@ export default fp(
       {
         schema: {
           params: z.object({
-            steamId: z
-              .string()
-              .regex(/[0-9]{17}/)
-              .transform(value => value as SteamId64),
+            steamId: steamId64,
           }),
           querystring: z.object({
             gamespage: z.coerce.number().optional(),

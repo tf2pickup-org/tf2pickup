@@ -10,6 +10,7 @@ import { GameStateIndicator } from '../views/html/game-state-indicator'
 import { LogsLink } from '../views/html/logs-link'
 import { PlayerConnectionStatusIndicator } from '../views/html/player-connection-status-indicator'
 import { GameEventList } from '../views/html/game-event-list'
+import { GameSlot } from '../views/html/game-slot'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -19,7 +20,7 @@ export default fp(async app => {
       app.gateway.broadcast(async actor => await ConnectInfo({ game: after, actor }))
 
       if ([GameState.launching, GameState.ended].includes(after.state)) {
-        app.gateway.broadcast(async () => await GameSlotList({ game: after }))
+        app.gateway.broadcast(async actor => await GameSlotList({ game: after, actor }))
       }
     }
 
@@ -83,5 +84,18 @@ export default fp(async app => {
           connectionStatus: PlayerConnectionStatus.offline,
         }),
     )
+  })
+
+  events.on('game:substituteRequested', async ({ game, replacee }) => {
+    const r = await collections.players.findOne({ steamId: replacee })
+    if (!r) {
+      throw new Error(`no such player: ${replacee}`)
+    }
+    const slot = game.slots.find(s => s.player.equals(r._id))
+    if (!slot) {
+      throw new Error(`no such game slot: ${game.number} ${replacee}`)
+    }
+
+    app.gateway.broadcast(async actor => await GameSlot({ game, slot, actor }))
   })
 })

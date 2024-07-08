@@ -6,6 +6,7 @@ import {
 } from '../../../database/models/game-event.model'
 import type { GameModel } from '../../../database/models/game.model'
 import { collections } from '../../../database/collections'
+import { GameClassIcon } from '../../../html/components/game-class-icon'
 
 const renderedEvents = [
   GameEventType.gameCreated,
@@ -110,8 +111,43 @@ async function GameEventInfo(props: { event: GameEventModel }) {
             return <span>Game interrupted</span>
           }
         default:
-          return <span class="italic">{props.event.reason}</span>
+          return <></>
       }
+    case GameEventType.substituteRequested: {
+      const player = await collections.players.findOne({ _id: props.event.player })
+      if (!player) {
+        throw new Error(`player not found: ${props.event.player.toString()}`)
+      }
+
+      if (props.event.actor) {
+        const actor = await collections.players.findOne({ _id: props.event.actor })
+        if (!actor) {
+          throw new Error(`actor not found: ${props.event.actor.toString()}`)
+        }
+
+        return (
+          <span>
+            <a href={`/players/${actor.steamId}`} class="font-bold whitespace-nowrap">
+              {actor.name}
+            </a>{' '}
+            requested substitute for{' '}
+            <a href={`/player/${player.steamId}`} class="font-bold whitespace-nowrap">
+              <GameClassIcon gameClass={props.event.gameClass} size={20} /> {player.name}
+            </a>
+          </span>
+        )
+      } else {
+        return (
+          <span>
+            Requested substitute for{' '}
+            <a href={`/player/${player.steamId}`} class="font-bold whitespace-nowrap">
+              <GameClassIcon gameClass={props.event.gameClass} size={20} /> {player.name}
+            </a>
+          </span>
+        )
+      }
+    }
+
     default:
       return <span class="italic">{props.event.event}</span>
   }

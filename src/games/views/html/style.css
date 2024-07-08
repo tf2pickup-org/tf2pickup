@@ -77,29 +77,39 @@
     @apply transition-colors;
     @apply duration-75;
 
+    height: 60px;
+
     display: flex;
-    background-color: theme(colors.abru.light.60);
     align-items: center;
     gap: 10px;
     border-radius: 4px;
     padding: 10px;
 
-    a {
-      &:hover {
-        text-decoration: underline;
+    &.active {
+      background-color: theme(colors.abru.light.60);
+
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      .connected {
+        background-color: #0a955b;
+      }
+
+      .joining {
+        background-color: #d9861a;
+      }
+
+      .offline {
+        background-color: #b80c4d;
       }
     }
 
-    .connected {
-      background-color: #0a955b;
-    }
-
-    .joining {
-      background-color: #d9861a;
-    }
-
-    .offline {
-      background-color: #b80c4d;
+    &.waiting-for-substitute {
+      background-color: theme(colors.abru.light.30);
+      color: theme(colors.abru.light.60);
     }
   }
 }

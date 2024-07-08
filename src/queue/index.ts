@@ -23,7 +23,7 @@ export default fp(
     await app.register((await import('./plugins/auto-reset')).default)
 
     app.get('/', async (req, reply) => {
-      reply.status(200).html(await QueuePage(req.user))
+      await reply.status(200).html(QueuePage(req.user))
     })
   },
   {

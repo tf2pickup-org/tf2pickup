@@ -28,14 +28,11 @@ export async function GamePage(number: GameNumber, user?: User) {
           <div class="order-first flex flex-col">
             <GameSummary game={game} actor={user?.player.steamId} />
             <span class="col-span-2 mb-0 mt-8 text-2xl font-bold text-white">Game events</span>
-
-            {/* <div class="max-h-[260px] overflow-y-scroll"> */}
             <GameEventList game={game} />
-            {/* </div> */}
           </div>
 
           <div class="col-span-3">
-            <GameSlotList game={game} />
+            <GameSlotList game={game} actor={user?.player.steamId} />
           </div>
         </div>
       </Page>

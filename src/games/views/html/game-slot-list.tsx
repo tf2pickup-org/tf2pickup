@@ -2,10 +2,11 @@ import { SlotStatus, type GameSlotModel } from '../../../database/models/game-sl
 import { type GameModel } from '../../../database/models/game.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { tf2ClassOrder } from '../../../shared/tf2-class-order'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2Team } from '../../../shared/types/tf2-team'
 import { GameSlot } from './game-slot'
 
-export function GameSlotList(props: { game: GameModel }) {
+export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undefined }) {
   const activeSlots = props.game.slots.filter(slot =>
     [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(slot.status),
   )
@@ -28,9 +29,9 @@ export function GameSlotList(props: { game: GameModel }) {
       <div class="slot-list" id={`game-${props.game.number}-slots`}>
         {slotPairs.map(({ red, blu, gameClass }) => (
           <>
-            <GameSlot slot={blu!} gameState={props.game.state} />
+            <GameSlot slot={blu!} game={props.game} actor={props.actor} />
             <GameClassIcon gameClass={gameClass} size={32} />
-            <GameSlot slot={red!} gameState={props.game.state} />
+            <GameSlot slot={red!} game={props.game} actor={props.actor} />
           </>
         ))}
       </div>
