@@ -20,5 +20,5 @@ export interface GameSlotModel {
   gameClass: Tf2ClassName
   status: SlotStatus
   connectionStatus: PlayerConnectionStatus
-  skill: number
+  skill?: number
 }

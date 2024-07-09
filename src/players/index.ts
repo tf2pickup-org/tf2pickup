@@ -13,6 +13,7 @@ export const players = {
 
 export default fp(
   async app => {
+    await app.register((await import('./plugins/assign-active-game')).default)
     await app.register((await import('./routes')).default)
 
     events.on('player:updated', ({ before, after }) => {

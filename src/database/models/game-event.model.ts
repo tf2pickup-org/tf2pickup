@@ -82,6 +82,13 @@ export interface SubstituteRequested {
   reason?: string | undefined
 }
 
+export interface PlayerReplaced {
+  event: GameEventType.playerReplaced
+  at: Date
+  replacee: ObjectId
+  replacement: ObjectId
+}
+
 export type GameEventModel =
   | GameCreated
   | GameStarted
@@ -92,3 +99,4 @@ export type GameEventModel =
   | PlayerJoinedGameServerTeam
   | PlayerLeftGameServer
   | SubstituteRequested
+  | PlayerReplaced

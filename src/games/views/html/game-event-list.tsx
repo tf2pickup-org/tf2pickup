@@ -32,31 +32,33 @@ export async function GameEventList(props: { game: GameModel }) {
       aria-label="Game events"
     >
       {events.map(event => (
-        <GameEvent event={event} />
+        <GameEvent game={props.game} event={event} />
       ))}
     </div>
   )
 }
 
-function GameEvent(props: { event: GameEventModel }) {
+function GameEvent(props: { event: GameEventModel; game: GameModel }) {
   return (
     <div
       class={[
         'game-event',
         props.event.event === GameEventType.gameServerInitialized && 'game-event--info',
+        props.event.event === GameEventType.substituteRequested && 'game-event--warning',
+        props.event.event === GameEventType.playerReplaced && 'game-event--success',
       ]}
     >
       <span class="at" safe>
         {format(props.event.at, 'HH:mm:ss')}
       </span>
       <div>
-        <GameEventInfo event={props.event} />
+        <GameEventInfo game={props.game} event={props.event} />
       </div>
     </div>
   )
 }
 
-async function GameEventInfo(props: { event: GameEventModel }) {
+async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) {
   switch (props.event.event) {
     case GameEventType.gameCreated:
       return <span>Game created</span>
@@ -131,7 +133,7 @@ async function GameEventInfo(props: { event: GameEventModel }) {
               {actor.name}
             </a>{' '}
             requested substitute for{' '}
-            <a href={`/player/${player.steamId}`} class="font-bold whitespace-nowrap">
+            <a href={`/players/${player.steamId}`} class="font-bold whitespace-nowrap">
               <GameClassIcon gameClass={props.event.gameClass} size={20} /> {player.name}
             </a>
           </span>
@@ -146,6 +148,36 @@ async function GameEventInfo(props: { event: GameEventModel }) {
           </span>
         )
       }
+    }
+    case GameEventType.playerReplaced: {
+      const replacee = await collections.players.findOne({ _id: props.event.replacee })
+      if (!replacee) {
+        throw new Error(`replacee not found: ${replacee}`)
+      }
+      const replacement = await collections.players.findOne({ _id: props.event.replacement })
+      if (!replacement) {
+        throw new Error(`replacement not found: ${replacement}`)
+      }
+
+      const slot = props.game.slots.find(s => s.player.equals(replacement._id))
+      if (!slot) {
+        throw new Error(
+          `replacement slot not found (gameNumber=${props.game.number}; replacement=${props.event.replacement.toString()}`,
+        )
+      }
+
+      return (
+        <span>
+          <a href={`/players/${replacement.steamId}`} class="font-bold whitespace-nowrap">
+            {replacement.name}
+          </a>{' '}
+          replaced{' '}
+          <a href={`/players/${replacee.steamId}`} class="font-bold whitespace-nowrap">
+            {replacee.name}
+          </a>{' '}
+          on <GameClassIcon gameClass={slot.gameClass} size={20} /> {slot.gameClass}
+        </span>
+      )
     }
 
     default:

@@ -98,4 +98,9 @@ export default fp(async app => {
 
     app.gateway.broadcast(async actor => await GameSlot({ game, slot, actor }))
   })
+
+  events.on('game:playerReplaced', ({ game }) => {
+    // fixme refresh only one slot
+    app.gateway.broadcast(async actor => await GameSlotList({ game, actor }))
+  })
 })

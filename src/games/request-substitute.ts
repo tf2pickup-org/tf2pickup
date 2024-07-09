@@ -5,6 +5,7 @@ import { GameState, type GameModel, type GameNumber } from '../database/models/g
 import { events } from '../events'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { findPlayerSlot } from './find-player-slot'
 import { update } from './update'
 
 export async function requestSubstitute({
@@ -74,19 +75,4 @@ export async function requestSubstitute({
   })
 
   return newGame
-}
-
-async function findPlayerSlot(game: GameModel, player: SteamId64) {
-  for (const slot of game.slots.filter(s => s.status !== SlotStatus.replaced)) {
-    const ps = await collections.players.findOne({ _id: slot.player })
-    if (!ps) {
-      throw new Error(`player in slot does not exist: ${slot.player.toString()}`)
-    }
-
-    if (ps.steamId === player) {
-      return slot
-    }
-  }
-
-  return null
 }

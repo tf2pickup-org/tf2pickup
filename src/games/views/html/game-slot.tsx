@@ -102,7 +102,12 @@ async function GameSlotContent(props: {
     case SlotStatus.waitingForSubstitute: {
       if (a && a.activeGame === undefined) {
         return (
-          <button class="flex-1 flex justify-center text-abru-light-60 hover:text-abru-light-70">
+          <button
+            class="flex-1 flex justify-center text-abru-light-60 hover:text-abru-light-70"
+            hx-put={`/games/${props.game.number}/replace-player`}
+            hx-trigger="click"
+            aria-label="Replace player"
+          >
             <IconPlus size={32} />
           </button>
         )

@@ -3,10 +3,10 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { GameListPage } from './views/html/game-list.page'
 import { GamePage } from './views/html/game.page'
-import type { GameNumber } from '../database/models/game.model'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import { gameNumber } from './schemas/game-number'
 import { requestSubstitute } from './request-substitute'
+import { replacePlayer } from './replace-player'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -44,10 +44,7 @@ export default fp(
         {
           schema: {
             params: z.object({
-              number: z.coerce
-                .number()
-                .positive()
-                .transform(number => number as GameNumber),
+              number: gameNumber,
             }),
             body: z.object({
               player: steamId64,
@@ -65,6 +62,31 @@ export default fp(
 
           await requestSubstitute({ number, replacee, actor: request.user!.player.steamId })
           await reply.status(204).send()
+        },
+      )
+      .put(
+        '/games/:number/replace-player',
+        {
+          schema: {
+            params: z.object({
+              number: gameNumber,
+            }),
+            body: z.object({
+              player: steamId64,
+            }),
+          },
+        },
+        async (request, reply) => {
+          if (!request.user) {
+            await reply.status(401).send()
+            return
+          }
+
+          const number = request.params.number
+          const replacee = request.body.player
+          const replacement = request.user.player.steamId
+
+          await replacePlayer({ number, replacee, replacement })
         },
       )
   },

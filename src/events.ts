@@ -28,6 +28,11 @@ export interface Events {
     actor?: SteamId64
     reason?: string
   }
+  'game:playerReplaced': {
+    game: GameModel
+    replacee: SteamId64
+    replacement: SteamId64
+  }
 
   'gamelog:message': {
     message: LogMessage
