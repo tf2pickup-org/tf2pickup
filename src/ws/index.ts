@@ -31,7 +31,6 @@ export default fp(
     })
 
     const isAliveInterval = setInterval(() => {
-      logger.trace('ws ping')
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       ;(app.websocketServer.clients as Set<WebSocket>).forEach(client => {
         if (!client.isAlive) {
