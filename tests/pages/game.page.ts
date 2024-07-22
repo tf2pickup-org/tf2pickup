@@ -25,6 +25,11 @@ export class GamePage {
     await btn.click()
   }
 
+  async replacePlayer(playerName: string) {
+    const btn = this.playerSlot(playerName).getByRole('button', { name: 'Replace player' })
+    await btn.click()
+  }
+
   gameEvent(event: string) {
     return this.page.getByLabel('Game events').getByText(event)
   }

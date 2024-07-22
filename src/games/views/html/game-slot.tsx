@@ -34,7 +34,9 @@ export async function GameSlot(props: {
         }[props.slot.status],
       ]}
     >
-      <span class="sr-only">{player.name}'s slot</span>
+      <span class="sr-only" safe>
+        {player.name}'s slot
+      </span>
       <input type="hidden" name="player" value={player.steamId} />
       <GameSlotContent
         game={props.game}
@@ -100,7 +102,7 @@ async function GameSlotContent(props: {
       )
 
     case SlotStatus.waitingForSubstitute: {
-      if (a && a.activeGame === undefined) {
+      if (a && (props.slot.player.equals(a._id) || a.activeGame === undefined)) {
         return (
           <button
             class="flex-1 flex justify-center text-abru-light-60 hover:text-abru-light-70"
@@ -108,6 +110,7 @@ async function GameSlotContent(props: {
             hx-trigger="click"
             aria-label="Replace player"
           >
+            <span class="sr-only">Replace player</span>
             <IconPlus size={32} />
           </button>
         )

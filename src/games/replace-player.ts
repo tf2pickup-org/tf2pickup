@@ -46,53 +46,81 @@ export async function replacePlayer({
       throw new Error(`replacement player not found: ${replacement}`)
     }
 
-    if (rm.activeGame !== undefined) {
-      throw new Error(`player denied: player has active game`)
-    }
+    let newGame: GameModel
 
-    await update(
-      { number },
-      {
-        $push: {
-          slots: {
-            player: rm._id,
-            team: slot.team,
-            gameClass: slot.gameClass,
-            status: SlotStatus.active,
-            connectionStatus: PlayerConnectionStatus.offline,
+    if (re._id.equals(rm._id)) {
+      newGame = await update(
+        { number },
+        {
+          $set: {
+            'slots.$[slot].status': SlotStatus.active,
           },
-          events: {
-            event: GameEventType.playerReplaced,
-            at: new Date(),
-            replacee: re._id,
-            replacement: rm._id,
+          $push: {
+            events: {
+              event: GameEventType.playerReplaced,
+              at: new Date(),
+              replacee: re._id,
+              replacement: rm._id,
+            },
           },
         },
-      },
-    )
-
-    const newGame = await update(
-      { number },
-      {
-        $set: {
-          'slots.$[slot].status': SlotStatus.replaced,
+        {
+          arrayFilters: [
+            {
+              $and: [{ 'slot.player': { $eq: re._id } }],
+            },
+          ],
         },
-      },
-      {
-        arrayFilters: [
-          {
-            $and: [
-              { 'slot.player': { $eq: re._id } },
-              {
-                'slot.status': {
-                  $eq: SlotStatus.waitingForSubstitute,
+      )
+    } else {
+      if (rm.activeGame !== undefined) {
+        throw new Error(`player denied: player has active game`)
+      }
+
+      await update(
+        { number },
+        {
+          $push: {
+            slots: {
+              player: rm._id,
+              team: slot.team,
+              gameClass: slot.gameClass,
+              status: SlotStatus.active,
+              connectionStatus: PlayerConnectionStatus.offline,
+            },
+            events: {
+              event: GameEventType.playerReplaced,
+              at: new Date(),
+              replacee: re._id,
+              replacement: rm._id,
+            },
+          },
+        },
+      )
+
+      newGame = await update(
+        { number },
+        {
+          $set: {
+            'slots.$[slot].status': SlotStatus.replaced,
+          },
+        },
+        {
+          arrayFilters: [
+            {
+              $and: [
+                { 'slot.player': { $eq: re._id } },
+                {
+                  'slot.status': {
+                    $eq: SlotStatus.waitingForSubstitute,
+                  },
                 },
-              },
-            ],
-          },
-        ],
-      },
-    )
+              ],
+            },
+          ],
+        },
+      )
+    }
 
     events.emit('game:playerReplaced', { game: newGame, replacee, replacement })
     return game
