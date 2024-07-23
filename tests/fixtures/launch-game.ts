@@ -1,9 +1,7 @@
-import { mergeTests, type Page } from '@playwright/test'
 import { authUsers } from './auth-users'
 import { users, type User } from '../data'
-import { simulateGameServer } from './simulate-game-server'
-import { GameServerSimulator } from '../game-server-simulator'
 import { Mutex } from 'async-mutex'
+import { GamePage } from '../pages/game.page'
 
 interface QueueUser extends User {
   slotId: number
@@ -11,11 +9,10 @@ interface QueueUser extends User {
 
 const queueUsers: QueueUser[] = users.map((user, i) => ({ ...user, slotId: i }))
 
-export const launchGame = mergeTests(
-  authUsers(...queueUsers.map(u => u.steamId)),
-  simulateGameServer,
-).extend<{ gameServer: GameServerSimulator; pages: Map<string, Page>; gameNumber: number }>({
-  gameNumber: async ({ pages }, use) => {
+export const launchGame = authUsers(...queueUsers.map(u => u.steamId)).extend<{
+  gamePages: Map<string, GamePage>
+}>({
+  gamePages: async ({ pages }, use) => {
     const mutex = new Mutex()
 
     await Promise.all(
@@ -37,14 +34,8 @@ export const launchGame = mergeTests(
       }),
     )
 
-    const firstPage = pages.get(users[0].steamId)!
-    const matches = firstPage.url().match(/games\/(\d+)/)
-    if (matches) {
-      const gameNumber = Number(matches[1])
-      await use(gameNumber)
-    } else {
-      throw new Error('could not launch game')
-    }
+    const gamePages = new Map(Array.from(pages, ([steamId, page]) => [steamId, new GamePage(page)]))
+    await use(gamePages)
   },
 })
 
