@@ -2,15 +2,18 @@ import { users } from '../data'
 import { launchGame, expect } from '../fixtures/launch-game'
 
 launchGame('substitute player', async ({ gamePages }) => {
-  const admin = gamePages.get(users[0].steamId)!
-  await expect(admin.playerLink(users[1].name)).toBeVisible()
-  await admin.requestSubstitute(users[1].name)
-  await expect(admin.playerLink(users[1].name)).not.toBeVisible()
+  const admin = users[0]
+  const page = gamePages.get(admin.steamId)!
+  const mayflower = users[1]
+
+  await expect(page.playerLink(mayflower.name)).toBeVisible()
+  await page.requestSubstitute(mayflower.name)
+  await expect(page.playerLink(mayflower.name)).not.toBeVisible()
 
   await Promise.all(
     Array.from(gamePages.values()).map(async page => {
-      await expect(page.gameEvent(`${users[0].name} requested substitute`)).toBeVisible()
-      await expect(page.playerLink(users[1].name)).not.toBeVisible()
+      await expect(page.gameEvent(`${admin.name} requested substitute`)).toBeVisible()
+      await expect(page.playerLink(mayflower.name)).not.toBeVisible()
     }),
   )
 })
