@@ -2,20 +2,22 @@ import { format } from 'date-fns'
 import { createSocket, type Socket } from 'dgram'
 import { Server } from 'net'
 
-enum RconPacketType {
-  SERVERDATA_AUTH = 3,
-  SERVERDATA_EXECCOMMAND = 2,
-  SERVERDATA_RESPONSE_VALUE = 0,
-}
+const RconPacketType = {
+  SERVERDATA_AUTH: 3,
+  SERVERDATA_EXECCOMMAND: 2,
+  SERVERDATA_AUTH_RESPONSE: 2,
+  SERVERDATA_RESPONSE_VALUE: 0,
+} as const
 
 class RconPacket {
-  type: RconPacketType = RconPacketType.SERVERDATA_RESPONSE_VALUE
+  type: (typeof RconPacketType)[keyof typeof RconPacketType] =
+    RconPacketType.SERVERDATA_RESPONSE_VALUE
   id = 0
   body = ''
 
   constructor(buffer?: Buffer) {
     if (buffer) {
-      this.type = buffer.readInt32LE(8)
+      this.type = buffer.readInt32LE(8) as (typeof RconPacketType)[keyof typeof RconPacketType]
       this.id = buffer.readInt32LE(4)
       this.body = buffer.subarray(12).toString('ascii').replace(/\0/g, '')
     }
@@ -86,7 +88,7 @@ export class GameServerSimulator {
             socket.write(response1.toBuffer())
 
             const response2 = new RconPacket()
-            response2.type = RconPacketType.SERVERDATA_EXECCOMMAND
+            response2.type = RconPacketType.SERVERDATA_AUTH_RESPONSE
 
             if (packet.body === '123456') {
               response2.id = packet.id
