@@ -33,4 +33,15 @@ export class GamePage {
   gameEvent(event: string) {
     return this.page.getByLabel('Game events').getByText(event)
   }
+
+  adminActions() {
+    return this.page.getByRole('button', { name: 'Admin actions' })
+  }
+
+  async forceEnd() {
+    this.page.on('dialog', dialog => dialog.accept())
+    await this.adminActions().click()
+    const btn = this.page.getByRole('button', { name: 'Force-end' })
+    await btn.click()
+  }
 }

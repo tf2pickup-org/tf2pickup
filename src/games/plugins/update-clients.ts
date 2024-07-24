@@ -19,7 +19,7 @@ export default fp(async app => {
       app.gateway.broadcast(async () => await GameStateIndicator({ game: after }))
       app.gateway.broadcast(async actor => await ConnectInfo({ game: after, actor }))
 
-      if ([GameState.launching, GameState.ended].includes(after.state)) {
+      if ([GameState.launching, GameState.ended, GameState.interrupted].includes(after.state)) {
         app.gateway.broadcast(async actor => await GameSlotList({ game: after, actor }))
       }
     }

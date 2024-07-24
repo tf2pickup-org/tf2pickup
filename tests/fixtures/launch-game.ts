@@ -12,7 +12,7 @@ const queueUsers: QueueUser[] = users.map((user, i) => ({ ...user, slotId: i }))
 export const launchGame = authUsers(...queueUsers.map(u => u.steamId)).extend<{
   gamePages: Map<string, GamePage>
 }>({
-  gamePages: async ({ pages }, use) => {
+  gamePages: async ({ pages }, use, testInfo) => {
     const mutex = new Mutex()
 
     await Promise.all(
@@ -36,6 +36,12 @@ export const launchGame = authUsers(...queueUsers.map(u => u.steamId)).extend<{
 
     const gamePages = new Map(Array.from(pages, ([steamId, page]) => [steamId, new GamePage(page)]))
     await use(gamePages)
+
+    if (testInfo.status !== testInfo.expectedStatus) {
+      const admin = users.find(u => 'roles' in u && u.roles.includes('admin'))!
+      const adminPage = gamePages.get(admin.steamId)!
+      await adminPage.forceEnd()
+    }
   },
 })
 

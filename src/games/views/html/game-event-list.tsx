@@ -104,7 +104,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             return (
               <span>
                 Game interrupted by{' '}
-                <a href={`/players/${actor.steamId}`} safe>
+                <a href={`/players/${actor.steamId}`} class="font-bold whitespace-nowrap" safe>
                   {actor.name}
                 </a>
               </span>
