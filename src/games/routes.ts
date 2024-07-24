@@ -7,6 +7,7 @@ import { steamId64 } from '../shared/schemas/steam-id-64'
 import { gameNumber } from './schemas/game-number'
 import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
+import { forceEnd } from './force-end'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -87,6 +88,24 @@ export default fp(
           const replacement = request.user.player.steamId
 
           await replacePlayer({ number, replacee, replacement })
+        },
+      )
+      .put(
+        '/games/:number/force-end',
+        {
+          schema: {
+            params: z.object({
+              number: gameNumber,
+            }),
+          },
+        },
+        async (request, reply) => {
+          if (!request.isAdmin) {
+            await reply.status(403).send()
+            return
+          }
+
+          await forceEnd(request.params.number, request.user!.player.steamId)
         },
       )
   },
