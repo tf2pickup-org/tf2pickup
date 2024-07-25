@@ -3,7 +3,8 @@ import { authUsers, expect } from '../fixtures/auth-users'
 
 const user = users[0]
 
-authUsers(user.steamId)('vote for map', async ({ pages }) => {
+authUsers.use({ steamIds: [user.steamId] })
+authUsers('vote for map', async ({ pages }) => {
   const page = pages.get(user.steamId)!
   const mapBtn = page.getByLabel('Vote for map').locator('nth=0')
   expect(await mapBtn.getAttribute('aria-checked')).toBe('false')

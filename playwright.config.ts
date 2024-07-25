@@ -1,12 +1,14 @@
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
+import type { AuthUsersOptions } from './tests/fixtures/auth-users'
+import { users } from './tests/data'
 
 dotenv.config()
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig({
+export default defineConfig<AuthUsersOptions>({
   testDir: './tests',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -41,7 +43,7 @@ export default defineConfig({
 
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], steamIds: users.map(u => u.steamId) },
       dependencies: ['setup database'],
     },
 

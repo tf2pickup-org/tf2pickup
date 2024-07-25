@@ -1,11 +1,9 @@
 import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
 
-authUsers(
-  users[0].steamId,
-  users[1].steamId,
-  users[2].steamId,
-)('mark as friend', async ({ pages }) => {
+authUsers.use({ steamIds: [users[0].steamId, users[1].steamId, users[2].steamId] })
+
+authUsers('mark as friend', async ({ pages }) => {
   const [medic1, medic2, soldier] = [
     pages.get(users[0].steamId)!,
     pages.get(users[1].steamId)!,

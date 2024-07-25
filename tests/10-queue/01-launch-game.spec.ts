@@ -1,5 +1,5 @@
 import { authUsers, expect } from '../fixtures/auth-users'
-import { users, type User } from '../data'
+import { users } from '../data'
 import { secondsToMilliseconds } from 'date-fns'
 import SteamID from 'steamid'
 import { waitABit } from '../utils/wait-a-bit'
@@ -7,34 +7,28 @@ import { Mutex } from 'async-mutex'
 import { mergeTests } from '@playwright/test'
 import { simulateGameServer } from '../fixtures/simulate-game-server'
 
-interface QueueUser extends User {
-  slotId: number
-}
-
-const queueUsers: QueueUser[] = users.map((user, i) => ({ ...user, slotId: i }))
-
 let gameNo: number
 
-const test = mergeTests(authUsers(...queueUsers.map(u => u.steamId)), simulateGameServer)
+const test = mergeTests(authUsers, simulateGameServer)
 
-test('launch game', async ({ pages, page, gameServer }) => {
+test('launch game', async ({ steamIds, pages, page, gameServer }) => {
   // no players are in the queue
   await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 0/12')
 
+  const queueUsers = steamIds.slice(0, 12)
   const mutex = new Mutex()
-
   await Promise.all(
-    queueUsers.map(async user => {
-      const page = pages.get(user.steamId)!
+    queueUsers.map(async (steamId, i) => {
+      const page = pages.get(steamId)!
 
       await mutex.runExclusive(async () => {
         // join the queue
-        await page.getByLabel(`Join queue on slot ${user.slotId}`, { exact: true }).click()
+        await page.getByLabel(`Join queue on slot ${i}`, { exact: true }).click()
         expect(await page.title()).toMatch(/^\[\d+\/12\]/)
       })
 
       // last player joining the queue is ready by default
-      if (user.slotId !== 11) {
+      if (i !== 11) {
         // wait for ready-up
         await page.getByRole('button', { name: `I'M READY` }).click()
       }
@@ -51,12 +45,13 @@ test('launch game', async ({ pages, page, gameServer }) => {
   await page.goto(`/games/${gameNo}`)
 
   await Promise.all(
-    queueUsers.map(async user => {
-      const page = pages.get(user.steamId)!
+    queueUsers.map(async steamId => {
+      const page = pages.get(steamId)!
+      const userName = users.find(u => u.steamId === steamId)!.name
 
-      const playerLink = page.getByRole('link', { name: user.name })
+      const playerLink = page.getByRole('link', { name: userName })
       await expect(playerLink).toBeVisible()
-      expect(await playerLink.getAttribute('href')).toMatch(`/players/${user.steamId}`)
+      expect(await playerLink.getAttribute('href')).toMatch(`/players/${steamId}`)
 
       await page.goto('/')
       const goBackLink = page.getByRole('link', { name: 'Go back to the game' })
@@ -88,11 +83,11 @@ test('launch game', async ({ pages, page, gameServer }) => {
       await expect(events.getByText('Game server initialized')).toBeVisible()
 
       await expect(
-        page.getByLabel(`${user.name}'s slot`).getByLabel('Player connection status'),
+        page.getByLabel(`${userName}'s slot`).getByLabel('Player connection status'),
       ).toHaveClass(/offline/)
-      expect(
-        gameServer.commands.some(cmd => cmd.includes(`sm_game_player_add ${user.steamId}`)),
-      ).toBe(true)
+      expect(gameServer.commands.some(cmd => cmd.includes(`sm_game_player_add ${steamId}`))).toBe(
+        true,
+      )
     }),
   )
 
@@ -103,20 +98,20 @@ test('launch game', async ({ pages, page, gameServer }) => {
   await expect(page.getByRole('link', { name: 'watch stv' })).toBeVisible()
 
   await Promise.all(
-    queueUsers.map(async user => {
-      const page = pages.get(user.steamId)!
-      const slot = page.getByLabel(`${user.name}'s slot`)
+    queueUsers.map(async steamId => {
+      const page = pages.get(steamId)!
+      const userName = users.find(u => u.steamId === steamId)!.name
+
+      const slot = page.getByLabel(`${userName}'s slot`)
       await expect(slot).toBeVisible()
 
-      await expect(slot.getByRole('link', { name: user.name })).toBeVisible()
+      await expect(slot.getByRole('link', { name: userName })).toBeVisible()
 
-      const steamId = new SteamID(user.steamId)
-      gameServer.log(
-        `"${user.name}< ><21><${steamId.steam3()}><>" connected, address "127.0.0.1:27005"`,
-      )
+      const steamId3 = new SteamID(steamId).steam3()
+      gameServer.log(`"${userName}< ><21><${steamId3}><>" connected, address "127.0.0.1:27005"`)
       await expect(slot.getByLabel('Player connection status')).toHaveClass(/joining/)
 
-      gameServer.log(`"${user.name}<21><${steamId.steam3()}><Unassigned>" joined team "Red"`)
+      gameServer.log(`"${userName}<21><${steamId3}><Unassigned>" joined team "Red"`)
       await expect(slot.getByLabel('Player connection status')).toHaveClass(/connected/)
     }),
   )
@@ -130,8 +125,8 @@ test('launch game', async ({ pages, page, gameServer }) => {
   await expect(page.getByLabel('Game events').getByText('Game ended')).toBeVisible()
 
   await Promise.all(
-    queueUsers.map(async user => {
-      const page = pages.get(user.steamId)!
+    queueUsers.map(async steamId => {
+      const page = pages.get(steamId)!
       const gameState = page.getByLabel('Game status')
       await expect(gameState).not.toContainText('live', { ignoreCase: true })
     }),

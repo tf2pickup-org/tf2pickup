@@ -17,4 +17,5 @@ export const users = [
   { steamId: '76561199196157187', name: 'Blacklight' },
   { steamId: '76561199195855422', name: 'AstraGirl' },
   { steamId: '76561199195188363', name: 'BellBoy' },
+  { steamId: '76561199203544766', name: 'TommyGun' },
 ] as const

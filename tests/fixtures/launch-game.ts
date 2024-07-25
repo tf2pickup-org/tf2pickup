@@ -1,40 +1,40 @@
 import { authUsers } from './auth-users'
-import { users, type User } from '../data'
+import { users } from '../data'
 import { Mutex } from 'async-mutex'
 import { GamePage } from '../pages/game.page'
 
-interface QueueUser extends User {
-  slotId: number
-}
-
-const queueUsers: QueueUser[] = users.map((user, i) => ({ ...user, slotId: i }))
-
-export const launchGame = authUsers(...queueUsers.map(u => u.steamId)).extend<{
+export const launchGame = authUsers.extend<{
   gamePages: Map<string, GamePage>
 }>({
-  gamePages: async ({ pages }, use, testInfo) => {
-    const mutex = new Mutex()
+  gamePages: async ({ pages, steamIds }, use, testInfo) => {
+    if (pages.size < 12) {
+      throw new Error(`at least 12 users are required to launch a game`)
+    }
 
+    const queueUsers = steamIds.slice(0, 12)
+
+    const gamePages = new Map<string, GamePage>()
+    const mutex = new Mutex()
     await Promise.all(
-      queueUsers.map(async user => {
-        const page = pages.get(user.steamId)!
+      queueUsers.map(async (user, i) => {
+        const page = pages.get(user)!
 
         await mutex.runExclusive(async () => {
           // join the queue
-          await page.getByLabel(`Join queue on slot ${user.slotId}`, { exact: true }).click()
+          await page.getByLabel(`Join queue on slot ${i}`, { exact: true }).click()
         })
 
         // last player joining the queue is ready by default
-        if (user.slotId !== 11) {
+        if (i !== 11) {
           // wait for ready-up
           await page.getByRole('button', { name: `I'M READY` }).click()
         }
 
         await page.waitForURL(/games\/(\d+)/)
+        gamePages.set(user, new GamePage(page))
       }),
     )
 
-    const gamePages = new Map(Array.from(pages, ([steamId, page]) => [steamId, new GamePage(page)]))
     await use(gamePages)
 
     if (testInfo.status !== testInfo.expectedStatus) {
