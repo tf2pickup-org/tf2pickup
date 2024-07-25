@@ -1,7 +1,7 @@
 import { users } from '../data'
 import { launchGame, expect } from '../fixtures/launch-game'
 
-launchGame('substitute self', async ({ gamePages }) => {
+launchGame('substitute self', async ({ gamePages, page }) => {
   const admin = users[0]
   const mayflower = users[1]
   const adminsPage = gamePages.get(admin.steamId)!
@@ -17,6 +17,10 @@ launchGame('substitute self', async ({ gamePages }) => {
       await expect(page.playerLink(mayflower.name)).not.toBeVisible()
     }),
   )
+
+  await expect(
+    page.getByText(`Team BLU needs a substitute for scout in game #${mayflowersPage.gameNumber}`),
+  ).toBeVisible()
 
   await mayflowersPage.replacePlayer(mayflower.name)
   await Promise.all(

@@ -10,6 +10,8 @@ import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../database/models/queue-state.model'
 import { MapResult, MapVote } from '../views/html/map-vote'
 import { SetTitle } from '../views/html/set-title'
+import { SubstitutionRequests } from '../views/html/substitution-requests'
+import { GameState } from '../../database/models/game.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -131,6 +133,21 @@ export default fp(
           .toPlayers(...actors.map(a => a.player!))
           .broadcast(async actor => await QueueSlot({ slot, actor }))
       })
+    })
+
+    const refreshSubstitutionRequests = async () => {
+      const cmp = await SubstitutionRequests()
+      app.gateway.broadcast(() => cmp)
+    }
+    events.on('game:substituteRequested', refreshSubstitutionRequests)
+    events.on('game:playerReplaced', refreshSubstitutionRequests)
+    events.on('game:updated', async ({ before, after }) => {
+      if (
+        before.state !== after.state &&
+        [GameState.ended, GameState.interrupted].includes(after.state)
+      ) {
+        await refreshSubstitutionRequests()
+      }
     })
   },
   { name: 'update clients' },

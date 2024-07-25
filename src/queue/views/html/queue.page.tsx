@@ -18,6 +18,7 @@ import { Footer } from '../../../html/components/footer'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { RequestNotificationPermissions } from './request-notification-permissions'
+import { SubstitutionRequests } from './substitution-requests'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -36,6 +37,7 @@ export async function QueuePage(user?: User) {
           <div class="order-1 lg:col-span-4 flex flex-col gap-y-2">
             <OfflineAlert />
             <RequestNotificationPermissions />
+            <SubstitutionRequests />
           </div>
 
           <div class="order-2 lg:col-span-3">
