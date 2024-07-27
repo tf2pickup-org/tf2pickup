@@ -12,6 +12,7 @@ import { MapResult, MapVote } from '../views/html/map-vote'
 import { SetTitle } from '../views/html/set-title'
 import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { GameState } from '../../database/models/game.model'
+import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -23,6 +24,11 @@ export default fp(
       })
       socket.send(await QueueStateCmp())
       socket.send(await OnlinePlayerList())
+
+      if (socket.player) {
+        const player = await collections.players.findOne({ steamId: socket.player.steamId })
+        socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
+      }
     })
 
     events.on('player:connected', async () => {
@@ -36,6 +42,16 @@ export default fp(
       await safe(async () => {
         const cmp = await OnlinePlayerList()
         app.gateway.broadcast(() => cmp)
+      })
+    })
+
+    events.on('player:updated', async ({ before, after }) => {
+      await safe(async () => {
+        if (before.activeGame !== after.activeGame) {
+          console.log('player:updated', before.activeGame, after.activeGame)
+          const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
+          app.gateway.toPlayers(after.steamId).broadcast(() => cmp)
+        }
       })
     })
 

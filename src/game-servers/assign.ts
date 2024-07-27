@@ -1,10 +1,12 @@
-import { type GameModel } from '../database/models/game.model'
+import { GameServerProvider, type GameModel } from '../database/models/game.model'
 import { games } from '../games'
 import { staticGameServers } from '../static-game-servers'
-import { mutex } from './mutex'
 import { events } from '../events'
 import { GameEventType } from '../database/models/game-event.model'
 import { logger } from '../logger'
+import { Mutex } from 'async-mutex'
+
+const mutex = new Mutex()
 
 export async function assign(game: GameModel) {
   await mutex.runExclusive(async () => {
@@ -20,8 +22,7 @@ export async function assign(game: GameModel) {
           name: freeServer.name,
           address: freeServer.address,
           port: freeServer.port,
-          rconPassword: freeServer.rconPassword,
-          provider: 'static',
+          provider: GameServerProvider.static,
         },
       },
       $push: {

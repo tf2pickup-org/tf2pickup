@@ -56,13 +56,6 @@ export async function create(
   }
 
   events.emit('game:created', { game })
-  await Promise.all(
-    slots.map(
-      async gameSlot =>
-        await players.update(gameSlot.player, { $set: { activeGame: game.number } }),
-    ),
-  )
-
   return game
 }
 

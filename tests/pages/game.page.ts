@@ -1,15 +1,21 @@
 import type { Page } from '@playwright/test'
 
 export class GamePage {
-  readonly gameNumber: number
+  constructor(
+    public readonly page: Page,
+    public readonly gameNumber: number,
+  ) {}
 
-  constructor(public readonly page: Page) {
-    const matches = page.url().match(/games\/(\d+)/)
-    if (matches) {
-      this.gameNumber = Number(matches[1])
-    } else {
-      throw new Error(`invalid page`)
-    }
+  url() {
+    return `/games/${this.gameNumber}`
+  }
+
+  async goto() {
+    await this.page.goto(this.url())
+  }
+
+  gameStatus() {
+    return this.page.getByLabel('Game status')
   }
 
   playerSlot(playerName: string) {
