@@ -56,6 +56,16 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
+        env:
+          WEBSITE_URL: 'http://localhost:3000'
+          MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          QUEUE_CONFIG: '6v6'
+          AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
+          THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
+          LOG_RELAY_ADDRESS: 'host.docker.internal'
+          LOG_RELAY_PORT: '9871'
+          GAME_SERVER_SECRET: 'xxxxxx'
         run: pnpm test:e2e
 
       - uses: actions/upload-artifact@v4
