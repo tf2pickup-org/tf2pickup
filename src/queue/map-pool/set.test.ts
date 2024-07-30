@@ -8,7 +8,7 @@ const events = vi.hoisted(() => {
   }
 })
 
-vi.mock('../../database/models/map-pool-entry.model', () => {
+vi.mock('../../database/collections', () => {
   let maps: MapPoolEntry[] = []
   return {
     collections: {
@@ -17,7 +17,7 @@ vi.mock('../../database/models/map-pool-entry.model', () => {
           maps.length = 0
           return Promise.resolve()
         }),
-        insertMany: vi.fn().mockImplementation(newMaps => {
+        insertMany: vi.fn().mockImplementation((newMaps: MapPoolEntry[]) => {
           maps = [...newMaps]
           return Promise.resolve()
         }),
@@ -26,11 +26,13 @@ vi.mock('../../database/models/map-pool-entry.model', () => {
         }),
       },
     },
-    mapPoolSchema: {
-      parse: vi.fn(),
-    },
   }
 })
+vi.mock('../../database/models/map-pool-entry.model', () => ({
+  mapPoolSchema: {
+    parse: vi.fn(),
+  },
+}))
 vi.mock('../../events', () => ({ events }))
 
 describe('set()', () => {
