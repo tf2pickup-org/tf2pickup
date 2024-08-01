@@ -1,6 +1,8 @@
 import { format } from 'date-fns'
 import { createSocket, type Socket } from 'dgram'
 import { Server } from 'net'
+import SteamID from 'steamid'
+import { waitABit } from './utils/wait-a-bit'
 
 const RconPacketType = {
   SERVERDATA_AUTH: 3,
@@ -59,6 +61,15 @@ class CVar {
   }
 }
 
+class AddedPlayer {
+  constructor(
+    public readonly steamId64: string,
+    public readonly name: string,
+    public readonly team: string,
+    public readonly gameClass: string,
+  ) {}
+}
+
 export class GameServerSimulator {
   private readonly socket: Socket
   private server: Server
@@ -70,6 +81,7 @@ export class GameServerSimulator {
     new CVar('tv_port', '27020', 'Host SourceTV port'),
     new CVar('tv_password', 'tv', 'SourceTV password for all clients'),
   ]
+  private addedPlayers: AddedPlayer[] = []
 
   constructor(
     readonly apiAddress: string,
@@ -119,6 +131,20 @@ export class GameServerSimulator {
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
               response.id = packet.id
               response.body = `logaddress_add ${address}`
+              socket.write(response.toBuffer())
+            } else if (/sm_game_player_add .+/.test(packet.body)) {
+              const [, steamId64, name, team, gameClass] =
+                packet.body.match(
+                  /^sm_game_player_add (\d{17}) -name "(.+)" -team (blu|red) -class (.+)$/,
+                ) ?? []
+              if (steamId64 && name && team && gameClass) {
+                this.addedPlayers.push(new AddedPlayer(steamId64, name, team, gameClass))
+              }
+
+              const response = new RconPacket()
+              response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
+              response.id = packet.id
+              response.body = packet.body
               socket.write(response.toBuffer())
             } else {
               const response = new RconPacket()
@@ -175,6 +201,20 @@ export class GameServerSimulator {
       const [host, port] = address.split(':')
       this.socket.send(this.prepareMessage(message), Number(port), host)
     })
+  }
+
+  async connectAllPlayers() {
+    const eventDelay = 100
+    let i = 1
+    for (const player of this.addedPlayers) {
+      const team = player.team === 'blu' ? 'Blue' : 'Red'
+      const steamId3 = new SteamID(player.steamId64).steam3()
+      this.log(`"${player.name}<${i}><${steamId3}><>" connected, address "127.0.0.1:27005"`)
+      await waitABit(eventDelay)
+      this.log(`"${player.name}<${i}><${steamId3}><Unassigned>" joined team "${team}"`)
+      await waitABit(eventDelay)
+      i += 1
+    }
   }
 
   async sendHeartbeat() {

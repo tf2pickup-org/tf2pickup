@@ -25,6 +25,7 @@ launchGame(
       }),
     )
 
+    await gameServer.connectAllPlayers()
     gameServer.log('World triggered "Round_Start"')
     await waitABit(secondsToMilliseconds(10))
     gameServer.log('World triggered "Game_Over" reason "Reached Win Limit"')
