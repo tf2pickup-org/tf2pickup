@@ -47,10 +47,11 @@ export default defineConfig<AuthUsersOptions>({
       dependencies: ['setup database'],
     },
 
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'], steamIds: users.map(u => u.steamId) },
+      dependencies: ['setup database'],
+    },
 
     // {
     //   name: 'webkit',
