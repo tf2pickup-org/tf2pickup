@@ -9,6 +9,7 @@ import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { collections } from '../database/collections'
+import { PlayerRole } from '../database/models/player.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -50,6 +51,9 @@ export default fp(
       .put(
         '/games/:number/request-substitute',
         {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
           schema: {
             params: z.object({
               number: gameNumber,
@@ -60,10 +64,6 @@ export default fp(
           },
         },
         async (request, reply) => {
-          if (!request.isAdmin) {
-            return reply.forbidden()
-          }
-
           const number = request.params.number
           const replacee = request.body.player
 
@@ -74,6 +74,9 @@ export default fp(
       .put(
         '/games/:number/replace-player',
         {
+          config: {
+            authenticate: true,
+          },
           schema: {
             params: z.object({
               number: gameNumber,
@@ -84,20 +87,20 @@ export default fp(
           },
         },
         async (request, reply) => {
-          if (!request.user) {
-            return reply.unauthorized()
-          }
-
           const number = request.params.number
           const replacee = request.body.player
-          const replacement = request.user.player.steamId
+          const replacement = request.user!.player.steamId
 
           await replacePlayer({ number, replacee, replacement })
+          await reply.status(204).send()
         },
       )
       .put(
         '/games/:number/force-end',
         {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
           schema: {
             params: z.object({
               number: gameNumber,
@@ -105,11 +108,8 @@ export default fp(
           },
         },
         async (request, reply) => {
-          if (!request.isAdmin) {
-            return reply.forbidden()
-          }
-
           await forceEnd(request.params.number, request.user!.player.steamId)
+          await reply.status(204).send()
         },
       )
   },

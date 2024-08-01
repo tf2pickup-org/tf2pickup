@@ -17,6 +17,8 @@ declare module 'fastify' {
 export default fp(
   async app => {
     await app.register((await import('./plugins/steam')).default)
+    await app.register((await import('./plugins/authenticate')).default)
+    await app.register((await import('./plugins/authorize')).default)
 
     // eslint-disable-next-line @typescript-eslint/require-await
     app.addHook('onRequest', async request => {
