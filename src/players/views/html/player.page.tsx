@@ -1,11 +1,10 @@
 import type { User } from '../../../auth/types/user'
 import { collections } from '../../../database/collections'
-import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { format } from 'date-fns'
-import { GameState, type GameModel } from '../../../database/models/game.model'
+import { GameState } from '../../../database/models/game.model'
 import { getPlayerGameCountOnClasses } from '../../get-player-game-count-on-classes'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
@@ -16,39 +15,39 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
+import type { WithId } from 'mongodb'
 
 const gamesPerPage = 5
 
-export async function PlayerPage(steamId: SteamId64, user?: User, page = 1) {
-  const player = await collections.players.findOne({ steamId })
-  if (!player) {
-    throw new Error(`player not found: ${steamId}`)
-  }
-
-  const skip = (page - 1) * gamesPerPage
+export async function PlayerPage(props: {
+  player: WithId<PlayerModel>
+  user?: User | undefined
+  page: number
+}) {
+  const skip = (props.page - 1) * gamesPerPage
 
   const games = await collections.games
     .find(
-      { 'slots.player': player._id },
+      { 'slots.player': props.player._id },
       { limit: gamesPerPage, skip, sort: { 'events.0.at': -1 } },
     )
     .toArray()
 
   const { last, around } = paginate(
-    page,
+    props.page,
     gamesPerPage,
-    await collections.games.countDocuments({ 'slots.player': player._id }),
+    await collections.games.countDocuments({ 'slots.player': props.player._id }),
   )
 
   const gameCount = await collections.games.countDocuments({
-    $and: [{ state: GameState.ended }, { ['slots.player' as keyof GameModel]: player._id }],
+    $and: [{ state: GameState.ended }, { ['slots.player']: props.player._id }],
   })
 
-  const gameCountOnClasses = await getPlayerGameCountOnClasses(player._id)
+  const gameCountOnClasses = await getPlayerGameCountOnClasses(props.player._id)
 
   return (
     <Layout
-      title={player.name}
+      title={props.player.name}
       head={
         <>
           <Style fileName={resolve(import.meta.dirname, 'style.css')} />
@@ -58,11 +57,11 @@ export async function PlayerPage(steamId: SteamId64, user?: User, page = 1) {
         </>
       }
     >
-      <NavigationBar user={user} />
+      <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto mt-12 flex flex-col gap-[30px] p-2 lg:p-0">
           <PlayerPresentation
-            player={player}
+            player={props.player}
             gameCount={gameCount}
             gameCountOnClasses={gameCountOnClasses}
           />
@@ -72,20 +71,20 @@ export async function PlayerPage(steamId: SteamId64, user?: User, page = 1) {
             {games.map(game => (
               <GameListItem
                 game={game}
-                classPlayed={game.slots.find(s => s.player.equals(player._id))!.gameClass}
+                classPlayed={game.slots.find(s => s.player.equals(props.player._id))!.gameClass}
               />
             ))}
           </div>
 
           <Pagination
-            hrefFn={page => `/players/${player.steamId}?gamespage=${page}`}
+            hrefFn={page => `/players/${props.player.steamId}?gamespage=${page}`}
             lastPage={last}
-            currentPage={page}
+            currentPage={props.page}
             around={around}
           />
         </div>
       </Page>
-      <Footer user={user} />
+      <Footer user={props.user} />
     </Layout>
   )
 }

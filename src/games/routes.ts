@@ -8,6 +8,7 @@ import { gameNumber } from './schemas/game-number'
 import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
+import { collections } from '../database/collections'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -37,7 +38,13 @@ export default fp(
           },
         },
         async (request, reply) => {
-          reply.status(200).html(await GamePage(request.params.number, request.user))
+          const { number } = request.params
+          const game = await collections.games.findOne({ number })
+          if (!game) {
+            return reply.notFound()
+          }
+
+          reply.status(200).html(await GamePage({ game, user: request.user }))
         },
       )
       .put(
@@ -54,8 +61,7 @@ export default fp(
         },
         async (request, reply) => {
           if (!request.isAdmin) {
-            await reply.status(403).send()
-            return
+            return reply.forbidden()
           }
 
           const number = request.params.number
@@ -79,8 +85,7 @@ export default fp(
         },
         async (request, reply) => {
           if (!request.user) {
-            await reply.status(401).send()
-            return
+            return reply.unauthorized()
           }
 
           const number = request.params.number
@@ -101,8 +106,7 @@ export default fp(
         },
         async (request, reply) => {
           if (!request.isAdmin) {
-            await reply.status(403).send()
-            return
+            return reply.forbidden()
           }
 
           await forceEnd(request.params.number, request.user!.player.steamId)

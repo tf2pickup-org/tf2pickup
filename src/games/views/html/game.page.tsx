@@ -1,7 +1,6 @@
 import { resolve } from 'node:path'
 import type { User } from '../../../auth/types/user'
-import { collections } from '../../../database/collections'
-import { GameState, type GameNumber } from '../../../database/models/game.model'
+import { GameState, type GameModel } from '../../../database/models/game.model'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Style } from '../../../html/components/style'
@@ -13,28 +12,23 @@ import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
 import { AdminActions } from './admin-actions'
 
-export async function GamePage(number: GameNumber, user?: User) {
-  const game = await collections.games.findOne({ number })
-  if (!game) {
-    throw new Error(`game not found: ${number}`)
-  }
-
+export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
     <Layout
-      title={`game #${game.number}`}
+      title={`game #${props.game.number}`}
       head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}
     >
-      <NavigationBar user={user} />
+      <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto grid grid-cols-4 gap-x-4 relative">
           <div class="order-first flex flex-col">
-            <GameSummary game={game} actor={user?.player.steamId} />
+            <GameSummary game={props.game} actor={props.user?.player.steamId} />
             <span class="col-span-2 mb-0 mt-8 text-2xl font-bold text-white">Game events</span>
-            <GameEventList game={game} />
+            <GameEventList game={props.game} />
           </div>
 
           <div class="col-span-3">
-            <GameSlotList game={game} actor={user?.player.steamId} />
+            <GameSlotList game={props.game} actor={props.user?.player.steamId} />
           </div>
 
           {[
@@ -42,14 +36,14 @@ export async function GamePage(number: GameNumber, user?: User) {
             GameState.configuring,
             GameState.launching,
             GameState.started,
-          ].includes(game.state) && user?.player.roles.includes(PlayerRole.admin) ? (
-            <AdminActions gameNumber={game.number} />
+          ].includes(props.game.state) && props.user?.player.roles.includes(PlayerRole.admin) ? (
+            <AdminActions gameNumber={props.game.number} />
           ) : (
             <></>
           )}
         </div>
       </Page>
-      <Footer user={user} />
+      <Footer user={props.user} />
     </Layout>
   )
 }

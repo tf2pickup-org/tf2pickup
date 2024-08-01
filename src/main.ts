@@ -9,6 +9,7 @@ const app = fastify({ logger })
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
+await app.register(await import('@fastify/sensible'))
 await app.register(await import('@fastify/formbody'))
 await app.register(await import('@fastify/cookie'), {
   secret: environment.AUTH_SECRET,

@@ -16,6 +16,7 @@
   "dependencies": {
     "@fastify/cookie": "9.3.1",
     "@fastify/formbody": "7.4.0",
+    "@fastify/sensible": "^5.6.0",
     "@fastify/static": "^7.0.4",
     "@fastify/websocket": "10.0.1",
     "@kitajs/fastify-html-plugin": "4.1.0",

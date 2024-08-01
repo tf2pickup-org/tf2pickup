@@ -4,6 +4,7 @@ import { PlayerPage } from './views/html/player.page'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { steamId64 } from '../shared/schemas/steam-id-64'
+import { collections } from '../database/collections'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -26,9 +27,15 @@ export default fp(
       },
       async (req, reply) => {
         const { steamId } = req.params
+        const player = await collections.players.findOne({ steamId })
+        if (!player) {
+          return reply.notFound(`player not found: ${steamId}`)
+        }
         reply
           .status(200)
-          .html(await PlayerPage(steamId, req.user, Number(req.query.gamespage) || 1))
+          .html(
+            await PlayerPage({ player, user: req.user, page: Number(req.query.gamespage) || 1 }),
+          )
       },
     )
   },
