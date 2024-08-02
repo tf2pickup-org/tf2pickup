@@ -63,7 +63,7 @@ jobs:
           QUEUE_CONFIG: '6v6'
           AUTH_SECRET: ${{ secrets.AUTH_SECRET }}
           THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
-          LOG_RELAY_ADDRESS: 'host.docker.internal'
+          LOG_RELAY_ADDRESS: '127.0.0.1'
           LOG_RELAY_PORT: '9871'
           GAME_SERVER_SECRET: 'xxxxxx'
         run: pnpm test:e2e
