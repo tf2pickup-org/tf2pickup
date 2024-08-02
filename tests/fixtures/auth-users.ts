@@ -48,6 +48,7 @@ export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
     )
     await use(pages)
     for (const page of pages.values()) {
+      await page.context().close()
       await page.close()
     }
     pages.clear()

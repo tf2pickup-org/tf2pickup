@@ -79,7 +79,7 @@ function PlayerInfo(props: {
   markAsFriendButtonState: MarkAsFriendButtonState | undefined
 }) {
   let slotButton = <></>
-  if (props.isActorsSlot) {
+  if (props.isActorsSlot && !props.ready) {
     slotButton = (
       <button class="leave-queue-button" name="leave" value="" aria-label="Leave queue">
         <IconMinus />
