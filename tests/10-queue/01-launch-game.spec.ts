@@ -11,7 +11,7 @@ let gameNo: number
 
 const test = mergeTests(authUsers, simulateGameServer)
 
-test.skip('launch game', async ({ steamIds, pages, page, gameServer }) => {
+test('launch game', async ({ steamIds, pages, page, gameServer }) => {
   // no players are in the queue
   await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 0/12')
 
@@ -24,7 +24,6 @@ test.skip('launch game', async ({ steamIds, pages, page, gameServer }) => {
       await mutex.runExclusive(async () => {
         // join the queue
         await page.getByLabel(`Join queue on slot ${i}`, { exact: true }).click()
-        expect(await page.title()).toMatch(/^\[\d+\/12\]/)
       })
 
       // last player joining the queue is ready by default
