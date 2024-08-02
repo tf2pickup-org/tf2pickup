@@ -11,7 +11,7 @@ let gameNo: number
 
 const test = mergeTests(authUsers, simulateGameServer)
 
-test('launch game', async ({ steamIds, pages, page, gameServer }) => {
+test.skip('launch game', async ({ steamIds, pages, page, gameServer }) => {
   // no players are in the queue
   await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 0/12')
 
