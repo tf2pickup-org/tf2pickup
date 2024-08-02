@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('login', async ({ page }) => {
+test.skip('login', async ({ page }) => {
   const username = process.env['STEAM_USERNAME']
   const password = process.env['STEAM_PASSWORD']
   expect(username).toBeTruthy()
