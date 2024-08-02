@@ -1,47 +1,40 @@
 import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
+import { QueuePage } from '../pages/queue.page'
 
 authUsers.use({ steamIds: [users[0].steamId, users[1].steamId, users[2].steamId] })
 
 authUsers('mark as friend', async ({ pages }) => {
   const [medic1, medic2, soldier] = [
-    pages.get(users[0].steamId)!,
-    pages.get(users[1].steamId)!,
-    pages.get(users[2].steamId)!,
+    new QueuePage(pages.get(users[0].steamId)!),
+    new QueuePage(pages.get(users[1].steamId)!),
+    new QueuePage(pages.get(users[2].steamId)!),
   ]
-  await medic1.getByLabel('Join queue on slot 10', { exact: true }).click()
-  await medic2.getByLabel('Join queue on slot 11', { exact: true }).click()
-  await soldier.getByLabel('Join queue on slot 4', { exact: true }).click()
+  await medic1.joinQueue(10)
+  await medic2.joinQueue(11)
+  await soldier.joinQueue(4)
 
-  await expect(
-    soldier.getByLabel('Queue slot 10').getByRole('button', { name: 'Mark as friend' }),
-  ).not.toBeVisible()
+  await expect(soldier.markAsFriendButton(10)).not.toBeVisible()
 
-  let markAsFriendBtn1Medic1 = medic1
-    .getByLabel('Queue slot 4')
-    .getByRole('button', { name: 'Mark as friend' })
+  const markAsFriendBtn1Medic1 = medic1.markAsFriendButton(4)
   await expect(markAsFriendBtn1Medic1).toBeVisible()
   await expect(markAsFriendBtn1Medic1).toBeEnabled()
   await expect(markAsFriendBtn1Medic1).not.toHaveClass(/selected/)
   await markAsFriendBtn1Medic1.click()
 
-  markAsFriendBtn1Medic1 = medic1
-    .getByLabel('Queue slot 4')
-    .getByRole('button', { name: 'Unfriend' })
-  await expect(markAsFriendBtn1Medic1).toBeVisible()
-  await expect(markAsFriendBtn1Medic1).toBeEnabled()
-  await expect(markAsFriendBtn1Medic1).toHaveClass(/selected/)
+  const unfriendButton = medic1.unfriendButton(4)
+  await expect(unfriendButton).toBeVisible()
+  await expect(unfriendButton).toBeEnabled()
+  await expect(unfriendButton).toHaveClass(/selected/)
 
-  const markAsFriendBtn1Medic2 = medic2
-    .getByLabel('Queue slot 4')
-    .getByRole('button', { name: 'Mark as friend' })
+  const markAsFriendBtn1Medic2 = medic2.markAsFriendButton(4)
   await expect(markAsFriendBtn1Medic2).toBeVisible()
   await expect(markAsFriendBtn1Medic2).toBeDisabled()
 
-  await medic1.getByLabel('Leave queue', { exact: true }).click()
+  await medic1.leaveQueue()
   await expect(markAsFriendBtn1Medic2).toBeVisible()
   await expect(markAsFriendBtn1Medic2).toBeEnabled()
 
-  await medic2.getByLabel('Leave queue', { exact: true }).click()
-  await soldier.getByLabel('Leave queue', { exact: true }).click()
+  await medic2.leaveQueue()
+  await soldier.leaveQueue()
 })
