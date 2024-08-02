@@ -34,18 +34,16 @@ export default defineConfig<AuthUsersOptions>({
       name: 'setup database',
       testMatch: /database\.setup\.ts/,
     },
-
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], steamIds: users.map(u => u.steamId) },
       dependencies: ['setup database'],
     },
-
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'], steamIds: users.map(u => u.steamId) },
-    //   dependencies: ['setup database'],
-    // },
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'], steamIds: users.map(u => u.steamId) },
+      dependencies: ['setup database'],
+    },
 
     // {
     //   name: 'webkit',
