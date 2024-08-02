@@ -16,8 +16,8 @@ export default defineConfig<AuthUsersOptions>({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : '50%',
+  /* Opt out of parallel tests */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -29,7 +29,7 @@ export default defineConfig<AuthUsersOptions>({
     trace: 'on-first-retry',
 
     video: {
-      mode: 'retain-on-failure',
+      mode: 'on-first-retry',
       size: { width: 1280, height: 720 },
     },
   },

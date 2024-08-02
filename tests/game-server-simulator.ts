@@ -195,8 +195,14 @@ export class GameServerSimulator {
   }
 
   async close() {
-    return new Promise<void>(resolve => {
-      this.socket.close(resolve)
+    return new Promise<void>((resolve, reject) => {
+      this.server.close(err => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
     })
   }
 
