@@ -11,10 +11,10 @@ export const simulateGameServer = test.extend<{ gameServer: GameServerSimulator 
     }
 
     const gameServer = new GameServerSimulator(apiAddress, secret)
-    gameServer.run()
+    await gameServer.run()
     await gameServer.sendHeartbeat()
     await use(gameServer)
-    gameServer.close()
+    await gameServer.close()
   },
 })
 

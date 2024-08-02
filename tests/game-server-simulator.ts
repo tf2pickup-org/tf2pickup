@@ -188,12 +188,16 @@ export class GameServerSimulator {
     return cvar
   }
 
-  run() {
-    this.server.listen(27015)
+  async run() {
+    return new Promise<void>(resolve => {
+      this.server.listen(27015, resolve)
+    })
   }
 
-  close() {
-    this.socket.close()
+  async close() {
+    return new Promise<void>(resolve => {
+      this.socket.close(resolve)
+    })
   }
 
   log(message: string) {
