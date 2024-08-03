@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import jsonwebtoken from 'jsonwebtoken'
 import { minutesToMilliseconds } from 'date-fns'
+import { join } from 'path'
 
 export interface AuthUsersOptions {
   steamIds: string[]
@@ -12,7 +13,7 @@ interface AuthUsersFixture {
 
 export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
   steamIds: [[], { option: true }],
-  pages: async ({ steamIds, browser, baseURL }, use) => {
+  pages: async ({ steamIds, browser, baseURL }, use, testInfo) => {
     // opening a new context takes some time
     test.setTimeout(minutesToMilliseconds(1))
     expect(process.env['AUTH_SECRET']).toBeDefined()
@@ -25,7 +26,12 @@ export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
     const pages = new Map<string, Page>()
     await Promise.all(
       steamIds.map(async steamId => {
-        const context = await browser.newContext()
+        const context = await browser.newContext({
+          recordVideo: {
+            dir: join(testInfo.outputDir, 'videos', steamId),
+            size: { width: 1280, height: 720 },
+          },
+        })
         const token = jsonwebtoken.sign({ id: steamId }, process.env['AUTH_SECRET']!, {
           expiresIn: '7d',
         })
