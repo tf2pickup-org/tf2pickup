@@ -26,6 +26,18 @@ export class GamePage {
     return this.playerSlot(playerName).getByRole('link', { name: playerName })
   }
 
+  connectString() {
+    return this.page.getByLabel('Connect string')
+  }
+
+  joinGameButton() {
+    return this.page.getByRole('link', { name: 'join game' })
+  }
+
+  watchStvButton() {
+    return this.page.getByRole('link', { name: 'watch stv' })
+  }
+
   async requestSubstitute(playerName: string) {
     const btn = this.playerSlot(playerName).getByLabel('Request substitute')
     await btn.click()

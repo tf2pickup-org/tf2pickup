@@ -1,5 +1,20 @@
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
+
+class QueueSlot {
+  readonly locator: Locator
+
+  constructor(
+    private readonly page: Page,
+    private readonly slotNumber: number,
+  ) {
+    this.locator = this.page.getByLabel(`Queue slot ${this.slotNumber}`, { exact: true })
+  }
+
+  markAsFriendButton() {
+    return this.locator.getByRole('button', { name: 'Mark as friend' })
+  }
+}
 
 class ReadyUpDialog {
   constructor(private readonly page: Page) {}

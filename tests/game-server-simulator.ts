@@ -62,12 +62,17 @@ class CVar {
 }
 
 class AddedPlayer {
+  private static lastUserId = 0
+  readonly userId: number
+
   constructor(
     public readonly steamId64: string,
     public readonly name: string,
     public readonly team: string,
     public readonly gameClass: string,
-  ) {}
+  ) {
+    this.userId = AddedPlayer.lastUserId++
+  }
 }
 
 export class GameServerSimulator {
@@ -81,7 +86,8 @@ export class GameServerSimulator {
     new CVar('tv_port', '27020', 'Host SourceTV port'),
     new CVar('tv_password', 'tv', 'SourceTV password for all clients'),
   ]
-  private addedPlayers: AddedPlayer[] = []
+  addedPlayers: AddedPlayer[] = []
+  private readonly eventDelay = 100
 
   constructor(
     readonly apiAddress: string,
@@ -213,18 +219,52 @@ export class GameServerSimulator {
     })
   }
 
-  async connectAllPlayers() {
-    const eventDelay = 100
-    let i = 1
-    for (const player of this.addedPlayers) {
-      const team = player.team === 'blu' ? 'Blue' : 'Red'
-      const steamId3 = new SteamID(player.steamId64).steam3()
-      this.log(`"${player.name}<${i}><${steamId3}><>" connected, address "127.0.0.1:27005"`)
-      await waitABit(eventDelay)
-      this.log(`"${player.name}<${i}><${steamId3}><Unassigned>" joined team "${team}"`)
-      await waitABit(eventDelay)
-      i += 1
+  async playerConnects(playerName: string) {
+    const player = this.addedPlayers.find(player => player.name === playerName)
+    if (!player) {
+      throw new Error(`player not found: ${playerName}`)
     }
+
+    const steamId3 = new SteamID(player.steamId64).steam3()
+    await waitABit(this.eventDelay / 2)
+    this.log(
+      `"${player.name}<${player.userId}><${steamId3}><>" connected, address "127.0.0.1:27005"`,
+    )
+    await waitABit(this.eventDelay / 2)
+  }
+
+  async playerJoinsTeam(playerName: string) {
+    const player = this.addedPlayers.find(player => player.name === playerName)
+    if (!player) {
+      throw new Error(`player not found: ${playerName}`)
+    }
+
+    const team = player.team === 'blu' ? 'Blue' : 'Red'
+    const steamId3 = new SteamID(player.steamId64).steam3()
+    await waitABit(this.eventDelay / 2)
+    this.log(`"${player.name}<${player.userId}><${steamId3}><Unassigned>" joined team "${team}"`)
+    await waitABit(this.eventDelay / 2)
+  }
+
+  async connectAllPlayers() {
+    for (const player of this.addedPlayers) {
+      await this.playerConnects(player.name)
+      await this.playerJoinsTeam(player.name)
+    }
+  }
+
+  async matchStarts() {
+    await waitABit(this.eventDelay / 2)
+    this.log('World triggered "Round_Start"')
+    await waitABit(this.eventDelay / 2)
+  }
+
+  async matchEnds(score: { blu: number; red: number }) {
+    await waitABit(this.eventDelay / 2)
+    this.log('World triggered "Game_Over" reason "Reached Win Limit"')
+    this.log(`Team "Red" final score "${score.red}" with "6" players`)
+    this.log(`Team "Blue" final score "${score.blu}" with "6" players`)
+    await waitABit(this.eventDelay / 2)
   }
 
   async sendHeartbeat() {

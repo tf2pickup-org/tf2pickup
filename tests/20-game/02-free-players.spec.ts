@@ -26,11 +26,9 @@ launchGame(
     )
 
     await gameServer.connectAllPlayers()
-    gameServer.log('World triggered "Round_Start"')
+    await gameServer.matchStarts()
     await waitABit(secondsToMilliseconds(10))
-    gameServer.log('World triggered "Game_Over" reason "Reached Win Limit"')
-    gameServer.log('Team "Red" final score "5" with "6" players')
-    gameServer.log('Team "Blue" final score "0" with "6" players')
+    await gameServer.matchEnds({ blu: 0, red: 5 })
 
     await Promise.all(
       queueUsers.map(async steamId => {
