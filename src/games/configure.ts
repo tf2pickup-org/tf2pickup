@@ -30,7 +30,7 @@ import { update } from './update'
 import { extractConVarValue } from './extract-con-var-value'
 import { generate } from 'generate-password'
 
-export async function configure(game: GameModel) {
+export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
     throw new Error(`gameServer is undefined`)
   }
@@ -39,6 +39,7 @@ export async function configure(game: GameModel) {
   }
 
   logger.info({ game }, `configuring game ${game.number}...`)
+  const { signal } = options
 
   const password = generateGameserverPassword()
   const configLines = await compileConfig(game, password)
@@ -67,6 +68,9 @@ export async function configure(game: GameModel) {
     })
 
     await rcon.send(svLogsecret(logSecret))
+    if (signal?.aborted) {
+      throw new Error(`${signal.reason}`)
+    }
 
     game = await update(game.number, {
       $set: {
@@ -106,6 +110,10 @@ export async function configure(game: GameModel) {
       password: extractConVarValue(await rcon.send(tvPassword())),
     })
     logger.info(game, `stv connect string: ${stvConnectString}`)
+
+    if (signal?.aborted) {
+      throw new Error(`${signal.reason}`)
+    }
 
     game = await update(game.number, {
       $set: {
