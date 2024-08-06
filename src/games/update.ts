@@ -1,12 +1,21 @@
-import type { FindOneAndUpdateOptions, StrictFilter, StrictUpdateFilter } from 'mongodb'
+import type {
+  FindOneAndUpdateOptions,
+  StrictFilter,
+  StrictUpdateFilter,
+  UpdateFilter,
+} from 'mongodb'
 import type { GameModel, GameNumber } from '../database/models/game.model'
 import { collections } from '../database/collections'
 import { events } from '../events'
 import { mutex } from './mutex'
 
-export async function update(
+export async function update<
+  FilterType extends
+    | StrictUpdateFilter<GameModel>
+    | UpdateFilter<GameModel> = StrictUpdateFilter<GameModel>,
+>(
   numberOrFilter: GameNumber | StrictFilter<GameModel>,
-  update: StrictUpdateFilter<GameModel>,
+  update: FilterType,
   options?: FindOneAndUpdateOptions,
 ): Promise<GameModel> {
   return await mutex.runExclusive(async () => {

@@ -1,5 +1,6 @@
 import { environment } from '../environment'
 import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
+import Html from '@kitajs/html'
 
 export function Layout(
   props?: Html.PropsWithChildren<{ title?: string; head?: string | Promise<string> }>,

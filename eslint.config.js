@@ -47,7 +47,7 @@ export default tseslint.config(
   {
     ignores: [
       'node_modules/**',
-      'build/**',
+      'dist/**',
       'postcss.config.js',
       'tailwind.config.js',
       'playwright.config.ts',

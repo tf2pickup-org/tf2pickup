@@ -13,12 +13,16 @@
     "forceConsistentCasingInFileNames": true,
     "sourceMap": true,
     "rootDir": ".",
-    "outDir": "./build",
+    "outDir": "./dist",
     "importHelpers": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@kitajs/html",
     "plugins": [{ "name": "@kitajs/ts-html-plugin" }],
     "types": ["@kitajs/html/htmx.d.ts"]
   },
-  "exclude": ["playwright.config.ts"]
+  "exclude": ["playwright.config.ts", "dist", "node_modules"],
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  }
 }

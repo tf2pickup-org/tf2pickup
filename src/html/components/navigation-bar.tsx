@@ -2,6 +2,7 @@ import type { User } from '../../auth/types/user'
 import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
 import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
+import Html from '@kitajs/html'
 
 export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
   return (
