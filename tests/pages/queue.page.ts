@@ -11,6 +11,14 @@ class QueueSlot {
     this.locator = this.page.getByLabel(`Queue slot ${this.slotNumber}`, { exact: true })
   }
 
+  joinButton() {
+    return this.page.getByLabel(`Join queue on slot ${this.slotNumber}`, { exact: true })
+  }
+
+  async join() {
+    await this.joinButton().click()
+  }
+
   markAsFriendButton() {
     return this.locator.getByRole('button', { name: 'Mark as friend' })
   }
@@ -29,7 +37,7 @@ class ReadyUpDialog {
 }
 
 export class QueuePage {
-  constructor(private readonly page: Page) {}
+  constructor(public readonly page: Page) {}
 
   async goto() {
     await this.page.goto('/')
@@ -41,6 +49,10 @@ export class QueuePage {
 
   async leaveQueue(timeout = secondsToMilliseconds(5)) {
     await this.page.getByLabel(`Leave queue`, { exact: true }).click({ timeout })
+  }
+
+  slot(slot: number) {
+    return new QueueSlot(this.page, slot)
   }
 
   queueSlot(slot: number) {

@@ -4,6 +4,7 @@ import { Mutex } from 'async-mutex'
 import { GamePage } from '../pages/game.page'
 import { mergeTests } from '@playwright/test'
 import { simulateGameServer } from './simulate-game-server'
+import { QueuePage } from '../pages/queue.page'
 
 export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
   gameNumber: number
@@ -19,20 +20,19 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
     const mutex = new Mutex()
     await Promise.all(
       queueUsers.map(async (user, i) => {
-        const page = pages.get(user)!
+        const page = new QueuePage(pages.get(user)!)
 
         await mutex.runExclusive(async () => {
-          // join the queue
-          await page.getByLabel(`Join queue on slot ${i}`, { exact: true }).click()
+          await page.slot(i).join()
         })
 
         // last player joining the queue is ready by default
         if (i !== 11) {
           // wait for ready-up
-          await page.getByRole('button', { name: `I'M READY` }).click()
+          await page.readyUpDialog().readyUp()
         }
 
-        await page.waitForURL(/games\/(\d+)/)
+        await page.page.waitForURL(/games\/(\d+)/)
       }),
     )
 
