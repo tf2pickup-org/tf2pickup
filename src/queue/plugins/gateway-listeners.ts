@@ -10,6 +10,8 @@ import { logger } from '../../logger'
 import { MapVote } from '../views/html/map-vote'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
+import { getState } from '../get-state'
+import { QueueState } from '../../database/models/queue-state.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -54,7 +56,8 @@ export default fp(
           await refreshTakenSlots(socket.player.steamId)
         }
 
-        if (slot.ready) {
+        const queueState = await getState()
+        if (queueState === QueueState.ready) {
           const close = await ReadyUpDialog.close()
           app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
         }
