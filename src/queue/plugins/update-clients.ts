@@ -48,7 +48,6 @@ export default fp(
     events.on('player:updated', async ({ before, after }) => {
       await safe(async () => {
         if (before.activeGame !== after.activeGame) {
-          console.log('player:updated', before.activeGame, after.activeGame)
           const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
           app.gateway.toPlayers(after.steamId).broadcast(() => cmp)
         }
