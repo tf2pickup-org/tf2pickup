@@ -8,7 +8,12 @@ import { GameState } from '../../../database/models/game.model'
 import { getPlayerGameCountOnClasses } from '../../get-player-game-count-on-classes'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { IconAlignBoxBottomRight, IconBrandSteam, IconStars } from '../../../html/components/icons'
+import {
+  IconAlignBoxBottomRight,
+  IconBrandSteam,
+  IconEdit,
+  IconStars,
+} from '../../../html/components/icons'
 import { Style } from '../../../html/components/style'
 import { resolve } from 'node:path'
 import { Page } from '../../../html/components/page'
@@ -16,6 +21,7 @@ import { Footer } from '../../../html/components/footer'
 import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
 import type { WithId } from 'mongodb'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 const gamesPerPage = 5
 
@@ -59,7 +65,7 @@ export async function PlayerPage(props: {
     >
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container mx-auto mt-12 flex flex-col gap-[30px] p-2 lg:p-0">
+        <div class="container mx-auto mt-12 flex flex-col gap-[30px] p-2 lg:p-0 relative">
           <PlayerPresentation
             player={props.player}
             gameCount={gameCount}
@@ -82,6 +88,7 @@ export async function PlayerPage(props: {
             currentPage={props.page}
             around={around}
           />
+          <EditPlayerButton steamId={props.player.steamId} />
         </div>
       </Page>
       <Footer user={props.user} />
@@ -185,5 +192,17 @@ function PlayerPresentation(props: {
         </div>
       </div>
     </div>
+  )
+}
+
+function EditPlayerButton(props: { steamId: SteamId64 }) {
+  return (
+    <a
+      href={`/players/${props.steamId}/edit`}
+      class="absolute bottom-0 right-0 button button--accent drop-shadow"
+    >
+      <span class="sr-only">Edit player</span>
+      <IconEdit />
+    </a>
   )
 }

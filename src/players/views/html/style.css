@@ -26,3 +26,10 @@
     background-color: lighten(theme(colors.abru.light.3), 2%);
   }
 }
+
+.player-skill {
+  appearance: textfield;
+  text-align: center;
+  width: 42px;
+  height: 42px;
+}

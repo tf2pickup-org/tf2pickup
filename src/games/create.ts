@@ -70,7 +70,7 @@ async function queueSlotToPlayerSlot(queueSlot: QueueSlotModel): Promise<PlayerS
 
   const { skill: playerSkill } = await players.bySteamId(player)
   if (playerSkill && gameClass in playerSkill) {
-    skill = playerSkill[gameClass]
+    skill = playerSkill[gameClass]!
   }
 
   return { player, gameClass, skill }

@@ -24,5 +24,5 @@ export interface PlayerModel {
   etf2lProfileId?: number
   cooldownLevel: number
   activeGame?: GameNumber
-  skill?: Record<Tf2ClassName, number>
+  skill?: Partial<Record<Tf2ClassName, number>>
 }
