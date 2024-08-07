@@ -11,6 +11,8 @@ import { LogsLink } from '../views/html/logs-link'
 import { PlayerConnectionStatusIndicator } from '../views/html/player-connection-status-indicator'
 import { GameEventList } from '../views/html/game-event-list'
 import { GameSlot } from '../views/html/game-slot'
+import { whenGameEnds } from '../when-game-ends'
+import { GamesLink } from '../../html/components/games-link'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -43,6 +45,18 @@ export default fp(async app => {
       app.gateway.broadcast(async () => await GameEventList({ game: after }))
     }
   })
+
+  events.on('game:created', async () => {
+    const cmp = await GamesLink()
+    app.gateway.broadcast(() => cmp)
+  })
+
+  events.on('game:updated', d =>
+    whenGameEnds(d, async () => {
+      const cmp = await GamesLink()
+      app.gateway.broadcast(() => cmp)
+    }),
+  )
 
   events.on('match/player:connected', async ({ steamId }) => {
     const player = await collections.players.findOne({ steamId })

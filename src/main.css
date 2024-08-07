@@ -152,6 +152,10 @@ dialog::backdrop {
   &.active {
     background-color: theme(colors.abru.dark.20);
   }
+
+  &.accent {
+    color: theme(colors.accent.DEFAULT);
+  }
 }
 
 .profile-menu-item {

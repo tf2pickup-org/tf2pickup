@@ -1,4 +1,5 @@
 import type { User } from '../../auth/types/user'
+import { GamesLink } from './games-link'
 import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
 import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
@@ -29,7 +30,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
 
   return (
     <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
-      <MenuItem href="/games">Games</MenuItem>
+      <GamesLink />
       <MenuItem href="/players">Players</MenuItem>
       <MenuItem href="/rules">Rules</MenuItem>
 
