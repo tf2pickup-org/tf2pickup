@@ -13,6 +13,7 @@ import { collections } from '../database/collections'
 import { PlayerRole } from '../database/models/player.model'
 import { update } from './update'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { PlayerSettingsPage } from './views/html/player-settings.page'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -193,6 +194,48 @@ export default fp(
           }
 
           reply.status(200).html(await EditPlayerBansPage({ player, user: req.user! }))
+        },
+      )
+      .get(
+        '/settings',
+        {
+          config: {
+            authenticate: true,
+          },
+        },
+        async (req, reply) => {
+          reply.status(200).html(await PlayerSettingsPage({ user: req.user! }))
+        },
+      )
+      .post(
+        '/settings',
+        {
+          config: {
+            authenticate: true,
+          },
+          schema: {
+            body: z.object({
+              soundVolume: z.coerce.number().min(0).max(1),
+            }),
+          },
+        },
+        async (req, reply) => {
+          const player = await collections.players.findOne({ steamId: req.user!.player.steamId })
+          if (!player) {
+            throw new Error(`player not found: ${req.user!.player.steamId}`)
+          }
+          const preferences =
+            (await collections.playerPreferences.findOne({ player: player._id }))?.preferences ?? {}
+          preferences.soundVolume = req.body.soundVolume.toString()
+          await collections.playerPreferences.updateOne(
+            { player: player._id },
+            {
+              $set: {
+                preferences,
+              },
+            },
+          )
+          await reply.redirect(`/settings`)
         },
       )
   },

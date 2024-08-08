@@ -439,3 +439,56 @@ dialog::backdrop {
     }
   }
 }
+
+input[type='range'] {
+  appearance: none;
+  background: transparent;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-ms-track {
+    width: 100%;
+    cursor: pointer;
+
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+
+  &::-webkit-slider-thumb,
+  &::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background-color: theme('colors.accent.DEFAULT');
+    cursor: pointer;
+    border: none;
+  }
+
+  &:hover::-webkit-slider-thumb,
+  &:hover::-moz-range-thumb {
+    background-color: darken(theme('colors.accent.DEFAULT'), 10%);
+  }
+
+  &:focus::-webkit-slider-thumb,
+  &:focus::-moz-range-thumb {
+    border: 1px solid theme('colors.accent.DEFAULT');
+    outline: 3px solid theme('colors.accent.DEFAULT');
+    outline-offset: 0.125rem;
+  }
+
+  &::-webkit-slider-runnable-track,
+  &::-moz-range-track {
+    width: 100%;
+    height: 8px;
+    cursor: pointer;
+    background-color: theme('colors.abru.light.5');
+    border-radius: 4px;
+  }
+}
