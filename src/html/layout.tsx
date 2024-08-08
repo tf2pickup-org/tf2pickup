@@ -1,9 +1,13 @@
 import { environment } from '../environment'
 import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
 import Html from '@kitajs/html'
+import { FlashMessages } from './components/flash-messages'
 
 export function Layout(
-  props?: Html.PropsWithChildren<{ title?: string; head?: string | Promise<string> }>,
+  props?: Html.PropsWithChildren<{
+    title?: string
+    head?: string | Promise<string>
+  }>,
 ) {
   const safeHead = props?.head ?? ''
   return (
@@ -18,6 +22,7 @@ export function Layout(
           <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
           <script src="/map-thumbnail.js"></script>
           <script src="/request-notification-permissions.js"></script>
+          <script src="/flash-message.js"></script>
           <link href="/main.css" rel="stylesheet"></link>
           <title>{props?.title ?? environment.WEBSITE_NAME}</title>
           {safeHead}
@@ -26,6 +31,7 @@ export function Layout(
           <div class="flex h-full flex-col">{props?.children}</div>
           <div id="notify-container"></div>
           <ReadyUpDialog />
+          <FlashMessages />
         </body>
       </html>
     </>

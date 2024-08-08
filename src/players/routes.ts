@@ -42,11 +42,13 @@ export default fp(
           if (!player) {
             return reply.notFound(`player not found: ${steamId}`)
           }
-          reply
-            .status(200)
-            .html(
-              await PlayerPage({ player, user: req.user, page: Number(req.query.gamespage) || 1 }),
-            )
+          reply.status(200).html(
+            await PlayerPage({
+              player,
+              user: req.user,
+              page: Number(req.query.gamespage) || 1,
+            }),
+          )
         },
       )
       .get(
@@ -117,6 +119,7 @@ export default fp(
           }
 
           await update(player.steamId, { $set: { name } })
+          req.flash('success', `Player updated`)
           await reply.redirect(`/players/${steamId}`)
         },
       )
@@ -171,6 +174,7 @@ export default fp(
           }
 
           await update(player.steamId, { $set: { skill } })
+          req.flash('success', `Player skill updated`)
           await reply.redirect(`/players/${steamId}`)
         },
       )
@@ -235,6 +239,7 @@ export default fp(
               },
             },
           )
+          req.flash('success', `Settings saved`)
           await reply.redirect(`/settings`)
         },
       )

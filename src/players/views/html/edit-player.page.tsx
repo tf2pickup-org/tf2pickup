@@ -72,6 +72,8 @@ export async function EditPlayerSkillPage(props: { player: PlayerModel; user: Us
                         name={`skill.${gameClass.name}`}
                         value={skill.toString()}
                         class="player-skill"
+                        required
+                        step="0.1"
                       />
                     </div>
                   )

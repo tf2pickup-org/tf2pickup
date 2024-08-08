@@ -248,6 +248,59 @@ dialog::backdrop {
   background-color: theme(colors.abru.light.5);
 }
 
+.flash-messages {
+  position: fixed;
+  bottom: 48px;
+  left: 50%;
+  transform: translate(-50%, 0);
+
+  .message {
+    width: 640px;
+    border-radius: 4px;
+    box-shadow: 0px 29px 37px 3px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+
+    &.success {
+      background-color: #0a955b;
+    }
+
+    .content {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      font-weight: 700;
+      font-size: 16px;
+      color: theme(colors.ash);
+    }
+
+    progress[value] {
+      appearance: none;
+      border: none;
+      overflow: hidden;
+      border-radius: 0 0 4px 4px;
+      width: 640px;
+      height: 4px;
+      background-color: #087749;
+
+      &::-webkit-progress-bar {
+        background: #087749;
+      }
+
+      &::-webkit-progress-value {
+        background: #5db08d;
+      }
+
+      &::-moz-progress-bar {
+        background: #5db08d;
+      }
+    }
+  }
+}
+
 .snackbar {
   position: fixed;
   bottom: 48px;
