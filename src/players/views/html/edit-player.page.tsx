@@ -13,11 +13,20 @@ import {
   AdminPanelLink,
   AdminPanelSidebar,
 } from '../../../html/components/admin-panel'
-import { IconBan, IconChartArrowsVertical, IconUserScan } from '../../../html/components/icons'
+import {
+  IconBan,
+  IconChartArrowsVertical,
+  IconPlus,
+  IconUserScan,
+} from '../../../html/components/icons'
 import type { Children } from '@kitajs/html'
 import { queue } from '../../../queue'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { configuration } from '../../../configuration'
+import { collections } from '../../../database/collections'
+import type { WithId } from 'mongodb'
+import type { PlayerBanModel } from '../../../database/models/player-ban.model'
+import { format } from 'date-fns'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -91,17 +100,27 @@ export async function EditPlayerSkillPage(props: { player: PlayerModel; user: Us
   )
 }
 
-export async function EditPlayerBansPage(props: { player: PlayerModel; user: User }) {
+export async function EditPlayerBansPage(props: { player: WithId<PlayerModel>; user: User }) {
+  const bans = await collections.playerBans.find({ player: props.player._id }).toArray()
+
   return (
     <EditPlayer player={props.player} user={props.user} activePage="/bans">
       <div class="admin-panel-content">
-        <div class="group">
-          <div class="input-group">
-            <label class="label" for="player-bans">
-              Bans
-            </label>
-          </div>
-        </div>
+        {bans.length === 0 ? (
+          <span class="text-abru-light-75 italic">No bans</span>
+        ) : (
+          bans.map(ban => <BanDetails ban={ban} />)
+        )}
+      </div>
+
+      <div class="flex">
+        <a
+          href={`/players/${props.player.steamId}/edit/bans/add`}
+          class="button button--accent mt-6"
+        >
+          <IconPlus />
+          Add ban
+        </a>
       </div>
     </EditPlayer>
   )
@@ -152,5 +171,35 @@ function EditPlayer(props: {
       </Page>
       <Footer user={props.user} />
     </Layout>
+  )
+}
+
+async function BanDetails(props: { ban: PlayerBanModel }) {
+  const admin = await collections.players.findOne({ _id: props.ban.admin })
+  if (!admin) {
+    throw new Error(`admin with ID ${props.ban.admin.toString()} not found`)
+  }
+  return (
+    <div class="group">
+      <div>
+        <span class="text-2xl font-bold me-2" safe>
+          {props.ban.reason}
+        </span>
+        <span class="text-sm">
+          by{' '}
+          <a href={`/players/${admin.steamId}`} safe>
+            {admin.name}
+          </a>
+        </span>
+      </div>
+
+      <div class="text-base" safe>
+        Starts {format(props.ban.start, 'MMMM dd, yyyy, HH:mm')}
+      </div>
+
+      <div class="text-base" safe>
+        Ends {format(props.ban.end, 'MMMM dd, yyyy, HH:mm')}
+      </div>
+    </div>
   )
 }

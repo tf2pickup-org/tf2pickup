@@ -474,6 +474,9 @@ dialog::backdrop {
   background-color: theme(colors.abru.dark.25);
   border-radius: 16px;
   padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 
   .group {
     background-color: theme(colors.abru.light.5);
