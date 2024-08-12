@@ -45,7 +45,12 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       />
     )
   } else if (props.actor) {
-    slotContent = <JoinButton slotId={props.slot.id} />
+    const actor = await collections.players.findOne({ steamId: props.actor })
+    if (!props.actor) {
+      throw new Error(`actor invalid: ${props.actor}`)
+    }
+
+    slotContent = <JoinButton slotId={props.slot.id} disabled={Boolean(actor?.activeGame)} />
   }
 
   return (
@@ -59,13 +64,14 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
   )
 }
 
-function JoinButton(props: { slotId: number }) {
+function JoinButton(props: { slotId: number; disabled: boolean }) {
   return (
     <button
       class="join-queue-button"
       name="join"
       value={`${props.slotId}`}
       aria-label={`Join queue on slot ${props.slotId}`}
+      disabled={props.disabled}
     >
       <IconPlus />
     </button>

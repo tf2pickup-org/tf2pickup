@@ -9,7 +9,7 @@ import { mutex } from './mutex'
 
 export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlotModel[]> {
   return await mutex.runExclusive(async () => {
-    logger.info({ steamId, slotId }, `join queue`)
+    logger.trace({ steamId, slotId }, `join queue`)
     const player = await collections.players.findOne({ steamId })
     if (!player) {
       throw new Error(`player does not exist: ${steamId}`)
@@ -18,6 +18,10 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
     // if (!player.hasAcceptedRules) {
     //   throw new Error(`player has not accepted rules`)
     // }
+
+    if (player.activeGame) {
+      throw new Error(`player has active game`)
+    }
 
     const state = await getState()
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
