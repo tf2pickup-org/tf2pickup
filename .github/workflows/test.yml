@@ -66,6 +66,7 @@ jobs:
           LOG_RELAY_ADDRESS: '127.0.0.1'
           LOG_RELAY_PORT: '9871'
           GAME_SERVER_SECRET: 'xxxxxx'
+          KEY_STORE_PASSPHRASE: ${{ secrets.AUTH_SECRET }}
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
           STEAM_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
         run: pnpm test:e2e
