@@ -9,22 +9,22 @@ dependencies:
     specifier: 9.3.1
     version: 9.3.1
   '@fastify/flash':
-    specifier: ^5.2.0
+    specifier: 5.2.0
     version: 5.2.0
   '@fastify/formbody':
     specifier: 7.4.0
     version: 7.4.0
   '@fastify/request-context':
-    specifier: ^5.1.0
+    specifier: 5.1.0
     version: 5.1.0
   '@fastify/secure-session':
-    specifier: ^7.5.1
+    specifier: 7.5.1
     version: 7.5.1
   '@fastify/sensible':
-    specifier: ^5.6.0
+    specifier: 5.6.0
     version: 5.6.0
   '@fastify/static':
-    specifier: ^7.0.4
+    specifier: 7.0.4
     version: 7.0.4
   '@fastify/websocket':
     specifier: 10.0.1
@@ -33,13 +33,13 @@ dependencies:
     specifier: 4.1.0
     version: 4.1.0(@kitajs/html@4.2.0)(@kitajs/ts-html-plugin@4.0.1)
   '@kitajs/html':
-    specifier: ^4.2.0
+    specifier: 4.2.0
     version: 4.2.0
   '@kitajs/ts-html-plugin':
     specifier: 4.0.1
     version: 4.0.1(@kitajs/html@4.2.0)(typescript@5.4.5)
   '@tailwindcss/typography':
-    specifier: ^0.5.13
+    specifier: 0.5.13
     version: 0.5.13(tailwindcss@3.4.7)
   async-mutex:
     specifier: 0.5.0
@@ -72,7 +72,7 @@ dependencies:
     specifier: 9.0.2
     version: 9.0.2
   lodash-es:
-    specifier: ^4.17.21
+    specifier: 4.17.21
     version: 4.17.21
   marked:
     specifier: 13.0.0
@@ -81,7 +81,7 @@ dependencies:
     specifier: 6.5.0
     version: 6.5.0
   nanoid:
-    specifier: ^5.0.7
+    specifier: 5.0.7
     version: 5.0.7
   openid:
     specifier: 2.0.12
@@ -90,7 +90,7 @@ dependencies:
     specifier: 9.0.0
     version: 9.0.0
   pino-pretty:
-    specifier: ^11.2.2
+    specifier: 11.2.2
     version: 11.2.2
   postcss:
     specifier: 8.4.41
@@ -114,7 +114,7 @@ dependencies:
     specifier: 3.4.7
     version: 3.4.7
   ws:
-    specifier: ^8.18.0
+    specifier: 8.18.0
     version: 8.18.0
   zod:
     specifier: 3.23.4
@@ -125,10 +125,10 @@ devDependencies:
     specifier: 9.4.0
     version: 9.4.0
   '@playwright/test':
-    specifier: ^1.45.3
+    specifier: 1.45.3
     version: 1.45.3
   '@tsconfig/strictest':
-    specifier: ^2.0.5
+    specifier: 2.0.5
     version: 2.0.5
   '@types/eslint__js':
     specifier: 8.42.3
@@ -137,10 +137,10 @@ devDependencies:
     specifier: 9.0.6
     version: 9.0.6
   '@types/lodash':
-    specifier: ^4.17.7
+    specifier: 4.17.7
     version: 4.17.7
   '@types/lodash-es':
-    specifier: ^4.17.12
+    specifier: 4.17.12
     version: 4.17.12
   '@types/node':
     specifier: 20.12.7
@@ -158,7 +158,7 @@ devDependencies:
     specifier: 8.5.10
     version: 8.5.10
   cssnano:
-    specifier: ^7.0.4
+    specifier: 7.0.4
     version: 7.0.4(postcss@8.4.41)
   eslint:
     specifier: 9.4.0
@@ -167,7 +167,7 @@ devDependencies:
     specifier: 15.6.0
     version: 15.6.0
   postcss-cli:
-    specifier: ^11.0.0
+    specifier: 11.0.0
     version: 11.0.0(postcss@8.4.41)(tsx@4.11.0)
   prettier:
     specifier: 3.2.5
@@ -185,7 +185,7 @@ devDependencies:
     specifier: 7.12.0
     version: 7.12.0(eslint@9.4.0)(typescript@5.4.5)
   vitest:
-    specifier: ^1.6.0
+    specifier: 1.6.0
     version: 1.6.0(@types/node@20.12.7)
 
 packages:
@@ -1510,17 +1510,6 @@ packages:
     dependencies:
       fill-range: 7.1.1
 
-  /browserslist@4.23.2:
-    resolution: {integrity: sha512-qkqSyistMYdxAcw+CzbZwlBy8AGmS/eEWs+sEV5TnLRGDOL+C5M2EnH6tlZyg0YoAxGJAFKh61En9BR941GnHA==}
-    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
-    hasBin: true
-    dependencies:
-      caniuse-lite: 1.0.30001644
-      electron-to-chromium: 1.5.3
-      node-releases: 2.0.18
-      update-browserslist-db: 1.1.0(browserslist@4.23.2)
-    dev: true
-
   /browserslist@4.23.3:
     resolution: {integrity: sha512-btwCFJVjI4YWDNfau8RhZ+B1Q/VLoUITrm3RlP6y1tYGWIOa+InuYiRGXUBXo8nA1qKmHMyLB/iVQg5TT4eFoA==}
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
@@ -1530,7 +1519,6 @@ packages:
       electron-to-chromium: 1.5.5
       node-releases: 2.0.18
       update-browserslist-db: 1.1.0(browserslist@4.23.3)
-    dev: false
 
   /bson@6.8.0:
     resolution: {integrity: sha512-iOJg8pr7wq2tg/zSlCCHMi3hMm5JTOxLTagf3zxhcenHsFp+c6uOs6K7W5UE7A4QIJGtqh/ZovFNMP4mOPJynQ==}
@@ -1577,19 +1565,14 @@ packages:
   /caniuse-api@3.0.0:
     resolution: {integrity: sha512-bsTwuIg/BZZK/vreVTYYbSWoe2F+71P7K5QGEX+pT250DZbfU1MQ5prOKpPR+LL6uWKK3KMwMCAS74QB3Um1uw==}
     dependencies:
-      browserslist: 4.23.2
-      caniuse-lite: 1.0.30001644
+      browserslist: 4.23.3
+      caniuse-lite: 1.0.30001651
       lodash.memoize: 4.1.2
       lodash.uniq: 4.5.0
     dev: true
 
-  /caniuse-lite@1.0.30001644:
-    resolution: {integrity: sha512-YGvlOZB4QhZuiis+ETS0VXR+MExbFf4fZYYeMTEE0aTQd/RdIjkTyZjLrbYVKnHzppDvnOhritRVv+i7Go6mHw==}
-    dev: true
-
   /caniuse-lite@1.0.30001651:
     resolution: {integrity: sha512-9Cf+Xv1jJNe1xPZLGuUXLNkE1BoDkqRqYyFJ9TDYSqhduqA4hu4oR9HluGoWYQC/aj8WHjsGVV+bwkh0+tegRg==}
-    dev: false
 
   /chai@4.5.0:
     resolution: {integrity: sha512-RITGBfijLkBddZvnn8jdqoTypxvqbOLYQkGGxXzeFjVHvudaPw0HNFD9x928/eUwYWd2dPCugVqspGALTZZQKw==}
@@ -1767,7 +1750,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       css-declaration-sorter: 7.2.0(postcss@8.4.41)
       cssnano-utils: 5.0.0(postcss@8.4.41)
       postcss: 8.4.41
@@ -1962,13 +1945,8 @@ packages:
       safe-buffer: 5.2.1
     dev: false
 
-  /electron-to-chromium@1.5.3:
-    resolution: {integrity: sha512-QNdYSS5i8D9axWp/6XIezRObRHqaav/ur9z1VzCDUCH1XIFOr9WQk5xmgunhsTpjjgDy3oLxO/WMOVZlpUQrlA==}
-    dev: true
-
   /electron-to-chromium@1.5.5:
     resolution: {integrity: sha512-QR7/A7ZkMS8tZuoftC/jfqNkZLQO779SSW3YuZHP4eXpj3EffGLFcB/Xu9AAZQzLccTiCV+EmUo3ha4mQ9wnlA==}
-    dev: false
 
   /emoji-regex@8.0.0:
     resolution: {integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==}
@@ -3366,7 +3344,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       caniuse-api: 3.0.0
       colord: 2.9.3
       postcss: 8.4.41
@@ -3379,7 +3357,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       postcss: 8.4.41
       postcss-value-parser: 4.2.0
     dev: true
@@ -3521,7 +3499,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       caniuse-api: 3.0.0
       cssnano-utils: 5.0.0(postcss@8.4.41)
       postcss: 8.4.41
@@ -3556,7 +3534,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       cssnano-utils: 5.0.0(postcss@8.4.41)
       postcss: 8.4.41
       postcss-value-parser: 4.2.0
@@ -3648,7 +3626,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       postcss: 8.4.41
       postcss-value-parser: 4.2.0
     dev: true
@@ -3690,7 +3668,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       caniuse-api: 3.0.0
       postcss: 8.4.41
     dev: true
@@ -4158,7 +4136,7 @@ packages:
     peerDependencies:
       postcss: ^8.4.31
     dependencies:
-      browserslist: 4.23.2
+      browserslist: 4.23.3
       postcss: 8.4.41
       postcss-selector-parser: 6.1.1
     dev: true
@@ -4403,17 +4381,6 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: true
 
-  /update-browserslist-db@1.1.0(browserslist@4.23.2):
-    resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
-    hasBin: true
-    peerDependencies:
-      browserslist: '>= 4.21.0'
-    dependencies:
-      browserslist: 4.23.2
-      escalade: 3.1.2
-      picocolors: 1.0.1
-    dev: true
-
   /update-browserslist-db@1.1.0(browserslist@4.23.3):
     resolution: {integrity: sha512-EdRAaAyk2cUE1wOf2DkEhzxqOQvFOoRJFNS6NeyJ01Gp2beMRpBAINjM2iDXE3KCuKhwnvHIQCJm6ThL2Z+HzQ==}
     hasBin: true
@@ -4423,7 +4390,6 @@ packages:
       browserslist: 4.23.3
       escalade: 3.1.2
       picocolors: 1.0.1
-    dev: false
 
   /uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
