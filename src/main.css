@@ -425,11 +425,24 @@ dialog::backdrop {
   background-color: transparent;
 }
 
+.admin-panel-section {
+  font-size: 14px;
+  color: theme(colors.abru.light.50);
+  font-weight: 500;
+  padding: 8px 12px;
+
+  &:not(:first-child) {
+    border-top: 1px solid theme(colors.abru.light.25);
+    padding-top: 16px;
+    margin-top: 8px;
+  }
+}
+
 .admin-panel-link {
   display: flex;
   flex-flow: flex nowrap;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
   color: theme(colors.abru.light.75);
   font-weight: 500;
   font-size: 18px;

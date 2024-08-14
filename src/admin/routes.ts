@@ -1,0 +1,23 @@
+import fp from 'fastify-plugin'
+import { PlayerRole } from '../database/models/player.model'
+
+export default fp(
+  async app => {
+    await app.register((await import('./player-restrictions')).default)
+
+    app.get(
+      '/admin',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+      },
+      async (request, reply) => {
+        await reply.redirect('/admin/player-restrictions')
+      },
+    )
+  },
+  {
+    name: 'admin routes',
+  },
+)

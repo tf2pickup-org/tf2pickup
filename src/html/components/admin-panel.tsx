@@ -1,11 +1,15 @@
 import type { Children } from '@kitajs/html'
 
 export function AdminPanel(props?: { children?: Children }) {
-  return <div class="container mx-auto grid grid-cols-6 gap-8">{props?.children}</div>
+  return <div class="container mx-auto grid grid-cols-5 gap-8">{props?.children}</div>
 }
 
 export function AdminPanelSidebar(props?: { children?: Children }) {
   return <div class="flex flex-col gap-y-1">{props?.children}</div>
+}
+
+export function AdminPanelSection(props: { children: Children }) {
+  return <span class="admin-panel-section">{props.children}</span>
 }
 
 export function AdminPanelLink(props: { href: string; active?: boolean; children: Children }) {
@@ -17,7 +21,7 @@ export function AdminPanelLink(props: { href: string; active?: boolean; children
 }
 
 export function AdminPanelBody(props?: { children?: Children }) {
-  return <div class="col-span-5">{props?.children}</div>
+  return <div class="col-span-4">{props?.children}</div>
 }
 
 export function AdminPanelHeader(props?: { children?: Children }) {
