@@ -30,8 +30,8 @@ dependencies:
     specifier: 10.0.1
     version: 10.0.1
   '@kitajs/fastify-html-plugin':
-    specifier: 4.1.0
-    version: 4.1.0(@kitajs/html@4.2.0)(@kitajs/ts-html-plugin@4.0.1)
+    specifier: 4.1.1
+    version: 4.1.1(@kitajs/html@4.2.0)(@kitajs/ts-html-plugin@4.0.1)
   '@kitajs/html':
     specifier: 4.2.0
     version: 4.2.0
@@ -828,11 +828,11 @@ packages:
       '@jridgewell/sourcemap-codec': 1.5.0
     dev: false
 
-  /@kitajs/fastify-html-plugin@4.1.0(@kitajs/html@4.2.0)(@kitajs/ts-html-plugin@4.0.1):
-    resolution: {integrity: sha512-pbd4xOVopLnBfxqUyCHYzNtKX2H4V3z8lW+CPXnPEYpXgWUeLVjozevmTMDyWBCi14RujNWHJ1CPcz3uX2ZrXQ==}
+  /@kitajs/fastify-html-plugin@4.1.1(@kitajs/html@4.2.0)(@kitajs/ts-html-plugin@4.0.1):
+    resolution: {integrity: sha512-gUUGcp2QHrnFOIXNEuHNBQigE0F3jQgpJ0MexzJu2o8rCeNQ2z4w6rBwVYxV6fWpzg+HOSd1lDgKuaWFV/mxeA==}
     peerDependencies:
-      '@kitajs/html': ^4.1.0
-      '@kitajs/ts-html-plugin': ^4.0.1
+      '@kitajs/html': ^4.2.0
+      '@kitajs/ts-html-plugin': ^4.0.2
     peerDependenciesMeta:
       '@kitajs/ts-html-plugin':
         optional: true
