@@ -1,0 +1,20 @@
+.admin-panel-set {
+  background: theme(colors.abru.dark.25);
+  border-radius: 16px;
+  padding: 24px;
+  color: theme(colors.abru.light.50);
+
+  .form-checkbox {
+    margin-bottom: 16px;
+
+    label {
+      margin-left: 8px;
+    }
+
+    .description {
+      color: theme(colors.abru.light.75);
+      font-size: 12px;
+      margin-left: 22px;
+    }
+  }
+}

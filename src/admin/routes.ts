@@ -4,6 +4,8 @@ import { PlayerRole } from '../database/models/player.model'
 export default fp(
   async app => {
     await app.register((await import('./player-restrictions')).default)
+    await app.register((await import('./games')).default)
+    await app.register((await import('./voice-server')).default)
 
     app.get(
       '/admin',
