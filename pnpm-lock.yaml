@@ -105,8 +105,8 @@ dependencies:
     specifier: 4.2.4
     version: 4.2.4
   steamapi:
-    specifier: 3.0.8
-    version: 3.0.8
+    specifier: 3.0.12
+    version: 3.0.12
   steamid:
     specifier: 2.0.0
     version: 2.0.0
@@ -4063,8 +4063,8 @@ packages:
     resolution: {integrity: sha512-JPbdCEQLj1w5GilpiHAx3qJvFndqybBysA3qUOnznweH4QbNYUsW/ea8QzSrnh0vNsezMMw5bcVool8lM0gwzg==}
     dev: true
 
-  /steamapi@3.0.8:
-    resolution: {integrity: sha512-AqI+MiazzEiDFoKq5FQqbbqC/Ww1QPLn4zHhr6Q0fRP/8ZDvsL7CRRVBKiR2NZj6UduLs0JSqx38x5V5+DzgJg==}
+  /steamapi@3.0.12:
+    resolution: {integrity: sha512-bGH3OPANcFlFN4DS5hXY4xEufh11peejcoHQ8fIu4Mm2o7LtpBwVqRKozfwDalQ45k8Xd8QKutSpoGrzGA5SAQ==}
     dependencies:
       node-fetch: 3.3.2
       steamid: 2.0.0
