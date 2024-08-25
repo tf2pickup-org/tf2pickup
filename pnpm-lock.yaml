@@ -40,7 +40,7 @@ dependencies:
     version: 4.0.2(@kitajs/html@4.2.1)(typescript@5.4.5)
   '@tailwindcss/typography':
     specifier: 0.5.14
-    version: 0.5.14(tailwindcss@3.4.7)
+    version: 0.5.14(tailwindcss@3.4.10)
   async-mutex:
     specifier: 0.5.0
     version: 0.5.0
@@ -111,8 +111,8 @@ dependencies:
     specifier: 2.0.0
     version: 2.0.0
   tailwindcss:
-    specifier: 3.4.7
-    version: 3.4.7
+    specifier: 3.4.10
+    version: 3.4.10
   ws:
     specifier: 8.18.0
     version: 8.18.0
@@ -1044,7 +1044,7 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /@tailwindcss/typography@0.5.14(tailwindcss@3.4.7):
+  /@tailwindcss/typography@0.5.14(tailwindcss@3.4.10):
     resolution: {integrity: sha512-ZvOCjUbsJBjL9CxQBn+VEnFpouzuKhxh2dH8xMIWHILL+HfOYtlAkWcyoon8LlzE53d2Yo6YO6pahKKNW3q1YQ==}
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
@@ -1053,7 +1053,7 @@ packages:
       lodash.isplainobject: 4.0.6
       lodash.merge: 4.6.2
       postcss-selector-parser: 6.0.10
-      tailwindcss: 3.4.7
+      tailwindcss: 3.4.10
     dev: false
 
   /@trysound/sax@0.2.0:
@@ -4180,8 +4180,8 @@ packages:
       picocolors: 1.0.1
     dev: true
 
-  /tailwindcss@3.4.7:
-    resolution: {integrity: sha512-rxWZbe87YJb4OcSopb7up2Ba4U82BoiSGUdoDr3Ydrg9ckxFS/YWsvhN323GMcddgU65QRy7JndC7ahhInhvlQ==}
+  /tailwindcss@3.4.10:
+    resolution: {integrity: sha512-KWZkVPm7yJRhdu4SRSl9d4AK2wM3a50UsvgHZO7xY77NQr2V+fIrEuoDGQcbvswWvFGbS2f6e+jC/6WJm1Dl0w==}
     engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
