@@ -64,7 +64,7 @@ dependencies:
     version: 4.5.1
   fastify-type-provider-zod:
     specifier: 1.2.0
-    version: 1.2.0(fastify@4.26.2)(zod@3.23.4)
+    version: 1.2.0(fastify@4.26.2)(zod@3.23.8)
   generate-password:
     specifier: 1.7.1
     version: 1.7.1
@@ -117,8 +117,8 @@ dependencies:
     specifier: 8.18.0
     version: 8.18.0
   zod:
-    specifier: 3.23.4
-    version: 3.23.4
+    specifier: 3.23.8
+    version: 3.23.8
 
 devDependencies:
   '@eslint/js':
@@ -2250,15 +2250,15 @@ packages:
     resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
     dev: false
 
-  /fastify-type-provider-zod@1.2.0(fastify@4.26.2)(zod@3.23.4):
+  /fastify-type-provider-zod@1.2.0(fastify@4.26.2)(zod@3.23.8):
     resolution: {integrity: sha512-2zkPEWFIBYzkGQ0kmn8gOW5tlQOmdDWn5edF5LQ2r0RiydFGhD86FVZX6wLraXAmdFm8P1CMmo19lwlGb0mZrA==}
     peerDependencies:
       fastify: ^4.0.0
       zod: ^3.14.2
     dependencies:
       fastify: 4.26.2
-      zod: 3.23.4
-      zod-to-json-schema: 3.23.2(zod@3.23.4)
+      zod: 3.23.8
+      zod-to-json-schema: 3.23.2(zod@3.23.8)
     dev: false
 
   /fastify@4.26.2:
@@ -4626,14 +4626,14 @@ packages:
     engines: {node: '>=12.20'}
     dev: true
 
-  /zod-to-json-schema@3.23.2(zod@3.23.4):
+  /zod-to-json-schema@3.23.2(zod@3.23.8):
     resolution: {integrity: sha512-uSt90Gzc/tUfyNqxnjlfBs8W6WSGpNBv0rVsNxP/BVSMHMKGdthPYff4xtCHYloJGM0CFxFsb3NbC0eqPhfImw==}
     peerDependencies:
       zod: ^3.23.3
     dependencies:
-      zod: 3.23.4
+      zod: 3.23.8
     dev: false
 
-  /zod@3.23.4:
-    resolution: {integrity: sha512-/AtWOKbBgjzEYYQRNfoGKHObgfAZag6qUJX1VbHo2PRBgS+wfWagEY2mizjfyAPcGesrJOcx/wcl0L9WnVrHFw==}
+  /zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
     dev: false
