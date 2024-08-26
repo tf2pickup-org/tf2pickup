@@ -1,5 +1,6 @@
 export { IconAdjustments } from './icon-adjustments'
 export { IconAlignBoxBottomRight } from './icon-align-box-bottom-right'
+export { IconArrowBackUp } from './icon-arrow-back-up'
 export { IconArrowsShuffle } from './icon-arrows-shuffle'
 export { IconBan } from './icon-ban'
 export { IconBrandDiscord } from './icon-brand-discord'

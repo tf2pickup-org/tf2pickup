@@ -47,11 +47,11 @@ export const configurationSchema = z.discriminatedUnion('key', [
   }),
   z.object({
     key: z.literal('games.voice_server.static_link'),
-    value: z.string().url().nullable(),
+    value: z.string().url().nullable().default(null),
   }),
   z.object({
     key: z.literal('games.voice_server.mumble.url'),
-    value: z.string().nullable(),
+    value: z.string().nullable().default(null),
   }),
   z.object({
     key: z.literal('games.voice_server.mumble.port'),
@@ -59,11 +59,11 @@ export const configurationSchema = z.discriminatedUnion('key', [
   }),
   z.object({
     key: z.literal('games.voice_server.mumble.channel_name'),
-    value: z.string().nullable(),
+    value: z.string().nullable().default(null),
   }),
   z.object({
     key: z.literal('games.voice_server.mumble.password'),
-    value: z.string().nullable(),
+    value: z.string().nullable().default(null),
   }),
   z.object({
     key: z.literal('players.etf2l_account_required'),
