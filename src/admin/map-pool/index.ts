@@ -31,10 +31,9 @@ const adminPage = standardAdminPage({
 export default fp(
   async app => {
     await app.register(adminPage)
-    app.post(
-      '/admin/map-pool/create',
-      async (request, response) => await response.send(await MapPoolEntryCmp({ name: '' })),
-    )
+    app.post('/admin/map-pool/create', async (_request, response) => {
+      return await response.send(await MapPoolEntryCmp({ name: '' }))
+    })
   },
   {
     name: 'admin panel - map pool',

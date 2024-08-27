@@ -18,7 +18,7 @@ export default fp(
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
+      async (_request, reply) => {
         await reply.redirect('/admin/player-restrictions')
       },
     )
