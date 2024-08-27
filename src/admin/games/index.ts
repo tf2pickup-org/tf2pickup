@@ -1,0 +1,32 @@
+import { GamesPage } from './views/html/games.page'
+import { z } from 'zod'
+import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
+import { configuration } from '../../configuration'
+import { standardAdminPage } from '../plugins/standard-admin-page'
+
+export default standardAdminPage({
+  path: '/admin/games',
+  bodySchema: z.object({
+    whitelistId: z.string(),
+    joinGameserverTimeout: z.coerce.number(),
+    rejoinGameserverTimeout: z.coerce.number(),
+    executeExtraCommands: z.string().transform(value => value.split('\n')),
+    logsTfUploadMethod: z.nativeEnum(LogsTfUploadMethod),
+  }),
+  save: async ({
+    whitelistId,
+    joinGameserverTimeout,
+    rejoinGameserverTimeout,
+    executeExtraCommands,
+    logsTfUploadMethod,
+  }) => {
+    await Promise.all([
+      configuration.set('games.whitelist_id', whitelistId),
+      configuration.set('games.join_gameserver_timeout', joinGameserverTimeout),
+      configuration.set('games.rejoin_gameserver_timeout', rejoinGameserverTimeout),
+      configuration.set('games.execute_extra_commands', executeExtraCommands),
+      configuration.set('games.logs_tf_upload_method', logsTfUploadMethod),
+    ])
+  },
+  page: async user => await GamesPage({ user }),
+})

@@ -2,6 +2,7 @@ import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { z } from 'zod'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
+import { VoiceServerType } from '../../shared/types/voice-server-type'
 
 export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
@@ -40,6 +41,30 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.nativeEnum(LogsTfUploadMethod).default(LogsTfUploadMethod.backend),
     })
     .describe('Method of uploading logs to the logs.tf service'),
+  z.object({
+    key: z.literal('games.voice_server_type'),
+    value: z.nativeEnum(VoiceServerType).default(VoiceServerType.none),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.static_link'),
+    value: z.string().url().nullable().default(null),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.mumble.url'),
+    value: z.string().nullable().default(null),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.mumble.port'),
+    value: z.number().gte(0).lte(65535).default(64738),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.mumble.channel_name'),
+    value: z.string().nullable().default(null),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.mumble.password'),
+    value: z.string().nullable().default(null),
+  }),
   z.object({
     key: z.literal('players.etf2l_account_required'),
     value: z.boolean().default(false),
