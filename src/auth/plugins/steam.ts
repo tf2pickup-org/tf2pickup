@@ -9,6 +9,8 @@ import { secondsInWeek } from 'date-fns/constants'
 import { assertIsError } from '../../utils/assert-is-error'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { collections } from '../../database/collections'
+import { ErrorPage } from '../../error-pages/views/html/error.page'
+import { InsufficientInGameHoursError } from '../../players/errors/insufficient-in-game-hours.error'
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
 
@@ -67,7 +69,7 @@ export default fp(
   async app => {
     app.get('/auth/steam', async (_request, reply) => {
       const url = await getSteamLoginUrl()
-      await reply.redirect(302, url)
+      return await reply.redirect(302, url)
     })
 
     app.get('/auth/steam/return', async (request, reply) => {
@@ -83,22 +85,28 @@ export default fp(
 
         const token = jwt.sign({ id: player.steamId }, environment.AUTH_SECRET, { expiresIn: '7d' })
 
-        let returnUrl = request.cookies['return_url']
-        if (returnUrl) {
-          await reply.clearCookie('return_url')
-        } else {
-          returnUrl = environment.WEBSITE_URL
-        }
+        const returnUrl = request.cookies['return_url'] ?? environment.WEBSITE_URL
         logger.trace({ user }, `redirecting to ${returnUrl}`)
 
-        await reply
+        return await reply
+          .clearCookie('return_url')
           .setCookie('token', token, { maxAge: secondsInWeek, path: '/' })
           .redirect(302, returnUrl)
           .send()
       } catch (e) {
         assertIsError(e)
         logger.error(e, `failed to authenticate user`)
-        await reply.code(401).send('steam login failed')
+        if (e instanceof InsufficientInGameHoursError) {
+          await reply
+            .code(403)
+            .html(
+              ErrorPage({
+                message: `You need at least ${e.requiredHours} in-game hours to register.`,
+              }),
+            )
+        } else {
+          await reply.code(401).html(ErrorPage({ message: e.message }))
+        }
       }
     })
 

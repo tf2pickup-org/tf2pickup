@@ -41,7 +41,11 @@ export async function Profile(player: PlayerModel) {
             <span>Settings</span>
           </a>
           <div class="divider" />
-          <a href="/auth/sign-out" class="profile-menu-item profile-menu-item--accent">
+          <a
+            href="/auth/sign-out"
+            class="profile-menu-item profile-menu-item--accent"
+            hx-boost="false"
+          >
             <IconLogout />
             <span>Sign out</span>
           </a>
