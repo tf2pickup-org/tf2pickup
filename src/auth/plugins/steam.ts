@@ -11,6 +11,7 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { collections } from '../../database/collections'
 import { ErrorPage } from '../../error-pages/views/html/error.page'
 import { InsufficientInGameHoursError } from '../../players/errors/insufficient-in-game-hours.error'
+import { PlayerRegistrationDeniedError } from '../../players/errors/player-registration-denied.error'
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
 
@@ -97,13 +98,13 @@ export default fp(
         assertIsError(e)
         logger.error(e, `failed to authenticate user`)
         if (e instanceof InsufficientInGameHoursError) {
-          await reply
-            .code(403)
-            .html(
-              ErrorPage({
-                message: `You need at least ${e.requiredHours} in-game hours to register.`,
-              }),
-            )
+          await reply.code(403).html(
+            ErrorPage({
+              message: `You need at least ${e.requiredHours} in-game hours to register.`,
+            }),
+          )
+        } else if (e instanceof PlayerRegistrationDeniedError) {
+          await reply.code(403).html(ErrorPage({ message: e.message }))
         } else {
           await reply.code(401).html(ErrorPage({ message: e.message }))
         }
