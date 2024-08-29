@@ -65,30 +65,38 @@ export async function PlayerPage(props: {
     >
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container mx-auto mt-12 flex flex-col gap-[30px] p-2 lg:p-0 relative">
+        <div class="container mx-auto mt-12 grid grid-cols-2 gap-[30px] p-2 lg:p-0 relative">
           <PlayerPresentation
             player={props.player}
             gameCount={gameCount}
             gameCountOnClasses={gameCountOnClasses}
           />
 
-          <div class="text-abru-light-75 text-2xl font-bold">Game history</div>
-          <div class="game-list">
-            {games.map(game => (
-              <GameListItem
-                game={game}
-                classPlayed={game.slots.find(s => s.player.equals(props.player._id))!.gameClass}
-              />
-            ))}
-          </div>
+          {games.length > 0 ? (
+            <>
+              <div class="col-span-2 text-abru-light-75 text-2xl font-bold">Game history</div>
+              <div class="col-span-2 game-list">
+                {games.map(game => (
+                  <GameListItem
+                    game={game}
+                    classPlayed={game.slots.find(s => s.player.equals(props.player._id))!.gameClass}
+                  />
+                ))}
+              </div>
 
-          <Pagination
-            hrefFn={page => `/players/${props.player.steamId}?gamespage=${page}`}
-            lastPage={last}
-            currentPage={props.page}
-            around={around}
-          />
-          <EditPlayerButton steamId={props.player.steamId} />
+              <Pagination
+                hrefFn={page => `/players/${props.player.steamId}?gamespage=${page}`}
+                lastPage={last}
+                currentPage={props.page}
+                around={around}
+              />
+            </>
+          ) : (
+            <>
+              <div></div>
+            </>
+          )}
+          <EditPlayerButton user={props.user} steamId={props.player.steamId} />
         </div>
       </Page>
       <Footer user={props.user} />
@@ -102,7 +110,7 @@ function PlayerPresentation(props: {
   gameCountOnClasses: { [gameClass in Tf2ClassName]?: number }
 }) {
   return (
-    <div class="flex flex-row gap-[10px] rounded-lg bg-abru-dark-29 p-[10px] text-abru-light-75">
+    <div class="col-span-2 flex flex-row gap-[10px] rounded-lg bg-abru-dark-29 p-[10px] text-abru-light-75">
       <img
         src={props.player.avatar.large}
         width="184"
@@ -195,14 +203,17 @@ function PlayerPresentation(props: {
   )
 }
 
-function EditPlayerButton(props: { steamId: SteamId64 }) {
+function EditPlayerButton(props: { user: User | undefined; steamId: SteamId64 }) {
   return (
-    <a
-      href={`/players/${props.steamId}/edit`}
-      class="absolute bottom-0 right-0 button button--accent drop-shadow"
-    >
-      <span class="sr-only">Edit player</span>
-      <IconEdit />
-    </a>
+    <div class="grid justify-items-end">
+      {props.user?.player.roles.includes(PlayerRole.admin) ? (
+        <a href={`/players/${props.steamId}/edit`} class="button button--accent drop-shadow">
+          <span class="sr-only">Edit player</span>
+          <IconEdit />
+        </a>
+      ) : (
+        <></>
+      )}
+    </div>
   )
 }
