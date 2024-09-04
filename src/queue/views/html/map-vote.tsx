@@ -9,7 +9,7 @@ export async function MapVote(props: { actor?: SteamId64 | undefined }) {
   const results = await getMapVoteResults()
   return (
     <form
-      class="grid gap-4 grid-cols-3"
+      class="grid gap-4 grid-cols-1 md:grid-cols-3"
       id="map-vote"
       ws-send
       _={`

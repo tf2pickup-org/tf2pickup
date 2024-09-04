@@ -6,8 +6,8 @@ export function RequestNotificationPermissions() {
         id="notifications-permission-default"
         _="init js requestNotificationPermissions()"
       >
-        <div class="banner banner--alert flex flex-row">
-          <p class="flex-1">
+        <div class="banner banner--alert flex flex-col md:flex-row gap-y-2">
+          <p class="flex-1 text-center md:text-start">
             To be notified when a game is about to start, we need your permission to show browser
             notifications.
           </p>

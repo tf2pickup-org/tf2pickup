@@ -13,6 +13,7 @@ import {
   IconBrandSteam,
   IconEdit,
   IconStars,
+  IconSum,
 } from '../../../html/components/icons'
 import { Style } from '../../../html/components/style'
 import { resolve } from 'node:path'
@@ -65,17 +66,21 @@ export async function PlayerPage(props: {
     >
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container mx-auto mt-12 grid grid-cols-2 gap-[30px] p-2 lg:p-0 relative">
-          <PlayerPresentation
-            player={props.player}
-            gameCount={gameCount}
-            gameCountOnClasses={gameCountOnClasses}
-          />
+        <div class="container relative mx-auto grid grid-cols-2 gap-[30px]">
+          <div class="col-span-2">
+            <PlayerPresentation
+              player={props.player}
+              gameCount={gameCount}
+              gameCountOnClasses={gameCountOnClasses}
+            />
+          </div>
 
           {games.length > 0 ? (
             <>
-              <div class="col-span-2 text-abru-light-75 text-2xl font-bold">Game history</div>
-              <div class="col-span-2 game-list">
+              <div class="col-span-2 text-center text-2xl font-bold text-abru-light-75 md:text-start">
+                Game history
+              </div>
+              <div class="game-list col-span-2">
                 {games.map(game => (
                   <GameListItem
                     game={game}
@@ -110,94 +115,88 @@ function PlayerPresentation(props: {
   gameCountOnClasses: { [gameClass in Tf2ClassName]?: number }
 }) {
   return (
-    <div class="col-span-2 flex flex-row gap-[10px] rounded-lg bg-abru-dark-29 p-[10px] text-abru-light-75">
+    <div class="player-presentation">
       <img
         src={props.player.avatar.large}
         width="184"
         height="184"
-        class="h-[184px] w-[184px] rounded"
+        class="player-avatar"
         alt={`${props.player.name}'s avatar`}
       />
 
-      <div class="flex grow flex-col justify-between p-[22px]">
-        <div class="flex grow flex-row gap-[10px]">
-          <span class="-mt-[6px] text-[48px] font-bold leading-none" safe>
-            {props.player.name}
+      <div class="flex flex-row items-center gap-[10px]">
+        <span class="-mt-[6px] text-[48px] font-bold leading-none" safe>
+          {props.player.name}
+        </span>
+        {props.player.roles.includes(PlayerRole.admin) ? (
+          <span class="rounded-[3px] bg-alert px-[8px] py-[6px] font-bold leading-none text-abru-light-3">
+            admin
           </span>
-          {props.player.roles.includes(PlayerRole.admin) ? (
-            <span class="my-2 self-baseline rounded-[3px] bg-alert px-[8px] py-[6px] font-bold leading-none text-abru-light-3">
-              admin
-            </span>
-          ) : (
-            <></>
-          )}
+        ) : (
+          <></>
+        )}
+      </div>
 
-          <div class="grow"></div>
-
-          <div class="flex flex-col">
-            <span class="text-base font-light">Joined:</span>
-            <span class="text-2xl font-bold" safe>
-              {format(props.player.joinedAt, 'MMMM dd, yyyy')}
-            </span>
-          </div>
+      <div class="flex-col md:justify-self-end">
+        <div class="text-center text-base font-light md:text-start">Joined:</div>
+        <div class="text-2xl font-bold" safe>
+          {format(props.player.joinedAt, 'MMMM dd, yyyy')}
         </div>
+      </div>
 
-        <div class="flex flex-row items-center justify-between">
-          <div class="grid grid-flow-col grid-rows-2 place-items-center gap-x-6">
-            <span class="text-base font-light">Total games played:</span>
-            <span class="justify-self-start text-2xl font-bold">{props.gameCount}</span>
+      <div class="player-stats">
+        <span class="md:hidden">
+          <IconSum size={32} />
+        </span>
+        <span class="hidden text-base font-light md:inline">Total games played:</span>
+        <span class="justify-self-start text-2xl font-bold">{props.gameCount}</span>
 
-            <div class="row-span-2 mx-2 h-[48px] w-[2px] bg-abru-light-15"></div>
+        <div class="row-span-2 mx-2 hidden h-[48px] w-[2px] self-center bg-abru-light-15 md:block"></div>
 
-            {[
-              Tf2ClassName.scout,
-              Tf2ClassName.soldier,
-              Tf2ClassName.demoman,
-              Tf2ClassName.medic,
-            ].map(gameClass => (
-              <>
-                <GameClassIcon gameClass={gameClass} size={32} />
-                <span class="text-2xl font-bold">{props.gameCountOnClasses[gameClass] ?? 0}</span>
-              </>
-            ))}
-          </div>
+        {[Tf2ClassName.scout, Tf2ClassName.soldier, Tf2ClassName.demoman, Tf2ClassName.medic].map(
+          gameClass => (
+            <>
+              <GameClassIcon gameClass={gameClass} size={32} />
+              <span class="text-2xl font-bold">{props.gameCountOnClasses[gameClass] ?? 0}</span>
+            </>
+          ),
+        )}
+      </div>
 
-          <div class="flex flex-row gap-[10px]">
-            <a
-              href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
-              target="_blank"
-              rel="noreferrer"
-              class="player-presentation-link"
-            >
-              <IconBrandSteam />
-              <span>steam</span>
-            </a>
+      <div class="grid gap-[10px] md:grid-flow-col md:grid-rows-1 md:justify-items-center md:max-xl:col-span-3 lg:place-content-end">
+        <a
+          href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
+          target="_blank"
+          rel="noreferrer"
+          class="player-presentation-link"
+        >
+          <IconBrandSteam />
+          <span>steam</span>
+        </a>
 
-            <a
-              href={`https://logs.tf/profile/${props.player.steamId}`}
-              target="_blank"
-              rel="noreferrer"
-              class="player-presentation-link"
-            >
-              <IconAlignBoxBottomRight />
-              <span>logs</span>
-            </a>
+        <a
+          href={`https://logs.tf/profile/${props.player.steamId}`}
+          target="_blank"
+          rel="noreferrer"
+          class="player-presentation-link"
+        >
+          <IconAlignBoxBottomRight />
+          <span>logs</span>
+        </a>
 
-            {props.player.etf2lProfileId ? (
-              <a
-                href={`https://etf2l.org/forum/user/${props.player.etf2lProfileId}`}
-                target="_blank"
-                rel="noreferrer"
-                class="player-presentation-link"
-              >
-                <IconStars />
-                <span>etf2l</span>
-              </a>
-            ) : (
-              <></>
-            )}
-          </div>
-        </div>
+        {props.player.etf2lProfileId ? (
+          <a
+            href={`https://etf2l.org/forum/user/${props.player.etf2lProfileId}`}
+            target="_blank"
+            rel="noreferrer"
+            class="player-presentation-link"
+          >
+            <IconStars />
+            <span>etf2l</span>
+          </a>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   )
