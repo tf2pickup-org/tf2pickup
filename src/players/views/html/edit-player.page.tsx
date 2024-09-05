@@ -101,7 +101,10 @@ export async function EditPlayerSkillPage(props: { player: PlayerModel; user: Us
 }
 
 export async function EditPlayerBansPage(props: { player: WithId<PlayerModel>; user: User }) {
-  const bans = await collections.playerBans.find({ player: props.player._id }).toArray()
+  const bans = await collections.playerBans
+    .find({ player: props.player._id })
+    .sort({ start: -1 })
+    .toArray()
 
   return (
     <EditPlayer player={props.player} user={props.user} activePage="/bans">
