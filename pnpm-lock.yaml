@@ -60,14 +60,14 @@ importers:
         specifier: 16.4.5
         version: 16.4.5
       fastify:
-        specifier: 4.26.2
-        version: 4.26.2
+        specifier: 4.28.1
+        version: 4.28.1
       fastify-plugin:
         specifier: 4.5.1
         version: 4.5.1
       fastify-type-provider-zod:
         specifier: 1.2.0
-        version: 1.2.0(fastify@4.26.2)(zod@3.23.8)
+        version: 1.2.0(fastify@4.28.1)(zod@3.23.8)
       generate-password:
         specifier: 1.7.1
         version: 1.7.1
@@ -1373,8 +1373,8 @@ packages:
       fastify: ^4.0.0
       zod: ^3.14.2
 
-  fastify@4.26.2:
-    resolution: {integrity: sha512-90pjTuPGrfVKtdpLeLzND5nyC4woXZN5VadiNQCicj/iJU4viNHKhsAnb7jmv1vu2IzkLXyBiCzdWuzeXgQ5Ug==}
+  fastify@4.28.1:
+    resolution: {integrity: sha512-kFWUtpNr4i7t5vY2EJPCN2KgMVpuqfU4NjnJNCgiNB900oiDeYqaNDRcAfeBbOF5hGixixxcKnOU4KN9z6QncQ==}
 
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
@@ -1976,10 +1976,6 @@ packages:
 
   pino-std-serializers@6.2.2:
     resolution: {integrity: sha512-cHjPPsE+vhj/tnhCy/wiMh3M3z3h/j15zHQX+S9GkTBgqJuTuJzYJ4gUyACLhDaJ7kk9ba9iRDmbH2tJU03OiA==}
-
-  pino@8.21.0:
-    resolution: {integrity: sha512-ip4qdzjkAyDDZklUaZkcRFb2iA118H9SgRh8yzTkSQK8HilsOJF7rSY8HoW5+I0M46AZgX/pxbprf2vvzQCE0Q==}
-    hasBin: true
 
   pino@9.0.0:
     resolution: {integrity: sha512-uI1ThkzTShNSwvsUM6b4ND8ANzWURk9zTELMztFkmnCQeR/4wkomJ+echHee5GMWGovoSfjwdeu80DsFIt7mbA==}
@@ -3936,13 +3932,13 @@ snapshots:
 
   fastify-plugin@4.5.1: {}
 
-  fastify-type-provider-zod@1.2.0(fastify@4.26.2)(zod@3.23.8):
+  fastify-type-provider-zod@1.2.0(fastify@4.28.1)(zod@3.23.8):
     dependencies:
-      fastify: 4.26.2
+      fastify: 4.28.1
       zod: 3.23.8
       zod-to-json-schema: 3.23.2(zod@3.23.8)
 
-  fastify@4.26.2:
+  fastify@4.28.1:
     dependencies:
       '@fastify/ajv-compiler': 3.6.0
       '@fastify/error': 3.4.1
@@ -3953,7 +3949,7 @@ snapshots:
       fast-json-stringify: 5.16.1
       find-my-way: 8.2.0
       light-my-request: 5.13.0
-      pino: 8.21.0
+      pino: 9.0.0
       process-warning: 3.0.0
       proxy-addr: 2.0.7
       rfdc: 1.4.1
@@ -4490,20 +4486,6 @@ snapshots:
       strip-json-comments: 3.1.1
 
   pino-std-serializers@6.2.2: {}
-
-  pino@8.21.0:
-    dependencies:
-      atomic-sleep: 1.0.0
-      fast-redact: 3.5.0
-      on-exit-leak-free: 2.1.2
-      pino-abstract-transport: 1.2.0
-      pino-std-serializers: 6.2.2
-      process-warning: 3.0.0
-      quick-format-unescaped: 4.0.4
-      real-require: 0.2.0
-      safe-stable-stringify: 2.4.3
-      sonic-boom: 3.8.1
-      thread-stream: 2.7.0
 
   pino@9.0.0:
     dependencies:
