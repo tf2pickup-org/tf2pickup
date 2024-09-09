@@ -74,7 +74,7 @@
     "tsc-alias": "1.8.10",
     "tsx": "4.19.0",
     "typescript": "5.5.4",
-    "typescript-eslint": "7.18.0",
+    "typescript-eslint": "8.5.0",
     "vitest": "2.0.5"
   }
 }
