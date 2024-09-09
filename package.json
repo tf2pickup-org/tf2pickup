@@ -38,7 +38,7 @@
     "jsonwebtoken": "9.0.2",
     "lodash-es": "4.17.21",
     "marked": "13.0.3",
-    "mongodb": "6.5.0",
+    "mongodb": "6.8.1",
     "nanoid": "5.0.7",
     "openid": "2.0.12",
     "pino": "9.0.0",
