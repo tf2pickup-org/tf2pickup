@@ -111,8 +111,8 @@ importers:
         specifier: 3.0.12
         version: 3.0.12
       steamid:
-        specifier: 2.0.0
-        version: 2.0.0
+        specifier: 2.1.0
+        version: 2.1.0
       tailwindcss:
         specifier: 3.4.10
         version: 3.4.10
@@ -2456,8 +2456,8 @@ packages:
   steamapi@3.0.12:
     resolution: {integrity: sha512-bGH3OPANcFlFN4DS5hXY4xEufh11peejcoHQ8fIu4Mm2o7LtpBwVqRKozfwDalQ45k8Xd8QKutSpoGrzGA5SAQ==}
 
-  steamid@2.0.0:
-    resolution: {integrity: sha512-+BFJMbo+IxzyfovLR37E7APkaNfmrL3S+88T7wTMRHnQ6LBhzEawPnjfWNKM9eUL/dH45j+7vhSX4WaGXoa4/Q==}
+  steamid@2.1.0:
+    resolution: {integrity: sha512-ndt1cvuuSC+i8fcxVsmeyRlgGsR1QsoAuIXz+eabj8/Y4GIWE2+mgHA7Hys61JDHOxttfWtXHtN2m5TNYTlORg==}
     engines: {node: '>=12.0.0'}
 
   stream-shift@1.0.3:
@@ -4953,9 +4953,9 @@ snapshots:
   steamapi@3.0.12:
     dependencies:
       node-fetch: 3.3.2
-      steamid: 2.0.0
+      steamid: 2.1.0
 
-  steamid@2.0.0: {}
+  steamid@2.1.0: {}
 
   stream-shift@1.0.3: {}
 
