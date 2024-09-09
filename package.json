@@ -41,7 +41,7 @@
     "mongodb": "6.8.1",
     "nanoid": "5.0.7",
     "openid": "2.0.12",
-    "pino": "9.0.0",
+    "pino": "9.4.0",
     "pino-pretty": "11.2.2",
     "postcss": "8.4.45",
     "postcss-import": "16.1.0",
