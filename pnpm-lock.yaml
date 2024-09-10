@@ -34,13 +34,13 @@ importers:
         version: 10.0.1
       '@kitajs/fastify-html-plugin':
         specifier: 4.1.3
-        version: 4.1.3(@kitajs/html@4.2.2)(@kitajs/ts-html-plugin@4.0.2(@kitajs/html@4.2.2)(typescript@5.5.4))
+        version: 4.1.3(@kitajs/html@4.2.2)(@kitajs/ts-html-plugin@4.0.3(@kitajs/html@4.2.2)(typescript@5.5.4))
       '@kitajs/html':
         specifier: 4.2.2
         version: 4.2.2
       '@kitajs/ts-html-plugin':
-        specifier: 4.0.2
-        version: 4.0.2(@kitajs/html@4.2.2)(typescript@5.5.4)
+        specifier: 4.0.3
+        version: 4.0.3(@kitajs/html@4.2.2)(typescript@5.5.4)
       '@tailwindcss/typography':
         specifier: 0.5.15
         version: 0.5.15(tailwindcss@3.4.10)
@@ -599,11 +599,11 @@ packages:
     resolution: {integrity: sha512-di0yCy60m/ywY2SgdhQ/Xz0GM9BaxF6XPCZ4DoSA2/LfhIVM9mgs8udMtr6KuyWe1254hOSJDl3RE9npFOzM8Q==}
     engines: {node: '>=12'}
 
-  '@kitajs/ts-html-plugin@4.0.2':
-    resolution: {integrity: sha512-uMVk/OdLJM8pzDVcbXnHNkZGRNZc9O8tx9Iw29s4UVi55i+fFwVPHBMtBuC+iPR2ecsihxOlo0W4PpvlO/cfKA==}
+  '@kitajs/ts-html-plugin@4.0.3':
+    resolution: {integrity: sha512-rXbWKovRncLoRcshnb4eBz/gojmclUJ2KkZw0HLu/3cvO0l4HtvAIGaZ1Y2rJy5hLcUdCzNjTEU2EzYCECRCSg==}
     hasBin: true
     peerDependencies:
-      '@kitajs/html': ^4.2.0
+      '@kitajs/html': ^4.2.2
       typescript: ^5.3.3
 
   '@lukeed/ms@2.0.2':
@@ -2545,6 +2545,9 @@ packages:
   tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
+  tslib@2.7.0:
+    resolution: {integrity: sha512-gLXCKdN1/j47AiHiOkJN69hJmcbGTHI0ImLmbYLHykhgeN0jVGola9yVjFgzCUklsZQMW55o+dW7IXv3RCXDzA==}
+
   tsx@4.19.0:
     resolution: {integrity: sha512-bV30kM7bsLZKZIOCHeMNVMJ32/LuJzLVajkQI/qf92J2Qr08ueLQvW00PUZGiuLPP760UINwupgUj8qrSCPUKg==}
     engines: {node: '>=18.0.0'}
@@ -3033,22 +3036,22 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@kitajs/fastify-html-plugin@4.1.3(@kitajs/html@4.2.2)(@kitajs/ts-html-plugin@4.0.2(@kitajs/html@4.2.2)(typescript@5.5.4))':
+  '@kitajs/fastify-html-plugin@4.1.3(@kitajs/html@4.2.2)(@kitajs/ts-html-plugin@4.0.3(@kitajs/html@4.2.2)(typescript@5.5.4))':
     dependencies:
       '@kitajs/html': 4.2.2
       fastify-plugin: 4.5.1
     optionalDependencies:
-      '@kitajs/ts-html-plugin': 4.0.2(@kitajs/html@4.2.2)(typescript@5.5.4)
+      '@kitajs/ts-html-plugin': 4.0.3(@kitajs/html@4.2.2)(typescript@5.5.4)
 
   '@kitajs/html@4.2.2':
     dependencies:
       csstype: 3.1.3
 
-  '@kitajs/ts-html-plugin@4.0.2(@kitajs/html@4.2.2)(typescript@5.5.4)':
+  '@kitajs/ts-html-plugin@4.0.3(@kitajs/html@4.2.2)(typescript@5.5.4)':
     dependencies:
       '@kitajs/html': 4.2.2
       chalk: 4.1.2
-      tslib: 2.6.3
+      tslib: 2.7.0
       typescript: 5.5.4
       yargs: 17.7.2
 
@@ -5005,6 +5008,8 @@ snapshots:
       plimit-lit: 1.6.1
 
   tslib@2.6.3: {}
+
+  tslib@2.7.0: {}
 
   tsx@4.19.0:
     dependencies:
