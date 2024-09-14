@@ -43,7 +43,7 @@
     "openid": "2.0.12",
     "pino": "9.4.0",
     "pino-pretty": "11.2.2",
-    "postcss": "8.4.45",
+    "postcss": "8.4.47",
     "postcss-import": "16.1.0",
     "postcss-lighten-darken": "0.9.0",
     "rcon-client": "4.2.5",
