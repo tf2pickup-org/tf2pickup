@@ -70,7 +70,7 @@ export default fp(
   async app => {
     app.get('/auth/steam', async (_request, reply) => {
       const url = await getSteamLoginUrl()
-      return await reply.redirect(302, url)
+      return await reply.redirect(url, 302)
     })
 
     app.get('/auth/steam/return', async (request, reply) => {
@@ -92,7 +92,7 @@ export default fp(
         return await reply
           .clearCookie('return_url')
           .setCookie('token', token, { maxAge: secondsInWeek, path: '/' })
-          .redirect(302, returnUrl)
+          .redirect(returnUrl, 302)
           .send()
       } catch (e) {
         assertIsError(e)

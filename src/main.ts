@@ -1,12 +1,12 @@
 import fastify from 'fastify'
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 import { resolve } from 'node:path'
-import { logger } from './logger'
+import { logger as loggerInstance } from './logger'
 import { environment } from './environment'
 import { secrets } from './secrets'
 import { hoursToSeconds } from 'date-fns'
 
-const app = fastify({ logger })
+const app = fastify({ loggerInstance })
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)

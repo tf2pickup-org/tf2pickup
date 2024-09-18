@@ -10,7 +10,7 @@ export default fp(
       return await reply
         .clearCookie('return_url')
         .clearCookie('token')
-        .redirect(302, returnUrl)
+        .redirect(returnUrl, 302)
         .send()
     })
   },
