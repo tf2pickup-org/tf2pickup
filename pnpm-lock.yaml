@@ -30,8 +30,8 @@ importers:
         specifier: 8.0.1
         version: 8.0.1
       '@fastify/websocket':
-        specifier: 10.0.1
-        version: 10.0.1
+        specifier: 11.0.1
+        version: 11.0.1
       '@kitajs/fastify-html-plugin':
         specifier: 4.2.0
         version: 4.2.0(@kitajs/html@4.2.2)(@kitajs/ts-html-plugin@4.1.0(@kitajs/html@4.2.2)(typescript@5.5.4))
@@ -554,8 +554,8 @@ packages:
   '@fastify/static@8.0.1':
     resolution: {integrity: sha512-7idyhbcgf14v4bjWzUeHEFvnVxvNJ1n5cyGPgFtwTZjnjUQ1wgC7a2FQai7OGKqCKywDEjzbPhAZRW+uEK1LMg==}
 
-  '@fastify/websocket@10.0.1':
-    resolution: {integrity: sha512-8/pQIxTPRD8U94aILTeJ+2O3el/r19+Ej5z1O1mXlqplsUH7KzCjAI0sgd5DM/NoPjAi5qLFNIjgM5+9/rGSNw==}
+  '@fastify/websocket@11.0.1':
+    resolution: {integrity: sha512-44yam5+t1I9v09hWBYO+ezV88+mb9Se2BjgERtzB/68+0mGeTfFkjBeDBe2y+ZdiPpeO2rhevhdnfrBm5mqH+Q==}
 
   '@humanwhocodes/module-importer@1.0.1':
     resolution: {integrity: sha512-bxveV4V8v5Yb4ncFTT3rPSgZBOpCkjfK0y4oVVVJwIuDVBRMDXrPyXRL988i5ap9m9bnyEEjWfm5WkBmtffLfA==}
@@ -2996,10 +2996,10 @@ snapshots:
       fastq: 1.17.1
       glob: 11.0.0
 
-  '@fastify/websocket@10.0.1':
+  '@fastify/websocket@11.0.1':
     dependencies:
       duplexify: 4.1.3
-      fastify-plugin: 4.5.1
+      fastify-plugin: 5.0.0
       ws: 8.18.0
     transitivePeerDependencies:
       - bufferutil
