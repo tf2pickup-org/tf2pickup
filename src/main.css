@@ -438,6 +438,17 @@ dialog::backdrop {
   }
 }
 
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  .label {
+    font-size: 16px;
+    font-weight: 500;
+  }
+}
+
 .admin-panel-link {
   display: flex;
   flex-flow: flex nowrap;
@@ -447,7 +458,7 @@ dialog::backdrop {
   font-weight: 500;
   font-size: 18px;
   border-radius: 4px;
-  padding: 6px 12px;
+  padding: 6px 12px;  
   position: relative;
 
   &:hover {

@@ -10,6 +10,7 @@ import type { MapPoolEntry } from './database/models/map-pool-entry.model'
 import type { StaticGameServerModel } from './database/models/static-game-server.model'
 import type { LogMessage } from './log-receiver/parse-log-message'
 import type { Tf2Team } from './shared/types/tf2-team'
+import type { PlayerBanModel } from './database/models/player-ban.model'
 
 export interface Events {
   'game:created': {
@@ -100,6 +101,9 @@ export interface Events {
   'player:updated': {
     before: PlayerModel
     after: PlayerModel
+  }
+  'player/ban:added': {
+    ban: PlayerBanModel
   }
 
   'queue/mapPool:reset': {
