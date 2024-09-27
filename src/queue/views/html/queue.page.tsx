@@ -33,8 +33,8 @@ export async function QueuePage(user?: User) {
     >
       <NavigationBar user={user} />
       <Page>
-        <div class="container mx-auto grid gap-x-4 gap-y-8 p-2 lg:grid-cols-4 lg:p-0">
-          <div class="order-1 lg:col-span-4 flex flex-col gap-y-2">
+        <div class="container mx-auto grid grid-cols-1 lg:grid-cols-4 lg:gap-x-4 gap-y-8">
+          <div class="order-1 lg:col-span-4 grid grid-cols-1 gap-y-2">
             <OfflineAlert />
             <RequestNotificationPermissions />
             <SubstitutionRequests />
@@ -47,7 +47,7 @@ export async function QueuePage(user?: User) {
             </div>
           </div>
 
-          <div class="order-4 col-span-3">
+          <div class="order-4 lg:col-span-3">
             <MapVote actor={user?.player.steamId} />
           </div>
 

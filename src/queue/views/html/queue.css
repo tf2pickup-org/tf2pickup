@@ -142,6 +142,11 @@
     border-radius: 2px;
     padding: 4px 8px;
     font-weight: 300;
+    text-align: center;
+
+    @media screen(lg) {
+      text-align: start;
+    }
 
     &:nth-child(even) {
       background-color: theme(colors.abru.dark.6);

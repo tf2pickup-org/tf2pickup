@@ -2,6 +2,52 @@
   grid-template-columns: subgrid;
 }
 
+.player-presentation {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  gap: 10px;
+  border-radius: 8px;
+  padding: 22px;
+  background-color: theme(colors.abru.dark.29);
+  color: theme(colors.abru.light.75);
+  row-gap: 24px;
+
+  @media screen(md) {
+    grid-auto-flow: row;
+    grid-template-columns: 218px auto auto;
+    justify-items: normal;
+    row-gap: 10px;
+  }
+
+  .player-avatar {
+    grid-row: span 2 / span 2;
+    height: 184px;
+    width: 184px;
+    border-radius: 4px;
+  }
+
+  .player-stats {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 10px;
+
+    @media screen(md) {
+      grid-auto-flow: column;
+      grid-template-rows: 1fr 1fr;
+      justify-items: center;
+      justify-self: start;
+      column-gap: 24px;
+
+      @media not all and screen(lg) {
+        grid-column: span 2 / span 2;
+        width: 100%;
+      }
+    }
+  }
+}
+
 .player-presentation-link {
   @apply transition-colors;
   @apply duration-75;
@@ -14,6 +60,8 @@
 
   background-color: theme(colors.abru.light.3);
   color: theme(colors.abru.light.75);
+  height: 48px;
+  min-width: 200px;
 
   border-radius: 4px;
   padding: 12px 32px;
@@ -21,6 +69,10 @@
   font-size: 18px;
   font-weight: 700;
   text-transform: uppercase;
+
+  @media screen(md) {
+    min-width: 0;
+  }
 
   &:hover {
     background-color: lighten(theme(colors.abru.light.3), 2%);
