@@ -14,6 +14,11 @@ import { PlayerRole } from '../database/models/player.model'
 import { update } from './update'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { PlayerSettingsPage } from './views/html/player-settings.page'
+import { AddBanPage } from './views/html/add-ban.page'
+import { banExpiryFormSchema } from './schemas/ban-expiry-form.schema'
+import { format } from 'date-fns'
+import { getBanExpiryDate } from './get-ban-expiry-date'
+import { addBan } from './add-ban'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -198,6 +203,68 @@ export default fp(
           }
 
           reply.status(200).html(await EditPlayerBansPage({ player, user: req.user! }))
+        },
+      )
+      .get(
+        '/players/ban-expiry',
+        {
+          schema: {
+            querystring: banExpiryFormSchema,
+          },
+        },
+        async (request, reply) => {
+          const banExpiryDate = getBanExpiryDate(request.query)
+          reply.status(200).html(format(banExpiryDate, 'dd.MM.yyyy HH:mm'))
+        },
+      )
+      .get(
+        '/players/:steamId/edit/bans/add',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+            }),
+          },
+        },
+        async (request, reply) => {
+          const { steamId } = request.params
+          const player = await collections.players.findOne({ steamId })
+          if (player === null) {
+            return reply.notFound(`player not found: ${steamId}`)
+          }
+          reply.status(200).html(await AddBanPage({ player, user: request.user! }))
+        },
+      )
+      .post(
+        '/players/:steamId/edit/bans/add',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+            }),
+            body: z.intersection(
+              banExpiryFormSchema,
+              z.object({
+                reason: z.string(),
+              }),
+            ),
+          },
+        },
+        async (request, reply) => {
+          await addBan({
+            player: request.params.steamId,
+            admin: request.user!.player.steamId,
+            end: getBanExpiryDate(request.body),
+            reason: request.body.reason,
+          })
+          request.flash('success', `Player ban added`)
+          reply.redirect(`/players/${request.params.steamId}/edit/bans`)
         },
       )
       .get(

@@ -179,9 +179,7 @@ function EditPlayer(props: {
 
 async function BanDetails(props: { ban: PlayerBanModel }) {
   const admin = await collections.players.findOne({ _id: props.ban.admin })
-  if (!admin) {
-    throw new Error(`admin with ID ${props.ban.admin.toString()} not found`)
-  }
+
   return (
     <div class="group">
       <div>
@@ -190,8 +188,8 @@ async function BanDetails(props: { ban: PlayerBanModel }) {
         </span>
         <span class="text-sm">
           by{' '}
-          <a href={`/players/${admin.steamId}`} safe>
-            {admin.name}
+          <a href={`/players/${admin?.steamId}`} safe>
+            {admin?.name ?? 'unknown admin'}
           </a>
         </span>
       </div>
