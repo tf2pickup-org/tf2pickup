@@ -51,8 +51,8 @@ importers:
         specifier: 10.4.20
         version: 10.4.20(postcss@8.4.47)
       croner:
-        specifier: 8.1.1
-        version: 8.1.1
+        specifier: 8.1.2
+        version: 8.1.2
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -1075,8 +1075,8 @@ packages:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
 
-  croner@8.1.1:
-    resolution: {integrity: sha512-1VdUuRnQP4drdFkS8NKvDR1NBgevm8TOuflcaZEKsxw42CxonjW/2vkj1AKlinJb4ZLwBcuWF9GiPr7FQc6AQA==}
+  croner@8.1.2:
+    resolution: {integrity: sha512-ypfPFcAXHuAZRCzo3vJL6ltENzniTjwe/qsLleH1V2/7SRDjgvRQyrLmumFTLmjFax4IuSxfGXEn79fozXcJog==}
     engines: {node: '>=18.0'}
 
   cross-spawn@7.0.3:
@@ -3563,7 +3563,7 @@ snapshots:
 
   cookie@0.6.0: {}
 
-  croner@8.1.1: {}
+  croner@8.1.2: {}
 
   cross-spawn@7.0.3:
     dependencies:
