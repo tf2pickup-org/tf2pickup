@@ -68,7 +68,7 @@
     "@types/ws": "8.5.12",
     "cssnano": "7.0.6",
     "eslint": "9.11.1",
-    "globals": "15.9.0",
+    "globals": "15.10.0",
     "postcss-cli": "11.0.0",
     "prettier": "3.3.3",
     "prettier-plugin-tailwindcss": "0.6.8",
