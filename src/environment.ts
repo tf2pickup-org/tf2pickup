@@ -17,6 +17,9 @@ const environmentSchema = z.object({
   LOG_RELAY_PORT: z.coerce.number(),
   GAME_SERVER_SECRET: z.string(),
   THUMBNAIL_SERVICE_URL: z.string().url(),
+
+  TWITCH_CLIENT_ID: z.string().optional(),
+  TWITCH_CLIENT_SECRET: z.string().optional(),
 })
 
 export const environment = environmentSchema.parse(process.env)

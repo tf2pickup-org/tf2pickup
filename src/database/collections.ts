@@ -17,6 +17,7 @@ import type { QueueStateModel } from './models/queue-state.model'
 import type { SecretModel } from './models/secret.model'
 import type { StaticGameServerModel } from './models/static-game-server.model'
 import type { TaskModel } from './models/task.model'
+import type { StreamModel } from './models/stream.model'
 
 export const collections = {
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
@@ -36,5 +37,6 @@ export const collections = {
   queueMapVotes: database.collection<QueueMapVoteModel>('queue.mapvotes'),
   secrets: database.collection<SecretModel>('secrets'),
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
+  streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
 }

@@ -109,6 +109,24 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('serveme.tf.ban_gameservers'),
     value: z.array(z.string()).default([]),
   }),
+  z.object({
+    key: z.literal('twitchtv.promoted_streams'),
+    value: z
+      .array(z.string())
+      .default([
+        'teamfortresstv',
+        'teamfortresstv2',
+        'teamfortresstv3',
+        'kritzkast',
+        'kritzkast2',
+        'rglgg',
+        'essentialstf',
+        'cappingtv',
+        'cappingtv2',
+        'cappingtv3',
+        'tflivetv',
+      ]),
+  }),
 ])
 
 export type ConfigurationEntryModel = z.infer<typeof configurationSchema>

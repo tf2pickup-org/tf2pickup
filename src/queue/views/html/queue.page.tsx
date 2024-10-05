@@ -19,6 +19,7 @@ import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { RequestNotificationPermissions } from './request-notification-permissions'
 import { SubstitutionRequests } from './substitution-requests'
+import { StreamList } from './stream-list'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -33,8 +34,8 @@ export async function QueuePage(user?: User) {
     >
       <NavigationBar user={user} />
       <Page>
-        <div class="container mx-auto grid grid-cols-1 lg:grid-cols-4 lg:gap-x-4 gap-y-8">
-          <div class="order-1 lg:col-span-4 grid grid-cols-1 gap-y-2">
+        <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
+          <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />
             <RequestNotificationPermissions />
             <SubstitutionRequests />
@@ -53,6 +54,10 @@ export async function QueuePage(user?: User) {
 
           <div class="order-last lg:order-3 lg:row-span-2">
             <OnlinePlayerList />
+          </div>
+
+          <div class="order-5 lg:col-span-4">
+            <StreamList />
           </div>
         </div>
       </Page>

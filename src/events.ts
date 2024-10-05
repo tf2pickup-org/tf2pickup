@@ -11,6 +11,7 @@ import type { StaticGameServerModel } from './database/models/static-game-server
 import type { LogMessage } from './log-receiver/parse-log-message'
 import type { Tf2Team } from './shared/types/tf2-team'
 import type { PlayerBanModel } from './database/models/player-ban.model'
+import type { StreamModel } from './database/models/stream.model'
 
 export interface Events {
   'game:created': {
@@ -143,6 +144,10 @@ export interface Events {
   'staticGameServer:updated': {
     before: StaticGameServerModel
     after: StaticGameServerModel
+  }
+
+  'twitch.tv/streams:updated': {
+    streams: StreamModel[]
   }
 }
 
