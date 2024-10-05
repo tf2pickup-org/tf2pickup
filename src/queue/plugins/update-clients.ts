@@ -13,6 +13,7 @@ import { SetTitle } from '../views/html/set-title'
 import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { GameState } from '../../database/models/game.model'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
+import { StreamList } from '../views/html/stream-list'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -163,6 +164,12 @@ export default fp(
       ) {
         await refreshSubstitutionRequests()
       }
+    })
+    events.on('twitch.tv/streams:updated', async () => {
+      await safe(async () => {
+        const cmp = await StreamList()
+        app.gateway.broadcast(() => cmp)
+      })
     })
   },
   { name: 'update clients' },
