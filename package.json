@@ -42,7 +42,7 @@
     "nanoid": "5.0.7",
     "openid": "2.0.12",
     "pino": "9.5.0",
-    "pino-pretty": "11.2.2",
+    "pino-pretty": "11.3.0",
     "postcss": "8.4.47",
     "postcss-import": "16.1.0",
     "postcss-lighten-darken": "0.9.0",
