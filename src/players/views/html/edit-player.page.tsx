@@ -9,7 +9,6 @@ import { Footer } from '../../../html/components/footer'
 import {
   AdminPanel,
   AdminPanelBody,
-  AdminPanelHeader,
   AdminPanelLink,
   AdminPanelSidebar,
 } from '../../../html/components/admin-panel'
