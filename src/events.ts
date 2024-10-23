@@ -106,6 +106,10 @@ export interface Events {
   'player/ban:added': {
     ban: PlayerBanModel
   }
+  'player/ban:revoked': {
+    ban: PlayerBanModel
+    admin: SteamId64
+  }
 
   'queue/mapPool:reset': {
     maps: MapPoolEntry[]

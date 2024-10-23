@@ -46,11 +46,17 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     )
   } else if (props.actor) {
     const actor = await collections.players.findOne({ steamId: props.actor })
-    if (!props.actor) {
+    if (!actor) {
       throw new Error(`actor invalid: ${props.actor}`)
     }
 
-    slotContent = <JoinButton slotId={props.slot.id} disabled={Boolean(actor?.activeGame)} />
+    const activeBans = await collections.playerBans.countDocuments({
+      player: actor._id,
+      end: { $gte: new Date() },
+    })
+    const disabled = Boolean(actor.activeGame) || activeBans > 0
+
+    slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
 
   return (
@@ -137,7 +143,7 @@ function PlayerInfo(props: {
         class="h-[42px] w-[42px] rounded"
       />
       <a
-        class="text-abru-dark-3 flex-1 overflow-hidden whitespace-nowrap text-center text-xl font-bold hover:underline"
+        class="flex-1 overflow-hidden whitespace-nowrap text-center text-xl font-bold text-abru-dark-3 hover:underline"
         href={`/players/${props.player.steamId}`}
         safe
       >

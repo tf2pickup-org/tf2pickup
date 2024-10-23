@@ -5,6 +5,7 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import {
+  BanDetails,
   EditPlayerBansPage,
   EditPlayerProfilePage,
   EditPlayerSkillPage,
@@ -19,6 +20,8 @@ import { banExpiryFormSchema } from './schemas/ban-expiry-form.schema'
 import { format } from 'date-fns'
 import { getBanExpiryDate } from './get-ban-expiry-date'
 import { addBan } from './add-ban'
+import { ObjectId } from 'mongodb'
+import { revokeBan } from './revoke-ban'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -203,6 +206,25 @@ export default fp(
           }
 
           reply.status(200).html(await EditPlayerBansPage({ player, user: req.user! }))
+        },
+      )
+      .put(
+        '/players/:steamId/edit/bans/:banId/revoke',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+              banId: z.string().transform(value => new ObjectId(value)),
+            }),
+          },
+        },
+        async (request, reply) => {
+          const { banId } = request.params
+          const ban = await revokeBan(banId, request.user!.player.steamId)
+          reply.status(200).html(await BanDetails({ ban }))
         },
       )
       .get(

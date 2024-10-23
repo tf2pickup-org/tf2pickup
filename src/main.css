@@ -91,6 +91,13 @@ dialog::backdrop {
       background-color: lighten(theme(colors.abru.DEFAULT), 4%);
     }
   }
+
+  &--darker {
+    background-color: theme(colors.abru.dark.25);
+    &:hover {
+      background-color: darken(theme(colors.abru.dark.25), 5%);
+    }
+  }
 }
 
 .banner {
@@ -438,6 +445,18 @@ dialog::backdrop {
   }
 }
 
+.admin-panel-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  margin-bottom: 24px;
+  align-items: center;
+
+  h1 {
+    font-size: 32px;
+    color: theme(colors.abru.light.75);
+  }
+}
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -458,7 +477,7 @@ dialog::backdrop {
   font-weight: 500;
   font-size: 18px;
   border-radius: 4px;
-  padding: 6px 12px;  
+  padding: 6px 12px;
   position: relative;
 
   &:hover {
