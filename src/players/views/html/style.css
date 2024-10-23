@@ -85,3 +85,17 @@
   width: 42px;
   height: 42px;
 }
+
+.edit-player-ban-list {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  gap: 8px;
+
+  .ban-item {
+    @apply col-span-4;
+    @apply row-span-2;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+  }
+}

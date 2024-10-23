@@ -18,4 +18,6 @@ authUsers('banned player gets kicked', async ({ steamIds, pages }) => {
   await adminPage.getByRole('button', { name: 'Save' }).click()
 
   await expect(player.slot(0).joinButton()).toBeDisabled()
+
+  await adminPage.getByRole('button', { name: 'Revoke ban' }).click()
 })

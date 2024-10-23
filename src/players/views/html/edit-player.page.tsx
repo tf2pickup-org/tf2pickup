@@ -18,6 +18,7 @@ import {
   IconChartArrowsVertical,
   IconPlus,
   IconUserScan,
+  IconX,
 } from '../../../html/components/icons'
 import type { Children } from '@kitajs/html'
 import { queue } from '../../../queue'
@@ -107,23 +108,29 @@ export async function EditPlayerBansPage(props: { player: WithId<PlayerModel>; u
     .toArray()
 
   return (
-    <EditPlayer player={props.player} user={props.user} activePage="/bans">
-      <div class="admin-panel-content">
-        {bans.length === 0 ? (
-          <span class="text-abru-light-75 italic">No bans</span>
-        ) : (
-          bans.map(ban => <BanDetails ban={ban} />)
-        )}
-      </div>
-
-      <div class="flex">
-        <a
-          href={`/players/${props.player.steamId}/edit/bans/add`}
-          class="button button--accent mt-6"
-        >
+    <EditPlayer
+      player={props.player}
+      user={props.user}
+      activePage="/bans"
+      action={
+        <a href={`/players/${props.player.steamId}/edit/bans/add`} class="button button--accent">
           <IconPlus />
           Add ban
         </a>
+      }
+    >
+      <div class="admin-panel-content">
+        {bans.length === 0 ? (
+          <span class="italic text-abru-light-75">No bans</span>
+        ) : (
+          <>
+            <div class="edit-player-ban-list">
+              {bans.map(ban => (
+                <BanDetails ban={ban} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </EditPlayer>
   )
@@ -134,6 +141,7 @@ function EditPlayer(props: {
   user: User
   children: Children
   activePage: keyof typeof editPlayerPages
+  action?: Children
 }) {
   return (
     <Layout
@@ -167,7 +175,10 @@ function EditPlayer(props: {
             </AdminPanelLink>
           </AdminPanelSidebar>
           <AdminPanelBody>
-            <AdminPanelHeader>{editPlayerPages[props.activePage]}</AdminPanelHeader>
+            <div class="admin-panel-header">
+              <h1>{editPlayerPages[props.activePage]}</h1>
+              {props.action ? props.action : <></>}
+            </div>
             {props.children}
           </AdminPanelBody>
         </AdminPanel>
@@ -177,30 +188,53 @@ function EditPlayer(props: {
   )
 }
 
-async function BanDetails(props: { ban: PlayerBanModel }) {
+export async function BanDetails(props: { ban: WithId<PlayerBanModel> }) {
+  const player = await collections.players.findOne({ _id: props.ban.player })
+  if (!player) {
+    throw new Error(`player ${props.ban.player.toString()} not found`)
+  }
   const admin = await collections.players.findOne({ _id: props.ban.admin })
 
   return (
-    <div class="group">
-      <div>
-        <span class="text-2xl font-bold me-2" safe>
-          {props.ban.reason}
-        </span>
-        <span class="text-sm">
-          by{' '}
-          <a href={`/players/${admin?.steamId}`} safe>
-            {admin?.name ?? 'unknown admin'}
-          </a>
-        </span>
-      </div>
+    <div class="ban-item group" id={`player-ban-${props.ban._id}`}>
+      <form class="contents">
+        <div class="col-span-3">
+          <span class="me-2 text-2xl font-bold" safe>
+            {props.ban.reason}
+          </span>
+          <span class="text-sm">
+            by{' '}
+            <a href={`/players/${admin?.steamId}`} safe>
+              {admin?.name ?? 'unknown admin'}
+            </a>
+          </span>
+        </div>
 
-      <div class="text-base" safe>
-        Starts {format(props.ban.start, 'MMMM dd, yyyy, HH:mm')}
-      </div>
+        <div class="row-span-2 flex items-center">
+          {props.ban.end > new Date() ? (
+            <button
+              class="button button--darker"
+              hx-put={`/players/${player.steamId}/edit/bans/${props.ban._id.toString()}/revoke`}
+              hx-trigger="click"
+              hx-target={`#player-ban-${props.ban._id}`}
+              hx-swap="outerHTML"
+            >
+              <IconX />
+              <span class="sr-only">Revoke ban</span>
+            </button>
+          ) : (
+            <></>
+          )}
+        </div>
 
-      <div class="text-base" safe>
-        Ends {format(props.ban.end, 'MMMM dd, yyyy, HH:mm')}
-      </div>
+        <span class="text-base">
+          Starts: <strong safe>{format(props.ban.start, 'MMMM dd, yyyy, HH:mm')}</strong>
+        </span>
+
+        <span class="text-base">
+          Ends: <strong safe>{format(props.ban.end, 'MMMM dd, yyyy, HH:mm')}</strong>
+        </span>
+      </form>
     </div>
   )
 }
