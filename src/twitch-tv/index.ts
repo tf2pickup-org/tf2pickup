@@ -40,7 +40,7 @@ export default fp(
       return
     }
 
-    Cron('* * * * *', async () => {
+    new Cron('* * * * *', async () => {
       try {
         await refreshStreams()
       } catch (error) {

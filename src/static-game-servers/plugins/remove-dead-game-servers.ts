@@ -22,7 +22,7 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     // run every minute
-    Cron('* * * * *', removeDeadGameServers)
+    new Cron('* * * * *', removeDeadGameServers)
   },
   { name: 'remove dead game servers' },
 )
