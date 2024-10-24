@@ -3,7 +3,6 @@ import { logger } from '../logger'
 import { Gateway } from './gateway'
 import { extractClientIp } from './extract-client-ip'
 import websocket from '@fastify/websocket'
-import { WebSocket } from 'ws'
 import { secondsToMilliseconds } from 'date-fns'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -14,7 +13,7 @@ declare module 'fastify' {
 }
 
 declare module 'ws' {
-  interface WebSocket {
+  export default interface WebSocket {
     isAlive: boolean
     player?: {
       steamId: SteamId64
@@ -31,8 +30,7 @@ export default fp(
     })
 
     const isAliveInterval = setInterval(() => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      ;(app.websocketServer.clients as Set<WebSocket>).forEach(client => {
+      app.websocketServer.clients.forEach(client => {
         if (!client.isAlive) {
           client.terminate()
           return
@@ -43,14 +41,12 @@ export default fp(
       })
     }, secondsToMilliseconds(30))
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-    app.websocketServer.on('connection', (client: WebSocket) => {
+    app.websocketServer.on('connection', client => {
       client.isAlive = true
       client.on('error', logger.error)
       client.on('pong', () => (client.isAlive = true))
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     app.websocketServer.on('close', () => {
       clearInterval(isAliveInterval)
     })

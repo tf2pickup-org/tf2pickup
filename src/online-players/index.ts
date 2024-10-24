@@ -12,9 +12,7 @@ export default fp(
   async app => {
     // verify the player is online
     async function verifyPlayer(steamId: SteamId64) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const playerSockets = [...app.websocketServer.clients].filter(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         socket => socket.player?.steamId === steamId,
       )
       logger.debug(`verify online status for ${steamId} (${playerSockets.length} sockets)`)
