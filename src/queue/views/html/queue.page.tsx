@@ -20,6 +20,7 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { RequestNotificationPermissions } from './request-notification-permissions'
 import { SubstitutionRequests } from './substitution-requests'
 import { StreamList } from './stream-list'
+import { BanAlerts } from './ban-alerts'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -38,6 +39,7 @@ export async function QueuePage(user?: User) {
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />
             <RequestNotificationPermissions />
+            <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
           </div>
 

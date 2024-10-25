@@ -14,6 +14,8 @@ import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { GameState } from '../../database/models/game.model'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
 import { StreamList } from '../views/html/stream-list'
+import { BanAlerts } from '../views/html/ban-alerts'
+import type { ObjectId } from 'mongodb'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -169,6 +171,32 @@ export default fp(
       await safe(async () => {
         const cmp = await StreamList()
         app.gateway.broadcast(() => cmp)
+      })
+    })
+
+    const refreshBanAlerts = async (playerId: ObjectId) => {
+      const player = await collections.players.findOne({ _id: playerId })
+      if (!player) {
+        throw new Error(`player not found for ban ${playerId.toString()}`)
+      }
+      const cmp = await BanAlerts({ actor: player.steamId })
+      app.gateway.toPlayers(player?.steamId).broadcast(() => cmp)
+
+      setImmediate(async () => {
+        const slots = await collections.queueSlots.find().toArray()
+        for (const slot of slots) {
+          app.gateway.toPlayers(player.steamId).broadcast(async actor => QueueSlot({ slot, actor }))
+        }
+      })
+    }
+    events.on('player/ban:added', async ({ ban }) => {
+      await safe(async () => {
+        await refreshBanAlerts(ban.player)
+      })
+    })
+    events.on('player/ban:revoked', async ({ ban }) => {
+      await safe(async () => {
+        await refreshBanAlerts(ban.player)
       })
     })
   },
