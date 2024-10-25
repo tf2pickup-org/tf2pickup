@@ -1,7 +1,13 @@
 import { collections } from '../../../database/collections'
 import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
-import { IconHeart, IconHeartFilled, IconMinus, IconPlus } from '../../../html/components/icons'
+import {
+  IconHeart,
+  IconHeartFilled,
+  IconLock,
+  IconMinus,
+  IconPlus,
+} from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 enum MarkAsFriendButtonState {
@@ -52,7 +58,7 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
 
     const activeBans = await collections.playerBans.countDocuments({
       player: actor._id,
-      end: { $gte: new Date() },
+      end: { $gt: new Date() },
     })
     const disabled = Boolean(actor.activeGame) || activeBans > 0
 
@@ -79,7 +85,7 @@ function JoinButton(props: { slotId: number; disabled: boolean }) {
       aria-label={`Join queue on slot ${props.slotId}`}
       disabled={props.disabled}
     >
-      <IconPlus />
+      {props.disabled ? <IconLock /> : <IconPlus />}
     </button>
   )
 }

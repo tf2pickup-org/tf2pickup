@@ -18,6 +18,10 @@
     background-color: theme(colors.abru.light.30);
     color: theme(colors.abru.light.30);
 
+    &:has(> svg.icon-tabler-lock) {
+      color: theme(colors.abru.light.35);
+    }
+
     &:hover:enabled {
       background-color: theme(colors.abru.light.25);
       color: theme(colors.abru.light.60);

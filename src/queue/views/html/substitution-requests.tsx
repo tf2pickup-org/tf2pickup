@@ -13,7 +13,7 @@ export async function SubstitutionRequests() {
               <GameClassIcon gameClass={request.slot.gameClass} size={20} />{' '}
               {request.slot.gameClass}
             </strong>{' '}
-            in game #{request.gameNumber}
+            in game&nbsp;<span safe>#{request.gameNumber}</span>
           </p>
           <a class="button button--dense button--alert" href={`/games/${request.gameNumber}`}>
             View game details
