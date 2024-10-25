@@ -39,7 +39,7 @@ await app.register((await import('@kitajs/fastify-html-plugin')).default)
 for (const path of [
   './messages',
   './tasks',
-  './ws',
+  './websocket',
   './auth',
   './queue',
   './online-players',
