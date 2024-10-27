@@ -1,0 +1,108 @@
+@layer components {
+  .admin-panel-section {
+    font-size: 14px;
+    color: theme(colors.abru.light.50);
+    font-weight: 500;
+    padding: 8px 12px;
+
+    &:not(:first-child) {
+      border-top: 1px solid theme(colors.abru.light.25);
+      padding-top: 16px;
+      margin-top: 8px;
+    }
+  }
+
+  .admin-panel-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin-bottom: 24px;
+    align-items: center;
+
+    h1 {
+      font-size: 32px;
+      color: theme(colors.abru.light.75);
+    }
+  }
+
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .label {
+      font-size: 16px;
+      font-weight: 500;
+    }
+  }
+
+  .admin-panel-link {
+    display: flex;
+    flex-flow: flex nowrap;
+    align-items: center;
+    gap: 8px;
+    color: theme(colors.abru.light.75);
+    font-weight: 500;
+    font-size: 18px;
+    border-radius: 4px;
+    padding: 6px 12px;
+    position: relative;
+
+    &:hover {
+      background-color: theme(colors.abru.dark.25 / 20%);
+    }
+
+    &.active {
+      background-color: theme(colors.abru.dark.25);
+
+      &:before {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        content: '';
+        width: 4px;
+        height: calc(100% - 8px);
+        background-color: theme(colors.accent.DEFAULT);
+        border-radius: 2px;
+      }
+    }
+  }
+
+  .admin-panel-content {
+    background-color: theme(colors.abru.dark.25);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .group {
+      background-color: theme(colors.abru.light.5);
+      border-radius: 8px;
+      padding: 16px;
+      color: theme(colors.abru.light.75);
+      font-size: 18px;
+
+      input[type='text'],
+      input[type='number'] {
+        background-color: theme(colors.abru.dark.25);
+        color: theme(colors.white);
+        border-radius: 8px;
+        padding: 8px;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .label {
+          color: theme(colors.abru.light.50);
+          font-size: 16px;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}

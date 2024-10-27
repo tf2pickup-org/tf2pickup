@@ -27,7 +27,7 @@ export async function GameEventList(props: { game: GameModel }) {
 
   return (
     <div
-      class="game-event-list masked-overflow"
+      class="game-event-list fade-scroll"
       id={`game-${props.game.number}-event-list`}
       aria-label="Game events"
     >
@@ -104,7 +104,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             return (
               <span>
                 Game interrupted by{' '}
-                <a href={`/players/${actor.steamId}`} class="font-bold whitespace-nowrap" safe>
+                <a href={`/players/${actor.steamId}`} class="whitespace-nowrap font-bold" safe>
                   {actor.name}
                 </a>
               </span>
@@ -129,11 +129,11 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
         return (
           <span>
-            <a href={`/players/${actor.steamId}`} class="font-bold whitespace-nowrap" safe>
+            <a href={`/players/${actor.steamId}`} class="whitespace-nowrap font-bold" safe>
               {actor.name}
             </a>{' '}
             requested substitute for{' '}
-            <a href={`/players/${player.steamId}`} class="font-bold whitespace-nowrap">
+            <a href={`/players/${player.steamId}`} class="whitespace-nowrap font-bold">
               <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
               <span safe>{player.name}</span>
             </a>
@@ -143,7 +143,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         return (
           <span>
             Requested substitute for{' '}
-            <a href={`/player/${player.steamId}`} class="font-bold whitespace-nowrap">
+            <a href={`/player/${player.steamId}`} class="whitespace-nowrap font-bold">
               <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
               <span safe>{player.name}</span>
             </a>
@@ -170,11 +170,11 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       return (
         <span>
-          <a href={`/players/${replacement.steamId}`} class="font-bold whitespace-nowrap" safe>
+          <a href={`/players/${replacement.steamId}`} class="whitespace-nowrap font-bold" safe>
             {replacement.name}
           </a>{' '}
           replaced{' '}
-          <a href={`/players/${replacee.steamId}`} class="font-bold whitespace-nowrap" safe>
+          <a href={`/players/${replacee.steamId}`} class="whitespace-nowrap font-bold" safe>
             {replacee.name}
           </a>{' '}
           on <GameClassIcon gameClass={slot.gameClass} size={20} /> {slot.gameClass}

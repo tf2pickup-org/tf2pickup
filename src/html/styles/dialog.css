@@ -1,0 +1,6 @@
+@layer base {
+  dialog::backdrop {
+    background: theme(colors.abru.dark.3 / 50%);
+    backdrop-filter: blur(1px);
+  }
+}
