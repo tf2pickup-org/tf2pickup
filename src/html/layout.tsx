@@ -16,13 +16,7 @@ export function Layout(
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-          <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/ws.js"></script>
-          <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/head-support.js"></script>
-          <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
-          <script src="/map-thumbnail.js"></script>
-          <script src="/request-notification-permissions.js"></script>
-          <script src="/flash-message.js"></script>
+          <script src="/bundle.js"></script>
           <link href="/main.css" rel="stylesheet"></link>
           <title>{props?.title ?? environment.WEBSITE_NAME}</title>
           {safeHead}

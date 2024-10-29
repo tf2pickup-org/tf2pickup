@@ -10,15 +10,11 @@ export function FlashMessages() {
     <div class="flash-messages">
       {Object.entries(messages).map(([type, message]) =>
         message?.map(message => (
-          <div class={['message', type]}>
+          <div class={['message', type]} data-flash-message>
             <div class="content" safe>
               {message}
             </div>
-            <progress
-              max="100"
-              value="100"
-              _="init set box to the closest parent <div/> then js(me, box) initFlashMessage(me, box)"
-            ></progress>
+            <progress max="100" value="100"></progress>
           </div>
         )),
       )}

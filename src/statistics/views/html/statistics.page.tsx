@@ -11,12 +11,7 @@ export async function StatisticsPage(user?: User) {
       title="statistics"
       head={
         <>
-          <script
-            id="chartjs"
-            async
-            src="https://cdn.jsdelivr.net/npm/chart.js"
-            hx-preserve="true"
-          ></script>
+          <script src="/statistics/bundle.js" hx-preserve="true"></script>
         </>
       }
     >
@@ -24,7 +19,7 @@ export async function StatisticsPage(user?: User) {
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">
           <div class="lg:col-span-2">
-            <div class="text-abru-light-75 my-9 text-[48px] font-bold capitalize">Statistics</div>
+            <div class="my-9 text-[48px] font-bold capitalize text-abru-light-75">Statistics</div>
           </div>
 
           <div class="flex flex-col items-center rounded-lg bg-abru-dark-25 px-12 py-8 lg:row-span-2">

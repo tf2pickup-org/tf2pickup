@@ -1,4 +1,4 @@
-function requestNotificationPermissions() {
+export function requestNotificationPermissions() {
   if (Notification.permission === 'default') {
     const banner = document.getElementById('notifications-permission-default')
     if (banner) {

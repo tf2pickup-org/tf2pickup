@@ -11,39 +11,12 @@ export async function PlayedMapsCount() {
       <canvas id="played-maps-count"></canvas>
       <script>
         {`
-        (async function() {
+        window.addEventListener('load', () => {
           const data = ${JSON.stringify(data)};
-          const script = document.querySelector('#chartjs');
+          const element = document.getElementById('played-maps-count');
 
-          const loadChart = () => {
-            new Chart(document.getElementById('played-maps-count'), {
-                type: 'pie',
-                data: data,
-                options: {
-                  plugins: {
-                    legend: {
-                      position: 'right',
-                      labels: {
-                        boxWidth: 14,
-                        boxHeight: 14,
-                        font: {
-                          size: 14,
-                        },
-                        color: '#C7C4C7',
-                        padding: 16,
-                      },
-                    },
-                  },
-                },
-              });
-          }
-
-          if (typeof Chart === 'undefined') {
-            script.addEventListener('load', loadChart);
-          } else {
-            loadChart();
-          }
-        })();
+          makePlayerMapsCountChart(element, data);
+        });
         `}
       </script>
     </>
