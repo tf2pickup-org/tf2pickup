@@ -1,0 +1,7 @@
+@layer components {
+  footer {
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+}
