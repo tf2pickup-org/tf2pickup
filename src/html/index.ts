@@ -33,7 +33,7 @@ export async function bundle(entryPoint: string): Promise<string> {
 }
 
 export default fp(async app => {
-  app.get('/bundle.js', async (request, reply) => {
+  app.get('/bundle.js', async (_request, reply) => {
     await reply
       .header('Content-Type', 'text/javascript')
       .send(await bundle(resolve(import.meta.dirname, 'bundle', 'main.js')))
