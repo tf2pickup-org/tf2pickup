@@ -12,7 +12,7 @@ export default fp(
     app.get('/statistics/bundle.js', async (_request, reply) => {
       await reply
         .header('Content-Type', 'text/javascript')
-        .send(await bundle(resolve(import.meta.dirname, 'views', 'html', 'main.js')))
+        .send(await bundle(resolve(import.meta.dirname, 'views', 'html', 'bundle', 'main.js')))
     })
   },
   {

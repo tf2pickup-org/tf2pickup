@@ -15,7 +15,7 @@ export async function PlayedMapsCount() {
           const data = ${JSON.stringify(data)};
           const element = document.getElementById('played-maps-count');
 
-          makePlayerMapsCountChart(element, data);
+          makePlayedMapsCountChart(element, data);
         });
         `}
       </script>
