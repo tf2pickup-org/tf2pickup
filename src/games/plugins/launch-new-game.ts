@@ -4,13 +4,14 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
 import { create } from '../create'
 import { queue } from '../../queue'
+import { debounce } from 'lodash-es'
 
-async function launchGame() {
+const launchGame = debounce(async () => {
   logger.info('launching game')
   const slots = await queue.getSlots()
   const map = await queue.getMapWinner()
   await create(slots, map)
-}
+}, 1000)
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
