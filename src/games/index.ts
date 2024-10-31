@@ -14,7 +14,7 @@ export default fp(
     await app.register((await import('./plugins/match-event-listener')).default)
     await app.register((await import('./plugins/match-event-handler')).default)
     await app.register((await import('./plugins/game-log-collector')).default)
-    await app.register((await import('./plugins/update-clients')).default)
+    await app.register((await import('./plugins/sync-clients')).default)
     await app.register((await import('./routes')).default)
   },
   {

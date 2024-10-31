@@ -19,7 +19,7 @@ export default fp(
     await app.register((await import('./plugins/gateway-listeners')).default)
     await app.register((await import('./plugins/kick-disconnected-players')).default)
     await app.register((await import('./plugins/auto-update-queue-state')).default)
-    await app.register((await import('./plugins/update-clients')).default)
+    await app.register((await import('./plugins/sync-clients')).default)
     await app.register((await import('./plugins/auto-reset')).default)
     await app.register((await import('./plugins/kick-replacement-players')).default)
     await app.register((await import('./plugins/kick-banned-players')).default)
