@@ -27,7 +27,7 @@ export async function GameEventList(props: { game: GameModel }) {
 
   return (
     <div
-      class="game-event-list fade-scroll"
+      class="game-event-list fade-scroll h-[300px]"
       id={`game-${props.game.number}-event-list`}
       aria-label="Game events"
     >

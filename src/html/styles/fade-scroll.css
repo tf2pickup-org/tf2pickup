@@ -9,9 +9,6 @@
     /* If content exceeds height of container, overflow! */
     overflow-y: auto;
 
-    /* Our height limit */
-    height: 300px;
-
     /* Need to make sure container has bottom space,
   otherwise content at the bottom is always faded out */
     padding-bottom: var(--mask-height);
@@ -58,7 +55,7 @@
 
   /* Firefox */
   .fade-scroll {
-    scrollbar-width: normal; /* can also be normal, or none, to not render scrollbar */
+    scrollbar-width: auto; /* can also be normal, or none, to not render scrollbar */
     scrollbar-color: theme(colors.abru.light.30) transparent; /* foreground background */
   }
 
