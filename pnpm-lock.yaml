@@ -157,13 +157,13 @@ importers:
         specifier: 8.5.12
         version: 8.5.12
       chart.js:
-        specifier: ^4.4.6
+        specifier: 4.4.6
         version: 4.4.6
       cssnano:
         specifier: 7.0.6
         version: 7.0.6(postcss@8.4.47)
       esbuild:
-        specifier: ^0.24.0
+        specifier: 0.24.0
         version: 0.24.0
       eslint:
         specifier: 9.13.0
@@ -172,10 +172,10 @@ importers:
         specifier: 15.11.0
         version: 15.11.0
       htmx.org:
-        specifier: ^1.9.12
+        specifier: 1.9.12
         version: 1.9.12
       hyperscript.org:
-        specifier: ^0.9.13
+        specifier: 0.9.13
         version: 0.9.13
       pino-princess:
         specifier: 1.0.0
