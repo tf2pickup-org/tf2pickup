@@ -9,6 +9,7 @@ import { setState } from '../set-state'
 import { kick } from '../kick'
 import { unready } from '../unready'
 import { configuration } from '../../configuration'
+import { tasks } from '../../tasks'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -39,8 +40,8 @@ export default fp(
           } else if (readyPlayerCount === requiredPlayerCount) {
             logger.info('all players ready, queue ready')
             await setState(QueueState.launching)
-            await app.cancelAllTasks('queue:readyUpTimeout')
-            await app.cancelAllTasks('queue:unready')
+            await tasks.cancelAll('queue:readyUpTimeout')
+            await tasks.cancelAll('queue:unready')
           }
 
           break
@@ -76,7 +77,7 @@ export default fp(
       const nextTimeout = readyStateTimeout - readyUpTimeout
 
       if (nextTimeout > 0) {
-        await app.scheduleTask('queue:unready', nextTimeout)
+        await tasks.schedule('queue:unready', nextTimeout)
       } else {
         await unreadyQueue()
       }
@@ -85,11 +86,11 @@ export default fp(
     async function readyUp() {
       await setState(QueueState.ready)
       const timeout = await configuration.get('queue.ready_up_timeout')
-      await app.scheduleTask('queue:readyUpTimeout', timeout)
+      await tasks.schedule('queue:readyUpTimeout', timeout)
     }
 
-    app.registerTask('queue:readyUpTimeout', readyUpTimeout)
-    app.registerTask('queue:unready', unreadyQueue)
+    tasks.register('queue:readyUpTimeout', readyUpTimeout)
+    tasks.register('queue:unready', unreadyQueue)
 
     events.on('queue/slots:updated', async () => {
       await safe(async () => {
