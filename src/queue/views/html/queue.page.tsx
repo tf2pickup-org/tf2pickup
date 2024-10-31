@@ -21,6 +21,7 @@ import { RequestNotificationPermissions } from './request-notification-permissio
 import { SubstitutionRequests } from './substitution-requests'
 import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
+import { AcceptRulesDialog } from './accept-rules-dialog'
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -67,6 +68,7 @@ export async function QueuePage(user?: User) {
 
       <div id="queue-notify-container"></div>
       <RunningGameSnackbar gameNumber={user?.player.activeGame} />
+      <AcceptRulesDialog actor={user} />
     </Layout>
   )
 }

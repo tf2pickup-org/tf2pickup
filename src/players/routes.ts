@@ -59,6 +59,23 @@ export default fp(
           )
         },
       )
+      .post(
+        '/players/:steamId/accept-rules',
+        {
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+            }),
+          },
+        },
+        async (request, reply) => {
+          await collections.players.updateOne(
+            { steamId: request.params.steamId },
+            { $set: { hasAcceptedRules: true } },
+          )
+          await reply.redirect('/')
+        },
+      )
       .get(
         '/players/:steamId/edit',
         {
