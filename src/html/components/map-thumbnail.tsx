@@ -7,11 +7,8 @@ export function MapThumbnail(props: { map: string }) {
 
   return (
     <div
-      class="flex h-full w-full items-center justify-center text-slate-700 map-thumbnail"
-      data-map-name={mapName}
-      data-map-url-template={`${environment.THUMBNAIL_SERVICE_URL}/unsafe/{width}x{height}/{map}.jpg`}
-      // TODO replace with a proper observer
-      _="init js(me) addThumbnailObserver(me)"
+      class="map-thumbnail flex h-full w-full items-center justify-center text-slate-700"
+      data-map-thumbnail={mapName}
     >
       <img
         loading="lazy"

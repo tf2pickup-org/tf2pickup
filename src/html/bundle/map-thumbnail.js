@@ -1,3 +1,7 @@
+import htmx from 'htmx.org'
+
+const thumbnailUrlTemplate = `${THUMBNAIL_SERVICE_URL}/unsafe/{width}x{height}/{map}.jpg`
+
 const resizeObserver = new ResizeObserver(entries => {
   for (const entry of entries) {
     const width = Math.round(entry.contentRect.width)
@@ -13,18 +17,13 @@ const resizeObserver = new ResizeObserver(entries => {
 
     const img = /** @type {HTMLImageElement} */ (tag)
 
-    const mapName = entry.target.getAttribute('data-map-name')
+    const mapName = entry.target.getAttribute('data-map-thumbnail')
     if (!mapName) {
       console.warn('No map name found for map thumbnail')
       continue
     }
 
-    const urlTemplate = entry.target.getAttribute('data-map-url-template')
-    if (!urlTemplate) {
-      console.warn('No map url template found for map thumbnail')
-      continue
-    }
-    const thumbnailSrc = urlTemplate
+    const thumbnailSrc = thumbnailUrlTemplate
       .replace('{width}', width.toString())
       .replace('{height}', height.toString())
       .replace('{map}', mapName)
@@ -32,8 +31,18 @@ const resizeObserver = new ResizeObserver(entries => {
   }
 })
 
-function addThumbnailObserver(/** @type {HTMLElement} */ element) {
-  resizeObserver.observe(element)
-}
+htmx.onLoad(element => {
+  if (element.hasAttribute('data-map-thumbnail')) {
+    resizeObserver.observe(element)
+  }
 
-window.addThumbnailObserver = addThumbnailObserver
+  element.querySelectorAll('[data-map-thumbnail]').forEach(element => {
+    resizeObserver.observe(element)
+  })
+})
+
+window.addEventListener('load', () => {
+  document.querySelectorAll('[data-map-thumbnail]').forEach(element => {
+    resizeObserver.observe(element)
+  })
+})

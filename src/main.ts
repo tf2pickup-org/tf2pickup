@@ -41,6 +41,7 @@ for (const path of [
   './tasks',
   './websocket',
   './auth',
+  './html',
   './queue',
   './online-players',
   './players',
