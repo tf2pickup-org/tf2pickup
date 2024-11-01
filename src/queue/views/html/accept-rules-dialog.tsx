@@ -33,7 +33,7 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
       `}
     >
       <div class="flex flex-col gap-6">
-        <div class="rules-wrapper fade-scroll">
+        <div class="rules-wrapper fade-scroll" data-fade-scroll>
           <article class="prose prose-invert mb-16 max-w-none">{safeRules}</article>
         </div>
 
