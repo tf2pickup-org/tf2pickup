@@ -13,7 +13,7 @@ import { tasks } from '../../tasks'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
-  async app => {
+  async () => {
     async function maybeUpdateQueueState() {
       const state = await getState()
       const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
