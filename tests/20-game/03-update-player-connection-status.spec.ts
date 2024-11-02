@@ -18,12 +18,16 @@ launchGame(
         })
 
         const slot = page.playerSlot(playerName)
+        await expect(slot.getByLabel('Player connection status')).toHaveClass(/offline/)
 
         await gameServer.playerConnects(playerName)
         await expect(slot.getByLabel('Player connection status')).toHaveClass(/joining/)
 
         await gameServer.playerJoinsTeam(playerName)
         await expect(slot.getByLabel('Player connection status')).toHaveClass(/connected/)
+
+        await gameServer.playerDisconnects(playerName)
+        await expect(slot.getByLabel('Player connection status')).toHaveClass(/offline/)
       }),
     )
 

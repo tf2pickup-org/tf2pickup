@@ -3,6 +3,7 @@ import { createSocket, type Socket } from 'dgram'
 import { Server } from 'net'
 import SteamID from 'steamid'
 import { waitABit } from './utils/wait-a-bit'
+import { Mutex } from 'async-mutex'
 
 const RconPacketType = {
   SERVERDATA_AUTH: 3,
@@ -88,6 +89,7 @@ export class GameServerSimulator {
   ]
   addedPlayers: AddedPlayer[] = []
   private readonly eventDelay = 100
+  private readonly sendMutex = new Mutex()
 
   constructor(
     readonly apiAddress: string,
@@ -213,9 +215,15 @@ export class GameServerSimulator {
   }
 
   log(message: string) {
-    this.addresses.forEach(address => {
+    this.addresses.forEach(async address => {
       const [host, port] = address.split(':')
-      this.socket.send(this.prepareMessage(message), Number(port), host)
+      const release = await this.sendMutex.acquire()
+      this.socket.send(this.prepareMessage(message), Number(port), host, error => {
+        if (error) {
+          console.error(error)
+        }
+        release()
+      })
     })
   }
 
@@ -243,6 +251,20 @@ export class GameServerSimulator {
     const steamId3 = new SteamID(player.steamId64).steam3()
     await waitABit(this.eventDelay / 2)
     this.log(`"${player.name}<${player.userId}><${steamId3}><Unassigned>" joined team "${team}"`)
+    await waitABit(this.eventDelay / 2)
+  }
+
+  async playerDisconnects(playerName: string) {
+    const player = this.addedPlayers.find(player => player.name === playerName)
+    if (!player) {
+      throw new Error(`player not found: ${playerName}`)
+    }
+
+    const steamId3 = new SteamID(player.steamId64).steam3()
+    await waitABit(this.eventDelay / 2)
+    this.log(
+      `"${player.name}<${player.userId}><${steamId3}><Unassigned>" disconnected (reason "Disconnect by user.")`,
+    )
     await waitABit(this.eventDelay / 2)
   }
 
