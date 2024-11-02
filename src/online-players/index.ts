@@ -4,6 +4,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { logger } from '../logger'
 import { events } from '../events'
 import { secondsToMilliseconds } from 'date-fns'
+import { tasks } from '../tasks'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
@@ -26,7 +27,7 @@ export default fp(
         events.emit('player:disconnected', { steamId })
       }
     }
-    app.registerTask('onlinePlayers:validatePlayer', verifyPlayer)
+    tasks.register('onlinePlayers:validatePlayer', verifyPlayer)
 
     app.gateway.on('connected', async (socket, ipAddress, userAgent) => {
       if (socket.player) {
@@ -67,11 +68,7 @@ export default fp(
           )
 
           app.log.debug(`${player.steamId} (${player.name}) disconnected`)
-          await app.scheduleTask(
-            'onlinePlayers:validatePlayer',
-            verifyPlayerTimeout,
-            player.steamId,
-          )
+          await tasks.schedule('onlinePlayers:validatePlayer', verifyPlayerTimeout, player.steamId)
         })
 
         events.emit('player:connected', {
