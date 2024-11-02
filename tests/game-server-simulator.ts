@@ -140,7 +140,21 @@ export class GameServerSimulator {
               response.id = packet.id
               response.body = `logaddress_add ${address}`
               socket.write(response.toBuffer())
-            } else if (/sm_game_player_add .+/.test(packet.body)) {
+            } else if (/^logaddress_del (.+)/.test(packet.body)) {
+              const [, address] = packet.body.match(/logaddress_add (.+)/) ?? []
+              if (address) {
+                const index = this.addresses.indexOf(address)
+                if (index > -1) {
+                  this.addresses.splice(index, 1)
+                }
+              }
+
+              const response = new RconPacket()
+              response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
+              response.id = packet.id
+              response.body = packet.body
+              socket.write(response.toBuffer())
+            } else if (/^sm_game_player_add .+/.test(packet.body)) {
               const [, steamId64, name, team, gameClass] =
                 packet.body.match(
                   /^sm_game_player_add (\d{17}) -name "(.+)" -team (blu|red) -class (.+)$/,
@@ -149,6 +163,13 @@ export class GameServerSimulator {
                 this.addedPlayers.push(new AddedPlayer(steamId64, name, team, gameClass))
               }
 
+              const response = new RconPacket()
+              response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
+              response.id = packet.id
+              response.body = packet.body
+              socket.write(response.toBuffer())
+            } else if (/^sm_game_player_delall$/.test(packet.body)) {
+              this.addedPlayers = []
               const response = new RconPacket()
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
               response.id = packet.id

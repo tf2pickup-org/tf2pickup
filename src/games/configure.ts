@@ -38,7 +38,7 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
     throw new Error(`gameServer provider not supported`)
   }
 
-  logger.info({ game }, `configuring game ${game.number}...`)
+  logger.info({ game }, `configuring game #${game.number}...`)
   const { signal } = options
 
   const password = generateGameserverPassword()
