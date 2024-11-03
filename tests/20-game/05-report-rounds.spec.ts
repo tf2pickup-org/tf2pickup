@@ -1,11 +1,9 @@
-import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { secondsToMilliseconds } from 'date-fns'
 import { expect, launchGame } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
 import { waitABit } from '../utils/wait-a-bit'
 
-launchGame('cleanup game server', async ({ gameNumber, page, gameServer }) => {
-  launchGame.setTimeout(minutesToMilliseconds(2))
-
+launchGame('report rounds', async ({ gameNumber, page, gameServer }) => {
   // wait for the gameserver to be configured
   const gamePage = new GamePage(page, gameNumber)
   await gamePage.goto()
@@ -14,11 +12,13 @@ launchGame('cleanup game server', async ({ gameNumber, page, gameServer }) => {
 
   await gameServer.connectAllPlayers()
   await gameServer.matchStarts()
-  await waitABit(secondsToMilliseconds(10))
-  await gameServer.matchEnds()
-  await waitABit(secondsToMilliseconds(40))
+  await waitABit(secondsToMilliseconds(1))
 
-  expect(gameServer.commands.some(cmd => /logaddress_del/.test(cmd))).toBe(true)
-  expect(gameServer.addedPlayers.length).toEqual(0)
-  expect(gameServer.commands.some(cmd => cmd === 'sm_game_player_whitelist 0')).toBe(true)
+  await gameServer.roundEnds('blu')
+  await expect(gamePage.page.getByText('Round ended')).toBeVisible()
+  await waitABit(secondsToMilliseconds(1))
+  await gameServer.roundEnds('red')
+  await expect(gamePage.page.getByText('Round ended')).toHaveCount(2)
+  await waitABit(secondsToMilliseconds(1))
+  await gameServer.matchEnds()
 })

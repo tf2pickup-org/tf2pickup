@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { format, millisecondsToSeconds } from 'date-fns'
 import { createSocket, type Socket } from 'dgram'
 import { Server } from 'net'
 import SteamID from 'steamid'
@@ -90,6 +90,8 @@ export class GameServerSimulator {
   addedPlayers: AddedPlayer[] = []
   private readonly eventDelay = 100
   private readonly sendMutex = new Mutex()
+  private roundStartTimestamp = Date.now()
+  private score = { red: 0, blu: 0 }
 
   constructor(
     readonly apiAddress: string,
@@ -299,14 +301,29 @@ export class GameServerSimulator {
   async matchStarts() {
     await waitABit(this.eventDelay / 2)
     this.log('World triggered "Round_Start"')
+    this.roundStartTimestamp = Date.now()
+    this.score.blu = 0
+    this.score.red = 0
     await waitABit(this.eventDelay / 2)
   }
 
-  async matchEnds(score: { blu: number; red: number }) {
+  async matchEnds() {
     await waitABit(this.eventDelay / 2)
     this.log('World triggered "Game_Over" reason "Reached Win Limit"')
-    this.log(`Team "Red" final score "${score.red}" with "6" players`)
-    this.log(`Team "Blue" final score "${score.blu}" with "6" players`)
+    this.log(`Team "Red" final score "${this.score.red}" with "6" players`)
+    this.log(`Team "Blue" final score "${this.score.blu}" with "6" players`)
+    await waitABit(this.eventDelay / 2)
+  }
+
+  async roundEnds(winner: 'blu' | 'red') {
+    await waitABit(this.eventDelay / 2)
+    const lengthMs = Date.now() - this.roundStartTimestamp
+    this.score[winner] += 1
+    this.log(`World triggered "Round_Win" (winner "${winner === 'blu' ? 'Blue' : 'Red'}")`)
+    this.log(`World triggered "Round_Length" (seconds "${millisecondsToSeconds(lengthMs)}")`)
+    this.log(`Team "Red" current score "${this.score.red}" with "6" players`)
+    this.log(`Team "Blue" current score "${this.score.blu}" with "6" players`)
+    this.roundStartTimestamp = Date.now()
     await waitABit(this.eventDelay / 2)
   }
 

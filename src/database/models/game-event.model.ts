@@ -89,6 +89,14 @@ export interface PlayerReplaced {
   replacement: ObjectId
 }
 
+export interface RoundEnded {
+  event: GameEventType.roundEnded
+  at: Date
+  winner: Tf2Team
+  lengthMs: number
+  score: Record<Tf2Team, number>
+}
+
 export type GameEventModel =
   | GameCreated
   | GameStarted
@@ -100,3 +108,4 @@ export type GameEventModel =
   | PlayerLeftGameServer
   | SubstituteRequested
   | PlayerReplaced
+  | RoundEnded

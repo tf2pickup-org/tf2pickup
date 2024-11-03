@@ -28,7 +28,7 @@ launchGame(
     await gameServer.connectAllPlayers()
     await gameServer.matchStarts()
     await waitABit(secondsToMilliseconds(10))
-    await gameServer.matchEnds({ blu: 0, red: 5 })
+    await gameServer.matchEnds()
 
     await Promise.all(
       queueUsers.map(async steamId => {

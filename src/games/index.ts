@@ -16,6 +16,7 @@ export default fp(
     await app.register((await import('./plugins/match-event-listener')).default)
     await app.register((await import('./plugins/match-event-handler')).default)
     await app.register((await import('./plugins/sync-clients')).default)
+    await app.register((await import('./plugins/track-match-rounds')).default)
     await app.register((await import('./routes')).default)
   },
   {
