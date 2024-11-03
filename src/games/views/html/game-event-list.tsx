@@ -18,6 +18,8 @@ const renderedEvents = [
 
   GameEventType.substituteRequested,
   GameEventType.playerReplaced,
+
+  GameEventType.roundEnded,
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
@@ -183,16 +185,17 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       )
     }
 
+    case GameEventType.roundEnded: {
+      return (
+        <div class="flex flex-row items-center gap-2">
+          <span class="flex-1">Round ended</span>
+          <span class="rounded bg-team-blu px-2 py-1">BLU: {props.event.score.blu}</span>
+          <span class="rounded bg-team-red px-2 py-1">RED: {props.event.score.red}</span>
+        </div>
+      )
+    }
+
     default:
       return <span class="italic">{props.event.event}</span>
   }
 }
-
-// function MatchScore(props: { score: Record<Tf2Team, number> }) {
-//   return (
-//     <div class="flex flex-row flex-nowrap">
-//       <span class="bg-team-red rounded px-2 py-1">{props.score.red}</span>
-//       <span class="bg-team-blu rounded px-2 py-1">{props.score.blu}</span>
-//     </div>
-//   )
-// }
