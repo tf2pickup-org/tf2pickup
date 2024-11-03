@@ -34,7 +34,6 @@ export function GameStateIndicator(props: { game: GameModel }) {
       aria-label="Game status"
     >
       {indicator}
-      <span class="sr-only">{props.game.state}</span>
     </div>
   )
 }
