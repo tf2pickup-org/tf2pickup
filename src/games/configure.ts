@@ -29,6 +29,7 @@ import {
 import { update } from './update'
 import { extractConVarValue } from './extract-con-var-value'
 import { generate } from 'generate-password'
+import { events } from '../events'
 
 export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
@@ -128,6 +129,7 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
         },
       },
     })
+    events.emit('game:gameServerInitialized', { game })
 
     return {
       connectString,

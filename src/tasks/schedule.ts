@@ -17,6 +17,14 @@ export async function schedule<T extends keyof Tasks>(
   const taskWrapped = execute(name, at, ...args)
   const timeout = setTimeout(async () => {
     await taskWrapped()
+    const t = timers.find(t => t.timer === timeout)!
+    const i = timers.indexOf(t)
+    timers.splice(i, 1)
   }, ms)
-  timers.set(name, timeout)
+
+  timers.push({
+    name,
+    args,
+    timer: timeout,
+  })
 }
