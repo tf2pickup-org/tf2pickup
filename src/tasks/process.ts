@@ -1,3 +1,4 @@
+import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { assertIsError } from '../utils/assert-is-error'
@@ -27,4 +28,4 @@ async function process() {
   )
 }
 
-setInterval(process, 1000)
+setInterval(process, secondsToMilliseconds(1))

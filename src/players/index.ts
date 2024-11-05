@@ -4,10 +4,8 @@ import { getPlayerGameCountOnClasses } from './get-player-game-count-on-classes'
 import { update } from './update'
 import { events } from '../events'
 import { GoToGame } from './views/html/go-to-game'
-import { addBan } from './add-ban'
 
 export const players = {
-  addBan,
   bySteamId,
   getPlayerGameCountOnClass: getPlayerGameCountOnClasses,
   update,
