@@ -13,10 +13,12 @@ test.beforeEach(async ({ db }) => {
   await configuration.updateOne(
     { key: 'games.join_gameserver_timeout' },
     { $set: { value: secondsToMilliseconds(10) } },
+    { upsert: true }
   )
   await configuration.updateOne(
     { key: 'games.rejoin_gameserver_timeout' },
     { $set: { value: secondsToMilliseconds(5) } },
+    { upsert: true },
   )
 })
 
