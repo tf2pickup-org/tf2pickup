@@ -51,8 +51,9 @@ export default fp(async app => {
     app.gateway.broadcast(() => cmp)
   })
 
-  events.on('game:updated', d =>
-    whenGameEnds(d, async () => {
+  events.on(
+    'game:updated',
+    whenGameEnds(async () => {
       const cmp = await GamesLink()
       app.gateway.broadcast(() => cmp)
     }),

@@ -4,6 +4,7 @@ import { SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
 import { events } from '../events'
 import { logger } from '../logger'
+import { isBot, type Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { findPlayerSlot } from './find-player-slot'
 import { update } from './update'
@@ -16,7 +17,7 @@ export async function requestSubstitute({
 }: {
   number: GameNumber
   replacee: SteamId64
-  actor: SteamId64
+  actor: SteamId64 | Bot
   reason?: string
 }): Promise<GameModel> {
   logger.info({ number, replacee, actor, reason }, 'substitutePlayer()')
@@ -40,10 +41,18 @@ export async function requestSubstitute({
     throw new Error(`replacee not found: ${replacee}`)
   }
 
-  const a = await collections.players.findOne({ steamId: actor })
-  if (a === null) {
-    throw new Error(`actor not found: ${actor}`)
-  }
+  const a = await (async () => {
+    if (isBot(actor)) {
+      return actor
+    }
+
+    const a = await collections.players.findOne({ steamId: actor })
+    if (a === null) {
+      throw new Error(`actor not found: ${actor}`)
+    }
+
+    return a._id
+  })()
 
   const newGame = await update(
     { number },
@@ -57,7 +66,7 @@ export async function requestSubstitute({
           at: new Date(),
           player: r._id,
           gameClass: slot.gameClass,
-          actor: a._id,
+          actor: a,
           reason,
         },
       },

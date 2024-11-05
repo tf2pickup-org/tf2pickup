@@ -9,6 +9,7 @@ export const games = {
 
 export default fp(
   async app => {
+    await app.register((await import('./plugins/auto-ban-players')).default)
     await app.register((await import('./plugins/auto-cleanup')).default)
     await app.register((await import('./plugins/auto-configure')).default)
     await app.register((await import('./plugins/game-log-collector')).default)

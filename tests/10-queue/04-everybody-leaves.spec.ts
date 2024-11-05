@@ -20,5 +20,5 @@ authUsers('everybody leaves', async ({ steamIds, pages }) => {
 
   // last player leaves
   const page = new QueuePage(pages.get(queueUsers[11]!)!)
-  await page.leaveQueue(minutesToMilliseconds(1))
+  await page.leaveQueue(minutesToMilliseconds(1.5))
 })

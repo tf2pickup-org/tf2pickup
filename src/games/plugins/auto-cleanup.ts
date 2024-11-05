@@ -19,8 +19,9 @@ async function cleanupSafe(game: GameModel) {
 
 export default fp(
   async () => {
-    events.on('game:updated', async d =>
-      whenGameEnds(d, async ({ after }) => {
+    events.on(
+      'game:updated',
+      whenGameEnds(async ({ after }) => {
         if (after.state === GameState.ended) {
           delay(async () => await cleanupSafe(after), secondsToMilliseconds(30))
         } else {

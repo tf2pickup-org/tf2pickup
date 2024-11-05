@@ -12,6 +12,7 @@ import type { LogMessage } from './log-receiver/parse-log-message'
 import type { Tf2Team } from './shared/types/tf2-team'
 import type { PlayerBanModel } from './database/models/player-ban.model'
 import type { StreamModel } from './database/models/stream.model'
+import type { Bot } from './shared/types/bot'
 
 export interface Events {
   'game:created': {
@@ -24,10 +25,13 @@ export interface Events {
   'game:gameServerAssigned': {
     game: GameModel
   }
+  'game:gameServerInitialized': {
+    game: GameModel
+  }
   'game:substituteRequested': {
     game: GameModel
     replacee: SteamId64
-    actor?: SteamId64
+    actor: SteamId64 | Bot
     reason?: string
   }
   'game:playerReplaced': {

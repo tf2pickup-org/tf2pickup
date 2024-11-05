@@ -1,6 +1,7 @@
 import type { ObjectId } from 'mongodb'
 import type { Tf2Team } from '../../shared/types/tf2-team'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import type { Bot } from '../../shared/types/bot'
 
 export enum GameEventType {
   gameCreated = 'created',
@@ -78,7 +79,7 @@ export interface SubstituteRequested {
   at: Date
   player: ObjectId
   gameClass: Tf2ClassName
-  actor?: ObjectId
+  actor: ObjectId | Bot
   reason?: string | undefined
 }
 
