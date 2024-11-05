@@ -110,8 +110,8 @@ jobs:
           pattern: blob-report-*
           merge-multiple: true
 
-      - name: Merge into HTML Report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+      - name: Merge reports from shards
+        run: PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter=html,json ./all-blob-reports
 
       - name: Upload HTML report
         uses: actions/upload-artifact@v4
@@ -119,3 +119,7 @@ jobs:
           name: html-report-attempt-${{ github.run_attempt }}
           path: playwright-report
           retention-days: 30
+
+      - uses: daun/playwright-report-summary@v3
+        with:
+          report-file: results.json
