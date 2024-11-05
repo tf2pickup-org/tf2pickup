@@ -10,7 +10,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
   gameNumber: number
 }>({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  gameNumber: async ({ pages, steamIds, gameServer }, use, testInfo) => {
+  gameNumber: async ({ pages, steamIds, gameServer }, use) => {
     if (pages.size < 12) {
       throw new Error(`at least 12 users are required to launch a game`)
     }
@@ -42,13 +42,12 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
       const gameNumber = Number(matches[1])
       await use(gameNumber)
 
-      if (testInfo.status !== testInfo.expectedStatus) {
-        const admin = users.find(u => 'roles' in u && u.roles.includes('admin'))!
-        const adminPage = new GamePage(pages.get(admin.steamId)!, gameNumber)
-        await adminPage.goto()
-        if ((await adminPage.gameStatus().textContent())?.toLowerCase() === 'live') {
-          await adminPage.forceEnd()
-        }
+      // kill the game
+      const admin = users.find(u => 'roles' in u && u.roles.includes('admin'))!
+      const adminPage = new GamePage(pages.get(admin.steamId)!, gameNumber)
+      await adminPage.goto()
+      if ((await adminPage.gameStatus().textContent())?.toLowerCase() === 'live') {
+        await adminPage.forceEnd()
       }
     } else {
       throw new Error('could not launch game')

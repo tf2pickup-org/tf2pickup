@@ -12,19 +12,19 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     // verify the player is online
-    async function verifyPlayer(steamId: SteamId64) {
+    async function verifyPlayer({ player }: { player: SteamId64 }) {
       const playerSockets = [...app.websocketServer.clients].filter(
-        socket => socket.player?.steamId === steamId,
+        socket => socket.player?.steamId === player,
       )
-      logger.debug(`verify online status for ${steamId} (${playerSockets.length} sockets)`)
+      logger.debug(`verify online status for ${player} (${playerSockets.length} sockets)`)
       const { deletedCount } = await collections.onlinePlayers.deleteOne({
-        steamId,
+        steamId: player,
         ipAddress: {
           $size: 0,
         },
       })
       if (deletedCount > 0) {
-        events.emit('player:disconnected', { steamId })
+        events.emit('player:disconnected', { steamId: player })
       }
     }
     tasks.register('onlinePlayers:validatePlayer', verifyPlayer)
@@ -68,7 +68,9 @@ export default fp(
           )
 
           app.log.debug(`${player.steamId} (${player.name}) disconnected`)
-          await tasks.schedule('onlinePlayers:validatePlayer', verifyPlayerTimeout, player.steamId)
+          await tasks.schedule('onlinePlayers:validatePlayer', verifyPlayerTimeout, {
+            player: player.steamId,
+          })
         })
 
         events.emit('player:connected', {

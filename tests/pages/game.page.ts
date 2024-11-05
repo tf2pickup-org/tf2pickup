@@ -48,7 +48,7 @@ export class GamePage {
     await btn.click()
   }
 
-  gameEvent(event: string) {
+  gameEvent(event: string | RegExp) {
     return this.page.getByLabel('Game events').getByText(event)
   }
 

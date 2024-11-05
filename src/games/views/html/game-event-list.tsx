@@ -144,6 +144,11 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           )
         }
 
+        let reason = <></>
+        if (props.event.reason) {
+          reason = <> (reason: {props.event.reason})</>
+        }
+
         return (
           <span>
             {actorDesc} requested substitute for{' '}
@@ -151,6 +156,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
               <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
               <span safe>{player.name}</span>
             </a>
+            {reason}
           </span>
         )
       } else {

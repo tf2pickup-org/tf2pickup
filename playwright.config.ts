@@ -18,7 +18,7 @@ export default defineConfig<AuthUsersOptions>({
   reporter: process.env.CI ? [['dot'], ['github'], ['html']] : 'html',
   reportSlowTests: {
     max: 5,
-    threshold: minutesToMilliseconds(2),
+    threshold: minutesToMilliseconds(10),
   },
   use: {
     baseURL: 'http://localhost:3000',

@@ -5,10 +5,12 @@ import { tasks } from '../../tasks'
 import { requestSubstitute } from '../request-substitute'
 import { SlotStatus } from '../../database/models/game-slot.model'
 import { collections } from '../../database/collections'
+import { whenGameEnds } from '../when-game-ends'
+import { GameState } from '../../database/models/game.model'
 
 export default fp(
   async () => {
-    tasks.register('games:autoSubstitutePlayer', async (gameNumber, player) => {
+    tasks.register('games:autoSubstitutePlayer', async ({ gameNumber, player }) => {
       await requestSubstitute({
         number: gameNumber,
         replacee: player,
@@ -16,6 +18,13 @@ export default fp(
         reason: 'Player is offline',
       })
     })
+
+    events.on(
+      'game:updated',
+      whenGameEnds(({ after }) => {
+        tasks.cancel('games:autoSubstitutePlayer', { gameNumber: after.number })
+      }),
+    )
 
     events.on('game:gameServerInitialized', async ({ game }) => {
       const joinTimeout = await configuration.get('games.join_gameserver_timeout')
@@ -36,12 +45,52 @@ export default fp(
           }),
       )
       players.forEach(player => {
-        tasks.schedule('games:autoSubstitutePlayer', joinTimeout, game.number, player)
+        tasks.schedule('games:autoSubstitutePlayer', joinTimeout, {
+          gameNumber: game.number,
+          player,
+        })
       })
     })
 
     events.on('match/player:connected', ({ gameNumber, steamId }) => {
-      tasks.cancel('games:autoSubstitutePlayer', gameNumber, steamId)
+      tasks.cancel('games:autoSubstitutePlayer', { gameNumber, player: steamId })
+    })
+
+    events.on('match/player:disconnected', async ({ gameNumber, steamId }) => {
+      const rejoinTimeout = await configuration.get('games.rejoin_gameserver_timeout')
+      if (rejoinTimeout === 0) {
+        return
+      }
+
+      const game = await collections.games.findOne({ number: gameNumber })
+      if (game === null) {
+        throw new Error(`game ${gameNumber} not found`)
+      }
+
+      if ([GameState.ended, GameState.interrupted].includes(game.state)) {
+        return
+      }
+
+      tasks.schedule('games:autoSubstitutePlayer', rejoinTimeout, {
+        gameNumber,
+        player: steamId,
+      })
+    })
+
+    events.on('game:substituteRequested', ({ game, replacee }) => {
+      tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number, player: replacee })
+    })
+
+    events.on('game:playerReplaced', async ({ game, replacement }) => {
+      const rejoinTimeout = await configuration.get('games.rejoin_gameserver_timeout')
+      if (rejoinTimeout === 0) {
+        return
+      }
+
+      tasks.schedule('games:autoSubstitutePlayer', rejoinTimeout, {
+        gameNumber: game.number,
+        player: replacement,
+      })
     })
   },
   {
