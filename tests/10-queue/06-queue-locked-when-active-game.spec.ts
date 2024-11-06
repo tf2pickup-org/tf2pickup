@@ -2,7 +2,7 @@ import { expect, launchGame } from '../fixtures/launch-game'
 
 launchGame(
   'queue is locked for players that are involved in active game',
-  async ({ steamIds, users }) => {
+  async ({ steamIds, users, gameNumber }) => {
     const queueUsers = steamIds.slice(0, 12)
 
     await Promise.all(
