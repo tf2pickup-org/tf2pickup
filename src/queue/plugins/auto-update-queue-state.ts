@@ -92,11 +92,7 @@ export default fp(
     tasks.register('queue:readyUpTimeout', readyUpTimeout)
     tasks.register('queue:unready', unreadyQueue)
 
-    events.on('queue/slots:updated', async () => {
-      await safe(async () => {
-        await maybeUpdateQueueState()
-      })
-    })
+    events.on('queue/slots:updated', safe(maybeUpdateQueueState))
   },
   { name: 'auto update queue state' },
 )

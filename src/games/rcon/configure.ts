@@ -1,17 +1,15 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { deburr } from 'lodash-es'
-import { Rcon } from 'rcon-client'
-import { configuration } from '../configuration'
-import { collections } from '../database/collections'
-import { GameEventType } from '../database/models/game-event.model'
-import { SlotStatus } from '../database/models/game-slot.model'
-import { type GameModel, GameServerProvider, GameState } from '../database/models/game.model'
-import { environment } from '../environment'
-import { logger } from '../logger'
-import { LogsTfUploadMethod } from '../shared/types/logs-tf-upload-method'
-import { assertIsError } from '../utils/assert-is-error'
-import { generateGameserverPassword } from '../utils/generate-game-server-password'
-import { makeConnectString } from './make-connect-string'
+import { configuration } from '../../configuration'
+import { collections } from '../../database/collections'
+import { GameEventType } from '../../database/models/game-event.model'
+import { SlotStatus } from '../../database/models/game-slot.model'
+import { type GameModel, GameState } from '../../database/models/game.model'
+import { environment } from '../../environment'
+import { logger } from '../../logger'
+import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
+import { generateGameserverPassword } from '../../utils/generate-game-server-password'
+import { makeConnectString } from '../make-connect-string'
 import {
   logAddressAdd,
   kickAll,
@@ -25,41 +23,24 @@ import {
   tvPort,
   tvPassword,
   svLogsecret,
-} from './rcon-commands'
-import { update } from './update'
-import { extractConVarValue } from './extract-con-var-value'
+} from './commands'
+import { update } from '../update'
+import { extractConVarValue } from '../extract-con-var-value'
 import { generate } from 'generate-password'
-import { events } from '../events'
+import { events } from '../../events'
+import { withRcon } from './with-rcon'
 
 export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
     throw new Error(`gameServer is undefined`)
   }
-  if (game.gameServer.provider !== GameServerProvider.static) {
-    throw new Error(`gameServer provider not supported`)
-  }
-
   logger.info({ game }, `configuring game #${game.number}...`)
   const { signal } = options
 
   const password = generateGameserverPassword()
   const configLines = await compileConfig(game, password)
-  const gameServer = await collections.staticGameServers.findOne({ id: game.gameServer.id })
-  if (gameServer === null) {
-    throw new Error(`gameServer not found`)
-  }
-  let rcon: Rcon | undefined = undefined
-  try {
-    rcon = await Rcon.connect({
-      host: gameServer.internalIpAddress,
-      port: Number(gameServer.port),
-      password: gameServer.rconPassword,
-    })
-    rcon.on('error', error => {
-      assertIsError(error)
-      logger.error(error, `game #${game.number}: rcon error`)
-    })
 
+  return await withRcon(game, async ({ rcon, gameServer }) => {
     const logSecret = generate({
       length: 16,
       numbers: true,
@@ -134,9 +115,7 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
     return {
       connectString,
     }
-  } finally {
-    await rcon?.end()
-  }
+  })
 }
 
 async function compileConfig(game: GameModel, password: string): Promise<string[]> {

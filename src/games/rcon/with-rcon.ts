@@ -1,20 +1,23 @@
 import { Rcon } from 'rcon-client'
-import { GameServerProvider, type GameModel } from '../database/models/game.model'
-import { logger } from '../logger'
-import { collections } from '../database/collections'
-import { assertIsError } from '../utils/assert-is-error'
-import { delAllGamePlayers, disablePlayerWhitelist, logAddressDel } from './rcon-commands'
-import { environment } from '../environment'
+import { collections } from '../../database/collections'
+import { type GameModel, GameServerProvider } from '../../database/models/game.model'
+import { assertIsError } from '../../utils/assert-is-error'
+import { logger } from '../../logger'
+import type { StaticGameServerModel } from '../../database/models/static-game-server.model'
 
-export async function cleanup(game: GameModel) {
-  if (!game.gameServer) {
+export async function withRcon<T>(
+  game: GameModel,
+  callback: (args: { rcon: Rcon; gameServer: StaticGameServerModel }) => Promise<T>,
+): Promise<T> {
+  if (game.gameServer === undefined) {
     throw new Error(`gameServer is undefined`)
   }
   if (game.gameServer.provider !== GameServerProvider.static) {
     throw new Error(`gameServer provider not supported`)
   }
 
-  logger.info({ game }, `cleaning up after game #${game.number}...`)
+  logger.trace({ game }, `withRcon()`)
+
   const gameServer = await collections.staticGameServers.findOne({ id: game.gameServer.id })
   if (gameServer === null) {
     throw new Error(`gameServer not found`)
@@ -32,10 +35,7 @@ export async function cleanup(game: GameModel) {
       logger.error(error, `game #${game.number}: rcon error`)
     })
 
-    await rcon.send(logAddressDel(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`))
-    await rcon.send(delAllGamePlayers())
-    await rcon.send(disablePlayerWhitelist())
-    logger.info({ game }, `server cleaned up`)
+    return await callback({ rcon, gameServer })
   } finally {
     await rcon?.end()
   }

@@ -11,11 +11,11 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { MapResult, MapVote } from '../views/html/map-vote'
 import { SetTitle } from '../views/html/set-title'
 import { SubstitutionRequests } from '../views/html/substitution-requests'
-import { GameState } from '../../database/models/game.model'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
 import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
 import type { ObjectId } from 'mongodb'
+import { whenGameEnds } from '../../games/when-game-ends'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -34,31 +34,35 @@ export default fp(
       }
     })
 
-    events.on('player:connected', async () => {
-      await safe(async () => {
+    events.on(
+      'player:connected',
+      safe(async () => {
         const cmp = await OnlinePlayerList()
         app.gateway.broadcast(() => cmp)
-      })
-    })
+      }),
+    )
 
-    events.on('player:disconnected', async () => {
-      await safe(async () => {
+    events.on(
+      'player:disconnected',
+      safe(async () => {
         const cmp = await OnlinePlayerList()
         app.gateway.broadcast(() => cmp)
-      })
-    })
+      }),
+    )
 
-    events.on('player:updated', async ({ before, after }) => {
-      await safe(async () => {
+    events.on(
+      'player:updated',
+      safe(async ({ before, after }) => {
         if (before.activeGame !== after.activeGame) {
           const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
           app.gateway.toPlayers(after.steamId).broadcast(() => cmp)
         }
-      })
-    })
+      }),
+    )
 
-    events.on('queue/slots:updated', async ({ slots }) => {
-      await safe(async () => {
+    events.on(
+      'queue/slots:updated',
+      safe(async ({ slots }) => {
         const queueState = await QueueStateCmp()
         app.gateway.broadcast(
           async player =>
@@ -73,11 +77,12 @@ export default fp(
           collections.queueSlots.countDocuments(),
         ])
         app.gateway.broadcast(async () => await SetTitle({ current, required }))
-      })
-    })
+      }),
+    )
 
-    events.on('queue/state:updated', async ({ state }) => {
-      await safe(async () => {
+    events.on(
+      'queue/state:updated',
+      safe(async ({ state }) => {
         if (state === QueueState.ready) {
           const players = (
             await collections.queueSlots
@@ -90,24 +95,26 @@ export default fp(
           const show = await ReadyUpDialog.show()
           app.gateway.toPlayers(...players).broadcast(() => show)
         }
-      })
-    })
+      }),
+    )
 
     events.on('queue/mapOptions:reset', () => {
       app.gateway.broadcast(async actor => await MapVote({ actor }))
     })
 
-    events.on('queue/mapVoteResults:updated', async ({ results }) => {
-      await safe(async () => {
+    events.on(
+      'queue/mapVoteResults:updated',
+      safe(async ({ results }) => {
         const mapOptions = await collections.queueMapOptions.find().toArray()
         for (const map of mapOptions.map(option => option.name)) {
           app.gateway.broadcast(async () => MapResult({ results, map }))
         }
-      })
-    })
+      }),
+    )
 
-    events.on('queue/friendship:created', async ({ target }) => {
-      await safe(async () => {
+    events.on(
+      'queue/friendship:created',
+      safe(async ({ target }) => {
         const slot = await collections.queueSlots.findOne({ player: target })
         if (!slot) {
           return
@@ -118,11 +125,12 @@ export default fp(
         app.gateway
           .toPlayers(...actors.map(a => a.player!))
           .broadcast(async actor => await QueueSlot({ slot, actor }))
-      })
-    })
+      }),
+    )
 
-    events.on('queue/friendship:updated', async ({ target }) => {
-      await safe(async () => {
+    events.on(
+      'queue/friendship:updated',
+      safe(async ({ target }) => {
         const actors = await collections.queueSlots
           .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
           .toArray()
@@ -135,11 +143,12 @@ export default fp(
             .toPlayers(...actors.map(a => a.player!))
             .broadcast(async actor => await QueueSlot({ slot, actor }))
         })
-      })
-    })
+      }),
+    )
 
-    events.on('queue/friendship:removed', async ({ target }) => {
-      await safe(async () => {
+    events.on(
+      'queue/friendship:removed',
+      safe(async ({ target }) => {
         const slot = await collections.queueSlots.findOne({ player: target })
         if (!slot) {
           return
@@ -150,8 +159,8 @@ export default fp(
         app.gateway
           .toPlayers(...actors.map(a => a.player!))
           .broadcast(async actor => await QueueSlot({ slot, actor }))
-      })
-    })
+      }),
+    )
 
     const refreshSubstitutionRequests = async () => {
       const cmp = await SubstitutionRequests()
@@ -159,20 +168,14 @@ export default fp(
     }
     events.on('game:substituteRequested', refreshSubstitutionRequests)
     events.on('game:playerReplaced', refreshSubstitutionRequests)
-    events.on('game:updated', async ({ before, after }) => {
-      if (
-        before.state !== after.state &&
-        [GameState.ended, GameState.interrupted].includes(after.state)
-      ) {
-        await refreshSubstitutionRequests()
-      }
-    })
-    events.on('twitch.tv/streams:updated', async () => {
-      await safe(async () => {
+    events.on('game:updated', whenGameEnds(refreshSubstitutionRequests))
+    events.on(
+      'twitch.tv/streams:updated',
+      safe(async () => {
         const cmp = await StreamList()
         app.gateway.broadcast(() => cmp)
-      })
-    })
+      }),
+    )
 
     const refreshBanAlerts = async (playerId: ObjectId) => {
       const player = await collections.players.findOne({ _id: playerId })
@@ -189,16 +192,18 @@ export default fp(
         }
       })
     }
-    events.on('player/ban:added', async ({ ban }) => {
-      await safe(async () => {
+    events.on(
+      'player/ban:added',
+      safe(async ({ ban }) => {
         await refreshBanAlerts(ban.player)
-      })
-    })
-    events.on('player/ban:revoked', async ({ ban }) => {
-      await safe(async () => {
+      }),
+    )
+    events.on(
+      'player/ban:revoked',
+      safe(async ({ ban }) => {
         await refreshBanAlerts(ban.player)
-      })
-    })
+      }),
+    )
   },
   { name: 'update clients' },
 )

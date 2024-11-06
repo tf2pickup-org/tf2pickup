@@ -6,16 +6,17 @@ import { collections } from '../../database/collections'
 
 export default fp(
   async () => {
-    events.on('player/ban:added', async ({ ban }) => {
-      await safe(async () => {
+    events.on(
+      'player/ban:added',
+      safe(async ({ ban }) => {
         const player = await collections.players.findOne({ _id: ban.player })
         if (!player) {
           throw new Error(`player ${ban.player.toString()} not found`)
         }
 
         await kick(player.steamId)
-      })
-    })
+      }),
+    )
   },
   {
     name: 'kick banned players',
