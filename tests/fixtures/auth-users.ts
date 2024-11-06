@@ -1,18 +1,19 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import jsonwebtoken from 'jsonwebtoken'
 import { minutesToMilliseconds } from 'date-fns'
+import { UserContext, UserManager } from '../user-manager'
 
 export interface AuthUsersOptions {
   steamIds: string[]
 }
 
 interface AuthUsersFixture {
-  pages: Map<string, Page>
+  users: UserManager
 }
 
 export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
   steamIds: [[], { option: true }],
-  pages: async ({ steamIds, browser, baseURL }, use) => {
+  users: async ({ steamIds, browser, baseURL }, use) => {
     // opening a new context takes some time
     test.setTimeout(minutesToMilliseconds(1))
     expect(process.env['AUTH_SECRET']).toBeDefined()
@@ -22,7 +23,7 @@ export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
       url = new URL(baseURL)
     }
 
-    const pages = new Map<string, Page>()
+    const users: UserContext[] = []
     await Promise.all(
       steamIds.map(async steamId => {
         const context = await browser.newContext()
@@ -43,15 +44,15 @@ export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
         await context.grantPermissions(['notifications'])
         const page = await context.newPage()
         await page.goto('/')
-        pages.set(steamId, page)
+        users.push(new UserContext(steamId, page))
       }),
     )
-    await use(pages)
-    for (const page of pages.values()) {
-      await page.context().close()
-      await page.close()
+    await use(new UserManager(users))
+    for (const user of users) {
+      await user.page.context().close()
+      await user.page.close()
     }
-    pages.clear()
+    users.length = 0
   },
   page: async ({ page }, use) => {
     await page.goto('/')

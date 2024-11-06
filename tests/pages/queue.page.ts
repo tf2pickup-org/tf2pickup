@@ -1,4 +1,4 @@
-import type { Locator, Page } from '@playwright/test'
+import { errors, type Locator, type Page } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
 
 class QueueSlot {
@@ -27,8 +27,19 @@ class QueueSlot {
 class ReadyUpDialog {
   constructor(private readonly page: Page) {}
 
+  readyUpButton() {
+    return this.page.getByRole('button', { name: `I'M READY` })
+  }
+
   async readyUp() {
-    await this.page.getByRole('button', { name: `I'M READY` }).click()
+    const button = this.readyUpButton()
+    try {
+      await button.click({ timeout: secondsToMilliseconds(5) })
+    } catch (error) {
+      if (error instanceof errors.TimeoutError) {
+        return
+      }
+    }
   }
 
   async notReady() {

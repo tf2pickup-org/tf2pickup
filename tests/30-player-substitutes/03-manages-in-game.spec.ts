@@ -1,29 +1,27 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { users } from '../data'
 import { expect, launchGameAndStartMatch } from '../fixtures/launch-game-and-start-match'
-import { GamePage } from '../pages/game.page'
 import { waitABit } from '../utils/wait-a-bit'
 
-launchGameAndStartMatch('manages in-game', async ({ gameNumber, pages, gameServer }) => {
-  const admin = users[0]
-  const mayflower = users[1]
-  const tommyGun = users[12]
+launchGameAndStartMatch('manages in-game', async ({ gameNumber, users, gameServer }) => {
+  const admin = users.getAdmin()
+  const mayflower = users.byName('Mayflower')
+  const tommyGun = users.byName('TommyGun')
 
-  const adminsPage = new GamePage(pages.get(admin.steamId)!, gameNumber)
-  const tommyGunsPage = new GamePage(pages.get(tommyGun.steamId)!, gameNumber)
+  const adminsPage = admin.gamePage(gameNumber)
+  const tommyGunsPage = tommyGun.gamePage(gameNumber)
   await tommyGunsPage.goto()
 
-  await expect(adminsPage.playerLink(mayflower.name)).toBeVisible()
-  await adminsPage.requestSubstitute(mayflower.name)
+  await expect(adminsPage.playerLink(mayflower.playerName)).toBeVisible()
+  await adminsPage.requestSubstitute(mayflower.playerName)
 
   await waitABit(secondsToMilliseconds(1))
   expect(
     gameServer.commands.some(command =>
-      command.includes(`say Looking for replacement for ${mayflower.name}...`),
+      command.includes(`say Looking for replacement for ${mayflower.playerName}...`),
     ),
   ).toBe(true)
 
-  await tommyGunsPage.replacePlayer(mayflower.name)
+  await tommyGunsPage.replacePlayer(mayflower.playerName)
   await waitABit(secondsToMilliseconds(1))
 
   expect(
@@ -36,7 +34,7 @@ launchGameAndStartMatch('manages in-game', async ({ gameNumber, pages, gameServe
   ).toBe(true)
   expect(
     gameServer.commands.some(command =>
-      command.includes(`say ${mayflower.name} has been replaced by ${tommyGun.name}`),
+      command.includes(`say ${mayflower.playerName} has been replaced by ${tommyGun.playerName}`),
     ),
   ).toBe(true)
 })

@@ -18,6 +18,10 @@ export class GamePage {
     return this.page.getByLabel('Game status')
   }
 
+  async isLive() {
+    return (await this.gameStatus().textContent())?.toLowerCase() === 'live'
+  }
+
   playerSlot(playerName: string) {
     return this.page.getByLabel(`${playerName}'s slot`)
   }

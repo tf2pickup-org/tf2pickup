@@ -1,26 +1,23 @@
-import { MongoClient } from 'mongodb'
 import { users } from '../data'
-import { authUsers as test, expect } from '../fixtures/auth-users'
+import { authUsers, expect } from '../fixtures/auth-users'
+import { mergeTests } from '@playwright/test'
+import { accessMongoDb } from '../fixtures/access-mongo-db'
 
 const user = users[0]
 
-test.use({ steamIds: [user.steamId] })
+authUsers.use({ steamIds: [user.steamId] })
+
+const test = mergeTests(authUsers, accessMongoDb)
 
 test.describe('when user has not accepted the rules yet', () => {
-  test.beforeEach(async ({ steamIds }) => {
+  test.beforeEach(async ({ db, steamIds }) => {
     const steamId = steamIds[0]!
-    const client = new MongoClient(process.env['MONGODB_URI']!)
-    await client.connect()
-    const db = client.db()
     const players = db.collection('players')
     await players.updateOne({ steamId }, { $set: { hasAcceptedRules: false } })
   })
 
-  test('accept rules', async ({ steamIds, pages }) => {
-    const steamId = steamIds[0]!
-    const page = pages.get(steamId)!
-    await page.goto('/')
-
+  test('accept rules', async ({ users }) => {
+    const page = users.getFirst().page
     await expect(page.getByTitle('Accept rules dialog')).toBeVisible()
 
     const btn = page.getByRole('button', { name: 'I accept these rules' })

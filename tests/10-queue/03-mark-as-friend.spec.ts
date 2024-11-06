@@ -1,14 +1,14 @@
 import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
-import { QueuePage } from '../pages/queue.page'
+import type { QueuePage } from '../pages/queue.page'
 
 authUsers.use({ steamIds: [users[0].steamId, users[1].steamId, users[2].steamId] })
 
-authUsers('mark as friend', async ({ pages }) => {
-  const [medic1, medic2, soldier] = [
-    new QueuePage(pages.get(users[0].steamId)!),
-    new QueuePage(pages.get(users[1].steamId)!),
-    new QueuePage(pages.get(users[2].steamId)!),
+authUsers('mark as friend', async ({ users }) => {
+  const [medic1, medic2, soldier] = users.getMany(3).map(user => user.queuePage()) as [
+    QueuePage,
+    QueuePage,
+    QueuePage,
   ]
   await medic1.joinQueue(10)
   await medic2.joinQueue(11)
