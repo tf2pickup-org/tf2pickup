@@ -22,7 +22,7 @@ export default defineConfig<AuthUsersOptions>({
   },
   use: {
     baseURL: 'http://localhost:3000',
-    trace: 'on-all-retries',
+    trace: 'retain-on-failure',
     video: {
       mode: 'retain-on-failure',
       size: { width: 1280, height: 720 },
