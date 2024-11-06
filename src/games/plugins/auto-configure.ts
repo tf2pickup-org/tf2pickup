@@ -2,7 +2,7 @@ import fp from 'fastify-plugin'
 import { logger } from '../../logger'
 import { assertIsError } from '../../utils/assert-is-error'
 import { events } from '../../events'
-import { configure } from '../configure'
+import { configure } from '../rcon/configure'
 import type { GameNumber } from '../../database/models/game.model'
 import { whenForceEnded } from '../when-force-ended'
 
