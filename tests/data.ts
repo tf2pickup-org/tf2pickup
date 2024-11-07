@@ -1,8 +1,3 @@
-export interface User {
-  steamId: string
-  name: string
-}
-
 // list of test users
 export const users = [
   { steamId: '76561199195756652', name: 'Promenader', roles: ['admin'] },
