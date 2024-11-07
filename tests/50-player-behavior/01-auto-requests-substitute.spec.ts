@@ -1,19 +1,19 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { users } from '../data'
 import { expect, launchGameAndInitialize } from '../fixtures/launch-game-and-initialize'
 import { GamePage } from '../pages/game.page'
 import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
-import { chooseAdmin } from '../fixtures/choose-admin'
+import type { UserContext } from '../user-manager'
 
-const test = mergeTests(launchGameAndInitialize, accessMongoDb, chooseAdmin)
+const test = mergeTests(launchGameAndInitialize, accessMongoDb)
+const offlinePlayer = 'BellBoy'
 
 test.beforeEach(async ({ db }) => {
   const configuration = db.collection('configuration')
   await configuration.updateOne(
     { key: 'games.join_gameserver_timeout' },
     { $set: { value: secondsToMilliseconds(10) } },
-    { upsert: true }
+    { upsert: true },
   )
   await configuration.updateOne(
     { key: 'games.rejoin_gameserver_timeout' },
@@ -23,17 +23,14 @@ test.beforeEach(async ({ db }) => {
 })
 
 test.describe('when a player does not connect to the gameserver on time', () => {
-  test('should request substitute for them', async ({ steamIds, gameNumber, page, gameServer }) => {
+  test('should request substitute for them', async ({ gameNumber, page, gameServer, players }) => {
     const gamePage = new GamePage(page, gameNumber)
-    const queueUsers = steamIds.slice(0, 12)
-    const connectingPlayers = queueUsers.slice(0, 11)
-    const offlinePlayer = users.find(u => u.steamId === queueUsers[11])!
+    const connectingPlayers = players.filter(user => user.playerName !== offlinePlayer)
 
     await Promise.all(
-      connectingPlayers.map(async steamId => {
-        const playerName = users.find(u => u.steamId === steamId)!.name
-        await gameServer.playerConnects(playerName)
-        await gameServer.playerJoinsTeam(playerName)
+      connectingPlayers.map(async user => {
+        await gameServer.playerConnects(user.playerName)
+        await gameServer.playerJoinsTeam(user.playerName)
       }),
     )
 
@@ -42,50 +39,45 @@ test.describe('when a player does not connect to the gameserver on time', () => 
       timeout: secondsToMilliseconds(11),
     })
     expect(event).toHaveText(/bot requested substitute for.+BellBoy \(reason: Player is offline\)/)
-    await expect(gamePage.playerLink(offlinePlayer.name)).not.toBeVisible()
+    await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })
 })
 
 test.describe('when a player connects to the gameserver, but then leaves', () => {
-  test('should request substitute for them', async ({ steamIds, gameNumber, page, gameServer }) => {
+  test('should request substitute for them', async ({ gameNumber, page, gameServer, players }) => {
     const gamePage = new GamePage(page, gameNumber)
-    const queueUsers = steamIds.slice(0, 12)
-    const connectingPlayers = queueUsers.slice(0, 11)
-    const offlinePlayer = users.find(u => u.steamId === queueUsers[11])!
+    const connectingPlayers = players.filter(user => user.playerName !== offlinePlayer)
 
     await Promise.all(
-      connectingPlayers.map(async steamId => {
-        const playerName = users.find(u => u.steamId === steamId)!.name
-        await gameServer.playerConnects(playerName)
-        await gameServer.playerJoinsTeam(playerName)
+      connectingPlayers.map(async user => {
+        await gameServer.playerConnects(user.playerName)
+        await gameServer.playerJoinsTeam(user.playerName)
       }),
     )
 
-    await gameServer.playerConnects(offlinePlayer.name)
-    await gameServer.playerDisconnects(offlinePlayer.name)
+    await gameServer.playerConnects(offlinePlayer)
+    await gameServer.playerDisconnects(offlinePlayer)
 
     await expect(gamePage.gameEvent(/bot requested substitute/)).toBeVisible({
       timeout: secondsToMilliseconds(6),
     })
-    await expect(gamePage.playerLink(offlinePlayer.name)).not.toBeVisible()
+    await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })
 })
 
 test.describe('when the match starts, but then a player leaves', () => {
-  test('should request substitute for them', async ({ steamIds, gameNumber, page, gameServer }) => {
+  test('should request substitute for them', async ({ gameNumber, page, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
-    const queueUsers = steamIds.slice(0, 12)
-    const offlinePlayer = users.find(u => u.steamId === queueUsers[11])!
 
     await gameServer.connectAllPlayers()
     await gameServer.matchStarts()
 
-    await gameServer.playerDisconnects(offlinePlayer.name)
+    await gameServer.playerDisconnects(offlinePlayer)
 
     await expect(gamePage.gameEvent(/bot requested substitute/)).toBeVisible({
       timeout: secondsToMilliseconds(6),
     })
-    await expect(gamePage.playerLink(offlinePlayer.name)).not.toBeVisible()
+    await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })
 })
 
@@ -93,24 +85,27 @@ test.describe('when a player replaces another player and does not join the games
   let adminsPage: GamePage
   let tommyGunsPage: GamePage
   let gamePage: GamePage
-  const mayflower = users[1]
+  let mayflower: UserContext
 
-  test.beforeEach(async ({ gameNumber, page, pages, admin, gameServer }) => {
-    const tommyGun = users[12]
+  test.beforeEach(async ({ gameNumber, page, users, gameServer }) => {
+    const tommyGun = users.byName('TommyGun')
 
     gamePage = new GamePage(page, gameNumber)
-    adminsPage = new GamePage(pages.get(admin.steamId)!, gameNumber)
-    tommyGunsPage = new GamePage(pages.get(tommyGun.steamId)!, gameNumber)
+    adminsPage = users.getAdmin().gamePage(gameNumber)
+    await adminsPage.goto()
+    tommyGunsPage = tommyGun.gamePage(gameNumber)
     await tommyGunsPage.goto()
 
     await gameServer.connectAllPlayers()
+
+    mayflower = users.byName('Mayflower')
   })
 
   test.describe('before the match starts', () => {
     test.beforeEach(async ({ gameServer }) => {
-      await adminsPage.requestSubstitute(mayflower.name)
-      await tommyGunsPage.replacePlayer(mayflower.name)
-      await gameServer.playerDisconnects(mayflower.name)
+      await adminsPage.requestSubstitute(mayflower.playerName)
+      await tommyGunsPage.replacePlayer(mayflower.playerName)
+      await gameServer.playerDisconnects(mayflower.playerName)
     })
 
     test('should request substitute for them', async () => {
@@ -125,9 +120,9 @@ test.describe('when a player replaces another player and does not join the games
     test.beforeEach(async ({ gameServer }) => {
       await gameServer.matchStarts()
 
-      await adminsPage.requestSubstitute(mayflower.name)
-      await tommyGunsPage.replacePlayer(mayflower.name)
-      await gameServer.playerDisconnects(mayflower.name)
+      await adminsPage.requestSubstitute(mayflower.playerName)
+      await tommyGunsPage.replacePlayer(mayflower.playerName)
+      await gameServer.playerDisconnects(mayflower.playerName)
     })
 
     test('should request substitute for them', async () => {

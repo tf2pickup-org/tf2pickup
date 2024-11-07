@@ -1,35 +1,35 @@
-import { users } from '../data'
 import { launchGame, expect } from '../fixtures/launch-game'
-import { GamePage } from '../pages/game.page'
 
-launchGame('substitute other', async ({ gameNumber, pages, page }) => {
-  const admin = users[0]
-  const mayflower = users[1]
-  const tommyGun = users[12]
+launchGame('substitute other', async ({ gameNumber, users, page }) => {
+  const admin = users.getAdmin()
+  const mayflower = users.byName('Mayflower')
+  const tommyGun = users.byName('TommyGun')
 
-  const adminsPage = new GamePage(pages.get(admin.steamId)!, gameNumber)
-  const tommyGunsPage = new GamePage(pages.get(tommyGun.steamId)!, gameNumber)
+  const adminsPage = admin.gamePage(gameNumber)
+  const tommyGunsPage = tommyGun.gamePage(gameNumber)
   await tommyGunsPage.goto()
 
-  await expect(adminsPage.playerLink(mayflower.name)).toBeVisible()
-  await adminsPage.requestSubstitute(mayflower.name)
-  await expect(adminsPage.playerLink(mayflower.name)).not.toBeVisible()
+  await expect(adminsPage.playerLink(mayflower.playerName)).toBeVisible()
+  await adminsPage.requestSubstitute(mayflower.playerName)
+  await expect(adminsPage.playerLink(mayflower.playerName)).not.toBeVisible()
 
-  await expect(adminsPage.gameEvent(`${admin.name} requested substitute`)).toBeVisible()
-  await expect(adminsPage.playerLink(mayflower.name)).not.toBeVisible()
-  await expect(tommyGunsPage.gameEvent(`${admin.name} requested substitute`)).toBeVisible()
-  await expect(tommyGunsPage.playerLink(mayflower.name)).not.toBeVisible()
+  await expect(adminsPage.gameEvent(`${admin.playerName} requested substitute`)).toBeVisible()
+  await expect(adminsPage.playerLink(mayflower.playerName)).not.toBeVisible()
+  await expect(tommyGunsPage.gameEvent(`${admin.playerName} requested substitute`)).toBeVisible()
+  await expect(tommyGunsPage.playerLink(mayflower.playerName)).not.toBeVisible()
 
   await expect(
     page.getByText(`Team BLU needs a substitute for scout in game #${adminsPage.gameNumber}`),
   ).toBeVisible()
 
-  await tommyGunsPage.replacePlayer(mayflower.name)
+  await tommyGunsPage.replacePlayer(mayflower.playerName)
 
-  await expect(adminsPage.playerLink(tommyGun.name)).toBeVisible()
-  await expect(adminsPage.gameEvent(`${tommyGun.name} replaced ${mayflower.name}`)).toBeVisible()
-  await expect(tommyGunsPage.playerLink(tommyGun.name)).toBeVisible()
-  await expect(tommyGunsPage.gameEvent(`${tommyGun.name} replaced ${mayflower.name}`)).toBeVisible()
-
-  await adminsPage.forceEnd()
+  await expect(adminsPage.playerLink(tommyGun.playerName)).toBeVisible()
+  await expect(
+    adminsPage.gameEvent(`${tommyGun.playerName} replaced ${mayflower.playerName}`),
+  ).toBeVisible()
+  await expect(tommyGunsPage.playerLink(tommyGun.playerName)).toBeVisible()
+  await expect(
+    tommyGunsPage.gameEvent(`${tommyGun.playerName} replaced ${mayflower.playerName}`),
+  ).toBeVisible()
 })

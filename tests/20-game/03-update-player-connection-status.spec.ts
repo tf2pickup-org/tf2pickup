@@ -1,18 +1,11 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { expect, launchGame } from '../fixtures/launch-game'
-import { GamePage } from '../pages/game.page'
-import { users } from '../data'
 
-launchGame(
-  'update player connection status',
-  async ({ steamIds, gameNumber, pages, gameServer }) => {
-    const players = steamIds.slice(0, 12)
-
-    await Promise.all(
-      players.map(async steamId => {
-        const page = new GamePage(pages.get(steamId)!, gameNumber)
-        const playerName = users.find(u => u.steamId === steamId)!.name
-
+launchGame('update player connection status', async ({ players, gameNumber, gameServer }) => {
+  await Promise.all(
+    players
+      .map(player => ({ page: player.gamePage(gameNumber), playerName: player.playerName }))
+      .map(async ({ page, playerName }) => {
         await expect(page.gameEvent('Game server initialized')).toBeVisible({
           timeout: secondsToMilliseconds(30),
         })
@@ -29,9 +22,5 @@ launchGame(
         await gameServer.playerDisconnects(playerName)
         await expect(slot.getByLabel('Player connection status')).toHaveClass(/offline/)
       }),
-    )
-
-    const adminsPage = new GamePage(pages.get(users[0].steamId)!, gameNumber)
-    await adminsPage.forceEnd()
-  },
-)
+  )
+})

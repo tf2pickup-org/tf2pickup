@@ -1,12 +1,11 @@
 import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
-import { QueuePage } from '../pages/queue.page'
 
 const user = users[0]
 
 authUsers.use({ steamIds: [user.steamId] })
-authUsers('vote for map', async ({ pages }) => {
-  const page = new QueuePage(pages.get(user.steamId)!)
+authUsers('vote for map', async ({ users }) => {
+  const page = users.getFirst().queuePage()
   const mapBtn = page.voteForMapButton(0)
   expect(await mapBtn.getAttribute('aria-checked')).toBe('false')
 
