@@ -1,15 +1,11 @@
 import { expect } from '@playwright/test'
-import { launchGame } from '../fixtures/launch-game'
 import { waitABit } from '../utils/wait-a-bit'
 import { secondsToMilliseconds } from 'date-fns'
+import { launchGameAndInitialize } from '../fixtures/launch-game-and-initialize'
 
-launchGame(
+launchGameAndInitialize(
   'free players when the game ends',
   async ({ steamIds, gameNumber, users, gameServer }) => {
-    const gamePage = users.getFirst().gamePage(gameNumber)
-    await expect(gamePage.gameEvent('Game server assigned')).toBeVisible()
-    await expect(gamePage.gameEvent('Game server initialized')).toBeVisible({ timeout: 13000 })
-
     const queueUsers = steamIds.slice(0, 12)
     await Promise.all(
       queueUsers
@@ -22,7 +18,7 @@ launchGame(
 
     await gameServer.connectAllPlayers()
     await gameServer.matchStarts()
-    await waitABit(secondsToMilliseconds(10))
+    await waitABit(secondsToMilliseconds(3))
     await gameServer.matchEnds()
 
     await Promise.all(

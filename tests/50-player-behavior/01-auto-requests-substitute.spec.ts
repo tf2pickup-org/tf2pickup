@@ -25,8 +25,8 @@ test.describe('when a player does not connect to the gameserver on time', () => 
   test('should request substitute for them', async ({ users, gameNumber, page, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
     const queueUsers = users.getMany(12)
-    const connectingPlayers = queueUsers.slice(0, 11)
     const offlinePlayer = users.bySteamId(queueUsers[11].steamId)
+    const connectingPlayers = queueUsers.filter(user => user.steamId !== offlinePlayer.steamId)
 
     await Promise.all(
       connectingPlayers.map(async user => {
@@ -48,8 +48,8 @@ test.describe('when a player connects to the gameserver, but then leaves', () =>
   test('should request substitute for them', async ({ users, gameNumber, page, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
     const queueUsers = users.getMany(12)
-    const connectingPlayers = queueUsers.slice(0, 11)
     const offlinePlayer = users.bySteamId(queueUsers[11].steamId)
+    const connectingPlayers = queueUsers.filter(user => user.steamId !== offlinePlayer.steamId)
 
     await Promise.all(
       connectingPlayers.map(async user => {
