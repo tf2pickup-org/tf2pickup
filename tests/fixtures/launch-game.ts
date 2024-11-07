@@ -26,18 +26,17 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
       ['BellBoy', 11],
     ])
 
-    const queueUsers = users.getMany(12)
     await Promise.all(
-      queueUsers
-        .map(user => ({ page: user.queuePage(), slot: desiredSlots.get(user.playerName)! }))
-        .map(async ({ page, slot }) => {
-          await page.slot(slot).join()
-          await page.readyUpDialog().readyUp()
-          await page.page.waitForURL(/games\/(\d+)/)
-        }),
+      Array.from(desiredSlots.entries()).map(async ([name, slot]) => {
+        const user = users.byName(name)
+        const page = user.queuePage()
+        await page.slot(slot).join()
+        await page.readyUpDialog().readyUp()
+        await user.page.waitForURL(/games\/(\d+)/)
+      }),
     )
 
-    const page = users.getFirst().page
+    const page = users.byName('Promenader').page
     const matches = page.url().match(/games\/(\d+)/)
     if (matches) {
       const gameNumber = Number(matches[1])
