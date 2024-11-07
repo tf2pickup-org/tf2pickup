@@ -5,11 +5,10 @@ import { launchGameAndInitialize } from '../fixtures/launch-game-and-initialize'
 
 launchGameAndInitialize(
   'free players when the game ends',
-  async ({ steamIds, gameNumber, users, gameServer }) => {
-    const queueUsers = steamIds.slice(0, 12)
+  async ({ players, gameNumber, gameServer }) => {
     await Promise.all(
-      queueUsers
-        .map(steamId => users.bySteamId(steamId).queuePage())
+      players
+        .map(player => player.queuePage())
         .map(async page => {
           await page.goto()
           await expect(page.goBackToGameLink()).toBeVisible()
@@ -22,8 +21,8 @@ launchGameAndInitialize(
     await gameServer.matchEnds()
 
     await Promise.all(
-      queueUsers
-        .map(steamId => users.bySteamId(steamId).queuePage())
+      players
+        .map(player => player.queuePage())
         .map(async page => {
           await page.goto()
           await expect(page.goBackToGameLink()).not.toBeVisible()

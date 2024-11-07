@@ -22,16 +22,20 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
   gameNumber: number
   players: UserContext[]
 }>({
+  players: async ({ users }, use) => {
+    const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
+    await use(players)
+  },
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  gameNumber: async ({ users, gameServer }, use) => {
+  gameNumber: async ({ users, players, gameServer }, use) => {
     if (users.count < 12) {
       throw new Error(`at least 12 users are required to launch a game`)
     }
 
     await Promise.all(
-      Array.from(desiredSlots.entries()).map(async ([name, slot]) => {
-        const user = users.byName(name)
+      players.map(async user => {
         const page = user.queuePage()
+        const slot = desiredSlots.get(user.playerName)!
         await page.slot(slot).join()
         await page.readyUpDialog().readyUp()
         await user.page.waitForURL(/games\/(\d+)/)
@@ -53,10 +57,6 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
     } else {
       throw new Error('could not launch game')
     }
-  },
-  players: async ({ users }, use) => {
-    const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
-    await use(players)
   },
 })
 

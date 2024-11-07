@@ -29,6 +29,4 @@ launchGame('substitute self', async ({ gameNumber, users, page }) => {
   await expect(
     mayflowersPage.gameEvent(`${mayflower.playerName} replaced ${mayflower.playerName}`),
   ).toBeVisible()
-
-  await adminsPage.forceEnd()
 })

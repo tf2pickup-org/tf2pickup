@@ -3,13 +3,11 @@ import { launchGame } from '../fixtures/launch-game'
 import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
 
-launchGame('configure game server', async ({ steamIds, gameNumber, users, page, gameServer }) => {
-  const players = steamIds.slice(0, 12)
-
+launchGame('configure game server', async ({ players, gameNumber, page, gameServer }) => {
   await Promise.all(
     players
-      .map(steamId => ({ steamId, page: users.bySteamId(steamId).gamePage(gameNumber) }))
-      .map(async ({ page, steamId }) => {
+      .map(player => ({ player, page: player.gamePage(gameNumber) }))
+      .map(async ({ player, page }) => {
         await expect(page.gameEvent('Game server assigned')).toBeVisible()
 
         const connectString = page.connectString()
@@ -24,7 +22,7 @@ launchGame('configure game server', async ({ steamIds, gameNumber, users, page, 
         await expect(page.gameEvent('Game server initialized')).toBeVisible()
         await expect(page.joinGameButton()).toBeVisible()
 
-        expect(gameServer.addedPlayers.some(p => p.steamId64 === steamId)).toBe(true)
+        expect(gameServer.addedPlayers.some(p => p.steamId64 === player.steamId)).toBe(true)
       }),
   )
 
