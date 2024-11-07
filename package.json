@@ -37,7 +37,7 @@
     "generate-password": "1.7.1",
     "jsonwebtoken": "9.0.2",
     "lodash-es": "4.17.21",
-    "marked": "14.1.3",
+    "marked": "14.1.4",
     "mongodb": "6.10.0",
     "nanoid": "5.0.8",
     "openid": "2.0.12",
