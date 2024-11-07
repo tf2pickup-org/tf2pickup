@@ -66,6 +66,23 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.string().nullable().default(null),
   }),
   z.object({
+    key: z.literal('games.join_queue_cooldown'),
+    value: z
+      .record(z.nativeEnum(Tf2ClassName), z.number())
+      .default({
+        [Tf2ClassName.scout]: secondsToMilliseconds(5),
+        [Tf2ClassName.soldier]: secondsToMilliseconds(5),
+        [Tf2ClassName.pyro]: secondsToMilliseconds(5),
+        [Tf2ClassName.demoman]: secondsToMilliseconds(5),
+        [Tf2ClassName.heavy]: secondsToMilliseconds(5),
+        [Tf2ClassName.engineer]: secondsToMilliseconds(5),
+        [Tf2ClassName.medic]: secondsToMilliseconds(0),
+        [Tf2ClassName.sniper]: secondsToMilliseconds(5),
+        [Tf2ClassName.spy]: secondsToMilliseconds(5),
+      })
+      .describe('Apply cooldown before players can join the queue after a game ends'),
+  }),
+  z.object({
     key: z.literal('players.etf2l_account_required'),
     value: z.boolean().default(false),
   }),

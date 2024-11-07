@@ -20,6 +20,13 @@ import { whenGameEnds } from '../../games/when-game-ends'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    async function syncAllSlots(...players: SteamId64[]) {
+      const slots = await collections.queueSlots.find().toArray()
+      slots.forEach(async slot => {
+        app.gateway.toPlayers(...players).broadcast(async actor => await QueueSlot({ slot, actor }))
+      })
+    }
+
     app.gateway.on('connected', async socket => {
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(async slot => {
@@ -56,6 +63,7 @@ export default fp(
         if (before.activeGame !== after.activeGame) {
           const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
           app.gateway.toPlayers(after.steamId).broadcast(() => cmp)
+          await syncAllSlots(after.steamId)
         }
       }),
     )
@@ -186,10 +194,7 @@ export default fp(
       app.gateway.toPlayers(player?.steamId).broadcast(() => cmp)
 
       setImmediate(async () => {
-        const slots = await collections.queueSlots.find().toArray()
-        for (const slot of slots) {
-          app.gateway.toPlayers(player.steamId).broadcast(async actor => QueueSlot({ slot, actor }))
-        }
+        await syncAllSlots(player.steamId)
       })
     }
     events.on(

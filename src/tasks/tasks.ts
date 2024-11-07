@@ -17,6 +17,12 @@ export const tasksSchema = z.discriminatedUnion('name', [
     }),
   }),
   z.object({
+    name: z.literal('games.freePlayer'),
+    args: z.object({
+      player: steamId64,
+    }),
+  }),
+  z.object({
     name: z.literal('queue:readyUpTimeout'),
     args: z.object({}),
   }),
