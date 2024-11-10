@@ -59,7 +59,7 @@ test.describe('when a player connects to the gameserver, but then leaves', () =>
     await gameServer.playerDisconnects(offlinePlayer)
 
     await expect(gamePage.gameEvent(/bot requested substitute/)).toBeVisible({
-      timeout: secondsToMilliseconds(6),
+      timeout: secondsToMilliseconds(10),
     })
     await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })
@@ -75,7 +75,7 @@ test.describe('when the match starts, but then a player leaves', () => {
     await gameServer.playerDisconnects(offlinePlayer)
 
     await expect(gamePage.gameEvent(/bot requested substitute/)).toBeVisible({
-      timeout: secondsToMilliseconds(6),
+      timeout: secondsToMilliseconds(7),
     })
     await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })

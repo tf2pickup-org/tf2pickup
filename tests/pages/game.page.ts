@@ -34,8 +34,12 @@ export class GamePage {
     return this.page.getByLabel('Connect string')
   }
 
+  waitingForGameServer() {
+    return this.page.locator('a').filter({ hasText: 'Waiting for server...' })
+  }
+
   joinGameButton() {
-    return this.page.getByRole('link', { name: 'join game' })
+    return this.page.getByRole('link', { name: /join (game|in \d{1,2}\:\d{2})/i })
   }
 
   watchStvButton() {

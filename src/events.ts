@@ -13,6 +13,7 @@ import type { Tf2Team } from './shared/types/tf2-team'
 import type { PlayerBanModel } from './database/models/player-ban.model'
 import type { StreamModel } from './database/models/stream.model'
 import type { Bot } from './shared/types/bot'
+import type { PlayerConnectionStatus } from './database/models/game-slot.model'
 
 export interface Events {
   'build:bundleReady': {
@@ -42,6 +43,11 @@ export interface Events {
     game: GameModel
     replacee: SteamId64
     replacement: SteamId64
+  }
+  'game:playerConnectionStatusUpdated': {
+    game: GameModel
+    player: SteamId64
+    playerConnectionStatus: PlayerConnectionStatus
   }
 
   'gamelog:message': {

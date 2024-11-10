@@ -25,7 +25,8 @@
       background-color: darken(theme(colors.abru.light.15), 5%);
     }
 
-    &:disabled {
+    &:disabled,
+    a&:not([href]) {
       background-color: theme(colors.abru.light.35);
       color: theme(colors.abru.light.60);
 
@@ -43,8 +44,20 @@
 
     &--accent {
       background-color: theme(colors.accent.DEFAULT);
+
       &:hover {
         background-color: darken(theme(colors.accent.DEFAULT), 10%);
+      }
+
+      &:disabled,
+      a&:not([href]) {
+        background-color: theme(colors.accent.DEFAULT);
+        color: theme(colors.ash);
+
+        &:hover {
+          background-color: theme(colors.accent.DEFAULT);
+          color: theme(colors.ash);
+        }
       }
     }
 

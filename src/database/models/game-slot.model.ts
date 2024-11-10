@@ -21,4 +21,5 @@ export interface GameSlotModel {
   status: SlotStatus
   connectionStatus: PlayerConnectionStatus
   skill?: number
+  shouldJoinBy?: Date
 }

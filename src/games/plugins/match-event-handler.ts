@@ -8,6 +8,7 @@ import { update } from '../update'
 import { assertIsError } from '../../utils/assert-is-error'
 import { logger } from '../../logger'
 import { collections } from '../../database/collections'
+import { safe } from '../../utils/safe'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -71,14 +72,15 @@ export default fp(
       }
     })
 
-    events.on('match/player:connected', async ({ gameNumber, steamId }) => {
-      try {
+    events.on(
+      'match/player:connected',
+      safe(async ({ gameNumber, steamId }) => {
         const player = await collections.players.findOne({ steamId })
         if (!player) {
           throw new Error(`player with steamId ${steamId} not found`)
         }
 
-        await update(
+        const game = await update(
           gameNumber,
           {
             $set: {
@@ -96,11 +98,13 @@ export default fp(
             arrayFilters: [{ 'element.player': { $eq: player._id } }],
           },
         )
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+        events.emit('game:playerConnectionStatusUpdated', {
+          game,
+          player: steamId,
+          playerConnectionStatus: PlayerConnectionStatus.joining,
+        })
+      }),
+    )
 
     events.on('match/player:joinedTeam', async ({ gameNumber, steamId, team }) => {
       try {
@@ -109,7 +113,7 @@ export default fp(
           throw new Error(`player with steamId ${steamId} not found`)
         }
 
-        await update(
+        const game = await update(
           gameNumber,
           {
             $set: {
@@ -128,6 +132,11 @@ export default fp(
             arrayFilters: [{ 'element.player': { $eq: player._id } }],
           },
         )
+        events.emit('game:playerConnectionStatusUpdated', {
+          game,
+          player: steamId,
+          playerConnectionStatus: PlayerConnectionStatus.connected,
+        })
       } catch (error) {
         assertIsError(error)
         logger.warn(error)
@@ -141,7 +150,7 @@ export default fp(
           throw new Error(`player with steamId ${steamId} not found`)
         }
 
-        await update(
+        const game = await update(
           gameNumber,
           {
             $set: {
@@ -159,6 +168,11 @@ export default fp(
             arrayFilters: [{ 'element.player': { $eq: player._id } }],
           },
         )
+        events.emit('game:playerConnectionStatusUpdated', {
+          game,
+          player: steamId,
+          playerConnectionStatus: PlayerConnectionStatus.offline,
+        })
       } catch (error) {
         assertIsError(error)
         logger.warn(error)
