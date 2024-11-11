@@ -60,4 +60,4 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
   },
 })
 
-export { expect } from '@playwright/test'
+export { expect } from './simulate-game-server'

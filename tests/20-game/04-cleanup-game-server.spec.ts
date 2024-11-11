@@ -8,15 +8,9 @@ launchGameAndStartMatch('cleanup game server', async ({ gameNumber, gameServer }
   await waitABit(secondsToMilliseconds(3))
   await gameServer.matchEnds()
 
-  await expect
-    .poll(
-      () =>
-        gameServer.commands.some(cmd => /logaddress_del/.test(cmd)) &&
-        gameServer.addedPlayers.length === 0 &&
-        gameServer.commands.some(cmd => cmd === 'sm_game_player_whitelist 0'),
-      {
-        timeout: secondsToMilliseconds(40),
-      },
-    )
-    .toBe(true)
+  await expect(gameServer).toHaveCommand(/^logaddress_del/, {
+    timeout: secondsToMilliseconds(40),
+  })
+  await expect(gameServer).toHaveCommand('sm_game_player_whitelist 0')
+  expect(gameServer.addedPlayers.length).toBe(0)
 })

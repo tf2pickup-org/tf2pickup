@@ -1,5 +1,4 @@
-import { expect } from '@playwright/test'
-import { launchGame } from '../fixtures/launch-game'
+import { launchGame, expect } from '../fixtures/launch-game'
 import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
 
@@ -22,7 +21,7 @@ launchGame('configure game server', async ({ players, gameNumber, page, gameServ
         await expect(page.gameEvent('Game server initialized')).toBeVisible()
         await expect(page.joinGameButton()).toBeVisible()
 
-        expect(gameServer.addedPlayers.some(p => p.steamId64 === player.steamId)).toBe(true)
+        await expect(gameServer).toHaveCommand(`sm_game_player_add ${player.steamId}`)
       }),
   )
 
