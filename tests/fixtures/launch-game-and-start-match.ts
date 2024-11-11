@@ -9,4 +9,4 @@ export const launchGameAndStartMatch = launchGameAndInitialize.extend({
   },
 })
 
-export { expect } from '@playwright/test'
+export { expect } from './launch-game-and-initialize'

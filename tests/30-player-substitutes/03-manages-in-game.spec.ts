@@ -13,32 +13,16 @@ launchGameAndStartMatch('manages in-game', async ({ gameNumber, users, gameServe
   await expect(adminsPage.playerLink(mayflower.playerName)).toBeVisible()
   await adminsPage.requestSubstitute(mayflower.playerName)
 
-  await expect
-    .poll(
-      () =>
-        gameServer.commands.some(command =>
-          command.includes(`say Looking for replacement for ${mayflower.playerName}...`),
-        ),
-      { timeout: secondsToMilliseconds(1) },
-    )
-    .toBe(true)
+  await expect(gameServer).toHaveCommand(
+    `say Looking for replacement for ${mayflower.playerName}...`,
+    { timeout: secondsToMilliseconds(1) },
+  )
 
   await tommyGunsPage.replacePlayer(mayflower.playerName)
 
-  await expect
-    .poll(
-      () =>
-        gameServer.commands.some(command =>
-          command.includes(`sm_game_player_add ${tommyGun.steamId}`),
-        ) &&
-        gameServer.commands.some(command =>
-          command.includes(`sm_game_player_del ${mayflower.steamId}`),
-        ) &&
-        gameServer.commands.some(command =>
-          command.includes(
-            `say ${mayflower.playerName} has been replaced by ${tommyGun.playerName}`,
-          ),
-        ),
-    )
-    .toBe(true)
+  await expect(gameServer).toHaveCommand(`sm_game_player_add ${tommyGun.steamId}`)
+  await expect(gameServer).toHaveCommand(`sm_game_player_del ${mayflower.steamId}`)
+  await expect(gameServer).toHaveCommand(
+    `say ${mayflower.playerName} has been replaced by ${tommyGun.playerName}`,
+  )
 })
