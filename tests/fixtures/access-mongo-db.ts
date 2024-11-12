@@ -14,3 +14,5 @@ export const accessMongoDb = test.extend<{ db: Db }>({
     await client.close()
   },
 })
+
+export { expect } from '@playwright/test'
