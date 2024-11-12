@@ -2,7 +2,6 @@ import fastify from 'fastify'
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 import { resolve } from 'node:path'
 import { logger as loggerInstance } from './logger'
-import { environment } from './environment'
 import { secrets } from './secrets'
 import { hoursToSeconds } from 'date-fns'
 
@@ -14,7 +13,7 @@ app.setValidatorCompiler(validatorCompiler)
 await app.register(await import('@fastify/sensible'))
 await app.register(await import('@fastify/formbody'))
 await app.register(await import('@fastify/cookie'), {
-  secret: environment.AUTH_SECRET,
+  secret: await secrets.get('cookie'),
   hook: 'onRequest',
 })
 await app.register(await import('@fastify/secure-session'), {

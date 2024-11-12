@@ -12,6 +12,7 @@ import { collections } from '../../database/collections'
 import { ErrorPage } from '../../error-pages/views/html/error.page'
 import { InsufficientInGameHoursError } from '../../players/errors/insufficient-in-game-hours.error'
 import { PlayerRegistrationDeniedError } from '../../players/errors/player-registration-denied.error'
+import { secrets } from '../../secrets'
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
 
@@ -84,7 +85,9 @@ export default fp(
         logger.debug({ user }, 'user logged in')
         const player = await upsertPlayer(user)
 
-        const token = jwt.sign({ id: player.steamId }, environment.AUTH_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: player.steamId }, await secrets.get('auth'), {
+          expiresIn: '7d',
+        })
 
         const returnUrl = request.cookies['return_url'] ?? environment.WEBSITE_URL
         logger.trace({ user }, `redirecting to ${returnUrl}`)
@@ -117,7 +120,7 @@ export default fp(
       const token = request.cookies['token']
       if (token) {
         try {
-          const { id } = jwt.verify(token, environment.AUTH_SECRET) as { id: SteamId64 }
+          const { id } = jwt.verify(token, await secrets.get('auth')) as { id: SteamId64 }
           const player = await collections.players.findOne({ steamId: id })
           if (!player) {
             throw new Error('player not found')
