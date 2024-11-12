@@ -1,9 +1,13 @@
+import { resolve } from 'node:path'
 import type { User } from '../../../auth/types/user'
+import { bundle } from '../../../html'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { PlayedMapsCount } from './played-maps-count'
+
+const bundleJs = await bundle(resolve(import.meta.dirname, 'bundle', 'main.js'))
 
 export async function StatisticsPage(user?: User) {
   return (
@@ -11,7 +15,7 @@ export async function StatisticsPage(user?: User) {
       title="statistics"
       head={
         <>
-          <script src="/statistics/bundle.js" hx-preserve="true"></script>
+          <script src={bundleJs} hx-preserve="true"></script>
         </>
       }
     >

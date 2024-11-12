@@ -13,8 +13,12 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run build
 
 FROM base
+COPY package.json /app
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
 USER node
+ENV NODE_ENV=production
+ENV APP_HOST=0.0.0.0
+ENV APP_PORT=3000
 EXPOSE 3000
 CMD [ "node", "dist/src/main" ]
