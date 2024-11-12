@@ -68,7 +68,7 @@ jobs:
         env:
           WEBSITE_URL: 'http://localhost:3000'
           MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
-          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
           QUEUE_CONFIG: '6v6'
           THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
           LOG_RELAY_ADDRESS: '127.0.0.1'
