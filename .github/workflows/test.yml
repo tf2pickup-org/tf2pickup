@@ -31,6 +31,7 @@ jobs:
         run: pnpm test
 
   e2e-tests:
+    if: ${{ github.actor != 'dependabot[bot]' }}
     name: end to end
     env:
       shardTotal: 6
