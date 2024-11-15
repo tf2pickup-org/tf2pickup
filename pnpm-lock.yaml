@@ -169,7 +169,7 @@ importers:
         specifier: 8.5.13
         version: 8.5.13
       cpy-cli:
-        specifier: ^5.0.0
+        specifier: 5.0.0
         version: 5.0.0
       cssnano:
         specifier: 7.0.6
@@ -193,7 +193,7 @@ importers:
         specifier: 0.6.8
         version: 0.6.8(prettier@3.3.3)
       rimraf:
-        specifier: ^6.0.1
+        specifier: 6.0.1
         version: 6.0.1
       tsc-alias:
         specifier: 1.8.10
