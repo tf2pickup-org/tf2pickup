@@ -4123,7 +4123,7 @@ snapshots:
       cp-file: 10.0.0
       globby: 13.2.2
       junk: 4.0.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       nested-error-stacks: 2.1.1
       p-filter: 3.0.0
       p-map: 6.0.0
