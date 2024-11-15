@@ -1,5 +1,5 @@
 import postcss from 'postcss'
-import tailwindcssNesting from 'tailwindcss/nesting'
+import tailwindcssNesting from 'tailwindcss/nesting/index.js'
 import tailwindcss from 'tailwindcss'
 import lightenDarken from 'postcss-lighten-darken'
 import autoprefixer from 'autoprefixer'

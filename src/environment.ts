@@ -5,6 +5,8 @@ dotenv.config()
 
 const environmentSchema = z.object({
   NODE_ENV: z.string().default('development'),
+  APP_HOST: z.string().default('localhost'),
+  APP_PORT: z.coerce.number().default(3000),
 
   WEBSITE_URL: z.string().url(),
   WEBSITE_NAME: z.string().default('tf2pickup.org'),

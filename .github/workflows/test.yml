@@ -10,6 +10,10 @@ on:
     branches:
       - 'master'
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   unit-tests:
     name: unit
@@ -30,10 +34,61 @@ jobs:
       - name: Run unit tests
         run: pnpm test
 
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.docker_meta.outputs.version }}
+
+    steps:
+      - name: Docker meta
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,format=long
+            type=schedule,pattern=nightly
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=semver,pattern=stable,enable=${{ !contains(github.event.push.ref, 'alpha') && !contains(github.event.push.ref, 'beta') && !contains(github.event.push.ref, 'rc') }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build
+        id: docker_build
+        uses: docker/build-push-action@v6
+        with:
+          push: false
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          outputs: type=docker,dest=/tmp/image.tar
+
+      - name: Print image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: image
+          path: /tmp/image.tar
+
   e2e-tests:
     name: end to end
+    needs: [build]
+    runs-on: ubuntu-latest
     env:
       shardTotal: 6
+      WEBSITE_URL: 'http://localhost:3000'
+      MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
+      STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
+      QUEUE_CONFIG: '6v6'
+      THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
+      LOG_RELAY_ADDRESS: '127.0.0.1'
+      LOG_RELAY_PORT: '9871'
+      GAME_SERVER_SECRET: 'xxxxxx'
+      KEY_STORE_PASSPHRASE: 'a_password'
 
     strategy:
       fail-fast: false
@@ -46,7 +101,6 @@ jobs:
         ports:
           - 27017:27017
 
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
@@ -63,20 +117,58 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: image
+          path: /tmp
+
+      - name: Load image
+        run: |
+          docker load --input /tmp/image.tar
+          docker image ls -a
+
+      - name: Start app
+        run: |
+          docker run \
+            --name=tf2pickup-app \
+            --detach \
+            --network=${{ job.services.mongo.network }} \
+            -v "/var/run/docker.sock":"/var/run/docker.sock" \
+            -e WEBSITE_URL \
+            -e MONGODB_URI \
+            -e STEAM_API_KEY \
+            -e QUEUE_CONFIG \
+            -e KEY_STORE_PASSPHRASE \
+            -e LOG_RELAY_ADDRESS \
+            -e LOG_RELAY_PORT \
+            -e GAME_SERVER_SECRET \
+            -e THUMBNAIL_SERVICE_URL \
+            -p 3000:3000/tcp \
+            -p 9871:9871/udp \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.tag }}
+          docker inspect tf2pickup-app
+          while ! curl -s http://localhost:3000 > /dev/null; do
+            echo "Waiting for server..."
+            sleep 5
+          done
         env:
-          WEBSITE_URL: 'http://localhost:3000'
-          MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
-          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-          QUEUE_CONFIG: '6v6'
-          THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
-          LOG_RELAY_ADDRESS: '127.0.0.1'
-          LOG_RELAY_PORT: '9871'
-          GAME_SERVER_SECRET: 'xxxxxx'
-          KEY_STORE_PASSPHRASE: 'a_password'
+          MONGODB_URI: 'mongodb://mongo:27017/tf2pickup'
+        timeout-minutes: 1
+
+      - name: Run Playwright tests
+        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }}
+        env:
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
           STEAM_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }}
+
+      - name: Stop app
+        if: ${{ always() }}
+        run: docker container stop tf2pickup-app
+
+      - name: Show app logs
+        if: ${{ always() }}
+        run: docker container logs tf2pickup-app
 
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
