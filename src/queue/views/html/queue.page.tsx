@@ -1,7 +1,6 @@
 import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
-import { Style } from '../../../html/components/style'
 import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
 import { QueueState } from './queue-state'
@@ -22,6 +21,9 @@ import { SubstitutionRequests } from './substitution-requests'
 import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
+import { embed } from '../../../html'
+
+const style = await embed(resolve(import.meta.dirname, 'queue.css'))
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
@@ -32,7 +34,11 @@ export async function QueuePage(user?: User) {
   return (
     <Layout
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      head={<Style fileName={resolve(import.meta.dirname, 'queue.css')} />}
+      head={
+        <style type="text/css" safe>
+          {style}
+        </style>
+      }
     >
       <NavigationBar user={user} />
       <Page>

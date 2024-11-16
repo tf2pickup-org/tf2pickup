@@ -15,7 +15,6 @@ import {
   IconStars,
   IconSum,
 } from '../../../html/components/icons'
-import { Style } from '../../../html/components/style'
 import { resolve } from 'node:path'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
@@ -23,7 +22,10 @@ import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
 import type { WithId } from 'mongodb'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { embed } from '../../../html'
+import { style as gameListStyle } from '../../../games/views/html/game-list.page'
 
+const style = await embed(resolve(import.meta.dirname, 'style.css'))
 const gamesPerPage = 5
 
 export async function PlayerPage(props: {
@@ -56,12 +58,10 @@ export async function PlayerPage(props: {
     <Layout
       title={props.player.name}
       head={
-        <>
-          <Style fileName={resolve(import.meta.dirname, 'style.css')} />
-          <Style
-            fileName={resolve(import.meta.dirname, '../../../games/views/html/game-list.css')}
-          />
-        </>
+        <style type="text/css" safe>
+          {style}
+          {gameListStyle}
+        </style>
       }
     >
       <NavigationBar user={props.user} />

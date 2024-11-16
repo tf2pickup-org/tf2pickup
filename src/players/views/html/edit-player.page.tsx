@@ -1,6 +1,5 @@
 import { resolve } from 'node:path'
 import type { PlayerModel } from '../../../database/models/player.model'
-import { Style } from '../../../html/components/style'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import type { User } from '../../../auth/types/user'
@@ -27,12 +26,15 @@ import { collections } from '../../../database/collections'
 import type { WithId } from 'mongodb'
 import type { PlayerBanModel } from '../../../database/models/player-ban.model'
 import { format } from 'date-fns'
+import { embed } from '../../../html'
 
 const editPlayerPages = {
   '/profile': 'Profile',
   '/skill': 'Skill',
   '/bans': 'Bans',
 } as const
+
+const style = await embed(resolve(import.meta.dirname, 'style.css'))
 
 export async function EditPlayerProfilePage(props: { player: PlayerModel; user: User }) {
   return (
@@ -145,7 +147,11 @@ function EditPlayer(props: {
   return (
     <Layout
       title={`Edit ${props.player.name}`}
-      head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}
+      head={
+        <style type="text/css" safe>
+          {style}
+        </style>
+      }
     >
       <NavigationBar user={props.user} />
       <Page>

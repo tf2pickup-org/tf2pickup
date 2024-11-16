@@ -1,30 +1,20 @@
-import { resolve } from 'node:path'
 import type { User } from '../../../auth/types/user'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
-import { Style } from '../../../html/components/style'
 import { Layout } from '../../../html/layout'
 import { format } from 'date-fns'
+import { style as adminStyle } from '../../../admin/views/html/admin'
 
 export async function AddBanPage(props: { player: PlayerModel; user: User }) {
   return (
     <Layout
       title={`Ban ${props.player.name}`}
       head={
-        <Style
-          fileName={resolve(
-            import.meta.dirname,
-            '..',
-            '..',
-            '..',
-            'admin',
-            'views',
-            'html',
-            'style.css',
-          )}
-        />
+        <style type="text/css" safe>
+          {adminStyle}
+        </style>
       }
     >
       <NavigationBar user={props.user} />
@@ -44,7 +34,7 @@ export async function AddBanPage(props: { player: PlayerModel; user: User }) {
               </div>
 
               <fieldset
-                class="ml-[22px] mb-2 flex flex-row gap-2"
+                class="mb-2 ml-[22px] flex flex-row gap-2"
                 _={`
                 on change from #addBanForm
                   if #addBanForm.lengthSelector.value is 'duration'
@@ -71,7 +61,7 @@ export async function AddBanPage(props: { player: PlayerModel; user: User }) {
               </div>
 
               <fieldset
-                class="ml-[22px] mb-2"
+                class="mb-2 ml-[22px]"
                 disabled
                 _={`
                 on change from #addBanForm
@@ -114,7 +104,7 @@ export async function AddBanPage(props: { player: PlayerModel; user: User }) {
                 ></span>
               </p>
 
-              <div class="my-4 input-group">
+              <div class="input-group my-4">
                 <label class="label" for="banReason">
                   Reason
                 </label>

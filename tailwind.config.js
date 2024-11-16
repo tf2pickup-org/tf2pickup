@@ -71,8 +71,8 @@ export default {
       },
       keyframes: {
         rotate: {
-          from: 'rotate(0deg)',
-          to: 'rotate(90deg)',
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(90deg)' },
         },
       },
       animation: {

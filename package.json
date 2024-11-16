@@ -16,6 +16,7 @@
     "postbuild": "cpy public dist && cpy src/**/*.md src/**/*.css dist/src"
   },
   "dependencies": {
+    "@deanc/esbuild-plugin-postcss": "^1.0.2",
     "@fastify/cookie": "11.0.1",
     "@fastify/flash": "6.0.2",
     "@fastify/formbody": "8.0.1",
@@ -32,6 +33,7 @@
     "autoprefixer": "10.4.20",
     "chart.js": "4.4.6",
     "croner": "9.0.0",
+    "cssnano": "^7.0.6",
     "date-fns": "4.1.0",
     "dotenv": "16.4.5",
     "esbuild": "0.24.0",
@@ -44,6 +46,7 @@
     "jsonwebtoken": "9.0.2",
     "lodash-es": "4.17.21",
     "marked": "14.1.4",
+    "mime": "^4.0.4",
     "mongodb": "6.10.0",
     "nanoid": "5.0.8",
     "openid": "2.0.12",
