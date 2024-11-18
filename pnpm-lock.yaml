@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@deanc/esbuild-plugin-postcss':
-        specifier: ^1.0.2
+        specifier: 1.0.2
         version: 1.0.2(esbuild@0.24.0)
       '@fastify/cookie':
         specifier: 11.0.1
@@ -60,7 +60,7 @@ importers:
         specifier: 9.0.0
         version: 9.0.0
       cssnano:
-        specifier: ^7.0.6
+        specifier: 7.0.6
         version: 7.0.6(postcss@8.4.49)
       date-fns:
         specifier: 4.1.0
@@ -99,7 +99,7 @@ importers:
         specifier: 14.1.4
         version: 14.1.4
       mime:
-        specifier: ^4.0.4
+        specifier: 4.0.4
         version: 4.0.4
       mongodb:
         specifier: 6.10.0
