@@ -27,8 +27,8 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { Footer } from '../../../html/components/footer'
-import { Style } from '../../../html/components/style'
 import { resolve } from 'path'
+import { embed } from '../../../html'
 
 const adminPages = {
   'player-restrictions': {
@@ -99,6 +99,7 @@ const adminPages = {
 } as const
 
 const sections = Array.from(new Set(Object.values(adminPages).map(({ section }) => section)))
+export const style = await embed(resolve(import.meta.dirname, 'style.css'))
 
 export function Admin(props: {
   user: User
@@ -108,7 +109,11 @@ export function Admin(props: {
   return (
     <Layout
       title={adminPages[props.activePage].title}
-      head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}
+      head={
+        <style type="text/css" safe>
+          {style}
+        </style>
+      }
     >
       <NavigationBar user={props.user} />
       <Page>

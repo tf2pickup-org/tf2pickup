@@ -3,7 +3,6 @@ import type { User } from '../../../auth/types/user'
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
-import { Style } from '../../../html/components/style'
 import { Layout } from '../../../html/layout'
 import { GameSummary } from './game-summary'
 import { GameSlotList } from './game-slot-list'
@@ -11,12 +10,19 @@ import { Footer } from '../../../html/components/footer'
 import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
 import { AdminActions } from './admin-actions'
+import { embed } from '../../../html'
+
+const style = await embed(resolve(import.meta.dirname, 'style.css'))
 
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
     <Layout
       title={`game #${props.game.number}`}
-      head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}
+      head={
+        <style type="text/css" safe>
+          {style}
+        </style>
+      }
     >
       <NavigationBar user={props.user} />
       <Page>

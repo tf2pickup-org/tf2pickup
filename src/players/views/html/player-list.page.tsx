@@ -1,6 +1,5 @@
 import { resolve } from 'node:path'
 import { NavigationBar } from '../../../html/components/navigation-bar'
-import { Style } from '../../../html/components/style'
 import { Layout } from '../../../html/layout'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { deburr } from 'lodash-es'
@@ -8,7 +7,9 @@ import { collections } from '../../../database/collections'
 import type { User } from '../../../auth/types/user'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
+import { embed } from '../../../html'
 
+const style = await embed(resolve(import.meta.dirname, 'style.css'))
 const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
 const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 
@@ -17,11 +18,18 @@ export async function PlayerListPage(user?: User) {
   const groupedPlayers = groupPlayers(players)
 
   return (
-    <Layout title="players" head={<Style fileName={resolve(import.meta.dirname, 'style.css')} />}>
+    <Layout
+      title="players"
+      head={
+        <style type="text/css" safe>
+          {style}
+        </style>
+      }
+    >
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Players</div>
+          <div class="my-9 text-[48px] font-bold text-abru-light-75">Players</div>
 
           <div class="hidden flex-row justify-between text-2xl font-bold text-abru-light-75 md:flex">
             {groups.map(letter => (

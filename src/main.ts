@@ -27,8 +27,6 @@ await app.register(await import('@fastify/secure-session'), {
 })
 await app.register((await import('@fastify/flash')).default)
 await app.register(await import('@fastify/request-context'))
-
-await app.register((await import('./postcss')).default)
 await app.register(await import('@fastify/static'), {
   root: resolve(import.meta.dirname, '..', 'public'),
   prefix: '/',

@@ -6,6 +6,7 @@ import { bundle } from '.'
 import { resolve } from 'path'
 
 const mainJs = await bundle(resolve(import.meta.dirname, 'bundle', 'main.js'))
+const mainCss = await bundle(resolve(import.meta.dirname, 'styles', 'main.css'))
 
 export function Layout(
   props?: Html.PropsWithChildren<{
@@ -20,8 +21,8 @@ export function Layout(
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <script src={mainJs} hx-preserve="true"></script>
-          <link href="/main.css" rel="stylesheet"></link>
+          <script src={mainJs}></script>
+          <link href={mainCss} rel="stylesheet"></link>
           <title>{props?.title ?? environment.WEBSITE_NAME}</title>
           {safeHead}
         </head>

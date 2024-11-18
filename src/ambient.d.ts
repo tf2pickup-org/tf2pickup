@@ -4,3 +4,7 @@ declare module 'postcss-lighten-darken' {
   declare const plugin: PluginCreator<AcceptedPlugin | string>
   export = plugin
 }
+
+declare module '@deanc/esbuild-plugin-postcss' {
+  export = (options: { plugins: unknown[] } = { plugins: [] }) => unknown
+}
