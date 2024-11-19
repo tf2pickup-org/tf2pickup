@@ -26,7 +26,7 @@ import { collections } from '../../../database/collections'
 import type { WithId } from 'mongodb'
 import type { PlayerBanModel } from '../../../database/models/player-ban.model'
 import { format } from 'date-fns'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -34,7 +34,7 @@ const editPlayerPages = {
   '/bans': 'Bans',
 } as const
 
-const style = await embed(resolve(import.meta.dirname, 'style.css'))
+const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 
 export async function EditPlayerProfilePage(props: { player: PlayerModel; user: User }) {
   return (

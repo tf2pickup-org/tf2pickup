@@ -10,9 +10,9 @@ import { Footer } from '../../../html/components/footer'
 import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
 import { AdminActions } from './admin-actions'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 
-const style = await embed(resolve(import.meta.dirname, 'style.css'))
+const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (

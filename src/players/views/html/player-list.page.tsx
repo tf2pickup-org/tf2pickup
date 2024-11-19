@@ -7,9 +7,9 @@ import { collections } from '../../../database/collections'
 import type { User } from '../../../auth/types/user'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 
-const style = await embed(resolve(import.meta.dirname, 'style.css'))
+const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
 const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 

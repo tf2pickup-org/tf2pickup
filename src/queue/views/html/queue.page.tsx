@@ -21,9 +21,9 @@ import { SubstitutionRequests } from './substitution-requests'
 import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 
-const style = await embed(resolve(import.meta.dirname, 'queue.css'))
+const style = await html.embed(resolve(import.meta.dirname, 'queue.css'))
 
 export async function QueuePage(user?: User) {
   const slots = await collections.queueSlots.find().toArray()
