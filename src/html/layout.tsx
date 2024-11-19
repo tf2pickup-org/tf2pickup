@@ -2,7 +2,7 @@ import { environment } from '../environment'
 import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
 import Html from '@kitajs/html'
 import { FlashMessages } from './components/flash-messages'
-import { bundle } from '.'
+import { bundle } from './bundle'
 import { resolve } from 'path'
 
 const mainJs = await bundle(resolve(import.meta.dirname, 'bundle', 'main.js'))

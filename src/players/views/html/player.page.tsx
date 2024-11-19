@@ -22,10 +22,10 @@ import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
 import type { WithId } from 'mongodb'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 import { style as gameListStyle } from '../../../games/views/html/game-list.page'
 
-const style = await embed(resolve(import.meta.dirname, 'style.css'))
+const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 const gamesPerPage = 5
 
 export async function PlayerPage(props: {

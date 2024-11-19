@@ -28,7 +28,7 @@ import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { Footer } from '../../../html/components/footer'
 import { resolve } from 'path'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 
 const adminPages = {
   'player-restrictions': {
@@ -99,7 +99,7 @@ const adminPages = {
 } as const
 
 const sections = Array.from(new Set(Object.values(adminPages).map(({ section }) => section)))
-export const style = await embed(resolve(import.meta.dirname, 'style.css'))
+export const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 
 export function Admin(props: {
   user: User

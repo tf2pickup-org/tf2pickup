@@ -15,6 +15,10 @@ import type { StreamModel } from './database/models/stream.model'
 import type { Bot } from './shared/types/bot'
 
 export interface Events {
+  'build:bundleReady': {
+    entryPoint: string
+  }
+
   'game:created': {
     game: GameModel
   }

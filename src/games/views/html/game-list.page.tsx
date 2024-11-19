@@ -7,9 +7,9 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { GameListItem } from './game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
-import { embed } from '../../../html'
+import { html } from '../../../html'
 
-export const style = await embed(resolve(import.meta.dirname, 'game-list.css'))
+export const style = await html.embed(resolve(import.meta.dirname, 'game-list.css'))
 const itemsPerPage = 8
 
 export async function GameListPage(user?: User, page = 1) {
