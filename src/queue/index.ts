@@ -4,6 +4,16 @@ import { QueuePage } from './views/html/queue.page'
 import { getSlots } from './get-slots'
 import { getState } from './get-state'
 import { getMapWinner } from './get-map-winner'
+import { resolve } from 'node:path'
+import { collections } from '../database/collections'
+import { logger } from '../logger'
+import { reset } from './reset'
+
+const slotCount = await collections.queueSlots.countDocuments()
+if (slotCount === 0) {
+  logger.info(`no queue initialized, initializing one now...`)
+  await reset()
+}
 
 export const queue = {
   config,
@@ -14,15 +24,9 @@ export const queue = {
 
 export default fp(
   async app => {
-    await app.register((await import('./plugins/initialize')).default)
-
-    await app.register((await import('./plugins/gateway-listeners')).default)
-    await app.register((await import('./plugins/kick-disconnected-players')).default)
-    await app.register((await import('./plugins/auto-update-queue-state')).default)
-    await app.register((await import('./plugins/sync-clients')).default)
-    await app.register((await import('./plugins/auto-reset')).default)
-    await app.register((await import('./plugins/kick-replacement-players')).default)
-    await app.register((await import('./plugins/kick-banned-players')).default)
+    await app.register((await import('@fastify/autoload')).default, {
+      dir: resolve(import.meta.dirname, 'plugins'),
+    })
 
     app.get('/', async (req, reply) => {
       await reply.status(200).html(QueuePage(req.user))
