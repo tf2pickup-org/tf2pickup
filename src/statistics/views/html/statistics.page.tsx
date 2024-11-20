@@ -11,14 +11,7 @@ const bundleJs = await html.bundle(resolve(import.meta.dirname, 'bundle', 'main.
 
 export async function StatisticsPage(user?: User) {
   return (
-    <Layout
-      title="statistics"
-      head={
-        <>
-          <script src={bundleJs} hx-preserve="true"></script>
-        </>
-      }
-    >
+    <Layout title="statistics" jsBundles={[bundleJs]}>
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">

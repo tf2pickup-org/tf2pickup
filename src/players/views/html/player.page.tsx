@@ -55,15 +55,7 @@ export async function PlayerPage(props: {
   const gameCountOnClasses = await getPlayerGameCountOnClasses(props.player._id)
 
   return (
-    <Layout
-      title={props.player.name}
-      head={
-        <style type="text/css" safe>
-          {style}
-          {gameListStyle}
-        </style>
-      }
-    >
+    <Layout title={props.player.name} embedStyles={[style, gameListStyle]}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container relative mx-auto grid grid-cols-2 gap-[30px]">

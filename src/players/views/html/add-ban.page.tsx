@@ -9,14 +9,7 @@ import { style as adminStyle } from '../../../admin/views/html/admin'
 
 export async function AddBanPage(props: { player: PlayerModel; user: User }) {
   return (
-    <Layout
-      title={`Ban ${props.player.name}`}
-      head={
-        <style type="text/css" safe>
-          {adminStyle}
-        </style>
-      }
-    >
+    <Layout title={`Ban ${props.player.name}`} embedStyles={adminStyle}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto">

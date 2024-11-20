@@ -107,14 +107,7 @@ export function Admin(props: {
   children: Children
 }) {
   return (
-    <Layout
-      title={adminPages[props.activePage].title}
-      head={
-        <style type="text/css" safe>
-          {style}
-        </style>
-      }
-    >
+    <Layout title={adminPages[props.activePage].title} embedStyles={style}>
       <NavigationBar user={props.user} />
       <Page>
         <AdminPanel>

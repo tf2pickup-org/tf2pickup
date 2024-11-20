@@ -23,6 +23,8 @@ export const html = {
 
 export default fp(
   async app => {
+    await app.register((await import('./middleware/htmx')).default)
+
     app.withTypeProvider<ZodTypeProvider>().get(
       '/bundles/:fileName',
       {
