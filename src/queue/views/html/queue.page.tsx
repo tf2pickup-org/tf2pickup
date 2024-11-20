@@ -3,7 +3,6 @@ import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
-import { QueueState } from './queue-state'
 import { config } from '../../config'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { Page } from '../../../html/components/page'
@@ -22,6 +21,7 @@ import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
 import { html } from '../../../html'
+import { CurrentPlayerCount } from './current-player-count'
 
 const style = await html.embed(resolve(import.meta.dirname, 'queue.css'))
 
@@ -76,6 +76,20 @@ export async function QueuePage(user?: User) {
       <RunningGameSnackbar gameNumber={user?.player.activeGame} />
       <AcceptRulesDialog actor={user} />
     </Layout>
+  )
+}
+
+async function QueueState() {
+  const required = await collections.queueSlots.countDocuments()
+  return (
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-row items-center justify-center">
+        <h3 class="flex-1 text-center text-2xl font-bold text-ash md:text-start">
+          Players: <CurrentPlayerCount />/{required}
+        </h3>
+      </div>
+      <div class="h-[2px] rounded-sm bg-abru-light-25"></div>
+    </div>
   )
 }
 

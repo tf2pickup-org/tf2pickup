@@ -2,7 +2,6 @@ import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { OnlinePlayerList } from '../views/html/online-player-list'
 import { safe } from '../../utils/safe'
-import { QueueState as QueueStateCmp } from '../views/html/queue-state'
 import { QueueSlot } from '../views/html/queue-slot'
 import { collections } from '../../database/collections'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
@@ -16,6 +15,7 @@ import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
 import type { ObjectId } from 'mongodb'
 import { whenGameEnds } from '../../games/when-game-ends'
+import { CurrentPlayerCount } from '../views/html/current-player-count'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -32,7 +32,7 @@ export default fp(
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
       })
-      socket.send(await QueueStateCmp())
+      socket.send(await CurrentPlayerCount())
       socket.send(await OnlinePlayerList())
 
       if (socket.player) {
@@ -71,12 +71,12 @@ export default fp(
     events.on(
       'queue/slots:updated',
       safe(async ({ slots }) => {
-        const queueState = await QueueStateCmp()
+        const playerCount = await CurrentPlayerCount()
         app.gateway.broadcast(
           async player =>
             await Promise.all([
               ...slots.map(async slot => await QueueSlot({ slot, actor: player })),
-              queueState,
+              playerCount,
             ]),
         )
 
