@@ -5,6 +5,7 @@ import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { events } from '../../events'
 import { whenGameEnds } from '../when-game-ends'
+import { SlotStatus } from '../../database/models/game-slot.model'
 
 export default fp(
   async () => {
@@ -16,15 +17,19 @@ export default fp(
       'game:updated',
       whenGameEnds(async ({ after }) => {
         await Promise.all(
-          after.slots.map(async ({ gameClass, player }) => {
-            const p = await collections.players.findOne({ _id: player })
-            if (p === null) {
-              throw new Error(`player not found: ${player.toString()}`)
-            }
-            const queueCooldown = await configuration.get('games.join_queue_cooldown')
-            const cooldownMs = queueCooldown[gameClass] ?? 0
-            tasks.schedule('games.freePlayer', cooldownMs, { player: p.steamId })
-          }),
+          after.slots
+            .filter(slot =>
+              [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(slot.status),
+            )
+            .map(async ({ gameClass, player }) => {
+              const p = await collections.players.findOne({ _id: player })
+              if (p === null) {
+                throw new Error(`player not found: ${player.toString()}`)
+              }
+              const queueCooldown = await configuration.get('games.join_queue_cooldown')
+              const cooldownMs = queueCooldown[gameClass] ?? 0
+              tasks.schedule('games.freePlayer', cooldownMs, { player: p.steamId })
+            }),
         )
       }),
     )

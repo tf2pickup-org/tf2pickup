@@ -17,15 +17,15 @@ export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefi
   return (
     <div
       id={`game-${props.game.number}-summary`}
-      class="text-abru-light-75 flex flex-col overflow-hidden rounded-lg"
+      class="flex flex-col overflow-hidden rounded-lg text-abru-light-75"
     >
       <div class="game-summary-caption relative flex min-h-[200px] flex-1 flex-col justify-end px-[10px]">
         <div class="absolute bottom-0 left-0 right-0 top-0 -z-10">
           <MapThumbnail map={props.game.map} />
         </div>
 
-        <div class="floating-label text-abru-light-75 left-[10px] top-[10px]">
-          <span>#{props.game.number}</span>
+        <div class="floating-label left-[10px] top-[10px] text-abru-light-75">
+          <span safe>#{props.game.number}</span>
         </div>
 
         <GameStateIndicator game={props.game} />
@@ -38,7 +38,7 @@ export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefi
         </div>
       </div>
 
-      <div class="bg-abru-dark-29 flex flex-col gap-[8px] p-[10px]">
+      <div class="flex flex-col gap-[8px] bg-abru-dark-29 p-[10px]">
         <div class="game-info">
           <span class="label">launched</span>
           <span class="value" safe>

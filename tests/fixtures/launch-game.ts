@@ -18,19 +18,29 @@ const desiredSlots = new Map<string, number>([
   ['BellBoy', 11],
 ])
 
-export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
-  gameNumber: number
-  players: UserContext[]
-}>({
+export interface LaunchGameOptions {
+  // Set to true to kill the game after the test
+  // Default: true
+  killGame?: boolean
+}
+
+export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
+  LaunchGameOptions & {
+    gameNumber: number
+    players: UserContext[]
+  }
+>({
+  killGame: [true, { option: true }],
   players: async ({ users }, use) => {
     const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
     await use(players)
   },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  gameNumber: async ({ users, players, gameServer }, use) => {
+  gameNumber: async ({ users, players, gameServer, killGame }, use) => {
     if (users.count < 12) {
       throw new Error(`at least 12 users are required to launch a game`)
     }
+
+    await gameServer.sendHeartbeat()
 
     await Promise.all(
       players.map(async user => {
@@ -47,6 +57,10 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<{
     if (matches) {
       const gameNumber = Number(matches[1])
       await use(gameNumber)
+
+      if (!killGame) {
+        return
+      }
 
       // kill the game if it's live
       const adminPage = users.getAdmin().gamePage(gameNumber)

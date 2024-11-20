@@ -13,10 +13,11 @@ import { GameEventList } from '../views/html/game-event-list'
 import { GameSlot } from '../views/html/game-slot'
 import { whenGameEnds } from '../when-game-ends'
 import { GamesLink } from '../../html/components/games-link'
+import { safe } from '../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
-  events.on('game:updated', ({ before, after }) => {
+  events.on('game:updated', async ({ before, after }) => {
     if (before.state !== after.state) {
       app.gateway.broadcast(async () => await GameStateIndicator({ game: after }))
       app.gateway.broadcast(async actor => await ConnectInfo({ game: after, actor }))
@@ -44,6 +45,25 @@ export default fp(async app => {
     if (before.events.length < after.events.length) {
       app.gateway.broadcast(async () => await GameEventList({ game: after }))
     }
+
+    await Promise.all(
+      after.slots.map(async slot => {
+        const beforeSlot = before.slots.find(s => s.player.equals(slot.player))
+        if (!beforeSlot) {
+          return
+        }
+
+        if (beforeSlot.shouldJoinBy !== slot.shouldJoinBy) {
+          const player = await collections.players.findOne({ _id: slot.player })
+          if (!player) {
+            throw new Error(`no such player: ${slot.player.toString()}`)
+          }
+          app.gateway
+            .toPlayers(player.steamId)
+            .broadcast(async actor => await ConnectInfo({ game: after, actor }))
+        }
+      }),
+    )
   })
 
   events.on('game:created', async () => {
@@ -59,47 +79,80 @@ export default fp(async app => {
     }),
   )
 
-  events.on('match/player:connected', async ({ steamId }) => {
-    const player = await collections.players.findOne({ steamId })
-    if (!player) {
-      throw new Error(`no such player: ${steamId}`)
-    }
-    app.gateway.broadcast(
-      async () =>
-        await PlayerConnectionStatusIndicator({
-          steamId: player.steamId,
-          connectionStatus: PlayerConnectionStatus.joining,
-        }),
-    )
-  })
+  events.on(
+    'match/player:connected',
+    safe(async ({ gameNumber, steamId }) => {
+      const player = await collections.players.findOne({ steamId })
+      if (!player) {
+        throw new Error(`no such player: ${steamId}`)
+      }
+      const game = await collections.games.findOne({ number: gameNumber })
+      if (!game) {
+        throw new Error(`game ${gameNumber} not found`)
+      }
 
-  events.on('match/player:joinedTeam', async ({ steamId }) => {
-    const player = await collections.players.findOne({ steamId })
-    if (!player) {
-      throw new Error(`no such player: ${steamId}`)
-    }
-    app.gateway.broadcast(
-      async () =>
-        await PlayerConnectionStatusIndicator({
-          steamId: player.steamId,
-          connectionStatus: PlayerConnectionStatus.connected,
-        }),
-    )
-  })
+      app.gateway.broadcast(
+        async () =>
+          await PlayerConnectionStatusIndicator({
+            steamId: player.steamId,
+            connectionStatus: PlayerConnectionStatus.joining,
+          }),
+      )
+      app.gateway
+        .toPlayers(player.steamId)
+        .broadcast(async actor => await ConnectInfo({ game, actor }))
+    }),
+  )
 
-  events.on('match/player:disconnected', async ({ steamId }) => {
-    const player = await collections.players.findOne({ steamId })
-    if (!player) {
-      throw new Error(`no such player: ${steamId}`)
-    }
-    app.gateway.broadcast(
-      async () =>
-        await PlayerConnectionStatusIndicator({
-          steamId: player.steamId,
-          connectionStatus: PlayerConnectionStatus.offline,
-        }),
-    )
-  })
+  events.on(
+    'match/player:joinedTeam',
+    safe(async ({ gameNumber, steamId }) => {
+      const player = await collections.players.findOne({ steamId })
+      if (!player) {
+        throw new Error(`no such player: ${steamId}`)
+      }
+      const game = await collections.games.findOne({ number: gameNumber })
+      if (!game) {
+        throw new Error(`game ${gameNumber} not found`)
+      }
+
+      app.gateway.broadcast(
+        async () =>
+          await PlayerConnectionStatusIndicator({
+            steamId: player.steamId,
+            connectionStatus: PlayerConnectionStatus.connected,
+          }),
+      )
+      app.gateway
+        .toPlayers(player.steamId)
+        .broadcast(async actor => await ConnectInfo({ game, actor }))
+    }),
+  )
+
+  events.on(
+    'match/player:disconnected',
+    safe(async ({ gameNumber, steamId }) => {
+      const player = await collections.players.findOne({ steamId })
+      if (!player) {
+        throw new Error(`no such player: ${steamId}`)
+      }
+      const game = await collections.games.findOne({ number: gameNumber })
+      if (!game) {
+        throw new Error(`game ${gameNumber} not found`)
+      }
+
+      app.gateway.broadcast(
+        async () =>
+          await PlayerConnectionStatusIndicator({
+            steamId: player.steamId,
+            connectionStatus: PlayerConnectionStatus.offline,
+          }),
+      )
+      app.gateway
+        .toPlayers(player.steamId)
+        .broadcast(async actor => await ConnectInfo({ game, actor }))
+    }),
+  )
 
   events.on('game:substituteRequested', async ({ game, replacee }) => {
     const r = await collections.players.findOne({ steamId: replacee })
