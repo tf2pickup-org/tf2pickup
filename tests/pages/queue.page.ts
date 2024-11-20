@@ -62,6 +62,10 @@ export class QueuePage {
     await this.page.getByLabel(`Leave queue`, { exact: true }).click({ timeout })
   }
 
+  header() {
+    return this.page.getByRole('heading', { name: /Players: \d+\/\d+/ })
+  }
+
   slot(slot: number) {
     return new QueueSlot(this.page, slot)
   }
