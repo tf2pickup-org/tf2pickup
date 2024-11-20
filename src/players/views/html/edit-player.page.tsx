@@ -145,14 +145,7 @@ function EditPlayer(props: {
   action?: Children
 }) {
   return (
-    <Layout
-      title={`Edit ${props.player.name}`}
-      head={
-        <style type="text/css" safe>
-          {style}
-        </style>
-      }
-    >
+    <Layout title={`Edit ${props.player.name}`} embedStyles={style}>
       <NavigationBar user={props.user} />
       <Page>
         <AdminPanel>

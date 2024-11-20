@@ -12,7 +12,8 @@ import { html } from '../../../html'
 export const style = await html.embed(resolve(import.meta.dirname, 'game-list.css'))
 const itemsPerPage = 8
 
-export async function GameListPage(user?: User, page = 1) {
+export async function GameListPage(props: { user?: User | undefined; page: number }) {
+  const page = props.page ?? 1
   const { last, around } = paginate(page, itemsPerPage, await collections.games.countDocuments())
   const skip = (page - 1) * itemsPerPage
 
@@ -21,15 +22,8 @@ export async function GameListPage(user?: User, page = 1) {
     .toArray()
 
   return (
-    <Layout
-      title="games"
-      head={
-        <style type="text/css" safe>
-          {style}
-        </style>
-      }
-    >
-      <NavigationBar user={user} />
+    <Layout title="games" embedStyles={style}>
+      <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto">
           <div class="my-9 text-[48px] font-bold text-abru-light-75">Games</div>
@@ -47,7 +41,7 @@ export async function GameListPage(user?: User, page = 1) {
           />
         </div>
       </Page>
-      <Footer user={user} />
+      <Footer user={props.user} />
     </Layout>
   )
 }

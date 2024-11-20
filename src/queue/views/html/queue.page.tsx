@@ -25,40 +25,33 @@ import { CurrentPlayerCount } from './current-player-count'
 
 const style = await html.embed(resolve(import.meta.dirname, 'queue.css'))
 
-export async function QueuePage(user?: User) {
+export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()
 
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
 
   return (
-    <Layout
-      title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      head={
-        <style type="text/css" safe>
-          {style}
-        </style>
-      }
-    >
-      <NavigationBar user={user} />
+    <Layout title={`[${current}/${required}] ${environment.WEBSITE_NAME}`} embedStyles={style}>
+      <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />
             <RequestNotificationPermissions />
-            <BanAlerts actor={user?.player.steamId} />
+            <BanAlerts actor={props.user?.player.steamId} />
             <SubstitutionRequests />
           </div>
 
           <div class="order-2 lg:col-span-3">
             <div class="flex flex-col gap-8">
               <QueueState />
-              <Queue slots={slots} actor={user?.player.steamId} />
+              <Queue slots={slots} actor={props.user?.player.steamId} />
             </div>
           </div>
 
           <div class="order-4 lg:col-span-3">
-            <MapVote actor={user?.player.steamId} />
+            <MapVote actor={props.user?.player.steamId} />
           </div>
 
           <div class="order-last lg:order-3 lg:row-span-2">
@@ -70,11 +63,11 @@ export async function QueuePage(user?: User) {
           </div>
         </div>
       </Page>
-      <Footer user={user} />
+      <Footer user={props.user} />
 
       <div id="queue-notify-container"></div>
-      <RunningGameSnackbar gameNumber={user?.player.activeGame} />
-      <AcceptRulesDialog actor={user} />
+      <RunningGameSnackbar gameNumber={props.user?.player.activeGame} />
+      <AcceptRulesDialog actor={props.user} />
     </Layout>
   )
 }

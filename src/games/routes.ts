@@ -26,7 +26,12 @@ export default fp(
           },
         },
         async (request, reply) => {
-          reply.status(200).html(await GameListPage(request.user, Number(request.query.page) || 1))
+          reply.status(200).html(
+            await GameListPage({
+              user: request.user,
+              page: Number(request.query.page) || 1,
+            }),
+          )
         },
       )
       .get(

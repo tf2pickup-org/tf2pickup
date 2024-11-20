@@ -16,14 +16,7 @@ const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
-    <Layout
-      title={`game #${props.game.number}`}
-      head={
-        <style type="text/css" safe>
-          {style}
-        </style>
-      }
-    >
+    <Layout title={`game #${props.game.number}`} embedStyles={style}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container relative mx-auto grid grid-cols-4 gap-x-4">

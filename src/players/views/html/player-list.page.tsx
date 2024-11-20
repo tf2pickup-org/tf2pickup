@@ -18,14 +18,7 @@ export async function PlayerListPage(user?: User) {
   const groupedPlayers = groupPlayers(players)
 
   return (
-    <Layout
-      title="players"
-      head={
-        <style type="text/css" safe>
-          {style}
-        </style>
-      }
-    >
+    <Layout title="players" embedStyles={style}>
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto">
