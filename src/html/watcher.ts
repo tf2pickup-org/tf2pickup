@@ -17,15 +17,13 @@ if (environment.NODE_ENV !== 'production') {
 
     const file = resolve(rootDir, event.filename)
 
-    const bundlesToRebuild = Array.from(bundleInfos.values()).filter(({ dependencies }) =>
-      dependencies.includes(file),
-    )
+    const bundlesToRebuild = bundleInfos.filter(({ dependencies }) => dependencies.includes(file))
     if (bundlesToRebuild.length > 0) {
       logger.info(`${file} has changed; rebuilding dependees...`)
     }
 
-    for (const { fileName } of bundlesToRebuild) {
-      await bundle(fileName)
+    for (const { entryPoint } of bundlesToRebuild) {
+      await bundle(entryPoint)
     }
   }, 100)
 

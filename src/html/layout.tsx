@@ -6,7 +6,7 @@ import { bundle } from './bundle'
 import { resolve } from 'path'
 import { requestContext } from '@fastify/request-context'
 
-const mainJs = await bundle(resolve(import.meta.dirname, 'bundle', 'main.js'))
+const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'index.ts'))
 const mainCss = await bundle(resolve(import.meta.dirname, 'styles', 'main.css'))
 
 export function Layout(
@@ -16,7 +16,7 @@ export function Layout(
     jsBundles?: string[]
   }>,
 ) {
-  const title = <title>{props?.title ?? environment.WEBSITE_NAME}</title>
+  const title = <title safe>{props?.title ?? environment.WEBSITE_NAME}</title>
   const body = (
     <>
       {props?.embedStyles && (
@@ -53,12 +53,21 @@ export function Layout(
     )
   }
 
+  const injectEnv = (
+    <script>{`
+    window.env = {
+     THUMBNAIL_SERVICE_URL: "${environment.THUMBNAIL_SERVICE_URL}",
+    }
+    `}</script>
+  )
+
   return (
     <>
       <html lang="en">
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          {injectEnv}
           <script src={mainJs} hx-preserve></script>
           <link href={mainCss} rel="stylesheet" hx-preserve></link>
           {title}

@@ -7,7 +7,7 @@ import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { PlayedMapsCount } from './played-maps-count'
 
-const bundleJs = await html.bundle(resolve(import.meta.dirname, 'bundle', 'main.js'))
+const bundleJs = await html.bundle(resolve(import.meta.dirname, '@client', 'index.ts'))
 
 export async function StatisticsPage(user?: User) {
   return (

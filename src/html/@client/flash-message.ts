@@ -1,6 +1,6 @@
 import htmx from 'htmx.org'
 
-function initFlashMessage(/** @type {HTMLElement} */ messageBox) {
+function initFlashMessage(messageBox: HTMLElement) {
   const progress = messageBox.querySelector('progress')
   if (!progress) {
     return

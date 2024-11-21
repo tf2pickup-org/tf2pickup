@@ -1,6 +1,10 @@
 import htmx from 'htmx.org'
 
-const thumbnailUrlTemplate = `${THUMBNAIL_SERVICE_URL}/unsafe/{width}x{height}/{map}.jpg`
+const thumbnailUrlTemplate = `${window.env.THUMBNAIL_SERVICE_URL}/unsafe/{width}x{height}/{map}.jpg`
+
+function isImageElement(element: Element | undefined): element is HTMLImageElement {
+  return element?.tagName === 'IMG'
+}
 
 const resizeObserver = new ResizeObserver(entries => {
   for (const entry of entries) {
@@ -10,12 +14,10 @@ const resizeObserver = new ResizeObserver(entries => {
       continue
     }
 
-    const tag = entry.target.children[0]
-    if (!tag || tag.tagName !== 'IMG') {
+    const img = entry.target.children[0]
+    if (!isImageElement(img)) {
       continue
     }
-
-    const img = /** @type {HTMLImageElement} */ (tag)
 
     const mapName = entry.target.getAttribute('data-map-thumbnail')
     if (!mapName) {

@@ -1,20 +1,15 @@
 import fp from 'fastify-plugin'
-import { z } from 'zod'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
-import mime from 'mime'
-import { RefreshPage } from './components/refresh-page'
-import { events } from '../events'
 import './watcher'
 import { bundle } from './bundle'
 import { embed } from './embed'
 
-export const bundles = new Map<string, string>()
-
 interface BundleInfo {
+  entryPoint: string
   fileName: string
   dependencies: string[]
 }
-export const bundleInfos = new Map<string, BundleInfo>()
+export const bundleInfos: BundleInfo[] = []
+export const bundles = new Map<string, string>()
 
 export const html = {
   bundle,
@@ -24,32 +19,7 @@ export const html = {
 export default fp(
   async app => {
     await app.register((await import('./middleware/htmx')).default)
-
-    app.withTypeProvider<ZodTypeProvider>().get(
-      '/bundles/:fileName',
-      {
-        schema: {
-          params: z.object({
-            fileName: z.string(),
-          }),
-        },
-      },
-      async (request, reply) => {
-        const fileName = request.params.fileName
-        if (!bundles.has(fileName)) {
-          return await reply.notFound()
-        }
-
-        return reply
-          .header('Content-Type', `${mime.getType(fileName)}; charset=utf-8`)
-          .send(bundles.get(fileName))
-      },
-    )
-
-    events.on('build:bundleReady', async () => {
-      const refresh = await RefreshPage()
-      app.gateway.broadcast(() => refresh)
-    })
+    await app.register((await import('./plugins/serve-dev-bundles')).default)
   },
   {
     name: 'html',

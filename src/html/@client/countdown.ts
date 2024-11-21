@@ -1,6 +1,6 @@
 import htmx from 'htmx.org'
 
-function init(/** @type {HTMLElement} */ element) {
+function init(element: HTMLElement) {
   let ms = Number(element.getAttribute('data-countdown'))
   let last = Date.now()
   const interval = setInterval(() => {

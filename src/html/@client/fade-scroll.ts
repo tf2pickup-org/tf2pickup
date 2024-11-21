@@ -1,6 +1,6 @@
 import htmx from 'htmx.org'
 
-function update(/** @type {HTMLElement} */ element) {
+function update(element: HTMLElement) {
   const isScrollable = element.scrollHeight > element.clientHeight
   if (!isScrollable) {
     element.classList.remove('mask-top', 'mask-bottom')
@@ -20,7 +20,7 @@ function update(/** @type {HTMLElement} */ element) {
   }
 }
 
-function initElement(/** @type {HTMLElement} */ element) {
+function initElement(element: HTMLElement) {
   // @ts-ignore
   element.addEventListener('scroll', event => update(event.target))
   update(element)

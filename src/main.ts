@@ -5,6 +5,7 @@ import { logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
 import { hoursToSeconds } from 'date-fns'
 import { environment } from './environment'
+import { srcDir } from './src-dir'
 
 const app = fastify({ loggerInstance })
 
@@ -28,7 +29,7 @@ await app.register(await import('@fastify/secure-session'), {
 await app.register((await import('@fastify/flash')).default)
 await app.register(await import('@fastify/request-context'))
 await app.register(await import('@fastify/static'), {
-  root: resolve(import.meta.dirname, '..', 'public'),
+  root: resolve(srcDir, '..', 'public'),
   prefix: '/',
 })
 
