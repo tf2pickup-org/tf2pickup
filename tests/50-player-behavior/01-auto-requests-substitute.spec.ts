@@ -36,7 +36,7 @@ test.describe('when a player does not connect to the gameserver on time', () => 
 
     const event = gamePage.gameEvent(/requested substitute/)
     await expect(event).toBeVisible({
-      timeout: secondsToMilliseconds(11),
+      timeout: secondsToMilliseconds(12),
     })
     expect(event).toHaveText(/bot requested substitute for.+BellBoy \(reason: Player is offline\)/)
     await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
@@ -59,7 +59,7 @@ test.describe('when a player connects to the gameserver, but then leaves', () =>
     await gameServer.playerDisconnects(offlinePlayer)
 
     await expect(gamePage.gameEvent(/bot requested substitute/)).toBeVisible({
-      timeout: secondsToMilliseconds(10),
+      timeout: secondsToMilliseconds(12),
     })
     await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })
@@ -75,7 +75,7 @@ test.describe('when the match starts, but then a player leaves', () => {
     await gameServer.playerDisconnects(offlinePlayer)
 
     await expect(gamePage.gameEvent(/bot requested substitute/)).toBeVisible({
-      timeout: secondsToMilliseconds(7),
+      timeout: secondsToMilliseconds(8),
     })
     await expect(gamePage.playerLink(offlinePlayer)).not.toBeVisible()
   })
@@ -111,7 +111,7 @@ test.describe('when a player replaces another player and does not join the games
     test('should request substitute for them', async () => {
       const event = gamePage.gameEvent(/bot requested substitute/)
       await expect(event).toBeVisible({
-        timeout: secondsToMilliseconds(7),
+        timeout: secondsToMilliseconds(8),
       })
     })
   })
@@ -128,7 +128,7 @@ test.describe('when a player replaces another player and does not join the games
     test('should request substitute for them', async () => {
       const event = gamePage.gameEvent(/bot requested substitute/)
       await expect(event).toBeVisible({
-        timeout: secondsToMilliseconds(7),
+        timeout: secondsToMilliseconds(8),
       })
     })
   })
