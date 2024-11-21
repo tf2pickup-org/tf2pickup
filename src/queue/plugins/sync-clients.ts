@@ -16,6 +16,7 @@ import { BanAlerts } from '../views/html/ban-alerts'
 import type { ObjectId } from 'mongodb'
 import { whenGameEnds } from '../../games/when-game-ends'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
+import { PreReadyUpButton } from '../views/html/pre-ready-up-button'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -64,6 +65,12 @@ export default fp(
           const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
           app.gateway.toPlayers(after.steamId).broadcast(() => cmp)
           await syncAllSlots(after.steamId)
+        }
+
+        if (before.preReadyUntil !== after.preReadyUntil) {
+          app.gateway
+            .toPlayers(after.steamId)
+            .broadcast(async actor => await PreReadyUpButton({ actor }))
         }
       }),
     )

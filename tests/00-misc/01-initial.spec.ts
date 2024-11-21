@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { QueuePage } from '../pages/queue.page'
 
 test('has title', async ({ page }) => {
   await page.goto('/')
@@ -28,4 +29,10 @@ test('has 3 map vote buttons', async ({ page }) => {
   await page.goto('/')
   const mapVoteButtons = page.getByLabel(/Vote for map/)
   await expect(mapVoteButtons).toHaveCount(3)
+})
+
+test('pre-ready up button is not rendered', async ({ page }) => {
+  const queuePage = new QueuePage(page)
+  await queuePage.goto()
+  await expect(queuePage.preReadyUpButton()).not.toBeVisible()
 })

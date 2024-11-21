@@ -76,5 +76,25 @@
         background-color: darken(theme(colors.abru.dark.25), 5%);
       }
     }
+
+    &--lighter {
+      background-color: theme(colors.abru.light.85);
+      color: theme(colors.abru.light.3);
+
+      &:hover {
+        background-color: darken(theme(colors.abru.light.85), 5%);
+      }
+
+      &:disabled,
+      a&:not([href]) {
+        background-color: theme(colors.abru.light.85);
+        color: theme(colors.abru.light.60);
+
+        &:hover {
+          background-color: theme(colors.abru.light.85);
+          color: theme(colors.abru.light.60);
+        }
+      }
+    }
   }
 }

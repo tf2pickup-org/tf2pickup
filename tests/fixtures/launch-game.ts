@@ -3,21 +3,6 @@ import { mergeTests } from '@playwright/test'
 import { simulateGameServer } from './simulate-game-server'
 import type { UserContext } from '../user-manager'
 
-const desiredSlots = new Map<string, number>([
-  ['Promenader', 0],
-  ['Mayflower', 1],
-  ['Polemic', 2],
-  ['Shadowhunter', 3],
-  ['MoonMan', 4],
-  ['Underfire', 5],
-  ['Astropower', 6],
-  ['LlamaDrama', 7],
-  ['SlitherTuft', 8],
-  ['Blacklight', 9],
-  ['AstraGirl', 10],
-  ['BellBoy', 11],
-])
-
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
   // Default: true
@@ -28,18 +13,37 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
   LaunchGameOptions & {
     gameNumber: number
     players: UserContext[]
+    desiredSlots: Map<string, number>
   }
 >({
   killGame: [true, { option: true }],
-  players: async ({ users }, use) => {
-    const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
-    await use(players)
+  desiredSlots: async ({}, use) => {
+    await use(
+      new Map<string, number>([
+        ['Promenader', 0],
+        ['Mayflower', 1],
+        ['Polemic', 2],
+        ['Shadowhunter', 3],
+        ['MoonMan', 4],
+        ['Underfire', 5],
+        ['Astropower', 6],
+        ['LlamaDrama', 7],
+        ['SlitherTuft', 8],
+        ['Blacklight', 9],
+        ['AstraGirl', 10],
+        ['BellBoy', 11],
+      ]),
+    )
   },
-  gameNumber: async ({ users, players, gameServer, killGame }, use) => {
+  players: async ({ users, desiredSlots }, use) => {
     if (users.count < 12) {
       throw new Error(`at least 12 users are required to launch a game`)
     }
 
+    const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
+    await use(players)
+  },
+  gameNumber: async ({ users, players, gameServer, killGame, desiredSlots }, use) => {
     await gameServer.sendHeartbeat()
 
     await Promise.all(

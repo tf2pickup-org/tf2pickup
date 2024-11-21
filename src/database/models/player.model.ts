@@ -25,4 +25,5 @@ export interface PlayerModel {
   cooldownLevel: number
   activeGame?: GameNumber
   skill?: Partial<Record<Tf2ClassName, number>>
+  preReadyUntil?: Date
 }

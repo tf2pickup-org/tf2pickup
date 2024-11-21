@@ -12,6 +12,8 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../get-state'
 import { QueueState } from '../../database/models/queue-state.model'
+import { PreReadyUpButton } from '../views/html/pre-ready-up-button'
+import { preReady } from '../pre-ready'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -30,6 +32,9 @@ export default fp(
       try {
         const slots = await join(slotId, socket.player.steamId)
         app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.enable())
+        app.gateway
+          .toPlayers(socket.player.steamId)
+          .broadcast(async () => await PreReadyUpButton.enable())
 
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
           await refreshTakenSlots(socket.player.steamId)
@@ -47,6 +52,9 @@ export default fp(
       try {
         const slot = await leave(socket.player.steamId)
         app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.disable())
+        app.gateway
+          .toPlayers(socket.player.steamId)
+          .broadcast(async () => await PreReadyUpButton.disable())
 
         app.gateway
           .toPlayers(socket.player.steamId)
@@ -101,6 +109,18 @@ export default fp(
 
       try {
         await markAsFriend(socket.player.steamId, steamId)
+      } catch (error) {
+        logger.error(error)
+      }
+    })
+
+    app.gateway.on('queue:togglepreready', async socket => {
+      if (!socket.player) {
+        return
+      }
+
+      try {
+        await preReady.toggle(socket.player.steamId)
       } catch (error) {
         logger.error(error)
       }

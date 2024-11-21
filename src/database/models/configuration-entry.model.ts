@@ -119,6 +119,10 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.boolean().default(false),
   }),
   z.object({
+    key: z.literal('queue.pre_ready_up_timeout'),
+    value: z.number().positive().default(minutesToMilliseconds(5)),
+  }),
+  z.object({
     key: z.literal('serveme_tf.preferred_region'),
     value: z.string().nullable().default(null),
   }),

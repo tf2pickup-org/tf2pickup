@@ -7,6 +7,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { getState } from './get-state'
 import { mutex } from './mutex'
+import { preReady } from './pre-ready'
 
 export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
   return await mutex.runExclusive(async () => {
@@ -51,6 +52,9 @@ export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> 
           source: friendship.source,
           target: friendship.target,
         })
+      }
+      for (const steamId of steamIds) {
+        await preReady.cancel(steamId)
       }
     }
 

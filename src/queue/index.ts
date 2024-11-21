@@ -29,7 +29,7 @@ export default fp(
     })
 
     app.get('/', async (req, reply) => {
-      await reply.status(200).html(QueuePage({ user: req.user }))
+      return reply.status(200).html(QueuePage({ user: req.user }))
     })
   },
   {

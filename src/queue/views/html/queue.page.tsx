@@ -21,6 +21,7 @@ import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
 import { CurrentPlayerCount } from './current-player-count'
+import { PreReadyUpButton } from './pre-ready-up-button'
 
 export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()
@@ -45,7 +46,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
 
           <div class="order-2 lg:col-span-3">
             <div class="flex flex-col gap-8">
-              <QueueState />
+              <QueueState actor={props.user} />
               <Queue slots={slots} actor={props.user?.player.steamId} />
             </div>
           </div>
@@ -72,15 +73,17 @@ export async function QueuePage(props: { user?: User | undefined }) {
   )
 }
 
-async function QueueState() {
+async function QueueState(props: { actor?: User | undefined }) {
   const required = await collections.queueSlots.countDocuments()
   return (
     <div class="flex flex-col gap-2">
-      <div class="flex flex-row items-center justify-center">
+      <form ws-send class="flex flex-row items-center justify-center">
         <h3 class="flex-1 text-center text-2xl font-bold text-ash md:text-start">
           Players: <CurrentPlayerCount />/{required}
         </h3>
-      </div>
+
+        <PreReadyUpButton actor={props.actor?.player.steamId} />
+      </form>
       <div class="h-[2px] rounded-sm bg-abru-light-25"></div>
     </div>
   )
