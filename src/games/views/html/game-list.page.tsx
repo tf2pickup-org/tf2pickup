@@ -7,9 +7,7 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { GameListItem } from './game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
-import { html } from '../../../html'
 
-export const style = await html.embed(resolve(import.meta.dirname, 'game-list.css'))
 const itemsPerPage = 8
 
 export async function GameListPage(props: { user?: User | undefined; page: number }) {
@@ -22,7 +20,7 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
     .toArray()
 
   return (
-    <Layout title="games" embedStyles={style}>
+    <Layout title="games" embedStyle={resolve(import.meta.dirname, 'game-list.css')}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto">

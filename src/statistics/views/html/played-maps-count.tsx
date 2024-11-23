@@ -9,14 +9,31 @@ export async function PlayedMapsCount() {
     <>
       <span class="text-2xl font-bold text-abru-light-75">Most played maps</span>
       <canvas id="played-maps-count"></canvas>
-      <script>
+      <script type="module">
         {`
-        window.addEventListener('load', () => {
-          const data = ${JSON.stringify(data)};
-          const element = document.getElementById('played-maps-count');
+        import { Chart } from '/js/chart.js';
 
-          makePlayedMapsCountChart(element, data);
-        });
+        const data = ${JSON.stringify(data)};
+        new Chart(document.getElementById('played-maps-count'), {
+          type: 'pie',
+          data: data,
+          options: {
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: {
+                  boxWidth: 14,
+                  boxHeight: 14,
+                  font: {
+                    size: 14,
+                  },
+                  color: '#C7C4C7',
+                  padding: 16,
+                },
+              },
+            },
+          },
+        })
         `}
       </script>
     </>

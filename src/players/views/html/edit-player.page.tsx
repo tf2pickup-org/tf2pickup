@@ -26,15 +26,12 @@ import { collections } from '../../../database/collections'
 import type { WithId } from 'mongodb'
 import type { PlayerBanModel } from '../../../database/models/player-ban.model'
 import { format } from 'date-fns'
-import { html } from '../../../html'
 
 const editPlayerPages = {
   '/profile': 'Profile',
   '/skill': 'Skill',
   '/bans': 'Bans',
 } as const
-
-const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 
 export async function EditPlayerProfilePage(props: { player: PlayerModel; user: User }) {
   return (
@@ -145,7 +142,10 @@ function EditPlayer(props: {
   action?: Children
 }) {
   return (
-    <Layout title={`Edit ${props.player.name}`} embedStyles={style}>
+    <Layout
+      title={`Edit ${props.player.name}`}
+      embedStyle={resolve(import.meta.dirname, 'style.css')}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <AdminPanel>

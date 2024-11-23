@@ -28,7 +28,6 @@ import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { Footer } from '../../../html/components/footer'
 import { resolve } from 'path'
-import { html } from '../../../html'
 
 const adminPages = {
   'player-restrictions': {
@@ -99,7 +98,6 @@ const adminPages = {
 } as const
 
 const sections = Array.from(new Set(Object.values(adminPages).map(({ section }) => section)))
-export const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 
 export function Admin(props: {
   user: User
@@ -107,7 +105,10 @@ export function Admin(props: {
   children: Children
 }) {
   return (
-    <Layout title={adminPages[props.activePage].title} embedStyles={style}>
+    <Layout
+      title={adminPages[props.activePage].title}
+      embedStyle={resolve(import.meta.dirname, 'style.css')}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <AdminPanel>

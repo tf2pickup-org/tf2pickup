@@ -1,17 +1,13 @@
-import { resolve } from 'node:path'
 import type { User } from '../../../auth/types/user'
-import { html } from '../../../html'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { PlayedMapsCount } from './played-maps-count'
 
-const bundleJs = await html.bundle(resolve(import.meta.dirname, 'bundle', 'main.js'))
-
 export async function StatisticsPage(user?: User) {
   return (
-    <Layout title="statistics" jsBundles={[bundleJs]}>
+    <Layout title="statistics">
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">
