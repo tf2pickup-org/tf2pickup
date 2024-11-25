@@ -16,10 +16,6 @@ import type { Bot } from './shared/types/bot'
 import type { PlayerConnectionStatus } from './database/models/game-slot.model'
 
 export interface Events {
-  'build:bundleReady': {
-    entryPoint: string
-  }
-
   'game:created': {
     game: GameModel
   }

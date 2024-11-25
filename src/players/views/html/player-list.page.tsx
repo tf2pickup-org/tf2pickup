@@ -7,9 +7,7 @@ import { collections } from '../../../database/collections'
 import type { User } from '../../../auth/types/user'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
-import { html } from '../../../html'
 
-const style = await html.embed(resolve(import.meta.dirname, 'style.css'))
 const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
 const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 
@@ -18,7 +16,7 @@ export async function PlayerListPage(user?: User) {
   const groupedPlayers = groupPlayers(players)
 
   return (
-    <Layout title="players" embedStyles={style}>
+    <Layout title="players" embedStyle={resolve(import.meta.dirname, 'style.css')}>
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto">

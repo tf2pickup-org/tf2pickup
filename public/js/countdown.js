@@ -1,7 +1,9 @@
-import htmx from 'htmx.org'
+import htmx from './htmx.js'
+
+const attrName = 'data-countdown'
 
 function init(/** @type {HTMLElement} */ element) {
-  let ms = Number(element.getAttribute('data-countdown'))
+  let ms = Number(element.getAttribute(attrName))
   let last = Date.now()
   const interval = setInterval(() => {
     ms = Math.max(ms - (Date.now() - last), 0)
@@ -26,11 +28,11 @@ function init(/** @type {HTMLElement} */ element) {
 htmx.onLoad(element => {
   if (!(element instanceof HTMLElement)) return
 
-  if (element.hasAttribute('data-countdown')) {
+  if (element.hasAttribute(attrName)) {
     init(element)
   }
 
-  element.querySelectorAll('[data-countdown]').forEach(element => {
+  element.querySelectorAll(`[${attrName}]`).forEach(element => {
     if (element instanceof HTMLElement) {
       init(element)
     }

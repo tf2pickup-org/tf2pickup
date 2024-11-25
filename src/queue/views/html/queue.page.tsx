@@ -20,10 +20,7 @@ import { SubstitutionRequests } from './substitution-requests'
 import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
-import { html } from '../../../html'
 import { CurrentPlayerCount } from './current-player-count'
-
-const style = await html.embed(resolve(import.meta.dirname, 'queue.css'))
 
 export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()
@@ -32,7 +29,10 @@ export async function QueuePage(props: { user?: User | undefined }) {
   const required = slots.length
 
   return (
-    <Layout title={`[${current}/${required}] ${environment.WEBSITE_NAME}`} embedStyles={style}>
+    <Layout
+      title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
+      embedStyle={resolve(import.meta.dirname, 'queue.css')}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">

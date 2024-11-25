@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import type { User } from '../../../auth/types/user'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { Footer } from '../../../html/components/footer'
@@ -5,11 +6,22 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { format } from 'date-fns'
-import { style as adminStyle } from '../../../admin/views/html/admin'
 
 export async function AddBanPage(props: { player: PlayerModel; user: User }) {
   return (
-    <Layout title={`Ban ${props.player.name}`} embedStyles={adminStyle}>
+    <Layout
+      title={`Ban ${props.player.name}`}
+      embedStyle={resolve(
+        import.meta.dirname,
+        '..',
+        '..',
+        '..',
+        'admin',
+        'views',
+        'html',
+        'style.css',
+      )}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto">

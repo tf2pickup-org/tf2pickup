@@ -1,7 +1,8 @@
 import { readFile } from 'fs/promises'
 import { logger } from '../logger'
-import { parse } from 'node:path'
+import { parse, resolve } from 'node:path'
 import postcss from 'postcss'
+import postcssImport from 'postcss-import'
 import cssnano from 'cssnano'
 import tailwindcssNesting from 'tailwindcss/nesting/index.js'
 import tailwindcss from 'tailwindcss'
@@ -10,12 +11,22 @@ import autoprefixer from 'autoprefixer'
 import { environment } from '../environment'
 import mime from 'mime'
 
+const srcDir = resolve(import.meta.dirname, '..')
+const cache = new Map<string, string>()
+
 export async function embed(fileName: string): Promise<string> {
+  if (cache.has(fileName)) {
+    return cache.get(fileName)!
+  }
+
   logger.debug(`building ${fileName}...`)
   const css = await readFile(fileName)
-  const { name, ext } = parse(fileName)
+  const { name, ext, dir } = parse(fileName)
   const style = (
     await postcss([
+      postcssImport({
+        path: [dir, srcDir],
+      }),
       tailwindcssNesting,
       tailwindcss,
       lightenDarken,
@@ -27,5 +38,6 @@ export async function embed(fileName: string): Promise<string> {
     })
   ).css
   logger.debug({ type: mime.getType(fileName), length: style.length }, `${fileName} built`)
+  cache.set(fileName, style)
   return style
 }
