@@ -2,15 +2,19 @@ import htmx from './htmx.js'
 
 const attrName = 'data-countdown'
 
+function formatTimeout(/** @type number */ ms) {
+  const minutes = Math.floor(ms / 60000)
+  const seconds = Math.floor((ms % 60000) / 1000)
+  return seconds === 60 ? minutes + 1 + ':00' : minutes + ':' + (seconds < 10 ? '0' : '') + seconds
+}
+
 function init(/** @type {HTMLElement} */ element) {
   let ms = Number(element.getAttribute(attrName))
   let last = Date.now()
   const interval = setInterval(() => {
     ms = Math.max(ms - (Date.now() - last), 0)
     last = Date.now()
-    const minutes = Math.floor(ms / 60000)
-    const seconds = ((ms % 60000) / 1000).toFixed(0)
-    element.textContent = `${minutes}:${seconds.length === 1 ? '0' : ''}${seconds}`
+    element.textContent = formatTimeout(ms)
     if (ms <= 0) {
       clearInterval(interval)
     }

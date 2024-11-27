@@ -15,14 +15,10 @@ export function Layout(
     embedStyle?: string
   }>,
 ) {
-  const title = <title>{props?.title ?? environment.WEBSITE_NAME}</title>
+  const title = <title safe>{props?.title ?? environment.WEBSITE_NAME}</title>
   const body = (
     <>
-      {props?.embedStyle && (
-        <style type="text/css" safe>
-          {embed(props.embedStyle)}
-        </style>
-      )}
+      {props?.embedStyle && <style type="text/css">{embed(props.embedStyle)}</style>}
       <div class="flex h-full flex-col">{props?.children}</div>
       <div id="notify-container"></div>
       <ReadyUpDialog />

@@ -1,4 +1,4 @@
-declare module 'https://unpkg.com/htmx.org@2.0.0/dist/htmx.esm.js' {
+declare module 'https://unpkg.com/htmx.org@2.0.2/dist/htmx.esm.js' {
   export * from 'htmx.org'
 }
 

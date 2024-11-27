@@ -55,7 +55,7 @@ export class QueuePage {
   }
 
   async joinQueue(slot: number) {
-    await this.page.getByLabel(`Join queue on slot ${slot}`, { exact: true }).click()
+    await this.slot(slot).join()
   }
 
   async leaveQueue(timeout = secondsToMilliseconds(5)) {
@@ -92,5 +92,9 @@ export class QueuePage {
 
   goBackToGameLink() {
     return this.page.getByRole('link', { name: 'Go back to the game' })
+  }
+
+  preReadyUpButton() {
+    return this.page.getByRole('button', { name: 'Pre-ready up' })
   }
 }

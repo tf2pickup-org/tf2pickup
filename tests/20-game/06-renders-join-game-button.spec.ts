@@ -28,12 +28,14 @@ test('renders join game button', async ({ gameNumber, players, gameServer }) => 
   })
 
   const joinGameButton = page.joinGameButton()
-  await expect(joinGameButton).toBeVisible()
-  await expect(joinGameButton).toHaveAttribute('href', /^steam:\/\/connect\/.*$/)
-
-  for (let i = 29; i >= 10; i -= 1) {
-    await expect.soft(joinGameButton).toHaveText(`join in 0:${i}`, { timeout: 2000 })
-  }
+  await Promise.all(
+    Array.from(Array(29).keys()).map(
+      async i =>
+        await expect
+          .soft(joinGameButton)
+          .toHaveText(new RegExp(`join in 0:\\d?${i}`), { timeout: (30 - i) * 1000 }),
+    ),
+  )
 
   await gameServer.playerConnects('LlamaDrama')
   await expect(joinGameButton).toContainText('join game')

@@ -13,6 +13,7 @@ export interface ClientToServerEvents {
   'queue:votemap': (mapName: string) => void
   'queue:readyup': () => void
   'queue:markasfriend': (steamId: SteamId64 | null) => void
+  'queue:togglepreready': () => void
 }
 
 type GatewayEvents = ClientToServerEvents
@@ -51,7 +52,19 @@ const markAsFriend = z.object({
   HEADERS: htmxHeaders,
 })
 
-const clientMessage = z.union([joinQueue, leaveQueue, readyUp, voteMap, markAsFriend])
+const preReadyToggle = z.object({
+  prereadytoggle: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const clientMessage = z.union([
+  joinQueue,
+  leaveQueue,
+  readyUp,
+  voteMap,
+  markAsFriend,
+  preReadyToggle,
+])
 
 type MessageFn = (
   player: SteamId64 | undefined,
@@ -176,6 +189,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
           socket,
           parsed.markasfriend === '' ? null : parsed.markasfriend,
         )
+      } else if ('prereadytoggle' in parsed) {
+        this.emit('queue:togglepreready', socket)
       }
     } catch (error) {
       console.error(error)
