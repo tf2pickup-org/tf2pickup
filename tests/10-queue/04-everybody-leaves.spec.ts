@@ -6,20 +6,18 @@ authUsers('everybody leaves', async ({ steamIds, users }) => {
   const queueUsers = steamIds.slice(0, 12)
   for (let i = 0; i < queueUsers.length; ++i) {
     const steamId = queueUsers[i]!
-    const page = users.bySteamId(steamId).queuePage()
+    const page = await users.bySteamId(steamId).queuePage()
     await page.joinQueue(i)
   }
 
   await Promise.all(
-    queueUsers
-      .slice(0, -1)
-      .map(steamId => users.bySteamId(steamId).queuePage())
-      .map(async page => {
-        await page.readyUpDialog().notReady()
-      }),
+    queueUsers.slice(0, -1).map(async steamId => {
+      const page = await users.bySteamId(steamId).queuePage()
+      await page.readyUpDialog().notReady()
+    }),
   )
 
   // last player leaves
-  const page = users.bySteamId(queueUsers[11]!).queuePage()
+  const page = await users.bySteamId(queueUsers[11]!).queuePage()
   await page.leaveQueue(minutesToMilliseconds(1.5))
 })

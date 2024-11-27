@@ -7,15 +7,14 @@ launchGameAndInitialize(
   'free players when the game ends',
   async ({ players, gameNumber, gameServer }) => {
     await Promise.all(
-      players
-        .map(player => player.queuePage())
-        .map(async page => {
-          await page.goto()
-          await expect(page.goBackToGameLink()).toBeVisible()
-          for (let i = 0; i < 12; ++i) {
-            await expect(page.slot(i).joinButton()).toBeDisabled()
-          }
-        }),
+      players.map(async player => {
+        const page = await player.queuePage()
+        await page.goto()
+        await expect(page.goBackToGameLink()).toBeVisible()
+        for (let i = 0; i < 12; ++i) {
+          await expect(page.slot(i).joinButton()).toBeDisabled()
+        }
+      }),
     )
 
     await gameServer.connectAllPlayers()
@@ -29,8 +28,8 @@ launchGameAndInitialize(
     await Promise.all([
       ...medics
         .map(playerName => players.find(p => p.playerName === playerName)!)
-        .map(player => player.queuePage())
-        .map(async page => {
+        .map(async player => {
+          const page = await player.queuePage()
           await page.goto()
           await expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(1),
@@ -41,8 +40,8 @@ launchGameAndInitialize(
         }),
       ...players
         .filter(p => !medics.includes(p.playerName))
-        .map(player => player.queuePage())
-        .map(async page => {
+        .map(async player => {
+          const page = await player.queuePage()
           await page.goto()
           await expect(page.goBackToGameLink()).toBeVisible()
           for (let i = 0; i < 12; ++i) {
@@ -55,8 +54,8 @@ launchGameAndInitialize(
     await Promise.all(
       players
         .filter(p => !medics.includes(p.playerName))
-        .map(player => player.queuePage())
-        .map(async page => {
+        .map(async player => {
+          const page = await player.queuePage()
           await page.goto()
           await expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(5),

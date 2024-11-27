@@ -48,15 +48,15 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
 
     await Promise.all(
       players.map(async user => {
-        const page = user.queuePage()
+        const page = await user.queuePage()
         const slot = desiredSlots.get(user.playerName)!
         await page.slot(slot).join()
         await page.readyUpDialog().readyUp()
-        await user.page.waitForURL(/games\/(\d+)/)
+        await (await user.page()).waitForURL(/games\/(\d+)/)
       }),
     )
 
-    const page = users.byName('Promenader').page
+    const page = await users.byName('Promenader').page()
     const matches = page.url().match(/games\/(\d+)/)
     if (matches) {
       const gameNumber = Number(matches[1])
@@ -67,7 +67,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
       }
 
       // kill the game if it's live
-      const adminPage = users.getAdmin().gamePage(gameNumber)
+      const adminPage = await users.getAdmin().gamePage(gameNumber)
       await adminPage.goto()
       if (await adminPage.isLive()) {
         await adminPage.forceEnd()

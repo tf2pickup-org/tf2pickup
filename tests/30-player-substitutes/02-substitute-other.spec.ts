@@ -5,8 +5,8 @@ launchGame('substitute other', async ({ gameNumber, users, page }) => {
   const mayflower = users.byName('Mayflower')
   const tommyGun = users.byName('TommyGun')
 
-  const adminsPage = admin.gamePage(gameNumber)
-  const tommyGunsPage = tommyGun.gamePage(gameNumber)
+  const adminsPage = await admin.gamePage(gameNumber)
+  const tommyGunsPage = await tommyGun.gamePage(gameNumber)
   await tommyGunsPage.goto()
 
   await expect(adminsPage.playerLink(mayflower.playerName)).toBeVisible()

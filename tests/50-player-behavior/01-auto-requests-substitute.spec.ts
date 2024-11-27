@@ -91,9 +91,9 @@ test.describe('when a player replaces another player and does not join the games
     const tommyGun = users.byName('TommyGun')
 
     gamePage = new GamePage(page, gameNumber)
-    adminsPage = users.getAdmin().gamePage(gameNumber)
+    adminsPage = await users.getAdmin().gamePage(gameNumber)
     await adminsPage.goto()
-    tommyGunsPage = tommyGun.gamePage(gameNumber)
+    tommyGunsPage = await tommyGun.gamePage(gameNumber)
     await tommyGunsPage.goto()
 
     await gameServer.connectAllPlayers()

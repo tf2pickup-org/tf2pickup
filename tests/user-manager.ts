@@ -1,18 +1,19 @@
-import type { Page } from '@playwright/test'
 import { QueuePage } from './pages/queue.page'
 import { GamePage } from './pages/game.page'
 import { users } from './data'
 import { AdminPage } from './pages/admin.page'
+import type { BrowserContext, Page } from '@playwright/test'
 
 // https://stackoverflow.com/questions/52489261/can-i-define-an-n-length-tuple-type
 type Tuple<T, N, R extends T[] = []> = R['length'] extends N ? Readonly<R> : Tuple<T, N, [...R, T]>
 
 export class UserContext {
   readonly playerName: string
+  private _page?: Page
 
   constructor(
     public readonly steamId: string,
-    public readonly page: Page,
+    public readonly browserContext: BrowserContext,
   ) {
     const playerName = users.find(u => u.steamId === steamId)?.name
     if (!playerName) {
@@ -22,21 +23,36 @@ export class UserContext {
     this.playerName = playerName
   }
 
+  async page() {
+    if (!this._page) {
+      this._page = await this.browserContext.newPage()
+      await this._page.goto('/')
+    }
+    return this._page
+  }
+
   get isAdmin() {
     const u = users.find(u => u.steamId === this.steamId)!
     return 'roles' in u && u.roles.includes('admin')
   }
 
-  adminPage() {
-    return new AdminPage(this.page)
+  async adminPage() {
+    return new AdminPage(await this.page())
   }
 
-  gamePage(gameNumber: number) {
-    return new GamePage(this.page, gameNumber)
+  async gamePage(gameNumber: number) {
+    return new GamePage(await this.page(), gameNumber)
   }
 
-  queuePage() {
-    return new QueuePage(this.page)
+  async queuePage() {
+    return new QueuePage(await this.page())
+  }
+
+  async close() {
+    if (this._page) {
+      await this._page.close()
+    }
+    await this.browserContext.close()
   }
 }
 

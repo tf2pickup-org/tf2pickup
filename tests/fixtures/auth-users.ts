@@ -59,16 +59,12 @@ export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
             sameSite: 'Lax',
           },
         ])
-        await context.grantPermissions(['notifications'])
-        const page = await context.newPage()
-        await page.goto('/')
-        users.push(new UserContext(steamId, page))
+        users.push(new UserContext(steamId, context))
       }),
     )
     await use(new UserManager(users))
     for (const user of users) {
-      await user.page.context().close()
-      await user.page.close()
+      await user.close()
     }
     users.length = 0
   },

@@ -5,7 +5,7 @@ const user = users[0]
 
 authUsers.use({ steamIds: [user.steamId] })
 authUsers('vote for map', async ({ users }) => {
-  const page = users.getFirst().queuePage()
+  const page = await users.getFirst().queuePage()
   const mapBtn = page.voteForMapButton(0)
   expect(await mapBtn.getAttribute('aria-checked')).toBe('false')
 

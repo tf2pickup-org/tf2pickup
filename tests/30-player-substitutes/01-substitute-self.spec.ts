@@ -2,9 +2,9 @@ import { launchGame, expect } from '../fixtures/launch-game'
 
 launchGame('substitute self', async ({ gameNumber, users, page }) => {
   const admin = users.getAdmin()
-  const adminsPage = admin.gamePage(gameNumber)
+  const adminsPage = await admin.gamePage(gameNumber)
   const mayflower = users.byName('Mayflower')
-  const mayflowersPage = mayflower.gamePage(gameNumber)
+  const mayflowersPage = await mayflower.gamePage(gameNumber)
 
   await expect(adminsPage.playerLink(mayflower.playerName)).toBeVisible()
   await adminsPage.requestSubstitute(mayflower.playerName)

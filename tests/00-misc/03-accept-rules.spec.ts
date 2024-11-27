@@ -17,7 +17,7 @@ test.describe('when user has not accepted the rules yet', () => {
   })
 
   test('accept rules', async ({ users }) => {
-    const page = users.getFirst().page
+    const page = await users.getFirst().page()
     await expect(page.getByTitle('Accept rules dialog')).toBeVisible()
 
     const btn = page.getByRole('button', { name: 'I accept these rules' })
