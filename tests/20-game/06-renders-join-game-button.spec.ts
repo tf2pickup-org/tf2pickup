@@ -20,7 +20,7 @@ test.beforeEach(async ({ db }) => {
 })
 
 test('renders join game button', async ({ gameNumber, players, gameServer }) => {
-  const page = players.find(p => p.playerName === 'LlamaDrama')!.gamePage(gameNumber)
+  const page = await players.find(p => p.playerName === 'LlamaDrama')!.gamePage(gameNumber)
   await expect(page.waitingForGameServer()).toBeVisible()
 
   await expect(page.gameEvent('Game server initialized')).toBeVisible({

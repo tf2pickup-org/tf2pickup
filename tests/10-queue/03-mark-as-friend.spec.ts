@@ -5,11 +5,9 @@ import type { QueuePage } from '../pages/queue.page'
 authUsers.use({ steamIds: [users[0].steamId, users[1].steamId, users[2].steamId] })
 
 authUsers('mark as friend', async ({ users }) => {
-  const [medic1, medic2, soldier] = users.getMany(3).map(user => user.queuePage()) as [
-    QueuePage,
-    QueuePage,
-    QueuePage,
-  ]
+  const [medic1, medic2, soldier] = (await Promise.all(
+    users.getMany(3).map(async user => await user.queuePage()),
+  )) as [QueuePage, QueuePage, QueuePage]
   await medic1.joinQueue(10)
   await medic2.joinQueue(11)
   await soldier.joinQueue(4)
