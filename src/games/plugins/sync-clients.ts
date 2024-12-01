@@ -14,6 +14,8 @@ import { GameSlot } from '../views/html/game-slot'
 import { whenGameEnds } from '../when-game-ends'
 import { GamesLink } from '../../html/components/games-link'
 import { safe } from '../../utils/safe'
+import { JoinVoiceButton } from '../views/html/join-voice-button'
+import { JoinGameButton } from '../views/html/join-game-button'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -60,7 +62,17 @@ export default fp(async app => {
           }
           app.gateway
             .toPlayers(player.steamId)
-            .broadcast(async actor => await ConnectInfo({ game: after, actor }))
+            .broadcast(async actor => await JoinGameButton({ game: after, actor }))
+        }
+
+        if (beforeSlot.voiceServerUrl !== slot.voiceServerUrl) {
+          const player = await collections.players.findOne({ _id: slot.player })
+          if (!player) {
+            throw new Error(`no such player: ${slot.player.toString()}`)
+          }
+          app.gateway
+            .toPlayers(player.steamId)
+            .broadcast(async actor => await JoinVoiceButton({ game: after, actor }))
         }
       }),
     )

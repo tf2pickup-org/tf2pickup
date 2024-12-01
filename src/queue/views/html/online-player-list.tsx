@@ -9,7 +9,7 @@ interface OnlinePlayer {
 
 export async function OnlinePlayerList() {
   const onlinePlayers = await collections.onlinePlayers
-    .find({})
+    .find({}, { sort: { name: 1 } })
     .project<OnlinePlayer>({ _id: 0, steamId: 1, name: 1 })
     .toArray()
 
