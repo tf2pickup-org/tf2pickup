@@ -23,6 +23,12 @@ export const tasksSchema = z.discriminatedUnion('name', [
     }),
   }),
   z.object({
+    name: z.literal('mumble.cleanupChannel'),
+    args: z.object({
+      gameNumber,
+    }),
+  }),
+  z.object({
     name: z.literal('queue:readyUpTimeout'),
     args: z.object({}),
   }),

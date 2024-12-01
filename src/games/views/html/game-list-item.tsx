@@ -35,7 +35,9 @@ export function GameListItem(props: { game: GameModel; classPlayed?: Tf2ClassNam
   return (
     <a class="game-list-item" href={`/games/${props.game.number}`}>
       <div class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</div>
-      <span class={['game-number', isRunning && 'text-accent']}>#{props.game.number}</span>
+      <span class={['game-number', isRunning && 'text-accent']} safe>
+        #{props.game.number}
+      </span>
       <span class="map-name" safe>
         {props.game.map}
       </span>

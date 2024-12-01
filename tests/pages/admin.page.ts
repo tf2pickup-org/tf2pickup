@@ -61,4 +61,14 @@ export class AdminPage {
     await this.page.getByRole('button', { name: 'Save' }).click()
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
+
+  async configureVoiceServer(props: { host: string; password: string; channelName: string }) {
+    await this.page.goto('/admin/voice-server')
+    await this.page.getByLabel('Mumble').click()
+    await this.page.getByLabel('Server URL').fill(props.host)
+    await this.page.getByLabel('Server password').fill(props.password)
+    await this.page.getByLabel('Channel name').fill(props.channelName)
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('connected', { exact: true })).toBeVisible()
+  }
 }

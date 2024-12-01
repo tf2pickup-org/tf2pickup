@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import { z } from 'zod'
-import { standardAdminPage } from '../plugins/standard-admin-page'
+import { standardAdminPage } from '../standard-admin-page'
 import { MapPoolEntry as MapPoolEntryCmp, MapPoolPage } from './views/html/map-pool.page'
 import type { MapPoolEntry } from '../../database/models/map-pool-entry.model'
 import { mapPool } from '../../queue/map-pool'

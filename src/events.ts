@@ -13,8 +13,14 @@ import type { Tf2Team } from './shared/types/tf2-team'
 import type { StreamModel } from './database/models/stream.model'
 import type { Bot } from './shared/types/bot'
 import type { PlayerConnectionStatus } from './database/models/game-slot.model'
+import type { Configuration } from './database/models/configuration-entry.model'
+import type { MumbleClientStatus } from './mumble/status'
 
 export interface Events {
+  'configuration:updated': {
+    key: keyof Configuration
+  }
+
   'game:created': {
     game: GameModel
   }
@@ -99,6 +105,10 @@ export interface Events {
   'match/demo:uploaded': {
     gameNumber: GameNumber
     demoUrl: string
+  }
+
+  'mumble/connectionStatusChanged': {
+    status: MumbleClientStatus
   }
 
   'player:connected': {

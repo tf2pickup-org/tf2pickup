@@ -65,6 +65,10 @@ export class GamePage {
     return this.page.getByRole('link', { name: /join (game|in \d{1,2}\:\d{2})/i })
   }
 
+  joinVoiceButton() {
+    return this.page.getByRole('link', { name: 'join voice' })
+  }
+
   watchStvButton() {
     return this.page.getByRole('link', { name: 'watch stv' })
   }
