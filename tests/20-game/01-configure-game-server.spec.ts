@@ -2,6 +2,7 @@ import { launchGame, expect } from '../fixtures/launch-game'
 import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
 
+launchGame.use({ killGame: false })
 launchGame('configure game server', async ({ players, gameNumber, page, gameServer }) => {
   await Promise.all(
     players.map(async player => {

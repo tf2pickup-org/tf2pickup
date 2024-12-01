@@ -14,8 +14,13 @@ import type { PlayerBanModel } from './database/models/player-ban.model'
 import type { StreamModel } from './database/models/stream.model'
 import type { Bot } from './shared/types/bot'
 import type { PlayerConnectionStatus } from './database/models/game-slot.model'
+import type { Configuration } from './database/models/configuration-entry.model'
 
 export interface Events {
+  'configuration:updated': {
+    key: keyof Configuration
+  }
+
   'game:created': {
     game: GameModel
   }

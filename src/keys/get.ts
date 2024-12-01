@@ -34,7 +34,7 @@ export async function get(keyName: string): Promise<KeyPair> {
         })
         .toString(),
     })
-    logger.info(`key pair "${keyName} generated`)
+    logger.info({ name: keyName }, `key pair "${keyName} generated`)
     return keyPair
   } else {
     const privateKey = createPrivateKey({

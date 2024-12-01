@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { GoToGame } from '../views/html/go-to-game'
+import { GoToGame } from '../../players/views/html/go-to-game'
 
 export default fp(
   async app => {
