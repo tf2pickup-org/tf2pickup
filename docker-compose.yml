@@ -23,5 +23,15 @@ services:
     profiles:
       - dev
 
+  mumble:
+    image: mumblevoip/mumble-server:latest
+    environment:
+      - MUMBLE_SUPERUSER_PASSWORD=123456
+    ports:
+      - 64738:64738/tcp
+      - 64738:64738/udp
+    volumes:
+      - ./tests/mumble-data/:/data:rw
+
 volumes:
   mongo:

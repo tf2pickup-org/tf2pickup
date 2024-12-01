@@ -21,4 +21,5 @@ export interface GameSlotModel {
   connectionStatus: PlayerConnectionStatus
   skill?: number
   shouldJoinBy?: Date
+  voiceServerUrl?: string
 }

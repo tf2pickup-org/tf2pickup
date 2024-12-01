@@ -2,15 +2,18 @@ import './migrate'
 import fastify from 'fastify'
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 import { resolve } from 'node:path'
-import { logger as loggerInstance } from './logger'
+import { logger, logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
 import { hoursToSeconds } from 'date-fns'
 import { environment } from './environment'
+import { version } from './version'
 
 const app = fastify({ loggerInstance })
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
+
+logger.info(`starting tf2pickup.org ${version}`)
 
 await app.register(await import('@fastify/sensible'))
 await app.register(await import('@fastify/formbody'))
@@ -52,5 +55,6 @@ await app.register((await import('./admin')).default)
 await app.register((await import('./hall-of-game')).default)
 await app.register((await import('./pre-ready')).default)
 await app.register((await import('./serveme-tf')).default)
+await app.register((await import('./mumble')).default)
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })

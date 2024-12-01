@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test'
+import { expect, type Page } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
 
 export class AdminPage {
@@ -31,5 +31,15 @@ export class AdminPage {
         .getByRole('button', { name: 'Remove game assignment' })
         .click({ timeout: secondsToMilliseconds(1) })
     } catch (error) {}
+  }
+
+  async configureVoiceServer(props: { host: string; password: string; channelName: string }) {
+    await this.page.goto('/admin/voice-server')
+    await this.page.getByLabel('Mumble').click()
+    await this.page.getByLabel('Server URL').fill(props.host)
+    await this.page.getByLabel('Server password').fill(props.password)
+    await this.page.getByLabel('Channel name').fill(props.channelName)
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('connected', { exact: true })).toBeVisible()
   }
 }

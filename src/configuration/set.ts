@@ -3,6 +3,7 @@ import {
   configurationSchema,
   type Configuration,
 } from '../database/models/configuration-entry.model'
+import { events } from '../events'
 
 export async function set<T extends keyof Configuration>(
   key: T,
@@ -10,4 +11,5 @@ export async function set<T extends keyof Configuration>(
 ): Promise<void> {
   configurationSchema.parse({ key, value })
   await collections.configuration.updateOne({ key }, { $set: { value } }, { upsert: true })
+  events.emit('configuration:updated', { key })
 }

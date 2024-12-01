@@ -2,7 +2,7 @@ import { GamesPage } from './views/html/games.page'
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { configuration } from '../../configuration'
-import { standardAdminPage } from '../plugins/standard-admin-page'
+import { standardAdminPage } from '../standard-admin-page'
 
 export default standardAdminPage({
   path: '/admin/games',
