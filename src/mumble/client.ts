@@ -3,7 +3,7 @@ import { configuration } from '../configuration'
 import { VoiceServerType } from '../shared/types/voice-server-type'
 import { logger } from '../logger'
 import { certificates } from '../certificates'
-import { version } from '../../package.json'
+import { version } from '../../package.json' with { type: 'json' }
 import { moveToTargetChannel } from './move-to-target-channel'
 import { assertClientIsConnected } from './assert-client-is-connected'
 
