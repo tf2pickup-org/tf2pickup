@@ -78,7 +78,7 @@
     "htmx.org": "1.9.12",
     "pino-princess": "1.0.0",
     "postcss-cli": "11.0.0",
-    "prettier": "3.4.1",
+    "prettier": "3.4.2",
     "prettier-plugin-tailwindcss": "0.6.9",
     "rimraf": "6.0.1",
     "tsc-alias": "1.8.10",
