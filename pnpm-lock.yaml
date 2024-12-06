@@ -37,13 +37,13 @@ importers:
         version: 11.0.1
       '@kitajs/fastify-html-plugin':
         specifier: 4.2.0
-        version: 4.2.0(@kitajs/html@4.2.4)(@kitajs/ts-html-plugin@4.1.1(@kitajs/html@4.2.4)(typescript@5.7.2))
+        version: 4.2.0(@kitajs/html@4.2.5)(@kitajs/ts-html-plugin@4.1.1(@kitajs/html@4.2.5)(typescript@5.7.2))
       '@kitajs/html':
-        specifier: 4.2.4
-        version: 4.2.4
+        specifier: 4.2.5
+        version: 4.2.5
       '@kitajs/ts-html-plugin':
         specifier: 4.1.1
-        version: 4.1.1(@kitajs/html@4.2.4)(typescript@5.7.2)
+        version: 4.1.1(@kitajs/html@4.2.5)(typescript@5.7.2)
       '@tailwindcss/typography':
         specifier: 0.5.15
         version: 0.5.15(tailwindcss@3.4.16)
@@ -644,8 +644,8 @@ packages:
       '@kitajs/ts-html-plugin':
         optional: true
 
-  '@kitajs/html@4.2.4':
-    resolution: {integrity: sha512-wH/q9F+lYFAlI4pVVLtdndjF+dhinn8J4fJr+ofbH17/owVBi6g3/X4A8FgZETGuKnDoMP2ffO5xhQDxgtVuMA==}
+  '@kitajs/html@4.2.5':
+    resolution: {integrity: sha512-tQlQlv9Weanw8RpcLB2gjLwfcX59qCsoB/dDWk+f5laXA+5/RGo0y4tytRWDbID4Y/RzlkFDt24mtxaPj1kajw==}
     engines: {node: '>=12'}
 
   '@kitajs/ts-html-plugin@4.1.1':
@@ -3360,20 +3360,20 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@kitajs/fastify-html-plugin@4.2.0(@kitajs/html@4.2.4)(@kitajs/ts-html-plugin@4.1.1(@kitajs/html@4.2.4)(typescript@5.7.2))':
+  '@kitajs/fastify-html-plugin@4.2.0(@kitajs/html@4.2.5)(@kitajs/ts-html-plugin@4.1.1(@kitajs/html@4.2.5)(typescript@5.7.2))':
     dependencies:
-      '@kitajs/html': 4.2.4
+      '@kitajs/html': 4.2.5
       fastify-plugin: 5.0.1
     optionalDependencies:
-      '@kitajs/ts-html-plugin': 4.1.1(@kitajs/html@4.2.4)(typescript@5.7.2)
+      '@kitajs/ts-html-plugin': 4.1.1(@kitajs/html@4.2.5)(typescript@5.7.2)
 
-  '@kitajs/html@4.2.4':
+  '@kitajs/html@4.2.5':
     dependencies:
       csstype: 3.1.3
 
-  '@kitajs/ts-html-plugin@4.1.1(@kitajs/html@4.2.4)(typescript@5.7.2)':
+  '@kitajs/ts-html-plugin@4.1.1(@kitajs/html@4.2.5)(typescript@5.7.2)':
     dependencies:
-      '@kitajs/html': 4.2.4
+      '@kitajs/html': 4.2.5
       chalk: 4.1.2
       tslib: 2.8.1
       typescript: 5.7.2
