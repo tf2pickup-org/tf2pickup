@@ -6,10 +6,14 @@ export function GoToGame(number: GameNumber) {
   const id = nanoid()
   return (
     <div id="notify-container" hx-swap-oob="beforeend">
-      <div
-        id={id}
-        _={`on load go to url ${environment.WEBSITE_URL}/games/${number} then remove me`}
-      ></div>
+      <script type="module" id={id}>{`
+        import htmx from '/js/htmx.js';
+        const path = '${environment.WEBSITE_URL}/games/${number}';
+        htmx.ajax('get', path).then(() => {
+          history.pushState({}, '', path);
+        });
+        document.getElementById('${id}').remove();
+      `}</script>
     </div>
   )
 }
