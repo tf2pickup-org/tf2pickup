@@ -20,6 +20,10 @@
     font-weight: 700;
 
     @apply shadow;
+
+    &:empty {
+      display: none;
+    }
   }
 }
 
