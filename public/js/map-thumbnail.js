@@ -29,6 +29,13 @@ const resizeObserver = new ResizeObserver(entries => {
       .replace('{width}', width.toString())
       .replace('{height}', height.toString())
       .replace('{map}', mapName)
+
+    img.loading = 'lazy'
+    img.onload = () => (img.style.opacity = '1')
+    img.style.transitionProperty = 'opacity'
+    img.style.transitionTimingFunction = 'cubic-bezier(0.4, 0, 0.2, 1)'
+    img.style.transitionDuration = '150ms'
+    img.style.opacity = '0'
     img.src = thumbnailSrc
   }
 })
