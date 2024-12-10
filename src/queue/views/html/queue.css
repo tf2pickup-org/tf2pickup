@@ -141,7 +141,7 @@
     line-height: normal;
   }
 
-  .item {
+  a {
     color: theme(colors.abru.light.75);
     border-radius: 2px;
     padding: 4px 8px;

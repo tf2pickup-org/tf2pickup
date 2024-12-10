@@ -10,6 +10,8 @@ interface OnlinePlayer {
 export async function OnlinePlayerList() {
   const onlinePlayers = await collections.onlinePlayers
     .find({})
+    .sort({ name: 1 })
+    .collation({ locale: 'en', caseLevel: true })
     .project<OnlinePlayer>({ _id: 0, steamId: 1, name: 1 })
     .toArray()
 
@@ -21,7 +23,7 @@ export async function OnlinePlayerList() {
       </h6>
 
       {onlinePlayers.map(player => (
-        <a href={`/players/${player.steamId}`} class="item" safe>
+        <a href={`/players/${player.steamId}`} safe>
           {player.name}
         </a>
       ))}
