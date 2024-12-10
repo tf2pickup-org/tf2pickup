@@ -31,22 +31,26 @@ launchGameAndInitialize(
         .map(async player => {
           const page = await player.queuePage()
           await page.goto()
-          await expect(page.goBackToGameLink()).not.toBeVisible({
-            timeout: secondsToMilliseconds(1),
-          })
-          for (let i = 0; i < 12; ++i) {
-            await expect(page.slot(i).joinButton()).toBeEnabled()
-          }
+          await Promise.all([
+            expect(page.goBackToGameLink()).not.toBeVisible({
+              timeout: secondsToMilliseconds(1),
+            }),
+            ...Array.from(Array(12).keys()).map(
+              async i => await expect(page.slot(i).joinButton()).toBeEnabled(),
+            ),
+          ])
         }),
       ...players
         .filter(p => !medics.includes(p.playerName))
         .map(async player => {
           const page = await player.queuePage()
           await page.goto()
-          await expect(page.goBackToGameLink()).toBeVisible()
-          for (let i = 0; i < 12; ++i) {
-            await expect(page.slot(i).joinButton()).toBeDisabled()
-          }
+          await Promise.all([
+            expect(page.goBackToGameLink()).toBeVisible(),
+            ...Array.from(Array(12).keys()).map(
+              async i => await expect(page.slot(i).joinButton()).toBeDisabled(),
+            ),
+          ])
         }),
     ])
 
@@ -57,12 +61,14 @@ launchGameAndInitialize(
         .map(async player => {
           const page = await player.queuePage()
           await page.goto()
-          await expect(page.goBackToGameLink()).not.toBeVisible({
-            timeout: secondsToMilliseconds(5),
-          })
-          for (let i = 0; i < 12; ++i) {
-            await expect(page.slot(i).joinButton()).toBeEnabled()
-          }
+          await Promise.all([
+            expect(page.goBackToGameLink()).not.toBeVisible({
+              timeout: secondsToMilliseconds(5),
+            }),
+            ...Array.from(Array(12).keys()).map(
+              async i => await expect(page.slot(i).joinButton()).toBeEnabled(),
+            ),
+          ])
         }),
     )
   },

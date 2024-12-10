@@ -1,4 +1,4 @@
-import { errors, type Locator, type Page } from '@playwright/test'
+import { errors, expect, type Locator, type Page } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
 
 class QueueSlot {
@@ -12,15 +12,19 @@ class QueueSlot {
   }
 
   joinButton() {
-    return this.page.getByLabel(`Join queue on slot ${this.slotNumber}`, { exact: true })
+    return this.locator.getByRole('button', {
+      name: `Join queue on slot ${this.slotNumber}`,
+      exact: true,
+    })
   }
 
   async join() {
     await this.joinButton().click()
+    await expect(this.joinButton()).not.toBeVisible()
   }
 
   markAsFriendButton() {
-    return this.locator.getByRole('button', { name: 'Mark as friend' })
+    return this.locator.getByLabel('Mark as friend')
   }
 }
 
@@ -43,7 +47,7 @@ class ReadyUpDialog {
   }
 
   async notReady() {
-    await this.page.getByRole('button', { name: `Can't play right now` }).click()
+    await this.page.getByRole('button', { name: `No, I can't play now` }).click()
   }
 }
 
@@ -59,7 +63,7 @@ export class QueuePage {
   }
 
   async leaveQueue(timeout = secondsToMilliseconds(5)) {
-    await this.page.getByLabel(`Leave queue`, { exact: true }).click({ timeout })
+    await this.page.getByRole('button', { name: 'Leave queue' }).click({ timeout })
   }
 
   header() {
@@ -72,14 +76,6 @@ export class QueuePage {
 
   queueSlot(slot: number) {
     return this.page.getByLabel(`Queue slot ${slot}`, { exact: true })
-  }
-
-  markAsFriendButton(slot: number) {
-    return this.queueSlot(slot).getByRole('button', { name: 'Mark as friend' })
-  }
-
-  unfriendButton(slot: number) {
-    return this.queueSlot(slot).getByRole('button', { name: 'Unfriend' })
   }
 
   voteForMapButton(mapNo: number) {

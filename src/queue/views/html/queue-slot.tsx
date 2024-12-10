@@ -1,5 +1,4 @@
 import { collections } from '../../../database/collections'
-import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import {
   IconHeart,
@@ -10,7 +9,8 @@ import {
 } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
-enum MarkAsFriendButtonState {
+const enum MarkAsFriendButtonState {
+  none,
   enabled,
   disabled, // marked by another player
   selected, // marked by me
@@ -19,37 +19,7 @@ enum MarkAsFriendButtonState {
 export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
   let slotContent = <></>
   if (props.slot.player) {
-    const player = await collections.players.findOne({ steamId: props.slot.player })
-    if (!player) {
-      throw new Error(`player does not exist: ${props.slot.player}`)
-    }
-
-    let markAsFriendButtonState: MarkAsFriendButtonState | undefined = undefined
-
-    if (props.actor) {
-      const actorsSlot = await collections.queueSlots.findOne({ player: props.actor })
-      if (actorsSlot?.canMakeFriendsWith?.includes(props.slot.gameClass)) {
-        const friendship = await collections.queueFriends.findOne({
-          target: props.slot.player,
-        })
-        if (friendship === null) {
-          markAsFriendButtonState = MarkAsFriendButtonState.enabled
-        } else if (friendship.source === props.actor) {
-          markAsFriendButtonState = MarkAsFriendButtonState.selected
-        } else {
-          markAsFriendButtonState = MarkAsFriendButtonState.disabled
-        }
-      }
-    }
-
-    slotContent = (
-      <PlayerInfo
-        player={player}
-        isActorsSlot={props.actor === props.slot.player}
-        ready={props.slot.ready}
-        markAsFriendButtonState={markAsFriendButtonState}
-      />
-    )
+    slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
     const actor = await collections.players.findOne({ steamId: props.actor })
     if (!actor) {
@@ -61,7 +31,6 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       end: { $gt: new Date() },
     })
     const disabled = Boolean(actor.activeGame) || activeBans > 0
-
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
 
@@ -82,80 +51,106 @@ function JoinButton(props: { slotId: number; disabled: boolean }) {
       class="join-queue-button"
       name="join"
       value={`${props.slotId}`}
-      aria-label={`Join queue on slot ${props.slotId}`}
       disabled={props.disabled}
     >
+      <span class="sr-only">Join queue on slot {props.slotId}</span>
       {props.disabled ? <IconLock /> : <IconPlus />}
     </button>
   )
 }
 
-function PlayerInfo(props: {
-  player: PlayerModel
-  isActorsSlot: boolean
-  ready: boolean
-  markAsFriendButtonState: MarkAsFriendButtonState | undefined
-}) {
-  let slotButton = <></>
-  if (props.isActorsSlot && !props.ready) {
-    slotButton = (
-      <button class="leave-queue-button" name="leave" value="" aria-label="Leave queue">
+async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
+  if (!props.slot.player) {
+    return <></>
+  }
+
+  const player = await collections.players.findOne({ steamId: props.slot.player })
+  if (!player) {
+    throw new Error(`player does not exist: ${props.slot.player}`)
+  }
+
+  let slotActionButton = <></>
+  if (props.actor === props.slot.player && !props.slot.ready) {
+    slotActionButton = (
+      <button class="leave-queue-button" name="leave" value="">
         <IconMinus />
+        <span class="sr-only">Leave queue</span>
       </button>
     )
-  } else if (props.markAsFriendButtonState !== undefined) {
-    slotButton = (
-      <button
-        class={[
-          'mark-as-friend-button',
-          props.markAsFriendButtonState === MarkAsFriendButtonState.selected && 'selected',
-        ]}
-        disabled={props.markAsFriendButtonState === MarkAsFriendButtonState.disabled}
-        name="markasfriend"
-        value={
-          props.markAsFriendButtonState === MarkAsFriendButtonState.selected
-            ? ''
-            : props.player.steamId
-        }
-        aria-label={
-          props.markAsFriendButtonState === MarkAsFriendButtonState.selected
-            ? 'Unfriend'
-            : 'Mark as friend'
-        }
-      >
-        {props.markAsFriendButtonState === MarkAsFriendButtonState.selected ? (
+  } else {
+    slotActionButton = <MarkAsFriendButton {...props} />
+  }
+
+  return (
+    <div class="player-info" data-player-ready={`${props.slot.ready}`}>
+      <img src={player.avatar.medium} width="64" height="64" alt={`${player.name}'s name`} />
+      <a href={`/players/${player.steamId}`} safe>
+        {player.name}
+      </a>
+      {slotActionButton}
+    </div>
+  )
+}
+
+async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
+  const markAsFriendButtonState = await determineMarkAsFriendButtonState(props.slot, props.actor)
+  if (markAsFriendButtonState === MarkAsFriendButtonState.none) {
+    return <></>
+  }
+
+  return (
+    <label class="mark-as-friend-button">
+      <input
+        type="checkbox"
+        id={`mark-as-friend-${props.slot.id}`}
+        disabled={markAsFriendButtonState === MarkAsFriendButtonState.disabled}
+        checked={markAsFriendButtonState === MarkAsFriendButtonState.selected}
+        ws-send
+        hx-vals={JSON.stringify({
+          markasfriend:
+            markAsFriendButtonState === MarkAsFriendButtonState.selected
+              ? null
+              : props.slot.player!,
+        })}
+        hx-trigger="change"
+      />
+      <span class="sr-only">Mark as friend</span>
+      <div class="mark">
+        {markAsFriendButtonState === MarkAsFriendButtonState.selected ? (
           <IconHeartFilled />
         ) : (
           <IconHeart />
         )}
-      </button>
-    )
+      </div>
+    </label>
+  )
+}
+
+async function determineMarkAsFriendButtonState(
+  slot: QueueSlotModel,
+  actor?: SteamId64,
+): Promise<MarkAsFriendButtonState> {
+  if (!slot.player) {
+    return MarkAsFriendButtonState.none
   }
 
-  return (
-    <div
-      class={[
-        'flex flex-1 flex-row items-center justify-center p-2',
-        !props.isActorsSlot && !props.ready && 'taken',
-        props.isActorsSlot && 'my-slot',
-        props.ready && 'ready',
-      ]}
-    >
-      <img
-        src={props.player.avatar.medium}
-        width="64"
-        height="64"
-        alt={`${props.player.name}'s name`}
-        class="h-[42px] w-[42px] rounded"
-      />
-      <a
-        class="flex-1 overflow-hidden whitespace-nowrap text-center text-xl font-bold text-abru-dark-3 hover:underline"
-        href={`/players/${props.player.steamId}`}
-        safe
-      >
-        {props.player.name}
-      </a>
-      <div class="w-[42px] px-1">{slotButton}</div>
-    </div>
-  )
+  if (!actor) {
+    return MarkAsFriendButtonState.none
+  }
+
+  const actorsSlot = await collections.queueSlots.findOne({ player: actor })
+  if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
+    const friendship = await collections.queueFriends.findOne({
+      target: slot.player,
+    })
+    if (friendship === null) {
+      return MarkAsFriendButtonState.enabled
+    } else if (friendship.source === actor) {
+      return MarkAsFriendButtonState.selected
+    } else {
+      return MarkAsFriendButtonState.disabled
+    }
+  }
+
+  return MarkAsFriendButtonState.none
 }
