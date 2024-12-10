@@ -1,0 +1,63 @@
+.hof-board {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto;
+  column-gap: 16px;
+  row-gap: 10px;
+
+  padding: 10px 14px;
+
+  background-color: rgba(19, 16, 20, 0.5);
+  color: theme(colors.abru.light.75);
+  border-radius: 8px;
+
+  font-size: 20px;
+  font-weight: 500;
+
+  .title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .hof-record {
+    @apply transition-colors;
+    @apply duration-75;
+
+    display: grid;
+    grid-column: span 4 / span 4;
+    grid-template-columns: subgrid;
+    border-radius: 4px;
+    align-items: center;
+    padding: 0px 8px 0px 0px;
+
+    &:hover {
+      background-color: theme(colors.abru.light.5 / 40%);
+    }
+
+    &.is-1st,
+    &.is-2nd,
+    &.is-3rd {
+      padding: 10px 8px 10px 10px;
+    }
+
+    &.is-1st {
+      background-color: theme(colors.abru.light.15);
+      &:hover {
+        background-color: darken(theme(colors.abru.light.15), 2%);
+      }
+    }
+
+    &.is-2nd {
+      background-color: theme(colors.abru.light.10);
+      &:hover {
+        background-color: darken(theme(colors.abru.light.10), 2%);
+      }
+    }
+
+    &.is-3rd {
+      background-color: theme(colors.abru.light.5);
+      &:hover {
+        background-color: darken(theme(colors.abru.light.5), 2%);
+      }
+    }
+  }
+}
