@@ -11,7 +11,7 @@ import { preReady } from './pre-ready'
 
 export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
   return await mutex.runExclusive(async () => {
-    logger.debug({ steamId }, 'leave queue')
+    logger.trace({ steamId }, 'queue.leave()')
     const state = await getState()
     if (state === QueueState.launching) {
       throw new Error('invalid queue state')

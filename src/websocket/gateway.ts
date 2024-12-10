@@ -48,7 +48,7 @@ const voteMap = z.object({
 })
 
 const markAsFriend = z.object({
-  markasfriend: z.union([z.string(), z.literal('')]),
+  markasfriend: z.union([z.string(), z.null()]),
   HEADERS: htmxHeaders,
 })
 
@@ -184,11 +184,7 @@ export class Gateway extends EventEmitter implements Broadcaster {
       } else if ('votemap' in parsed) {
         this.emit('queue:votemap', socket, parsed.votemap)
       } else if ('markasfriend' in parsed) {
-        this.emit(
-          'queue:markasfriend',
-          socket,
-          parsed.markasfriend === '' ? null : parsed.markasfriend,
-        )
+        this.emit('queue:markasfriend', socket, parsed.markasfriend)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
       }

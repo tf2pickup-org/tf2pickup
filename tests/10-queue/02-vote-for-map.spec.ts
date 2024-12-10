@@ -1,9 +1,5 @@
-import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
 
-const user = users[0]
-
-authUsers.use({ steamIds: [user.steamId] })
 authUsers('vote for map', async ({ users }) => {
   const page = await users.getFirst().queuePage()
   const mapBtn = page.voteForMapButton(0)

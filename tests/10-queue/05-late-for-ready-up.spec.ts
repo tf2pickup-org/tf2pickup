@@ -23,8 +23,8 @@ authUsers('player is late for ready up', async ({ steamIds, users, page }) => {
   await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 11/12', {
     timeout: 60000,
   })
-  const kickedUserPage = await users.bySteamId(queueUsers[0]!).page()
-  await expect(kickedUserPage.getByLabel(`Join queue on slot 0`, { exact: true })).toBeVisible()
+  const kickedUserPage = await users.bySteamId(queueUsers[0]!).queuePage()
+  await expect(kickedUserPage.slot(0).joinButton()).toBeVisible()
 
   // everybody leaves the queue
   await Promise.all(

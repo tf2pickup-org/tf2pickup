@@ -32,7 +32,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
   return (
     <Layout
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      embedStyle={resolve(import.meta.dirname, 'queue.css')}
+      embedStyle={resolve(import.meta.dirname, 'queue.page.css')}
     >
       <NavigationBar user={props.user} />
       <Page>

@@ -11,7 +11,7 @@ import { preReady } from './pre-ready'
 
 export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
   return await mutex.runExclusive(async () => {
-    logger.debug({ steamIds }, 'kick from queue')
+    logger.trace({ steamIds }, 'queue.kick()')
     const state = await getState()
     if (state === QueueState.launching) {
       throw new Error('invalid queue state')

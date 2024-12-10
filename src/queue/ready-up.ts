@@ -9,12 +9,11 @@ import { mutex } from './mutex'
 
 export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
   return await mutex.runExclusive(async () => {
+    logger.trace({ steamId }, 'queue.readyUp()')
     const state = await getState()
     if (state !== QueueState.ready) {
       throw new Error('wrong queue state')
     }
-
-    logger.info(`player ${steamId} ready`)
 
     const slot = await collections.queueSlots.findOneAndUpdate(
       { player: steamId },

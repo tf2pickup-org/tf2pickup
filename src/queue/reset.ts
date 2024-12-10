@@ -11,6 +11,7 @@ import { getState } from './get-state'
 import { mapPool } from './map-pool'
 
 export async function reset() {
+  logger.trace('queue.reset()')
   const slots = generateEmptyQueue()
   await collections.queueSlots.deleteMany({})
   await collections.queueSlots.insertMany(slots)

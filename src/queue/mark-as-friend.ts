@@ -12,7 +12,7 @@ export async function markAsFriend(
   target: SteamId64 | null,
 ): Promise<QueueSlotModel | null> {
   return await mutex.runExclusive(async () => {
-    logger.info(`marking ${source} as friend of ${target}`)
+    logger.trace({ source, target }, `queue.markAsFriend()`)
 
     const queueState = await getState()
     if (queueState === QueueState.launching) {

@@ -1,11 +1,6 @@
-import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
 import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
-
-const user = users[0]
-
-authUsers.use({ steamIds: [user.steamId] })
 
 const test = mergeTests(authUsers, accessMongoDb)
 
