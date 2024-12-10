@@ -49,6 +49,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
     await Promise.all(
       players.map(async user => {
         const page = await user.queuePage()
+        await page.goto()
         const slot = desiredSlots.get(user.playerName)!
         await page.slot(slot).join()
         await page.readyUpDialog().readyUp()

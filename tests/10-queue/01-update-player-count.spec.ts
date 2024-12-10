@@ -3,10 +3,10 @@ import { QueuePage } from '../pages/queue.page'
 
 authUsers('update player count', async ({ page, users }) => {
   const queuePage = new QueuePage(page)
-  await queuePage.goto()
-
   const p1 = await users.getNext().queuePage()
   const p2 = await users.getNext().queuePage()
+
+  await Promise.all([queuePage.goto(), p1.goto(), p2.goto()])
 
   await expect(queuePage.header()).toContainText('0/12')
   await p1.joinQueue(0)

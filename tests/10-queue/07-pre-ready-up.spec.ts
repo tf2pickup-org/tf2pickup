@@ -16,11 +16,13 @@ test.beforeEach(async ({ db }) => {
 
 test('pre-ready up button is visible for logged-in-users', async ({ users }) => {
   const page = await users.getNext().queuePage()
+  await page.goto()
   await expect(page.preReadyUpButton()).toBeVisible()
 })
 
 test('pre-ready up button is enabled when a player joins the queue', async ({ users }) => {
   const page = await users.getNext().queuePage()
+  await page.goto()
   await expect(page.preReadyUpButton()).toBeDisabled()
   await page.joinQueue(3)
   await expect(page.preReadyUpButton()).toBeEnabled()
@@ -30,6 +32,7 @@ test('pre-ready up button is enabled when a player joins the queue', async ({ us
 
 test('pre-ready expires', async ({ users }) => {
   const page = await users.getNext().queuePage()
+  await page.goto()
   await page.joinQueue(4)
   await page.preReadyUpButton().click()
   await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
@@ -53,6 +56,7 @@ test('pre-ready up readies up when the queue is ready', async ({
   await Promise.all(
     preReadiedPlayers.map(async user => {
       const page = await user.queuePage()
+      await page.goto()
       const slot = desiredSlots.get(user.playerName)!
       await page.slot(slot).join()
       await page.preReadyUpButton().click()
@@ -61,6 +65,7 @@ test('pre-ready up readies up when the queue is ready', async ({
 
   {
     const page = await lastPlayer.queuePage()
+    await page.goto()
     const slot = desiredSlots.get(lastPlayer.playerName)!
     await page.slot(slot).join()
   }

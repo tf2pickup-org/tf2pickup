@@ -26,7 +26,6 @@ export class UserContext {
   async page() {
     if (!this._page) {
       this._page = await this.browserContext.newPage()
-      await this._page.goto('/')
     }
     return this._page
   }
