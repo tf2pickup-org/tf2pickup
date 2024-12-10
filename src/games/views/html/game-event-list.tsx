@@ -96,8 +96,6 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       return <span>Game started</span>
     case GameEventType.gameEnded:
       switch (props.event.reason) {
-        case GameEndedReason.matchEnded:
-          return <span>Game ended</span>
         case GameEndedReason.interrupted:
           if (props.event.actor) {
             const actor = await collections.players.findOne({ _id: props.event.actor })
@@ -117,7 +115,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             return <span>Game interrupted</span>
           }
         default:
-          return <></>
+          return <span>Game ended</span>
       }
     case GameEventType.substituteRequested: {
       const player = await collections.players.findOne({ _id: props.event.player })
@@ -126,16 +124,16 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       }
 
       if (props.event.actor) {
-        let actorDesc: string | Promise<string>
+        let safeActorDesc: string | Promise<string>
         if (isBot(props.event.actor)) {
-          actorDesc = 'bot'
+          safeActorDesc = 'bot'
         } else {
           const actor = await collections.players.findOne({ _id: props.event.actor })
           if (!actor) {
             throw new Error(`actor not found: ${props.event.actor.toString()}`)
           }
 
-          actorDesc = (
+          safeActorDesc = (
             <>
               <a href={`/players/${actor.steamId}`} class="whitespace-nowrap font-bold" safe>
                 {actor.name}
@@ -151,7 +149,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
         return (
           <span>
-            {actorDesc} requested substitute for{' '}
+            {safeActorDesc} requested substitute for{' '}
             <a href={`/players/${player.steamId}`} class="whitespace-nowrap font-bold">
               <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
               <span safe>{player.name}</span>
@@ -201,7 +199,6 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         </span>
       )
     }
-
     case GameEventType.roundEnded: {
       return (
         <div class="flex flex-row items-center gap-2">
