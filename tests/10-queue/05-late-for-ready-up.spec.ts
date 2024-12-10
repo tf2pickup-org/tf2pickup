@@ -7,6 +7,7 @@ authUsers('player is late for ready up', async ({ steamIds, users, page }) => {
   await Promise.all(
     queueUsers.map(async (steamId, i) => {
       const page = await users.bySteamId(steamId).queuePage()
+      await page.goto()
       await page.joinQueue(i)
     }),
   )

@@ -3,7 +3,11 @@ import type { QueuePage } from '../pages/queue.page'
 
 authUsers('mark as friend', async ({ users }) => {
   const [medic1, medic2, soldier] = (await Promise.all(
-    users.getMany(3).map(async user => await user.queuePage()),
+    users.getMany(3).map(async user => {
+      const page = await user.queuePage()
+      await page.goto()
+      return page
+    }),
   )) as [QueuePage, QueuePage, QueuePage]
   await medic1.slot(10).join()
   await medic2.slot(11).join()

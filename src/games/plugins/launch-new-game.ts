@@ -11,7 +11,7 @@ const launchGame = debounce(async () => {
   const slots = await queue.getSlots()
   const map = await queue.getMapWinner()
   await create(slots, map)
-}, 1000)
+}, 100)
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

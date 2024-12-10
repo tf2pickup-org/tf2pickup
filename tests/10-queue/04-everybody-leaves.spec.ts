@@ -7,6 +7,7 @@ authUsers('everybody leaves', async ({ steamIds, users }) => {
   for (let i = 0; i < queueUsers.length; ++i) {
     const steamId = queueUsers[i]!
     const page = await users.bySteamId(steamId).queuePage()
+    await page.goto()
     await page.joinQueue(i)
   }
 

@@ -2,6 +2,7 @@ import { authUsers, expect } from '../fixtures/auth-users'
 
 authUsers('vote for map', async ({ users }) => {
   const page = await users.getFirst().queuePage()
+  await page.goto()
   const mapBtn = page.voteForMapButton(0)
   expect(await mapBtn.getAttribute('aria-checked')).toBe('false')
 
