@@ -73,7 +73,7 @@ importers:
         version: 5.0.1
       fastify-type-provider-zod:
         specifier: 4.0.2
-        version: 4.0.2(fastify@5.1.0)(zod@3.24.0)
+        version: 4.0.2(fastify@5.1.0)(zod@3.24.1)
       generate-password:
         specifier: 1.7.1
         version: 1.7.1
@@ -126,8 +126,8 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       zod:
-        specifier: 3.24.0
-        version: 3.24.0
+        specifier: 3.24.1
+        version: 3.24.1
     devDependencies:
       '@eslint/js':
         specifier: 9.16.0
@@ -3017,8 +3017,8 @@ packages:
     peerDependencies:
       zod: ^3.23.3
 
-  zod@3.24.0:
-    resolution: {integrity: sha512-Hz+wiY8yD0VLA2k/+nsg2Abez674dDGTai33SwNvMPuf9uIrBC9eFgIMQxBBbHFxVXi8W+5nX9DcAh9YNSQm/w==}
+  zod@3.24.1:
+    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
 
 snapshots:
 
@@ -4241,12 +4241,12 @@ snapshots:
 
   fastify-plugin@5.0.1: {}
 
-  fastify-type-provider-zod@4.0.2(fastify@5.1.0)(zod@3.24.0):
+  fastify-type-provider-zod@4.0.2(fastify@5.1.0)(zod@3.24.1):
     dependencies:
       '@fastify/error': 4.0.0
       fastify: 5.1.0
-      zod: 3.24.0
-      zod-to-json-schema: 3.23.3(zod@3.24.0)
+      zod: 3.24.1
+      zod-to-json-schema: 3.23.3(zod@3.24.1)
 
   fastify@5.1.0:
     dependencies:
@@ -5674,8 +5674,8 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.23.3(zod@3.24.0):
+  zod-to-json-schema@3.23.3(zod@3.24.1):
     dependencies:
-      zod: 3.24.0
+      zod: 3.24.1
 
-  zod@3.24.0: {}
+  zod@3.24.1: {}
