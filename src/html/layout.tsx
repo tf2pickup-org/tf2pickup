@@ -18,7 +18,7 @@ export function Layout(
   const title = <title safe>{props?.title ?? environment.WEBSITE_NAME}</title>
   const body = (
     <>
-      {props?.embedStyle && <style type="text/css">{embed(props.embedStyle)}</style>}
+      {props?.embedStyle ? <style type="text/css">{embed(props.embedStyle)}</style> : <></>}
       <div class="flex h-full flex-col">{props?.children}</div>
       <div id="notify-container"></div>
       <ReadyUpDialog />
@@ -44,6 +44,7 @@ export function Layout(
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="icon" type="image/x-icon" href="/favicon.ico" />
           <script src="/js/main.js" type="module"></script>
           <link href={mainCss} rel="stylesheet" hx-preserve></link>
           {title}

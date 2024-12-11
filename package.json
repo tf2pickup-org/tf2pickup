@@ -75,6 +75,7 @@
     "cssnano": "7.0.6",
     "eslint": "9.16.0",
     "globals": "15.13.0",
+    "howler": "2.2.4",
     "htmx.org": "1.9.12",
     "pino-princess": "1.0.0",
     "postcss-cli": "11.0.0",
