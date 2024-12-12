@@ -23,6 +23,8 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
       class="button button--lighter min-w-[200px]"
       id="pre-ready-up-button"
       name="prereadytoggle"
+      ws-send
+      hx-trigger="click"
       disabled={!isInQueue}
       aria-selected={timeLeft > 0}
     >
@@ -49,7 +51,7 @@ PreReadyUpButton.enable = () => {
     <div id="notify-container" hx-swap-oob="beforeend">
       <script type="module" id={id}>{`
         document.getElementById('pre-ready-up-button').disabled = false;
-        setTimeout(() => document.getElementById('${id}').remove());
+        document.getElementById('${id}').remove();
       `}</script>
     </div>
   )
@@ -61,7 +63,7 @@ PreReadyUpButton.disable = () => {
     <div id="notify-container" hx-swap-oob="beforeend">
       <script type="module" id={id}>{`
         document.getElementById('pre-ready-up-button').disabled = true;
-        setTimeout(() => document.getElementById('${id}').remove());
+        document.getElementById('${id}').remove();
       `}</script>
     </div>
   )

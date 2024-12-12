@@ -12,8 +12,8 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../get-state'
 import { QueueState } from '../../database/models/queue-state.model'
-import { PreReadyUpButton } from '../views/html/pre-ready-up-button'
-import { preReady } from '../pre-ready'
+import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
+import { preReady } from '../../pre-ready'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

@@ -15,7 +15,7 @@ import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
 import { whenGameEnds } from '../../games/when-game-ends'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
-import { PreReadyUpButton } from '../views/html/pre-ready-up-button'
+import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

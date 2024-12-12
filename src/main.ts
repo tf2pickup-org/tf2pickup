@@ -51,5 +51,6 @@ await app.register((await import('./statistics')).default)
 await app.register((await import('./twitch-tv')).default)
 await app.register((await import('./admin')).default)
 await app.register((await import('./hall-of-game')).default)
+await app.register((await import('./pre-ready')).default)
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })

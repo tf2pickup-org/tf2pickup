@@ -6,6 +6,7 @@ import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { mutex } from './mutex'
+import { preReady } from '../pre-ready'
 
 export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
   return await mutex.runExclusive(async () => {
@@ -25,6 +26,7 @@ export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
     }
 
     events.emit('queue/slots:updated', { slots: [slot] })
+    await preReady.start(steamId)
     return slot
   })
 }

@@ -21,7 +21,7 @@ import { StreamList } from './stream-list'
 import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
 import { CurrentPlayerCount } from './current-player-count'
-import { PreReadyUpButton } from './pre-ready-up-button'
+import { PreReadyUpButton } from '../../../pre-ready/views/html/pre-ready-up-button'
 
 export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()

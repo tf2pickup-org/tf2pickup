@@ -1,4 +1,4 @@
-import type { SteamId64 } from '../../shared/types/steam-id-64'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 import { cancel } from './cancel'
 import { isPreReadied } from './is-pre-readied'
 import { start } from './start'
