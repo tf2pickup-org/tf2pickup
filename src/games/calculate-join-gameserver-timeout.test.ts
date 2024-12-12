@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { calculateJoinGameserverTimeout } from './calculate-join-gameserver-timeout'
 import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { ObjectId } from 'mongodb'
 import { Tf2Team } from '../shared/types/tf2-team'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
@@ -15,7 +14,7 @@ vi.mock('../configuration', () => ({
   },
 }))
 
-const players = vi.hoisted(() => new Map<SteamId64, { _id: ObjectId }>())
+const players = vi.hoisted(() => new Map<SteamId64, { steamId: SteamId64 }>())
 vi.mock('../database/collections', () => ({
   collections: {
     players: {
@@ -32,15 +31,14 @@ describe('calculateJoinGameServerTimeout', () => {
     configuration.set('games.join_gameserver_timeout', 5 * 60 * 1000)
     configuration.set('games.rejoin_gameserver_timeout', 3 * 60 * 1000)
     steamId = 'FAKE_STEAM_ID' as SteamId64
-    const _id = new ObjectId()
-    players.set(steamId, { _id })
+    players.set(steamId, { steamId })
     game = {
       number: 1 as GameNumber,
       state: GameState.created,
       map: 'cp_badlands',
       slots: [
         {
-          player: _id,
+          player: steamId,
           team: Tf2Team.blu,
           gameClass: Tf2ClassName.scout,
           status: SlotStatus.active,
@@ -71,14 +69,6 @@ describe('calculateJoinGameServerTimeout', () => {
     })
   })
 
-  describe('when the given player is not found', () => {
-    it('should throw an error', async () => {
-      await expect(
-        calculateJoinGameserverTimeout(game, 'ANOTHER_STEAM_ID' as SteamId64),
-      ).rejects.toThrow('player ANOTHER_STEAM_ID not found')
-    })
-  })
-
   describe('when the game has been just created', () => {
     it('should return undefined', async () => {
       expect(await calculateJoinGameserverTimeout(game, steamId)).toBe(undefined)
@@ -105,8 +95,8 @@ describe('calculateJoinGameServerTimeout', () => {
         game.events.push({
           event: GameEventType.playerReplaced,
           at: new Date(2024, 0, 1, 12, 0),
-          replacement: players.get(steamId)!._id,
-          replacee: new ObjectId(),
+          replacement: steamId,
+          replacee: 'REPLACEE_STEAM_ID' as SteamId64,
         })
       })
 
@@ -122,8 +112,8 @@ describe('calculateJoinGameServerTimeout', () => {
         game.events.push({
           event: GameEventType.playerReplaced,
           at: new Date(2024, 0, 1, 12, 3),
-          replacement: players.get(steamId)!._id,
-          replacee: new ObjectId(),
+          replacement: steamId,
+          replacee: 'REPLACEE_STEAM_ID' as SteamId64,
         })
       })
 
@@ -139,7 +129,7 @@ describe('calculateJoinGameServerTimeout', () => {
         game.events.push({
           event: GameEventType.playerLeftGameServer,
           at: new Date(2024, 0, 1, 12, 0),
-          player: players.get(steamId)!._id,
+          player: steamId,
         })
       })
 
@@ -155,7 +145,7 @@ describe('calculateJoinGameServerTimeout', () => {
         game.events.push({
           event: GameEventType.playerLeftGameServer,
           at: new Date(2024, 0, 1, 12, 3),
-          player: players.get(steamId)!._id,
+          player: steamId,
         })
       })
 
@@ -177,8 +167,7 @@ describe('calculateJoinGameServerTimeout', () => {
 
       beforeEach(() => {
         anotherSteamId = 'ANOTHER_STEAM_ID' as SteamId64
-        const _id = new ObjectId()
-        players.set(anotherSteamId, { _id })
+        players.set(anotherSteamId, { steamId: anotherSteamId })
       })
 
       it('should throw an error', async () => {
@@ -204,7 +193,7 @@ describe('calculateJoinGameServerTimeout', () => {
         game.events.push({
           event: GameEventType.playerLeftGameServer,
           at: new Date(2024, 0, 1, 12, 0),
-          player: players.get(steamId)!._id,
+          player: steamId,
         })
       })
 

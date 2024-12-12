@@ -1,6 +1,4 @@
 import fp from 'fastify-plugin'
-import { collections } from '../../database/collections'
-import { PlayerConnectionStatus } from '../../database/models/game-slot.model'
 import { GameState } from '../../database/models/game.model'
 import { events } from '../../events'
 import { ConnectInfo } from '../views/html/connect-info'
@@ -48,18 +46,14 @@ export default fp(async app => {
 
     await Promise.all(
       after.slots.map(async slot => {
-        const beforeSlot = before.slots.find(s => s.player.equals(slot.player))
+        const beforeSlot = before.slots.find(s => s.player === slot.player)
         if (!beforeSlot) {
           return
         }
 
         if (beforeSlot.shouldJoinBy !== slot.shouldJoinBy) {
-          const player = await collections.players.findOne({ _id: slot.player })
-          if (!player) {
-            throw new Error(`no such player: ${slot.player.toString()}`)
-          }
           app.gateway
-            .toPlayers(player.steamId)
+            .toPlayers(slot.player)
             .broadcast(async actor => await ConnectInfo({ game: after, actor }))
         }
       }),
@@ -80,86 +74,21 @@ export default fp(async app => {
   )
 
   events.on(
-    'match/player:connected',
-    safe(async ({ gameNumber, steamId }) => {
-      const player = await collections.players.findOne({ steamId })
-      if (!player) {
-        throw new Error(`no such player: ${steamId}`)
-      }
-      const game = await collections.games.findOne({ number: gameNumber })
-      if (!game) {
-        throw new Error(`game ${gameNumber} not found`)
-      }
-
+    'game:playerConnectionStatusUpdated',
+    safe(async ({ game, player, playerConnectionStatus }) => {
       app.gateway.broadcast(
         async () =>
           await PlayerConnectionStatusIndicator({
-            steamId: player.steamId,
-            connectionStatus: PlayerConnectionStatus.joining,
+            steamId: player,
+            connectionStatus: playerConnectionStatus,
           }),
       )
-      app.gateway
-        .toPlayers(player.steamId)
-        .broadcast(async actor => await ConnectInfo({ game, actor }))
-    }),
-  )
-
-  events.on(
-    'match/player:joinedTeam',
-    safe(async ({ gameNumber, steamId }) => {
-      const player = await collections.players.findOne({ steamId })
-      if (!player) {
-        throw new Error(`no such player: ${steamId}`)
-      }
-      const game = await collections.games.findOne({ number: gameNumber })
-      if (!game) {
-        throw new Error(`game ${gameNumber} not found`)
-      }
-
-      app.gateway.broadcast(
-        async () =>
-          await PlayerConnectionStatusIndicator({
-            steamId: player.steamId,
-            connectionStatus: PlayerConnectionStatus.connected,
-          }),
-      )
-      app.gateway
-        .toPlayers(player.steamId)
-        .broadcast(async actor => await ConnectInfo({ game, actor }))
-    }),
-  )
-
-  events.on(
-    'match/player:disconnected',
-    safe(async ({ gameNumber, steamId }) => {
-      const player = await collections.players.findOne({ steamId })
-      if (!player) {
-        throw new Error(`no such player: ${steamId}`)
-      }
-      const game = await collections.games.findOne({ number: gameNumber })
-      if (!game) {
-        throw new Error(`game ${gameNumber} not found`)
-      }
-
-      app.gateway.broadcast(
-        async () =>
-          await PlayerConnectionStatusIndicator({
-            steamId: player.steamId,
-            connectionStatus: PlayerConnectionStatus.offline,
-          }),
-      )
-      app.gateway
-        .toPlayers(player.steamId)
-        .broadcast(async actor => await ConnectInfo({ game, actor }))
+      app.gateway.toPlayers(player).broadcast(async actor => await ConnectInfo({ game, actor }))
     }),
   )
 
   events.on('game:substituteRequested', async ({ game, replacee }) => {
-    const r = await collections.players.findOne({ steamId: replacee })
-    if (!r) {
-      throw new Error(`no such player: ${replacee}`)
-    }
-    const slot = game.slots.find(s => s.player.equals(r._id))
+    const slot = game.slots.find(s => s.player === replacee)
     if (!slot) {
       throw new Error(`no such game slot: ${game.number} ${replacee}`)
     }

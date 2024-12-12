@@ -1,7 +1,6 @@
 import { configuration } from '../configuration'
-import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
-import { PlayerConnectionStatus } from '../database/models/game-slot.model'
+import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -16,20 +15,15 @@ export async function calculateJoinGameserverTimeout(
     return
   }
 
-  const p = await collections.players.findOne({ steamId: player })
-  if (p === null) {
-    throw new Error(`player ${player} not found`)
-  }
-
   const disconnectedAt = game.events
     .filter(e => e.event === GameEventType.playerLeftGameServer)
-    .filter(e => e.player.equals(p._id))
+    .filter(e => e.player === player)
     .sort((a, b) => b.at.getTime() - a.at.getTime())
     .at(0)?.at
 
   const replacedAt = game.events
     .filter(e => e.event === GameEventType.playerReplaced)
-    .filter(e => e.replacement.equals(p._id))
+    .filter(e => e.replacement === player)
     .sort((a, b) => b.at.getTime() - a.at.getTime())
     .at(0)?.at
 
@@ -52,9 +46,13 @@ export async function calculateJoinGameserverTimeout(
     }
 
     case GameState.started: {
-      const slot = game.slots.find(s => s.player.equals(p._id))
+      const slot = game.slots.find(slot => slot.player === player)
       if (!slot) {
         throw new Error(`player ${player} not found in game ${game.number}`)
+      }
+
+      if (slot.status !== SlotStatus.active) {
+        return undefined
       }
 
       if (slot.connectionStatus !== PlayerConnectionStatus.offline) {

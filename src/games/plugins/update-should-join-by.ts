@@ -5,7 +5,6 @@ import { update } from '../update'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
 import { safe } from '../../utils/safe'
-import { collections } from '../../database/collections'
 
 export default fp(
   async () => {
@@ -41,11 +40,6 @@ export default fp(
           return
         }
 
-        const r = await collections.players.findOne({ steamId: replacement })
-        if (!r) {
-          throw new Error(`player not found: ${replacement}`)
-        }
-
         await update(
           game.number,
           {
@@ -56,7 +50,7 @@ export default fp(
           {
             arrayFilters: [
               {
-                'slot.player': r._id,
+                'slot.player': replacement,
               },
             ],
           },
@@ -76,11 +70,6 @@ export default fp(
           return
         }
 
-        const p = await collections.players.findOne({ steamId: player })
-        if (!p) {
-          throw new Error(`player not found: ${player}`)
-        }
-
         await update(
           game.number,
           {
@@ -91,7 +80,7 @@ export default fp(
           {
             arrayFilters: [
               {
-                'slot.player': p._id,
+                'slot.player': player,
               },
             ],
           },

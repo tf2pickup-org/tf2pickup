@@ -150,9 +150,9 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
         game.slots
           .filter(slot => slot.status !== SlotStatus.replaced)
           .map(async slot => {
-            const player = await collections.players.findOne({ _id: slot.player })
+            const player = await collections.players.findOne({ steamId: slot.player })
             if (player === null) {
-              throw new Error(`player ${slot.player.toString()} not found`)
+              throw new Error(`player ${slot.player} not found`)
             }
             return addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass)
           }),

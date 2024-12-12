@@ -20,7 +20,7 @@ export async function replacePlayer({
   replacement: SteamId64
 }): Promise<GameModel> {
   return await replacePlayerMutex.runExclusive(async () => {
-    logger.info({ number, replacee, replacement }, 'replacePlayer()')
+    logger.trace({ number, replacee, replacement }, 'games.replacePlayer()')
 
     const game = await collections.games.findOne({ number })
     if (game === null) {
@@ -31,24 +31,14 @@ export async function replacePlayer({
       throw new Error(`game ${game.number} in wrong state: ${game.state}`)
     }
 
-    const slot = await findPlayerSlot(game, replacee)
-    if (slot === null) {
+    const slot = game.slots.find(({ player }) => player === replacee)
+    if (!slot) {
       throw new Error(`player slot unavailable (gameNumber=${game.number}, replacee=${replacee})`)
-    }
-
-    const re = await collections.players.findOne({ steamId: replacee })
-    if (!re) {
-      throw new Error(`replacee player not found: ${replacee}`)
-    }
-
-    const rm = await collections.players.findOne({ steamId: replacement })
-    if (!rm) {
-      throw new Error(`replacement player not found: ${replacement}`)
     }
 
     let newGame: GameModel
 
-    if (re._id.equals(rm._id)) {
+    if (replacee === replacement) {
       newGame = await update(
         { number },
         {
@@ -59,20 +49,25 @@ export async function replacePlayer({
             events: {
               event: GameEventType.playerReplaced,
               at: new Date(),
-              replacee: re._id,
-              replacement: rm._id,
+              replacee,
+              replacement,
             },
           },
         },
         {
           arrayFilters: [
             {
-              $and: [{ 'slot.player': { $eq: re._id } }],
+              $and: [{ 'slot.player': { $eq: replacee } }],
             },
           ],
         },
       )
     } else {
+      const rm = await collections.players.findOne({ steamId: replacement })
+      if (!rm) {
+        throw new Error(`replacement player not found: ${replacement}`)
+      }
+
       if (rm.activeGame !== undefined) {
         throw new Error(`player denied: player has active game`)
       }
@@ -82,7 +77,7 @@ export async function replacePlayer({
         {
           $push: {
             slots: {
-              player: rm._id,
+              player: replacement,
               team: slot.team,
               gameClass: slot.gameClass,
               status: SlotStatus.active,
@@ -91,8 +86,8 @@ export async function replacePlayer({
             events: {
               event: GameEventType.playerReplaced,
               at: new Date(),
-              replacee: re._id,
-              replacement: rm._id,
+              replacee,
+              replacement,
             },
           },
         },
@@ -109,7 +104,7 @@ export async function replacePlayer({
           arrayFilters: [
             {
               $and: [
-                { 'slot.player': { $eq: re._id } },
+                { 'slot.player': { $eq: replacee } },
                 {
                   'slot.status': {
                     $eq: SlotStatus.waitingForSubstitute,
@@ -125,19 +120,4 @@ export async function replacePlayer({
     events.emit('game:playerReplaced', { game: newGame, replacee, replacement })
     return game
   })
-}
-
-async function findPlayerSlot(game: GameModel, player: SteamId64) {
-  for (const slot of game.slots.filter(s => s.status === SlotStatus.waitingForSubstitute)) {
-    const ps = await collections.players.findOne({ _id: slot.player })
-    if (!ps) {
-      throw new Error(`player in slot does not exist: ${slot.player.toString()}`)
-    }
-
-    if (ps.steamId === player) {
-      return slot
-    }
-  }
-
-  return null
 }

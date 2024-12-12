@@ -11,7 +11,7 @@ export async function whitelistPlayer(game: GameModel, steamId: SteamId64) {
     throw new Error(`player not found: ${steamId}`)
   }
 
-  const slot = game.slots.find(slot => slot.player.equals(player._id))
+  const slot = game.slots.find(slot => slot.player === player.steamId)
   if (!slot) {
     throw new Error(`player not found in game: ${steamId}`)
   }

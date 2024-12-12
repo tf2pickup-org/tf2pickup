@@ -34,7 +34,7 @@ export async function PlayerPage(props: {
 
   const games = await collections.games
     .find(
-      { 'slots.player': props.player._id },
+      { 'slots.player': props.player.steamId },
       { limit: gamesPerPage, skip, sort: { 'events.0.at': -1 } },
     )
     .toArray()
@@ -42,14 +42,14 @@ export async function PlayerPage(props: {
   const { last, around } = paginate(
     props.page,
     gamesPerPage,
-    await collections.games.countDocuments({ 'slots.player': props.player._id }),
+    await collections.games.countDocuments({ 'slots.player': props.player.steamId }),
   )
 
   const gameCount = await collections.games.countDocuments({
-    $and: [{ state: GameState.ended }, { ['slots.player']: props.player._id }],
+    $and: [{ state: GameState.ended }, { ['slots.player']: props.player.steamId }],
   })
 
-  const gameCountOnClasses = await getPlayerGameCountOnClasses(props.player._id)
+  const gameCountOnClasses = await getPlayerGameCountOnClasses(props.player.steamId)
 
   return (
     <Layout title={props.player.name} embedStyle={resolve(import.meta.dirname, 'style.css')}>
@@ -73,7 +73,7 @@ export async function PlayerPage(props: {
                 {games.map(game => (
                   <GameListItem
                     game={game}
-                    classPlayed={game.slots.find(s => s.player.equals(props.player._id))!.gameClass}
+                    classPlayed={game.slots.find(s => s.player === props.player.steamId)!.gameClass}
                   />
                 ))}
               </div>

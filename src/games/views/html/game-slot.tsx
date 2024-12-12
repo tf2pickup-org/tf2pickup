@@ -12,7 +12,7 @@ export async function GameSlot(props: {
   slot: GameSlotModel
   actor: SteamId64 | undefined
 }) {
-  const player = await collections.players.findOne({ _id: props.slot.player })
+  const player = await collections.players.findOne({ steamId: props.slot.player })
   if (!player) {
     throw new Error(`no such player: ${props.slot.player.toString()}`)
   }
@@ -102,10 +102,10 @@ async function GameSlotContent(props: {
       )
 
     case SlotStatus.waitingForSubstitute: {
-      if (a && (props.slot.player.equals(a._id) || a.activeGame === undefined)) {
+      if (a && (props.slot.player === a.steamId || a.activeGame === undefined)) {
         return (
           <button
-            class="flex-1 flex justify-center text-abru-light-60 hover:text-abru-light-70"
+            class="flex flex-1 justify-center text-abru-light-60 hover:text-abru-light-70"
             hx-put={`/games/${props.game.number}/replace-player`}
             hx-trigger="click"
             aria-label="Replace player"
@@ -127,7 +127,7 @@ async function GameSlotContent(props: {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="bg-abru-light-85 rounded-sm p-2 hover:bg-abru-light-75 transition-colors duration-75"
+      class="rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"

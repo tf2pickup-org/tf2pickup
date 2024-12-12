@@ -1,4 +1,3 @@
-import { collections } from '../../../database/collections'
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import { IconCopy } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -41,7 +40,7 @@ async function ConnectString(props: { game: GameModel; actor: SteamId64 | undefi
       break
     default: {
       const connectString =
-        ((await actorInGame(props.game, props.actor))
+        (actorInGame(props.game, props.actor)
           ? props.game.connectString
           : props.game.stvConnectString) ?? ''
       csBoxContent = connectString
@@ -76,15 +75,10 @@ async function ConnectString(props: { game: GameModel; actor: SteamId64 | undefi
   )
 }
 
-async function actorInGame(game: GameModel, actor?: SteamId64) {
+function actorInGame(game: GameModel, actor?: SteamId64) {
   if (!actor) {
     return false
   }
 
-  const player = await collections.players.findOne({ steamId: actor })
-  if (player === null) {
-    throw new Error(`player ${actor} does not exist`)
-  }
-
-  return game.slots.some(slot => slot.player.equals(player._id))
+  return game.slots.some(slot => slot.player === actor)
 }

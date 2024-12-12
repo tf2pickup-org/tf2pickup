@@ -41,6 +41,7 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
 
 function slotsForTeam(slots: GameSlotModel[], team: Tf2Team) {
   return slots
+    .filter(slot => [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(slot.status))
     .filter(slot => slot.team === team)
     .sort((a, b) => tf2ClassOrder[b.gameClass] - tf2ClassOrder[a.gameClass])
 }

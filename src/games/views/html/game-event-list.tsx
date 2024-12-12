@@ -67,22 +67,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameCreated:
       return <span>Game created</span>
     case GameEventType.gameServerAssigned:
-      if (props.event.actor) {
-        const actor = await collections.players.findOne({ _id: props.event.actor })
-        if (!actor) {
-          throw new Error(`actor not found: ${props.event.actor.toString()}`)
-        }
-
-        return (
-          <span>
-            <a href={`/players/${actor.steamId}`} safe>
-              {actor.name}
-            </a>{' '}
-            assigned game server:{' '}
-            <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
-          </span>
-        )
-      } else {
+      if (!props.event.actor) {
         return (
           <span>
             Game server assigned:{' '}
@@ -90,6 +75,30 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           </span>
         )
       }
+
+      if (isBot(props.event.actor)) {
+        return (
+          <span>
+            Bot assigned game server:{' '}
+            <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
+          </span>
+        )
+      }
+
+      const actor = await collections.players.findOne({ steamId: props.event.actor })
+      if (!actor) {
+        throw new Error(`actor not found: ${props.event.actor}`)
+      }
+
+      return (
+        <span>
+          <a href={`/players/${actor.steamId}`} safe>
+            {actor.name}
+          </a>{' '}
+          assigned game server:{' '}
+          <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
+        </span>
+      )
     case GameEventType.gameServerInitialized:
       return <span>Game server initialized</span>
     case GameEventType.gameStarted:
@@ -97,30 +106,34 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameEnded:
       switch (props.event.reason) {
         case GameEndedReason.interrupted:
-          if (props.event.actor) {
-            const actor = await collections.players.findOne({ _id: props.event.actor })
-            if (!actor) {
-              throw new Error(`actor not found: ${props.event.actor.toString()}`)
-            }
-
-            return (
-              <span>
-                Game interrupted by{' '}
-                <a href={`/players/${actor.steamId}`} class="whitespace-nowrap font-bold" safe>
-                  {actor.name}
-                </a>
-              </span>
-            )
-          } else {
+          if (!props.event.actor) {
             return <span>Game interrupted</span>
           }
+
+          if (isBot(props.event.actor)) {
+            return <span>Game interrupted by bot</span>
+          }
+
+          const actor = await collections.players.findOne({ steamId: props.event.actor })
+          if (!actor) {
+            throw new Error(`actor not found: ${props.event.actor}`)
+          }
+
+          return (
+            <span>
+              Game interrupted by{' '}
+              <a href={`/players/${actor.steamId}`} class="whitespace-nowrap font-bold" safe>
+                {actor.name}
+              </a>
+            </span>
+          )
         default:
           return <span>Game ended</span>
       }
     case GameEventType.substituteRequested: {
-      const player = await collections.players.findOne({ _id: props.event.player })
+      const player = await collections.players.findOne({ steamId: props.event.player })
       if (!player) {
-        throw new Error(`player not found: ${props.event.player.toString()}`)
+        throw new Error(`player not found: ${props.event.player}`)
       }
 
       if (props.event.actor) {
@@ -128,9 +141,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         if (isBot(props.event.actor)) {
           safeActorDesc = 'bot'
         } else {
-          const actor = await collections.players.findOne({ _id: props.event.actor })
+          const actor = await collections.players.findOne({ steamId: props.event.actor })
           if (!actor) {
-            throw new Error(`actor not found: ${props.event.actor.toString()}`)
+            throw new Error(`actor not found: ${props.event.actor}`)
           }
 
           safeActorDesc = (
@@ -170,16 +183,16 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       }
     }
     case GameEventType.playerReplaced: {
-      const replacee = await collections.players.findOne({ _id: props.event.replacee })
+      const replacee = await collections.players.findOne({ steamId: props.event.replacee })
       if (!replacee) {
         throw new Error(`replacee not found: ${replacee}`)
       }
-      const replacement = await collections.players.findOne({ _id: props.event.replacement })
+      const replacement = await collections.players.findOne({ steamId: props.event.replacement })
       if (!replacement) {
         throw new Error(`replacement not found: ${replacement}`)
       }
 
-      const slot = props.game.slots.find(s => s.player.equals(replacement._id))
+      const slot = props.game.slots.find(({ player }) => player === replacement.steamId)
       if (!slot) {
         throw new Error(
           `replacement slot not found (gameNumber=${props.game.number}; replacement=${props.event.replacement.toString()}`,

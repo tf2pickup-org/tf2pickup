@@ -16,12 +16,7 @@ export default fp(async () => {
 
   events.on('game:created', async ({ game }) => {
     for (const slot of game.slots) {
-      const player = await collections.players.findOne({ _id: slot.player })
-      if (!player) {
-        throw new Error(`player ${slot.player.toString()} not found`)
-      }
-
-      await update(player.steamId, { $unset: { preReadyUntil: 1 } })
+      await update(slot.player, { $unset: { preReadyUntil: 1 } })
     }
   })
 })

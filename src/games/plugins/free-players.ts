@@ -2,7 +2,6 @@ import fp from 'fastify-plugin'
 import { tasks } from '../../tasks'
 import { players } from '../../players'
 import { configuration } from '../../configuration'
-import { collections } from '../../database/collections'
 import { events } from '../../events'
 import { whenGameEnds } from '../when-game-ends'
 import { SlotStatus } from '../../database/models/game-slot.model'
@@ -22,13 +21,9 @@ export default fp(
               [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(slot.status),
             )
             .map(async ({ gameClass, player }) => {
-              const p = await collections.players.findOne({ _id: player })
-              if (p === null) {
-                throw new Error(`player not found: ${player.toString()}`)
-              }
               const queueCooldown = await configuration.get('games.join_queue_cooldown')
               const cooldownMs = queueCooldown[gameClass] ?? 0
-              tasks.schedule('games.freePlayer', cooldownMs, { player: p.steamId })
+              tasks.schedule('games.freePlayer', cooldownMs, { player })
             }),
         )
       }),
