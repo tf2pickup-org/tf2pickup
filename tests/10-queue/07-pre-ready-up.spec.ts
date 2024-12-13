@@ -2,16 +2,18 @@ import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
 import { secondsToMilliseconds } from 'date-fns'
 import { launchGame, expect } from '../fixtures/launch-game'
+import { queuePage } from '../fixtures/queue-page'
 
-const test = mergeTests(accessMongoDb, launchGame)
+const test = mergeTests(accessMongoDb, launchGame, queuePage)
 
-test.beforeEach(async ({ db }) => {
+test.beforeEach(async ({ db, queue }) => {
   const configuration = db.collection('configuration')
   await configuration.updateOne(
     { key: 'queue.pre_ready_up_timeout' },
     { $set: { value: secondsToMilliseconds(10) } },
     { upsert: true },
   )
+  await queue.waitToBeEmpty()
 })
 
 test('pre-ready up button is visible for logged-in-users', async ({ users }) => {

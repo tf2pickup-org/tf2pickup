@@ -5,7 +5,7 @@ import { launchGameAndInitialize } from '../fixtures/launch-game-and-initialize'
 
 launchGameAndInitialize(
   'free players when the game ends',
-  async ({ players, gameNumber, gameServer }) => {
+  async ({ players, gameServer, gameNumber }) => {
     await Promise.all(
       players.map(async player => {
         const page = await player.queuePage()

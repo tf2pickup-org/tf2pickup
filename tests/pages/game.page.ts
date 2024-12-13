@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import type { UserName } from '../user-manager'
 
 export class GamePage {
   constructor(
@@ -25,11 +26,11 @@ export class GamePage {
     )
   }
 
-  playerSlot(playerName: string) {
+  playerSlot(playerName: UserName) {
     return this.page.getByLabel(`${playerName}'s slot`)
   }
 
-  playerLink(playerName: string) {
+  playerLink(playerName: UserName) {
     return this.playerSlot(playerName).getByRole('link', { name: playerName })
   }
 
@@ -49,12 +50,12 @@ export class GamePage {
     return this.page.getByRole('link', { name: 'watch stv' })
   }
 
-  async requestSubstitute(playerName: string) {
+  async requestSubstitute(playerName: UserName) {
     const btn = this.playerSlot(playerName).getByLabel('Request substitute')
     await btn.click()
   }
 
-  async replacePlayer(playerName: string) {
+  async replacePlayer(playerName: UserName) {
     const btn = this.playerSlot(playerName).getByRole('button', { name: 'Replace player' })
     await btn.click()
   }

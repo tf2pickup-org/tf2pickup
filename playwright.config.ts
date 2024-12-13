@@ -1,7 +1,5 @@
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
-import type { AuthUsersOptions } from './tests/fixtures/auth-users'
-import { users } from './tests/data'
 import { minutesToMilliseconds } from 'date-fns'
 
 dotenv.config()
@@ -9,7 +7,7 @@ dotenv.config()
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-export default defineConfig<AuthUsersOptions>({
+export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -23,10 +21,6 @@ export default defineConfig<AuthUsersOptions>({
   use: {
     baseURL: 'http://localhost:3000',
     trace: 'retain-on-failure',
-    video: {
-      mode: 'retain-on-failure',
-      size: { width: 1280, height: 720 },
-    },
   },
 
   projects: [
@@ -36,12 +30,12 @@ export default defineConfig<AuthUsersOptions>({
     },
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'], steamIds: users.map(u => u.steamId) },
+      use: { ...devices['Desktop Chrome'] },
       dependencies: ['setup database'],
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'], steamIds: users.map(u => u.steamId) },
+      use: { ...devices['Desktop Firefox'] },
       dependencies: ['setup database'],
     },
 

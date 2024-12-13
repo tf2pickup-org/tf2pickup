@@ -1,7 +1,14 @@
+import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
+import { queuePage } from '../fixtures/queue-page'
 
-authUsers('vote for map', async ({ users }) => {
-  const page = await users.getFirst().queuePage()
+const test = mergeTests(authUsers, queuePage)
+test.beforeEach(async ({ queue }) => {
+  await queue.waitToBeEmpty()
+})
+
+test('vote for map', async ({ users }) => {
+  const page = await users.byName('SlitherTuft').queuePage()
   await page.goto()
   const mapBtn = page.voteForMapButton(0)
   expect(await mapBtn.getAttribute('aria-checked')).toBe('false')

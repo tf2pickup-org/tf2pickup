@@ -2,7 +2,7 @@ import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { waitABit } from '../utils/wait-a-bit'
 import { expect, launchGameAndStartMatch } from '../fixtures/launch-game-and-start-match'
 
-launchGameAndStartMatch('cleanup game server', async ({ gameNumber, gameServer }) => {
+launchGameAndStartMatch('cleanup game server', async ({ gameServer, gameNumber }) => {
   launchGameAndStartMatch.setTimeout(minutesToMilliseconds(2))
 
   await waitABit(secondsToMilliseconds(3))
