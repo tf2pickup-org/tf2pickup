@@ -15,6 +15,7 @@ export async function createPlayer({
     roles: [],
     hasAcceptedRules: false,
     cooldownLevel: 0,
+    preferences: {},
   })
   return (await collections.players.findOne({ _id: insertedId }))!
 }

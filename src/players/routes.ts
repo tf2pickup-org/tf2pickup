@@ -11,7 +11,7 @@ import {
   EditPlayerSkillPage,
 } from './views/html/edit-player.page'
 import { collections } from '../database/collections'
-import { PlayerRole } from '../database/models/player.model'
+import { PlayerRole, type PlayerPreferences } from '../database/models/player.model'
 import { update } from './update'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { PlayerSettingsPage } from './views/html/player-settings.page'
@@ -334,17 +334,10 @@ export default fp(
           if (!player) {
             throw new Error(`player not found: ${req.user!.player.steamId}`)
           }
-          const preferences =
-            (await collections.playerPreferences.findOne({ player: player._id }))?.preferences ?? {}
-          preferences.soundVolume = req.body.soundVolume.toString()
-          await collections.playerPreferences.updateOne(
-            { player: player._id },
-            {
-              $set: {
-                preferences,
-              },
-            },
-          )
+          const preferences: PlayerPreferences = {
+            soundVolume: req.body.soundVolume,
+          }
+          await update(player.steamId, { $set: { preferences } })
           req.flash('success', `Settings saved`)
           await reply.redirect(`/settings`)
         },
