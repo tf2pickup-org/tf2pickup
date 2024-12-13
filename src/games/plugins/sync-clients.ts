@@ -41,7 +41,11 @@ export default fp(async app => {
     }
 
     if (before.events.length < after.events.length) {
-      app.gateway.broadcast(async () => await GameEventList({ game: after }))
+      const n = before.events.length - after.events.length
+      const newEvents = after.events.slice(n)
+      for (const event of newEvents) {
+        app.gateway.broadcast(async () => await GameEventList.append({ game: after, event }))
+      }
     }
 
     await Promise.all(
