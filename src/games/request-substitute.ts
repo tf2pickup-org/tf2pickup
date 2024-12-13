@@ -4,9 +4,8 @@ import { SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
 import { events } from '../events'
 import { logger } from '../logger'
-import { isBot, type Bot } from '../shared/types/bot'
+import { type Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { findPlayerSlot } from './find-player-slot'
 import { update } from './update'
 
 export async function requestSubstitute({
@@ -20,7 +19,7 @@ export async function requestSubstitute({
   actor: SteamId64 | Bot
   reason?: string
 }): Promise<GameModel> {
-  logger.info({ number, replacee, actor, reason }, 'substitutePlayer()')
+  logger.trace({ number, replacee, actor, reason }, 'substitutePlayer()')
 
   const game = await collections.games.findOne({ number })
   if (game === null) {
@@ -31,28 +30,14 @@ export async function requestSubstitute({
     throw new Error(`game ${game.number} in wrong state: ${game.state}`)
   }
 
-  const slot = await findPlayerSlot(game, replacee)
-  if (slot === null) {
+  const slot = game.slots.find(({ player }) => player === replacee)
+  if (!slot) {
     throw new Error(`player is not a member of game ${game.number}`)
   }
 
-  const r = await collections.players.findOne({ steamId: replacee })
-  if (r === null) {
-    throw new Error(`replacee not found: ${replacee}`)
+  if (slot.status !== SlotStatus.active) {
+    throw new Error(`invalid slot status: ${slot.status}`)
   }
-
-  const a = await (async () => {
-    if (isBot(actor)) {
-      return actor
-    }
-
-    const a = await collections.players.findOne({ steamId: actor })
-    if (a === null) {
-      throw new Error(`actor not found: ${actor}`)
-    }
-
-    return a._id
-  })()
 
   const newGame = await update(
     { number },
@@ -64,15 +49,15 @@ export async function requestSubstitute({
         events: {
           event: GameEventType.substituteRequested,
           at: new Date(),
-          player: r._id,
+          player: replacee,
           gameClass: slot.gameClass,
-          actor: a,
+          actor,
           reason,
         },
       },
     },
     {
-      arrayFilters: [{ 'slot.player': { $eq: r._id } }],
+      arrayFilters: [{ 'slot.player': { $eq: replacee } }],
     },
   )
 

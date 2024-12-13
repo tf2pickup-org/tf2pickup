@@ -19,7 +19,10 @@ export class GamePage {
   }
 
   async isLive() {
-    return (await this.gameStatus().textContent())?.toLowerCase() === 'live'
+    return (
+      (await this.gameStatus().isVisible()) &&
+      (await this.gameStatus().textContent())?.toLowerCase() === 'live'
+    )
   }
 
   playerSlot(playerName: string) {

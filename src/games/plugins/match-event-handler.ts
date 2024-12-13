@@ -7,7 +7,6 @@ import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-s
 import { update } from '../update'
 import { assertIsError } from '../../utils/assert-is-error'
 import { logger } from '../../logger'
-import { collections } from '../../database/collections'
 import { safe } from '../../utils/safe'
 
 export default fp(
@@ -75,11 +74,6 @@ export default fp(
     events.on(
       'match/player:connected',
       safe(async ({ gameNumber, steamId }) => {
-        const player = await collections.players.findOne({ steamId })
-        if (!player) {
-          throw new Error(`player with steamId ${steamId} not found`)
-        }
-
         const game = await update(
           gameNumber,
           {
@@ -90,12 +84,12 @@ export default fp(
               events: {
                 at: new Date(),
                 event: GameEventType.playerJoinedGameServer,
-                player: player._id,
+                player: steamId,
               },
             },
           },
           {
-            arrayFilters: [{ 'element.player': { $eq: player._id } }],
+            arrayFilters: [{ 'element.player': { $eq: steamId } }],
           },
         )
         events.emit('game:playerConnectionStatusUpdated', {
@@ -106,13 +100,9 @@ export default fp(
       }),
     )
 
-    events.on('match/player:joinedTeam', async ({ gameNumber, steamId, team }) => {
-      try {
-        const player = await collections.players.findOne({ steamId })
-        if (!player) {
-          throw new Error(`player with steamId ${steamId} not found`)
-        }
-
+    events.on(
+      'match/player:joinedTeam',
+      safe(async ({ gameNumber, steamId, team }) => {
         const game = await update(
           gameNumber,
           {
@@ -123,13 +113,13 @@ export default fp(
               events: {
                 at: new Date(),
                 event: GameEventType.playerJoinedGameServerTeam,
-                player: player._id,
+                player: steamId,
                 team,
               },
             },
           },
           {
-            arrayFilters: [{ 'element.player': { $eq: player._id } }],
+            arrayFilters: [{ 'element.player': { $eq: steamId } }],
           },
         )
         events.emit('game:playerConnectionStatusUpdated', {
@@ -137,19 +127,12 @@ export default fp(
           player: steamId,
           playerConnectionStatus: PlayerConnectionStatus.connected,
         })
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
 
-    events.on('match/player:disconnected', async ({ gameNumber, steamId }) => {
-      try {
-        const player = await collections.players.findOne({ steamId })
-        if (!player) {
-          throw new Error(`player with steamId ${steamId} not found`)
-        }
-
+    events.on(
+      'match/player:disconnected',
+      safe(async ({ gameNumber, steamId }) => {
         const game = await update(
           gameNumber,
           {
@@ -160,12 +143,12 @@ export default fp(
               events: {
                 at: new Date(),
                 event: GameEventType.playerLeftGameServer,
-                player: player._id,
+                player: steamId,
               },
             },
           },
           {
-            arrayFilters: [{ 'element.player': { $eq: player._id } }],
+            arrayFilters: [{ 'element.player': { $eq: steamId } }],
           },
         )
         events.emit('game:playerConnectionStatusUpdated', {
@@ -173,11 +156,8 @@ export default fp(
           player: steamId,
           playerConnectionStatus: PlayerConnectionStatus.offline,
         })
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
 
     events.on('match/score:final', async ({ gameNumber, team, score }) => {
       try {

@@ -33,7 +33,7 @@ export async function create(
         }
 
         return {
-          player: player._id,
+          player: player.steamId,
           team: slot.team,
           gameClass: slot.gameClass,
           status: SlotStatus.active,

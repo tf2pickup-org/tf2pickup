@@ -1,7 +1,5 @@
-import { users } from '../data'
 import { authUsers, expect } from '../fixtures/auth-users'
 
-authUsers.use({ steamIds: [users[0].steamId, users[1].steamId] })
 authUsers('banned player gets kicked from the queue', async ({ users }) => {
   const player = users.getNext(u => !u.isAdmin)
   const playerPage = await player.queuePage()

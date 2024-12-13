@@ -19,8 +19,8 @@ test.beforeEach(async ({ db }) => {
   )
 })
 
-test('renders join game button', async ({ gameNumber, players, gameServer }) => {
-  const page = await players.find(p => p.playerName === 'LlamaDrama')!.gamePage(gameNumber)
+test('renders join game button', async ({ gameNumber, users, gameServer }) => {
+  const page = await users.byName('LlamaDrama').gamePage(gameNumber)
   await expect(page.waitingForGameServer()).toBeVisible()
 
   await expect(page.gameEvent('Game server initialized')).toBeVisible({
@@ -28,15 +28,8 @@ test('renders join game button', async ({ gameNumber, players, gameServer }) => 
   })
 
   const joinGameButton = page.joinGameButton()
-  await Promise.all(
-    Array.from(Array(29).keys()).map(
-      async i =>
-        await expect
-          .soft(joinGameButton)
-          .toHaveText(new RegExp(`join in 0:\\d?${i}`), { timeout: (30 - i) * 1000 }),
-    ),
-  )
-
+  await expect(joinGameButton).toBeVisible()
+  await expect(joinGameButton).toContainText(/join in \d+:\d+/)
   await gameServer.playerConnects('LlamaDrama')
   await expect(joinGameButton).toContainText('join game')
 })

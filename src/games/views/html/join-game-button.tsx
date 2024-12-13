@@ -1,4 +1,3 @@
-import { collections } from '../../../database/collections'
 import {
   PlayerConnectionStatus,
   SlotStatus,
@@ -20,7 +19,7 @@ export async function JoinGameButton(props: { game: GameModel; actor: SteamId64 
       </>
     )
   } else {
-    const slot = await getPlayerSlot(props.game, props.actor)
+    const slot = getPlayerSlot(props.game, props.actor)
     const connectString = (slot ? props.game.connectString : props.game.stvConnectString) ?? ''
     connectLink = connectStringToLink(connectString)
     btnContent = slot ? <JoinAsPlayer slot={slot} /> : <JoinAsSpectator />
@@ -75,19 +74,12 @@ async function JoinAsSpectator() {
   )
 }
 
-async function getPlayerSlot(game: GameModel, actor?: SteamId64) {
+function getPlayerSlot(game: GameModel, actor?: SteamId64) {
   if (!actor) {
     return undefined
   }
 
-  const player = await collections.players.findOne({ steamId: actor })
-  if (player === null) {
-    throw new Error(`player ${actor} does not exist`)
-  }
-
-  return game.slots.find(
-    slot =>
-      slot.player.equals(player._id) &&
-      [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(slot.status),
-  )
+  return game.slots
+    .filter(({ status }) => [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(status))
+    .find(({ player }) => player === actor)
 }

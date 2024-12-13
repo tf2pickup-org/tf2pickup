@@ -1,3 +1,4 @@
+import './migrate'
 import fastify from 'fastify'
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 import { resolve } from 'node:path'

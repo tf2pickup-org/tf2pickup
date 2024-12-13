@@ -1,12 +1,12 @@
-import type { ObjectId } from 'mongodb'
 import { collections } from '../database/collections'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { GameState } from '../database/models/game.model'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 
 type PlayerPlayedClassCount = { [gameClass in Tf2ClassName]?: number }
 
 export async function getPlayerGameCountOnClasses(
-  playerId: ObjectId,
+  playerId: SteamId64,
 ): Promise<PlayerPlayedClassCount> {
   return (
     (

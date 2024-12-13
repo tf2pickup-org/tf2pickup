@@ -1,7 +1,7 @@
-import type { ObjectId } from 'mongodb'
 import type { Tf2Team } from '../../shared/types/tf2-team'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { Bot } from '../../shared/types/bot'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export enum GameEventType {
   gameCreated = 'created',
@@ -35,7 +35,7 @@ export interface GameEnded {
   event: GameEventType.gameEnded
   at: Date
   reason: GameEndedReason
-  actor?: ObjectId
+  actor?: SteamId64 | Bot
 }
 
 export interface GameStarted {
@@ -47,7 +47,7 @@ export interface GameServerAssigned {
   event: GameEventType.gameServerAssigned
   at: Date
   gameServerName: string
-  actor?: ObjectId
+  actor?: SteamId64 | Bot
 }
 
 export interface GameServerInitialized {
@@ -58,36 +58,36 @@ export interface GameServerInitialized {
 export interface PlayerJoinedGameServer {
   event: GameEventType.playerJoinedGameServer
   at: Date
-  player: ObjectId
+  player: SteamId64
 }
 
 export interface PlayerJoinedGameServerTeam {
   event: GameEventType.playerJoinedGameServerTeam
   at: Date
-  player: ObjectId
+  player: SteamId64
   team: Tf2Team
 }
 
 export interface PlayerLeftGameServer {
   event: GameEventType.playerLeftGameServer
   at: Date
-  player: ObjectId
+  player: SteamId64
 }
 
 export interface SubstituteRequested {
   event: GameEventType.substituteRequested
   at: Date
-  player: ObjectId
+  player: SteamId64
   gameClass: Tf2ClassName
-  actor: ObjectId | Bot
+  actor: SteamId64 | Bot
   reason?: string | undefined
 }
 
 export interface PlayerReplaced {
   event: GameEventType.playerReplaced
   at: Date
-  replacee: ObjectId
-  replacement: ObjectId
+  replacee: SteamId64
+  replacement: SteamId64
 }
 
 export interface RoundEnded {

@@ -5,7 +5,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 
 export async function findPlayerSlot(game: GameModel, player: SteamId64) {
   for (const slot of game.slots.filter(s => s.status !== SlotStatus.replaced)) {
-    const ps = await collections.players.findOne({ _id: slot.player })
+    const ps = await collections.players.findOne({ steamId: slot.player })
     if (!ps) {
       throw new Error(`player in slot does not exist: ${slot.player.toString()}`)
     }

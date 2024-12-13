@@ -87,7 +87,7 @@ async function getMostActiveOverall(): Promise<HallOfFameEntry[]> {
         $lookup: {
           from: 'players',
           localField: '_id',
-          foreignField: '_id',
+          foreignField: 'steamId',
           as: 'player',
         },
       },
@@ -116,7 +116,7 @@ async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
         $lookup: {
           from: 'players',
           localField: '_id',
-          foreignField: '_id',
+          foreignField: 'steamId',
           as: 'player',
         },
       },

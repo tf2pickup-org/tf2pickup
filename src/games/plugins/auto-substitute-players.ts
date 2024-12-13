@@ -4,9 +4,9 @@ import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
 import { requestSubstitute } from '../request-substitute'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
-import { collections } from '../../database/collections'
 import { whenGameEnds } from '../when-game-ends'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
+import { safe } from '../../utils/safe'
 
 export default fp(
   async () => {
@@ -34,47 +34,44 @@ export default fp(
       tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number, player: replacee })
     })
 
-    events.on('game:gameServerInitialized', async ({ game }) => {
-      const joinTimeout = await configuration.get('games.join_gameserver_timeout')
-      if (joinTimeout === 0) {
-        return
-      }
+    events.on(
+      'game:gameServerInitialized',
+      safe(async ({ game }) => {
+        const joinTimeout = await configuration.get('games.join_gameserver_timeout')
+        if (joinTimeout <= 0) {
+          return
+        }
 
-      const players = await Promise.all(
         game.slots
           .filter(slot => slot.status === SlotStatus.active)
-          .map(async slot => {
-            const player = await collections.players.findOne({ _id: slot.player })
-            if (!player) {
-              throw new Error(`player not found: ${slot.player}`)
-            }
+          .map(({ player }) => player)
+          .forEach(player => {
+            tasks.schedule('games:autoSubstitutePlayer', joinTimeout, {
+              gameNumber: game.number,
+              player,
+            })
+          })
+      }),
+    )
 
-            return player.steamId
-          }),
-      )
-      players.forEach(player => {
-        tasks.schedule('games:autoSubstitutePlayer', joinTimeout, {
+    events.on(
+      'game:playerReplaced',
+      safe(async ({ game, replacement }) => {
+        const timeout = await calculateJoinGameserverTimeout(game, replacement)
+        if (!timeout) {
+          return
+        }
+
+        tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
           gameNumber: game.number,
-          player,
+          player: replacement,
         })
-      })
-    })
-
-    events.on('game:playerReplaced', async ({ game, replacement }) => {
-      const timeout = await calculateJoinGameserverTimeout(game, replacement)
-      if (!timeout) {
-        return
-      }
-
-      tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
-        gameNumber: game.number,
-        player: replacement,
-      })
-    })
+      }),
+    )
 
     events.on(
       'game:playerConnectionStatusUpdated',
-      async ({ game, player, playerConnectionStatus }) => {
+      safe(async ({ game, player, playerConnectionStatus }) => {
         if (playerConnectionStatus !== PlayerConnectionStatus.offline) {
           return
         }
@@ -88,7 +85,7 @@ export default fp(
           gameNumber: game.number,
           player,
         })
-      },
+      }),
     )
   },
   {
