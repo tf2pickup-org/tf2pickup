@@ -83,6 +83,15 @@ export const configurationSchema = z.discriminatedUnion('key', [
       .describe('Apply cooldown before players can join the queue after a game ends'),
   }),
   z.object({
+    key: z.literal('games.auto_force_end_threshold'),
+    value: z
+      .number()
+      .default(4)
+      .describe(
+        'Number of active substitute requests that make the game be automatically force-ended',
+      ),
+  }),
+  z.object({
     key: z.literal('players.etf2l_account_required'),
     value: z.boolean().default(false),
   }),
