@@ -5,12 +5,11 @@ import { logger } from './logger'
 import type { QueueSlotModel } from './database/models/queue-slot.model'
 import { QueueState } from './database/models/queue-state.model'
 import type { GameModel, GameNumber } from './database/models/game.model'
-import type { PlayerModel } from './database/models/player.model'
+import type { PlayerBan, PlayerModel } from './database/models/player.model'
 import type { MapPoolEntry } from './database/models/map-pool-entry.model'
 import type { StaticGameServerModel } from './database/models/static-game-server.model'
 import type { LogMessage } from './log-receiver/parse-log-message'
 import type { Tf2Team } from './shared/types/tf2-team'
-import type { PlayerBanModel } from './database/models/player-ban.model'
 import type { StreamModel } from './database/models/stream.model'
 import type { Bot } from './shared/types/bot'
 import type { PlayerConnectionStatus } from './database/models/game-slot.model'
@@ -114,10 +113,12 @@ export interface Events {
     after: PlayerModel
   }
   'player/ban:added': {
-    ban: PlayerBanModel
+    player: SteamId64
+    ban: PlayerBan
   }
   'player/ban:revoked': {
-    ban: PlayerBanModel
+    player: SteamId64
+    ban: PlayerBan
     admin: SteamId64
   }
 

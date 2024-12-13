@@ -19,10 +19,10 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
     return <></>
   }
 
-  const bans = await collections.playerBans
-    .find({ player: actor._id, end: { $gte: new Date() } })
-    .toArray()
-  if (!bans.length) {
+  const bans = actor.bans
+    ?.filter(({ end }) => end.getTime() > new Date().getTime())
+    .toSorted((a, b) => b.start.getTime() - a.start.getTime())
+  if (!bans?.length) {
     return <></>
   }
 

@@ -26,10 +26,7 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       throw new Error(`actor invalid: ${props.actor}`)
     }
 
-    const activeBans = await collections.playerBans.countDocuments({
-      player: actor._id,
-      end: { $gt: new Date() },
-    })
+    const activeBans = actor.bans?.filter(b => b.end.getTime() > new Date().getTime())?.length ?? 0
     const disabled = Boolean(actor.activeGame) || activeBans > 0
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
