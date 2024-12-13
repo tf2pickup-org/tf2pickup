@@ -3,12 +3,9 @@ import type { User } from '../../../auth/types/user'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { IconVolume } from '../../../html/components/icons'
-import { collections } from '../../../database/collections'
 
 export async function PlayerSettingsPage(props: { user: User }) {
-  const player = await collections.players.findOne({ steamId: props.user.player.steamId })
-  const preferences = await collections.playerPreferences.findOne({ player: player!._id })
-  const soundVolume = preferences?.preferences.soundVolume ?? '1.0'
+  const soundVolume = props.user.player.preferences.soundVolume ?? 1
 
   return (
     <Layout title="Settings">
@@ -16,8 +13,8 @@ export async function PlayerSettingsPage(props: { user: User }) {
       <Page>
         <div class="container mx-auto">
           <form action="" method="post">
-            <div class="bg-abru-dark-25 rounded-lg flex-1 p-[24px] text-abru-light-75 font-normal flex flex-col gap-4">
-              <h4 class="font-bold text-[24px]">Preferences</h4>
+            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-abru-dark-25 p-[24px] font-normal text-abru-light-75">
+              <h4 class="text-[24px] font-bold">Preferences</h4>
 
               <div class="flex flex-col">
                 <label for="notification-sound-volume">Notification sound volume</label>
@@ -28,7 +25,7 @@ export async function PlayerSettingsPage(props: { user: User }) {
                     min="0"
                     max="1"
                     step="0.1"
-                    value={soundVolume}
+                    value={soundVolume.toString()}
                     id="notification-sound-volume"
                     name="soundVolume"
                     class="w-[360px]"

@@ -13,6 +13,10 @@ export enum PlayerRole {
   admin = 'admin',
 }
 
+export interface PlayerPreferences {
+  soundVolume?: number
+}
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -25,4 +29,5 @@ export interface PlayerModel {
   activeGame?: GameNumber
   skill?: Partial<Record<Tf2ClassName, number>>
   preReadyUntil?: Date
+  preferences: PlayerPreferences
 }
