@@ -20,7 +20,6 @@ import { banExpiryFormSchema } from './schemas/ban-expiry-form.schema'
 import { format } from 'date-fns'
 import { getBanExpiryDate } from './get-ban-expiry-date'
 import { addBan } from './add-ban'
-import { ObjectId } from 'mongodb'
 import { revokeBan } from './revoke-ban'
 
 export default fp(
@@ -226,7 +225,7 @@ export default fp(
         },
       )
       .put(
-        '/players/:steamId/edit/bans/:banId/revoke',
+        '/players/:steamId/edit/bans/:banStart/revoke',
         {
           config: {
             authorize: [PlayerRole.admin],
@@ -234,14 +233,23 @@ export default fp(
           schema: {
             params: z.object({
               steamId: steamId64,
-              banId: z.string().transform(value => new ObjectId(value)),
+              banStart: z.coerce.number().transform(value => new Date(value)),
             }),
           },
         },
         async (request, reply) => {
-          const { banId } = request.params
-          const ban = await revokeBan(banId, request.user!.player.steamId)
-          reply.status(200).html(await BanDetails({ ban }))
+          const { steamId, banStart } = request.params
+          const player = await collections.players.findOne({ steamId })
+          if (player === null) {
+            return reply.status(404).send()
+          }
+
+          const ban = await revokeBan({
+            player: steamId,
+            banStart,
+            admin: request.user!.player.steamId,
+          })
+          reply.status(200).html(await BanDetails({ player, ban }))
         },
       )
       .get(

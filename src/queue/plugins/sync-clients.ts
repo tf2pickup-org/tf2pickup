@@ -13,7 +13,6 @@ import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
 import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
-import type { ObjectId } from 'mongodb'
 import { whenGameEnds } from '../../games/when-game-ends'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
 import { PreReadyUpButton } from '../views/html/pre-ready-up-button'
@@ -192,28 +191,24 @@ export default fp(
       }),
     )
 
-    const refreshBanAlerts = async (playerId: ObjectId) => {
-      const player = await collections.players.findOne({ _id: playerId })
-      if (!player) {
-        throw new Error(`player not found for ban ${playerId.toString()}`)
-      }
-      const cmp = await BanAlerts({ actor: player.steamId })
-      app.gateway.toPlayers(player?.steamId).broadcast(() => cmp)
+    const refreshBanAlerts = async (player: SteamId64) => {
+      const cmp = await BanAlerts({ actor: player })
+      app.gateway.toPlayers(player).broadcast(() => cmp)
 
       setImmediate(async () => {
-        await syncAllSlots(player.steamId)
+        await syncAllSlots(player)
       })
     }
     events.on(
       'player/ban:added',
-      safe(async ({ ban }) => {
-        await refreshBanAlerts(ban.player)
+      safe(async ({ player }) => {
+        await refreshBanAlerts(player)
       }),
     )
     events.on(
       'player/ban:revoked',
-      safe(async ({ ban }) => {
-        await refreshBanAlerts(ban.player)
+      safe(async ({ player }) => {
+        await refreshBanAlerts(player)
       }),
     )
   },

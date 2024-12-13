@@ -1,3 +1,4 @@
+import type { Bot } from '../../shared/types/bot'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { GameNumber } from './game.model'
@@ -17,6 +18,13 @@ export interface PlayerPreferences {
   soundVolume?: number
 }
 
+export interface PlayerBan {
+  actor: SteamId64 | Bot
+  start: Date
+  end: Date
+  reason: string
+}
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -30,4 +38,5 @@ export interface PlayerModel {
   skill?: Partial<Record<Tf2ClassName, number>>
   preReadyUntil?: Date
   preferences: PlayerPreferences
+  bans?: PlayerBan[]
 }

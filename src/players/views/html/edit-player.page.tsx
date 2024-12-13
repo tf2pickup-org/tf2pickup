@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import type { PlayerModel } from '../../../database/models/player.model'
+import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import type { User } from '../../../auth/types/user'
@@ -24,8 +24,8 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { configuration } from '../../../configuration'
 import { collections } from '../../../database/collections'
 import type { WithId } from 'mongodb'
-import type { PlayerBanModel } from '../../../database/models/player-ban.model'
 import { format } from 'date-fns'
+import { isBot } from '../../../shared/types/bot'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -100,11 +100,7 @@ export async function EditPlayerSkillPage(props: { player: PlayerModel; user: Us
 }
 
 export async function EditPlayerBansPage(props: { player: WithId<PlayerModel>; user: User }) {
-  const bans = await collections.playerBans
-    .find({ player: props.player._id })
-    .sort({ start: -1 })
-    .toArray()
-
+  const bans = props.player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
   return (
     <EditPlayer
       player={props.player}
@@ -118,16 +114,16 @@ export async function EditPlayerBansPage(props: { player: WithId<PlayerModel>; u
       }
     >
       <div class="admin-panel-content">
-        {bans.length === 0 ? (
-          <span class="italic text-abru-light-75">No bans</span>
-        ) : (
+        {bans?.length ? (
           <>
             <div class="edit-player-ban-list">
               {bans.map(ban => (
-                <BanDetails ban={ban} />
+                <BanDetails player={props.player} ban={ban} />
               ))}
             </div>
           </>
+        ) : (
+          <span class="italic text-abru-light-75">No bans</span>
         )}
       </div>
     </EditPlayer>
@@ -186,35 +182,41 @@ function EditPlayer(props: {
   )
 }
 
-export async function BanDetails(props: { ban: WithId<PlayerBanModel> }) {
-  const player = await collections.players.findOne({ _id: props.ban.player })
-  if (!player) {
-    throw new Error(`player ${props.ban.player.toString()} not found`)
+export async function BanDetails(props: { player: PlayerModel; ban: PlayerBan }) {
+  let actorDesc = <></>
+  if (isBot(props.ban.actor)) {
+    actorDesc = <>bot</>
+  } else {
+    const actor = await collections.players.findOne({ steamId: props.ban.actor })
+    if (actor === null) {
+      throw new Error(`actor not found: ${props.ban.actor}`)
+    }
+
+    actorDesc = (
+      <a href={`/players/${actor.steamId}`} safe>
+        {' '}
+        {actor.name}
+      </a>
+    )
   }
-  const admin = await collections.players.findOne({ _id: props.ban.admin })
 
   return (
-    <div class="ban-item group" id={`player-ban-${props.ban._id}`}>
+    <div class="ban-item group" id={`player-ban-${props.ban.start.getTime().toString()}`}>
       <form class="contents">
         <div class="col-span-3">
           <span class="me-2 text-2xl font-bold" safe>
             {props.ban.reason}
           </span>
-          <span class="text-sm">
-            by{' '}
-            <a href={`/players/${admin?.steamId}`} safe>
-              {admin?.name ?? 'unknown admin'}
-            </a>
-          </span>
+          <span class="text-sm">by {actorDesc}</span>
         </div>
 
         <div class="row-span-2 flex items-center">
           {props.ban.end > new Date() ? (
             <button
               class="button button--darker"
-              hx-put={`/players/${player.steamId}/edit/bans/${props.ban._id.toString()}/revoke`}
+              hx-put={`/players/${props.player.steamId}/edit/bans/${props.ban.start.getTime().toString()}/revoke`}
               hx-trigger="click"
-              hx-target={`#player-ban-${props.ban._id}`}
+              hx-target={`#player-ban-${props.ban.start.getTime().toString()}`}
               hx-swap="outerHTML"
             >
               <IconX />

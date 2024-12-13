@@ -1,25 +1,30 @@
-import type { ObjectId } from 'mongodb'
-import { collections } from '../database/collections'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { events } from '../events'
+import { update } from './update'
+import type { PlayerBan } from '../database/models/player.model'
 
-export async function revokeBan(banId: ObjectId, adminId: SteamId64) {
-  let ban = await collections.playerBans.findOne({ _id: banId })
-  if (!ban) {
-    throw new Error(`ban not found: ${banId}`)
-  }
-
-  if (ban.end < new Date()) {
-    throw new Error(`ban already expired: ${banId}`)
-  }
-
-  const after = (await collections.playerBans.findOneAndUpdate(
-    { _id: banId },
-    { $set: { end: new Date() } },
+export async function revokeBan(props: {
+  player: SteamId64
+  banStart: Date
+  admin: SteamId64
+}): Promise<PlayerBan> {
+  const after = await update(
+    props.player,
     {
-      returnDocument: 'after',
+      $set: {
+        'bans.$[ban].end': new Date(),
+      },
     },
-  ))!
-  events.emit('player/ban:revoked', { ban: after, admin: adminId })
-  return after
+    {
+      arrayFilters: [{ 'ban.start': { $eq: props.banStart } }],
+    },
+  )
+
+  const ban = after.bans?.find(b => b.start.getTime() === props.banStart.getTime())
+  if (!ban) {
+    throw new Error(`ban not found`)
+  }
+
+  events.emit('player/ban:revoked', { player: after.steamId, ban, admin: props.admin })
+  return ban
 }
