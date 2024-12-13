@@ -24,9 +24,7 @@ const renderedEvents = [
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
-  const events = props.game.events
-    .filter(({ event }) => renderedEvents.includes(event))
-    .toSorted((a, b) => b.at.getTime() - a.at.getTime())
+  const events = props.game.events.toSorted((a, b) => b.at.getTime() - a.at.getTime())
 
   return (
     <div
@@ -42,7 +40,19 @@ export async function GameEventList(props: { game: GameModel }) {
   )
 }
 
+GameEventList.append = function (props: { game: GameModel; event: GameEventModel }) {
+  return (
+    <div id={`game-${props.game.number}-event-list`} hx-swap-oob="afterbegin">
+      <GameEvent {...props} />
+    </div>
+  )
+}
+
 function GameEvent(props: { event: GameEventModel; game: GameModel }) {
+  if (!renderedEvents.includes(props.event.event)) {
+    return <></>
+  }
+
   return (
     <div
       class={[
