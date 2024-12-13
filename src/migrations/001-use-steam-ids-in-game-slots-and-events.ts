@@ -126,7 +126,7 @@ export async function up() {
               throw new Error(`actor ${event.actor.toString()} not found (game #${game.number})`)
             }
 
-            if (a.roles.includes(PlayerRole.bot)) {
+            if (a.roles.includes('bot' as PlayerRole)) {
               actor = 'bot' as Bot
             } else {
               actor = a.steamId
