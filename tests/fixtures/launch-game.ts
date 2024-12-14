@@ -1,7 +1,8 @@
 import { authUsers } from './auth-users'
 import { mergeTests } from '@playwright/test'
 import { simulateGameServer } from './simulate-game-server'
-import type { UserContext } from '../user-manager'
+import type { UserContext, UserName } from '../user-manager'
+import { queuePage } from './queue-page'
 
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
@@ -9,17 +10,17 @@ export interface LaunchGameOptions {
   killGame?: boolean
 }
 
-export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
+export const launchGame = mergeTests(authUsers, simulateGameServer, queuePage).extend<
   LaunchGameOptions & {
     gameNumber: number
     players: UserContext[]
-    desiredSlots: Map<string, number>
+    desiredSlots: Map<UserName, number>
   }
 >({
   killGame: [true, { option: true }],
   desiredSlots: async ({}, use) => {
     await use(
-      new Map<string, number>([
+      new Map<UserName, number>([
         ['Promenader', 0],
         ['Mayflower', 1],
         ['Polemic', 2],
@@ -43,8 +44,9 @@ export const launchGame = mergeTests(authUsers, simulateGameServer).extend<
     const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
     await use(players)
   },
-  gameNumber: async ({ users, players, gameServer, killGame, desiredSlots }, use) => {
+  gameNumber: async ({ users, players, gameServer, killGame, desiredSlots, queue }, use) => {
     await gameServer.sendHeartbeat()
+    await queue.waitToBeEmpty()
 
     await Promise.all(
       players.map(async user => {

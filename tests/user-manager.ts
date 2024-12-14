@@ -7,12 +7,15 @@ import type { BrowserContext, Page } from '@playwright/test'
 // https://stackoverflow.com/questions/52489261/can-i-define-an-n-length-tuple-type
 type Tuple<T, N, R extends T[] = []> = R['length'] extends N ? Readonly<R> : Tuple<T, N, [...R, T]>
 
+export type UserSteamId = (typeof users)[number]['steamId']
+export type UserName = (typeof users)[number]['name']
+
 export class UserContext {
-  readonly playerName: string
+  readonly playerName: UserName
   private _page?: Page
 
   constructor(
-    public readonly steamId: string,
+    public readonly steamId: UserSteamId,
     public readonly browserContext: BrowserContext,
   ) {
     const playerName = users.find(u => u.steamId === steamId)?.name
@@ -95,7 +98,7 @@ export class UserManager {
     return player
   }
 
-  bySteamId(steamId: string): UserContext {
+  bySteamId(steamId: UserSteamId): UserContext {
     const user = this.users.find(user => user.steamId === steamId)
     if (user === undefined) {
       throw new Error(`user with steamId ${steamId} not found`)
@@ -103,7 +106,7 @@ export class UserManager {
     return user
   }
 
-  byName(name: string): UserContext {
+  byName(name: UserName): UserContext {
     const user = this.users.find(user => user.playerName === name)
     if (user === undefined) {
       throw new Error(`user with name ${name} not found`)

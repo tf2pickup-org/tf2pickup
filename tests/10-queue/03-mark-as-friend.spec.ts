@@ -1,7 +1,15 @@
+import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
 import type { QueuePage } from '../pages/queue.page'
+import { queuePage } from '../fixtures/queue-page'
 
-authUsers('mark as friend', async ({ users }) => {
+const test = mergeTests(authUsers, queuePage)
+
+test.beforeEach(async ({ queue }) => {
+  await queue.waitToBeEmpty()
+})
+
+test('mark as friend', async ({ users }) => {
   const [medic1, medic2, soldier] = (await Promise.all(
     users.getMany(3).map(async user => {
       const page = await user.queuePage()

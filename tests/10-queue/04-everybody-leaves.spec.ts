@@ -1,7 +1,15 @@
+import { mergeTests } from '@playwright/test'
 import { authUsers } from '../fixtures/auth-users'
 import { minutesToMilliseconds } from 'date-fns'
+import { queuePage } from '../fixtures/queue-page'
 
-authUsers('everybody leaves', async ({ steamIds, users }) => {
+const test = mergeTests(authUsers, queuePage)
+
+test.beforeEach(async ({ queue }) => {
+  await queue.waitToBeEmpty()
+})
+
+test('everybody leaves', async ({ steamIds, users }) => {
   authUsers.setTimeout(minutesToMilliseconds(2))
   const queueUsers = steamIds.slice(0, 12)
   for (let i = 0; i < queueUsers.length; ++i) {

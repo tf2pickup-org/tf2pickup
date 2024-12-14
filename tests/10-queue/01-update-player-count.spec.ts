@@ -1,7 +1,14 @@
+import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
 import { QueuePage } from '../pages/queue.page'
+import { queuePage } from '../fixtures/queue-page'
 
-authUsers('update player count', async ({ page, users }) => {
+const test = mergeTests(authUsers, queuePage)
+test.beforeEach(async ({ queue }) => {
+  await queue.waitToBeEmpty()
+})
+
+test('update player count', async ({ page, users }) => {
   const queuePage = new QueuePage(page)
   const p1 = await users.getNext().queuePage()
   const p2 = await users.getNext().queuePage()

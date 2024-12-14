@@ -2,21 +2,21 @@ import { randomBytes as randomBytesCb } from 'node:crypto'
 import { expect, accessMongoDb as test } from './access-mongo-db'
 import jsonwebtoken from 'jsonwebtoken'
 import { minutesToMilliseconds } from 'date-fns'
-import { UserContext, UserManager } from '../user-manager'
+import { UserContext, UserManager, type UserSteamId } from '../user-manager'
 import { promisify } from 'node:util'
-
-export interface AuthUsersOptions {
-  steamIds: string[]
-}
+import { users } from '../data'
 
 interface AuthUsersFixture {
+  steamIds: UserSteamId[]
   users: UserManager
 }
 
 const randomBytes = promisify(randomBytesCb)
 
-export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
-  steamIds: [[], { option: true }],
+export const authUsers = test.extend<AuthUsersFixture>({
+  steamIds: async ({}, use) => {
+    await use(users.map(u => u.steamId))
+  },
   users: async ({ db, steamIds, browser, baseURL }, use) => {
     // opening a new context takes some time
     test.setTimeout(minutesToMilliseconds(1))
@@ -67,11 +67,6 @@ export const authUsers = test.extend<AuthUsersOptions & AuthUsersFixture>({
       await user.close()
     }
     users.length = 0
-  },
-  page: async ({ page }, use) => {
-    await page.goto('/')
-    await use(page)
-    await page.close()
   },
 })
 

@@ -1,5 +1,5 @@
 import { errors, expect, type Locator, type Page } from '@playwright/test'
-import { secondsToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 
 class QueueSlot {
   readonly locator: Locator
@@ -9,6 +9,16 @@ class QueueSlot {
     private readonly slotNumber: number,
   ) {
     this.locator = this.page.getByLabel(`Queue slot ${this.slotNumber}`, { exact: true })
+  }
+
+  async isTaken() {
+    return (await this.locator.getAttribute('data-player')) !== null
+  }
+
+  async waitToBeFree(options?: { timeout?: number }) {
+    await expect(this.locator).not.toHaveAttribute('data-player', {
+      timeout: options?.timeout ?? minutesToMilliseconds(1),
+    })
   }
 
   joinButton() {
@@ -92,5 +102,11 @@ export class QueuePage {
 
   preReadyUpButton() {
     return this.page.getByRole('button', { name: 'Pre-ready up' })
+  }
+
+  async waitToBeEmpty(options?: { timeout?: number }) {
+    await Promise.all(
+      Array.from(Array(12).keys()).map(async i => await this.slot(i).waitToBeFree(options)),
+    )
   }
 }
