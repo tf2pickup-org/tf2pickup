@@ -14,11 +14,21 @@ launchGame('report rounds', async ({ gameNumber, page, gameServer }) => {
   await gameServer.matchStarts()
   await waitABit(secondsToMilliseconds(1))
 
+  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('0')
+  await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
+
   await gameServer.roundEnds('blu')
   await expect(gamePage.page.getByText('Round ended')).toBeVisible()
+  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
+  await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
+
   await waitABit(secondsToMilliseconds(1))
+
   await gameServer.roundEnds('red')
   await expect(gamePage.page.getByText('Round ended')).toHaveCount(2)
+  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
+  await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
+
   await waitABit(secondsToMilliseconds(1))
   await gameServer.matchEnds()
 })

@@ -4,6 +4,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { tf2ClassOrder } from '../../../shared/tf2-class-order'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2Team } from '../../../shared/types/tf2-team'
+import { GameScore } from './game-score'
 import { GameSlot } from './game-slot'
 
 export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undefined }) {
@@ -14,18 +15,7 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
 
   return (
     <>
-      <div class="grid grid-cols-2 gap-[4px]">
-        <div class="score-header blu">
-          <span class="uppercase">blu</span>
-          <span>{props.game.score?.blu ?? ''}</span>
-        </div>
-
-        <div class="score-header red">
-          <span class="uppercase">red</span>
-          <span>{props.game.score?.red ?? ''}</span>
-        </div>
-      </div>
-
+      <GameScore game={props.game} />
       <div class="slot-list" id={`game-${props.game.number}-slots`}>
         {slotPairs.map(({ red, blu, gameClass }) => (
           <>

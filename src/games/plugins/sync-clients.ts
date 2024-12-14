@@ -12,6 +12,7 @@ import { GameSlot } from '../views/html/game-slot'
 import { whenGameEnds } from '../when-game-ends'
 import { GamesLink } from '../../html/components/games-link'
 import { safe } from '../../utils/safe'
+import { GameScore } from '../views/html/game-score'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -23,6 +24,10 @@ export default fp(async app => {
       if ([GameState.launching, GameState.ended, GameState.interrupted].includes(after.state)) {
         app.gateway.broadcast(async actor => await GameSlotList({ game: after, actor }))
       }
+    }
+
+    if (before.score?.blu !== after.score?.blu || before.score?.red !== after.score?.red) {
+      app.gateway.broadcast(async () => await GameScore({ game: after }))
     }
 
     if (
