@@ -1,6 +1,6 @@
 import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
-import { secondsToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { launchGame, expect } from '../fixtures/launch-game'
 import { queuePage } from '../fixtures/queue-page'
 
@@ -92,4 +92,51 @@ test('pre-ready up readies up when the queue is ready', async ({
       throw new Error('could not launch game')
     }
   }
+})
+
+test('pre-ready up enables automatically after readying up', async ({
+  users,
+  players,
+  desiredSlots,
+}) => {
+  test.setTimeout(minutesToMilliseconds(2))
+  const polemic = users.byName('Polemic')
+  const shadowhunter = users.byName('Shadowhunter')
+
+  await Promise.all(
+    players
+      .filter(p => p.playerName !== 'Polemic')
+      .map(async user => {
+        const page = await user.queuePage()
+        await page.goto()
+        const slot = desiredSlots.get(user.playerName)!
+        await page.slot(slot).join()
+      }),
+  )
+
+  const page = await polemic.queuePage()
+  await page.goto()
+  await page.slot(desiredSlots.get('Polemic')!).join()
+  await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
+
+  {
+    const page = await shadowhunter.queuePage()
+    await page.readyUpDialog().readyUp()
+    await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
+  }
+
+  // await Promise.all(
+  //   players.map(async user => {
+  //     const page = await user.queuePage()
+  //     const slot = desiredSlots.get(user.playerName)!
+
+  //     if (!(await page.slot(slot).isReady())) {
+  //       await page.readyUpDialog().notReady()
+  //     }
+
+  //     if (await page.slot(slot).isTaken()) {
+  //       await page.leaveQueue(minutesToMilliseconds(1.5))
+  //     }
+  //   }),
+  // )
 })

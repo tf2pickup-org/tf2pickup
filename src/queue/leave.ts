@@ -7,7 +7,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { getState } from './get-state'
 import { mutex } from './mutex'
-import { preReady } from './pre-ready'
+import { preReady } from '../pre-ready'
 
 export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
   return await mutex.runExclusive(async () => {

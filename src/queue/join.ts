@@ -3,6 +3,7 @@ import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { events } from '../events'
 import { logger } from '../logger'
+import { preReady } from '../pre-ready'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { mutex } from './mutex'
@@ -69,6 +70,11 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
 
     const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
     events.emit('queue/slots:updated', { slots })
+
+    if (targetSlot?.ready) {
+      await preReady.start(steamId)
+    }
+
     return slots
   })
 }

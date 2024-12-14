@@ -21,6 +21,10 @@ class QueueSlot {
     })
   }
 
+  async isReady() {
+    return (await this.locator.locator('.player-info').getAttribute('data-player-ready')) === 'true'
+  }
+
   joinButton() {
     return this.locator.getByRole('button', {
       name: `Join queue on slot ${this.slotNumber}`,
@@ -56,8 +60,19 @@ class ReadyUpDialog {
     }
   }
 
+  notReadyButton() {
+    return this.page.getByRole('button', { name: `No, I can't play now` })
+  }
+
   async notReady() {
-    await this.page.getByRole('button', { name: `No, I can't play now` }).click()
+    const button = this.notReadyButton()
+    try {
+      await button.click({ timeout: secondsToMilliseconds(5) })
+    } catch (error) {
+      if (error instanceof errors.TimeoutError) {
+        return
+      }
+    }
   }
 }
 
