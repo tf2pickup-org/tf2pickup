@@ -29,6 +29,7 @@ export interface GameCreated {
 export enum GameEndedReason {
   matchEnded = 'match ended',
   interrupted = 'interrupted',
+  tooManySubstituteRequests = 'too many substitute requests',
 }
 
 export interface GameEnded {

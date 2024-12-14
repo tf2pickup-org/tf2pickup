@@ -137,6 +137,8 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
               </a>
             </span>
           )
+        case GameEndedReason.tooManySubstituteRequests:
+          return <span>Game interrupted (too many substitute requests)</span>
         default:
           return <span>Game ended</span>
       }
