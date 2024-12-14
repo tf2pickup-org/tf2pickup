@@ -32,6 +32,10 @@ export default fp(
           await update(
             { number: gameNumber },
             {
+              $set: {
+                'score.blu': value.score.blu,
+                'score.red': value.score.red,
+              },
               $push: {
                 events: {
                   at: new Date(),
