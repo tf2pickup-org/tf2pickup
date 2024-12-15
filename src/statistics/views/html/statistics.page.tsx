@@ -8,7 +8,7 @@ import { PlayedMapsCount } from './played-maps-count'
 export async function StatisticsPage(user?: User) {
   return (
     <Layout title="statistics">
-      <NavigationBar user={user} />
+      <NavigationBar user={user} currentPage="/statistics" />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">
           <div class="lg:col-span-2">

@@ -11,10 +11,10 @@ export function DocumentPage(document: DocumentModel, user?: User) {
 
   return (
     <Layout title={document.name}>
-      <NavigationBar user={user} />
+      <NavigationBar user={user} currentPage={`/${document.name}`} />
       <Page>
         <div class="container mx-auto">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold capitalize" safe>
+          <div class="my-9 text-[48px] font-bold capitalize text-abru-light-75" safe>
             {document.name}
           </div>
           <article class="prose prose-invert mb-16 max-w-none">{safeParsed}</article>

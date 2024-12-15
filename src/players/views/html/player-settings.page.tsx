@@ -9,7 +9,7 @@ export async function PlayerSettingsPage(props: { user: User }) {
 
   return (
     <Layout title="Settings">
-      <NavigationBar user={props.user} />
+      <NavigationBar user={props.user} currentPage="/settings" />
       <Page>
         <div class="container mx-auto">
           <form action="" method="post">

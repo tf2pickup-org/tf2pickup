@@ -53,7 +53,7 @@ export async function PlayerPage(props: {
 
   return (
     <Layout title={props.player.name} embedStyle={resolve(import.meta.dirname, 'style.css')}>
-      <NavigationBar user={props.user} />
+      <NavigationBar user={props.user} currentPage={`/players/${props.player.steamId}`} />
       <Page>
         <div class="container relative mx-auto grid grid-cols-2 gap-[30px]">
           <div class="col-span-2">

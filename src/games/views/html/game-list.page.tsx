@@ -21,7 +21,7 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
 
   return (
     <Layout title="games" embedStyle={resolve(import.meta.dirname, 'game-list.css')}>
-      <NavigationBar user={props.user} />
+      <NavigationBar user={props.user} currentPage="/games" />
       <Page>
         <div class="container mx-auto">
           <div class="my-9 text-[48px] font-bold text-abru-light-75">Games</div>

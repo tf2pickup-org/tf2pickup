@@ -20,7 +20,7 @@ export async function HallOfFamePage(props: { user?: User | undefined }) {
 
   return (
     <Layout title="Hall of fame" embedStyle={resolve(import.meta.dirname, 'hall-of-fame.page.css')}>
-      <NavigationBar user={props.user} />
+      <NavigationBar user={props.user} currentPage="/hall-of-fame" />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-x-4 gap-y-2 p-2 lg:grid-cols-2 lg:gap-y-0 lg:p-0">
           <div class="my-9 text-[48px] font-bold text-abru-light-75 lg:col-span-2">

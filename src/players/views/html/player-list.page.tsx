@@ -17,7 +17,7 @@ export async function PlayerListPage(user?: User) {
 
   return (
     <Layout title="players" embedStyle={resolve(import.meta.dirname, 'style.css')}>
-      <NavigationBar user={user} />
+      <NavigationBar user={user} currentPage="/players" />
       <Page>
         <div class="container mx-auto">
           <div class="my-9 text-[48px] font-bold text-abru-light-75">Players</div>

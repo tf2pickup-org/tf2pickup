@@ -5,7 +5,7 @@ import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
 import Html from '@kitajs/html'
 
-export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
+export function NavigationBar(props: { user?: User | undefined; currentPage: string }) {
   return (
     <nav class="flex min-h-[95px] flex-row justify-center">
       <div class="container flex flex-row items-center justify-between">
@@ -21,25 +21,25 @@ export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | unde
   )
 }
 
-function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
-  const { user } = props
-  let btn = <SteamButton />
-  if (user) {
-    btn = <Profile {...user.player} />
-  }
+function Menu({ user, currentPage }: { user?: User | undefined; currentPage: string }) {
+  const btn = user ? <Profile {...user.player} /> : <SteamButton />
 
   return (
     <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
-      <GamesLink />
-      <MenuItem href="/players">Players</MenuItem>
-      <MenuItem href="/rules">Rules</MenuItem>
+      <GamesLink active={currentPage.startsWith('/games')} />
+      <MenuItem href="/players" active={currentPage.startsWith('/players')}>
+        Players
+      </MenuItem>
+      <MenuItem href="/rules" active={currentPage === '/rules'}>
+        Rules
+      </MenuItem>
 
-      <MenuItem href="/hall-of-fame">
+      <MenuItem href="/hall-of-fame" active={currentPage === '/hall-of-fame'}>
         <IconCrown />
         HOF
       </MenuItem>
 
-      <MenuItem href="/statistics">
+      <MenuItem href="/statistics" active={currentPage === '/statistics'}>
         <IconChartPie />
         Stats
       </MenuItem>
@@ -70,9 +70,13 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
   )
 }
 
-function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) {
+function MenuItem({
+  href,
+  children,
+  active,
+}: Html.PropsWithChildren<{ href: string; active: boolean }>) {
   return (
-    <a href={href} class="menu-item">
+    <a href={href} class={['menu-item', active && 'active']}>
       {children}
     </a>
   )

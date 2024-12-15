@@ -34,7 +34,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
       embedStyle={resolve(import.meta.dirname, 'queue.page.css')}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar user={props.user} currentPage="/" />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">

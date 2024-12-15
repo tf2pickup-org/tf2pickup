@@ -17,7 +17,7 @@ export async function GamePage(props: { game: GameModel; user?: User | undefined
       title={`game #${props.game.number}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar user={props.user} currentPage={`/games/${props.game.number}`} />
       <Page>
         <div class="container relative mx-auto grid grid-cols-4 gap-x-4">
           <div class="order-first flex flex-col">
