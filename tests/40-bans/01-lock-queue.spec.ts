@@ -1,13 +1,8 @@
 import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
-import { queuePage } from '../fixtures/queue-page'
+import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
-const test = mergeTests(authUsers, queuePage)
-
-test.beforeEach(async ({ queue }) => {
-  await queue.waitToBeEmpty()
-})
-
+const test = mergeTests(authUsers, waitForEmptyQueue)
 test('banned player gets kicked from the queue', async ({ users }) => {
   const playerPage = await users.byName('AstraGirl').queuePage()
   await playerPage.goto()

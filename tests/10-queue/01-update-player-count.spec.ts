@@ -1,12 +1,9 @@
 import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
 import { QueuePage } from '../pages/queue.page'
-import { queuePage } from '../fixtures/queue-page'
+import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
-const test = mergeTests(authUsers, queuePage)
-test.beforeEach(async ({ queue }) => {
-  await queue.waitToBeEmpty()
-})
+const test = mergeTests(authUsers, waitForEmptyQueue)
 
 test('update player count', async ({ page, users }) => {
   const queuePage = new QueuePage(page)

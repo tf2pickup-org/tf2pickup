@@ -33,6 +33,8 @@ export async function GameSlot(props: {
           [SlotStatus.replaced]: 'replaced',
         }[props.slot.status],
       ]}
+      data-player={player.steamId}
+      data-status={props.slot.status}
     >
       <span class="sr-only" safe>
         {player.name}'s slot

@@ -1,9 +1,10 @@
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { waitABit } from '../utils/wait-a-bit'
-import { expect, launchGameAndStartMatch } from '../fixtures/launch-game-and-start-match'
+import { expect, launchGame } from '../fixtures/launch-game'
 
-launchGameAndStartMatch('cleanup game server', async ({ gameServer, gameNumber }) => {
-  launchGameAndStartMatch.setTimeout(minutesToMilliseconds(2))
+launchGame.use({ waitForStage: 'started' })
+launchGame('cleanup game server', async ({ gameServer, gameNumber }) => {
+  launchGame.setTimeout(minutesToMilliseconds(2))
 
   await waitABit(secondsToMilliseconds(3))
   await gameServer.matchEnds()
