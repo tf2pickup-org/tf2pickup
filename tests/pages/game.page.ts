@@ -1,5 +1,20 @@
-import type { Page } from '@playwright/test'
+import type { Locator, Page } from '@playwright/test'
 import type { UserName } from '../user-manager'
+
+export class GameSlot {
+  readonly locator: Locator
+
+  constructor(
+    private readonly page: Page,
+    private readonly playerName: UserName,
+  ) {
+    this.locator = this.page.getByLabel(`${this.playerName}'s slot`)
+  }
+
+  async status() {
+    return this.locator.getAttribute('data-status')
+  }
+}
 
 export class GamePage {
   constructor(
@@ -28,6 +43,10 @@ export class GamePage {
 
   playerSlot(playerName: UserName) {
     return this.page.getByLabel(`${playerName}'s slot`)
+  }
+
+  slot(playerName: UserName) {
+    return new GameSlot(this.page, playerName)
   }
 
   playerLink(playerName: UserName) {

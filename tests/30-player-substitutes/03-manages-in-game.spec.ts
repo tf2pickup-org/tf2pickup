@@ -1,7 +1,8 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { expect, launchGameAndStartMatch } from '../fixtures/launch-game-and-start-match'
+import { expect, launchGame } from '../fixtures/launch-game'
 
-launchGameAndStartMatch('manages in-game', async ({ gameNumber, users, gameServer }) => {
+launchGame.use({ waitForStage: 'started' })
+launchGame('manages in-game', async ({ gameNumber, users, gameServer }) => {
   const admin = users.getAdmin()
 
   const adminsPage = await admin.gamePage(gameNumber)

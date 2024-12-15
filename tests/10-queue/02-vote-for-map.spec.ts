@@ -1,11 +1,8 @@
 import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
-import { queuePage } from '../fixtures/queue-page'
+import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
-const test = mergeTests(authUsers, queuePage)
-test.beforeEach(async ({ queue }) => {
-  await queue.waitToBeEmpty()
-})
+const test = mergeTests(authUsers, waitForEmptyQueue)
 
 test('vote for map', async ({ users }) => {
   const page = await users.byName('SlitherTuft').queuePage()

@@ -1,13 +1,9 @@
 import { mergeTests } from '@playwright/test'
 import { authUsers, expect } from '../fixtures/auth-users'
 import { minutesToMilliseconds } from 'date-fns'
-import { queuePage } from '../fixtures/queue-page'
+import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
-const test = mergeTests(authUsers, queuePage)
-
-test.beforeEach(async ({ queue }) => {
-  await queue.waitToBeEmpty()
-})
+const test = mergeTests(authUsers, waitForEmptyQueue)
 
 test('player is late for ready up', async ({ steamIds, users, page }) => {
   authUsers.setTimeout(minutesToMilliseconds(2))

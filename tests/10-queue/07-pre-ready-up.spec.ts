@@ -2,18 +2,17 @@ import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { launchGame, expect } from '../fixtures/launch-game'
-import { queuePage } from '../fixtures/queue-page'
+import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
-const test = mergeTests(accessMongoDb, launchGame, queuePage)
+const test = mergeTests(accessMongoDb, launchGame, waitForEmptyQueue)
 
-test.beforeEach(async ({ db, queue }) => {
+test.beforeEach(async ({ db }) => {
   const configuration = db.collection('configuration')
   await configuration.updateOne(
     { key: 'queue.pre_ready_up_timeout' },
     { $set: { value: secondsToMilliseconds(10) } },
     { upsert: true },
   )
-  await queue.waitToBeEmpty()
 })
 
 test('pre-ready up button is visible for logged-in-users', async ({ users }) => {
@@ -124,19 +123,4 @@ test('pre-ready up enables automatically after readying up', async ({
     await page.readyUpDialog().readyUp()
     await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
   }
-
-  // await Promise.all(
-  //   players.map(async user => {
-  //     const page = await user.queuePage()
-  //     const slot = desiredSlots.get(user.playerName)!
-
-  //     if (!(await page.slot(slot).isReady())) {
-  //       await page.readyUpDialog().notReady()
-  //     }
-
-  //     if (await page.slot(slot).isTaken()) {
-  //       await page.leaveQueue(minutesToMilliseconds(1.5))
-  //     }
-  //   }),
-  // )
 })

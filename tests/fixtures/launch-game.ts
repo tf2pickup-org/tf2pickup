@@ -1,16 +1,25 @@
 import { authUsers } from './auth-users'
-import { mergeTests } from '@playwright/test'
+import { expect, mergeTests } from '@playwright/test'
 import { simulateGameServer } from './simulate-game-server'
 import type { UserContext, UserName } from '../user-manager'
-import { queuePage } from './queue-page'
+import { waitForEmptyQueue } from './wait-for-empty-queue'
+import { GamePage } from '../pages/game.page'
+import { secondsToMilliseconds } from 'date-fns'
 
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
   // Default: true
   killGame?: boolean
+
+  // Wait for the specific game state before carrying on with the test
+  // Default: 'created'
+  waitForStage:
+    | 'created' // the game was created, but nothing is ready yet
+    | 'launching' // the gameserver is configured, but the match hasn't started yet
+    | 'started' // all players are connected and the match has started
 }
 
-export const launchGame = mergeTests(authUsers, simulateGameServer, queuePage).extend<
+export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmptyQueue).extend<
   LaunchGameOptions & {
     gameNumber: number
     players: UserContext[]
@@ -18,6 +27,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, queuePage).e
   }
 >({
   killGame: [true, { option: true }],
+  waitForStage: ['created', { option: true }],
   desiredSlots: async ({}, use) => {
     await use(
       new Map<UserName, number>([
@@ -44,9 +54,8 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, queuePage).e
     const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
     await use(players)
   },
-  gameNumber: async ({ users, players, gameServer, killGame, desiredSlots, queue }, use) => {
+  gameNumber: async ({ users, players, gameServer, killGame, desiredSlots, waitForStage }, use) => {
     await gameServer.sendHeartbeat()
-    await queue.waitToBeEmpty()
 
     await Promise.all(
       players.map(async user => {
@@ -61,22 +70,41 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, queuePage).e
 
     const page = await users.byName('Promenader').page()
     const matches = page.url().match(/games\/(\d+)/)
-    if (matches) {
-      const gameNumber = Number(matches[1])
-      await use(gameNumber)
+    if (!matches) {
+      throw new Error('could not launch game')
+    }
 
-      if (!killGame) {
-        return
+    const gameNumber = Number(matches[1])
+
+    if (['launching', 'started'].includes(waitForStage)) {
+      const gamePage = new GamePage(page, gameNumber)
+      await gamePage.goto()
+      await expect(gamePage.gameEvent('Game server assigned')).toBeVisible()
+      await expect(gamePage.gameEvent('Game server initialized')).toBeVisible({
+        timeout: secondsToMilliseconds(15),
+      })
+
+      if (waitForStage === 'started') {
+        await gameServer.connectAllPlayers()
+        await gameServer.matchStarts()
       }
+    }
 
-      // kill the game if it's live
-      const adminPage = await users.getAdmin().gamePage(gameNumber)
-      await adminPage.goto()
-      if (await adminPage.isLive()) {
+    await use(gameNumber)
+
+    if (!killGame) {
+      return
+    }
+
+    // kill the game if it's live
+    const adminPage = await users.getAdmin().gamePage(gameNumber)
+    await adminPage.goto()
+    if (await adminPage.isLive()) {
+      if (waitForStage === 'started') {
+        await gameServer.matchEnds()
+      } else {
         await adminPage.forceEnd()
       }
-    } else {
-      throw new Error('could not launch game')
     }
   },
 })
