@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test'
+import { secondsToMilliseconds } from 'date-fns'
 
 export class AdminPage {
   constructor(public readonly page: Page) {}
@@ -21,5 +22,14 @@ export class AdminPage {
     for (const revokeButton of await this.page.getByRole('button', { name: 'Revoke ban' }).all()) {
       await revokeButton.click()
     }
+  }
+
+  async freeStaticGameServer() {
+    await this.page.goto('/admin/game-servers')
+    try {
+      await this.page
+        .getByRole('button', { name: 'Remove game assignment' })
+        .click({ timeout: secondsToMilliseconds(1) })
+    } catch (error) {}
   }
 }
