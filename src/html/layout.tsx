@@ -35,6 +35,8 @@ export async function Layout(
     )
   }
 
+  const safeCss = await embed(resolve(import.meta.dirname, 'styles', 'main.css'))
+
   return (
     <>
       <html lang="en">
@@ -43,9 +45,7 @@ export async function Layout(
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <link rel="icon" type="image/x-icon" href="/favicon.ico" />
           <script src="/js/main.js" type="module"></script>
-          <style type="text/css" safe>
-            {await embed(resolve(import.meta.dirname, 'styles', 'main.css'))}
-          </style>
+          <style type="text/css">{safeCss}</style>
           {title}
         </head>
         <body hx-ext="ws,head-support" ws-connect="/ws" class="h-screen" hx-boost="true">
