@@ -49,7 +49,7 @@ export function Layout(
           <link href={mainCss} rel="stylesheet" hx-preserve></link>
           {title}
         </head>
-        <body hx-ext="ws,head-support" ws-connect="/ws" class="h-screen" hx-boost="true">
+        <body hx-ext="ws,head-support,remove-me" ws-connect="/ws" class="h-screen" hx-boost="true">
           {body}
         </body>
       </html>

@@ -36,6 +36,15 @@ export interface GameServer {
   name: string
   address: string
   port: string
+
+  // if logSecret is undefined, a random one will be assigned automatically
+  logSecret?: string
+
+  rcon: {
+    address: string
+    port: string
+    password: string
+  }
 }
 
 export interface GameModel {

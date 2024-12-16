@@ -3,7 +3,7 @@ import { deburr } from 'lodash-es'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'
-import { type GameModel, GameState } from '../../database/models/game.model'
+import { type GameModel, GameServerProvider, GameState } from '../../database/models/game.model'
 import { environment } from '../../environment'
 import { logger } from '../../logger'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
@@ -22,12 +22,15 @@ import {
   tvPort,
   tvPassword,
   svLogsecret,
+  execConfig,
 } from './commands'
 import { update } from '../update'
 import { extractConVarValue } from '../extract-con-var-value'
 import { generate } from 'generate-password'
 import { events } from '../../events'
 import { withRcon } from './with-rcon'
+import { servemeTf } from '../../serveme-tf'
+import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
 
 export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
@@ -36,19 +39,32 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
   logger.info({ game }, `configuring game #${game.number}...`)
   const { signal } = options
 
+  if (game.gameServer.provider === GameServerProvider.servemeTf) {
+    await servemeTf.waitForStart(Number(game.gameServer.id) as ReservationId)
+  }
+
+  if (signal?.aborted) {
+    throw new Error(`${signal.reason}`)
+  }
+
   const password = generateGameserverPassword()
   const configLines = await compileConfig(game, password)
 
-  return await withRcon(game, async ({ rcon, gameServer }) => {
-    const logSecret = generate({
-      length: 16,
-      numbers: true,
-      symbols: false,
-      lowercase: false,
-      uppercase: false,
-    })
+  return await withRcon(game, async ({ rcon }) => {
+    let logSecret: string
+    if (!game.gameServer!.logSecret) {
+      logSecret = generate({
+        length: 16,
+        numbers: true,
+        symbols: false,
+        lowercase: false,
+        uppercase: false,
+      })
+      await rcon.send(svLogsecret(logSecret))
+    } else {
+      logSecret = game.gameServer!.logSecret
+    }
 
-    await rcon.send(svLogsecret(logSecret))
     if (signal?.aborted) {
       throw new Error(`${signal.reason}`)
     }
@@ -79,14 +95,13 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
     logger.info(game, `game ${game.number} configured`)
 
     const connectString = makeConnectString({
-      address: gameServer.address,
-      port: gameServer.port,
+      ...game.gameServer!,
       password,
     })
     logger.info(game, `connect string: ${connectString}`)
 
     const stvConnectString = makeConnectString({
-      address: gameServer.address,
+      address: game.gameServer!.address,
       port: extractConVarValue(await rcon.send(tvPort())) ?? 27020,
       password: extractConVarValue(await rcon.send(tvPassword())),
     })
@@ -121,16 +136,12 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
   return [
     logAddressAdd(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`),
     kickAll(),
-    changelevel(game.map),
   ]
+    .concat(game.gameServer?.provider === GameServerProvider.static ? changelevel(game.map) : [])
     .concat(
       await (async () => {
         const map = await collections.maps.findOne({ name: game.map })
-        if (map !== null) {
-          return map.execConfig ?? []
-        } else {
-          return []
-        }
+        return map?.execConfig ? execConfig(map.execConfig) : []
       })(),
     )
     .concat(
