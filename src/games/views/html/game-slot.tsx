@@ -30,7 +30,6 @@ export async function GameSlot(props: {
         {
           [SlotStatus.active]: 'active',
           [SlotStatus.waitingForSubstitute]: 'waiting-for-substitute',
-          [SlotStatus.replaced]: 'replaced',
         }[props.slot.status],
       ]}
       data-player={player.steamId}

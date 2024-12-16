@@ -3,7 +3,6 @@ import { deburr } from 'lodash-es'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'
-import { SlotStatus } from '../../database/models/game-slot.model'
 import { type GameModel, GameState } from '../../database/models/game.model'
 import { environment } from '../../environment'
 import { logger } from '../../logger'
@@ -147,15 +146,13 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
     .concat(setPassword(password))
     .concat(
       await Promise.all(
-        game.slots
-          .filter(slot => slot.status !== SlotStatus.replaced)
-          .map(async slot => {
-            const player = await collections.players.findOne({ steamId: slot.player })
-            if (player === null) {
-              throw new Error(`player ${slot.player} not found`)
-            }
-            return addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass)
-          }),
+        game.slots.map(async slot => {
+          const player = await collections.players.findOne({ steamId: slot.player })
+          if (player === null) {
+            throw new Error(`player ${slot.player} not found`)
+          }
+          return addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass)
+        }),
       ),
     )
     .concat(enablePlayerWhitelist())
