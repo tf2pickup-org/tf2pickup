@@ -97,15 +97,18 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
     }
 
     // kill the game if it's live
-    const adminPage = await users.getAdmin().gamePage(gameNumber)
-    await adminPage.goto()
-    if (await adminPage.isLive()) {
+    const gamePage = await users.getAdmin().gamePage(gameNumber)
+    await gamePage.goto()
+    if (await gamePage.isLive()) {
       if (waitForStage === 'started') {
         await gameServer.matchEnds()
       } else {
-        await adminPage.forceEnd()
+        await gamePage.forceEnd()
       }
     }
+
+    const adminPage = await users.getAdmin().adminPage()
+    await adminPage.freeStaticGameServer()
   },
 })
 

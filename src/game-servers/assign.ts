@@ -10,18 +10,18 @@ const mutex = new Mutex()
 
 export async function assign(game: GameModel) {
   await mutex.runExclusive(async () => {
-    const freeServer = await staticGameServers.findFree()
-    if (!freeServer) {
+    const staticGameServer = await staticGameServers.assign(game)
+    if (!staticGameServer) {
       throw new Error(`no free servers available for game ${game.number}`)
     }
 
     game = await games.update(game.number, {
       $set: {
         gameServer: {
-          id: freeServer.id,
-          name: freeServer.name,
-          address: freeServer.address,
-          port: freeServer.port,
+          id: staticGameServer.id,
+          name: staticGameServer.name,
+          address: staticGameServer.address,
+          port: staticGameServer.port,
           provider: GameServerProvider.static,
         },
       },
@@ -29,11 +29,11 @@ export async function assign(game: GameModel) {
         events: {
           event: GameEventType.gameServerAssigned,
           at: new Date(),
-          gameServerName: freeServer.name,
+          gameServerName: staticGameServer.name,
         },
       },
     })
-    logger.info({ game }, `game ${game.number} assigned to game server ${freeServer.name}`)
+    logger.info({ game }, `game ${game.number} assigned to game server ${staticGameServer.name}`)
     events.emit('game:gameServerAssigned', { game })
   })
 }

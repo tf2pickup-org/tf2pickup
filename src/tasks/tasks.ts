@@ -30,6 +30,10 @@ export const tasksSchema = z.discriminatedUnion('name', [
     name: z.literal('queue:unready'),
     args: z.object({}),
   }),
+  z.object({
+    name: z.literal('staticGameServers:free'),
+    args: z.object({ id: z.string() }),
+  }),
 ])
 
 type TasksT = z.infer<typeof tasksSchema>
