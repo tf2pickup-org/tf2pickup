@@ -1,3 +1,4 @@
+import { requestContext } from '@fastify/request-context'
 import type { User } from '../../auth/types/user'
 import { GamesLink } from './games-link'
 import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
@@ -71,8 +72,9 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
 }
 
 function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) {
+  const url = requestContext.get('url')
   return (
-    <a href={href} class="menu-item">
+    <a href={href} class="menu-item" aria-current={url === href ? 'page' : undefined}>
       {children}
     </a>
   )

@@ -2,12 +2,15 @@ import fp from 'fastify-plugin'
 import { z } from 'zod'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import mime from 'mime'
+import { resolve } from 'node:path'
 
 export const csses = new Map<string, string>()
 
 export default fp(
   async app => {
-    await app.register((await import('./middleware/htmx')).default)
+    await app.register((await import('@fastify/autoload')).default, {
+      dir: resolve(import.meta.dirname, 'middleware'),
+    })
 
     app.withTypeProvider<ZodTypeProvider>().get(
       '/css/:fileName',
