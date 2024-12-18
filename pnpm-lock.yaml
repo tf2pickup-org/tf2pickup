@@ -27,8 +27,8 @@ importers:
         specifier: 8.1.0
         version: 8.1.0
       '@fastify/sensible':
-        specifier: 6.0.1
-        version: 6.0.1
+        specifier: 6.0.2
+        version: 6.0.2
       '@fastify/static':
         specifier: 8.0.3
         version: 8.0.3
@@ -587,8 +587,8 @@ packages:
   '@fastify/send@3.2.0':
     resolution: {integrity: sha512-qF4TIEMjqk92jrOXjcqBrkk+HOXE70AwDKas9/AweFslbvSq0o1JEAHzC7YlggBaj4bN9pU70XIPyseEJ6vlXg==}
 
-  '@fastify/sensible@6.0.1':
-    resolution: {integrity: sha512-D0rN0kMeZKP23f4w9MoCI9e4+n7vASFAsGoRNn9bondSbplLeIfR2HcjCbyElAM04jGrPRLi/edyThEPOyC9cQ==}
+  '@fastify/sensible@6.0.2':
+    resolution: {integrity: sha512-sva4j0CDeFKpYepjiELnaeUam3X2u3rCS2BgQettpph89XGJQlxgslWihiQN5HBE9cjc1Cl4iy6Hcu1HhhFhzA==}
 
   '@fastify/static@8.0.3':
     resolution: {integrity: sha512-GHSoOVDIxEYEeVR5l044bRCuAKDErD/+9VE+Z9fnaTRr+DDz0Avrm4kKai1mHbPx6C0U7BVNthjd/gcMquZZUA==}
@@ -3375,7 +3375,7 @@ snapshots:
       http-errors: 2.0.0
       mime: 3.0.0
 
-  '@fastify/sensible@6.0.1':
+  '@fastify/sensible@6.0.2':
     dependencies:
       '@lukeed/ms': 2.0.2
       dequal: 2.0.3
