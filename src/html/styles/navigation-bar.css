@@ -30,7 +30,7 @@
       padding: 4px 10px;
     }
 
-    &.active {
+    &[aria-current='page'] {
       background-color: theme(colors.abru.dark.20);
     }
 
