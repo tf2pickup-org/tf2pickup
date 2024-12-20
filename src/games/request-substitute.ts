@@ -19,7 +19,7 @@ export async function requestSubstitute({
   actor: SteamId64 | Bot
   reason?: string
 }): Promise<GameModel> {
-  logger.trace({ number, replacee, actor, reason }, 'substitutePlayer()')
+  logger.trace({ number, replacee, actor, reason }, 'games.requestSubstitute()')
 
   const game = await collections.games.findOne({ number })
   if (game === null) {

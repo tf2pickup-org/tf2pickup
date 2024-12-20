@@ -25,18 +25,12 @@ export default defineConfig({
 
   projects: [
     {
-      name: 'setup database',
-      testMatch: /database\.setup\.ts/,
-    },
-    {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup database'],
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup database'],
     },
 
     // {

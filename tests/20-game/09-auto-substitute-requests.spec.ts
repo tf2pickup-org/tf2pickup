@@ -2,7 +2,6 @@ import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
 import { expect, mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
-import type { UserContext } from '../user-manager'
 import { launchGame } from '../fixtures/launch-game'
 
 const test = mergeTests(launchGame, accessMongoDb)

@@ -23,6 +23,10 @@ export default fp(
     events.on(
       'game:playerReplaced',
       safe(async ({ game, replacee, replacement }) => {
+        if (replacee === replacement) {
+          return
+        }
+
         const re = await collections.players.findOne({ steamId: replacee })
         if (!re) {
           throw new Error(`player not found: ${replacee}`)

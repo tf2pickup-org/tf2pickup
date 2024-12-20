@@ -9,6 +9,7 @@ import { users } from '../data'
 interface AuthUsersFixture {
   steamIds: UserSteamId[]
   users: UserManager
+  usersCreatedInDb: void
 }
 
 const randomBytes = promisify(randomBytesCb)
@@ -17,6 +18,42 @@ export const authUsers = test.extend<AuthUsersFixture>({
   steamIds: async ({}, use) => {
     await use(users.map(u => u.steamId))
   },
+  usersCreatedInDb: [
+    async ({ db }, use) => {
+      const players = db.collection('players')
+      for (const user of users) {
+        await players.updateOne(
+          { steamId: user.steamId },
+          {
+            $set: {
+              name: user.name,
+              joinedAt: new Date(),
+              avatar: {
+                small:
+                  'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg',
+                medium:
+                  'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_medium.jpg',
+                large:
+                  'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg',
+              },
+              roles: 'roles' in user ? (user.roles ?? []) : [],
+              hasAcceptedRules: true,
+              cooldownLevel: 0,
+            },
+            $unset: {
+              activeGame: 1,
+              skill: 1,
+            },
+          },
+          {
+            upsert: true,
+          },
+        )
+      }
+      await use()
+    },
+    { auto: true },
+  ],
   users: async ({ db, steamIds, browser, baseURL }, use) => {
     // opening a new context takes some time
     test.setTimeout(minutesToMilliseconds(1))
