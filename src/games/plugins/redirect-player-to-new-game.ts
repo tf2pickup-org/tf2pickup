@@ -7,8 +7,8 @@ export default fp(
     events.on('player:updated', ({ before, after }) => {
       if (before.activeGame === undefined && after.activeGame !== undefined) {
         app.gateway
-          .toPlayers(after.steamId)
-          .broadcast(async () => await GoToGame(after.activeGame!))
+          .to({ player: after.steamId })
+          .send(async () => await GoToGame(after.activeGame!))
       }
     })
   },

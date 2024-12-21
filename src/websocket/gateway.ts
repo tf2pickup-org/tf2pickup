@@ -8,6 +8,8 @@ import { logger } from '../logger'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
+  ready: () => void
+  navigated: (url: string) => void
   'queue:join': (slotId: number) => void
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void
@@ -57,6 +59,11 @@ const preReadyToggle = z.object({
   HEADERS: htmxHeaders,
 })
 
+const navigated = z.object({
+  navigated: z.string(),
+  HEADERS: htmxHeaders.optional(),
+})
+
 const clientMessage = z.union([
   joinQueue,
   leaveQueue,
@@ -64,6 +71,7 @@ const clientMessage = z.union([
   voteMap,
   markAsFriend,
   preReadyToggle,
+  navigated,
 ])
 
 type MessageFn = (
@@ -71,6 +79,102 @@ type MessageFn = (
 ) => string | Promise<string> | string[] | Promise<string[]>
 interface Broadcaster {
   broadcast: (messageFn: MessageFn) => void
+}
+
+async function sendSafe(client: WebSocket, msg: string) {
+  return new Promise<void>((resolve, reject) => {
+    if (client.readyState !== WebSocket.OPEN) {
+      resolve()
+      return
+    }
+
+    client.send(msg, err => {
+      if (err) {
+        if ('code' in err && err.code === 'EPIPE') {
+          client.terminate()
+          resolve()
+          return
+        }
+
+        reject(err)
+      } else {
+        resolve()
+      }
+    })
+  })
+}
+
+async function send(client: WebSocket, message: MessageFn) {
+  try {
+    const m = await message(client.player?.steamId)
+    if (Array.isArray(m)) {
+      for (const msg of m) {
+        await sendSafe(client, msg)
+      }
+    } else {
+      await sendSafe(client, m)
+    }
+  } catch (error) {
+    assertIsError(error)
+    logger.error(error)
+  }
+}
+
+type Filters = { players?: Set<SteamId64>; urls?: Set<string> }
+type UserFilters =
+  | { player: SteamId64 }
+  | { players: SteamId64[] }
+  | { url: string }
+  | { urls: string[] }
+
+function mergeFilters(base: Filters, additional: UserFilters) {
+  if ('players' in additional || 'player' in additional) {
+    base.players ??= new Set()
+  }
+
+  if ('url' in additional || 'urls' in additional) {
+    base.urls ??= new Set()
+  }
+
+  if ('player' in additional) {
+    base.players!.add(additional.player)
+  } else if ('players' in additional) {
+    additional.players.forEach(player => base.players!.add(player))
+  } else if ('url' in additional) {
+    base.urls!.add(additional.url)
+  } else if ('urls' in additional) {
+    additional.urls.forEach(url => base.urls!.add(url))
+  }
+  return base
+}
+
+class BroadcastOperator {
+  constructor(
+    public readonly app: FastifyInstance,
+    private readonly filters: Filters,
+  ) {}
+
+  to(filter: UserFilters) {
+    return new BroadcastOperator(this.app, mergeFilters(this.filters, filter))
+  }
+
+  send(message: MessageFn) {
+    this.app.websocketServer.clients.forEach(async client => {
+      if (this.filters.players) {
+        if (!client.player || !this.filters.players.has(client.player.steamId)) {
+          return
+        }
+      }
+
+      if (this.filters.urls) {
+        if (!this.filters.urls.has(client.currentUrl)) {
+          return
+        }
+      }
+
+      await send(client, message)
+    })
+  }
 }
 
 export class Gateway extends EventEmitter implements Broadcaster {
@@ -86,95 +190,33 @@ export class Gateway extends EventEmitter implements Broadcaster {
     return this
   }
 
-  broadcast(messageFn: MessageFn) {
-    this.app.websocketServer.clients.forEach(async client => {
-      const send = async (msg: string) =>
-        new Promise<void>((resolve, reject) => {
-          if (client.readyState !== WebSocket.OPEN) {
-            resolve()
-            return
-          }
-
-          client.send(msg, err => {
-            if (err) {
-              if ('code' in err && err.code === 'EPIPE') {
-                client.terminate()
-                resolve()
-                return
-              }
-
-              reject(err)
-            } else {
-              resolve()
-            }
-          })
-        })
-
-      try {
-        const message = await messageFn(client.player?.steamId)
-        if (Array.isArray(message)) {
-          for (const msg of message) {
-            await send(msg)
-          }
-        } else {
-          await send(message)
-        }
-      } catch (error) {
-        assertIsError(error)
-        logger.error(error)
-      }
-    })
+  broadcast(message: MessageFn) {
+    this.app.websocketServer.clients.forEach(async client => await send(client, message))
   }
 
-  toPlayers(...players: SteamId64[]): Broadcaster {
-    return {
-      broadcast: (messageFn: MessageFn) => {
-        this.app.websocketServer.clients.forEach(async client => {
-          if (client.player && players.includes(client.player.steamId)) {
-            const send = async (msg: string) =>
-              new Promise<void>((resolve, reject) => {
-                if (client.readyState !== WebSocket.OPEN) {
-                  resolve()
-                  return
-                }
-
-                client.send(msg, err => {
-                  if (err) {
-                    if ('code' in err && err.code === 'EPIPE') {
-                      client.terminate()
-                      resolve()
-                      return
-                    }
-
-                    reject(err)
-                  } else {
-                    resolve()
-                  }
-                })
-              })
-
-            try {
-              const message = await messageFn(client.player.steamId)
-              if (Array.isArray(message)) {
-                for (const msg of message) {
-                  await send(msg)
-                }
-              } else {
-                await send(message)
-              }
-            } catch (error) {
-              assertIsError(error)
-              logger.error(error)
-            }
-          }
-        })
-      },
-    }
+  to(filter: UserFilters): BroadcastOperator {
+    return new BroadcastOperator(this.app, mergeFilters({}, filter))
   }
 
   parse(socket: WebSocket, message: string) {
     try {
       const parsed = clientMessage.parse(JSON.parse(message))
+      if ('navigated' in parsed) {
+        if (!socket.currentUrl) {
+          socket.currentUrl = parsed.navigated
+          this.emit('ready', socket)
+        } else {
+          socket.currentUrl = parsed.navigated
+          this.emit('navigated', socket, parsed.navigated)
+        }
+        return
+      }
+
+      if (!socket.player) {
+        return
+      }
+
+      // all the other calls are for authenticated clients only
       if ('join' in parsed) {
         this.emit('queue:join', socket, parsed.join)
       } else if ('leave' in parsed) {
