@@ -21,7 +21,7 @@ export default fp(
     async function refreshTakenSlots(actor: SteamId64) {
       const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
       const cmps = await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor })))
-      app.gateway.toPlayers(actor).broadcast(() => cmps)
+      app.gateway.to({ player: actor }).send(() => cmps)
     }
 
     app.gateway.on('queue:join', async (socket, slotId) => {
@@ -31,10 +31,10 @@ export default fp(
 
       try {
         const slots = await join(slotId, socket.player.steamId)
-        app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.enable())
+        app.gateway.to({ player: socket.player.steamId }).send(async () => await MapVote.enable())
         app.gateway
-          .toPlayers(socket.player.steamId)
-          .broadcast(async () => await PreReadyUpButton.enable())
+          .to({ player: socket.player.steamId })
+          .send(async () => await PreReadyUpButton.enable())
 
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
           await refreshTakenSlots(socket.player.steamId)
@@ -51,14 +51,10 @@ export default fp(
 
       try {
         const slot = await leave(socket.player.steamId)
-        app.gateway.toPlayers(socket.player.steamId).broadcast(async () => await MapVote.disable())
+        app.gateway.to({ player: socket.player.steamId }).send(async () => await MapVote.disable())
         app.gateway
-          .toPlayers(socket.player.steamId)
-          .broadcast(async () => await PreReadyUpButton.disable())
-
-        app.gateway
-          .toPlayers(socket.player.steamId)
-          .broadcast(async actor => await MapVote({ actor }))
+          .to({ player: socket.player.steamId })
+          .send(async () => await PreReadyUpButton.disable())
 
         if (slot.canMakeFriendsWith?.length) {
           await refreshTakenSlots(socket.player.steamId)
@@ -67,7 +63,7 @@ export default fp(
         const queueState = await getState()
         if (queueState === QueueState.ready) {
           const close = await ReadyUpDialog.close()
-          app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+          app.gateway.to({ player: socket.player.steamId }).send(() => close)
         }
       } catch (error) {
         logger.error(error)
@@ -81,7 +77,7 @@ export default fp(
 
       try {
         const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
-        app.gateway.toPlayers(socket.player.steamId).broadcast(() => close)
+        app.gateway.to({ player: socket.player.steamId }).send(() => close)
       } catch (error) {
         logger.error(error)
       }
@@ -95,8 +91,8 @@ export default fp(
       try {
         await voteMap(socket.player.steamId, map)
         app.gateway
-          .toPlayers(socket.player.steamId)
-          .broadcast(async actor => await MapVote({ actor }))
+          .to({ player: socket.player.steamId })
+          .send(async actor => await MapVote({ actor }))
       } catch (error) {
         logger.error(error)
       }
