@@ -18,38 +18,54 @@ import { GameScore } from '../views/html/game-score'
 export default fp(async app => {
   events.on('game:updated', async ({ before, after }) => {
     if (before.state !== after.state) {
-      app.gateway.broadcast(async () => await GameStateIndicator({ game: after }))
-      app.gateway.broadcast(async actor => await ConnectInfo({ game: after, actor }))
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async () => await GameStateIndicator({ game: after }))
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async actor => await ConnectInfo({ game: after, actor }))
 
       if ([GameState.launching, GameState.ended, GameState.interrupted].includes(after.state)) {
-        app.gateway.broadcast(async actor => await GameSlotList({ game: after, actor }))
+        app.gateway
+          .to({ url: `/games/${after.number}` })
+          .send(async actor => await GameSlotList({ game: after, actor }))
       }
     }
 
     if (before.score?.blu !== after.score?.blu || before.score?.red !== after.score?.red) {
-      app.gateway.broadcast(async () => await GameScore({ game: after }))
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async () => await GameScore({ game: after }))
     }
 
     if (
       before.connectString !== after.connectString ||
       before.stvConnectString !== after.stvConnectString
     ) {
-      app.gateway.broadcast(async actor => await ConnectInfo({ game: after, actor }))
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async actor => await ConnectInfo({ game: after, actor }))
     }
 
     if (before.logsUrl !== after.logsUrl) {
-      app.gateway.broadcast(async () => await LogsLink({ game: after }))
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async () => await LogsLink({ game: after }))
     }
 
     if (before.demoUrl !== after.demoUrl) {
-      app.gateway.broadcast(async () => await DemoLink({ game: after }))
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async () => await DemoLink({ game: after }))
     }
 
     if (before.events.length < after.events.length) {
       const n = before.events.length - after.events.length
       const newEvents = after.events.slice(n)
       for (const event of newEvents) {
-        app.gateway.broadcast(async () => await GameEventList.append({ game: after, event }))
+        app.gateway
+          .to({ url: `/games/${after.number}` })
+          .send(async () => await GameEventList.append({ game: after, event }))
       }
     }
 
@@ -62,8 +78,9 @@ export default fp(async app => {
 
         if (beforeSlot.shouldJoinBy !== slot.shouldJoinBy) {
           app.gateway
-            .toPlayers(slot.player)
-            .broadcast(async actor => await ConnectInfo({ game: after, actor }))
+            .to({ url: `/games/${after.number}` })
+            .to({ player: slot.player })
+            .send(async actor => await ConnectInfo({ game: after, actor }))
         }
       }),
     )
@@ -76,9 +93,9 @@ export default fp(async app => {
 
   events.on(
     'game:updated',
-    whenGameEnds(async () => {
+    whenGameEnds(async ({ after }) => {
       const cmp = await GamesLink()
-      app.gateway.broadcast(() => cmp)
+      app.gateway.to({ url: `/games/${after.number}` }).send(() => cmp)
     }),
   )
 
@@ -92,7 +109,10 @@ export default fp(async app => {
             connectionStatus: playerConnectionStatus,
           }),
       )
-      app.gateway.toPlayers(player).broadcast(async actor => await ConnectInfo({ game, actor }))
+      app.gateway
+        .to({ url: `/games/${game.number}` })
+        .to({ player })
+        .send(async actor => await ConnectInfo({ game, actor }))
     }),
   )
 
@@ -102,11 +122,15 @@ export default fp(async app => {
       throw new Error(`no such game slot: ${game.number} ${replacee}`)
     }
 
-    app.gateway.broadcast(async actor => await GameSlot({ game, slot, actor }))
+    app.gateway
+      .to({ url: `/games/${game.number}` })
+      .send(async actor => await GameSlot({ game, slot, actor }))
   })
 
   events.on('game:playerReplaced', ({ game }) => {
     // fixme refresh only one slot
-    app.gateway.broadcast(async actor => await GameSlotList({ game, actor }))
+    app.gateway
+      .to({ url: `/games/${game.number}` })
+      .send(async actor => await GameSlotList({ game, actor }))
   })
 })

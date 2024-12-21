@@ -23,11 +23,15 @@ export default fp(
     async function syncAllSlots(...players: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(async slot => {
-        app.gateway.toPlayers(...players).broadcast(async actor => await QueueSlot({ slot, actor }))
+        app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
       })
     }
 
-    app.gateway.on('connected', async socket => {
+    app.gateway.on('ready', async socket => {
+      if (socket.currentUrl !== '/') {
+        return
+      }
+
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
@@ -62,14 +66,14 @@ export default fp(
       safe(async ({ before, after }) => {
         if (before.activeGame !== after.activeGame) {
           const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
-          app.gateway.toPlayers(after.steamId).broadcast(() => cmp)
+          app.gateway.to({ players: [after.steamId] }).send(() => cmp)
           await syncAllSlots(after.steamId)
         }
 
         if (before.preReadyUntil !== after.preReadyUntil) {
           app.gateway
-            .toPlayers(after.steamId)
-            .broadcast(async actor => await PreReadyUpButton({ actor }))
+            .to({ players: [after.steamId] })
+            .send(async actor => await PreReadyUpButton({ actor }))
         }
       }),
     )
@@ -107,7 +111,7 @@ export default fp(
             .filter(Boolean) as SteamId64[]
 
           const show = await ReadyUpDialog.show()
-          app.gateway.toPlayers(...players).broadcast(() => show)
+          app.gateway.to({ players }).send(() => show)
         }
       }),
     )
@@ -133,29 +137,29 @@ export default fp(
         if (!slot) {
           return
         }
-        const actors = await collections.queueSlots
-          .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-          .toArray()
-        app.gateway
-          .toPlayers(...actors.map(a => a.player!))
-          .broadcast(async actor => await QueueSlot({ slot, actor }))
+        const players = (
+          await collections.queueSlots
+            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .toArray()
+        ).map(({ player }) => player!)
+        app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
       }),
     )
 
     events.on(
       'queue/friendship:updated',
       safe(async ({ target }) => {
-        const actors = await collections.queueSlots
-          .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-          .toArray()
+        const players = (
+          await collections.queueSlots
+            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .toArray()
+        ).map(({ player }) => player!)
 
         const slots = await collections.queueSlots
           .find({ player: { $in: [target.before, target.after] } })
           .toArray()
         slots.forEach(slot => {
-          app.gateway
-            .toPlayers(...actors.map(a => a.player!))
-            .broadcast(async actor => await QueueSlot({ slot, actor }))
+          app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
         })
       }),
     )
@@ -167,12 +171,12 @@ export default fp(
         if (!slot) {
           return
         }
-        const actors = await collections.queueSlots
-          .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-          .toArray()
-        app.gateway
-          .toPlayers(...actors.map(a => a.player!))
-          .broadcast(async actor => await QueueSlot({ slot, actor }))
+        const players = (
+          await collections.queueSlots
+            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .toArray()
+        ).map(({ player }) => player!)
+        app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
       }),
     )
 
@@ -193,7 +197,7 @@ export default fp(
 
     const refreshBanAlerts = async (player: SteamId64) => {
       const cmp = await BanAlerts({ actor: player })
-      app.gateway.toPlayers(player).broadcast(() => cmp)
+      app.gateway.to({ players: [player] }).send(() => cmp)
 
       setImmediate(async () => {
         await syncAllSlots(player)
