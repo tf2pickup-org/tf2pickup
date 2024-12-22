@@ -7,11 +7,7 @@ export default fp(
     app.get('/auth/sign-out', async (request, reply) => {
       const returnUrl = request.cookies['return_url'] ?? environment.WEBSITE_URL
 
-      return await reply
-        .clearCookie('return_url')
-        .clearCookie('token')
-        .redirect(returnUrl, 302)
-        .send()
+      return reply.clearCookie('return_url').clearCookie('token').redirect(returnUrl, 302)
     })
   },
   {

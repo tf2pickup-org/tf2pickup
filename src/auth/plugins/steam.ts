@@ -92,24 +92,23 @@ export default fp(
         const returnUrl = request.cookies['return_url'] ?? environment.WEBSITE_URL
         logger.trace({ user }, `redirecting to ${returnUrl}`)
 
-        return await reply
+        return reply
           .clearCookie('return_url')
           .setCookie('token', token, { maxAge: secondsInWeek, path: '/' })
           .redirect(returnUrl, 302)
-          .send()
       } catch (e) {
         assertIsError(e)
         logger.error(e, `failed to authenticate user`)
         if (e instanceof InsufficientInGameHoursError) {
-          await reply.code(403).html(
+          return await reply.code(403).html(
             ErrorPage({
               message: `You need at least ${e.requiredHours} in-game hours to register.`,
             }),
           )
         } else if (e instanceof PlayerRegistrationDeniedError) {
-          await reply.code(403).html(ErrorPage({ message: e.message }))
+          return await reply.code(403).html(ErrorPage({ message: e.message }))
         } else {
-          await reply.code(401).html(ErrorPage({ message: e.message }))
+          return await reply.code(401).html(ErrorPage({ message: e.message }))
         }
       }
     })
