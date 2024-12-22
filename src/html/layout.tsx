@@ -2,14 +2,11 @@ import { environment } from '../environment'
 import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
 import Html from '@kitajs/html'
 import { FlashMessages } from './components/flash-messages'
-import { bundle } from './bundle'
 import { resolve } from 'path'
 import { requestContext } from '@fastify/request-context'
 import { embed } from './embed'
 
-const mainCss = await bundle(resolve(import.meta.dirname, 'styles', 'main.css'))
-
-export function Layout(
+export async function Layout(
   props?: Html.PropsWithChildren<{
     title?: string
     embedStyle?: string
@@ -38,6 +35,8 @@ export function Layout(
     )
   }
 
+  const safeCss = await embed(resolve(import.meta.dirname, 'styles', 'main.css'))
+
   return (
     <>
       <html lang="en">
@@ -46,7 +45,7 @@ export function Layout(
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
           <link rel="icon" type="image/x-icon" href="/favicon.ico" />
           <script src="/js/main.js" type="module"></script>
-          <link href={mainCss} rel="stylesheet" hx-preserve></link>
+          <style type="text/css">{safeCss}</style>
           {title}
         </head>
         <body hx-ext="ws,head-support" ws-connect="/ws" class="h-screen" hx-boost="true">
