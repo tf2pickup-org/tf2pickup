@@ -51,12 +51,13 @@ export function ConfigurationEntryEdit(props: {
   if (!isDefault) {
     resetButton = (
       <button
-        class="text-abru-light-60 align-middle"
+        class="align-middle text-abru-light-60"
         type="button"
         hx-delete="/admin/view-for-nerds"
         hx-trigger="click"
         hx-target="closest form"
         hx-swap="outerHTML"
+        hx-params="not value"
       >
         <span class="sr-only">Reset default</span>
         <IconArrowBackUp></IconArrowBackUp>
@@ -71,7 +72,7 @@ export function ConfigurationEntryEdit(props: {
       hx-swap="outerHTML"
     >
       <input type="hidden" name="key" value={props._key} />
-      <div class="text-abru-light-75 table-cell">
+      <div class="table-cell text-abru-light-75">
         <label for={`${props._key}-edit`} class={[isDefault && 'font-normal']}>
           {props._key}
         </label>
