@@ -55,7 +55,7 @@ export default fp(
             authorize: [PlayerRole.admin],
           },
           schema: {
-            body: z.object({
+            querystring: z.object({
               key: z.custom<keyof Configuration>(v =>
                 configurationSchema.options.find(
                   option => option._def.shape().key._def.value === v,
@@ -65,7 +65,7 @@ export default fp(
           },
         },
         async (request, reply) => {
-          const { key } = request.body
+          const { key } = request.query
           const value = await configuration.reset(key)
           const defaultValue = configuration.getDefault(key)
           reply.html(await ConfigurationEntryEdit({ _key: key, value, defaultValue }))

@@ -1,8 +1,8 @@
 import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
-import { IconDeviceFloppy } from '../../../../html/components/icons'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
 import { Admin } from '../../../views/html/admin'
+import { SaveButton } from '../../../views/html/save-button'
 
 export async function GamesPage(props: { user: User }) {
   const whitelistId = await configuration.get('games.whitelist_id')
@@ -14,7 +14,7 @@ export async function GamesPage(props: { user: User }) {
   return (
     <Admin activePage="games" user={props.user}>
       <form action="" method="post">
-        <div class="bg-abru-dark-25 mt-8 flex flex-col gap-4 rounded-2xl p-6">
+        <div class="admin-panel-set flex flex-col gap-4">
           <dl>
             <dt>
               <label for="whitelistId">Whitelist ID</label>
@@ -45,7 +45,7 @@ export async function GamesPage(props: { user: User }) {
                 />
                 <span class="text-white">seconds</span>
               </div>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-abru-light-75">
                 The time a player has to join the gameserver before they are getting subbed
                 automatically. Use 0 to disable.
               </span>
@@ -67,7 +67,7 @@ export async function GamesPage(props: { user: User }) {
                 />
                 <span class="text-white">seconds</span>
               </div>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-abru-light-75">
                 The time a player has to come back to the gameserver after they go offline during
                 the match. Use 0 to disable.
               </span>
@@ -82,7 +82,7 @@ export async function GamesPage(props: { user: User }) {
               <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
                 {executeExtraCommands.join('\n')}
               </textarea>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-abru-light-75">
                 Extra commands to execute on the gameserver before the match starts. One command per
                 line.
               </span>
@@ -113,14 +113,11 @@ export async function GamesPage(props: { user: User }) {
               </select>
             </dd>
           </dl>
-        </div>
 
-        <p>
-          <button type="submit" class="button button--accent mt-6">
-            <IconDeviceFloppy />
-            Save
-          </button>
-        </p>
+          <p class="mt-2">
+            <SaveButton />
+          </p>
+        </div>
       </form>
     </Admin>
   )

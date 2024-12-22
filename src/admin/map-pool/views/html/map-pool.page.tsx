@@ -1,7 +1,8 @@
 import type { User } from '../../../../auth/types/user'
-import { IconDeviceFloppy, IconMinus, IconPlus } from '../../../../html/components/icons'
+import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { mapPool } from '../../../../queue/map-pool'
 import { Admin } from '../../../views/html/admin'
+import { SaveButton } from '../../../views/html/save-button'
 
 export async function MapPoolPage(props: { user: User }) {
   const maps = await mapPool.get()
@@ -35,14 +36,14 @@ export async function MapPoolPage(props: { user: User }) {
             <IconPlus />
             Add map
           </button>
-        </div>
 
-        <p>
-          <button type="submit" class="button button--accent mt-6">
-            <IconDeviceFloppy />
-            Save
-          </button>
-        </p>
+          <p class="mt-2 text-sm">
+            Making changes to the map pool will scramble the maps automatically.
+          </p>
+          <p>
+            <SaveButton />
+          </p>
+        </div>
       </form>
     </Admin>
   )

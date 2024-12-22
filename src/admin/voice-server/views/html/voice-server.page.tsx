@@ -1,8 +1,8 @@
 import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
-import { IconDeviceFloppy } from '../../../../html/components/icons'
 import { VoiceServerType } from '../../../../shared/types/voice-server-type'
 import { Admin } from '../../../views/html/admin'
+import { SaveButton } from '../../../views/html/save-button'
 
 export async function VoiceServerPage(props: { user: User }) {
   const type = await configuration.get('games.voice_server_type')
@@ -133,14 +133,11 @@ export async function VoiceServerPage(props: { user: User }) {
               </dd>
             </dl>
           </fieldset>
-        </div>
 
-        <p>
-          <button type="submit" class="button button--accent mt-6">
-            <IconDeviceFloppy />
-            Save
-          </button>
-        </p>
+          <p class="mt-8">
+            <SaveButton />
+          </p>
+        </div>
       </form>
     </Admin>
   )

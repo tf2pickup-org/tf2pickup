@@ -2,6 +2,7 @@ import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
 import { Admin } from '../../../views/html/admin'
+import { SaveButton } from '../../../views/html/save-button'
 
 export async function PlayerRestrictionsPage(props: { user: User }) {
   const etf2lAccountRequired = await configuration.get('players.etf2l_account_required')
@@ -13,8 +14,8 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
   return (
     <Admin activePage="player-restrictions" user={props.user}>
       <form action="" method="post">
-        <div class="bg-abru-dark-25 mt-8 flex flex-col gap-4 rounded-2xl p-6">
-          <div class="flex flex-row items-center justify-between">
+        <div class="admin-panel-set flex flex-col gap-4">
+          <div class="group flex flex-row items-center justify-between">
             <dl>
               <dt>
                 <label class="text-abru-light-75" for="etf2lAccountRequired">
@@ -22,7 +23,12 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
                 </label>
               </dt>
               <dd class="text-abru-light-75">
-                Players that do not have an ETF2L profile will not be able to register
+                <span class="hidden group-has-[:checked]:inline-block">
+                  Players that do not have an ETF2L profile will not be able to register
+                </span>
+                <span class="group-has-[:checked]:hidden">
+                  All players will be able to register
+                </span>
               </dd>
             </dl>
 
@@ -47,7 +53,7 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
             </dd>
           </dl>
 
-          <div class="flex flex-row items-center justify-between">
+          <div class="group flex flex-row items-center justify-between">
             <dl>
               <dt>
                 <label class="text-abru-light-75" for="denyPlayersWithNoSkillAssigned">
@@ -55,8 +61,13 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
                 </label>
               </dt>
               <dd class="text-abru-light-75">
-                Players that have no skill assigned will be able to join the queue and the default
-                skill will be used for them when launching a game
+                <span class="hidden group-has-[:checked]:inline-block">
+                  Players with no skill assigned won't be allowed to join the queue
+                </span>
+                <span class="group-has-[:checked]:hidden">
+                  Players that have no skill assigned will be able to join the queue and the default
+                  skill will be used for them when launching a game
+                </span>
               </dd>
             </dl>
 
@@ -66,11 +77,11 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
               name="denyPlayersWithNoSkillAssigned"
             />
           </div>
-        </div>
 
-        <button type="submit" class="button button--accent mt-6">
-          Save
-        </button>
+          <p>
+            <SaveButton />
+          </p>
+        </div>
       </form>
     </Admin>
   )
