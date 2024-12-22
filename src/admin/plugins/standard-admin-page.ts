@@ -31,7 +31,7 @@ export function standardAdminPage<Input, Output>({
             },
           },
           async (request, reply) => {
-            reply.status(200).html(await page(request.user!))
+            return reply.status(200).html(page(request.user!))
           },
         )
         .post(
@@ -47,7 +47,7 @@ export function standardAdminPage<Input, Output>({
           async (request, reply) => {
             await save(request.body as Input)
             requestContext.set('messages', { success: ['Configuration saved'] })
-            reply.status(200).html(await page(request.user!))
+            return reply.status(200).html(page(request.user!))
           },
         )
     },

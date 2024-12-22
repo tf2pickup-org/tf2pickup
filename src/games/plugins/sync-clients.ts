@@ -102,7 +102,7 @@ export default fp(async app => {
   events.on(
     'game:playerConnectionStatusUpdated',
     safe(async ({ game, player, playerConnectionStatus }) => {
-      app.gateway.broadcast(
+      app.gateway.to({ url: `/games/${game.number}` }).send(
         async () =>
           await PlayerConnectionStatusIndicator({
             steamId: player,

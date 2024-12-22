@@ -48,7 +48,7 @@ export async function Layout(
           <style type="text/css">{safeCss}</style>
           {title}
         </head>
-        <body hx-ext="ws,head-support" ws-connect="/ws" class="h-screen" hx-boost="true">
+        <body hx-ext="ws,head-support,remove-me" ws-connect="/ws" class="h-screen" hx-boost="true">
           {body}
         </body>
       </html>

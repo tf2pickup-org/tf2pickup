@@ -136,7 +136,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.string().nullable().default(null),
   }),
   z.object({
-    key: z.literal('serveme.tf.ban_gameservers'),
+    key: z.literal('serveme_tf.ban_gameservers'),
     value: z.array(z.string()).default([]),
   }),
   z.object({

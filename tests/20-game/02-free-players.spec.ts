@@ -29,13 +29,15 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
       .map(playerName => players.find(p => p.playerName === playerName)!)
       .map(async player => {
         const page = await player.queuePage()
-        await page.goto()
         await Promise.all([
           expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(1),
           }),
           ...Array.from(Array(12).keys()).map(
-            async i => await expect(page.slot(i).joinButton()).toBeEnabled(),
+            async i =>
+              await expect(page.slot(i).joinButton()).toBeEnabled({
+                timeout: secondsToMilliseconds(1),
+              }),
           ),
         ])
       }),
@@ -43,11 +45,13 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
       .filter(p => !medics.includes(p.playerName))
       .map(async player => {
         const page = await player.queuePage()
-        await page.goto()
         await Promise.all([
-          expect(page.goBackToGameLink()).toBeVisible(),
+          expect(page.goBackToGameLink()).toBeVisible({ timeout: secondsToMilliseconds(1) }),
           ...Array.from(Array(12).keys()).map(
-            async i => await expect(page.slot(i).joinButton()).toBeDisabled(),
+            async i =>
+              await expect(page.slot(i).joinButton()).toBeDisabled({
+                timeout: secondsToMilliseconds(1),
+              }),
           ),
         ])
       }),
@@ -59,13 +63,15 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
       .filter(p => !medics.includes(p.playerName))
       .map(async player => {
         const page = await player.queuePage()
-        await page.goto()
         await Promise.all([
           expect(page.goBackToGameLink()).not.toBeVisible({
-            timeout: secondsToMilliseconds(5),
+            timeout: secondsToMilliseconds(6),
           }),
           ...Array.from(Array(12).keys()).map(
-            async i => await expect(page.slot(i).joinButton()).toBeEnabled(),
+            async i =>
+              await expect(page.slot(i).joinButton()).toBeEnabled({
+                timeout: secondsToMilliseconds(6),
+              }),
           ),
         ])
       }),

@@ -47,12 +47,18 @@ importers:
       '@tailwindcss/typography':
         specifier: 0.5.15
         version: 0.5.15(tailwindcss@3.4.17)
+      '@tf2pickup-org/serveme-tf-client':
+        specifier: 0.1.2
+        version: 0.1.2
       async-mutex:
         specifier: 0.5.0
         version: 0.5.0
       autoprefixer:
         specifier: 10.4.20
         version: 10.4.20(postcss@8.4.49)
+      country-flag-icons:
+        specifier: 1.5.13
+        version: 1.5.13
       croner:
         specifier: 9.0.0
         version: 9.0.0
@@ -810,6 +816,9 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
+  '@tf2pickup-org/serveme-tf-client@0.1.2':
+    resolution: {integrity: sha512-cVEEbUwfc9ooVHLsjirXzHgWfzwjJ7seXy6blzxgKv2KpcB59iGDyzQq80Hu4b6C6OXOQctQCndfZqupKTednQ==}
+
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
@@ -1203,6 +1212,9 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  country-flag-icons@1.5.13:
+    resolution: {integrity: sha512-4JwHNqaKZ19doQoNcBjsoYA+I7NqCH/mC/6f5cBWvdKzcK5TMmzLpq3Z/syVHMHJuDGFwJ+rPpGizvrqJybJow==}
 
   cp-file@10.0.0:
     resolution: {integrity: sha512-vy2Vi1r2epK5WqxOLnskeKeZkdZvTKfFZQCplE3XWsP+SUJyd5XAUFC9lFgTjjXJF2GMne/UML14iEmkAaDfFg==}
@@ -3587,6 +3599,11 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17
 
+  '@tf2pickup-org/serveme-tf-client@0.1.2':
+    dependencies:
+      date-fns: 4.1.0
+      generate-password: 1.7.1
+
   '@trysound/sax@0.2.0': {}
 
   '@tsconfig/strictest@2.0.5': {}
@@ -4020,6 +4037,8 @@ snapshots:
       parse-json: 5.2.0
     optionalDependencies:
       typescript: 5.7.2
+
+  country-flag-icons@1.5.13: {}
 
   cp-file@10.0.0:
     dependencies:
