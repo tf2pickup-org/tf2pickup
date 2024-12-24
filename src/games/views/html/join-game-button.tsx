@@ -9,6 +9,14 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { connectStringToLink } from '../../connect-string-to-link'
 
 export async function JoinGameButton(props: { game: GameModel; actor: SteamId64 | undefined }) {
+  return (
+    <div class="contents" id={`game-${props.game.number}-join-game-button`}>
+      <JoinGameButtonContent {...props} />
+    </div>
+  )
+}
+
+async function JoinGameButtonContent(props: { game: GameModel; actor: SteamId64 | undefined }) {
   let btnContent: JSX.Element
   let connectLink: string | undefined
   if ([GameState.created, GameState.configuring].includes(props.game.state)) {
