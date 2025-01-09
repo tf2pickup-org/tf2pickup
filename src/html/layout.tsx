@@ -9,6 +9,8 @@ import { embed } from './embed'
 export async function Layout(
   props?: Html.PropsWithChildren<{
     title?: string
+    description?: string
+    canonical?: string
     embedStyle?: string
   }>,
 ) {
@@ -47,11 +49,38 @@ export async function Layout(
           <script src="/js/main.js" type="module"></script>
           <style type="text/css">{safeCss}</style>
           {title}
+          <MetaTags {...props} />
         </head>
         <body hx-ext="ws,head-support,remove-me" ws-connect="/ws" class="h-screen" hx-boost="true">
           {body}
         </body>
       </html>
+    </>
+  )
+}
+
+function MetaTags(props?: { title?: string; description?: string; canonical?: string }) {
+  const metaTags: JSX.Element[] = []
+  const ogTags: JSX.Element[] = []
+
+  if (props?.title) {
+    ogTags.push(<meta property="og:title" content={props.title} />)
+  }
+
+  if (props?.description) {
+    metaTags.push(<meta name="description" content={props.description} />)
+    ogTags.push(<meta property="og:description" content={props.description} />)
+  }
+
+  if (props?.canonical) {
+    metaTags.push(<link rel="canonical" href={`${environment.WEBSITE_URL}${props.canonical}`} />)
+    ogTags.push(<meta property="og:url" content={`${environment.WEBSITE_URL}${props.canonical}`} />)
+  }
+
+  return (
+    <>
+      {metaTags.join('\n')}
+      {ogTags.join('\n')}
     </>
   )
 }

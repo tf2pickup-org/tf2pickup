@@ -10,11 +10,14 @@ import { Footer } from '../../../html/components/footer'
 import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
 import { AdminActions } from './admin-actions'
+import { makeTitle } from '../../../html/make-title'
 
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
     <Layout
-      title={`game #${props.game.number}`}
+      title={makeTitle(`game #${props.game.number}`)}
+      description={`game #${props.game.number} details`}
+      canonical={`/games/${props.game.number}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar user={props.user} />

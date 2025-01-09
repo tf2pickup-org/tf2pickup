@@ -26,6 +26,7 @@ import { collections } from '../../../database/collections'
 import type { WithId } from 'mongodb'
 import { format } from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
+import { makeTitle } from '../../../html/make-title'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -139,7 +140,7 @@ function EditPlayer(props: {
 }) {
   return (
     <Layout
-      title={`Edit ${props.player.name}`}
+      title={makeTitle(`Edit ${props.player.name}`)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar user={props.user} />

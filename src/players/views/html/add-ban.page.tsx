@@ -6,11 +6,12 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { format } from 'date-fns'
+import { makeTitle } from '../../../html/make-title'
 
 export async function AddBanPage(props: { player: PlayerModel; user: User }) {
   return (
     <Layout
-      title={`Ban ${props.player.name}`}
+      title={makeTitle(`Ban ${props.player.name}`)}
       embedStyle={resolve(
         import.meta.dirname,
         '..',

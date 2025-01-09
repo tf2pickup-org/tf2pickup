@@ -6,13 +6,13 @@ import { logger } from '../logger'
 const randomBytes = promisify(randomBytesCb)
 
 export async function get(secretName: string): Promise<Buffer> {
-  logger.trace(`secrets.get(secretName=${secretName})`)
+  logger.trace({ secretName }, `secrets.get()`)
   const secret = await collections.secrets.findOne({ name: secretName })
   if (secret === null) {
-    logger.info(`secret "${secretName}" not found; generating...`)
+    logger.info({ secretName }, `secret "${secretName}" not found; generating...`)
     const value = await randomBytes(32)
     await collections.secrets.insertOne({ name: secretName, value: value.toString('hex') })
-    logger.info(`secret "${secretName}" generated`)
+    logger.info({ secretName }, `secret "${secretName}" generated`)
     return value
   } else {
     return Buffer.from(secret.value, 'hex')

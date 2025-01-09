@@ -7,6 +7,7 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { GameListItem } from './game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
+import { makeTitle } from '../../../html/make-title'
 
 const itemsPerPage = 8
 
@@ -20,7 +21,12 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
     .toArray()
 
   return (
-    <Layout title="games" embedStyle={resolve(import.meta.dirname, 'game-list.css')}>
+    <Layout
+      title={makeTitle('games')}
+      description={`games - page ${page}`}
+      canonical="/games"
+      embedStyle={resolve(import.meta.dirname, 'game-list.css')}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto">

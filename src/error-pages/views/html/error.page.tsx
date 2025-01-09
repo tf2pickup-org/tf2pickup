@@ -3,14 +3,15 @@ import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
+import { makeTitle } from '../../../html/make-title'
 
 export function ErrorPage(props: { message: string; user?: User | undefined }) {
   return (
-    <Layout title="error">
+    <Layout title={makeTitle('Error')}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto text-center">
-          <span class="text-rose-600 my-9 text-[48px] font-bold" safe>
+          <span class="my-9 text-[48px] font-bold text-rose-600" safe>
             {props.message}
           </span>
         </div>
