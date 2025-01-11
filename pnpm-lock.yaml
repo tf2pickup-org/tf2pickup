@@ -24,8 +24,8 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       '@fastify/secure-session':
-        specifier: 8.1.0
-        version: 8.1.0
+        specifier: 8.1.1
+        version: 8.1.1
       '@fastify/sensible':
         specifier: 6.0.2
         version: 6.0.2
@@ -562,9 +562,6 @@ packages:
   '@fastify/autoload@6.0.3':
     resolution: {integrity: sha512-/wM2pmI7jP2fGah3YuP14i9vuaijpD4gQYLiyd+eD7gUxpA3B4R6/0QIXQS2eJaYD9aIX4ZFRzPmrZsaetfcWw==}
 
-  '@fastify/cookie@10.0.1':
-    resolution: {integrity: sha512-NV/wbCUv4ETJ5KM1KMu0fLx0nSCm9idIxwg66NZnNbfPQH3rdbx6k0qRs5uy0y+MhBgvDudYRA30KlK659chyw==}
-
   '@fastify/cookie@11.0.2':
     resolution: {integrity: sha512-GWdwdGlgJxyvNv+QcKiGNevSspMQXncjMZ1J8IvuDQk0jvkzgWWZFNC2En3s+nHndZBGV8IbLwOI/sxCZw/mzA==}
 
@@ -592,8 +589,8 @@ packages:
   '@fastify/request-context@6.0.2':
     resolution: {integrity: sha512-VASejjzqd0+L/JNNtNdvbTt+bS8ESgQ3NUwxBFAtIRzMx49Ej52YbSTpiqzTmyUykvXoE/m2UNyhMGvLrstPgg==}
 
-  '@fastify/secure-session@8.1.0':
-    resolution: {integrity: sha512-sCxnu6U4AcQ2LQjpnF5FW+9LC9A0HpEZl93JtdbSfjc8vrzhPAWCeyAzyabyOlBTY50Iu7KJgfBVftdF2RCrOA==}
+  '@fastify/secure-session@8.1.1':
+    resolution: {integrity: sha512-JxdNd1sIo0Zm/n5x3j/2YW+H8OLXWkpGoLR4a32Ca7dnQpFCKJOKb3cj0N/vXj4REINmp44+ucev4SOA5zzpNQ==}
     hasBin: true
 
   '@fastify/send@3.2.0':
@@ -1197,10 +1194,6 @@ packages:
   content-disposition@0.5.4:
     resolution: {integrity: sha512-FveZTNuGw04cxlAiWbzi6zTAL/lhehaWbTtgluJh4/E95DqMwTmha3KZN1aAWA8cFIhHzMZUvLevkw5Rqk+tSQ==}
     engines: {node: '>= 0.6'}
-
-  cookie-signature@1.2.1:
-    resolution: {integrity: sha512-78KWk9T26NhzXtuL26cIJ8/qNHANyJ/ZYrmEXFzUmhZdjpBv+DlWlOANRTGBt48YcyslsLrj0bMLFTmXvLRCOw==}
-    engines: {node: '>=6.6.0'}
 
   cookie@0.6.0:
     resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
@@ -3338,11 +3331,6 @@ snapshots:
 
   '@fastify/autoload@6.0.3': {}
 
-  '@fastify/cookie@10.0.1':
-    dependencies:
-      cookie-signature: 1.2.1
-      fastify-plugin: 5.0.1
-
   '@fastify/cookie@11.0.2':
     dependencies:
       cookie: 1.0.0
@@ -3378,9 +3366,9 @@ snapshots:
     dependencies:
       fastify-plugin: 5.0.1
 
-  '@fastify/secure-session@8.1.0':
+  '@fastify/secure-session@8.1.1':
     dependencies:
-      '@fastify/cookie': 10.0.1
+      '@fastify/cookie': 11.0.2
       fastify-plugin: 5.0.1
       sodium-native: 4.1.1
 
@@ -4027,8 +4015,6 @@ snapshots:
   content-disposition@0.5.4:
     dependencies:
       safe-buffer: 5.2.1
-
-  cookie-signature@1.2.1: {}
 
   cookie@0.6.0: {}
 
