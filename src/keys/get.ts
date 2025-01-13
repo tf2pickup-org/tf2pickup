@@ -12,7 +12,7 @@ import type { KeyPair } from './types/key-pair'
 const generateKeyPair = promisify(generateKeyPairCb)
 
 export async function get(keyName: string): Promise<KeyPair> {
-  logger.trace(`keys.get(keyName=${keyName})`)
+  logger.trace({ keyName }, `keys.get()`)
   const key = await collections.keys.findOne({ name: keyName })
   if (key === null) {
     logger.info(`key pair "${keyName}" not found, generating new one...`)

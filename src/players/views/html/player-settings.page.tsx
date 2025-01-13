@@ -3,12 +3,13 @@ import type { User } from '../../../auth/types/user'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { IconVolume } from '../../../html/components/icons'
+import { makeTitle } from '../../../html/make-title'
 
 export async function PlayerSettingsPage(props: { user: User }) {
   const soundVolume = props.user.player.preferences.soundVolume ?? 1
 
   return (
-    <Layout title="Settings">
+    <Layout title={makeTitle('Settings')}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto">

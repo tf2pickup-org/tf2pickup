@@ -9,6 +9,7 @@ import { GameState } from '../../../database/models/game.model'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { IconAwardFilled } from '../../../html/components/icons'
+import { makeTitle } from '../../../html/make-title'
 
 interface HallOfFameEntry {
   player: PlayerModel
@@ -19,7 +20,12 @@ export async function HallOfFamePage(props: { user?: User | undefined }) {
   const [all, medics] = await Promise.all([getMostActiveOverall(), getMostActiveMedics()])
 
   return (
-    <Layout title="Hall of fame" embedStyle={resolve(import.meta.dirname, 'hall-of-fame.page.css')}>
+    <Layout
+      title={makeTitle('Hall of fame')}
+      description="Hall of fame"
+      canonical="/hall-of-fame"
+      embedStyle={resolve(import.meta.dirname, 'hall-of-fame.page.css')}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-x-4 gap-y-2 p-2 lg:grid-cols-2 lg:gap-y-0 lg:p-0">

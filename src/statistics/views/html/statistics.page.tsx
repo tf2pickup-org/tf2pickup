@@ -1,13 +1,19 @@
 import type { User } from '../../../auth/types/user'
+import { environment } from '../../../environment'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
+import { makeTitle } from '../../../html/make-title'
 import { PlayedMapsCount } from './played-maps-count'
 
 export async function StatisticsPage(user?: User) {
   return (
-    <Layout title="statistics">
+    <Layout
+      title={makeTitle('statistics')}
+      description={`${environment.WEBSITE_NAME} statistics`}
+      canonical="/statistics"
+    >
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">

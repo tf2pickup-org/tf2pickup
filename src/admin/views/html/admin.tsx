@@ -28,6 +28,7 @@ import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { Footer } from '../../../html/components/footer'
 import { resolve } from 'path'
+import { makeTitle } from '../../../html/make-title'
 
 const adminPages = {
   'player-restrictions': {
@@ -106,7 +107,7 @@ export function Admin(props: {
 }) {
   return (
     <Layout
-      title={adminPages[props.activePage].title}
+      title={makeTitle(adminPages[props.activePage].title)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar user={props.user} />

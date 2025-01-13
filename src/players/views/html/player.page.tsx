@@ -22,6 +22,8 @@ import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
 import type { WithId } from 'mongodb'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { makeTitle } from '../../../html/make-title'
+import { environment } from '../../../environment'
 
 const gamesPerPage = 5
 
@@ -52,7 +54,12 @@ export async function PlayerPage(props: {
   const gameCountOnClasses = await getPlayerGameCountOnClasses(props.player.steamId)
 
   return (
-    <Layout title={props.player.name} embedStyle={resolve(import.meta.dirname, 'style.css')}>
+    <Layout
+      title={makeTitle(props.player.name)}
+      description={`${props.player.name}'s profile on ${environment.WEBSITE_NAME}`}
+      canonical={`/players/${props.player.steamId}`}
+      embedStyle={resolve(import.meta.dirname, 'style.css')}
+    >
       <NavigationBar user={props.user} />
       <Page>
         <div class="container relative mx-auto grid grid-cols-2 gap-[30px]">
