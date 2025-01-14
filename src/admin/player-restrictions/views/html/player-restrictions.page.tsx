@@ -10,10 +10,12 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
   const denyPlayersWithNoSkillAssigned = await configuration.get(
     'queue.deny_players_with_no_skill_assigned',
   )
+  const playerSkillThreshold = await configuration.get('queue.player_skill_threshold')
+  const playerSkillThresholdEnabled = playerSkillThreshold !== null
 
   return (
     <Admin activePage="player-restrictions" user={props.user}>
-      <form action="" method="post">
+      <form action="" method="post" id="playerRestrictionsForm">
         <div class="admin-panel-set flex flex-col gap-4">
           <div class="group flex flex-row items-center justify-between">
             <dl>
@@ -77,6 +79,46 @@ export async function PlayerRestrictionsPage(props: { user: User }) {
               name="denyPlayersWithNoSkillAssigned"
             />
           </div>
+
+          <dl>
+            <dt class="group flex flex-row gap-2">
+              <label for="playerSkillThresholdEnabled">Player skill threshold</label>
+              <input
+                type="checkbox"
+                id="playerSkillThresholdEnabled"
+                name="playerSkillThresholdEnabled"
+                value="enabled"
+                checked={playerSkillThresholdEnabled}
+              />
+              <span class="hidden group-has-[:checked]:inline-block">enabled</span>
+              <span class="group-has-[:checked]:hidden">disabled</span>
+            </dt>
+            <dd class="flex flex-col">
+              <div>
+                <label for="playerSkillThreshold" class="sr-only">
+                  Player skill threshold value
+                </label>
+                <input
+                  type="number"
+                  id="playerSkillThreshold"
+                  name="playerSkillThreshold"
+                  value={playerSkillThreshold?.toString()}
+                  disabled={!playerSkillThresholdEnabled}
+                  _={`
+                    on change from #playerRestrictionsForm
+                      if #playerRestrictionsForm.playerSkillThresholdEnabled.checked
+                        remove [@disabled]
+                      else
+                        add [@disabled]
+                      end
+                  `}
+                />
+              </div>
+              <p class="text-sm text-abru-light-75">
+                Players will be able to join queue only on classes that meet the given criteria.
+              </p>
+            </dd>
+          </dl>
 
           <p>
             <SaveButton />
