@@ -15,7 +15,6 @@
   .admin-panel-header {
     display: grid;
     grid-template-columns: 1fr auto;
-    margin-bottom: 24px;
     align-items: center;
 
     h1 {
@@ -27,6 +26,7 @@
   .input-group {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
     gap: 4px;
 
     .label {

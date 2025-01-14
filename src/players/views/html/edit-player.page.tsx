@@ -8,12 +8,16 @@ import { Footer } from '../../../html/components/footer'
 import {
   AdminPanel,
   AdminPanelBody,
+  AdminPanelHeader,
   AdminPanelLink,
+  AdminPanelSection,
   AdminPanelSidebar,
 } from '../../../html/components/admin-panel'
 import {
+  IconArrowBackUp,
   IconBan,
-  IconChartArrowsVertical,
+  IconDeviceFloppy,
+  IconInputX,
   IconPlus,
   IconUserScan,
   IconX,
@@ -27,10 +31,10 @@ import type { WithId } from 'mongodb'
 import { format } from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 const editPlayerPages = {
   '/profile': 'Profile',
-  '/skill': 'Skill',
   '/bans': 'Bans',
 } as const
 
@@ -38,65 +42,79 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
   return (
     <EditPlayer player={props.player} user={props.user} activePage="/profile">
       <form action="" method="post">
-        <div class="admin-panel-content">
-          <div class="group">
+        <div class="admin-panel-set">
+          <div class="grid grid-cols-[1fr_184px] gap-y-4">
             <div class="input-group">
               <label class="label" for="player-nickname">
                 Nickname
               </label>
               <input type="text" name="name" value={props.player.name} id="player-nickname" />
             </div>
+
+            <div class="row-span-3">
+              <img
+                src={props.player.avatar.large}
+                width="184"
+                height="184"
+                class="player-avatar rounded"
+                alt={`${props.player.name}'s avatar`}
+              />
+            </div>
+
+            <div class="input-group">
+              <label class="label" for="player-skill">
+                Skill
+              </label>
+              <EditPlayerSkill steamId={props.player.steamId} skill={props.player.skill} />
+            </div>
+
+            <div>
+              <button type="submit" class="button button--accent button--dense">
+                <IconDeviceFloppy size={20} />
+                <span>Save</span>
+              </button>
+            </div>
           </div>
         </div>
-
-        <button type="submit" class="button button--accent mt-6">
-          Save
-        </button>
       </form>
     </EditPlayer>
   )
 }
 
-export async function EditPlayerSkillPage(props: { player: PlayerModel; user: User }) {
+export async function EditPlayerSkill(props: { steamId: SteamId64; skill: PlayerModel['skill'] }) {
   const config = queue.config
   const defaultSkill = await configuration.get('games.default_player_skill')
-  return (
-    <EditPlayer player={props.player} user={props.user} activePage="/skill">
-      <form action="" method="post">
-        <div class="admin-panel-content">
-          <div class="group">
-            <div class="input-group">
-              <label class="label" for="player-skill">
-                Skill
-              </label>
-              <div class="flex flex-row gap-6">
-                {config.classes.map(gameClass => {
-                  const skill =
-                    props.player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
-                  return (
-                    <div class="flex flex-row items-center gap-2">
-                      <GameClassIcon gameClass={gameClass.name} size={32} />
-                      <input
-                        type="number"
-                        name={`skill.${gameClass.name}`}
-                        value={skill.toString()}
-                        class="player-skill"
-                        required
-                        step="0.1"
-                      />
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <button type="submit" class="button button--accent mt-6">
-          Save
-        </button>
-      </form>
-    </EditPlayer>
+  return (
+    <div class="flex flex-row gap-6" hx-target="this">
+      {config.classes.map(gameClass => {
+        const skill = props.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
+        return (
+          <div class="flex flex-row items-center gap-2">
+            <GameClassIcon gameClass={gameClass.name} size={32} />
+            <input
+              type="number"
+              name={`skill.${gameClass.name}`}
+              value={skill.toString()}
+              class="player-skill"
+              required
+              step="0.1"
+            />
+          </div>
+        )
+      })}
+      <button
+        type="button"
+        class="button button--dense"
+        hx-get={`/players/${props.steamId}/edit/skill/default`}
+        hx-trigger="click"
+        hx-swap="outerHTML"
+        hx-disabled-elt="this"
+      >
+        <IconInputX />
+        Reset
+      </button>
+    </div>
   )
 }
 
@@ -138,28 +156,27 @@ function EditPlayer(props: {
   activePage: keyof typeof editPlayerPages
   action?: Children
 }) {
+  const safeName = props.player.name
   return (
     <Layout
       title={makeTitle(`Edit ${props.player.name}`)}
-      embedStyle={resolve(import.meta.dirname, 'style.css')}
+      embedStyle={resolve(import.meta.dirname, 'edit-player.page.css')}
     >
       <NavigationBar user={props.user} />
       <Page>
         <AdminPanel>
           <AdminPanelSidebar>
+            <AdminPanelSection>Edit player: {safeName}</AdminPanelSection>
+            <AdminPanelLink href={`/players/${props.player.steamId}`}>
+              <IconArrowBackUp />
+              Back
+            </AdminPanelLink>
             <AdminPanelLink
               href={`/players/${props.player.steamId}/edit/profile`}
               active={props.activePage === '/profile'}
             >
               <IconUserScan />
               Profile
-            </AdminPanelLink>
-            <AdminPanelLink
-              href={`/players/${props.player.steamId}/edit/skill`}
-              active={props.activePage === '/skill'}
-            >
-              <IconChartArrowsVertical />
-              Skill
             </AdminPanelLink>
             <AdminPanelLink
               href={`/players/${props.player.steamId}/edit/bans`}
@@ -171,7 +188,7 @@ function EditPlayer(props: {
           </AdminPanelSidebar>
           <AdminPanelBody>
             <div class="admin-panel-header">
-              <h1>{editPlayerPages[props.activePage]}</h1>
+              <AdminPanelHeader>{editPlayerPages[props.activePage]}</AdminPanelHeader>
               {props.action ? props.action : <></>}
             </div>
             {props.children}
@@ -195,7 +212,6 @@ export async function BanDetails(props: { player: PlayerModel; ban: PlayerBan })
 
     actorDesc = (
       <a href={`/players/${actor.steamId}`} safe>
-        {' '}
         {actor.name}
       </a>
     )

@@ -8,7 +8,7 @@ import {
   BanDetails,
   EditPlayerBansPage,
   EditPlayerProfilePage,
-  EditPlayerSkillPage,
+  EditPlayerSkill,
 } from './views/html/edit-player.page'
 import { collections } from '../database/collections'
 import { PlayerRole, type PlayerPreferences } from '../database/models/player.model'
@@ -131,24 +131,35 @@ export default fp(
             }),
             body: z.object({
               name: z.string(),
+              ...Object.keys(Tf2ClassName).reduce<
+                Partial<Record<`skill.${Tf2ClassName}`, z.ZodNumber>>
+              >((acc, key) => ({ ...acc, [`skill.${key}`]: z.coerce.number().optional() }), {}),
             }),
           },
         },
         async (req, reply) => {
           const { steamId } = req.params
           const { name } = req.body
+
           const player = await collections.players.findOne({ steamId })
           if (player === null) {
             return reply.notFound(`player not found: ${steamId}`)
           }
 
-          await update(player.steamId, { $set: { name } })
+          const skill = Object.entries(req.body)
+            .filter(([key]) => key.startsWith('skill.'))
+            .reduce<Partial<Record<Tf2ClassName, number>>>(
+              (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
+              {},
+            )
+
+          await update(player.steamId, { $set: { name, skill } })
           req.flash('success', `Player updated`)
           await reply.redirect(`/players/${steamId}`)
         },
       )
       .get(
-        '/players/:steamId/edit/skill',
+        '/players/:steamId/edit/skill/default',
         {
           config: {
             authorize: [PlayerRole.admin],
@@ -159,47 +170,9 @@ export default fp(
             }),
           },
         },
-        async (req, reply) => {
-          const { steamId } = req.params
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
-
-          reply.status(200).html(await EditPlayerSkillPage({ player, user: req.user! }))
-        },
-      )
-      .post(
-        '/players/:steamId/edit/skill',
-        {
-          config: {
-            authorize: [PlayerRole.admin],
-          },
-          schema: {
-            params: z.object({
-              steamId: steamId64,
-            }),
-            body: z.object(
-              Object.keys(Tf2ClassName).reduce<
-                Partial<Record<`skill.${Tf2ClassName}`, z.ZodNumber>>
-              >((acc, key) => ({ ...acc, [`skill.${key}`]: z.coerce.number().optional() }), {}),
-            ),
-          },
-        },
-        async (req, reply) => {
-          const { steamId } = req.params
-          const skill = Object.entries(req.body).reduce<Partial<Record<Tf2ClassName, number>>>(
-            (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
-            {},
-          )
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
-
-          await update(player.steamId, { $set: { skill } })
-          req.flash('success', `Player skill updated`)
-          await reply.redirect(`/players/${steamId}`)
+        async (request, reply) => {
+          const { steamId } = request.params
+          return reply.html(EditPlayerSkill({ steamId, skill: {} }))
         },
       )
       .get(
