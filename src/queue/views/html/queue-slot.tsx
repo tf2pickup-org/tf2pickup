@@ -1,4 +1,6 @@
+import { configuration } from '../../../configuration'
 import { collections } from '../../../database/collections'
+import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import {
   IconHeart,
@@ -27,7 +29,8 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     }
 
     const activeBans = actor.bans?.filter(b => b.end.getTime() > new Date().getTime())?.length ?? 0
-    const disabled = Boolean(actor.activeGame) || activeBans > 0
+    const disabled =
+      Boolean(actor.activeGame) || activeBans > 0 || !(await meetsSkillThreshold(actor, props.slot))
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
 
@@ -151,4 +154,17 @@ async function determineMarkAsFriendButtonState(
   }
 
   return MarkAsFriendButtonState.none
+}
+
+async function meetsSkillThreshold(actor: PlayerModel, slot: QueueSlotModel): Promise<boolean> {
+  const skillThreshold = await configuration.get('queue.player_skill_threshold')
+  if (skillThreshold === null) {
+    return true
+  }
+
+  const skill =
+    actor.skill?.[slot.gameClass] ??
+    (await configuration.get('games.default_player_skill'))[slot.gameClass] ??
+    0
+  return skill >= skillThreshold
 }

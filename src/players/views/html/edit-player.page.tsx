@@ -92,8 +92,12 @@ export async function EditPlayerSkill(props: { steamId: SteamId64; skill: Player
         return (
           <div class="flex flex-row items-center gap-2">
             <GameClassIcon gameClass={gameClass.name} size={32} />
+            <label class="sr-only" for={`playerSkill${gameClass.name}`}>
+              Player's skill on {gameClass.name}
+            </label>
             <input
               type="number"
+              id={`playerSkill${gameClass.name}`}
               name={`skill.${gameClass.name}`}
               value={skill.toString()}
               class="player-skill"

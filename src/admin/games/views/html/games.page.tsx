@@ -108,7 +108,7 @@ export async function GamesPage(props: { user: User }) {
                   value="gameserver"
                   selected={logsTfUploadMethod === LogsTfUploadMethod.gameserver}
                 >
-                  Gameserver - logs will be upploaded by the logs.tf sourcemod plugin
+                  Gameserver - logs will be uploaded by the logs.tf sourcemod plugin
                 </option>
               </select>
             </dd>
