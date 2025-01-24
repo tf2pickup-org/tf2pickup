@@ -61,7 +61,7 @@
     "zod": "3.24.1"
   },
   "devDependencies": {
-    "@eslint/js": "9.18.0",
+    "@eslint/js": "9.19.0",
     "@playwright/test": "1.50.0",
     "@tsconfig/strictest": "2.0.5",
     "@types/eslint__js": "8.42.3",
@@ -76,7 +76,7 @@
     "chart.js": "4.4.7",
     "cpy-cli": "5.0.0",
     "cssnano": "7.0.6",
-    "eslint": "9.18.0",
+    "eslint": "9.19.0",
     "globals": "15.14.0",
     "howler": "2.2.4",
     "htmx.org": "1.9.12",
