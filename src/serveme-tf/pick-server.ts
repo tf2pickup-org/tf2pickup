@@ -1,6 +1,6 @@
 import type { ServerId } from '@tf2pickup-org/serveme-tf-client'
 import { configuration } from '../configuration'
-import { sample } from 'lodash-es'
+import { sample } from 'es-toolkit'
 
 interface ServerData {
   id: ServerId

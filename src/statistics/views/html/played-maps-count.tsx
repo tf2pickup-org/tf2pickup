@@ -1,4 +1,4 @@
-import { concat, dropRight, takeRight } from 'lodash-es'
+import { dropRight, takeRight } from 'es-toolkit'
 import { getPlayedMapsCount, type PlayedMapCount } from '../../get-played-maps-count'
 
 export async function PlayedMapsCount() {
@@ -58,7 +58,7 @@ function toChartData(data: PlayedMapCount[]) {
     mapName: 'other',
     count: lastFewMaps.reduce((sum: number, d: PlayedMapCount) => sum + d.count, 0),
   }
-  const topMaps = concat(dropRight(data, Math.max(0, data.length - 8)), other)
+  const topMaps = dropRight(data, Math.max(0, data.length - 8)).concat(other)
 
   return {
     labels: topMaps.map((d: PlayedMapCount) => d.mapName),

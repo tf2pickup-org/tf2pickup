@@ -1,5 +1,5 @@
 import { strict } from 'node:assert'
-import { meanBy } from 'lodash-es'
+import { meanBy } from 'es-toolkit'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { Tf2Team } from '../shared/types/tf2-team'
@@ -108,7 +108,7 @@ interface TeamLineupWithSkillAverage extends TeamLineup {
 }
 
 function calculateAverageSkill(lineup: TeamLineup): TeamLineupWithSkillAverage {
-  return { ...lineup, skillAverage: meanBy(lineup.lineup, 'skill') }
+  return { ...lineup, skillAverage: meanBy(lineup.lineup, ({ skill }) => skill) }
 }
 
 interface LineupWithSkillAverageDifference extends PossibleLineup {

@@ -4,7 +4,7 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
 import { create } from '../create'
 import { queue } from '../../queue'
-import { debounce } from 'lodash-es'
+import { debounce } from 'es-toolkit'
 
 const launchGame = debounce(async () => {
   logger.info('launching game')
@@ -19,7 +19,7 @@ export default fp(
     events.on('queue/state:updated', async ({ state }) => {
       if (state === QueueState.launching) {
         try {
-          await launchGame()
+          launchGame()
         } catch (error) {
           logger.error(error)
         }
@@ -28,7 +28,7 @@ export default fp(
 
     app.addHook('onListen', async () => {
       if ((await queue.getState()) === QueueState.launching) {
-        await launchGame()
+        launchGame()
       }
     })
   },

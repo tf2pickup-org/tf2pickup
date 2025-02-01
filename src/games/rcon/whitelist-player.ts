@@ -1,4 +1,4 @@
-import { deburr } from 'lodash-es'
+import { deburr } from 'es-toolkit'
 import { collections } from '../../database/collections'
 import type { GameModel } from '../../database/models/game.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
