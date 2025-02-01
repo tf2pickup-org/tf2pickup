@@ -6,7 +6,6 @@ import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { discord } from '../../discord'
 import { GuildConfiguration } from './views/html/guild-configuration'
 import { configuration } from '../../configuration'
-import { requestContext } from '@fastify/request-context'
 
 const adminPage = standardAdminPage({
   path: '/admin/discord',

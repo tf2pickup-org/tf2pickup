@@ -8,7 +8,7 @@ export function DiscordPage(props: { user: User }) {
   return (
     <Admin activePage="discord" user={props.user}>
       <div class="admin-panel-set">
-        {discord.client ? (
+        {discord.client?.isReady() ? (
           <DiscordConfiguration client={discord.client} />
         ) : (
           <>

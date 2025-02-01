@@ -124,6 +124,7 @@ export interface Events {
   'player:updated': {
     before: PlayerModel
     after: PlayerModel
+    adminId?: SteamId64 | undefined
   }
   'player/ban:added': {
     player: SteamId64
