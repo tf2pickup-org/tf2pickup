@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { whenGameEnds } from '../when-game-ends'
-import { delay } from 'lodash-es'
+import { delay } from 'es-toolkit/compat'
 import { secondsToMilliseconds } from 'date-fns'
 import { cleanup } from '../rcon/cleanup'
 import { assertIsError } from '../../utils/assert-is-error'

@@ -1,5 +1,5 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { deburr } from 'lodash-es'
+import { deburr } from 'es-toolkit'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'

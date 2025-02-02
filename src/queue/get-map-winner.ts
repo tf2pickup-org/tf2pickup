@@ -1,4 +1,4 @@
-import { maxBy, sample } from 'lodash-es'
+import { maxBy, sample } from 'es-toolkit'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 

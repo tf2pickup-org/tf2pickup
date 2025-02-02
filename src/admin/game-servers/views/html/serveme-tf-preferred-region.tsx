@@ -1,4 +1,4 @@
-import { memoize } from 'lodash-es'
+import { memoize } from 'es-toolkit'
 import { servemeTf } from '../../../../serveme-tf'
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 import { configuration } from '../../../../configuration'
