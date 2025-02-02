@@ -8,6 +8,7 @@ import { resolve } from 'node:path'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { reset } from './reset'
+import { resetMapOptions } from './reset-map-options'
 
 const slotCount = await collections.queueSlots.countDocuments()
 if (slotCount === 0) {
@@ -20,6 +21,7 @@ export const queue = {
   getMapWinner,
   getSlots,
   getState,
+  resetMapOptions,
 } as const
 
 export default fp(
