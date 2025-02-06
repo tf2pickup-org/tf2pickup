@@ -10,15 +10,14 @@ import lightenDarken from 'postcss-lighten-darken'
 import autoprefixer from 'autoprefixer'
 import { environment } from '../environment'
 import mime from 'mime'
+import { memoize } from 'es-toolkit'
 
 const srcDir = resolve(import.meta.dirname, '..')
-const cache = new Map<string, string>()
 
-export async function embed(fileName: string): Promise<string> {
-  if (cache.has(fileName)) {
-    return cache.get(fileName)!
-  }
+// For production, we memoize the result of the embed function to avoid rebuilding the same file multiple times
+export const embed = environment.NODE_ENV === 'production' ? memoize(doEmbed) : doEmbed
 
+async function doEmbed(fileName: string): Promise<string> {
   logger.debug(`building ${fileName}...`)
   const css = await readFile(fileName)
   const { name, ext, dir } = parse(fileName)
@@ -38,6 +37,5 @@ export async function embed(fileName: string): Promise<string> {
     })
   ).css
   logger.debug({ type: mime.getType(fileName), length: style.length }, `${fileName} built`)
-  cache.set(fileName, style)
   return style
 }
