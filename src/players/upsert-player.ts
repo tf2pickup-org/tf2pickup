@@ -1,4 +1,3 @@
-import { UserSummary } from 'steamapi'
 import type { PlayerModel } from '../database/models/player.model'
 import { collections } from '../database/collections'
 import { createPlayer } from './create-player'
@@ -13,20 +12,39 @@ import { etf2l } from '../etf2l'
 import { PlayerRegistrationDeniedError } from './errors/player-registration-denied.error'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 
-export async function upsertPlayer(summary: UserSummary): Promise<PlayerModel> {
+interface UpsertPlayerParams {
+  steamID: string
+  nickname: string
+  avatar: {
+    small: string
+    medium: string
+    large: string
+  }
+}
+
+export async function upsertPlayer(summary: UpsertPlayerParams): Promise<PlayerModel> {
   const steamId = steamId64.parse(summary.steamID)
   const player = await collections.players.findOne({ steamId })
   if (player) {
     return player
   }
 
-  await verifyInGameHours(steamId)
-
-  const playerParams = await verifyEtf2l({
+  let playerParams: CreatePlayerParams = {
     steamId,
     name: summary.nickname,
     avatar: summary.avatar,
-  })
+  }
+
+  const bypassedUsers = await configuration.get('players.bypass_registration_restrictions')
+  if (bypassedUsers.some(u => u === steamId)) {
+    logger.info(
+      `${steamId} is on the list of bypassed registration restrictions. Skipping all checks`,
+    )
+  } else {
+    await verifyInGameHours(steamId)
+    playerParams = await verifyEtf2l(playerParams)
+  }
+
   return await createPlayer(playerParams)
 }
 

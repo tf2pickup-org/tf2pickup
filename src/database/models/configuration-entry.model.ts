@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
+import { steamId64 } from '../../shared/schemas/steam-id-64'
 
 export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
@@ -98,6 +99,10 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
     key: z.literal('players.minimum_in_game_hours'),
     value: z.number().default(0),
+  }),
+  z.object({
+    key: z.literal('players.bypass_registration_restrictions'),
+    value: z.array(steamId64).default([]),
   }),
   z.object({
     key: z.literal('queue.player_skill_threshold'),

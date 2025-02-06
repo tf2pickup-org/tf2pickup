@@ -71,8 +71,8 @@ const adminPages = {
     icon: IconArrowsShuffle,
     section: 'Actions',
   },
-  'create-player-account': {
-    title: 'Create player account',
+  'bypass-registration-restrictions': {
+    title: 'Bypass restrictions',
     icon: IconUserPlus,
     section: 'Actions',
   },
