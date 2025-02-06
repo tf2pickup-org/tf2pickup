@@ -1,8 +1,7 @@
 import { test, expect as baseExpect } from '@playwright/test'
 import { GameServerSimulator } from '../game-server-simulator'
-import { withTimeout } from '../../src/utils/with-timeout'
 import { secondsToMilliseconds } from 'date-fns'
-import { TimeoutError } from '../../src/shared/errors/timeout.error'
+import { TimeoutError, withTimeout } from 'es-toolkit'
 
 export const simulateGameServer = test.extend<{ gameServer: GameServerSimulator }>({
   // eslint-disable-next-line no-empty-pattern
@@ -40,17 +39,18 @@ export const expect = baseExpect.extend({
 
     try {
       await withTimeout(
-        new Promise<void>(resolve => {
-          if (hasCommand()) {
-            resolve()
-          }
-
-          setInterval(() => {
+        () =>
+          new Promise<void>(resolve => {
             if (hasCommand()) {
               resolve()
             }
-          }, secondsToMilliseconds(0.5))
-        }),
+
+            setInterval(() => {
+              if (hasCommand()) {
+                resolve()
+              }
+            }, secondsToMilliseconds(0.5))
+          }),
         options?.timeout ?? this.timeout,
       )
       pass = true
