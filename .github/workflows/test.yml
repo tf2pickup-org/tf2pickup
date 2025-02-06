@@ -89,6 +89,7 @@ jobs:
       LOG_RELAY_PORT: '9871'
       GAME_SERVER_SECRET: 'xxxxxx'
       KEY_STORE_PASSPHRASE: 'a_password'
+      MUMBLE_SUPERUSER_PASSWORD: '123456'
 
     strategy:
       fail-fast: false
@@ -106,6 +107,20 @@ jobs:
       - uses: pnpm/action-setup@v2
         with:
           version: 8
+
+      - name: Start mumble server
+        run: |
+          docker run \
+          --rm --detach \
+          --name mumble-server \
+          --network=${{ job.services.mongo.network }} \
+          -p 64738:64738/tcp \
+          -p 64738:64738/udp \
+          -e MUMBLE_CONFIG_AUTOBAN_ATTEMPTS=0 \
+          -e MUMBLE_SUPERUSER_PASSWORD=${{ env.MUMBLE_SUPERUSER_PASSWORD }} \
+          --user root \
+          mumblevoip/mumble-server:latest
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -161,6 +176,8 @@ jobs:
         env:
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
           STEAM_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          TEST_MUMBLE_SERVER_HOST: 'mumble-server'
+          TEST_MUMBLE_SERVER_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
 
       - name: Stop app
         if: ${{ always() }}

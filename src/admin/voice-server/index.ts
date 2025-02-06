@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { standardAdminPage } from '../plugins/standard-admin-page'
+import { standardAdminPage } from '../standard-admin-page'
 import { VoiceServerPage } from './views/html/voice-server.page'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
 import { configuration } from '../../configuration'

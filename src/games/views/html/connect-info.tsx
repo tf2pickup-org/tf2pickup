@@ -2,6 +2,7 @@ import { GameState, type GameModel } from '../../../database/models/game.model'
 import { IconCopy } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { JoinGameButton } from './join-game-button'
+import { JoinVoiceButton } from './join-voice-button'
 
 export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefined }) {
   const connectInfoVisible = [
@@ -17,6 +18,7 @@ export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefin
       <>
         <ConnectString game={props.game} actor={props.actor} />
         <JoinGameButton game={props.game} actor={props.actor} />
+        <JoinVoiceButton game={props.game} actor={props.actor} />
       </>
     )
   }

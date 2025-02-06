@@ -16,8 +16,10 @@ import type { SecretModel } from './models/secret.model'
 import type { StaticGameServerModel } from './models/static-game-server.model'
 import type { TaskModel } from './models/task.model'
 import type { StreamModel } from './models/stream.model'
+import type { CertificateModel } from './models/certificate.model'
 
 export const collections = {
+  certificates: database.collection<CertificateModel>('certificates'),
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
   documents: database.collection<DocumentModel>('documents'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),

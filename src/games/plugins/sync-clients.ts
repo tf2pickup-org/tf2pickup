@@ -13,6 +13,8 @@ import { whenGameEnds } from '../when-game-ends'
 import { GamesLink } from '../../html/components/games-link'
 import { safe } from '../../utils/safe'
 import { GameScore } from '../views/html/game-score'
+import { JoinVoiceButton } from '../views/html/join-voice-button'
+import { JoinGameButton } from '../views/html/join-game-button'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -44,7 +46,7 @@ export default fp(async app => {
     ) {
       app.gateway
         .to({ url: `/games/${after.number}` })
-        .send(async actor => await ConnectInfo({ game: after, actor }))
+        .send(async actor => await JoinGameButton({ game: after, actor }))
     }
 
     if (before.logsUrl !== after.logsUrl) {
@@ -80,7 +82,14 @@ export default fp(async app => {
           app.gateway
             .to({ url: `/games/${after.number}` })
             .to({ player: slot.player })
-            .send(async actor => await ConnectInfo({ game: after, actor }))
+            .send(async actor => await JoinGameButton({ game: after, actor }))
+        }
+
+        if (beforeSlot.voiceServerUrl !== slot.voiceServerUrl) {
+          app.gateway
+            .to({ url: `/games/${after.number}` })
+            .to({ player: slot.player })
+            .send(async actor => await JoinVoiceButton({ game: after, actor }))
         }
       }),
     )

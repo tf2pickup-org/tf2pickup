@@ -3,6 +3,7 @@ import { configuration } from '../../../../configuration'
 import { VoiceServerType } from '../../../../shared/types/voice-server-type'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
+import { MumbleClientStatus } from './mumble-client-status'
 
 export async function VoiceServerPage(props: { user: User }) {
   const type = await configuration.get('games.voice_server_type')
@@ -118,7 +119,12 @@ export async function VoiceServerPage(props: { user: User }) {
                 </label>
               </dt>
               <dd>
-                <input type="text" name="mumblePassword" value={mumblePassword ?? ''} />
+                <input
+                  type="text"
+                  id="mumble-password"
+                  name="mumblePassword"
+                  value={mumblePassword ?? ''}
+                />
               </dd>
             </dl>
 
@@ -129,9 +135,16 @@ export async function VoiceServerPage(props: { user: User }) {
                 </label>
               </dt>
               <dd>
-                <input type="text" name="mumbleChannelName" value={mumbleChannelName ?? ''} />
+                <input
+                  type="text"
+                  id="mumble-channel-name"
+                  name="mumbleChannelName"
+                  value={mumbleChannelName ?? ''}
+                />
               </dd>
             </dl>
+
+            <MumbleClientStatus />
           </fieldset>
 
           <p class="mt-8">

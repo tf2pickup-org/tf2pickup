@@ -1,7 +1,7 @@
 import { PlayerRestrictionsPage } from './views/html/player-restrictions.page'
 import { z } from 'zod'
 import { configuration } from '../../configuration'
-import { standardAdminPage } from '../plugins/standard-admin-page'
+import { standardAdminPage } from '../standard-admin-page'
 
 const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEnabled', [
   z.object({

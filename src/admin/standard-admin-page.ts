@@ -1,8 +1,8 @@
 import type { ZodSchema, ZodTypeDef } from 'zod'
 import fp from 'fastify-plugin'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
-import { PlayerRole } from '../../database/models/player.model'
-import type { User } from '../../auth/types/user'
+import { PlayerRole } from '../database/models/player.model'
+import type { User } from '../auth/types/user'
 import { requestContext } from '@fastify/request-context'
 
 interface StandardAdminPageArgs<Input, Output> {

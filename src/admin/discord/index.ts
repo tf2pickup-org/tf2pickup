@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { standardAdminPage } from '../plugins/standard-admin-page'
+import { standardAdminPage } from '../standard-admin-page'
 import { DiscordPage } from './views/html/discord.page'
 
 export default standardAdminPage({
