@@ -17,7 +17,7 @@ const resizeObserver = new ResizeObserver(entries => {
       continue
     }
 
-    const img = /** @type {HTMLImageElement} */ (tag)
+    const img = tag as HTMLImageElement
 
     const mapName = entry.target.getAttribute(attrName)
     if (!mapName) {

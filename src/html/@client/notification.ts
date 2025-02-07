@@ -1,7 +1,7 @@
 import htmx from './htmx.js'
-import { Howl } from 'https://cdn.jsdelivr.net/npm/howler@2.2.4/+esm'
+import { Howl } from 'howler'
 
-function init(/** @type {HTMLElement} */ element) {
+function init(element: HTMLElement) {
   const title = element.getAttribute('data-notification-title')
   if (!title) {
     return
@@ -11,7 +11,7 @@ function init(/** @type {HTMLElement} */ element) {
   const icon = element.getAttribute('data-notification-icon')
   const notification = new Notification(title, { body, ...(icon ? { icon } : {}) })
 
-  let /** @type {Howl} */ howl
+  let howl: Howl
   const sound = element.getAttribute('data-notification-sound')
   if (sound) {
     let volume = 1.0
