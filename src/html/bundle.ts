@@ -1,18 +1,35 @@
+import { build } from 'esbuild'
+import { environment } from '../environment'
+import { parse } from 'node:path'
 import { logger } from '../logger'
-import { parse, relative, resolve } from 'node:path'
-import mime from 'mime'
-import { csses } from '.'
-import { embed } from './embed'
+import { memoize } from 'es-toolkit'
 
-export async function bundle(entryPoint: string): Promise<string> {
-  const css = await embed(entryPoint)
-  const { ext, dir } = parse(entryPoint)
-  const rootDir = resolve(import.meta.dirname, '..', '..')
-  const id = relative(rootDir, dir).replaceAll('/', '_')
-  const fileName = `${id}${ext}`
-  csses.set(fileName, css)
+// fileName <-> bundle
+export const bundles = new Map<string, string>()
 
-  const url = `/css/${fileName}`
-  logger.debug({ entryPoint, url, id, type: mime.getType(fileName) }, `bundle ready`)
+export const bundle = environment.NODE_ENV === 'production' ? memoize(doBundle) : doBundle
+
+// Bundle JS code under entryPoint and return the path to the bundled file
+async function doBundle(entryPoint: string): Promise<string> {
+  const { name } = parse(entryPoint)
+
+  const ret = await build({
+    entryPoints: [entryPoint],
+    platform: 'browser',
+    bundle: true,
+    format: 'esm',
+    minify: environment.NODE_ENV === 'production',
+    write: false,
+  })
+
+  const [output] = ret.outputFiles
+  if (!output) {
+    throw new Error(`failed to bundle ${entryPoint}`)
+  }
+
+  const fileName = `${name}-${output.hash}.js`
+  const url = `/${encodeURIComponent(fileName)}`
+  logger.debug({ entryPoint, fileName, url }, 'bundle ready')
+  bundles.set(fileName, output.text)
   return url
 }

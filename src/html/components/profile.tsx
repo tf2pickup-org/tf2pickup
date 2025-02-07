@@ -1,7 +1,10 @@
+import { resolve } from 'node:path'
 import type { PlayerModel } from '../../database/models/player.model'
+import { bundle } from '../bundle'
 import { IconLogout, IconSettings, IconSettingsFilled, IconUserCircle } from './icons'
 
 export async function Profile(player: PlayerModel) {
+  const motionJs = await bundle(resolve(import.meta.dirname, '../@client/motion.ts'))
   return (
     <>
       <div class="relative grow lg:grow-0">
@@ -59,7 +62,7 @@ export async function Profile(player: PlayerModel) {
         </div>
       </div>
       <script type="module">{`
-        import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+        import { animate } from "${motionJs}";
 
         const button = document.getElementById('open-profile-menu-button');
         const profileMenu = document.getElementById('profile-menu');
@@ -84,7 +87,7 @@ export async function Profile(player: PlayerModel) {
 
             setTimeout(() => document.body.addEventListener('click', closeProfileMenu, { once: true }));
           }
-          
+
         })
       `}</script>
     </>

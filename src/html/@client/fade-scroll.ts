@@ -2,7 +2,7 @@ import htmx from './htmx.js'
 
 const attrName = 'data-fade-scroll'
 
-function update(/** @type {HTMLElement} */ element) {
+function update(element: HTMLElement) {
   const isScrollable = element.scrollHeight > element.clientHeight
   if (!isScrollable) {
     element.classList.remove('mask-top', 'mask-bottom')
@@ -22,7 +22,7 @@ function update(/** @type {HTMLElement} */ element) {
   }
 }
 
-function init(/** @type {HTMLElement} */ element) {
+function init(element: HTMLElement) {
   element.addEventListener('scroll', event => {
     if (event.target && event.target instanceof HTMLElement) {
       update(event.target)
