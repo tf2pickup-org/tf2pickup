@@ -1,4 +1,10 @@
-export function RequestNotificationPermissions() {
+import { resolve } from 'node:path'
+import { bundle } from '../../../html/bundle'
+
+export async function RequestNotificationPermissions() {
+  const scriptJs = await bundle(
+    resolve(import.meta.dirname, '@client', 'request-notification-permissions.ts'),
+  )
   return (
     <>
       <div id="notifications-permission-default" style="display: none;">
@@ -21,7 +27,7 @@ export function RequestNotificationPermissions() {
         </div>
       </div>
       <script type="module">{`
-        import { requestNotificationPermissions } from '/js/request-notification-permissions.js';
+        import { requestNotificationPermissions } from '${scriptJs}';
 
         const button = document.getElementById('request-notifications-permission');
         const bannerDefault = document.getElementById('notifications-permission-default');

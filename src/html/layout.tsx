@@ -5,6 +5,8 @@ import { FlashMessages } from './components/flash-messages'
 import { resolve } from 'path'
 import { requestContext } from '@fastify/request-context'
 import { embed } from './embed'
+import { bundle } from './bundle'
+import { mainTsPath } from './main-ts-path'
 
 export async function Layout(
   props?: Html.PropsWithChildren<{
@@ -38,49 +40,52 @@ export async function Layout(
   }
 
   const safeCss = await embed(resolve(import.meta.dirname, 'styles', 'main.css'))
+  const bundleUrl = await bundle(mainTsPath)
 
   return (
-    <>
-      <html lang="en">
-        <head>
-          <meta charset="UTF-8" />
-          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-          <script src="/js/main.js" type="module"></script>
-          <style type="text/css">{safeCss}</style>
-          {title}
-          <MetaTags {...props} />
-        </head>
-        <body hx-ext="ws,head-support,remove-me" ws-connect="/ws" class="h-screen" hx-boost="true">
-          {body}
-        </body>
-      </html>
-    </>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <script src={bundleUrl} type="module"></script>
+        <style type="text/css">{safeCss}</style>
+        {title}
+        <MetaTags {...props} />
+      </head>
+      <body hx-ext="ws,head-support,remove-me" ws-connect="/ws" class="h-screen" hx-boost="true">
+        {body}
+      </body>
+    </html>
   )
 }
 
 function MetaTags(props?: { title?: string; description?: string; canonical?: string }) {
-  const metaTags: JSX.Element[] = []
-  const ogTags: JSX.Element[] = []
+  const safeMetaTags: JSX.Element[] = []
+  const safeOgTags: JSX.Element[] = []
 
   if (props?.title) {
-    ogTags.push(<meta property="og:title" content={props.title} />)
+    safeOgTags.push(<meta property="og:title" content={props.title} />)
   }
 
   if (props?.description) {
-    metaTags.push(<meta name="description" content={props.description} />)
-    ogTags.push(<meta property="og:description" content={props.description} />)
+    safeMetaTags.push(<meta name="description" content={props.description} />)
+    safeOgTags.push(<meta property="og:description" content={props.description} />)
   }
 
   if (props?.canonical) {
-    metaTags.push(<link rel="canonical" href={`${environment.WEBSITE_URL}${props.canonical}`} />)
-    ogTags.push(<meta property="og:url" content={`${environment.WEBSITE_URL}${props.canonical}`} />)
+    safeMetaTags.push(
+      <link rel="canonical" href={`${environment.WEBSITE_URL}${props.canonical}`} />,
+    )
+    safeOgTags.push(
+      <meta property="og:url" content={`${environment.WEBSITE_URL}${props.canonical}`} />,
+    )
   }
 
   return (
     <>
-      {metaTags.join('\n')}
-      {ogTags.join('\n')}
+      {safeMetaTags.join('\n')}
+      {safeOgTags.join('\n')}
     </>
   )
 }

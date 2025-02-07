@@ -1,6 +1,10 @@
-export function requestNotificationPermissions(
-  /** @type {{ button: HTMLButtonElement; bannerDefault: HTMLElement; bannerDenied: HTMLElement }} */ params,
-) {
+interface NotificationPermissionsParams {
+  button: HTMLButtonElement
+  bannerDefault: HTMLElement
+  bannerDenied: HTMLElement
+}
+
+export function requestNotificationPermissions(params: NotificationPermissionsParams) {
   if (Notification.permission === 'default') {
     params.bannerDefault.style.display = 'block'
 
