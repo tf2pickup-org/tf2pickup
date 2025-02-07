@@ -4,7 +4,6 @@ import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
 import { requestSubstitute } from '../request-substitute'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
-import { whenGameEnds } from '../when-game-ends'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
 import { safe } from '../../utils/safe'
 
@@ -19,12 +18,9 @@ export default fp(
       })
     })
 
-    events.on(
-      'game:updated',
-      whenGameEnds(({ after }) => {
-        tasks.cancel('games:autoSubstitutePlayer', { gameNumber: after.number })
-      }),
-    )
+    events.on('game:ended', ({ game }) => {
+      tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number })
+    })
 
     events.on('match/player:connected', ({ gameNumber, steamId }) => {
       tasks.cancel('games:autoSubstitutePlayer', { gameNumber, player: steamId })

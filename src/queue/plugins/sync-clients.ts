@@ -13,7 +13,6 @@ import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
 import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
-import { whenGameEnds } from '../../games/when-game-ends'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
 import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 
@@ -186,7 +185,7 @@ export default fp(
     }
     events.on('game:substituteRequested', refreshSubstitutionRequests)
     events.on('game:playerReplaced', refreshSubstitutionRequests)
-    events.on('game:updated', whenGameEnds(refreshSubstitutionRequests))
+    events.on('game:ended', refreshSubstitutionRequests)
     events.on(
       'twitch.tv/streams:updated',
       safe(async () => {

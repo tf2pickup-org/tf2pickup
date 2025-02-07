@@ -3,8 +3,7 @@ import { logger } from '../../logger'
 import { assertIsError } from '../../utils/assert-is-error'
 import { events } from '../../events'
 import { configure } from '../rcon/configure'
-import type { GameNumber } from '../../database/models/game.model'
-import { whenForceEnded } from '../when-force-ended'
+import { GameState, type GameNumber } from '../../database/models/game.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -26,11 +25,11 @@ export default fp(
       }
     })
 
-    events.on('game:updated', async d =>
-      whenForceEnded(d, ({ after }) => {
-        configurators.get(after.number)?.abort()
-      }),
-    )
+    events.on('game:ended', async ({ game }) => {
+      if (game.state === GameState.interrupted) {
+        configurators.get(game.number)?.abort()
+      }
+    })
   },
   {
     name: 'auto configure',

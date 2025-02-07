@@ -40,7 +40,7 @@ export default fp(
 
     events.on('match:ended', async ({ gameNumber }) => {
       try {
-        await update(
+        const game = await update(
           { number: gameNumber, state: GameState.started },
           {
             $set: {
@@ -65,6 +65,7 @@ export default fp(
             ],
           },
         )
+        events.emit('game:ended', { game })
       } catch (error) {
         assertIsError(error)
         logger.warn(error)
