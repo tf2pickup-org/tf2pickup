@@ -9,7 +9,6 @@ import { LogsLink } from '../views/html/logs-link'
 import { PlayerConnectionStatusIndicator } from '../views/html/player-connection-status-indicator'
 import { GameEventList } from '../views/html/game-event-list'
 import { GameSlot } from '../views/html/game-slot'
-import { whenGameEnds } from '../when-game-ends'
 import { GamesLink } from '../../html/components/games-link'
 import { safe } from '../../utils/safe'
 import { GameScore } from '../views/html/game-score'
@@ -100,13 +99,10 @@ export default fp(async app => {
     app.gateway.broadcast(() => cmp)
   })
 
-  events.on(
-    'game:updated',
-    whenGameEnds(async ({ after }) => {
-      const cmp = await GamesLink()
-      app.gateway.to({ url: `/games/${after.number}` }).send(() => cmp)
-    }),
-  )
+  events.on('game:ended', async ({ game }) => {
+    const cmp = await GamesLink()
+    app.gateway.to({ url: `/games/${game.number}` }).send(() => cmp)
+  })
 
   events.on(
     'game:playerConnectionStatusUpdated',

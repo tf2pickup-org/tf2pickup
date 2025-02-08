@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { whenGameEnds } from '../../games/when-game-ends'
 import { safe } from '../../utils/safe'
 import { tasks } from '../../tasks'
 import { moveToTargetChannel } from '../move-to-target-channel'
@@ -38,12 +37,10 @@ export default fp(
     })
 
     events.on(
-      'game:updated',
-      safe(
-        whenGameEnds(async ({ after }) => {
-          tasks.schedule('mumble.cleanupChannel', removeChannelDelay, { gameNumber: after.number })
-        }),
-      ),
+      'game:ended',
+      safe(async ({ game }) => {
+        tasks.schedule('mumble.cleanupChannel', removeChannelDelay, { gameNumber: game.number })
+      }),
     )
   },
   {

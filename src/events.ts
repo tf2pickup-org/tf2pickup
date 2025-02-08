@@ -50,6 +50,9 @@ export interface Events {
     player: SteamId64
     playerConnectionStatus: PlayerConnectionStatus
   }
+  'game:ended': {
+    game: GameModel
+  }
 
   'gamelog:message': {
     message: LogMessage

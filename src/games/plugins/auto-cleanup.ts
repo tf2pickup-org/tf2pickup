@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { whenGameEnds } from '../when-game-ends'
 import { delay } from 'es-toolkit/compat'
 import { secondsToMilliseconds } from 'date-fns'
 import { cleanup } from '../rcon/cleanup'
@@ -19,16 +18,13 @@ async function cleanupSafe(game: GameModel) {
 
 export default fp(
   async () => {
-    events.on(
-      'game:updated',
-      whenGameEnds(async ({ after }) => {
-        if (after.state === GameState.ended) {
-          delay(async () => await cleanupSafe(after), secondsToMilliseconds(30))
-        } else {
-          await cleanupSafe(after)
-        }
-      }),
-    )
+    events.on('game:ended', async ({ game }) => {
+      if (game.state === GameState.ended) {
+        delay(async () => await cleanupSafe(game), secondsToMilliseconds(30))
+      } else {
+        await cleanupSafe(game)
+      }
+    })
   },
   {
     name: 'auto cleanup game servers',
