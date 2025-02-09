@@ -3,7 +3,6 @@ import { tasks } from '../../tasks'
 import { client } from '../client'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
 import { events } from '../../events'
-import { whenGameEnds } from '../../games/when-game-ends'
 import { GameServerProvider } from '../../database/models/game.model'
 import { secondsToMilliseconds } from 'date-fns'
 import { logger } from '../../logger'
@@ -25,15 +24,12 @@ export default fp(async () => {
     await endReservation(id as ReservationId)
   })
 
-  events.on(
-    'game:updated',
-    whenGameEnds(async ({ after }) => {
-      if (after.gameServer?.provider !== GameServerProvider.servemeTf) {
-        return
-      }
+  events.on('game:ended', async ({ game }) => {
+    if (game.gameServer?.provider !== GameServerProvider.servemeTf) {
+      return
+    }
 
-      const id = Number(after.gameServer.id)
-      tasks.schedule('servemeTf:endReservation', endReservationDelay, { id })
-    }),
-  )
+    const id = Number(game.gameServer.id)
+    tasks.schedule('servemeTf:endReservation', endReservationDelay, { id })
+  })
 })
