@@ -1,9 +1,12 @@
 import { dropRight, takeRight } from 'es-toolkit'
 import { getPlayedMapsCount, type PlayedMapCount } from '../../get-played-maps-count'
+import { bundle } from '../../../html/bundle'
+import { resolve } from 'node:path'
 
 export async function PlayedMapsCount() {
   const playedMapsCount = await getPlayedMapsCount()
   const data = toChartData(playedMapsCount)
+  const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'main.ts'))
 
   return (
     <>
@@ -11,29 +14,10 @@ export async function PlayedMapsCount() {
       <canvas id="played-maps-count"></canvas>
       <script type="module">
         {`
-        import { Chart } from '/js/chart.js';
+        import { makePlayedMapsCountChart } from '${mainJs}';
 
         const data = ${JSON.stringify(data)};
-        new Chart(document.getElementById('played-maps-count'), {
-          type: 'pie',
-          data: data,
-          options: {
-            plugins: {
-              legend: {
-                position: 'right',
-                labels: {
-                  boxWidth: 14,
-                  boxHeight: 14,
-                  font: {
-                    size: 14,
-                  },
-                  color: '#C7C4C7',
-                  padding: 16,
-                },
-              },
-            },
-          },
-        })
+        makePlayedMapsCountChart(document.getElementById('played-maps-count'), data);
         `}
       </script>
     </>

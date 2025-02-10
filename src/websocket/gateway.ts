@@ -231,7 +231,7 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:togglepreready', socket)
       }
     } catch (error) {
-      console.error(error)
+      logger.error({ error }, `failed to parse message: ${message}`)
     }
   }
 }

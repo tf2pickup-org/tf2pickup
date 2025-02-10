@@ -1,4 +1,4 @@
-import htmx from 'https://unpkg.com/htmx.org@2.0.2/dist/htmx.esm.js'
+import htmx from 'htmx.org'
 
 /* This is a workaround to make htmx extensions work */
 window.htmx = htmx

@@ -4,7 +4,7 @@ const timeout = 3.5 * 1000 // 3.5 seconds
 const steps = timeout / 10
 const attrName = 'data-flash-message'
 
-function initFlashMessage(/** @type {HTMLElement} */ messageBox) {
+function initFlashMessage(messageBox: HTMLElement) {
   const progress = messageBox.querySelector('progress')
   if (!progress) {
     return

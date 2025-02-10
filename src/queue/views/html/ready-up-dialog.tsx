@@ -9,13 +9,12 @@ export function ReadyUpDialog() {
         class="w-[616px] rounded-xl bg-abru-dark-29 px-[59px] py-[42px] shadow-xl"
         id={dialogId}
         _={`
-        on show remove [@disabled] from <#${dialogId} button/> then me.showModal() end
+        on show me.showModal() then remove [@disabled] from <#${dialogId} button/> end
         on close me.close() end
       `}
       >
         <form
           class="flex flex-col items-center gap-11"
-          ws-send
           _={`on submit add [@disabled] to <#${dialogId} button/>`}
         >
           <div class="flex flex-col items-center text-[32px] font-bold text-abru-light-75">
@@ -29,6 +28,7 @@ export function ReadyUpDialog() {
               value=""
               class="w-[242px] rounded bg-accent-600 py-[12px] text-xl font-bold uppercase text-gray-50"
               autofocus=""
+              ws-send
             >
               I'm ready
             </button>
@@ -36,6 +36,7 @@ export function ReadyUpDialog() {
               name="leave"
               value=""
               class="w-[242px] rounded bg-abru-light-5 py-[12px] text-xl font-bold text-gray-50"
+              ws-send
             >
               No, I can't play now
             </button>

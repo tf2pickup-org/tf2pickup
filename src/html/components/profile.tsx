@@ -1,7 +1,12 @@
+import { resolve } from 'node:path'
 import type { PlayerModel } from '../../database/models/player.model'
+import { bundle } from '../bundle'
 import { IconLogout, IconSettings, IconSettingsFilled, IconUserCircle } from './icons'
 
 export async function Profile(player: PlayerModel) {
+  const animateProfileMenuJs = await bundle(
+    resolve(import.meta.dirname, '../@client/animate-profile-menu.ts'),
+  )
   return (
     <>
       <div class="relative grow lg:grow-0">
@@ -59,33 +64,14 @@ export async function Profile(player: PlayerModel) {
         </div>
       </div>
       <script type="module">{`
-        import { animate } from "https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm";
+        import { animateProfileMenu } from "${animateProfileMenuJs}";
 
-        const button = document.getElementById('open-profile-menu-button');
         const profileMenu = document.getElementById('profile-menu');
-
-        const closeProfileMenu = event => {
-          const opts = { duration: 0.1, ease: 'easeInOut' };
-          animate('#profile-menu-icon-wrapper', { rotate: 0 }, opts);
-          animate('#profile-menu-icon', { opacity: 100 }, opts);
-          animate('#profile-menu-icon-overlay', { opacity: 0 }, opts);
-          animate(profileMenu,  { scaleY: [1, 0] }, opts).then(() => profileMenu.style.display = 'none');
-        };
-
-        button.addEventListener('click', event => {
-          event.preventDefault();
-          if (profileMenu.style.display === 'none') {
-            profileMenu.style.display = 'block';
-            const opts = { duration: 0.15, ease: 'easeInOut' };
-            animate(profileMenu,  { scaleY: [0, 1] }, opts);
-            animate('#profile-menu-icon-wrapper', { rotate: 45 }, opts);
-            animate('#profile-menu-icon', { opacity: 0 }, opts);
-            animate('#profile-menu-icon-overlay', { opacity: 100 }, opts);
-
-            setTimeout(() => document.body.addEventListener('click', closeProfileMenu, { once: true }));
-          }
-          
-        })
+        const icon = document.getElementById('profile-menu-icon');
+        const iconWrapper = document.getElementById('profile-menu-icon-wrapper');
+        const iconOverlay = document.getElementById('profile-menu-icon-overlay');
+        const openButton = document.getElementById('open-profile-menu-button');
+        animateProfileMenu({ profileMenu, icon, iconWrapper, iconOverlay, openButton });
       `}</script>
     </>
   )

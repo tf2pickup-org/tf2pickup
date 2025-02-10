@@ -1,12 +1,9 @@
-import { Chart } from 'chart.js/auto'
+import { Chart, type ChartData } from 'chart.js/auto'
 
-export function makePlayerMapsCountChart(
-  /** @type HTMLCanvasElement */ element,
-  /** @type import('chart.js').ChartData */ data,
-) {
+export function makePlayedMapsCountChart(element: HTMLCanvasElement, data: ChartData<'pie'>) {
   new Chart(element, {
     type: 'pie',
-    data: data,
+    data,
     options: {
       plugins: {
         legend: {
