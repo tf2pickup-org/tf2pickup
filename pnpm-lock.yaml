@@ -15,7 +15,7 @@ importers:
         specifier: 11.0.2
         version: 11.0.2
       '@fastify/etag':
-        specifier: ^6.0.3
+        specifier: 6.0.3
         version: 6.0.3
       '@fastify/flash':
         specifier: 6.0.3
@@ -84,7 +84,7 @@ importers:
         specifier: 1.32.0
         version: 1.32.0
       esbuild:
-        specifier: ^0.24.2
+        specifier: 0.24.2
         version: 0.24.2
       fastify:
         specifier: 5.2.1
@@ -117,7 +117,7 @@ importers:
         specifier: 6.13.0
         version: 6.13.0
       motion:
-        specifier: ^12.4.1
+        specifier: 12.4.1
         version: 12.4.1
       nanoid:
         specifier: 5.0.9
@@ -178,7 +178,7 @@ importers:
         specifier: 8.42.3
         version: 8.42.3
       '@types/howler':
-        specifier: ^2.2.12
+        specifier: 2.2.12
         version: 2.2.12
       '@types/jsonwebtoken':
         specifier: 9.0.8
