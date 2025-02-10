@@ -49,9 +49,8 @@ PreReadyUpButton.enable = () => {
   const id = nanoid()
   return (
     <div id="notify-container" hx-swap-oob="beforeend">
-      <script type="module" id={id}>{`
+      <script type="module" id={id} remove-me="0s">{`
         document.getElementById('pre-ready-up-button').disabled = false;
-        document.getElementById('${id}').remove();
       `}</script>
     </div>
   )
@@ -61,9 +60,8 @@ PreReadyUpButton.disable = () => {
   const id = nanoid()
   return (
     <div id="notify-container" hx-swap-oob="beforeend">
-      <script type="module" id={id}>{`
+      <script type="module" id={id} remove-me="0s">{`
         document.getElementById('pre-ready-up-button').disabled = true;
-        document.getElementById('${id}').remove();
       `}</script>
     </div>
   )
