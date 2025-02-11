@@ -17,6 +17,7 @@ const environmentSchema = z.object({
   KEY_STORE_PASSPHRASE: z.string(),
   LOG_RELAY_ADDRESS: z.string(),
   LOG_RELAY_PORT: z.coerce.number(),
+  LOGS_TF_API_KEY: z.string().optional(),
   GAME_SERVER_SECRET: z.string(),
   THUMBNAIL_SERVICE_URL: z.string().url(),
 
