@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { IconCoffee } from '../../../html/components/icons'
 import { collections } from '../../../database/collections'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -42,30 +41,6 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
         )}
       </div>
     </button>
-  )
-}
-
-PreReadyUpButton.enable = () => {
-  const id = nanoid()
-  return (
-    <div id="notify-container" hx-swap-oob="beforeend">
-      <script type="module" id={id}>{`
-        document.getElementById('pre-ready-up-button').disabled = false;
-        document.getElementById('${id}').remove();
-      `}</script>
-    </div>
-  )
-}
-
-PreReadyUpButton.disable = () => {
-  const id = nanoid()
-  return (
-    <div id="notify-container" hx-swap-oob="beforeend">
-      <script type="module" id={id}>{`
-        document.getElementById('pre-ready-up-button').disabled = true;
-        document.getElementById('${id}').remove();
-      `}</script>
-    </div>
   )
 }
 

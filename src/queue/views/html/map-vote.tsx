@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid'
+import { requestContext } from '@fastify/request-context'
 import { collections } from '../../../database/collections'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -7,38 +7,19 @@ import { getMapVoteResults } from '../../get-map-vote-results'
 export async function MapVote(props: { actor?: SteamId64 | undefined }) {
   const mapOptions = await collections.queueMapOptions.find().toArray()
   const results = await getMapVoteResults()
+  const boosted = requestContext.get('boosted')
+
+  // Use morph swap only for partial updates
+  const p = {
+    ...(boosted ? {} : { 'hx-swap-oob': 'morph' }),
+  }
+
   return (
-    <form
-      class="grid gap-4 grid-cols-1 md:grid-cols-3"
-      id="map-vote"
-      ws-send
-      _={`
-      on enable remove [@disabled] from <button/> in me
-      on disable add [@disabled] to <button/> in me
-    `}
-    >
+    <form class="grid grid-cols-1 gap-4 md:grid-cols-3" id="map-vote" ws-send hx-ext="morph" {...p}>
       {mapOptions.map(option => (
         <MapVoteButton results={results} map={option.name} actor={props.actor}></MapVoteButton>
       ))}
     </form>
-  )
-}
-
-MapVote.enable = () => {
-  const id = nanoid()
-  return (
-    <div id="notify-container" hx-swap-oob="beforeend">
-      <div id={id} _={`on load trigger enable on #map-vote then remove me`}></div>
-    </div>
-  )
-}
-
-MapVote.disable = () => {
-  const id = nanoid()
-  return (
-    <div id="notify-container" hx-swap-oob="beforeend">
-      <div id={id} _={`on load trigger disable on #map-vote then remove me`}></div>
-    </div>
   )
 }
 

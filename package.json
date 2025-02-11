@@ -48,6 +48,7 @@
     "generate-password": "1.7.1",
     "howler": "2.2.4",
     "htmx.org": "2.0.4",
+    "idiomorph": "0.4.0",
     "jsonwebtoken": "9.0.2",
     "marked": "15.0.7",
     "mime": "4.0.6",

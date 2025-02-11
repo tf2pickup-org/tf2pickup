@@ -104,6 +104,9 @@ importers:
       htmx.org:
         specifier: 2.0.4
         version: 2.0.4
+      idiomorph:
+        specifier: 0.4.0
+        version: 0.4.0
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
@@ -1937,6 +1940,9 @@ packages:
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
+
+  idiomorph@0.4.0:
+    resolution: {integrity: sha512-VdXFpZOTXhLatJmhCWJR5oQKLXT01O6sFCJqT0/EqG71C4tYZdPJ5etvttwWsT2WKRYWz160XkNr1DUqXNMZHg==}
 
   ignore@5.3.1:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
@@ -5038,6 +5044,8 @@ snapshots:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
+
+  idiomorph@0.4.0: {}
 
   ignore@5.3.1: {}
 
