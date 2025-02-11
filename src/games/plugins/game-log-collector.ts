@@ -8,7 +8,7 @@ export default fp(
     events.on('gamelog:message', async ({ message }) => {
       await collections.gameLogs.findOneAndUpdate(
         { logSecret: message.password },
-        { $push: { messages: message.payload } },
+        { $push: { logs: message.payload } },
         { upsert: true },
       )
     })
