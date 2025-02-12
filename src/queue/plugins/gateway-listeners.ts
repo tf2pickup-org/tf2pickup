@@ -31,10 +31,12 @@ export default fp(
 
       try {
         const slots = await join(slotId, socket.player.steamId)
-        app.gateway.to({ player: socket.player.steamId }).send(async () => await MapVote.enable())
         app.gateway
           .to({ player: socket.player.steamId })
-          .send(async () => await PreReadyUpButton.enable())
+          .send(async () => await MapVote({ actor: socket.player?.steamId }))
+        app.gateway
+          .to({ player: socket.player.steamId })
+          .send(async () => await PreReadyUpButton({ actor: socket.player?.steamId }))
 
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
           await refreshTakenSlots(socket.player.steamId)
@@ -51,10 +53,12 @@ export default fp(
 
       try {
         const slot = await leave(socket.player.steamId)
-        app.gateway.to({ player: socket.player.steamId }).send(async () => await MapVote.disable())
         app.gateway
           .to({ player: socket.player.steamId })
-          .send(async () => await PreReadyUpButton.disable())
+          .send(async () => await MapVote({ actor: socket.player?.steamId }))
+        app.gateway
+          .to({ player: socket.player.steamId })
+          .send(async () => await PreReadyUpButton({ actor: socket.player?.steamId }))
 
         if (slot.canMakeFriendsWith?.length) {
           await refreshTakenSlots(socket.player.steamId)
