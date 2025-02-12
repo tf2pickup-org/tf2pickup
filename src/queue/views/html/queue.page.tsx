@@ -96,10 +96,7 @@ function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }
     <form
       class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
       ws-send
-      _="
-      on htmx:wsClose from <body/> add @disabled to <button/> in me
-      on htmx:wsOpen from <body/> remove @disabled from <button/> in me
-      "
+      data-disable-when-offline
     >
       {config.classes
         .map(gc => gc.name)
