@@ -15,7 +15,14 @@ export async function MapVote(props: { actor?: SteamId64 | undefined }) {
   }
 
   return (
-    <form class="grid grid-cols-1 gap-4 md:grid-cols-3" id="map-vote" ws-send hx-ext="morph" {...p}>
+    <form
+      class="grid grid-cols-1 gap-4 md:grid-cols-3"
+      id="map-vote"
+      ws-send
+      hx-ext="morph"
+      {...p}
+      data-disable-when-offline
+    >
       {mapOptions.map(option => (
         <MapVoteButton results={results} map={option.name} actor={props.actor}></MapVoteButton>
       ))}
