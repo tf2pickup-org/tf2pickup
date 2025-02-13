@@ -90,7 +90,7 @@
     "globals": "15.15.0",
     "pino-princess": "1.0.0",
     "postcss-cli": "11.0.0",
-    "prettier": "3.5.0",
+    "prettier": "3.5.1",
     "prettier-plugin-tailwindcss": "0.6.11",
     "rimraf": "6.0.1",
     "tsc-alias": "1.8.10",
