@@ -6,6 +6,7 @@ import 'https://unpkg.com/hyperscript.org@0.9.13/dist/_hyperscript.min.js'
 import './idiomorph.ts'
 
 import './countdown'
+import './disable-when-offline'
 import './fade-scroll'
 import './flash-message'
 import './map-thumbnail'

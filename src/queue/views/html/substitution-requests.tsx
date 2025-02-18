@@ -4,7 +4,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 export async function SubstitutionRequests() {
   const requests = await games.getSubstitutionRequests()
   return (
-    <div id="subsitution-requests" class="contents">
+    <div id="substitution-requests" class="contents">
       {requests.map(request => (
         <div class="banner banner--alert flex flex-row items-center">
           <p class="flex-1">
