@@ -5,6 +5,7 @@ export default fp(
   async app => {
     await app.register((await import('./bypass-registration-restrictions')).default)
     await app.register((await import('./discord')).default)
+    await app.register((await import('./documents')).default)
     await app.register((await import('./game-servers')).default)
     await app.register((await import('./games')).default)
     await app.register((await import('./map-pool')).default)
