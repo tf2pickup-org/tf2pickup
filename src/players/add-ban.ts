@@ -1,8 +1,7 @@
-import { collections } from '../database/collections'
 import type { PlayerBan } from '../database/models/player.model'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { PlayerNotFoundError } from './errors'
+import { bySteamId } from './by-steam-id'
 import { update } from './update'
 
 export async function addBan(props: {
@@ -11,11 +10,7 @@ export async function addBan(props: {
   end: Date
   reason: string
 }): Promise<PlayerBan> {
-  const admin = await collections.players.findOne({ steamId: props.admin })
-  if (!admin) {
-    throw new PlayerNotFoundError(props.admin)
-  }
-
+  const admin = await bySteamId(props.admin)
   const ban: PlayerBan = {
     actor: admin.steamId,
     start: new Date(),

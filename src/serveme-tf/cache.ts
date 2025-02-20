@@ -1,5 +1,6 @@
 import { Reservation, type ReservationId } from '@tf2pickup-org/serveme-tf-client'
 import { client } from './client'
+import { errors } from '../errors'
 
 const cache = new Map<ReservationId, Reservation>()
 
@@ -9,7 +10,7 @@ export async function get(id: ReservationId): Promise<Reservation> {
   }
 
   if (!client) {
-    throw new Error(`serveme.tf disabled`)
+    throw errors.badRequest(`serveme.tf is disabled`)
   }
 
   const r = await client.fetch(id)

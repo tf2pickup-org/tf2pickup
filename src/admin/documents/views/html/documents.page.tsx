@@ -1,12 +1,13 @@
 import type { User } from '../../../../auth/types/user'
 import { collections } from '../../../../database/collections'
+import { errors } from '../../../../errors'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 
 export async function DocumentsPage(props: { user: User; name: string }) {
   const doc = await collections.documents.findOne({ name: props.name })
   if (!doc) {
-    throw new Error(`document not found: ${props.name}`)
+    throw errors.notFound(`document not found: ${props.name}`)
   }
 
   const safeBody = doc.body

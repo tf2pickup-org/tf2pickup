@@ -7,6 +7,7 @@ import { moveToTargetChannel } from './move-to-target-channel'
 import { assertClientIsConnected } from './assert-client-is-connected'
 import { version } from '../version'
 import { MumbleClientStatus, setStatus } from './status'
+import { errors } from '../errors'
 
 export let client: Client | undefined
 
@@ -26,7 +27,7 @@ export async function tryConnect() {
     configuration.get('games.voice_server.mumble.password'),
   ])
   if (!host) {
-    throw new Error(`mumble configuration malformed`)
+    throw errors.internalServerError(`mumble configuration malformed`)
   }
 
   logger.info({ host, port, channelName }, `connecting to mumble server...`)

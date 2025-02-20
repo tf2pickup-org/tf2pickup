@@ -16,6 +16,7 @@
     "postbuild": "cpy public dist && cpy src/**/*.md src/**/*.css dist/src && find src -wholename \"*/@client/*.ts\" -exec cp --parents '{}' dist ';'"
   },
   "dependencies": {
+    "@fastify/accepts": "^5.0.2",
     "@fastify/autoload": "6.1.0",
     "@fastify/cookie": "11.0.2",
     "@fastify/etag": "6.0.3",

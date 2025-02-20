@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import { collections } from '../database/collections'
 import { events } from '../events'
+import { errors } from '../errors'
 
 interface HeartbeatProps {
   name: string
@@ -49,7 +50,7 @@ export async function heartbeat({
   )
 
   if (newGameServer === null) {
-    throw new Error('Failed to update game server')
+    throw errors.internalServerError('Failed to update game server')
   }
 
   if (oldGameServer === null) {

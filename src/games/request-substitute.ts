@@ -1,11 +1,12 @@
-import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
 import { SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
+import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
 import { type Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { findOne } from './find-one'
 import { update } from './update'
 
 export async function requestSubstitute({
@@ -20,23 +21,19 @@ export async function requestSubstitute({
   reason?: string
 }): Promise<GameModel> {
   logger.trace({ number, replacee, actor, reason }, 'games.requestSubstitute()')
-
-  const game = await collections.games.findOne({ number })
-  if (game === null) {
-    throw new Error(`game not found: ${number}`)
-  }
+  const game = await findOne({ number })
 
   if ([GameState.ended, GameState.interrupted].includes(game.state)) {
-    throw new Error(`game ${game.number} in wrong state: ${game.state}`)
+    throw errors.badRequest(`game ${game.number} in wrong state: ${game.state}`)
   }
 
   const slot = game.slots.find(({ player }) => player === replacee)
   if (!slot) {
-    throw new Error(`player is not a member of game ${game.number}`)
+    throw errors.badRequest(`player is not a member of game ${game.number}`)
   }
 
   if (slot.status !== SlotStatus.active) {
-    throw new Error(`invalid slot status: ${slot.status}`)
+    throw errors.badRequest(`invalid slot status: ${slot.status}`)
   }
 
   const newGame = await update(
@@ -67,6 +64,5 @@ export async function requestSubstitute({
     actor,
     ...(reason && { reason }),
   })
-
   return newGame
 }

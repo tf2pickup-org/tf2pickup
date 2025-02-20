@@ -3,6 +3,7 @@ import { configuration } from '../configuration'
 import { logger } from '../logger'
 import { assertClientIsConnected } from './assert-client-is-connected'
 import { client } from './client'
+import { errors } from '../errors'
 
 export async function moveToTargetChannel() {
   assertClientIsConnected(client)
@@ -16,9 +17,9 @@ export async function moveToTargetChannel() {
   }
 
   if (!channel) {
-    throw new Error(`channel does not exist: ${channelName}`)
+    throw errors.badRequest(`channel does not exist: ${channelName}`)
   }
 
   logger.trace({ channel: { id: channel.id, name: channel.name } }, 'mumble channel found')
-  await client.user!.moveToChannel(channel.id)
+  await client.user.moveToChannel(channel.id)
 }

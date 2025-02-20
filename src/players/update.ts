@@ -3,8 +3,8 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { PlayerModel } from '../database/models/player.model'
 import { mutex } from './mutex'
 import { collections } from '../database/collections'
-import { PlayerNotFoundError } from './errors'
 import { events } from '../events'
+import { bySteamId } from './by-steam-id'
 
 export async function update(
   steamId: SteamId64,
@@ -12,11 +12,7 @@ export async function update(
   options?: FindOneAndUpdateOptions,
 ): Promise<PlayerModel> {
   return await mutex.runExclusive(async () => {
-    const before = await collections.players.findOne({ steamId })
-    if (!before) {
-      throw new PlayerNotFoundError(steamId)
-    }
-
+    const before = await bySteamId(steamId)
     const after = (await collections.players.findOneAndUpdate({ steamId }, update, {
       returnDocument: 'after',
       ...options,

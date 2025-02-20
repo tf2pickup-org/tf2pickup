@@ -27,7 +27,6 @@ import { queue } from '../../../queue'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { configuration } from '../../../configuration'
 import { collections } from '../../../database/collections'
-import type { WithId } from 'mongodb'
 import { format } from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
@@ -122,7 +121,7 @@ export async function EditPlayerSkill(props: { steamId: SteamId64; skill: Player
   )
 }
 
-export async function EditPlayerBansPage(props: { player: WithId<PlayerModel>; user: User }) {
+export async function EditPlayerBansPage(props: { player: PlayerModel; user: User }) {
   const bans = props.player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
   return (
     <EditPlayer

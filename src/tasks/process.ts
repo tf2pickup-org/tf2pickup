@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { assertIsError } from '../utils/assert-is-error'
 import { tasks, tasksSchema } from './tasks'
+import { errors } from '../errors'
 
 async function process() {
   const pendingTasks = await collections.tasks.find({ at: { $lte: new Date() } }).toArray()
@@ -13,7 +14,7 @@ async function process() {
         const task = tasksSchema.parse(data)
         const t = tasks[task.name]
         if (!t) {
-          throw new Error(`task not registered: ${task.name}`)
+          throw errors.internalServerError(`task not registered: ${task.name}`)
         }
 
         // @ts-expect-error

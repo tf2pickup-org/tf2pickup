@@ -2,8 +2,10 @@ import fp from 'fastify-plugin'
 import { update } from './update'
 import { getSubstitutionRequests } from './get-substitution-requests'
 import { resolve } from 'path'
+import { findOne } from './find-one'
 
 export const games = {
+  findOne,
   getSubstitutionRequests,
   update,
 } as const

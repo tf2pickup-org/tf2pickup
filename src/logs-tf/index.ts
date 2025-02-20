@@ -10,6 +10,7 @@ import type { GameNumber } from '../database/models/game.model'
 import { environment } from '../environment'
 import { tasks } from '../tasks'
 import { games } from '../games'
+import { errors } from '../errors'
 
 export default fp(
   async () => {
@@ -46,20 +47,16 @@ tasks.register('logsTf:uploadLogs', async ({ gameNumber }) => {
 })
 
 async function getGameLogs(gameNumber: GameNumber): Promise<{ logFile: string; map: string }> {
-  const game = await collections.games.findOne({ number: gameNumber })
-  if (!game) {
-    throw new Error(`game not found: ${gameNumber}`)
-  }
-
+  const game = await games.findOne({ number: gameNumber })
   if (!game.logSecret) {
-    throw new Error(`game is missing log secret: ${gameNumber}`)
+    throw errors.badRequest(`game is missing log secret: #${gameNumber}`)
   }
 
   const gameLogs = await collections.gameLogs.findOne({
     logSecret: game.logSecret,
   })
   if (!gameLogs) {
-    throw new Error(`game logs not found: ${gameNumber}`)
+    throw errors.notFound(`game logs not found for game #${gameNumber}`)
   }
 
   return {
