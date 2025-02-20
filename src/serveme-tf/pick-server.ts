@@ -1,6 +1,7 @@
 import type { ServerId } from '@tf2pickup-org/serveme-tf-client'
 import { configuration } from '../configuration'
 import { sample } from 'es-toolkit'
+import { errors } from '../errors'
 
 interface ServerData {
   id: ServerId
@@ -17,7 +18,7 @@ export async function pickServer(servers: ServerData[]): Promise<ServerId> {
 
   const server = sample(validServers)
   if (!server) {
-    throw new Error('could not find any gameservers meeting given criteria')
+    throw errors.notFound('could not find any gameservers meeting given criteria')
   }
 
   return server.id

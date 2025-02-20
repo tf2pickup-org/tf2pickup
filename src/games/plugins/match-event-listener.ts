@@ -191,7 +191,7 @@ async function testForGameEvent(message: string, logSecret: string) {
     if (matches) {
       const game = await collections.games.findOne({ logSecret })
       if (game === null) {
-        logger.warn({ message }, `error handling game event: no such game`)
+        logger.error({ message }, `error handling game event: no such game`)
         return
       }
       logger.debug(`#${game.number}: ${gameEvent.name}`)

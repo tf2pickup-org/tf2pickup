@@ -10,8 +10,8 @@ export function ErrorPage(props: { message: string; user?: User | undefined }) {
     <Layout title={makeTitle('Error')}>
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container mx-auto text-center">
-          <span class="my-9 text-[48px] font-bold text-rose-600" safe>
+        <div class="flex h-full flex-row items-center justify-center">
+          <span class="my-9 text-[36px] font-bold text-rose-600" safe>
             {props.message}
           </span>
         </div>

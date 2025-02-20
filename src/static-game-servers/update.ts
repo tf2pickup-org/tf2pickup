@@ -3,6 +3,7 @@ import type { StaticGameServerModel } from '../database/models/static-game-serve
 import { Mutex } from 'async-mutex'
 import { collections } from '../database/collections'
 import { events } from '../events'
+import { errors } from '../errors'
 
 const mutex = new Mutex()
 
@@ -13,14 +14,14 @@ export async function update(
   return await mutex.runExclusive(async () => {
     const before = await collections.staticGameServers.findOne(filter)
     if (!before) {
-      throw new Error(`static game server (${JSON.stringify(filter)}) not found`)
+      throw errors.notFound(`static game server (${JSON.stringify(filter)}) not found`)
     }
 
     const after = await collections.staticGameServers.findOneAndUpdate(filter, update, {
       returnDocument: 'after',
     })
     if (!after) {
-      throw new Error(`can't update static game server ${JSON.stringify(filter)}`)
+      throw errors.internalServerError(`can't update static game server ${JSON.stringify(filter)}`)
     }
 
     events.emit('staticGameServer:updated', { before, after })

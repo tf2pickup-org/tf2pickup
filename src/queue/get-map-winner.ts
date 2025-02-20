@@ -37,5 +37,5 @@ export async function getMapWinner(): Promise<string> {
   logger.trace({ mapsWithVotes }, 'queue.getMapWinner()')
   const maxVotes = maxBy(mapsWithVotes, r => r.votes)?.votes ?? 0
   const mapsWithMaxVotes = mapsWithVotes.filter(m => m.votes === maxVotes)
-  return sample(mapsWithMaxVotes)!.name
+  return sample(mapsWithMaxVotes).name
 }

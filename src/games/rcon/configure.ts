@@ -1,5 +1,5 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { deburr } from 'es-toolkit'
+import { deburr, delay } from 'es-toolkit'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'
@@ -84,7 +84,7 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
       logger.debug(line)
       await rcon.send(line)
       if (line.startsWith('changelevel')) {
-        await waitABit(secondsToMilliseconds(10))
+        await delay(secondsToMilliseconds(10))
       }
 
       if (!rcon.authenticated) {
@@ -176,5 +176,3 @@ async function compileConfig(game: GameModel, password: string): Promise<string[
     .concat(await configuration.get('games.execute_extra_commands'))
     .filter(Boolean)
 }
-
-const waitABit = async (ms: number) => new Promise(resolve => setTimeout(resolve, ms))

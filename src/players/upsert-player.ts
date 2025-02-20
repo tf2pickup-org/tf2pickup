@@ -5,12 +5,11 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import { configuration } from '../configuration'
 import { getTf2InGameHours } from '../steam/get-tf2-in-game-hours'
-import { InsufficientInGameHoursError } from './errors/insufficient-in-game-hours.error'
 import { logger } from '../logger'
 import type { CreatePlayerParams } from './types/create-player-params'
 import { etf2l } from '../etf2l'
-import { PlayerRegistrationDeniedError } from './errors/player-registration-denied.error'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
+import { errors } from '../errors'
 
 interface UpsertPlayerParams {
   steamID: string
@@ -57,7 +56,9 @@ async function verifyInGameHours(steamId: SteamId64) {
   const reportedHours = await getTf2InGameHours(steamId)
   logger.debug({ steamId, reportedHours, requiredHours }, 'in-game hours verification')
   if (reportedHours < requiredHours) {
-    throw new InsufficientInGameHoursError(steamId, requiredHours, reportedHours)
+    throw errors.forbidden(
+      `insufficient TF2 in-game hours (steamId: ${steamId}, reported: ${reportedHours}, required: ${requiredHours})`,
+    )
   }
 }
 
@@ -73,7 +74,7 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
       etf2lProfile.bans &&
       etf2lProfile.bans.filter(ban => ban.end > Date.now() / 1000).length > 0
     ) {
-      throw new PlayerRegistrationDeniedError(player.steamId, `you are banned on ETF2L.org`)
+      throw errors.forbidden(`you are banned on ETF2L.org`)
     }
 
     return {
@@ -82,7 +83,7 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
     }
   } catch (error) {
     if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
-      throw new PlayerRegistrationDeniedError(player.steamId, `ETF2L.org account is required`)
+      throw errors.forbidden(`ETF2L.org account is required`)
     } else {
       throw error
     }

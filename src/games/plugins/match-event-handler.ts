@@ -5,15 +5,14 @@ import { Tf2Team } from '../../shared/types/tf2-team'
 import { GameEndedReason, GameEventType } from '../../database/models/game-event.model'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
 import { update } from '../update'
-import { assertIsError } from '../../utils/assert-is-error'
-import { logger } from '../../logger'
 import { safe } from '../../utils/safe'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    events.on('match:started', async ({ gameNumber }) => {
-      try {
+    events.on(
+      'match:started',
+      safe(async ({ gameNumber }) => {
         await update(
           { number: gameNumber, state: GameState.launching },
           {
@@ -32,14 +31,12 @@ export default fp(
             },
           },
         )
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
 
-    events.on('match:ended', async ({ gameNumber }) => {
-      try {
+    events.on(
+      'match:ended',
+      safe(async ({ gameNumber }) => {
         const game = await update(
           { number: gameNumber, state: GameState.started },
           {
@@ -66,11 +63,8 @@ export default fp(
           },
         )
         events.emit('game:ended', { game })
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
 
     events.on(
       'match/player:connected',
@@ -160,38 +154,32 @@ export default fp(
       }),
     )
 
-    events.on('match/score:final', async ({ gameNumber, team, score }) => {
-      try {
+    events.on(
+      'match/score:final',
+      safe(async ({ gameNumber, team, score }) => {
         await update(gameNumber, {
           $set: {
             [`score.${team}`]: score,
           },
         })
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
 
-    events.on('match/logs:uploaded', async ({ gameNumber, logsUrl }) => {
-      try {
+    events.on(
+      'match/logs:uploaded',
+      safe(async ({ gameNumber, logsUrl }) => {
         await update(gameNumber, { $set: { logsUrl } })
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
 
-    events.on('match/demo:uploaded', async ({ gameNumber, demoUrl }) => {
-      try {
+    events.on(
+      'match/demo:uploaded',
+      safe(async ({ gameNumber, demoUrl }) => {
         await update(gameNumber, {
           $set: { demoUrl },
         })
-      } catch (error) {
-        assertIsError(error)
-        logger.warn(error)
-      }
-    })
+      }),
+    )
   },
   { name: 'match event handler' },
 )

@@ -2,10 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { upsertPlayer } from './upsert-player'
 import { createPlayer } from './create-player'
 import { getTf2InGameHours } from '../steam/get-tf2-in-game-hours'
-import { InsufficientInGameHoursError } from './errors/insufficient-in-game-hours.error'
-import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { etf2l } from '../etf2l'
-import { PlayerRegistrationDeniedError } from './errors/player-registration-denied.error'
+import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 
 const mockPlayer = vi.hoisted(() => ({
   steamId: '76561198074409147',
@@ -108,7 +106,7 @@ describe('upsertPlayer()', () => {
       it('should throw', async () => {
         await expect(
           upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' }),
-        ).rejects.toThrow(InsufficientInGameHoursError)
+        ).rejects.toThrow('insufficient TF2 in-game hours')
       })
 
       describe('but the user is on bypass list', () => {
@@ -174,7 +172,7 @@ describe('upsertPlayer()', () => {
       it('should throw', async () => {
         await expect(
           upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' }),
-        ).rejects.toThrow(PlayerRegistrationDeniedError)
+        ).rejects.toThrow('ETF2L.org account is required')
       })
     })
 
@@ -192,7 +190,7 @@ describe('upsertPlayer()', () => {
       it('should throw', async () => {
         await expect(
           upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' }),
-        ).rejects.toThrow(PlayerRegistrationDeniedError)
+        ).rejects.toThrow('you are banned on ETF2L.org')
       })
     })
   })

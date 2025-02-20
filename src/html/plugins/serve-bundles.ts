@@ -13,7 +13,9 @@ export default fp(async app => {
     }
 
     if (environment.NODE_ENV === 'production') {
-      reply.header('Cache-Control', 'public, max-age=31536000, immutable')
+      reply.staticCache(31536000)
+    } else {
+      reply.preventCache()
     }
 
     reply.header('Content-Type', 'application/javascript; charset=utf-8').send(bundle)

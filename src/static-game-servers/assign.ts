@@ -2,6 +2,7 @@ import { Mutex } from 'async-mutex'
 import { GameServerProvider, type GameModel, type GameServer } from '../database/models/game.model'
 import { findFree } from './find-free'
 import { update } from './update'
+import { errors } from '../errors'
 
 const mutex = new Mutex()
 
@@ -9,7 +10,7 @@ export async function assign(game: GameModel): Promise<GameServer> {
   return await mutex.runExclusive(async () => {
     const before = await findFree()
     if (!before) {
-      throw new Error(`no free servers available for game ${game.number}`)
+      throw errors.notFound(`no free servers available for game ${game.number}`)
     }
 
     const server = await update(

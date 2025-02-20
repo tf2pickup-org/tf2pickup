@@ -20,7 +20,6 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
-import type { WithId } from 'mongodb'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
@@ -28,7 +27,7 @@ import { environment } from '../../../environment'
 const gamesPerPage = 5
 
 export async function PlayerPage(props: {
-  player: WithId<PlayerModel>
+  player: PlayerModel
   user?: User | undefined
   page: number
 }) {

@@ -8,8 +8,8 @@ import { gameNumber } from './schemas/game-number'
 import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
-import { collections } from '../database/collections'
 import { PlayerRole } from '../database/models/player.model'
+import { findOne } from './find-one'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -45,11 +45,7 @@ export default fp(
         },
         async (request, reply) => {
           const { number } = request.params
-          const game = await collections.games.findOne({ number })
-          if (!game) {
-            return reply.notFound()
-          }
-
+          const game = await findOne({ number })
           reply.status(200).html(await GamePage({ game, user: request.user }))
         },
       )

@@ -7,11 +7,10 @@ export async function withRcon<T>(
   game: GameModel,
   callback: (args: { rcon: Rcon }) => Promise<T>,
 ): Promise<T> {
+  logger.trace({ game }, `withRcon()`)
   if (game.gameServer === undefined) {
     throw new Error(`gameServer is undefined`)
   }
-
-  logger.trace({ game }, `withRcon()`)
 
   let rcon: Rcon | undefined = undefined
   const { address, port, password } = game.gameServer.rcon

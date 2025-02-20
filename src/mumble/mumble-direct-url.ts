@@ -1,17 +1,14 @@
 import { configuration } from '../configuration'
-import { collections } from '../database/collections'
 import type { GameModel } from '../database/models/game.model'
+import { errors } from '../errors'
+import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
-export async function mumbleDirectUrl(game: GameModel, player: SteamId64): Promise<URL> {
-  const p = await collections.players.findOne({ steamId: player })
-  if (p === null) {
-    throw new Error(`player not found: ${p}`)
-  }
-
-  const slot = game.slots.find(s => s.player === player)
+export async function mumbleDirectUrl(game: GameModel, steamId: SteamId64): Promise<URL> {
+  const p = await players.bySteamId(steamId)
+  const slot = game.slots.find(s => s.player === steamId)
   if (!slot) {
-    throw new Error(`player is not in the game`)
+    throw errors.badRequest(`player is not in the game`)
   }
 
   const [host, port, rootChannelName, password] = await Promise.all([

@@ -1,6 +1,7 @@
 import { collections } from '../database/collections'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
+import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -16,18 +17,18 @@ export async function markAsFriend(
 
     const queueState = await getState()
     if (queueState === QueueState.launching) {
-      throw new Error('cannot mark as friend at this stage')
+      throw errors.badRequest('cannot mark as friend at this stage')
     }
 
     const sourceSlot = await collections.queueSlots.findOne({ player: source })
     if (!sourceSlot) {
-      throw new Error(`source slot not found: ${source}`)
+      throw errors.notFound(`source slot not found: ${source}`)
     }
 
     if (target === null) {
       const friendship = await collections.queueFriends.findOne({ source })
       if (!friendship) {
-        throw new Error(`friendship not found: ${source}`)
+        throw errors.notFound(`friendship not found: ${source}`)
       }
       const targetSlot = await collections.queueSlots.findOne({ player: friendship.target })
       await collections.queueFriends.deleteOne({ source })
@@ -42,7 +43,7 @@ export async function markAsFriend(
         { upsert: true, returnDocument: 'after' },
       )
       if (!after) {
-        throw new Error(`failed to update friendship: ${source} -> ${target}`)
+        throw errors.badRequest(`failed to update friendship: ${source} -> ${target}`)
       }
       if (friendship) {
         events.emit('queue/friendship:updated', {

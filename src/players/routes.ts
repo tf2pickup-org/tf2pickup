@@ -21,6 +21,7 @@ import { format } from 'date-fns'
 import { getBanExpiryDate } from './get-ban-expiry-date'
 import { addBan } from './add-ban'
 import { revokeBan } from './revoke-ban'
+import { bySteamId } from './by-steam-id'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -45,10 +46,7 @@ export default fp(
         },
         async (req, reply) => {
           const { steamId } = req.params
-          const player = await collections.players.findOne({ steamId })
-          if (!player) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
+          const player = await bySteamId(steamId)
           reply.status(200).html(
             await PlayerPage({
               player,
@@ -89,11 +87,6 @@ export default fp(
         },
         async (req, reply) => {
           const { steamId } = req.params
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
-
           await reply.redirect(`/players/${steamId}/edit/profile`)
         },
       )
@@ -111,11 +104,7 @@ export default fp(
         },
         async (req, reply) => {
           const { steamId } = req.params
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
-
+          const player = await bySteamId(steamId)
           reply.status(200).html(await EditPlayerProfilePage({ player, user: req.user! }))
         },
       )
@@ -140,12 +129,7 @@ export default fp(
         async (req, reply) => {
           const { steamId } = req.params
           const { name } = req.body
-
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
-
+          const player = await bySteamId(steamId)
           const skill = Object.entries(req.body)
             .filter(([key]) => key.startsWith('skill.'))
             .reduce<Partial<Record<Tf2ClassName, number>>>(
@@ -189,11 +173,7 @@ export default fp(
         },
         async (req, reply) => {
           const { steamId } = req.params
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
-
+          const player = await bySteamId(steamId)
           reply.status(200).html(await EditPlayerBansPage({ player, user: req.user! }))
         },
       )
@@ -212,11 +192,7 @@ export default fp(
         },
         async (request, reply) => {
           const { steamId, banStart } = request.params
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.status(404).send()
-          }
-
+          const player = await bySteamId(steamId)
           const ban = await revokeBan({
             player: steamId,
             banStart,
@@ -251,10 +227,7 @@ export default fp(
         },
         async (request, reply) => {
           const { steamId } = request.params
-          const player = await collections.players.findOne({ steamId })
-          if (player === null) {
-            return reply.notFound(`player not found: ${steamId}`)
-          }
+          const player = await bySteamId(steamId)
           reply.status(200).html(await AddBanPage({ player, user: request.user! }))
         },
       )
@@ -311,10 +284,7 @@ export default fp(
           },
         },
         async (req, reply) => {
-          const player = await collections.players.findOne({ steamId: req.user!.player.steamId })
-          if (!player) {
-            throw new Error(`player not found: ${req.user!.player.steamId}`)
-          }
+          const player = await bySteamId(req.user!.player.steamId)
           const preferences: PlayerPreferences = {
             soundVolume: req.body.soundVolume,
           }
