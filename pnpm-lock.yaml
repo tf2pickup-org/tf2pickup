@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@fastify/accepts':
-        specifier: ^5.0.2
+        specifier: 5.0.2
         version: 5.0.2
       '@fastify/autoload':
         specifier: 6.1.0
