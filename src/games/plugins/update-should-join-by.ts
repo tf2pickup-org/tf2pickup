@@ -7,6 +7,7 @@ import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-tim
 import { safe } from '../../utils/safe'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('game:gameServerInitialized', async ({ game }) => {
       const joinTimeout = await configuration.get('games.join_gameserver_timeout')

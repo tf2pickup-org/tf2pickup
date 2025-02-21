@@ -16,7 +16,7 @@ async function JoinVoiceButtonContent(props: { game: GameModel; actor: SteamId64
     return <></>
   }
 
-  const slot = await getPlayerSlot(props.game, props.actor)
+  const slot = getPlayerSlot(props.game, props.actor)
   if (!slot) {
     return <></>
   }
@@ -33,7 +33,7 @@ async function JoinVoiceButtonContent(props: { game: GameModel; actor: SteamId64
   )
 }
 
-async function getPlayerSlot(game: GameModel, actor?: SteamId64) {
+function getPlayerSlot(game: GameModel, actor?: SteamId64) {
   if (!actor) {
     return undefined
   }

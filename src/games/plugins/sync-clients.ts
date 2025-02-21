@@ -10,7 +10,6 @@ import { PlayerConnectionStatusIndicator } from '../views/html/player-connection
 import { GameEventList } from '../views/html/game-event-list'
 import { GameSlot } from '../views/html/game-slot'
 import { GamesLink } from '../../html/components/games-link'
-import { safe } from '../../utils/safe'
 import { GameScore } from '../views/html/game-score'
 import { JoinVoiceButton } from '../views/html/join-voice-button'
 import { JoinGameButton } from '../views/html/join-game-button'
@@ -71,7 +70,7 @@ export default fp(async app => {
     }
 
     await Promise.all(
-      after.slots.map(async slot => {
+      after.slots.map(slot => {
         const beforeSlot = before.slots.find(s => s.player === slot.player)
         if (!beforeSlot) {
           return
@@ -104,24 +103,21 @@ export default fp(async app => {
     app.gateway.to({ url: `/games/${game.number}` }).send(() => cmp)
   })
 
-  events.on(
-    'game:playerConnectionStatusUpdated',
-    safe(async ({ game, player, playerConnectionStatus }) => {
-      app.gateway.to({ url: `/games/${game.number}` }).send(
-        async () =>
-          await PlayerConnectionStatusIndicator({
-            steamId: player,
-            connectionStatus: playerConnectionStatus,
-          }),
-      )
-      app.gateway
-        .to({ url: `/games/${game.number}` })
-        .to({ player })
-        .send(async actor => await ConnectInfo({ game, actor }))
-    }),
-  )
+  events.on('game:playerConnectionStatusUpdated', ({ game, player, playerConnectionStatus }) => {
+    app.gateway.to({ url: `/games/${game.number}` }).send(
+      async () =>
+        await PlayerConnectionStatusIndicator({
+          steamId: player,
+          connectionStatus: playerConnectionStatus,
+        }),
+    )
+    app.gateway
+      .to({ url: `/games/${game.number}` })
+      .to({ player })
+      .send(async actor => await ConnectInfo({ game, actor }))
+  })
 
-  events.on('game:substituteRequested', async ({ game, replacee }) => {
+  events.on('game:substituteRequested', ({ game, replacee }) => {
     const slot = game.slots.find(s => s.player === replacee)
     if (!slot) {
       throw new Error(`no such game slot: ${game.number} ${replacee}`)

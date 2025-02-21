@@ -4,6 +4,7 @@ import { secondsToMilliseconds } from 'date-fns'
 import { launchGame } from '../fixtures/launch-game'
 
 launchGame.use({ waitForStage: 'launching' })
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 launchGame('free players when the game ends', async ({ players, gameServer, gameNumber }) => {
   await Promise.all(
     players.map(async player => {
@@ -33,12 +34,11 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
           expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(1),
           }),
-          ...Array.from(Array(12).keys()).map(
-            async i =>
-              await expect(page.slot(i).joinButton()).toBeEnabled({
-                timeout: secondsToMilliseconds(1),
-              }),
-          ),
+          ...Array.from(Array(12).keys()).map(async i => {
+            await expect(page.slot(i).joinButton()).toBeEnabled({
+              timeout: secondsToMilliseconds(1),
+            })
+          }),
         ])
       }),
     ...players
@@ -47,12 +47,11 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
         const page = await player.queuePage()
         await Promise.all([
           expect(page.goBackToGameLink()).toBeVisible({ timeout: secondsToMilliseconds(1) }),
-          ...Array.from(Array(12).keys()).map(
-            async i =>
-              await expect(page.slot(i).joinButton()).toBeDisabled({
-                timeout: secondsToMilliseconds(1),
-              }),
-          ),
+          ...Array.from(Array(12).keys()).map(async i => {
+            await expect(page.slot(i).joinButton()).toBeDisabled({
+              timeout: secondsToMilliseconds(1),
+            })
+          }),
         ])
       }),
   ])
@@ -67,12 +66,11 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
           expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(6),
           }),
-          ...Array.from(Array(12).keys()).map(
-            async i =>
-              await expect(page.slot(i).joinButton()).toBeEnabled({
-                timeout: secondsToMilliseconds(6),
-              }),
-          ),
+          ...Array.from(Array(12).keys()).map(async i => {
+            await expect(page.slot(i).joinButton()).toBeEnabled({
+              timeout: secondsToMilliseconds(6),
+            })
+          }),
         ])
       }),
   )

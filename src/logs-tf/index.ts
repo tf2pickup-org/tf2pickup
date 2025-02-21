@@ -13,6 +13,7 @@ import { games } from '../games'
 import { errors } from '../errors'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     if (!environment.LOGS_TF_API_KEY) {
       logger.warn('logs.tf API key is missing, logs.tf integration disabled')

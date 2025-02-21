@@ -120,7 +120,10 @@ async function send(client: WebSocket, message: MessageFn) {
   }
 }
 
-type Filters = { players?: Set<SteamId64>; urls?: Set<string> }
+interface Filters {
+  players?: Set<SteamId64>
+  urls?: Set<string>
+}
 type UserFilters =
   | { player: SteamId64 }
   | { players: SteamId64[] }
@@ -191,7 +194,9 @@ export class Gateway extends EventEmitter implements Broadcaster {
   }
 
   broadcast(message: MessageFn) {
-    this.app.websocketServer.clients.forEach(async client => await send(client, message))
+    this.app.websocketServer.clients.forEach(async client => {
+      await send(client, message)
+    })
   }
 
   to(filter: UserFilters): BroadcastOperator {

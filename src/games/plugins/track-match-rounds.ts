@@ -16,6 +16,7 @@ interface RoundData {
 }
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     const rounds = new Map<GameNumber, RoundData>()
 
@@ -25,7 +26,7 @@ export default fp(
           value.winner &&
           value.lengthMs !== undefined &&
           value.score?.blu !== undefined &&
-          value.score?.red !== undefined
+          value.score.red !== undefined
         ) {
           logger.info({ ...value, gameNumber }, `round ended`)
 

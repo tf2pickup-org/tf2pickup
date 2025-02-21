@@ -36,7 +36,7 @@ export const authUsers = test.extend<AuthUsersFixture>({
                 large:
                   'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg',
               },
-              roles: 'roles' in user ? (user.roles ?? []) : [],
+              roles: 'roles' in user ? user.roles : [],
               hasAcceptedRules: true,
               cooldownLevel: 0,
             },

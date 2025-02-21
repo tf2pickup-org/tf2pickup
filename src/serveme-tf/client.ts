@@ -2,9 +2,9 @@ import { Client } from '@tf2pickup-org/serveme-tf-client'
 import { environment } from '../environment'
 import { logger } from '../logger'
 
-export const client = await initializeClient()
+export const client = initializeClient()
 
-async function initializeClient(): Promise<Client | null> {
+function initializeClient(): Client | null {
   if (environment.SERVEME_TF_API_KEY) {
     logger.info(
       { servemeTfApiEndpoint: environment.SERVEME_TF_API_ENDPOINT },

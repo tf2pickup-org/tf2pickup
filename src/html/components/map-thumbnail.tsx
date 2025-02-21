@@ -1,7 +1,7 @@
 import { environment } from '../../environment'
 
 export function MapThumbnail(props: { map: string }) {
-  const mapName = props.map.match(/^([a-z]+_[a-zA-Z0-9]+)/)?.[0] ?? 'unknown'
+  const mapName = /^([a-z]+_[a-zA-Z0-9]+)/.exec(props.map)?.[0] ?? 'unknown'
   const mapThumbnailUrl = (width: number, height: number) =>
     `${environment.THUMBNAIL_SERVICE_URL}/unsafe/${width}x${height}/${mapName}.jpg`
 

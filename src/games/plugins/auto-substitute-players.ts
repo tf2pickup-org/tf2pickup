@@ -8,6 +8,7 @@ import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-tim
 import { safe } from '../../utils/safe'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('games:autoSubstitutePlayer', async ({ gameNumber, player }) => {
       await requestSubstitute({
@@ -18,16 +19,19 @@ export default fp(
       })
     })
 
-    events.on('game:ended', ({ game }) => {
-      tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number })
+    events.on('game:ended', async ({ game }) => {
+      await tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number })
     })
 
-    events.on('match/player:connected', ({ gameNumber, steamId }) => {
-      tasks.cancel('games:autoSubstitutePlayer', { gameNumber, player: steamId })
+    events.on('match/player:connected', async ({ gameNumber, steamId }) => {
+      await tasks.cancel('games:autoSubstitutePlayer', { gameNumber, player: steamId })
     })
 
-    events.on('game:substituteRequested', ({ game, replacee }) => {
-      tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number, player: replacee })
+    events.on('game:substituteRequested', async ({ game, replacee }) => {
+      await tasks.cancel('games:autoSubstitutePlayer', {
+        gameNumber: game.number,
+        player: replacee,
+      })
     })
 
     events.on(
@@ -38,15 +42,17 @@ export default fp(
           return
         }
 
-        game.slots
-          .filter(slot => slot.status === SlotStatus.active)
-          .map(({ player }) => player)
-          .forEach(player => {
-            tasks.schedule('games:autoSubstitutePlayer', joinTimeout, {
-              gameNumber: game.number,
-              player,
-            })
-          })
+        await Promise.all(
+          game.slots
+            .filter(slot => slot.status === SlotStatus.active)
+            .map(({ player }) => player)
+            .map(async player => {
+              await tasks.schedule('games:autoSubstitutePlayer', joinTimeout, {
+                gameNumber: game.number,
+                player,
+              })
+            }),
+        )
       }),
     )
 
@@ -58,7 +64,7 @@ export default fp(
           return
         }
 
-        tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
+        await tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
           gameNumber: game.number,
           player: replacement,
         })
@@ -77,7 +83,7 @@ export default fp(
           return
         }
 
-        tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
+        await tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
           gameNumber: game.number,
           player,
         })

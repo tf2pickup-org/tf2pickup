@@ -4,6 +4,7 @@ import { safe } from '../../utils/safe'
 import { linkChannels } from '../link-channels'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on(
       'game:ended',

@@ -6,6 +6,7 @@ import { events } from '../../events'
 import { SlotStatus } from '../../database/models/game-slot.model'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('games.freePlayer', async ({ player }) => {
       await players.update(player, { $unset: { activeGame: 1 } })
@@ -20,7 +21,7 @@ export default fp(
           .map(async ({ gameClass, player }) => {
             const queueCooldown = await configuration.get('games.join_queue_cooldown')
             const cooldownMs = queueCooldown[gameClass] ?? 0
-            tasks.schedule('games.freePlayer', cooldownMs, { player })
+            await tasks.schedule('games.freePlayer', cooldownMs, { player })
           }),
       )
     })

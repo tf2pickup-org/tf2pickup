@@ -10,6 +10,7 @@ const withTwitchTvAuth = async (input: string | URL | Request, init?: RequestIni
   fetch(input, {
     ...init,
     headers: {
+      // eslint-disable-next-line @typescript-eslint/no-misused-spread
       ...init?.headers,
       Authorization: `Bearer ${await getAppAccessToken()}`,
       'Client-ID': environment.TWITCH_CLIENT_ID!,
@@ -37,7 +38,9 @@ export async function getStreams(params: {
         return null
       }
       const q = new URLSearchParams(queryParams)
-      userIds.forEach(userId => q.append('user_id', userId))
+      userIds.forEach(userId => {
+        q.append('user_id', userId)
+      })
       return await withTwitchTvAuth(new URL(`${twitchTvApiUrl}/streams?${q}`))
     }),
     ...userLoginsChunks.map(async userLogins => {
@@ -45,7 +48,9 @@ export async function getStreams(params: {
         return null
       }
       const q = new URLSearchParams(queryParams)
-      userLogins.forEach(userLogin => q.append('user_login', userLogin))
+      userLogins.forEach(userLogin => {
+        q.append('user_login', userLogin)
+      })
       return await withTwitchTvAuth(new URL(`${twitchTvApiUrl}/streams?${q}`))
     }),
   ])

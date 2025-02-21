@@ -121,7 +121,9 @@ export class QueuePage {
 
   async waitToBeEmpty(options?: { timeout?: number }) {
     await Promise.all(
-      Array.from(Array(12).keys()).map(async i => await this.slot(i).waitToBeFree(options)),
+      Array.from(Array(12).keys()).map(async i => {
+        await this.slot(i).waitToBeFree(options)
+      }),
     )
   }
 }

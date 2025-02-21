@@ -20,7 +20,7 @@ test('redirect player to launched game', async ({ users, players, desiredSlots }
 
   // kill the game
   const page = await users.byName('Promenader').page()
-  const matches = page.url().match(/games\/(\d+)/)
+  const matches = /games\/(\d+)/.exec(page.url())
   if (!matches) {
     throw new Error('could not launch game')
   }

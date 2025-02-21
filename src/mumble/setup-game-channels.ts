@@ -31,12 +31,9 @@ export async function setupGameChannels(game: GameModel) {
           return await mumbleDirectUrl(game, player.steamId)
         }),
       )
-    ).reduce(
-      (acc, url, i) => {
-        acc[`slots.${i}.voiceServerUrl`] = url.toString()
-        return acc
-      },
-      {} as Record<`slots.${number}.voiceServerUrl`, string>,
-    ),
+    ).reduce<Record<`slots.${number}.voiceServerUrl`, string>>((acc, url, i) => {
+      acc[`slots.${i}.voiceServerUrl`] = url.toString()
+      return acc
+    }, {}),
   })
 }

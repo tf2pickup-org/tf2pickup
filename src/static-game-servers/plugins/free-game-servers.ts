@@ -8,6 +8,7 @@ import { GameServerProvider, GameState } from '../../database/models/game.model'
 const freeGameServerDelay = secondsToMilliseconds(30)
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('staticGameServers:free', async ({ id }) => {
       await update({ id }, { $unset: { game: 1 } })
@@ -21,7 +22,9 @@ export default fp(
       if (game.state === GameState.interrupted) {
         await update({ id: game.gameServer.id }, { $unset: { game: 1 } })
       } else {
-        tasks.schedule('staticGameServers:free', freeGameServerDelay, { id: game.gameServer.id })
+        await tasks.schedule('staticGameServers:free', freeGameServerDelay, {
+          id: game.gameServer.id,
+        })
       }
     })
   },

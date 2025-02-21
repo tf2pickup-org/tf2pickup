@@ -9,6 +9,7 @@ declare module '@fastify/request-context' {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
+  // eslint-disable-next-line @typescript-eslint/require-await
   app.addHook('preHandler', async request => {
     request.requestContext.set('url', request.url)
   })

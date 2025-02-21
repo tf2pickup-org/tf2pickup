@@ -77,7 +77,7 @@ export const configureMumbleServer = authUsers.extend<{
             applyHere: true,
             applySubs: true,
             inherited: false,
-            userId: client.userId,
+            userId: client.userId!,
             grant: 0x41,
             deny: 0,
           },

@@ -5,7 +5,7 @@ import { logger } from '../logger'
 import { mutex } from './mutex'
 
 export async function setState(state: QueueState) {
-  return await mutex.runExclusive(async () => {
+  await mutex.runExclusive(async () => {
     logger.trace({ state }, 'queue.setState()')
     await collections.queueState.updateOne({}, { $set: { state } })
 

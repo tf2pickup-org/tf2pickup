@@ -17,7 +17,7 @@ async function process() {
           throw errors.internalServerError(`task not registered: ${task.name}`)
         }
 
-        // @ts-expect-error
+        // @ts-expect-error ts can't cast task args properly
         await t(task.args)
       } catch (error) {
         assertIsError(error)

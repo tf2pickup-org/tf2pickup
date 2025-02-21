@@ -5,7 +5,7 @@ interface SteamConnect {
 }
 
 const parseConnectString = (connect: string): SteamConnect | undefined => {
-  const match = connect.match(/^connect (.[^:;]+):?(\d+)?(?:;\s?password\s(.+))?$/)
+  const match = /^connect (.[^:;]+):?(\d+)?(?:;\s?password\s(.+))?$/.exec(connect)
   if (match?.[1]) {
     const ret: SteamConnect = { server: match[1] }
 

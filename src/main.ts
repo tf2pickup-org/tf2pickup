@@ -46,7 +46,7 @@ app.setErrorHandler((error, request, reply) => {
   let statusCode = 500
   let message = 'Internal Server Error'
   if (error instanceof HttpError) {
-    statusCode = error.statusCode
+    statusCode = error.statusCode as number
     message = error.message
   }
 

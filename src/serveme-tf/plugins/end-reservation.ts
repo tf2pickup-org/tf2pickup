@@ -9,6 +9,7 @@ import { logger } from '../../logger'
 
 const endReservationDelay = secondsToMilliseconds(30)
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
   async function endReservation(id: ReservationId) {
     if (!client) {
@@ -30,6 +31,6 @@ export default fp(async () => {
     }
 
     const id = Number(game.gameServer.id)
-    tasks.schedule('servemeTf:endReservation', endReservationDelay, { id })
+    await tasks.schedule('servemeTf:endReservation', endReservationDelay, { id })
   })
 })

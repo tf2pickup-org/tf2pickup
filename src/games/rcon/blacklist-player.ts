@@ -4,7 +4,7 @@ import { delGamePlayer } from './commands'
 import { withRcon } from './with-rcon'
 
 export async function blacklistPlayer(game: GameModel, steamId: SteamId64) {
-  return await withRcon(game, async ({ rcon }) => {
+  await withRcon(game, async ({ rcon }) => {
     await rcon.send(delGamePlayer(steamId))
   })
 }

@@ -126,7 +126,7 @@ export class GameServerSimulator {
             this.commands.push(packet.body)
 
             if (/sv_logsecret (.+)/.test(packet.body)) {
-              const [, logSecret] = packet.body.match(/sv_logsecret (.+)/) ?? []
+              const [, logSecret] = /sv_logsecret (.+)/.exec(packet.body) ?? []
               this.logSecret = logSecret
               const response = new RconPacket()
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
@@ -134,7 +134,7 @@ export class GameServerSimulator {
               response.body = `sv_logsecret ${logSecret}`
               socket.write(response.toBuffer())
             } else if (/logaddress_add (.+)/.test(packet.body)) {
-              const [, address] = packet.body.match(/logaddress_add (.+)/) ?? []
+              const [, address] = /logaddress_add (.+)/.exec(packet.body) ?? []
               this.addresses.push(address!)
 
               const response = new RconPacket()
@@ -143,7 +143,7 @@ export class GameServerSimulator {
               response.body = `logaddress_add ${address}`
               socket.write(response.toBuffer())
             } else if (/^logaddress_del (.+)/.test(packet.body)) {
-              const [, address] = packet.body.match(/logaddress_add (.+)/) ?? []
+              const [, address] = /logaddress_add (.+)/.exec(packet.body) ?? []
               if (address) {
                 const index = this.addresses.indexOf(address)
                 if (index > -1) {
@@ -158,8 +158,8 @@ export class GameServerSimulator {
               socket.write(response.toBuffer())
             } else if (/^sm_game_player_add .+/.test(packet.body)) {
               const [, steamId64, name, team, gameClass] =
-                packet.body.match(
-                  /^sm_game_player_add (\d{17}) -name "(.+)" -team (blu|red) -class (.+)$/,
+                /^sm_game_player_add (\d{17}) -name "(.+)" -team (blu|red) -class (.+)$/.exec(
+                  packet.body,
                 ) ?? []
               if (steamId64 && name && team && gameClass) {
                 this.addedPlayers.push(new AddedPlayer(steamId64, name, team, gameClass))
@@ -182,7 +182,7 @@ export class GameServerSimulator {
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
               response.id = packet.id
 
-              const [, name, value] = packet.body.match(/^([a-z_]+)\s(.*)$/) ?? []
+              const [, name, value] = /^([a-z_]+)\s(.*)$/.exec(packet.body) ?? []
               if (name && this.hasCvar(name)) {
                 const cvar = this.cvar(name)
                 if (value) {

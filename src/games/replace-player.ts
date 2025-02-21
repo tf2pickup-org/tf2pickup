@@ -36,7 +36,6 @@ export async function replacePlayer({
       throw new Error(`player slot unavailable (gameNumber=${game.number}, replacee=${replacee})`)
     }
 
-    let newGame: GameModel
     if (replacee !== replacement) {
       const rm = await collections.players.findOne({ steamId: replacement })
       if (!rm) {
@@ -48,7 +47,7 @@ export async function replacePlayer({
       }
     }
 
-    newGame = await update(
+    const newGame = await update(
       { number },
       {
         $set: {

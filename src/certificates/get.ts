@@ -4,10 +4,16 @@ import { logger } from '../logger'
 import pem from 'pem'
 import type { CertificateModel } from '../database/models/certificate.model'
 
+interface Certificate {
+  clientKey: string
+  certificate: string
+}
+
 const createCertificate = (options: pem.CertificateCreationOptions) =>
-  new Promise<pem.CertificateCreationResult>((resolve, reject) => {
+  new Promise<Certificate>((resolve, reject) => {
     pem.createCertificate(options, (error, result) => {
       if (error) {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         reject(error)
       } else {
         resolve(result)
