@@ -111,8 +111,8 @@ importers:
         specifier: 2.0.4
         version: 2.0.4
       idiomorph:
-        specifier: 0.7.1
-        version: 0.7.1
+        specifier: 0.7.2
+        version: 0.7.2
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
@@ -1845,8 +1845,8 @@ packages:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
 
-  idiomorph@0.7.1:
-    resolution: {integrity: sha512-6HI1AWYQL/WijVQNyE+1rn4Rt83XxMGShXa4IP4Ulhs8fj2FNJ2mgCDwO/OrDjMRjauPI/STRPsysM6zw3aX0w==}
+  idiomorph@0.7.2:
+    resolution: {integrity: sha512-fGqT4uBOetEVvKKQkj5bzCQgQlEjb7i4/AJSi7usmflG6HyCGRXAnJLi4aUjJDlPMM3tE/aRCKsUhDAzKabxWQ==}
 
   ignore@5.3.1:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
@@ -4922,7 +4922,7 @@ snapshots:
       statuses: 2.0.1
       toidentifier: 1.0.1
 
-  idiomorph@0.7.1: {}
+  idiomorph@0.7.2: {}
 
   ignore@5.3.1: {}
 
