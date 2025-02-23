@@ -11,6 +11,7 @@ import { minutesToMilliseconds } from 'date-fns'
 const removeChannelDelay = minutesToMilliseconds(1)
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('mumble.cleanupChannel', async ({ gameNumber }) => {
       await moveToTargetChannel()
@@ -28,7 +29,7 @@ export default fp(
 
       if (userCount > 0) {
         logger.debug({ gameNumber, userCount }, `mumble channel not empty yet; not removing`)
-        tasks.schedule('mumble.cleanupChannel', removeChannelDelay, { gameNumber })
+        await tasks.schedule('mumble.cleanupChannel', removeChannelDelay, { gameNumber })
         return
       }
 
@@ -39,7 +40,9 @@ export default fp(
     events.on(
       'game:ended',
       safe(async ({ game }) => {
-        tasks.schedule('mumble.cleanupChannel', removeChannelDelay, { gameNumber: game.number })
+        await tasks.schedule('mumble.cleanupChannel', removeChannelDelay, {
+          gameNumber: game.number,
+        })
       }),
     )
   },

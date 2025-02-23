@@ -4,7 +4,6 @@ import { secondsToMilliseconds } from 'date-fns'
 import { TimeoutError, withTimeout } from 'es-toolkit'
 
 export const simulateGameServer = test.extend<{ gameServer: GameServerSimulator }>({
-  // eslint-disable-next-line no-empty-pattern
   gameServer: async ({}, use) => {
     const apiAddress = process.env['WEBSITE_URL']
     const secret = process.env['GAME_SERVER_SECRET']
@@ -56,6 +55,7 @@ export const expect = baseExpect.extend({
       pass = true
     } catch (error) {
       if (error instanceof TimeoutError) {
+        // empty
       } else {
         throw error
       }

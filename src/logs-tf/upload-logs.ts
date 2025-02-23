@@ -40,7 +40,7 @@ export async function uploadLogs(params: UploadLogsParams): Promise<string> {
       }
 
       let reply = ''
-      response.on('data', chunk => (reply += chunk))
+      response.on('data', (chunk: string) => (reply += chunk))
       response.on('end', () => {
         try {
           const d = JSON.parse(reply) as UploadLogsResponse
@@ -56,7 +56,9 @@ export async function uploadLogs(params: UploadLogsParams): Promise<string> {
           reject(error instanceof Error ? error : new Error(error as string))
         }
       })
-      response.on('error', error => reject(error))
+      response.on('error', error => {
+        reject(error)
+      })
 
       response.resume()
     })

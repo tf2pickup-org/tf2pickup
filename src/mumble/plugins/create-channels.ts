@@ -9,6 +9,7 @@ import { collections } from '../../database/collections'
 import { client } from '../client'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on(
       'game:created',

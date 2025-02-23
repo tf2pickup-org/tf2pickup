@@ -17,10 +17,13 @@ async function cleanupSafe(game: GameModel) {
 }
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('game:ended', async ({ game }) => {
       if (game.state === GameState.ended) {
-        delay(async () => await cleanupSafe(game), secondsToMilliseconds(30))
+        delay(async () => {
+          await cleanupSafe(game)
+        }, secondsToMilliseconds(30))
       } else {
         await cleanupSafe(game)
       }

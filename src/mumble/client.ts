@@ -62,7 +62,7 @@ export async function tryConnect() {
 
     const permissions = await client.user.channel.getPermissions()
     if (!permissions.canCreateChannel) {
-      logger.warn(`bot ${client.user!.name} does not have permissions to create new channels`)
+      logger.warn(`bot ${client.user.name} does not have permissions to create new channels`)
     }
     setStatus(MumbleClientStatus.connected)
   } catch (error) {

@@ -8,14 +8,13 @@ let socket: SocketWrapper
 
 function reportNavigation(path: string) {
   const msg = JSON.stringify({ navigated: path })
-  socket?.send(msg)
+  socket.send(msg)
 }
 
-export function goTo(path: string) {
-  htmx.ajax('get', path, document.body).then(() => {
-    history.pushState({}, '', path)
-    reportNavigation(path)
-  })
+export async function goTo(path: string) {
+  await htmx.ajax('get', path, document.body)
+  history.pushState({}, '', path)
+  reportNavigation(path)
 }
 
 htmx.on('htmx:wsOpen', event => {

@@ -16,7 +16,7 @@ export async function whitelistPlayer(game: GameModel, steamId: SteamId64) {
     throw new Error(`player not found in game: ${steamId}`)
   }
 
-  return await withRcon(game, async ({ rcon }) => {
+  await withRcon(game, async ({ rcon }) => {
     await rcon.send(addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass))
   })
 }

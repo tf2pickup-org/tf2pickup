@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { safe } from '../../utils/safe'
 import { GameState, type GameModel } from '../../database/models/game.model'
 import { configuration } from '../../configuration'
 import { SlotStatus } from '../../database/models/game-slot.model'
@@ -10,6 +9,7 @@ import { forceEnd } from '../force-end'
 import { GameEndedReason } from '../../database/models/game-event.model'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     const maybeCloseGame = debounce(async (game: GameModel) => {
       if (
@@ -40,12 +40,9 @@ export default fp(
       }
     }, 100)
 
-    events.on(
-      'game:substituteRequested',
-      safe(async ({ game }) => {
-        await maybeCloseGame(game)
-      }),
-    )
+    events.on('game:substituteRequested', ({ game }) => {
+      maybeCloseGame(game)
+    })
   },
   {
     name: 'auto close games with too many subsitute requests',

@@ -4,6 +4,7 @@ import { safe } from '../../utils/safe'
 import { kick } from '../kick'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on(
       'player/ban:added',

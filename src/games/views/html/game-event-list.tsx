@@ -8,6 +8,7 @@ import type { GameModel } from '../../../database/models/game.model'
 import { collections } from '../../../database/collections'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { isBot } from '../../../shared/types/bot'
+import { players } from '../../../players'
 
 const renderedEvents = [
   GameEventType.gameCreated,
@@ -76,7 +77,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
   switch (props.event.event) {
     case GameEventType.gameCreated:
       return <span>Game created</span>
-    case GameEventType.gameServerAssigned:
+    case GameEventType.gameServerAssigned: {
       if (!props.event.actor) {
         return (
           <span>
@@ -95,11 +96,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         )
       }
 
-      const actor = await collections.players.findOne({ steamId: props.event.actor })
-      if (!actor) {
-        throw new Error(`actor not found: ${props.event.actor}`)
-      }
-
+      const actor = await players.bySteamId(props.event.actor)
       return (
         <span>
           <a href={`/players/${actor.steamId}`} safe>
@@ -109,13 +106,14 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
         </span>
       )
+    }
     case GameEventType.gameServerInitialized:
       return <span>Game server initialized</span>
     case GameEventType.gameStarted:
       return <span>Game started</span>
     case GameEventType.gameEnded:
       switch (props.event.reason) {
-        case GameEndedReason.interrupted:
+        case GameEndedReason.interrupted: {
           if (!props.event.actor) {
             return <span>Game interrupted</span>
           }
@@ -124,11 +122,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             return <span>Game interrupted by bot</span>
           }
 
-          const actor = await collections.players.findOne({ steamId: props.event.actor })
-          if (!actor) {
-            throw new Error(`actor not found: ${props.event.actor}`)
-          }
-
+          const actor = await players.bySteamId(props.event.actor)
           return (
             <span>
               Game interrupted by{' '}
@@ -137,6 +131,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
               </a>
             </span>
           )
+        }
         case GameEndedReason.tooManySubstituteRequests:
           return <span>Game interrupted (too many substitute requests)</span>
         default:

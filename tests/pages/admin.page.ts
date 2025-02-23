@@ -44,7 +44,10 @@ export class AdminPage {
       await this.page
         .getByRole('button', { name: 'Remove game assignment' })
         .click({ timeout: secondsToMilliseconds(1) })
-    } catch (error) {}
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      // empty
+    }
   }
 
   async configurePlayerSkillThreshold(threshold: number | null) {

@@ -12,7 +12,7 @@ import { makeTitle } from '../../../html/make-title'
 const itemsPerPage = 8
 
 export async function GameListPage(props: { user?: User | undefined; page: number }) {
-  const page = props.page ?? 1
+  const { page } = props
   const { last, around } = paginate(page, itemsPerPage, await collections.games.countDocuments())
   const skip = (page - 1) * itemsPerPage
 

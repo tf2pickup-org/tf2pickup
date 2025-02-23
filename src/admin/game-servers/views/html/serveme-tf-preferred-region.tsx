@@ -29,7 +29,9 @@ export function ServemeTfPreferredRegion() {
 
 const getRegions = memoize(async () => await servemeTf.listRegions())
 
-type SaveResult = { success: true }
+interface SaveResult {
+  success: true
+}
 
 export async function RegionList(props?: { saveResult?: SaveResult }) {
   const regions = await getRegions()

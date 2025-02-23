@@ -16,11 +16,11 @@ export async function pickServer(servers: ServerData[]): Promise<ServerId> {
     bannedServers.every(ban => !s.name.includes(ban)),
   )
 
-  const server = sample(validServers)
-  if (!server) {
+  if (validServers.length === 0) {
     throw errors.notFound('could not find any gameservers meeting given criteria')
   }
 
+  const server = sample(validServers)
   return server.id
 }
 

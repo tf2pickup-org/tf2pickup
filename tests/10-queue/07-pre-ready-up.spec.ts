@@ -80,7 +80,7 @@ test('pre-ready up readies up when the queue is ready', async ({
 
   {
     const page = await users.byName('Promenader').page()
-    const matches = page.url().match(/games\/(\d+)/)
+    const matches = /games\/(\d+)/.exec(page.url())
     if (matches) {
       const gameNumber = Number(matches[1])
       // kill the game

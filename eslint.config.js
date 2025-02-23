@@ -1,15 +1,16 @@
-import eslint from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import js from '@eslint/js'
+import ts from 'typescript-eslint'
 import globals from 'globals'
 
-export default tseslint.config(
-  eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+export default ts.config(
+  js.configs.recommended,
+  ts.configs.strictTypeChecked,
+  ts.configs.stylisticTypeChecked,
   {
     languageOptions: {
       parserOptions: {
-        EXPERIMENTAL_useProjectService: true,
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
       },
     },
   },
@@ -32,8 +33,15 @@ export default tseslint.config(
     },
   },
   {
+    files: ['tests/**/*.ts'],
+    rules: {
+      'no-empty-pattern': 'off',
+      '@typescript-eslint/no-invalid-void-type': 'off',
+    },
+  },
+  {
     files: ['**/*.test.ts'],
-    ...tseslint.configs.disableTypeChecked,
+    ...ts.configs.disableTypeChecked,
   },
   {
     files: ['**/@client/*.ts'],

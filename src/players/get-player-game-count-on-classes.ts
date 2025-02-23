@@ -3,7 +3,7 @@ import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { GameState } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
-type PlayerPlayedClassCount = { [gameClass in Tf2ClassName]?: number }
+type PlayerPlayedClassCount = Partial<Record<Tf2ClassName, number>>
 
 export async function getPlayerGameCountOnClasses(
   playerId: SteamId64,
@@ -11,7 +11,7 @@ export async function getPlayerGameCountOnClasses(
   return (
     (
       await collections.games
-        .aggregate<{ [gameClass in Tf2ClassName]?: number }>([
+        .aggregate<Partial<Record<Tf2ClassName, number>>>([
           {
             $unwind: {
               path: '$slots',

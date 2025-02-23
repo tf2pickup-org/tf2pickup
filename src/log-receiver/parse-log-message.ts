@@ -17,7 +17,7 @@ const extractPassword = (message: Buffer): string | null => {
   if (end < 0) {
     return null
   } else {
-    return message.slice(start, end).toString()
+    return message.subarray(start, end).toString()
   }
 }
 
@@ -27,7 +27,7 @@ const extractPayload = (message: Buffer): string | null => {
     return null
   }
   start += magicStringEndHeader.length
-  return message.slice(start, message.length - 2).toString()
+  return message.subarray(start, message.length - 2).toString()
 }
 
 export const parseLogMessage = (message: Buffer): LogMessage => {
@@ -35,7 +35,7 @@ export const parseLogMessage = (message: Buffer): LogMessage => {
     throw new Error('message too short')
   }
 
-  if (message.slice(0, 4).compare(packetHeader) !== 0) {
+  if (message.subarray(0, 4).compare(packetHeader) !== 0) {
     throw new Error('bad header')
   }
 

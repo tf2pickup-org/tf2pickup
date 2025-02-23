@@ -25,6 +25,7 @@ export default fp(
       }
     })
 
+    // eslint-disable-next-line @typescript-eslint/require-await
     events.on('game:ended', async ({ game }) => {
       if (game.state === GameState.interrupted) {
         configurators.get(game.number)?.abort()

@@ -6,7 +6,7 @@ import { logger } from '../logger'
  */
 export function safe<Args extends unknown[]>(fn: (...args: Args) => Promise<void>) {
   return (...args: Args) => {
-    fn(...args).catch(error => {
+    fn(...args).catch((error: unknown) => {
       logger.error(error)
     })
   }

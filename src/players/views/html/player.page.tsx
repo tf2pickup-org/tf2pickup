@@ -107,7 +107,7 @@ export async function PlayerPage(props: {
 function PlayerPresentation(props: {
   player: PlayerModel
   gameCount: number
-  gameCountOnClasses: { [gameClass in Tf2ClassName]?: number }
+  gameCountOnClasses: Partial<Record<Tf2ClassName, number>>
 }) {
   return (
     <div class="player-presentation">

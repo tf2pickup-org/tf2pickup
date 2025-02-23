@@ -21,7 +21,7 @@ export default fp(
   async app => {
     async function syncAllSlots(...players: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
-      slots.forEach(async slot => {
+      slots.forEach(slot => {
         app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
       })
     }

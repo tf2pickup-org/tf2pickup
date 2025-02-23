@@ -192,7 +192,7 @@ function EditPlayer(props: {
           <AdminPanelBody>
             <div class="admin-panel-header">
               <AdminPanelHeader>{editPlayerPages[props.activePage]}</AdminPanelHeader>
-              {props.action ? props.action : <></>}
+              {props.action ?? <></>}
             </div>
             {props.children}
           </AdminPanelBody>

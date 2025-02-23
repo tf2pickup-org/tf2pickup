@@ -29,6 +29,7 @@ async function refreshStreams() {
 }
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     if (environment.TWITCH_CLIENT_ID === undefined) {
       logger.info('TWITCH_CLIENT_ID empty; twitch.tv integration is disabled')

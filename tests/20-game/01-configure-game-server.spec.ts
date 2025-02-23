@@ -14,7 +14,7 @@ launchGame('configure game server', async ({ players, gameNumber, page, gameServ
       })
 
       const [, password] =
-        (await connectString.innerText()).match(/^connect .+;\s?password (.+)$/) ?? []
+        /^connect .+;\s?password (.+)$/.exec(await connectString.innerText()) ?? []
       expect(gameServer.cvar('sv_password').value).toEqual(password)
 
       await expect(page.gameEvent('Game server initialized')).toBeVisible()

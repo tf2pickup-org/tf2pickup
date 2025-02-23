@@ -4,6 +4,7 @@ import { ScrambleMaps } from './views/html/scramble-maps.page'
 import { queue } from '../../queue'
 import { MapVoteOptions } from './views/html/map-vote-options'
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
   app
     .get(

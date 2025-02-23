@@ -7,6 +7,7 @@ import { collections } from '../../database/collections'
 import { sayChat } from '../rcon/say-chat'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on(
       'game:substituteRequested',

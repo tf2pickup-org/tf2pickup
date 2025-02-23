@@ -10,6 +10,7 @@ import { requestContext } from '@fastify/request-context'
 import { collections } from '../../database/collections'
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     app
       .withTypeProvider<ZodTypeProvider>()

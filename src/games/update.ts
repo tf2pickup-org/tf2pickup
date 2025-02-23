@@ -9,13 +9,9 @@ import { collections } from '../database/collections'
 import { events } from '../events'
 import { mutex } from './mutex'
 
-export async function update<
-  FilterType extends
-    | StrictUpdateFilter<GameModel>
-    | UpdateFilter<GameModel> = StrictUpdateFilter<GameModel>,
->(
+export async function update(
   numberOrFilter: GameNumber | StrictFilter<GameModel>,
-  update: FilterType,
+  update: StrictUpdateFilter<GameModel> | UpdateFilter<GameModel>,
   options?: FindOneAndUpdateOptions,
 ): Promise<GameModel> {
   return await mutex.runExclusive(async () => {

@@ -28,6 +28,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
 >({
   killGame: [true, { option: true }],
   waitForStage: ['created', { option: true }],
+
   desiredSlots: async ({}, use) => {
     await use(
       new Map<UserName, number>([
@@ -69,7 +70,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
     )
 
     const page = await users.byName('Promenader').page()
-    const matches = page.url().match(/games\/(\d+)/)
+    const matches = /games\/(\d+)/.exec(page.url())
     if (!matches) {
       throw new Error('could not launch game')
     }

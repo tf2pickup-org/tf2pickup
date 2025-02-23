@@ -3,6 +3,7 @@ import { waitABit } from '../utils/wait-a-bit'
 import { expect, launchGame } from '../fixtures/launch-game'
 
 launchGame.use({ waitForStage: 'started' })
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 launchGame('cleanup game server', async ({ gameServer, gameNumber }) => {
   launchGame.setTimeout(minutesToMilliseconds(2))
 

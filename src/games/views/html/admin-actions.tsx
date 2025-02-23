@@ -6,7 +6,7 @@ export function AdminActions(props: { gameNumber: GameNumber }) {
     <div class="absolute bottom-0 right-0 flex flex-col gap-2">
       <div
         id="admin-actions"
-        class="flex flex-col bg-abru-dark-29 rounded-[10px] p-2 gap-2 drop-shadow-2xl"
+        class="flex flex-col gap-2 rounded-[10px] bg-abru-dark-29 p-2 drop-shadow-2xl"
         style="display: none"
         _="on click from <body/> hide me"
       >
@@ -26,7 +26,7 @@ export function AdminActions(props: { gameNumber: GameNumber }) {
       </div>
 
       <button
-        class="button button--accent justify-self-end drop-shadow self-end"
+        class="button button--accent self-end justify-self-end drop-shadow"
         _="on click halt the event then toggle the *display of #admin-actions"
       >
         <span class="sr-only">Admin actions</span>
