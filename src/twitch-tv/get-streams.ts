@@ -1,5 +1,5 @@
+import { chunk } from 'es-toolkit'
 import { environment } from '../environment'
-import { splitToChunks } from '../utils/split-to-chunks'
 import { getAppAccessToken } from './get-app-access-token'
 import { getStreamsResponseSchema } from './schemas/get-streams-response.schema'
 import type { Stream } from './types/stream'
@@ -29,8 +29,8 @@ export async function getStreams(params: {
   }
 
   // twitch.tv API allows up to 100 user_ids or user_logins per request
-  const userIdsChunks = splitToChunks(params.userIds, 100)
-  const userLoginsChunks = splitToChunks(params.userLogins, 100)
+  const userIdsChunks = chunk(params.userIds, 100)
+  const userLoginsChunks = chunk(params.userLogins, 100)
 
   const responses = await Promise.all([
     ...userIdsChunks.map(async userIds => {
