@@ -4,9 +4,12 @@ import { events } from '../events'
 import { getStreams } from './get-streams'
 
 export async function refreshStreams() {
+  const userIds = (
+    await collections.players.find({ twitchTvProfile: { $exists: true } }).toArray()
+  ).map(player => player.twitchTvProfile!.userId)
   const promotedStreams = await configuration.get('twitchtv.promoted_streams')
   const twitchStreams = await getStreams({
-    userIds: [],
+    userIds,
     userLogins: promotedStreams,
     type: 'live',
   })

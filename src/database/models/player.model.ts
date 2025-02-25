@@ -25,6 +25,13 @@ export interface PlayerBan {
   reason: string
 }
 
+export interface TwitchTvProfile {
+  userId: string
+  login: string
+  displayName: string
+  profileImageUrl: string
+}
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -39,4 +46,5 @@ export interface PlayerModel {
   preReadyUntil?: Date
   preferences: PlayerPreferences
   bans?: PlayerBan[]
+  twitchTvProfile?: TwitchTvProfile
 }

@@ -4,6 +4,7 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { IconVolume } from '../../../html/components/icons'
 import { makeTitle } from '../../../html/make-title'
+import { TwitchTvSettingsEntry } from '../../../twitch-tv/views/html/twitch-tv-settings-entry'
 
 export async function PlayerSettingsPage(props: { user: User }) {
   const soundVolume = props.user.player.preferences.soundVolume ?? 1
@@ -12,7 +13,7 @@ export async function PlayerSettingsPage(props: { user: User }) {
     <Layout title={makeTitle('Settings')}>
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container mx-auto">
+        <div class="container mx-auto flex flex-col gap-8">
           <form action="" method="post">
             <div class="flex flex-1 flex-col gap-4 rounded-lg bg-abru-dark-25 p-[24px] font-normal text-abru-light-75">
               <h4 class="text-[24px] font-bold">Preferences</h4>
@@ -41,6 +42,12 @@ export async function PlayerSettingsPage(props: { user: User }) {
               </div>
             </div>
           </form>
+
+          <div class="flex flex-1 flex-col gap-4 rounded-lg bg-abru-dark-25 p-[24px] font-normal text-abru-light-75">
+            <h4 class="text-[24px] font-bold">Linked accounts</h4>
+
+            <TwitchTvSettingsEntry user={props.user} />
+          </div>
         </div>
       </Page>
     </Layout>
