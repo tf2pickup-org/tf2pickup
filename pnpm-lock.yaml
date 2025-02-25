@@ -235,8 +235,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsc-alias:
-        specifier: 1.8.10
-        version: 1.8.10
+        specifier: 1.8.11
+        version: 1.8.11
       tsx:
         specifier: 4.19.3
         version: 4.19.3
@@ -3124,8 +3124,8 @@ packages:
   ts-mixer@6.0.4:
     resolution: {integrity: sha512-ufKpbmrugz5Aou4wcr5Wc1UUFWOLhq+Fm6qa6P0w0K5Qw2yhaUoiWszhCVuNQyNwrlGiscHOmqYoAox1PtvgjA==}
 
-  tsc-alias@1.8.10:
-    resolution: {integrity: sha512-Ibv4KAWfFkFdKJxnWfVtdOmB0Zi1RJVxcbPGiCDsFpCQSsmpWyuzHG3rQyI5YkobWwxFPEyQfu1hdo4qLG2zPw==}
+  tsc-alias@1.8.11:
+    resolution: {integrity: sha512-2DuEQ58A9Rj2NE2c1+/qaGKlshni9MCK95MJzRGhQG0CYLw0bE/ACgbhhTSf/p1svLelwqafOd8stQate2bYbg==}
     hasBin: true
 
   tslib@2.6.3:
@@ -6121,7 +6121,7 @@ snapshots:
 
   ts-mixer@6.0.4: {}
 
-  tsc-alias@1.8.10:
+  tsc-alias@1.8.11:
     dependencies:
       chokidar: 3.6.0
       commander: 9.5.0
