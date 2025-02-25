@@ -15,10 +15,7 @@ export function Footer(props: { user?: User | undefined }) {
             <a href="https://github.com/tf2pickup-org" target="_blank">
               Github
             </a>
-            <a
-              href="https://github.com/tf2pickup-org/client/blob/master/CHANGELOG.md"
-              target="_blank"
-            >
+            <a href="https://github.com/tf2pickup-org/tf2pickup" target="_blank">
               Changelog
             </a>
 
