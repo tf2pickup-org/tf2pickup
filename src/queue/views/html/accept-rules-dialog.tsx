@@ -2,6 +2,7 @@ import { parse } from 'marked'
 import type { User } from '../../../auth/types/user'
 import { collections } from '../../../database/collections'
 import { logger } from '../../../logger'
+import { nanoid } from 'nanoid'
 
 export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
   if (!props.actor) {
@@ -23,28 +24,28 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
   }
 
   const safeRules = parse(rules.body)
+  const id = nanoid()
 
   return (
-    <dialog
-      title="Accept rules dialog"
-      class="accept-rules-dialog"
-      _={`
-        init me.showModal() end
-      `}
-    >
-      <div class="flex flex-col gap-6">
-        <div class="rules-wrapper fade-scroll" data-fade-scroll>
-          <article class="prose prose-invert mb-16 max-w-none">{safeRules}</article>
-        </div>
+    <>
+      <dialog title="Accept rules dialog" class="accept-rules-dialog" id={id}>
+        <div class="flex flex-col gap-6">
+          <div class="rules-wrapper fade-scroll" data-fade-scroll>
+            <article class="prose prose-invert mb-16 max-w-none">{safeRules}</article>
+          </div>
 
-        <div class="flex flex-row justify-center">
-          <form action={`/players/${props.actor.player.steamId}/accept-rules`} method="post">
-            <button type="submit" class="button button--accent">
-              I accept these rules
-            </button>
-          </form>
+          <div class="flex flex-row justify-center">
+            <form action={`/players/${props.actor.player.steamId}/accept-rules`} method="post">
+              <button type="submit" class="button button--accent">
+                I accept these rules
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </dialog>
+      </dialog>
+      <script type="module">{`
+        document.getElementById('${id}').showModal();
+    `}</script>
+    </>
   )
 }
