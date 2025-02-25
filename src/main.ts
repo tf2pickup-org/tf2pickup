@@ -17,6 +17,21 @@ app.setValidatorCompiler(validatorCompiler)
 
 logger.info(`starting tf2pickup.org ${version}`)
 
+await app.register(await import('@fastify/helmet'), {
+  contentSecurityPolicy: {
+    directives: {
+      scriptSrcElem: ["'self'", "'unsafe-inline'"],
+      imgSrc: [
+        "'self'",
+        'https://mapthumbnails.tf2pickup.org',
+        'https://steamcdn-a.akamaihd.net',
+        'https://avatars.akamai.steamstatic.com',
+        'https://avatars.steamstatic.com',
+        'https://static-cdn.jtvnw.net',
+      ],
+    },
+  },
+})
 await app.register(await import('@fastify/sensible'))
 await app.register(await import('@fastify/formbody'))
 await app.register(await import('@fastify/cookie'), {

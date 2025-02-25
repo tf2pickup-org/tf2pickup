@@ -2,7 +2,10 @@ import './htmx'
 import 'htmx.org/dist/ext/head-support.js'
 import 'htmx.org/dist/ext/ws.js'
 import 'htmx.org/dist/ext/remove-me.js'
-import 'https://unpkg.com/hyperscript.org@0.9.13/dist/_hyperscript.min.js'
+
+import * as hyperscript from 'hyperscript.org'
+hyperscript.browserInit()
+
 import './idiomorph.ts'
 
 import './countdown'
