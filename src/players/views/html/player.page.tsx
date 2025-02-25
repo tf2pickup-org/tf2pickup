@@ -11,6 +11,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
   IconBrandSteam,
+  IconBrandTwitch,
   IconEdit,
   IconStars,
   IconSum,
@@ -188,6 +189,20 @@ function PlayerPresentation(props: {
           >
             <IconStars />
             <span>etf2l</span>
+          </a>
+        ) : (
+          <></>
+        )}
+
+        {props.player.twitchTvProfile ? (
+          <a
+            href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}/`}
+            target="_blank"
+            rel="noreferrer"
+            class="player-presentation-link"
+          >
+            <IconBrandTwitch />
+            <span>twitch</span>
           </a>
         ) : (
           <></>

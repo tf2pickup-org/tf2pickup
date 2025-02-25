@@ -20,6 +20,7 @@
     grid-template-columns: 218px auto auto;
     justify-items: normal;
     row-gap: 10px;
+    padding-right: 40px;
   }
 
   .player-avatar {
