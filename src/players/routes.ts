@@ -137,7 +137,7 @@ export default fp(
               {},
             )
 
-          await update(player.steamId, { $set: { name, skill } })
+          await update(player.steamId, { $set: { name, skill } }, {}, req.user!.player.steamId)
           req.flash('success', `Player updated`)
           await reply.redirect(`/players/${steamId}`)
         },

@@ -10,6 +10,7 @@ export async function update(
   steamId: SteamId64,
   update: StrictUpdateFilter<PlayerModel>,
   options?: FindOneAndUpdateOptions,
+  adminId?: SteamId64,
 ): Promise<PlayerModel> {
   return await mutex.runExclusive(async () => {
     const before = await bySteamId(steamId)
@@ -18,7 +19,7 @@ export async function update(
       ...options,
     }))!
 
-    events.emit('player:updated', { before, after })
+    events.emit('player:updated', { before, after, adminId })
     return after
   })
 }

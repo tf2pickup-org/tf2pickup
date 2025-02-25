@@ -7,6 +7,33 @@ import { steamId64 } from '../../shared/schemas/steam-id-64'
 
 export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
+    key: z.literal('discord.guilds'),
+    value: z
+      .array(
+        z.object({
+          id: z.string(),
+          substituteNotifications: z
+            .object({
+              channel: z.string(),
+              role: z.string().optional(),
+            })
+            .optional(),
+          queuePrompts: z
+            .object({
+              channel: z.string(),
+              bumpPlayerThresholdRatio: z.number(),
+            })
+            .optional(),
+          adminNotifications: z
+            .object({
+              channel: z.string(),
+            })
+            .optional(),
+        }),
+      )
+      .default([]),
+  }),
+  z.object({
     key: z.literal('games.default_player_skill'),
     value: z
       .record(z.nativeEnum(Tf2ClassName), z.number())

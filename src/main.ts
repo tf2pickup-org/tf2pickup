@@ -92,5 +92,6 @@ await app.register((await import('./pre-ready')).default)
 await app.register((await import('./serveme-tf')).default)
 await app.register((await import('./mumble')).default)
 await app.register((await import('./logs-tf')).default)
+await app.register((await import('./discord')).default)
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })

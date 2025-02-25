@@ -24,6 +24,8 @@ const environmentSchema = z.object({
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),
 
+  DISCORD_BOT_TOKEN: z.string().optional(),
+
   TWITCH_CLIENT_ID: z.string().optional(),
   TWITCH_CLIENT_SECRET: z.string().optional(),
 })
