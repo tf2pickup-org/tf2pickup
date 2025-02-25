@@ -7,7 +7,7 @@ import { minutesToMilliseconds } from 'date-fns'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
-  async () => {
+  async app => {
     if (environment.TWITCH_CLIENT_ID === undefined) {
       logger.info('TWITCH_CLIENT_ID empty; twitch.tv integration is disabled')
       return
@@ -18,8 +18,12 @@ export default fp(
       return
     }
 
-    setInterval(safe(refreshStreams), minutesToMilliseconds(1))
-    await refreshStreams()
+    app.addHook('onReady', async () => {
+      setInterval(safe(refreshStreams), minutesToMilliseconds(1))
+      await refreshStreams()
+    })
+
+    await app.register((await import('./routes')).default)
     logger.info('twitch.tv integration enabled')
   },
   {
