@@ -26,6 +26,9 @@ importers:
       '@fastify/formbody':
         specifier: 8.0.2
         version: 8.0.2
+      '@fastify/helmet':
+        specifier: 13.0.1
+        version: 13.0.1
       '@fastify/request-context':
         specifier: 6.0.2
         version: 6.0.2
@@ -113,6 +116,9 @@ importers:
       htmx.org:
         specifier: 2.0.4
         version: 2.0.4
+      hyperscript.org:
+        specifier: 0.9.14
+        version: 0.9.14
       idiomorph:
         specifier: 0.7.2
         version: 0.7.2
@@ -646,6 +652,9 @@ packages:
 
   '@fastify/forwarded@3.0.0':
     resolution: {integrity: sha512-kJExsp4JCms7ipzg7SJ3y8DwmePaELHxKYtg+tZow+k0znUTf3cb+npgyqm8+ATZOdmfgfydIebPDWM172wfyA==}
+
+  '@fastify/helmet@13.0.1':
+    resolution: {integrity: sha512-i+ifqazG3d0HwHL3zuZdg6B/WPc9Ee6kVfGpwGho4nxm0UaK1htss0zq+1rVhOoAorZlCgTZ3/i4S58hUGkkoA==}
 
   '@fastify/merge-json-schemas@0.1.1':
     resolution: {integrity: sha512-fERDVz7topgNjtXsJTTW1JKLy0rhuLRcquYqNR9rF7OcVpCa2OVW49ZPDIhaRRCaUuvVxI+N416xUoF76HNSXA==}
@@ -1870,6 +1879,10 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
+  helmet@8.0.0:
+    resolution: {integrity: sha512-VyusHLEIIO5mjQPUI1wpOAEu+wl6Q0998jzTxqUYGE45xCIcAxy3MsbEK/yyJUJ3ADeMoB6MornPH6GMWAf+Pw==}
+    engines: {node: '>=18.0.0'}
+
   highlight.js@10.7.3:
     resolution: {integrity: sha512-tzcUFauisWKNHaRkN4Wjl/ZA07gENAjFl3J/c480dprkGTg5EQstgaNFqBfUqCq54kZRIEcreTsAgF/m2quD7A==}
 
@@ -1882,6 +1895,10 @@ packages:
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
     engines: {node: '>= 0.8'}
+
+  hyperscript.org@0.9.14:
+    resolution: {integrity: sha512-ugmojsQQUMmXcnwaXYiYf8L3GbeANy/m59EmE/0Z6C5eQ52fOuSrvFkuEIejG9BdpbYB4iTtoYGqV99eYqDVMA==}
+    hasBin: true
 
   idiomorph@0.7.2:
     resolution: {integrity: sha512-fGqT4uBOetEVvKKQkj5bzCQgQlEjb7i4/AJSi7usmflG6HyCGRXAnJLi4aUjJDlPMM3tE/aRCKsUhDAzKabxWQ==}
@@ -2118,6 +2135,9 @@ packages:
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
+
+  markdown-it-deflist@2.1.0:
+    resolution: {integrity: sha512-3OuqoRUlSxJiuQYu0cWTLHNhhq2xtoSFqsZK8plANg91+RJQU1ziQ6lA2LzmFAEes18uPBsHZpcX6We5l76Nzg==}
 
   marked@15.0.7:
     resolution: {integrity: sha512-dgLIeKGLx5FwziAnsk4ONoGwHwGPJzselimvlVskE9XLN4Orv9u2VA3GWw/lYUqjfA0rUT/6fqKwfZJapP9BEg==}
@@ -3648,6 +3668,11 @@ snapshots:
 
   '@fastify/forwarded@3.0.0': {}
 
+  '@fastify/helmet@13.0.1':
+    dependencies:
+      fastify-plugin: 5.0.1
+      helmet: 8.0.0
+
   '@fastify/merge-json-schemas@0.1.1':
     dependencies:
       fast-deep-equal: 3.1.3
@@ -3739,7 +3764,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
-    optional: true
 
   '@jridgewell/sourcemap-codec@1.5.0': {}
 
@@ -4220,8 +4244,7 @@ snapshots:
 
   buffer-equal-constant-time@1.0.1: {}
 
-  buffer-from@1.1.2:
-    optional: true
+  buffer-from@1.1.2: {}
 
   cac@6.7.14: {}
 
@@ -4323,8 +4346,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  commander@2.20.3:
-    optional: true
+  commander@2.20.3: {}
 
   commander@4.1.1: {}
 
@@ -5022,6 +5044,8 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
+  helmet@8.0.0: {}
+
   highlight.js@10.7.3: {}
 
   howler@2.2.4: {}
@@ -5035,6 +5059,11 @@ snapshots:
       setprototypeof: 1.2.0
       statuses: 2.0.1
       toidentifier: 1.0.1
+
+  hyperscript.org@0.9.14:
+    dependencies:
+      markdown-it-deflist: 2.1.0
+      terser: 5.36.0
 
   idiomorph@0.7.2: {}
 
@@ -5240,6 +5269,8 @@ snapshots:
   magic-string@0.30.17:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  markdown-it-deflist@2.1.0: {}
 
   marked@15.0.7: {}
 
@@ -5950,10 +5981,8 @@ snapshots:
     dependencies:
       buffer-from: 1.1.2
       source-map: 0.6.1
-    optional: true
 
-  source-map@0.6.1:
-    optional: true
+  source-map@0.6.1: {}
 
   sparse-bitfield@3.0.3:
     dependencies:
@@ -6075,7 +6104,6 @@ snapshots:
       acorn: 8.14.0
       commander: 2.20.3
       source-map-support: 0.5.21
-    optional: true
 
   thenby@1.3.4: {}
 
