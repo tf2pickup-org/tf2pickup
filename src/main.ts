@@ -9,7 +9,6 @@ import { environment } from './environment'
 import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { HttpError } from '@fastify/sensible'
-import helmet from 'helmet'
 
 const app = fastify({ loggerInstance })
 
@@ -18,28 +17,23 @@ app.setValidatorCompiler(validatorCompiler)
 
 logger.info(`starting tf2pickup.org ${version}`)
 
-const defaultCspOptions = helmet.contentSecurityPolicy.getDefaultDirectives()
-// disable upgrade-insecure-requests to avoid redirecting from
-// http://localhost to https://localhost
-delete defaultCspOptions['upgrade-insecure-requests']
-
 await app.register(await import('@fastify/helmet'), {
-  contentSecurityPolicy: {
-    useDefaults: false,
-    directives: {
-      ...defaultCspOptions,
-      'script-src-elem': ["'self'", "'unsafe-inline'"],
-      'img-src': [
-        "'self'",
-        'https://mapthumbnails.tf2pickup.org',
-        'https://steamcdn-a.akamaihd.net',
-        'https://avatars.akamai.steamstatic.com',
-        'https://avatars.steamstatic.com',
-        'https://static-cdn.jtvnw.net',
-        'https://cdn.discordapp.com',
-      ],
-    },
-  },
+  contentSecurityPolicy:
+    environment.NODE_ENV === 'production'
+      ? {
+          directives: {
+            'script-src-elem': ["'self'", "'unsafe-inline'"],
+            'img-src': [
+              "'self'",
+              'https://mapthumbnails.tf2pickup.org',
+              'https://steamcdn-a.akamaihd.net',
+              'https://avatars.akamai.steamstatic.com',
+              'https://avatars.steamstatic.com',
+              'https://static-cdn.jtvnw.net',
+            ],
+          },
+        }
+      : false,
 })
 await app.register(await import('@fastify/sensible'))
 await app.register(await import('@fastify/formbody'))

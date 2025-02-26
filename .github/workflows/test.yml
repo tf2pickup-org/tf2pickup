@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       shardTotal: 6
-      WEBSITE_URL: 'http://localhost:3000'
+      WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
       QUEUE_CONFIG: '6v6'
@@ -102,24 +102,21 @@ jobs:
         ports:
           - 27017:27017
 
+      mumble:
+        image: mumblevoip/mumble-server:latest
+        ports:
+          - 64738:64738/tcp
+          - 64738:64738/udp
+        env:
+          MUMBLE_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
+        options: >-
+          --user root
+
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v2
         with:
           version: 8
-
-      - name: Start mumble server
-        run: |
-          docker run \
-          --rm --detach \
-          --name mumble-server \
-          --network=${{ job.services.mongo.network }} \
-          -p 64738:64738/tcp \
-          -p 64738:64738/udp \
-          -e MUMBLE_CONFIG_AUTOBAN_ATTEMPTS=0 \
-          -e MUMBLE_SUPERUSER_PASSWORD=${{ env.MUMBLE_SUPERUSER_PASSWORD }} \
-          --user root \
-          mumblevoip/mumble-server:latest
 
       - uses: actions/setup-node@v4
         with:
@@ -149,7 +146,6 @@ jobs:
             --name=tf2pickup-app \
             --detach \
             --network=${{ job.services.mongo.network }} \
-            -v "/var/run/docker.sock":"/var/run/docker.sock" \
             -e WEBSITE_URL \
             -e MONGODB_URI \
             -e STEAM_API_KEY \
@@ -163,7 +159,7 @@ jobs:
             -p 9871:9871/udp \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.tag }}
           docker inspect tf2pickup-app
-          while ! curl -s http://localhost:3000 > /dev/null; do
+          while ! curl -s http://127.0.0.1:3000 > /dev/null; do
             echo "Waiting for server..."
             sleep 5
           done
@@ -171,12 +167,34 @@ jobs:
           MONGODB_URI: 'mongodb://mongo:27017/tf2pickup'
         timeout-minutes: 1
 
+      - name: Configure access via proxy
+        run: |
+          sudo cp ${{ github.workspace }}/tests/nginx/certs/localhost.crt /usr/local/share/ca-certificates
+          sudo update-ca-certificates
+          sudo echo "127.0.0.1 www.localhost" | sudo tee -a /etc/hosts
+
+      - name: Start nginx
+        run: |
+          docker run \
+            --detach \
+            --name nginx \
+            --network=${{ job.services.mongo.network }} \
+            -p 80:80/tcp \
+            -p 443:443/tcp \
+            -v ${{ github.workspace }}/tests/nginx/nginx.conf:/etc/nginx/nginx.conf \
+            -v ${{ github.workspace }}/tests/nginx/certs:/etc/nginx/certs \
+            nginx
+
+      - name: Docker ps
+        run: docker ps
+
       - name: Run Playwright tests
         run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }}
         env:
+          API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
           STEAM_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-          TEST_MUMBLE_SERVER_HOST: 'mumble-server'
+          TEST_MUMBLE_SERVER_HOST: 'mumble'
           TEST_MUMBLE_SERVER_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
 
       - name: Stop app
@@ -186,6 +204,10 @@ jobs:
       - name: Show app logs
         if: ${{ always() }}
         run: docker container logs tf2pickup-app
+
+      - name: Show nginx logs
+        if: ${{ always() }}
+        run: docker container logs nginx
 
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4

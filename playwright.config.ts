@@ -19,18 +19,21 @@ export default defineConfig({
     threshold: minutesToMilliseconds(10),
   },
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: process.env.CI ? 'https://www.localhost' : 'http://localhost:3000',
     trace: 'retain-on-failure',
   },
 
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
     },
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
+      use: {
+        ...devices['Desktop Firefox'],
+        ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}),
+      },
     },
 
     // {
