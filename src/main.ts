@@ -36,6 +36,7 @@ await app.register(await import('@fastify/helmet'), {
         'https://avatars.akamai.steamstatic.com',
         'https://avatars.steamstatic.com',
         'https://static-cdn.jtvnw.net',
+        'https://cdn.discordapp.com',
       ],
     },
   },
