@@ -5,10 +5,10 @@ import { TimeoutError, withTimeout } from 'es-toolkit'
 
 export const simulateGameServer = test.extend<{ gameServer: GameServerSimulator }>({
   gameServer: async ({}, use) => {
-    const apiAddress = process.env['WEBSITE_URL']
+    const apiAddress = process.env['API_URL']
     const secret = process.env['GAME_SERVER_SECRET']
     if (!apiAddress || !secret) {
-      throw new Error('WEBSITE_URL and GAME_SERVER_SECRET must be set')
+      throw new Error('API_URL and GAME_SERVER_SECRET must be set')
     }
 
     const gameServer = new GameServerSimulator(apiAddress, secret)
