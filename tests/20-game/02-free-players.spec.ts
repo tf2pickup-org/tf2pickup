@@ -7,6 +7,7 @@ import { queueSlots } from '../queue-slots'
 launchGame.use({ waitForStage: 'launching' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 launchGame('free players when the game ends', async ({ players, gameServer, gameNumber }) => {
+  launchGame.setTimeout(secondsToMilliseconds(45))
   await Promise.all(
     players.map(async player => {
       const page = await player.queuePage()

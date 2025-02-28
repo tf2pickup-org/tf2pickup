@@ -22,7 +22,10 @@ export default fp(
     async function syncAllSlots(...players: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(slot => {
-        app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
+        app.gateway
+          .to({ players })
+          .to({ url: '/' })
+          .send(async actor => await QueueSlot({ slot, actor }))
       })
     }
 
@@ -69,13 +72,17 @@ export default fp(
       safe(async ({ before, after }) => {
         if (before.activeGame !== after.activeGame) {
           const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
-          app.gateway.to({ players: [after.steamId] }).send(() => cmp)
+          app.gateway
+            .to({ player: after.steamId })
+            .to({ url: '/' })
+            .send(() => cmp)
           await syncAllSlots(after.steamId)
         }
 
         if (before.preReadyUntil !== after.preReadyUntil) {
           app.gateway
-            .to({ players: [after.steamId] })
+            .to({ player: after.steamId })
+            .to({ url: '/' })
             .send(async actor => await PreReadyUpButton({ actor }))
         }
       }),

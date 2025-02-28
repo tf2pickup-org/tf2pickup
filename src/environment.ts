@@ -9,6 +9,8 @@ const environmentSchema = z.object({
   APP_HOST: z.string().default('localhost'),
   APP_PORT: z.coerce.number().default(3000),
 
+  ENABLE_TEST_AUTH: z.enum(['true', 'false']).default('false'),
+
   WEBSITE_URL: z.string().url(),
   WEBSITE_NAME: z.string().default('tf2pickup.org'),
   MONGODB_URI: z.string().url(),

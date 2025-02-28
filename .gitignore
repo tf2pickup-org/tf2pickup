@@ -7,3 +7,5 @@ dist
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/tests/.auth/*
+!/tests/.auth/.gitkeep
