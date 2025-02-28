@@ -1,12 +1,13 @@
 import { expect } from '@playwright/test'
-import { secondsToMilliseconds } from 'date-fns'
-import { launchGame } from '../fixtures/launch-game'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { launchGame as test } from '../fixtures/launch-game'
 import { delay } from 'es-toolkit'
 import { queueSlots } from '../queue-slots'
 
-launchGame.use({ waitForStage: 'launching' })
+test.use({ waitForStage: 'launching' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-launchGame('free players when the game ends', async ({ players, gameServer, gameNumber }) => {
+test('free players when the game ends', async ({ players, gameServer, gameNumber }) => {
+  test.setTimeout(minutesToMilliseconds(1))
   await Promise.all(
     players.map(async player => {
       const page = await player.queuePage()

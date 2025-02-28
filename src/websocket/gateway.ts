@@ -132,21 +132,23 @@ type UserFilters =
   | { urls: string[] }
 
 function mergeFilters(base: Filters, additional: UserFilters) {
-  if ('players' in additional || 'player' in additional) {
-    base.players ??= new Set()
-  }
-
-  if ('url' in additional || 'urls' in additional) {
-    base.urls ??= new Set()
-  }
-
   if ('player' in additional) {
-    base.players!.add(additional.player)
-  } else if ('players' in additional) {
+    base.players ??= new Set()
+    base.players.add(additional.player)
+  }
+
+  if ('players' in additional) {
+    base.players ??= new Set()
     additional.players.forEach(player => base.players!.add(player))
-  } else if ('url' in additional) {
-    base.urls!.add(additional.url)
-  } else if ('urls' in additional) {
+  }
+
+  if ('url' in additional) {
+    base.urls ??= new Set()
+    base.urls.add(additional.url)
+  }
+
+  if ('urls' in additional) {
+    base.urls ??= new Set()
     additional.urls.forEach(url => base.urls!.add(url))
   }
   return base
@@ -175,7 +177,6 @@ class BroadcastOperator {
           return
         }
       }
-
       await send(client, message)
     })
   }
