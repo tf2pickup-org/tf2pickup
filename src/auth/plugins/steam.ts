@@ -2,13 +2,16 @@ import fp from 'fastify-plugin'
 import { openId } from '../open-id'
 import { environment } from '../../environment'
 import SteamAPI from 'steamapi'
-import jwt from 'jsonwebtoken'
 import { logger } from '../../logger'
 import { upsertPlayer } from '../../players/upsert-player'
-import { secondsInWeek } from 'date-fns/constants'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
-import { secrets } from '../../secrets'
 import { players } from '../../players'
+
+declare module '@fastify/secure-session' {
+  interface SessionData {
+    steamId: SteamId64
+  }
+}
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
 
@@ -79,33 +82,24 @@ export default fp(
 
       logger.debug({ user }, 'user logged in')
       const player = await upsertPlayer(user)
+      request.session.set('steamId', player.steamId)
 
-      const token = jwt.sign({ id: player.steamId }, await secrets.get('auth'), {
-        expiresIn: '7d',
-      })
-
-      const returnUrl = request.cookies['return_url'] ?? environment.WEBSITE_URL
+      const returnUrl = environment.WEBSITE_URL
       logger.trace({ user }, `redirecting to ${returnUrl}`)
-
-      return await reply
-        .clearCookie('return_url')
-        .setCookie('token', token, { maxAge: secondsInWeek, path: '/' })
-        .redirect(returnUrl, 302)
-        .send()
+      return await reply.redirect(returnUrl, 302).send()
     })
 
     app.decorateRequest('user', undefined)
 
-    app.addHook('onRequest', async (request, reply) => {
-      const token = request.cookies['token']
-      if (token) {
+    app.addHook('onRequest', async request => {
+      const steamId = request.session.get('steamId')
+      if (steamId) {
         try {
-          const { id } = jwt.verify(token, await secrets.get('auth')) as { id: SteamId64 }
-          const player = await players.bySteamId(id)
+          const player = await players.bySteamId(steamId)
           request.user = { player }
         } catch (e) {
           logger.error(e)
-          await reply.clearCookie('token')
+          request.session.regenerate()
         }
       }
     })
