@@ -120,8 +120,8 @@ importers:
         specifier: 0.9.14
         version: 0.9.14
       idiomorph:
-        specifier: 0.7.2
-        version: 0.7.2
+        specifier: 0.7.3
+        version: 0.7.3
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
@@ -1885,8 +1885,8 @@ packages:
     resolution: {integrity: sha512-ugmojsQQUMmXcnwaXYiYf8L3GbeANy/m59EmE/0Z6C5eQ52fOuSrvFkuEIejG9BdpbYB4iTtoYGqV99eYqDVMA==}
     hasBin: true
 
-  idiomorph@0.7.2:
-    resolution: {integrity: sha512-fGqT4uBOetEVvKKQkj5bzCQgQlEjb7i4/AJSi7usmflG6HyCGRXAnJLi4aUjJDlPMM3tE/aRCKsUhDAzKabxWQ==}
+  idiomorph@0.7.3:
+    resolution: {integrity: sha512-YI/L1QQkBRDtiaGZN+/KolIkNoZuIsCgus1ciueosiqdyWz/weeP+ghFgDQpk2vzA3BkX6/M/kY5SCM03LBDkA==}
 
   ignore@5.3.1:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
@@ -5032,7 +5032,7 @@ snapshots:
       markdown-it-deflist: 2.1.0
       terser: 5.36.0
 
-  idiomorph@0.7.2: {}
+  idiomorph@0.7.3: {}
 
   ignore@5.3.1: {}
 
