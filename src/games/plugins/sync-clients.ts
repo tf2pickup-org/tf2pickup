@@ -13,6 +13,7 @@ import { GamesLink } from '../../html/components/games-link'
 import { GameScore } from '../views/html/game-score'
 import { JoinVoiceButton } from '../views/html/join-voice-button'
 import { JoinGameButton } from '../views/html/join-game-button'
+import { Tf2Team } from '../../shared/types/tf2-team'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -32,10 +33,16 @@ export default fp(async app => {
       }
     }
 
-    if (before.score?.blu !== after.score?.blu || before.score?.red !== after.score?.red) {
+    if (before.score?.blu !== after.score?.blu) {
       app.gateway
         .to({ url: `/games/${after.number}` })
-        .send(async () => await GameScore({ game: after }))
+        .send(async () => await GameScore({ game: after, team: Tf2Team.blu }))
+    }
+
+    if (before.score?.red !== after.score?.red) {
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async () => await GameScore({ game: after, team: Tf2Team.red }))
     }
 
     if (

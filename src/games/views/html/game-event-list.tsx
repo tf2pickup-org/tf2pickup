@@ -28,15 +28,18 @@ export async function GameEventList(props: { game: GameModel }) {
   const events = props.game.events.toSorted((a, b) => b.at.getTime() - a.at.getTime())
 
   return (
-    <div
-      class="game-event-list fade-scroll h-[300px]"
-      data-fade-scroll
-      id={`game-${props.game.number}-event-list`}
-      aria-label="Game events"
-    >
-      {events.map(event => (
-        <GameEvent game={props.game} event={event} />
-      ))}
+    <div class="game-events">
+      <span class="text-2xl font-bold text-white">Game events</span>
+      <div
+        class="game-event-list fade-scroll h-[300px]"
+        data-fade-scroll
+        id={`game-${props.game.number}-event-list`}
+        aria-label="Game events"
+      >
+        {events.map(event => (
+          <GameEvent game={props.game} event={event} />
+        ))}
+      </div>
     </div>
   )
 }

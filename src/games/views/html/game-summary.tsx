@@ -17,7 +17,8 @@ export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefi
   return (
     <div
       id={`game-${props.game.number}-summary`}
-      class="flex flex-col overflow-hidden rounded-lg text-abru-light-75"
+      class="flex flex-col overflow-hidden rounded-lg text-abru-light-75 xl:mr-4"
+      style="grid-area: gameSummary"
     >
       <div class="game-summary-caption relative flex min-h-[200px] flex-1 flex-col justify-end px-[10px]">
         <div class="absolute bottom-0 left-0 right-0 top-0 -z-10">

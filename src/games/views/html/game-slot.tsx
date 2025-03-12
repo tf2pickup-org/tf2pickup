@@ -2,9 +2,9 @@ import { collections } from '../../../database/collections'
 import { SlotStatus, type GameSlotModel } from '../../../database/models/game-slot.model'
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { Tf2Team } from '../../../shared/types/tf2-team'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 
 export async function GameSlot(props: {
@@ -17,16 +17,12 @@ export async function GameSlot(props: {
     throw new Error(`no such player: ${props.slot.player.toString()}`)
   }
 
-  const side = props.slot.team === Tf2Team.blu ? 'left' : 'right'
-
   return (
     <form
       id={`game-slot-${player.steamId}`}
       aria-label={`${player.name}'s slot`}
       class={[
         'slot',
-        side === 'right' && 'flex-row',
-        side === 'left' && 'flex-row-reverse',
         {
           [SlotStatus.active]: 'active',
           [SlotStatus.waitingForSubstitute]: 'waiting-for-substitute',
@@ -39,20 +35,13 @@ export async function GameSlot(props: {
         {player.name}'s slot
       </span>
       <input type="hidden" name="player" value={player.steamId} />
-      <GameSlotContent
-        game={props.game}
-        side={side}
-        slot={props.slot}
-        player={player}
-        actor={props.actor}
-      />
+      <GameSlotContent game={props.game} slot={props.slot} player={player} actor={props.actor} />
     </form>
   )
 }
 
 async function GameSlotContent(props: {
   game: GameModel
-  side: 'left' | 'right'
   slot: GameSlotModel
   player: PlayerModel
   actor: SteamId64 | undefined
@@ -71,17 +60,17 @@ async function GameSlotContent(props: {
     case SlotStatus.active:
       return (
         <>
+          <div class="class-icon">
+            <GameClassIcon gameClass={props.slot.gameClass} size={32} />
+          </div>
           <img
             src={props.player.avatar.medium}
             width="38"
             height="38"
             alt={`${props.player.name}'s avatar`}
+            class="player-avatar"
           />
-          <a
-            href={`/players/${props.player.steamId}`}
-            class={['flex-1 text-xl font-medium', props.side === 'left' && 'text-end']}
-            safe
-          >
+          <a href={`/players/${props.player.steamId}`} class="player-name" safe>
             {props.player.name}
           </a>
 
@@ -128,7 +117,7 @@ async function GameSlotContent(props: {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
+      class="slot-action rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"
