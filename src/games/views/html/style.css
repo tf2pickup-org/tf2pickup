@@ -1,3 +1,218 @@
+.game-page {
+  display: grid;
+  grid-template-areas:
+    'gameSummary'
+    'scoreBlu'
+    'slotsBlu'
+    'slotsBlu'
+    'slotsBlu'
+    'slotsBlu'
+    'slotsBlu'
+    'slotsBlu'
+    'scoreRed'
+    'slotsRed'
+    'slotsRed'
+    'slotsRed'
+    'slotsRed'
+    'slotsRed'
+    'slotsRed'
+    'gameEvents';
+
+  @media screen(xl) {
+    grid-template-areas:
+      'gameSummary scoreBlu scoreBlu       scoreRed       scoreRed'
+      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
+      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
+      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
+      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
+      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
+      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
+      'gameEvents  .        .              .              .';
+    grid-template-columns: 2fr 3fr auto auto 3fr;
+  }
+
+  .score-header {
+    display: grid;
+    grid-column: 2 / span 2;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'teamName score';
+
+    padding: 7px 24px 8px 24px;
+    font-size: 48px;
+    line-height: normal;
+    font-weight: 700;
+    border-radius: 8px 8px 0 0;
+    margin-top: 16px;
+
+    color: theme('colors.ash');
+
+    @media screen(xl) {
+      margin-top: 0;
+    }
+
+    &.team-blu {
+      grid-area: scoreBlu;
+      background-color: theme('colors.team-blu');
+
+      @media screen(xl) {
+        border-radius: 8px 0 0 0;
+        margin-right: 2px;
+      }
+    }
+
+    &.team-red {
+      grid-area: scoreRed;
+      background-color: theme('colors.team-red');
+
+      @media screen(xl) {
+        grid-template-areas: 'score teamName';
+        border-radius: 0 8px 0 0;
+        margin-left: 2px;
+      }
+    }
+  }
+
+  .game-class-icons {
+    display: none;
+    grid-area: gameClassIcons;
+    grid-template-rows: subgrid;
+    background-color: rgb(0 0 0 / 0.4);
+    align-items: center;
+
+    @media screen(xl) {
+      display: grid;
+    }
+  }
+
+  .slot-list {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    grid-template-rows: subgrid;
+    grid-template-areas: 'classIcon playerAvatar playerName slotAction playerConnectionStatus';
+
+    align-items: center;
+    padding-top: 10px;
+    gap: 10px;
+    border-radius: 0 0 8px 8px;
+    background-color: rgb(0 0 0 / 0.4);
+
+    &.team-blu {
+      grid-area: slotsBlu;
+
+      @media screen(xl) {
+        grid-template-columns: auto auto 1fr auto;
+        grid-template-areas: 'playerConnectionStatus slotAction playerName playerName playerName playerAvatar';
+
+        border-radius: 0 0 0 8px;
+
+        .player-name {
+          text-align: right;
+        }
+      }
+    }
+
+    &.team-red {
+      grid-area: slotsRed;
+
+      @media screen(xl) {
+        grid-template-columns: auto 1fr auto auto;
+        grid-template-areas: 'playerAvatar playerName playerName playerName slotAction playerConnectionStatus';
+
+        border-radius: 0 0 8px 0;
+      }
+    }
+
+    .slot {
+      @apply transition-colors;
+      @apply duration-75;
+
+      margin: 0 10px 0 10px;
+      height: 60px;
+
+      align-items: center;
+      border-radius: 4px;
+      padding: 10px;
+
+      &:last-of-type {
+        margin-bottom: 10px;
+      }
+
+      &.active {
+        display: grid;
+        grid-column: span 6 / span 6;
+        grid-template-columns: subgrid;
+
+        background-color: theme(colors.abru.light.60);
+
+        .class-icon {
+          grid-area: classIcon;
+
+          @media screen(xl) {
+            display: none;
+          }
+        }
+
+        .player-avatar {
+          grid-area: playerAvatar;
+        }
+
+        .player-name {
+          grid-area: playerName;
+          font-size: 20px;
+          font-weight: 500;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        .slot-action {
+          grid-area: slotAction;
+        }
+
+        .player-connection-status {
+          width: 6px;
+          align-self: stretch;
+          border-radius: 4px;
+          grid-area: playerConnectionStatus;
+
+          &.connected {
+            background-color: #0a955b;
+          }
+
+          &.joining {
+            background-color: #d9861a;
+          }
+
+          &.offline {
+            background-color: #b80c4d;
+          }
+        }
+      }
+
+      &.waiting-for-substitute {
+        grid-column: span 6 / span 6;
+        display: grid;
+        background-color: theme(colors.abru.light.30);
+        color: theme(colors.abru.light.60);
+      }
+    }
+  }
+
+  .game-events {
+    grid-area: gameEvents;
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 8px;
+
+    margin-top: 16px;
+
+    @media screen(xl) {
+      margin-right: 16px;
+    }
+  }
+}
+
 .game-summary-caption {
   background: linear-gradient(
     180deg,
@@ -39,82 +254,6 @@
 
   .value {
     font-weight: 500;
-  }
-}
-
-.score-header {
-  display: flex;
-  justify-content: space-between;
-
-  padding: 7px 24px 8px 24px;
-  font-size: 48px;
-  line-height: normal;
-  font-weight: 700;
-
-  color: theme('colors.ash');
-
-  &.blu {
-    background-color: theme('colors.team-blu');
-    padding-right: 34px;
-    border-top-left-radius: 8px;
-    flex-direction: row;
-  }
-
-  &.red {
-    background-color: theme('colors.team-red');
-    padding-left: 34px;
-    border-top-right-radius: 8px;
-    flex-direction: row-reverse;
-  }
-}
-
-.slot-list {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 10px;
-  border-radius: 0 0 8px 8px;
-  background-color: rgb(0 0 0 / 0.4);
-  padding: 10px;
-
-  .slot {
-    @apply transition-colors;
-    @apply duration-75;
-
-    height: 60px;
-
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: 4px;
-    padding: 10px;
-
-    &.active {
-      background-color: theme(colors.abru.light.60);
-
-      a {
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-
-      .connected {
-        background-color: #0a955b;
-      }
-
-      .joining {
-        background-color: #d9861a;
-      }
-
-      .offline {
-        background-color: #b80c4d;
-      }
-    }
-
-    &.waiting-for-substitute {
-      background-color: theme(colors.abru.light.30);
-      color: theme(colors.abru.light.60);
-    }
   }
 }
 

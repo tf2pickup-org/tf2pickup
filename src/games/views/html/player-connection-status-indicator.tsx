@@ -10,7 +10,7 @@ export function PlayerConnectionStatusIndicator(props: {
       id={`player-${props.steamId}-connection-status`}
       aria-label="Player connection status"
       class={[
-        '-m-1 w-[6px] self-stretch rounded',
+        'player-connection-status',
         {
           [PlayerConnectionStatus.connected]: 'connected',
           [PlayerConnectionStatus.joining]: 'joining',

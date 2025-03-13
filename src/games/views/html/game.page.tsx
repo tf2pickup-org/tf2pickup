@@ -22,16 +22,10 @@ export async function GamePage(props: { game: GameModel; user?: User | undefined
     >
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container relative mx-auto grid grid-cols-4 gap-x-4">
-          <div class="order-first flex flex-col">
-            <GameSummary game={props.game} actor={props.user?.player.steamId} />
-            <span class="col-span-2 mb-2 mt-8 text-2xl font-bold text-white">Game events</span>
-            <GameEventList game={props.game} />
-          </div>
-
-          <div class="col-span-3">
-            <GameSlotList game={props.game} actor={props.user?.player.steamId} />
-          </div>
+        <div class="game-page container relative mx-auto">
+          <GameSummary game={props.game} actor={props.user?.player.steamId} />
+          <GameSlotList game={props.game} actor={props.user?.player.steamId} />
+          <GameEventList game={props.game} />
 
           {[
             GameState.created,
