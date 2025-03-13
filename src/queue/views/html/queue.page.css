@@ -165,26 +165,62 @@
   }
 }
 
-.online-player-list {
+.queue-sidebar {
   display: flex;
   flex-flow: column nowrap;
   height: 100%;
+  max-height: 100%;
   border-radius: 8px;
   background-color: theme(colors.abru.dark.6);
   padding: 8px;
 
-  h6 {
+  .tab {
     margin: 10px;
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 4px;
-    color: theme(colors.abru.light.75);
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+
+    .tablink {
+      position: relative;
+
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      padding-bottom: 8px;
+
+      color: theme(colors.abru.light.75);
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+
+      &.active::after {
+        content: '';
+        display: block;
+        position: absolute;
+        bottom: 0;
+        width: 66px;
+        left: calc(50% - 33px);
+        border-bottom: 2px solid theme(colors.accent.DEFAULT);
+      }
+    }
+  }
+}
+
+.online-player-list {
+  flex: 1 1 0;
+  list-style-type: none;
+
+  li {
+    &:nth-child(odd) {
+      background-color: theme(colors.abru.dark.6);
+    }
+
+    &:nth-child(even) {
+      background-color: theme(colors.abru.light.5);
+    }
   }
 
   a {
@@ -193,21 +229,45 @@
     padding: 4px 8px;
     font-weight: 300;
     text-align: center;
+    display: inline-block;
+    width: 100%;
 
     @media screen(lg) {
       text-align: start;
     }
 
-    &:nth-child(even) {
-      background-color: theme(colors.abru.dark.6);
-    }
-
-    &:nth-child(odd) {
-      background-color: theme(colors.abru.light.5);
-    }
-
     &:hover {
       text-decoration: underline;
+    }
+  }
+}
+
+.chat {
+  flex: 1 1 0;
+  display: flex;
+  flex-flow: column nowrap;
+  overflow: hidden;
+
+  .message-list {
+    flex: 1 1 0%;
+    overflow-y: scroll;
+    padding: 8px;
+
+    & * {
+      overflow-anchor: none;
+    }
+
+    #chat-anchor {
+      overflow-anchor: auto;
+      height: 1px;
+    }
+
+    p {
+      color: theme(colors.white);
+
+      a {
+        font-weight: bold;
+      }
     }
   }
 }

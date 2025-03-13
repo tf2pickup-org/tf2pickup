@@ -111,4 +111,10 @@ export class UserManager {
     }
     return user
   }
+
+  *[Symbol.iterator]() {
+    for (const user of this.users) {
+      yield user
+    }
+  }
 }

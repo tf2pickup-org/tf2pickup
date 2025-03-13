@@ -15,8 +15,13 @@ import type { Bot } from './shared/types/bot'
 import type { PlayerConnectionStatus } from './database/models/game-slot.model'
 import type { Configuration } from './database/models/configuration-entry.model'
 import type { MumbleClientStatus } from './mumble/status'
+import type { ChatMessageModel } from './database/models/chat-message.model'
 
 export interface Events {
+  'chat:messageSent': {
+    message: ChatMessageModel
+  }
+
   'configuration:updated': {
     key: keyof Configuration
   }
