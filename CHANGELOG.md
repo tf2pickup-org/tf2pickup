@@ -1,4 +1,17 @@
+# Changelog
 
+# [4.0.0-alpha.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.1...4.0.0-alpha.2) (2025-03-14)
+
+
+### Bug Fixes
+
+* add discord cdn to csp ([#176](https://github.com/tf2pickup-org/tf2pickup/issues/176)) ([70b8ca2](https://github.com/tf2pickup-org/tf2pickup/commit/70b8ca2cd246ae1f446ebce42b8f09c2d46c47f8))
+* add notification on substitution request ([#174](https://github.com/tf2pickup-org/tf2pickup/issues/174)) ([25900b8](https://github.com/tf2pickup-org/tf2pickup/commit/25900b81dc56f9d995c1baf6c21c774d093964cb))
+
+
+### Features
+
+* gameserver ready notification ([#175](https://github.com/tf2pickup-org/tf2pickup/issues/175)) ([2f69fa9](https://github.com/tf2pickup-org/tf2pickup/commit/2f69fa9c5a038b7c8c6e9a554d872b68efa7746e))
 
 # [4.0.0-alpha.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.0...4.0.0-alpha.1) (2025-03-13)
 
