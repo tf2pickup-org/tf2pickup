@@ -1,5 +1,7 @@
+import type { GameModel } from '../../../database/models/game.model'
 import { games } from '../../../games'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function SubstitutionRequests() {
   const requests = await games.getSubstitutionRequests()
@@ -20,6 +22,24 @@ export async function SubstitutionRequests() {
           </a>
         </div>
       ))}
+    </div>
+  )
+}
+
+SubstitutionRequests.notify = ({ game, replacee }: { game: GameModel; replacee: SteamId64 }) => {
+  const slot = game.slots.find(s => s.player === replacee)
+  if (!slot) {
+    throw new Error('slot not found')
+  }
+
+  return (
+    <div id="notify-container" hx-swap-oob="beforeend">
+      <div
+        data-notification-title="A substitute is needed!"
+        data-notification-body={`Team ${slot.team} needs a substitute for ${slot.gameClass} in game #${game.number}`}
+        data-notification-icon="/favicon.png"
+        data-notification-sound="/sounds/cmon_tough_guy.webm"
+      ></div>
     </div>
   )
 }

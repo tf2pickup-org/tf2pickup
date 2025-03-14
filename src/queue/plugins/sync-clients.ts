@@ -183,7 +183,11 @@ export default fp(
       const cmp = await SubstitutionRequests()
       app.gateway.broadcast(() => cmp)
     }
-    events.on('game:substituteRequested', refreshSubstitutionRequests)
+    events.on('game:substituteRequested', async ({ game, replacee }) => {
+      await refreshSubstitutionRequests()
+      const notify = await SubstitutionRequests.notify({ game, replacee })
+      app.gateway.broadcast(() => notify)
+    })
     events.on('game:playerReplaced', refreshSubstitutionRequests)
     events.on('game:ended', refreshSubstitutionRequests)
     events.on(
