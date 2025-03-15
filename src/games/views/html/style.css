@@ -206,10 +206,6 @@
     gap: 8px;
 
     margin-top: 16px;
-
-    @media screen(xl) {
-      margin-right: 16px;
-    }
   }
 }
 
