@@ -113,6 +113,9 @@ importers:
       howler:
         specifier: 2.2.4
         version: 2.2.4
+      htmx-ext-ws:
+        specifier: 2.0.3
+        version: 2.0.3
       htmx.org:
         specifier: 2.0.4
         version: 2.0.4
@@ -2408,6 +2411,9 @@ packages:
 
   howler@2.2.4:
     resolution: {integrity: sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==}
+
+  htmx-ext-ws@2.0.3:
+    resolution: {integrity: sha512-782KDh1EHS1iJk9SWXlbNN8DkwHR3ujt8lFnsuQ+o2uBwnZM8WeZOkv1WOER7xXhpZJe4u9oLPhQg5RgCuRAHA==}
 
   htmx.org@2.0.4:
     resolution: {integrity: sha512-HLxMCdfXDOJirs3vBZl/ZLoY+c7PfM4Ahr2Ad4YXh6d22T5ltbTXFFkpx9Tgb2vvmWFMbIc3LqN2ToNkZJvyYQ==}
@@ -6558,6 +6564,10 @@ snapshots:
       lru-cache: 10.4.3
 
   howler@2.2.4: {}
+
+  htmx-ext-ws@2.0.3:
+    dependencies:
+      htmx.org: 2.0.4
 
   htmx.org@2.0.4: {}
 
