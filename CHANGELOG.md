@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-alpha.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2025-03-15)
+
+
+### Bug Fixes
+
+* remove game events margin ([#179](https://github.com/tf2pickup-org/tf2pickup/issues/179)) ([8253481](https://github.com/tf2pickup-org/tf2pickup/commit/8253481694e2358320259644fec7666605e15c70))
+* set ws connect delay to 1 second ([#177](https://github.com/tf2pickup-org/tf2pickup/issues/177)) ([bd2d5ac](https://github.com/tf2pickup-org/tf2pickup/commit/bd2d5acfc1eeb5f0d3e22be7a3f9d0e10b108a3e))
+
 # [4.0.0-alpha.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.1...4.0.0-alpha.2) (2025-03-14)
 
 
