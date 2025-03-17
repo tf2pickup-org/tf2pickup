@@ -121,6 +121,9 @@ export interface Events {
   'player:disconnected': {
     steamId: SteamId64
   }
+  'player:created': {
+    steamId: SteamId64
+  }
   'player:updated': {
     before: PlayerModel
     after: PlayerModel

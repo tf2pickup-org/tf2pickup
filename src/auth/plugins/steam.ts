@@ -4,7 +4,6 @@ import { environment } from '../../environment'
 import SteamAPI from 'steamapi'
 import jwt from 'jsonwebtoken'
 import { logger } from '../../logger'
-import { upsertPlayer } from '../../players/upsert-player'
 import { secondsInWeek } from 'date-fns/constants'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { secrets } from '../../secrets'
@@ -78,7 +77,7 @@ export default fp(
       }
 
       logger.debug({ user }, 'user logged in')
-      const player = await upsertPlayer(user)
+      const player = await players.upsert(user)
 
       const token = jwt.sign({ id: player.steamId }, await secrets.get('auth'), {
         expiresIn: '7d',

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { upsertPlayer } from './upsert-player'
-import { createPlayer } from './create-player'
+import { upsert } from './upsert'
+import { create } from './create'
 import { getTf2InGameHours } from '../steam/get-tf2-in-game-hours'
 import { etf2l } from '../etf2l'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
@@ -48,13 +48,14 @@ vi.mock('../etf2l', () => ({
   },
 }))
 
-vi.mock('./create-player', () => ({
-  createPlayer: vi.fn(),
+vi.mock('./create', () => ({
+  create: vi.fn(),
 }))
 vi.mock('../logger', () => ({
   logger: {
     info: vi.fn(),
     debug: vi.fn(),
+    trace: vi.fn(),
   },
 }))
 
@@ -71,14 +72,14 @@ const upsertedPlayer = {
 describe('upsertPlayer()', () => {
   describe('when player exists', () => {
     it('should return existing player', async () => {
-      const player = await upsertPlayer(upsertedPlayer)
+      const player = await upsert(upsertedPlayer)
       expect(player).toBe(mockPlayer)
     })
   })
 
   it('should create player', async () => {
-    await upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' })
-    expect(createPlayer).toHaveBeenCalledWith({
+    await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
+    expect(create).toHaveBeenCalledWith({
       steamId: '12345678901234567',
       name: 'FAKE_PLAYER_NAME',
       avatar: {
@@ -104,9 +105,9 @@ describe('upsertPlayer()', () => {
       })
 
       it('should throw', async () => {
-        await expect(
-          upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' }),
-        ).rejects.toThrow('insufficient TF2 in-game hours')
+        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
+          'insufficient TF2 in-game hours',
+        )
       })
 
       describe('but the user is on bypass list', () => {
@@ -119,8 +120,8 @@ describe('upsertPlayer()', () => {
         })
 
         it('should create player', async () => {
-          await upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' })
-          expect(createPlayer).toHaveBeenCalledWith({
+          await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
+          expect(create).toHaveBeenCalledWith({
             steamId: '12345678901234567',
             name: 'FAKE_PLAYER_NAME',
             avatar: {
@@ -139,8 +140,8 @@ describe('upsertPlayer()', () => {
       })
 
       it('should create player', async () => {
-        await upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' })
-        expect(createPlayer).toHaveBeenCalledWith({
+        await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
+        expect(create).toHaveBeenCalledWith({
           steamId: '12345678901234567',
           name: 'FAKE_PLAYER_NAME',
           avatar: {
@@ -170,9 +171,9 @@ describe('upsertPlayer()', () => {
       })
 
       it('should throw', async () => {
-        await expect(
-          upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' }),
-        ).rejects.toThrow('ETF2L.org account is required')
+        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
+          'ETF2L.org account is required',
+        )
       })
     })
 
@@ -188,9 +189,9 @@ describe('upsertPlayer()', () => {
       })
 
       it('should throw', async () => {
-        await expect(
-          upsertPlayer({ ...upsertedPlayer, steamID: '12345678901234567' }),
-        ).rejects.toThrow('you are banned on ETF2L.org')
+        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
+          'you are banned on ETF2L.org',
+        )
       })
     })
   })

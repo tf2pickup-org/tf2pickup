@@ -1,6 +1,6 @@
 import type { PlayerModel } from '../database/models/player.model'
 import { collections } from '../database/collections'
-import { createPlayer } from './create-player'
+import { create } from './create'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import { configuration } from '../configuration'
@@ -21,7 +21,8 @@ interface UpsertPlayerParams {
   }
 }
 
-export async function upsertPlayer(summary: UpsertPlayerParams): Promise<PlayerModel> {
+export async function upsert(summary: UpsertPlayerParams): Promise<PlayerModel> {
+  logger.trace('players.upsert()', { summary })
   const steamId = steamId64.parse(summary.steamID)
   const player = await collections.players.findOne({ steamId })
   if (player) {
@@ -44,7 +45,7 @@ export async function upsertPlayer(summary: UpsertPlayerParams): Promise<PlayerM
     playerParams = await verifyEtf2l(playerParams)
   }
 
-  return await createPlayer(playerParams)
+  return await create(playerParams)
 }
 
 async function verifyInGameHours(steamId: SteamId64) {
