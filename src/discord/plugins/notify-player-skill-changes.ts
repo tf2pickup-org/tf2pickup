@@ -24,6 +24,7 @@ function generateChangesText(
 }
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('player:updated', async ({ before, after, adminId }) => {
       if (!isEqual(before.skill, after.skill)) {

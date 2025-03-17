@@ -11,7 +11,7 @@ export function ErrorPage(props: { statusCode: number; message: string; user?: U
       <NavigationBar user={props.user} />
       <Page>
         <div class="flex h-full flex-col items-center justify-center">
-          <span class="text-[384px] font-bold leading-none text-abru-light-75" safe>
+          <span class="text-[384px] font-bold leading-none text-abru-light-75">
             {props.statusCode}
           </span>
           <span class="text-[36px] font-bold text-abru-light-75" safe>

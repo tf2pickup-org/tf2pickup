@@ -20,6 +20,7 @@ function generateChangesText(changes: Record<string, Change>) {
 }
 
 export default fp(
+  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('player:updated', async ({ before, after, adminId }) => {
       if (before.name !== after.name) {
