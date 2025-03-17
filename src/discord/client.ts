@@ -12,7 +12,7 @@ async function initializeClient(): Promise<Client | null> {
   const client = new Client({
     intents: [
       IntentsBitField.Flags.Guilds,
-      IntentsBitField.Flags.GuildEmojisAndStickers,
+      IntentsBitField.Flags.GuildExpressions,
       IntentsBitField.Flags.GuildMessages,
     ],
   })

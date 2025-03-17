@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
-    "check": "xss-scan",
+    "xss-scan": "xss-scan",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
     "test": "vitest --dir src",

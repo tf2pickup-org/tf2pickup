@@ -52,14 +52,14 @@ async function JoinAsPlayer(props: { slot: GameSlotModel }) {
 
   if (timeLeftMs > 0) {
     const minutes = Math.floor(timeLeftMs / 60000)
-    const seconds = ((timeLeftMs % 60000) / 1000).toFixed(0)
+    const safeSeconds = ((timeLeftMs % 60000) / 1000).toFixed(0)
     return (
       <>
         <IconPlayerPlayFilled size={16} />
         join in{' '}
-        <span data-countdown={timeLeftMs} safe>
-          {minutes}:{seconds.length === 1 ? '0' : ''}
-          {seconds}
+        <span data-countdown={timeLeftMs}>
+          {minutes}:{safeSeconds.length === 1 ? '0' : ''}
+          {safeSeconds}
         </span>
       </>
     )
