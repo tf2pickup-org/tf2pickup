@@ -28,7 +28,6 @@ export default fp(
   async () => {
     events.on('player:updated', async ({ before, after, adminId }) => {
       if (!isEqual(before.skill, after.skill)) {
-        console.log(before.skill, after.skill)
         const admin = await players.bySteamId(adminId!)
         const changes = generateChangesText(before.skill, after.skill)
 
