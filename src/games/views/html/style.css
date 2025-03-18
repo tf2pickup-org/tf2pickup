@@ -4,28 +4,22 @@
     'gameSummary'
     'scoreBlu'
     'slotsBlu'
-    'slotsBlu'
-    'slotsBlu'
-    'slotsBlu'
-    'slotsBlu'
-    'slotsBlu'
     'scoreRed'
     'slotsRed'
-    'slotsRed'
-    'slotsRed'
-    'slotsRed'
-    'slotsRed'
-    'slotsRed'
     'gameEvents';
+
+  @media screen(lg) {
+    grid-template-areas:
+      'gameSummary gameSummary    gameSummary    gameSummary'
+      'scoreBlu    scoreBlu       scoreRed       scoreRed'
+      'slotsBlu    gameClassIcons gameClassIcons slotsRed'
+      'gameEvents  gameEvents     gameEvents     gameEvents';
+    grid-template-columns: 1fr auto auto 1fr;
+  }
 
   @media screen(xl) {
     grid-template-areas:
       'gameSummary scoreBlu scoreBlu       scoreRed       scoreRed'
-      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
-      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
-      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
-      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
-      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
       'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
       'gameEvents  .        .              .              .';
     grid-template-columns: 2fr 3fr auto auto 3fr;
@@ -54,7 +48,7 @@
       grid-area: scoreBlu;
       background-color: theme('colors.team-blu');
 
-      @media screen(xl) {
+      @media screen(lg) {
         border-radius: 8px 0 0 0;
         margin-right: 2px;
       }
@@ -64,7 +58,7 @@
       grid-area: scoreRed;
       background-color: theme('colors.team-red');
 
-      @media screen(xl) {
+      @media screen(lg) {
         grid-template-areas: 'score teamName';
         border-radius: 0 8px 0 0;
         margin-left: 2px;
@@ -75,49 +69,58 @@
   .game-class-icons {
     display: none;
     grid-area: gameClassIcons;
-    grid-template-rows: subgrid;
     background-color: rgb(0 0 0 / 0.4);
     align-items: center;
+    padding: 4px 0;
 
-    @media screen(xl) {
+    @media screen(lg) {
       display: grid;
     }
   }
 
   .slot-list {
     display: grid;
-    grid-template-columns: auto auto 1fr auto auto;
-    grid-template-rows: subgrid;
-    grid-template-areas: 'classIcon playerAvatar playerName slotAction playerConnectionStatus';
 
     align-items: center;
-    padding-top: 10px;
+    padding: 10px 0;
     gap: 10px;
     border-radius: 0 0 8px 8px;
     background-color: rgb(0 0 0 / 0.4);
 
     &.team-blu {
       grid-area: slotsBlu;
+      grid-template-areas:
+        'bluScout1'
+        'bluScout2'
+        'bluSoldier1'
+        'bluSoldier2'
+        'bluDemoman1'
+        'bluMedic1';
 
-      @media screen(xl) {
-        grid-template-columns: auto auto 1fr auto;
-        grid-template-areas: 'playerConnectionStatus slotAction playerName playerName playerName playerAvatar';
-
+      @media screen(lg) {
         border-radius: 0 0 0 8px;
 
-        .player-name {
-          text-align: right;
+        .slot {
+          flex-flow: row-reverse nowrap;
+
+          .player-name {
+            text-align: right;
+          }
         }
       }
     }
 
     &.team-red {
       grid-area: slotsRed;
+      grid-template-areas:
+        'redScout1'
+        'redScout2'
+        'redSoldier1'
+        'redSoldier2'
+        'redDemoman1'
+        'redMedic1';
 
-      @media screen(xl) {
-        grid-template-columns: auto 1fr auto auto;
-        grid-template-areas: 'playerAvatar playerName playerName playerName slotAction playerConnectionStatus';
-
+      @media screen(lg) {
         border-radius: 0 0 8px 0;
       }
     }
@@ -126,6 +129,10 @@
       @apply transition-colors;
       @apply duration-75;
 
+      display: flex;
+      flex-flow: row nowrap;
+      gap: 8px;
+
       margin: 0 10px 0 10px;
       height: 60px;
 
@@ -133,48 +140,31 @@
       border-radius: 4px;
       padding: 10px;
 
-      &:last-of-type {
-        margin-bottom: 10px;
-      }
-
       &.active {
-        display: grid;
-        grid-column: span 6 / span 6;
-        grid-template-columns: subgrid;
-
         background-color: theme(colors.abru.light.60);
 
         .class-icon {
-          grid-area: classIcon;
-
-          @media screen(xl) {
+          @media screen(lg) {
             display: none;
           }
         }
 
-        .player-avatar {
-          grid-area: playerAvatar;
-        }
-
         .player-name {
-          grid-area: playerName;
+          flex: 1 1 0;
           font-size: 20px;
           font-weight: 500;
+          overflow: hidden;
+          text-overflow: ellipsis;
 
           &:hover {
             text-decoration: underline;
           }
         }
 
-        .slot-action {
-          grid-area: slotAction;
-        }
-
         .player-connection-status {
           width: 6px;
           align-self: stretch;
           border-radius: 4px;
-          grid-area: playerConnectionStatus;
 
           &.connected {
             background-color: #0a955b;
@@ -191,8 +181,6 @@
       }
 
       &.waiting-for-substitute {
-        grid-column: span 6 / span 6;
-        display: grid;
         background-color: theme(colors.abru.light.30);
         color: theme(colors.abru.light.60);
       }

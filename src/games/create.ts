@@ -1,11 +1,7 @@
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
-import {
-  PlayerConnectionStatus,
-  SlotStatus,
-  type GameSlotModel,
-} from '../database/models/game-slot.model'
+import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameNumber } from '../database/models/game.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
@@ -26,21 +22,15 @@ export async function create(
     map,
     state: GameState.created,
     slots: await Promise.all(
-      slots.map(async slot => {
-        const player = await collections.players.findOne({ steamId: slot.player })
-        if (!player) {
-          throw new Error(`player not found: ${slot.player}`)
-        }
-
-        return {
-          player: player.steamId,
-          team: slot.team,
-          gameClass: slot.gameClass,
-          status: SlotStatus.active,
-          connectionStatus: PlayerConnectionStatus.offline,
-          skill: slot.skill,
-        } as GameSlotModel
-      }),
+      slots.map(slot => ({
+        id: slot.id,
+        player: slot.player,
+        team: slot.team,
+        gameClass: slot.gameClass,
+        status: SlotStatus.active,
+        connectionStatus: PlayerConnectionStatus.offline,
+        skill: slot.skill,
+      })),
     ),
     events: [
       {
