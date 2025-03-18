@@ -3,6 +3,7 @@ import { meanBy } from 'es-toolkit'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { Tf2Team } from '../shared/types/tf2-team'
+import type { GameSlotId } from '../shared/types/game-slot-id'
 
 export interface PlayerSlot {
   player: SteamId64
@@ -11,6 +12,7 @@ export interface PlayerSlot {
 }
 
 export interface PlayerSlotWithTeam extends PlayerSlot {
+  id: GameSlotId
   team: Tf2Team
 }
 
@@ -169,9 +171,21 @@ export function pickTeams(players: PlayerSlot[], overrides?: TeamOverrides): Pla
 
   const selectedLineup = allPossibleLineups[0]!
 
+  const classCounts: Record<Tf2Team, Record<Tf2ClassName, number>> = {
+    [Tf2Team.blu]: Object.fromEntries(gameClasses.map(gc => [gc, 1])) as Record<
+      Tf2ClassName,
+      number
+    >,
+    [Tf2Team.red]: Object.fromEntries(gameClasses.map(gc => [gc, 1])) as Record<
+      Tf2ClassName,
+      number
+    >,
+  }
+
   return ([0, 1] as TeamId[]).flatMap(teamId =>
     selectedLineup[teamId].lineup.map(slot => ({
       ...slot,
+      id: `${teams[teamId]}-${slot.gameClass}-${classCounts[teams[teamId]][slot.gameClass]++}`,
       team: teams[teamId],
     })),
   )

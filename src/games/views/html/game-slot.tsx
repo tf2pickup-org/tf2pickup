@@ -1,3 +1,4 @@
+import { camelCase } from 'es-toolkit'
 import { collections } from '../../../database/collections'
 import { SlotStatus, type GameSlotModel } from '../../../database/models/game-slot.model'
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
@@ -19,7 +20,7 @@ export async function GameSlot(props: {
 
   return (
     <form
-      id={`game-slot-${player.steamId}`}
+      id={`game-slot-${props.slot.id}`}
       aria-label={`${player.name}'s slot`}
       class={[
         'slot',
@@ -28,6 +29,7 @@ export async function GameSlot(props: {
           [SlotStatus.waitingForSubstitute]: 'waiting-for-substitute',
         }[props.slot.status],
       ]}
+      style={`grid-area: ${camelCase(props.slot.id)}`}
       data-player={player.steamId}
       data-status={props.slot.status}
     >
@@ -68,7 +70,6 @@ async function GameSlotContent(props: {
             width="38"
             height="38"
             alt={`${props.player.name}'s avatar`}
-            class="player-avatar"
           />
           <a href={`/players/${props.player.steamId}`} class="player-name" safe>
             {props.player.name}
@@ -117,7 +118,7 @@ async function GameSlotContent(props: {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="slot-action rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
+      class="rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"
