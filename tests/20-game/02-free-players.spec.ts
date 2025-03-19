@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test'
-import { waitABit } from '../utils/wait-a-bit'
 import { secondsToMilliseconds } from 'date-fns'
 import { launchGame } from '../fixtures/launch-game'
+import { delay } from 'es-toolkit'
 
 launchGame.use({ waitForStage: 'launching' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -19,7 +19,7 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
 
   await gameServer.connectAllPlayers()
   await gameServer.matchStarts()
-  await waitABit(secondsToMilliseconds(3))
+  await delay(secondsToMilliseconds(3))
   await gameServer.matchEnds()
 
   const medics = ['AstraGirl', 'BellBoy']
