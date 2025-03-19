@@ -85,7 +85,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
   return (
     <div class="player-info" data-player-ready={`${props.slot.ready}`}>
       <img src={player.avatar.medium} width="64" height="64" alt={`${player.name}'s name`} />
-      <a href={`/players/${player.steamId}`} safe>
+      <a href={`/players/${player.steamId}`} preload="mousedown" safe>
         {player.name}
       </a>
       {slotActionButton}

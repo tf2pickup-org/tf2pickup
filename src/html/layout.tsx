@@ -54,7 +54,12 @@ export async function Layout(
         {title}
         <MetaTags {...props} />
       </head>
-      <body hx-ext="ws,head-support,remove-me" ws-connect="/ws" class="h-screen" hx-boost="true">
+      <body
+        hx-ext="ws,head-support,remove-me,preload"
+        ws-connect="/ws"
+        class="h-screen"
+        hx-boost="true"
+      >
         {body}
       </body>
     </html>

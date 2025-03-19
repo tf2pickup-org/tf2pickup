@@ -17,7 +17,11 @@ export async function SubstitutionRequests() {
             </strong>{' '}
             in game&nbsp;<span safe>#{request.gameNumber}</span>
           </p>
-          <a class="button button--dense button--alert" href={`/games/${request.gameNumber}`}>
+          <a
+            class="button button--dense button--alert"
+            href={`/games/${request.gameNumber}`}
+            preload="mousedown"
+          >
             View game details
           </a>
         </div>

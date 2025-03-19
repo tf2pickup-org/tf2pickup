@@ -13,8 +13,7 @@ export function GameListItem(props: { game: GameModel; classPlayed?: Tf2ClassNam
     GameState.started,
   ].includes(props.game.state)
 
-  const launchedAt = props.game.events[0]?.at
-  if (!launchedAt) throw new Error('game has no events')
+  const launchedAt = props.game.events[0].at
 
   let gameLabel = <div class="col-span-2"></div>
   if (props.game.state === GameState.interrupted) {
@@ -33,7 +32,7 @@ export function GameListItem(props: { game: GameModel; classPlayed?: Tf2ClassNam
   }
 
   return (
-    <a class="game-list-item" href={`/games/${props.game.number}`}>
+    <a class="game-list-item" href={`/games/${props.game.number}`} preload="mousedown">
       <div class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</div>
       <span class={['game-number', isRunning && 'text-accent']} safe>
         #{props.game.number}

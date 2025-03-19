@@ -1,5 +1,6 @@
 import htmx from './htmx'
 import 'htmx-ext-ws'
+import 'htmx-ext-preload'
 import 'htmx.org/dist/ext/head-support.js'
 import 'htmx.org/dist/ext/remove-me.js'
 

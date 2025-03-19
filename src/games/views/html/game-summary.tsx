@@ -1,5 +1,4 @@
 import { format } from 'date-fns'
-import { GameEventType } from '../../../database/models/game-event.model'
 import { type GameModel } from '../../../database/models/game.model'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -9,11 +8,7 @@ import { LogsLink } from './logs-link'
 import { DemoLink } from './demo-link'
 
 export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefined }) {
-  const launchedAt = props.game.events.find(e => e.event === GameEventType.gameCreated)?.at
-  if (!launchedAt) {
-    throw new Error(`game ${props.game.number} has no 'created' event`)
-  }
-
+  const launchedAt = props.game.events[0].at
   return (
     <div
       id={`game-${props.game.number}-summary`}
