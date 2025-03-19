@@ -23,7 +23,7 @@ export async function OnlinePlayerList() {
       </h6>
 
       {onlinePlayers.map(player => (
-        <a href={`/players/${player.steamId}`} safe>
+        <a href={`/players/${player.steamId}`} preload="mousedown" safe>
           {player.name}
         </a>
       ))}

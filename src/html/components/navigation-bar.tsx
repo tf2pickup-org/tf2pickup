@@ -74,7 +74,12 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
 function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) {
   const url = requestContext.get('url')
   return (
-    <a href={href} class="menu-item" aria-current={url === href ? 'page' : undefined}>
+    <a
+      href={href}
+      class="menu-item"
+      aria-current={url === href ? 'page' : undefined}
+      preload="mousedown"
+    >
       {children}
     </a>
   )

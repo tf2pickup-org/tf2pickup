@@ -2,6 +2,7 @@ import { configuration } from '../configuration'
 import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel } from '../database/models/game.model'
+import { errors } from '../errors'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
 export async function calculateJoinGameserverTimeout(
@@ -33,7 +34,7 @@ export async function calculateJoinGameserverTimeout(
         .filter(e => e.event === GameEventType.gameServerInitialized)
         .sort((a, b) => b.at.getTime() - a.at.getTime())[0]?.at
       if (!lastConfiguredAt) {
-        throw new Error('invalid game state')
+        throw errors.internalServerError('invalid game state')
       }
 
       return new Date(
@@ -48,7 +49,7 @@ export async function calculateJoinGameserverTimeout(
     case GameState.started: {
       const slot = game.slots.find(slot => slot.player === player)
       if (!slot) {
-        throw new Error(`player ${player} not found in game ${game.number}`)
+        throw errors.internalServerError(`player ${player} not found in game ${game.number}`)
       }
 
       if (slot.status !== SlotStatus.active) {

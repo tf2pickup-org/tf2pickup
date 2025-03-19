@@ -42,12 +42,12 @@ export async function Profile(player: PlayerModel) {
           style="display: none;"
         >
           <div class="flex flex-col gap-1 text-abru-light-75">
-            <a href={`/players/${player.steamId}`} class="profile-menu-item">
+            <a href={`/players/${player.steamId}`} class="profile-menu-item" preload="mousedown">
               <IconUserCircle />
               <span>My profile</span>
             </a>
             <div class="divider" />
-            <a href="/settings" class="profile-menu-item">
+            <a href="/settings" class="profile-menu-item" preload="mousedown">
               <IconSettings />
               <span>Settings</span>
             </a>

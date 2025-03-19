@@ -49,20 +49,18 @@ function Board(props: { title: string; entries: HallOfFameEntry[] }) {
         {props.title}
       </div>
       {props.entries.map((record, i) => (
-        <>
-          <a class="hof-record" href={`/players/${record.player.steamId}`}>
-            <MaybeAward i={i} />
-            <img
-              src={record.player.avatar.medium}
-              width="64"
-              height="64"
-              class="h-[38px] w-[38px]"
-              alt="{name}'s avatar"
-            />
-            <span safe>{record.player.name}</span>
-            <span class="justify-self-end">{record.count}</span>
-          </a>
-        </>
+        <a class="hof-record" href={`/players/${record.player.steamId}`} preload="mousedown">
+          <MaybeAward i={i} />
+          <img
+            src={record.player.avatar.medium}
+            width="64"
+            height="64"
+            class="h-[38px] w-[38px]"
+            alt="{name}'s avatar"
+          />
+          <span safe>{record.player.name}</span>
+          <span class="justify-self-end">{record.count}</span>
+        </a>
       ))}
     </div>
   )

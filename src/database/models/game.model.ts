@@ -1,5 +1,5 @@
 import type { GameSlotModel } from './game-slot.model'
-import type { GameEventModel } from './game-event.model'
+import type { GameCreated, GameEventModel } from './game-event.model'
 import type { Tf2Team } from '../../shared/types/tf2-team'
 
 declare const _gameNumber: unique symbol
@@ -53,7 +53,7 @@ export interface GameModel {
   state: GameState
 
   slots: GameSlotModel[]
-  events: GameEventModel[]
+  events: [GameCreated, ...GameEventModel[]]
   gameServer?: GameServer
 
   logsUrl?: string

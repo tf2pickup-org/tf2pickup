@@ -8,7 +8,11 @@ export function RunningGameSnackbar(props: { gameNumber?: GameNumber | undefined
         <Snackbar>
           <div class="flex flex-col items-center gap-6">
             <span>You are involved in a currently running game</span>
-            <a href={`/games/${props.gameNumber}`} class="button button--accent">
+            <a
+              href={`/games/${props.gameNumber}`}
+              class="button button--accent"
+              preload="mousedown"
+            >
               Go back to the game
             </a>
           </div>

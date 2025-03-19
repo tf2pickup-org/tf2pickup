@@ -40,12 +40,17 @@ export function Pagination(props: {
       <a
         href={props.hrefFn(props.currentPage - 1)}
         class={['page', props.currentPage <= 1 && 'page--disabled']}
+        preload="mousedown"
       >
         <IconChevronLeft />
       </a>
 
       {props.around.map(page => (
-        <a href={props.hrefFn(page)} class={['page', props.currentPage === page && 'page--active']}>
+        <a
+          href={props.hrefFn(page)}
+          class={['page', props.currentPage === page && 'page--active']}
+          preload="mousedown"
+        >
           <span class="px-[10px]">{page}</span>
         </a>
       ))}
@@ -53,6 +58,7 @@ export function Pagination(props: {
       <a
         href={props.hrefFn(props.currentPage + 1)}
         class={['page', props.currentPage >= props.lastPage && 'page--disabled']}
+        preload="mousedown"
       >
         <IconChevronRight />
       </a>
