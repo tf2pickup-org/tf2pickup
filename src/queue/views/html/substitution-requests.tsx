@@ -39,10 +39,10 @@ SubstitutionRequests.notify = ({ game, replacee }: { game: GameModel; replacee: 
   return (
     <div id="notify-container" hx-swap-oob="beforeend">
       <div
-        data-notification-title="A substitute is needed!"
-        data-notification-body={`Team ${slot.team} needs a substitute for ${slot.gameClass} in game #${game.number}`}
-        data-notification-icon="/favicon.png"
-        data-notification-sound="/sounds/cmon_tough_guy.webm"
+        notification-title="A substitute is needed!"
+        notification-body={`Team ${slot.team} needs a substitute for ${slot.gameClass} in game #${game.number}`}
+        notification-icon="/favicon.png"
+        play-sound-src="/sounds/cmon_tough_guy.webm"
       ></div>
     </div>
   )

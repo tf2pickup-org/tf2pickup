@@ -57,10 +57,10 @@ ReadyUpDialog.show = () => {
       </div>
       <div id="ready-up-notification-container">
         <div
-          data-notification-title="Ready up!"
-          data-notification-body="A game is starting"
-          data-notification-icon="/favicon.png"
-          data-notification-sound="/sounds/ready_up.webm"
+          notification-title="Ready up!"
+          notification-body="A game is starting"
+          notification-icon="/favicon.png"
+          play-sound-src="/sounds/ready_up.webm"
         ></div>
       </div>
     </>

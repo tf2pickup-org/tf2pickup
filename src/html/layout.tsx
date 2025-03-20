@@ -55,7 +55,7 @@ export async function Layout(
         <MetaTags {...props} />
       </head>
       <body
-        hx-ext="ws,head-support,remove-me,preload"
+        hx-ext="ws,head-support,remove-me,preload,notifications,play-sound"
         ws-connect="/ws"
         class="h-screen"
         hx-boost="true"
