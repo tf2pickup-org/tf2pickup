@@ -113,9 +113,15 @@ importers:
       howler:
         specifier: 2.2.4
         version: 2.2.4
+      htmx-ext-head-support:
+        specifier: ^2.0.4
+        version: 2.0.4
       htmx-ext-preload:
         specifier: 2.1.1
         version: 2.1.1
+      htmx-ext-remove-me:
+        specifier: ^2.0.1
+        version: 2.0.1
       htmx-ext-ws:
         specifier: 2.0.3
         version: 2.0.3
@@ -2415,8 +2421,14 @@ packages:
   howler@2.2.4:
     resolution: {integrity: sha512-iARIBPgcQrwtEr+tALF+rapJ8qSc+Set2GJQl7xT1MQzWaVkFebdJhR3alVlSiUf5U7nAANKuj3aWpwerocD5w==}
 
+  htmx-ext-head-support@2.0.4:
+    resolution: {integrity: sha512-CGGicOzu3VlHCqjhdHjlU4i4SQ19WwYnl2+1jX3SdOJX1gKOrJrtlED95FMgWyGrlZZ/qo0y/RpOE7KZA2X9kg==}
+
   htmx-ext-preload@2.1.1:
     resolution: {integrity: sha512-Gm9NJTMgbR4OAhZ8a4abkBSVccuI+yCVJs5Nrsn2mWDv+Ha5bSwSw8Bc4Y8D+TCaeNSFd8Qz/fe1sqBIVmv0GA==}
+
+  htmx-ext-remove-me@2.0.1:
+    resolution: {integrity: sha512-GYkBDZq2oErjyPK9uzBlMaUjf6WWYkqIcdABsgYR2/I2BmXjFSN1QTcsWabefFHabhrWdT0qHz0zgiaglex2Pw==}
 
   htmx-ext-ws@2.0.3:
     resolution: {integrity: sha512-782KDh1EHS1iJk9SWXlbNN8DkwHR3ujt8lFnsuQ+o2uBwnZM8WeZOkv1WOER7xXhpZJe4u9oLPhQg5RgCuRAHA==}
@@ -6571,7 +6583,15 @@ snapshots:
 
   howler@2.2.4: {}
 
+  htmx-ext-head-support@2.0.4:
+    dependencies:
+      htmx.org: 2.0.4
+
   htmx-ext-preload@2.1.1:
+    dependencies:
+      htmx.org: 2.0.4
+
+  htmx-ext-remove-me@2.0.1:
     dependencies:
       htmx.org: 2.0.4
 
