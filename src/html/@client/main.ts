@@ -1,8 +1,8 @@
 import htmx from './htmx'
 import 'htmx-ext-ws'
 import 'htmx-ext-preload'
-import 'htmx.org/dist/ext/head-support.js'
-import 'htmx.org/dist/ext/remove-me.js'
+import 'htmx-ext-head-support'
+import 'htmx-ext-remove-me'
 
 import * as hyperscript from 'hyperscript.org'
 hyperscript.browserInit()
