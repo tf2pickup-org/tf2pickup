@@ -15,11 +15,9 @@ import {
   IconHeadset,
   IconMapPinCog,
   IconMoodNerd,
-  IconPackageImport,
   IconSectionSign,
   IconServer,
   IconSpy,
-  IconTable,
   IconUserExclamation,
   IconUserPlus,
 } from '../../../html/components/icons'
@@ -74,16 +72,6 @@ const adminPages = {
   'bypass-registration-restrictions': {
     title: 'Bypass restrictions',
     icon: IconUserPlus,
-    section: 'Actions',
-  },
-  'import-player-skill': {
-    title: 'Import player skill',
-    icon: IconPackageImport,
-    section: 'Actions',
-  },
-  'player-skill-table': {
-    title: 'Player skill table',
-    icon: IconTable,
     section: 'Actions',
   },
   rules: {
