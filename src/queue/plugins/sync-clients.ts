@@ -15,6 +15,7 @@ import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
 import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
+import { OnlinePlayerCount } from '../views/html/online-player-count'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -44,21 +45,14 @@ export default fp(
       }
     })
 
-    events.on(
-      'player:connected',
-      safe(async () => {
-        const cmp = await OnlinePlayerList()
-        app.gateway.broadcast(() => cmp)
-      }),
-    )
+    async function updateOnlinePlayers() {
+      const opl = await OnlinePlayerList()
+      const opc = await OnlinePlayerCount()
+      app.gateway.broadcast(() => [opl, opc])
+    }
 
-    events.on(
-      'player:disconnected',
-      safe(async () => {
-        const cmp = await OnlinePlayerList()
-        app.gateway.broadcast(() => cmp)
-      }),
-    )
+    events.on('player:connected', safe(updateOnlinePlayers))
+    events.on('player:disconnected', safe(updateOnlinePlayers))
 
     events.on(
       'player:updated',
