@@ -4,6 +4,10 @@ import 'htmx-ext-preload'
 import 'htmx-ext-head-support'
 import 'htmx-ext-remove-me'
 
+// internal htmx extensions
+import './notifications'
+import './play-sound'
+
 import * as hyperscript from 'hyperscript.org'
 hyperscript.browserInit()
 
@@ -16,6 +20,5 @@ import './disable-when-offline'
 import './fade-scroll'
 import './flash-message'
 import './map-thumbnail'
-import './notification'
 
 export { goTo } from './navigation'
