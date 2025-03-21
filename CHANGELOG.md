@@ -1,5 +1,27 @@
 # Changelog
 
+# [4.0.0-alpha.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.3...4.0.0-alpha.4) (2025-03-21)
+
+
+### Bug Fixes
+
+* add game slot ids ([#183](https://github.com/tf2pickup-org/tf2pickup/issues/183)) ([5f22046](https://github.com/tf2pickup-org/tf2pickup/commit/5f22046ab29aa01bc617d17c42dcbc0a7a24075e))
+* add missing slot status for old games ([#184](https://github.com/tf2pickup-org/tf2pickup/issues/184)) ([dfce945](https://github.com/tf2pickup-org/tf2pickup/commit/dfce945648743b98ad3ce88bcdbf2e1dfc324832))
+* **deps:** pin dependencies ([6e18953](https://github.com/tf2pickup-org/tf2pickup/commit/6e1895336bac5aabd08f7cf35c2d10a5a94089f5))
+* **deps:** pin dependency htmx-ext-preload to 2.1.1 ([1880230](https://github.com/tf2pickup-org/tf2pickup/commit/18802305bd0a3c41f46ae9126e134cafa54c7268))
+* **deps:** update dependency mongodb to v6.15.0 ([6847999](https://github.com/tf2pickup-org/tf2pickup/commit/6847999b0c8c176928de10cb2d02416b129fecc4))
+* **deps:** update dependency nanoid to v5.1.4 ([7704ee2](https://github.com/tf2pickup-org/tf2pickup/commit/7704ee25d4b9259dfd9fd9693ac68f66f961c03e))
+* **deps:** update dependency nanoid to v5.1.5 ([3416b45](https://github.com/tf2pickup-org/tf2pickup/commit/3416b458b725dccda07c505bde2e3ed760b5f392))
+* install htmx extensions ([#188](https://github.com/tf2pickup-org/tf2pickup/issues/188)) ([1b08f4a](https://github.com/tf2pickup-org/tf2pickup/commit/1b08f4ac446dabf8b9a959db37f67203db78f98f))
+
+
+### Features
+
+* add missing statistics ([#187](https://github.com/tf2pickup-org/tf2pickup/issues/187)) ([4994d48](https://github.com/tf2pickup-org/tf2pickup/commit/4994d48a4d89ec8b560dca71e73ec8d9738f938f))
+* add preload support ([#186](https://github.com/tf2pickup-org/tf2pickup/issues/186)) ([62c7cf1](https://github.com/tf2pickup-org/tf2pickup/commit/62c7cf140a903ee593c81b6b120f675bf81cbb44))
+* notify admins when new player is registered ([#181](https://github.com/tf2pickup-org/tf2pickup/issues/181)) ([19ab7a7](https://github.com/tf2pickup-org/tf2pickup/commit/19ab7a7e681add9503ba94f5e7364fb1c5bce7ca))
+* send discord notification on player bans added & revoked ([#182](https://github.com/tf2pickup-org/tf2pickup/issues/182)) ([1134dfb](https://github.com/tf2pickup-org/tf2pickup/commit/1134dfbdc768c55584090e17e398de4f7b4b4a7b))
+
 # [4.0.0-alpha.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.2...4.0.0-alpha.3) (2025-03-15)
 
 
