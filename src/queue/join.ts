@@ -8,6 +8,7 @@ import { players } from '../players'
 import { preReady } from '../pre-ready'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
+import { meetsSkillThreshold } from './meets-skill-threshold'
 import { mutex } from './mutex'
 
 export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlotModel[]> {
@@ -35,6 +36,10 @@ export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlo
 
     if (targetSlot.player) {
       throw errors.badRequest('slot occupied')
+    }
+
+    if (!(await meetsSkillThreshold(player, targetSlot))) {
+      throw errors.badRequest(`player does not meet skill threshold`)
     }
 
     const [currentPlayerCount, requiredPlayerCount] = await Promise.all([
