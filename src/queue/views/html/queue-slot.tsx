@@ -9,6 +9,7 @@ import {
 } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
+import type { QueueSlotId } from '../../types/queue-slot-id'
 
 const enum MarkAsFriendButtonState {
   none,
@@ -45,14 +46,9 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
   )
 }
 
-function JoinButton(props: { slotId: number; disabled: boolean }) {
+function JoinButton(props: { slotId: QueueSlotId; disabled: boolean }) {
   return (
-    <button
-      class="join-queue-button"
-      name="join"
-      value={`${props.slotId}`}
-      disabled={props.disabled}
-    >
+    <button class="join-queue-button" name="join" value={props.slotId} disabled={props.disabled}>
       <span class="sr-only">Join queue on slot {props.slotId}</span>
       {props.disabled ? <IconLock /> : <IconPlus />}
     </button>

@@ -14,10 +14,10 @@ test('update player count', async ({ page, users }) => {
 
   await expect(queuePage.header()).toContainText('0/12')
   await expect(queuePage.page).toHaveTitle(/\[0\/12\]/)
-  await p1.joinQueue(0)
+  await p1.joinQueue('scout-1')
   await expect(queuePage.header()).toContainText('1/12')
   await expect(queuePage.page).toHaveTitle(/\[1\/12\]/)
-  await p2.joinQueue(1)
+  await p2.joinQueue('scout-2')
   await expect(queuePage.header()).toContainText('2/12')
   await expect(queuePage.page).toHaveTitle(/\[2\/12\]/)
 

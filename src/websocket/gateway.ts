@@ -5,12 +5,13 @@ import { z } from 'zod'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { assertIsError } from '../utils/assert-is-error'
 import { logger } from '../logger'
+import type { QueueSlotId } from '../queue/types/queue-slot-id'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
   ready: () => void
   navigated: (url: string) => void
-  'queue:join': (slotId: number) => void
+  'queue:join': (slotId: QueueSlotId) => void
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void
   'queue:readyup': () => void
@@ -30,7 +31,7 @@ const htmxHeaders = z.object({
 })
 
 const joinQueue = z.object({
-  join: z.coerce.number(),
+  join: z.string().regex(/^\w+-\d$/),
   HEADERS: htmxHeaders,
 })
 

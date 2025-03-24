@@ -31,14 +31,20 @@ test.describe('when player skill threshold is set', () => {
       await page.goto()
 
       // scout slots are disabled
-      for (let i = 0; i < 4; ++i) {
-        await expect(page.slot(i).joinButton()).toBeDisabled()
-      }
+      await expect(page.slot('scout-1').joinButton()).toBeDisabled()
+      await expect(page.slot('scout-2').joinButton()).toBeDisabled()
+      await expect(page.slot('scout-3').joinButton()).toBeDisabled()
+      await expect(page.slot('scout-4').joinButton()).toBeDisabled()
 
       // other slots are enabled
-      for (let i = 4; i < 12; ++i) {
-        await expect(page.slot(i).joinButton()).not.toBeDisabled()
-      }
+      await expect(page.slot('soldier-1').joinButton()).not.toBeDisabled()
+      await expect(page.slot('soldier-2').joinButton()).not.toBeDisabled()
+      await expect(page.slot('soldier-3').joinButton()).not.toBeDisabled()
+      await expect(page.slot('soldier-4').joinButton()).not.toBeDisabled()
+      await expect(page.slot('demoman-1').joinButton()).not.toBeDisabled()
+      await expect(page.slot('demoman-2').joinButton()).not.toBeDisabled()
+      await expect(page.slot('medic-1').joinButton()).not.toBeDisabled()
+      await expect(page.slot('medic-2').joinButton()).not.toBeDisabled()
     })
   })
 })

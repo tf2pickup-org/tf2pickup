@@ -25,7 +25,7 @@ test('pre-ready up button is enabled when a player joins the queue', async ({ us
   const page = await users.getNext().queuePage()
   await page.goto()
   await expect(page.preReadyUpButton()).toBeDisabled()
-  await page.joinQueue(3)
+  await page.joinQueue('soldier-1')
   await expect(page.preReadyUpButton()).toBeEnabled()
   await page.leaveQueue()
   await expect(page.preReadyUpButton()).toBeDisabled()
@@ -34,7 +34,7 @@ test('pre-ready up button is enabled when a player joins the queue', async ({ us
 test('pre-ready expires', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
-  await page.joinQueue(4)
+  await page.joinQueue('soldier-1')
   await page.preReadyUpButton().click()
   await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
   await expect(page.preReadyUpButton()).toContainText(/\d+:\d+/)

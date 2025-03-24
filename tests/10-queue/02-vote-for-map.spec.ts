@@ -14,7 +14,7 @@ test('vote for map', async ({ users }) => {
   await expect(mapBtn).toBeDisabled()
 
   // join the queue
-  await page.joinQueue(0)
+  await page.joinQueue('scout-1')
   await expect(mapBtn).not.toBeDisabled()
 
   await mapBtn.click()

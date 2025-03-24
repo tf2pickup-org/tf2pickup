@@ -1,14 +1,15 @@
 import { errors, expect, type Locator, type Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { queueSlots, type SlotId } from '../queue-slots'
 
 class QueueSlot {
   readonly locator: Locator
 
   constructor(
     private readonly page: Page,
-    private readonly slotNumber: number,
+    private readonly slotId: SlotId,
   ) {
-    this.locator = this.page.getByLabel(`Queue slot ${this.slotNumber}`, { exact: true })
+    this.locator = this.page.getByLabel(`Queue slot ${this.slotId}`)
   }
 
   async isTaken() {
@@ -27,8 +28,7 @@ class QueueSlot {
 
   joinButton() {
     return this.locator.getByRole('button', {
-      name: `Join queue on slot ${this.slotNumber}`,
-      exact: true,
+      name: `Join queue on slot ${this.slotId}`,
     })
   }
 
@@ -83,7 +83,7 @@ export class QueuePage {
     await this.page.goto('/')
   }
 
-  async joinQueue(slot: number) {
+  async joinQueue(slot: SlotId) {
     await this.slot(slot).join()
   }
 
@@ -95,7 +95,7 @@ export class QueuePage {
     return this.page.getByRole('heading', { name: /Players: \d+\/\d+/ })
   }
 
-  slot(slot: number) {
+  slot(slot: SlotId) {
     return new QueueSlot(this.page, slot)
   }
 
@@ -121,7 +121,7 @@ export class QueuePage {
 
   async waitToBeEmpty(options?: { timeout?: number }) {
     await Promise.all(
-      Array.from(Array(12).keys()).map(async i => {
+      Array.from(queueSlots()).map(async i => {
         await this.slot(i).waitToBeFree(options)
       }),
     )

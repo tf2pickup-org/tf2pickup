@@ -5,6 +5,7 @@ import type { UserContext, UserName } from '../user-manager'
 import { waitForEmptyQueue } from './wait-for-empty-queue'
 import { GamePage } from '../pages/game.page'
 import { secondsToMilliseconds } from 'date-fns'
+import type { SlotId } from '../queue-slots'
 
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
@@ -23,7 +24,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
   LaunchGameOptions & {
     gameNumber: number
     players: UserContext[]
-    desiredSlots: Map<UserName, number>
+    desiredSlots: Map<UserName, SlotId>
   }
 >({
   killGame: [true, { option: true }],
@@ -31,19 +32,19 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
 
   desiredSlots: async ({}, use) => {
     await use(
-      new Map<UserName, number>([
-        ['Promenader', 0],
-        ['Mayflower', 1],
-        ['Polemic', 2],
-        ['Shadowhunter', 3],
-        ['MoonMan', 4],
-        ['Underfire', 5],
-        ['Astropower', 6],
-        ['LlamaDrama', 7],
-        ['SlitherTuft', 8],
-        ['Blacklight', 9],
-        ['AstraGirl', 10],
-        ['BellBoy', 11],
+      new Map<UserName, SlotId>([
+        ['Promenader', 'scout-1'],
+        ['Mayflower', 'scout-2'],
+        ['Polemic', 'scout-3'],
+        ['Shadowhunter', 'scout-4'],
+        ['MoonMan', 'soldier-1'],
+        ['Underfire', 'soldier-2'],
+        ['Astropower', 'soldier-3'],
+        ['LlamaDrama', 'soldier-4'],
+        ['SlitherTuft', 'demoman-1'],
+        ['Blacklight', 'demoman-2'],
+        ['AstraGirl', 'medic-1'],
+        ['BellBoy', 'medic-2'],
       ]),
     )
   },

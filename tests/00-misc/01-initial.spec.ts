@@ -19,7 +19,7 @@ test('has queue state', async ({ page }) => {
 
 test('has 12 queue slots and no join buttons', async ({ page }) => {
   await page.goto('/')
-  const slots = page.getByLabel(/Queue slot (\d+)/)
+  const slots = page.getByLabel(/Queue slot .+/)
   await expect(slots).toHaveCount(12)
   await expect(slots.filter({ hasNot: page.getByRole('button') })).toHaveCount(12)
   await expect(slots.filter({ has: page.getByRole('button') })).toHaveCount(0)
