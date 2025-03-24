@@ -5,6 +5,10 @@
     left: 50%;
     transform: translate(-50%, 0);
 
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 12px;
+
     .message {
       width: 640px;
       border-radius: 4px;

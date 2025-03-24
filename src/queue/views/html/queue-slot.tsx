@@ -1,6 +1,4 @@
-import { configuration } from '../../../configuration'
 import { collections } from '../../../database/collections'
-import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import {
   IconHeart,
@@ -10,6 +8,7 @@ import {
   IconPlus,
 } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { meetsSkillThreshold } from '../../meets-skill-threshold'
 
 const enum MarkAsFriendButtonState {
   none,
@@ -70,7 +69,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
     throw new Error(`player does not exist: ${props.slot.player}`)
   }
 
-  let slotActionButton = <></>
+  let slotActionButton: JSX.Element
   if (props.actor === props.slot.player && !props.slot.ready) {
     slotActionButton = (
       <button class="leave-queue-button" name="leave" value="">
@@ -154,17 +153,4 @@ async function determineMarkAsFriendButtonState(
   }
 
   return MarkAsFriendButtonState.none
-}
-
-async function meetsSkillThreshold(actor: PlayerModel, slot: QueueSlotModel): Promise<boolean> {
-  const skillThreshold = await configuration.get('queue.player_skill_threshold')
-  if (skillThreshold === null) {
-    return true
-  }
-
-  const skill =
-    actor.skill?.[slot.gameClass] ??
-    (await configuration.get('games.default_player_skill'))[slot.gameClass] ??
-    0
-  return skill >= skillThreshold
 }

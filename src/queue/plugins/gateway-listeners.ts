@@ -14,6 +14,9 @@ import { getState } from '../get-state'
 import { QueueState } from '../../database/models/queue-state.model'
 import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 import { preReady } from '../../pre-ready'
+import { FlashMessages } from '../../html/components/flash-messages'
+import { WebSocket } from 'ws'
+import { errors } from '../../errors'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -24,12 +27,29 @@ export default fp(
       app.gateway.to({ player: actor }).send(() => cmps)
     }
 
-    app.gateway.on('queue:join', async (socket, slotId) => {
-      if (!socket.player) {
-        return
+    function wsSafe<Args extends unknown[]>(
+      fn: (socket: WebSocket, ...args: Args) => Promise<void>,
+    ) {
+      return (socket: WebSocket, ...args: Args) => {
+        fn(socket, ...args).catch(async (error: unknown) => {
+          logger.error(error)
+          if (error instanceof Error) {
+            const msg = (
+              await FlashMessages.append({ message: `Error: ${error.message}`, type: 'error' })
+            ).toString()
+            socket.send(msg)
+          }
+        })
       }
+    }
 
-      try {
+    app.gateway.on(
+      'queue:join',
+      wsSafe(async (socket, slotId) => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
+
         const slots = await join(slotId, socket.player.steamId)
         app.gateway
           .to({ player: socket.player.steamId })
@@ -41,17 +61,16 @@ export default fp(
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
           await refreshTakenSlots(socket.player.steamId)
         }
-      } catch (error) {
-        logger.error(error)
-      }
-    })
+      }),
+    )
 
-    app.gateway.on('queue:leave', async socket => {
-      if (!socket.player) {
-        return
-      }
+    app.gateway.on(
+      'queue:leave',
+      wsSafe(async socket => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
 
-      try {
         const slot = await leave(socket.player.steamId)
         app.gateway
           .to({ player: socket.player.steamId })
@@ -69,62 +88,56 @@ export default fp(
           const close = await ReadyUpDialog.close()
           app.gateway.to({ player: socket.player.steamId }).send(() => close)
         }
-      } catch (error) {
-        logger.error(error)
-      }
-    })
+      }),
+    )
 
-    app.gateway.on('queue:readyup', async socket => {
-      if (!socket.player) {
-        return
-      }
+    app.gateway.on(
+      'queue:readyup',
+      wsSafe(async socket => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
 
-      try {
         const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
         app.gateway.to({ player: socket.player.steamId }).send(() => close)
-      } catch (error) {
-        logger.error(error)
-      }
-    })
+      }),
+    )
 
-    app.gateway.on('queue:votemap', async (socket, map) => {
-      if (!socket.player) {
-        return
-      }
+    app.gateway.on(
+      'queue:votemap',
+      wsSafe(async (socket, map) => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
 
-      try {
         await voteMap(socket.player.steamId, map)
         app.gateway
           .to({ player: socket.player.steamId })
           .send(async actor => await MapVote({ actor }))
-      } catch (error) {
-        logger.error(error)
-      }
-    })
+      }),
+    )
 
-    app.gateway.on('queue:markasfriend', async (socket, steamId) => {
-      if (!socket.player) {
-        return
-      }
+    app.gateway.on(
+      'queue:markasfriend',
+      wsSafe(async (socket, steamId) => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
 
-      try {
         await markAsFriend(socket.player.steamId, steamId)
-      } catch (error) {
-        logger.error(error)
-      }
-    })
+      }),
+    )
 
-    app.gateway.on('queue:togglepreready', async socket => {
-      if (!socket.player) {
-        return
-      }
+    app.gateway.on(
+      'queue:togglepreready',
+      wsSafe(async socket => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
 
-      try {
         await preReady.toggle(socket.player.steamId)
-      } catch (error) {
-        logger.error(error)
-      }
-    })
+      }),
+    )
   },
   { name: 'queue gateway listeners' },
 )
