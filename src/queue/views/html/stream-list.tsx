@@ -42,6 +42,9 @@ async function Stream(props: StreamModel) {
           {props.viewerCount}
         </span>
       </div>
+      <span class="tooltip" safe>
+        {props.title}
+      </span>
     </a>
   )
 }

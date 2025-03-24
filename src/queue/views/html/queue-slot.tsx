@@ -29,8 +29,14 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     }
 
     const activeBans = actor.bans?.filter(b => b.end.getTime() > new Date().getTime()).length ?? 0
-    const disabled =
-      Boolean(actor.activeGame) || activeBans > 0 || !(await meetsSkillThreshold(actor, props.slot))
+    let disabled: string | undefined = undefined
+    if (activeBans > 0) {
+      disabled = 'You have active bans'
+    } else if (actor.activeGame) {
+      disabled = 'You are already in a game'
+    } else if (!(await meetsSkillThreshold(actor, props.slot))) {
+      disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
+    }
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
 
@@ -46,11 +52,16 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
   )
 }
 
-function JoinButton(props: { slotId: QueueSlotId; disabled: boolean }) {
+function JoinButton(props: { slotId: QueueSlotId; disabled: string | undefined }) {
   return (
-    <button class="join-queue-button" name="join" value={props.slotId} disabled={props.disabled}>
+    <button class="join-queue-button" name="join" value={props.slotId} disabled={!!props.disabled}>
       <span class="sr-only">Join queue on slot {props.slotId}</span>
       {props.disabled ? <IconLock /> : <IconPlus />}
+      {!!props.disabled && (
+        <span class="tooltip whitespace-nowrap" safe>
+          {props.disabled}
+        </span>
+      )}
     </button>
   )
 }
@@ -71,6 +82,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
       <button class="leave-queue-button" name="leave" value="">
         <IconMinus />
         <span class="sr-only">Leave queue</span>
+        <span class="tooltip">Leave queue</span>
       </button>
     )
   } else {
@@ -111,6 +123,7 @@ async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId
         hx-trigger="change"
       />
       <span class="sr-only">Mark as friend</span>
+      <span class="tooltip">Mark as friend</span>
       <div class="mark">
         {markAsFriendButtonState === MarkAsFriendButtonState.selected ? (
           <IconHeartFilled />
