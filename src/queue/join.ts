@@ -10,8 +10,9 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { meetsSkillThreshold } from './meets-skill-threshold'
 import { mutex } from './mutex'
+import type { QueueSlotId } from './types/queue-slot-id'
 
-export async function join(slotId: number, steamId: SteamId64): Promise<QueueSlotModel[]> {
+export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
   return await mutex.runExclusive(async () => {
     logger.trace({ steamId, slotId }, `queue.join()`)
     const player = await players.bySteamId(steamId)

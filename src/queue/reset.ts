@@ -3,6 +3,7 @@ import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { events } from '../events'
 import { logger } from '../logger'
+import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { config } from './config'
 import { getSlots } from './get-slots'
 import { getState } from './get-state'
@@ -33,12 +34,16 @@ export async function reset() {
 type EmptyQueueSlot = Omit<QueueSlotModel, 'player'> & { player: null }
 
 function generateEmptyQueue(): EmptyQueueSlot[] {
-  let lastId = 0
+  const classCounts = Object.fromEntries(Object.keys(Tf2ClassName).map(gc => [gc, 1])) as Record<
+    Tf2ClassName,
+    number
+  >
+
   const slots = config.classes.reduce<EmptyQueueSlot[]>((prev, curr) => {
     const classSlots: EmptyQueueSlot[] = []
     for (let i = 0; i < curr.count * config.teamCount; ++i) {
       classSlots.push({
-        id: lastId++,
+        id: `${curr.name}-${classCounts[curr.name]++}`,
         gameClass: curr.name,
         canMakeFriendsWith: curr.canMakeFriendsWith ?? [],
         player: null,

@@ -13,19 +13,19 @@ test('mark as friend', async ({ users }) => {
       return page
     }),
   )) as [QueuePage, QueuePage, QueuePage]
-  await medic1.slot(10).join()
-  await medic2.slot(11).join()
-  await soldier.slot(4).join()
+  await medic1.slot('medic-1').join()
+  await medic2.slot('medic-2').join()
+  await soldier.slot('soldier-1').join()
 
-  await expect(soldier.slot(10).markAsFriendButton()).not.toBeVisible()
+  await expect(soldier.slot('medic-1').markAsFriendButton()).not.toBeVisible()
 
-  const markAsFriendBtn1Medic1 = medic1.slot(4).markAsFriendButton()
+  const markAsFriendBtn1Medic1 = medic1.slot('soldier-1').markAsFriendButton()
   await expect(markAsFriendBtn1Medic1).toBeVisible()
   await expect(markAsFriendBtn1Medic1).toBeEnabled()
   await markAsFriendBtn1Medic1.check({ force: true })
   await expect(markAsFriendBtn1Medic1).toBeChecked()
 
-  const markAsFriendBtn1Medic2 = medic2.slot(4).markAsFriendButton()
+  const markAsFriendBtn1Medic2 = medic2.slot('soldier-1').markAsFriendButton()
   await expect(markAsFriendBtn1Medic2).toBeVisible()
   await expect(markAsFriendBtn1Medic2).toBeDisabled()
 

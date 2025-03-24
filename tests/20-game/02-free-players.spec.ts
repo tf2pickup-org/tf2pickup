@@ -2,6 +2,7 @@ import { expect } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
 import { launchGame } from '../fixtures/launch-game'
 import { delay } from 'es-toolkit'
+import { queueSlots } from '../queue-slots'
 
 launchGame.use({ waitForStage: 'launching' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -11,8 +12,8 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
       const page = await player.queuePage()
       await page.goto()
       await expect(page.goBackToGameLink()).toBeVisible()
-      for (let i = 0; i < 12; ++i) {
-        await expect(page.slot(i).joinButton()).toBeDisabled()
+      for (const slot of queueSlots()) {
+        await expect(page.slot(slot).joinButton()).toBeDisabled()
       }
     }),
   )
@@ -34,8 +35,8 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
           expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(1),
           }),
-          ...Array.from(Array(12).keys()).map(async i => {
-            await expect(page.slot(i).joinButton()).toBeEnabled({
+          ...Array.from(queueSlots()).map(async slot => {
+            await expect(page.slot(slot).joinButton()).toBeEnabled({
               timeout: secondsToMilliseconds(1),
             })
           }),
@@ -47,8 +48,8 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
         const page = await player.queuePage()
         await Promise.all([
           expect(page.goBackToGameLink()).toBeVisible({ timeout: secondsToMilliseconds(1) }),
-          ...Array.from(Array(12).keys()).map(async i => {
-            await expect(page.slot(i).joinButton()).toBeDisabled({
+          ...Array.from(queueSlots()).map(async slot => {
+            await expect(page.slot(slot).joinButton()).toBeDisabled({
               timeout: secondsToMilliseconds(1),
             })
           }),
@@ -66,8 +67,8 @@ launchGame('free players when the game ends', async ({ players, gameServer, game
           expect(page.goBackToGameLink()).not.toBeVisible({
             timeout: secondsToMilliseconds(6),
           }),
-          ...Array.from(Array(12).keys()).map(async i => {
-            await expect(page.slot(i).joinButton()).toBeEnabled({
+          ...Array.from(queueSlots()).map(async slot => {
+            await expect(page.slot(slot).joinButton()).toBeEnabled({
               timeout: secondsToMilliseconds(6),
             })
           }),

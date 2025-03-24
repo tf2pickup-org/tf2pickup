@@ -1,4 +1,5 @@
 import { expect, launchGame } from '../fixtures/launch-game'
+import { queueSlots } from '../queue-slots'
 
 launchGame(
   'queue is locked for players that are involved in active game',
@@ -8,8 +9,8 @@ launchGame(
       players.map(async player => {
         const page = await player.queuePage()
         await page.goto()
-        for (let i = 0; i < 12; ++i) {
-          await expect(page.slot(i).joinButton()).toBeDisabled()
+        for (const slot of queueSlots()) {
+          await expect(page.slot(slot).joinButton()).toBeDisabled()
         }
       }),
     )
