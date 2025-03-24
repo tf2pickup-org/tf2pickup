@@ -35,12 +35,16 @@ export default fp(
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
       })
+      socket.send(await SubstitutionRequests())
       socket.send(await CurrentPlayerCount())
       socket.send(await OnlinePlayerList())
+      socket.send(await StreamList())
 
       if (socket.player) {
         const player = await collections.players.findOne({ steamId: socket.player.steamId })
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
+        socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
+        socket.send(await BanAlerts({ actor: socket.player.steamId }))
       }
     })
 
