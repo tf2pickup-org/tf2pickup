@@ -107,15 +107,12 @@ export default fp(async app => {
     )
   })
 
-  events.on('game:created', async () => {
+  async function refreshGamesLink() {
     const cmp = await GamesLink()
     app.gateway.broadcast(() => cmp)
-  })
-
-  events.on('game:ended', async ({ game }) => {
-    const cmp = await GamesLink()
-    app.gateway.to({ url: `/games/${game.number}` }).send(() => cmp)
-  })
+  }
+  events.on('game:created', refreshGamesLink)
+  events.on('game:ended', refreshGamesLink)
 
   events.on('game:playerConnectionStatusUpdated', ({ game, player, playerConnectionStatus }) => {
     app.gateway.to({ url: `/games/${game.number}` }).send(
