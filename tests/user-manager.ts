@@ -27,9 +27,7 @@ export class UserContext {
   }
 
   async page() {
-    if (!this._page) {
-      this._page = await this.browserContext.newPage()
-    }
+    this._page ??= await this.browserContext.newPage()
     return this._page
   }
 
