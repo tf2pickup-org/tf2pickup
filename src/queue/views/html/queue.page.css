@@ -7,7 +7,6 @@
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  overflow: hidden;
 
   .join-queue-button {
     display: flex;
@@ -17,6 +16,7 @@
 
     background-color: theme(colors.abru.light.30);
     color: theme(colors.abru.light.30);
+    border-radius: 8px;
 
     &:has(> svg.icon-tabler-lock) {
       color: theme(colors.abru.light.35);
@@ -35,6 +35,7 @@
     grid-template-columns: 42px 1fr 42px;
     align-items: center;
     background-color: theme(colors.abru.light.60);
+    border-radius: 8px;
 
     img {
       border-radius: 4px;

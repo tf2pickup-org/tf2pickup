@@ -53,6 +53,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
         target="_blank"
       >
         <IconBrandDiscord size={32} />
+        <span class="tooltip tooltip--bottom whitespace-nowrap">Join us on Discord!</span>
       </a>
 
       <a
@@ -61,6 +62,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
         target="_blank"
       >
         <IconHeart size={32} />
+        <span class="tooltip tooltip--bottom whitespace-nowrap">Support us on Ko-fi!</span>
       </a>
 
       <div class="hidden w-2 lg:block" />
