@@ -1,5 +1,21 @@
 # Changelog
 
+# [4.0.0-alpha.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.4...4.0.0-alpha.5) (2025-03-25)
+
+
+### Bug Fixes
+
+* fix github footer link ([#195](https://github.com/tf2pickup-org/tf2pickup/issues/195)) ([fcdaf29](https://github.com/tf2pickup-org/tf2pickup/commit/fcdaf29cc0ec79d26cc29e7dbb6d3915eea9450f))
+* handle ws calls errors ([#193](https://github.com/tf2pickup-org/tf2pickup/issues/193)) ([95165c7](https://github.com/tf2pickup-org/tf2pickup/commit/95165c72093cb3d14fec1e7012dd253bbeceb869))
+* refresh more data on ws reconnect ([#196](https://github.com/tf2pickup-org/tf2pickup/issues/196)) ([53c859b](https://github.com/tf2pickup-org/tf2pickup/commit/53c859b2cd069be454bfba7b35d9a52885de4773))
+* refresh navbar games link ([#192](https://github.com/tf2pickup-org/tf2pickup/issues/192)) ([8ef6b82](https://github.com/tf2pickup-org/tf2pickup/commit/8ef6b82737e312865540683e28269d950bd01d7b))
+* remove unimplemented admin panel sections ([#190](https://github.com/tf2pickup-org/tf2pickup/issues/190)) ([8439a19](https://github.com/tf2pickup-org/tf2pickup/commit/8439a1939f6d7a1e4840d1b39d8b239324e7c584))
+
+
+### Features
+
+* add tooltips ([#194](https://github.com/tf2pickup-org/tf2pickup/issues/194)) ([96445d3](https://github.com/tf2pickup-org/tf2pickup/commit/96445d3e3eaa9a9c0afd83692e83c304323344c3))
+
 # [4.0.0-alpha.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.3...4.0.0-alpha.4) (2025-03-21)
 
 
