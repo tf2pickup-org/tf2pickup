@@ -100,6 +100,11 @@ async function GameSlotContent(props: {
             hx-put={`/games/${props.game.number}/replace-player`}
             hx-trigger="click"
             aria-label="Replace player"
+            data-umami-event="replace-player"
+            data-umami-event-game-number={props.game.number}
+            data-umami-event-player={props.slot.player}
+            data-umami-event-player-name={props.player.name}
+            data-umami-event-player-class={props.slot.gameClass}
           >
             <span class="sr-only">Replace player</span>
             <IconPlus size={32} />
@@ -122,6 +127,8 @@ function RequestSubstituteButton(props: { number: GameNumber }) {
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"
+      data-umami-event="request-substitute"
+      data-umami-event-game-number={props.number}
     >
       <IconReplaceFilled />
     </button>

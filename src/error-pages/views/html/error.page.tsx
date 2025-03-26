@@ -7,7 +7,7 @@ import { makeTitle } from '../../../html/make-title'
 
 export function ErrorPage(props: { statusCode: number; message: string; user?: User | undefined }) {
   return (
-    <Layout title={makeTitle('Error')}>
+    <Layout user={props.user} title={makeTitle('Error')}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="flex h-full flex-col items-center justify-center">

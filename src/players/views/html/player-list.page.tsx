@@ -18,6 +18,7 @@ export async function PlayerListPage(user?: User) {
 
   return (
     <Layout
+      user={user}
       title={makeTitle('players')}
       description="player list"
       canonical="/players"

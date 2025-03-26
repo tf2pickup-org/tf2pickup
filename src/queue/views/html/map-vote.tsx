@@ -61,6 +61,8 @@ async function MapVoteButton(props: {
       value={props.map}
       aria-label={`Vote for map ${props.map}`}
       aria-checked={`${selected}`}
+      data-umami-event="vote-map"
+      data-umami-event-map={props.map}
     >
       <div class="grow"></div>
       <div class="text-2xl font-bold leading-4">

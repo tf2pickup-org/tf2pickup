@@ -31,5 +31,30 @@ services:
       - 64738:64738/tcp
       - 64738:64738/udp
 
+  umami:
+    container_name: umami
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    ports:
+      - '3001:3000'
+    environment:
+      DATABASE_URL: postgresql://umami:umami123@umami-db:5432/umami
+      DATABASE_TYPE: postgresql
+      HASH_SALT: replace-me-with-a-random-string
+    depends_on:
+      - umami-db
+    restart: always
+
+  umami-db:
+    container_name: umami-db
+    image: postgres:12-alpine
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: umami123
+    volumes:
+      - umami-db:/var/lib/postgresql/data
+    restart: always
+
 volumes:
   mongo:
+  umami-db:

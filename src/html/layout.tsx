@@ -8,9 +8,11 @@ import { requestContext } from '@fastify/request-context'
 import { embed } from './embed'
 import { bundle } from './bundle'
 import { mainTsPath } from './main-ts-path'
+import type { User } from '../auth/types/user'
 
 export async function Layout(
   props?: Html.PropsWithChildren<{
+    user?: User | undefined
     title?: string
     description?: string
     canonical?: string
@@ -42,6 +44,7 @@ export async function Layout(
 
   const safeCss = await embed(resolve(import.meta.dirname, 'styles', 'main.css'))
   const bundleUrl = await bundle(mainTsPath)
+  const umamiEnabled = !!(environment.UMAMI_SCRIPT_SRC && environment.UMAMI_WEBSITE_ID)
 
   return (
     <html lang="en">
@@ -51,6 +54,14 @@ export async function Layout(
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <script src={bundleUrl} type="module"></script>
         <style type="text/css">{safeCss}</style>
+        {umamiEnabled && (
+          <script
+            defer
+            src={environment.UMAMI_SCRIPT_SRC}
+            data-website-id={environment.UMAMI_WEBSITE_ID}
+          ></script>
+        )}
+
         {title}
         <MetaTags {...props} />
       </head>
@@ -60,6 +71,9 @@ export async function Layout(
         class="h-screen"
         hx-boost="true"
       >
+        {umamiEnabled && !!props?.user && (
+          <script>{`document.addEventListener('DOMContentLoaded', () => {umami.identify({ steamId: '${props.user.player.steamId}' });});`}</script>
+        )}
         {body}
       </body>
     </html>

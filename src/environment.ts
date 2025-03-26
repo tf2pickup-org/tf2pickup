@@ -28,6 +28,9 @@ const environmentSchema = z.object({
 
   TWITCH_CLIENT_ID: z.string().optional(),
   TWITCH_CLIENT_SECRET: z.string().optional(),
+
+  UMAMI_SCRIPT_SRC: z.string().optional(),
+  UMAMI_WEBSITE_ID: z.string().optional(),
 })
 
 export const environment = environmentSchema.parse(process.env)

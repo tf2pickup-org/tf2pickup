@@ -15,6 +15,7 @@ import { makeTitle } from '../../../html/make-title'
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
     <Layout
+      user={props.user}
       title={makeTitle(`game #${props.game.number}`)}
       description={`game #${props.game.number} details`}
       canonical={`/games/${props.game.number}`}

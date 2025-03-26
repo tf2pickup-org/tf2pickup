@@ -22,7 +22,13 @@ await app.register(await import('@fastify/helmet'), {
     environment.NODE_ENV === 'production'
       ? {
           directives: {
-            'script-src-elem': ["'self'", "'unsafe-inline'"],
+            'script-src-elem': [
+              "'self'",
+              "'unsafe-inline'",
+              ...(environment.UMAMI_SCRIPT_SRC
+                ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
+                : []),
+            ],
             'img-src': [
               "'self'",
               'https://mapthumbnails.tf2pickup.org',

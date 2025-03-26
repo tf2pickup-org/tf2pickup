@@ -26,6 +26,7 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
       hx-trigger="click"
       disabled={!isInQueue}
       aria-selected={timeLeft > 0}
+      data-umami-event={timeLeft > 0 ? 'pre-ready-up-cancel' : 'pre-ready-up'}
     >
       <IconCoffee />
       <div class="flex-1">

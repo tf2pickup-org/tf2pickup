@@ -36,7 +36,7 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
 
           <div class="flex flex-row justify-center">
             <form action={`/players/${props.actor.player.steamId}/accept-rules`} method="post">
-              <button type="submit" class="button button--accent">
+              <button type="submit" class="button button--accent" data-umami-event="accept-rules">
                 I accept these rules
               </button>
             </form>

@@ -15,12 +15,17 @@ export function Footer(props: { user?: User | undefined }) {
           <div class="grow" />
           <div class="flex flex-col items-center gap-2 md:flex-row md:gap-5">
             <a href="/privacy-policy">Privacy policy</a>
-            <a href="https://github.com/tf2pickup-org/tf2pickup" target="_blank">
+            <a
+              href="https://github.com/tf2pickup-org/tf2pickup"
+              target="_blank"
+              data-umami-event="social-github"
+            >
               Github
             </a>
             <a
               href="https://github.com/tf2pickup-org/tf2pickup/blob/master/CHANGELOG.md"
               target="_blank"
+              data-umami-event="changelog-link"
             >
               Changelog
             </a>

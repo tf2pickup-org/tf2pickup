@@ -54,7 +54,14 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
 
 function JoinButton(props: { slotId: QueueSlotId; disabled: string | undefined }) {
   return (
-    <button class="join-queue-button" name="join" value={props.slotId} disabled={!!props.disabled}>
+    <button
+      class="join-queue-button"
+      name="join"
+      value={props.slotId}
+      disabled={!!props.disabled}
+      data-umami-event="join-queue"
+      data-umami-event-slot-id={props.slotId}
+    >
       <span class="sr-only">Join queue on slot {props.slotId}</span>
       {props.disabled ? <IconLock /> : <IconPlus />}
       {!!props.disabled && (
@@ -79,7 +86,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
   let slotActionButton: JSX.Element
   if (props.actor === props.slot.player && !props.slot.ready) {
     slotActionButton = (
-      <button class="leave-queue-button" name="leave" value="">
+      <button class="leave-queue-button" name="leave" value="" data-umami-event="leave-queue">
         <IconMinus />
         <span class="sr-only">Leave queue</span>
         <span class="tooltip">Leave queue</span>
@@ -121,6 +128,8 @@ async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId
               : props.slot.player!,
         })}
         hx-trigger="change"
+        data-umami-event="mark-as-friend"
+        data-umami-event-player={props.slot.player}
       />
       <span class="sr-only">Mark as friend</span>
       <span class="tooltip">Mark as friend</span>

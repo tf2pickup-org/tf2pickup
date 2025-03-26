@@ -26,7 +26,13 @@ async function JoinVoiceButtonContent(props: { game: GameModel; actor: SteamId64
   }
 
   return (
-    <a href={slot.voiceServerUrl} class="button">
+    <a
+      href={slot.voiceServerUrl}
+      class="button"
+      data-umami-event="join-voice"
+      data-umami-event-game-number={props.game.number}
+      data-umami-event-game-state={props.game.state}
+    >
       <IconHeadset size={24} />
       join voice
     </a>

@@ -11,6 +11,7 @@ import { makeTitle } from '../../../html/make-title'
 export async function AddBanPage(props: { player: PlayerModel; user: User }) {
   return (
     <Layout
+      user={props.user}
       title={makeTitle(`Ban ${props.player.name}`)}
       embedStyle={resolve(
         import.meta.dirname,
