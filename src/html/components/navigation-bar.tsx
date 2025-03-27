@@ -1,7 +1,7 @@
 import { requestContext } from '@fastify/request-context'
 import type { User } from '../../auth/types/user'
 import { GamesLink } from './games-link'
-import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
+import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart, IconMenu2 } from './icons'
 import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
 import Html from '@kitajs/html'
@@ -15,9 +15,19 @@ export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | unde
           <img alt="tf2pickup.org logo" src="/logo.png" height="120" class="h-[44px]" />
         </a>
 
-        <div class="hidden flex-row items-center gap-5 font-medium lg:flex">
+        <div class="hidden flex-row items-center gap-5 font-medium lg:flex" id="navbar-menu">
           <Menu {...props} />
         </div>
+
+        <button class="mx-4 text-ash lg:hidden" id="toggle-menu-button">
+          <IconMenu2 size={42} />
+        </button>
+
+        <script type="module">{`
+        document.getElementById('toggle-menu-button').addEventListener('click', () => {
+          document.getElementById('navbar-menu').classList.toggle('hidden');
+        });
+      `}</script>
       </div>
     </nav>
   )
@@ -33,7 +43,7 @@ async function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) 
   const discordInvite = await configuration.get('misc.discord_invite_link')
 
   return (
-    <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
+    <div class="absolute left-0 top-0 flex flex-col gap-[10px] px-4 lg:static lg:flex-row lg:items-center lg:px-0">
       <GamesLink />
       <MenuItem href="/players">Players</MenuItem>
       <MenuItem href="/rules">Rules</MenuItem>
