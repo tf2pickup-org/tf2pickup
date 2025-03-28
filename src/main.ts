@@ -38,6 +38,11 @@ await app.register(await import('@fastify/helmet'), {
               'https://static-cdn.jtvnw.net',
               'https://cdn.discordapp.com',
             ],
+            'connect-src': [
+              ...(environment.UMAMI_SCRIPT_SRC
+                ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
+                : []),
+            ],
           },
         }
       : false,
