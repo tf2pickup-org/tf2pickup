@@ -1,5 +1,20 @@
 # Changelog
 
+# [4.0.0-alpha.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.5...4.0.0-alpha.6) (2025-03-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency es-toolkit to v1.34.1 ([9bcb74b](https://github.com/tf2pickup-org/tf2pickup/commit/9bcb74bc97016ca2fa5462beaabe5e1624ee4d9c))
+* **deps:** update dependency fastify to v5.2.2 ([89d3ff9](https://github.com/tf2pickup-org/tf2pickup/commit/89d3ff905ff3638d574132df4e2aed42bfb7a734))
+* **deps:** update dependency motion to v12.6.0 ([f920b1b](https://github.com/tf2pickup-org/tf2pickup/commit/f920b1b9f9f05305f7ccfc92b016b6bb1e3ec836))
+* **deps:** update dependency motion to v12.6.2 ([1db5433](https://github.com/tf2pickup-org/tf2pickup/commit/1db543343da33d5d06746f388e844a2dd071d1c9))
+
+
+### Features
+
+* umami integration ([#199](https://github.com/tf2pickup-org/tf2pickup/issues/199)) ([3af711b](https://github.com/tf2pickup-org/tf2pickup/commit/3af711b5d83c4762a4d8915579a5a9534312f17e))
+
 # [4.0.0-alpha.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.4...4.0.0-alpha.5) (2025-03-25)
 
 
