@@ -31,6 +31,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
 
   return (
     <Layout
+      user={props.user}
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
       description="6v6 competitive pick-up games for everyone"
       canonical="/"

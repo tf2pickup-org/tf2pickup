@@ -51,6 +51,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
         href="https://discord.gg/UVFVfc4"
         class="hidden text-abru-light-75 hover:text-slate-200 xl:inline-block"
         target="_blank"
+        data-umami-event="social-discord"
       >
         <IconBrandDiscord size={32} />
         <span class="tooltip tooltip--bottom whitespace-nowrap">Join us on Discord!</span>
@@ -60,6 +61,7 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
         href="https://ko-fi.com/tf2pickuporg"
         class="hidden text-abru-light-75 hover:text-slate-200 xl:inline-block"
         target="_blank"
+        data-umami-event="social-kofi"
       >
         <IconHeart size={32} />
         <span class="tooltip tooltip--bottom whitespace-nowrap">Support us on Ko-fi!</span>
@@ -89,7 +91,7 @@ function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) 
 
 function SteamButton() {
   return (
-    <a href="/auth/steam" class="steam-button" hx-boost="false">
+    <a href="/auth/steam" class="steam-button" hx-boost="false" data-umami-event="login-steam">
       <span>Sign in through Steam</span>
       <div class="icon">
         <IconBrandSteam />

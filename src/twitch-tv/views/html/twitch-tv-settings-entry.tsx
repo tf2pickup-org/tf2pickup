@@ -23,7 +23,11 @@ export function TwitchTvSettingsEntry(props: { user: User }) {
             </a>
           </p>
           <div class="flex-1"></div>
-          <button class="button button--dense" hx-put="/twitch/disconnect">
+          <button
+            class="button button--dense"
+            hx-put="/twitch/disconnect"
+            data-umami-event="twitch-disconnect"
+          >
             Disconnect
           </button>
         </>
@@ -31,7 +35,12 @@ export function TwitchTvSettingsEntry(props: { user: User }) {
         <>
           <p>Connect your twitch.tv profile to advertise your streams on the main page</p>
           <div class="flex-1"></div>
-          <a class="button button--accent button--dense" href="/twitch/auth" hx-boost="false">
+          <a
+            class="button button--accent button--dense"
+            href="/twitch/auth"
+            hx-boost="false"
+            data-umami-event="twitch-connect"
+          >
             Connect
           </a>
         </>

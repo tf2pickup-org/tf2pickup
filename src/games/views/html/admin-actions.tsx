@@ -15,6 +15,8 @@ export function AdminActions(props: { gameNumber: GameNumber }) {
           hx-trigger="click"
           hx-put={`/games/${props.gameNumber}/force-end`}
           hx-confirm="Are you sure you want to force-end this game?"
+          data-umami-event="force-end-game"
+          data-umami-event-game-number={props.gameNumber}
         >
           <IconX />
           Force-end

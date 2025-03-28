@@ -162,6 +162,7 @@ function EditPlayer(props: {
   const safeName = props.player.name
   return (
     <Layout
+      user={props.user}
       title={makeTitle(`Edit ${props.player.name}`)}
       embedStyle={resolve(import.meta.dirname, 'edit-player.page.css')}
     >

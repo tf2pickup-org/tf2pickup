@@ -10,7 +10,7 @@ export async function PlayerSettingsPage(props: { user: User }) {
   const soundVolume = props.user.player.preferences.soundVolume ?? 1
 
   return (
-    <Layout title={makeTitle('Settings')}>
+    <Layout user={props.user} title={makeTitle('Settings')}>
       <NavigationBar user={props.user} />
       <Page>
         <div class="container mx-auto flex flex-col gap-8">
@@ -36,7 +36,11 @@ export async function PlayerSettingsPage(props: { user: User }) {
               </div>
 
               <div class="flex">
-                <button type="submit" class="button button--accent mt-6">
+                <button
+                  type="submit"
+                  class="button button--accent mt-6"
+                  data-umami-event="save-settings"
+                >
                   Save
                 </button>
               </div>

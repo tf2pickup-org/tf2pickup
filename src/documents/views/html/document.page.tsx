@@ -11,7 +11,7 @@ export function DocumentPage(document: DocumentModel, user?: User) {
   const safeParsed = parse(document.body ?? '')
 
   return (
-    <Layout title={makeTitle(document.name)}>
+    <Layout user={user} title={makeTitle(document.name)}>
       <NavigationBar user={user} />
       <Page>
         <div class="container mx-auto">

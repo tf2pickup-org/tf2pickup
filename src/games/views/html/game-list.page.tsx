@@ -22,6 +22,7 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
 
   return (
     <Layout
+      user={props.user}
       title={makeTitle('games')}
       description={`games - page ${page}`}
       canonical="/games"

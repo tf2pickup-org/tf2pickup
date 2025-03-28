@@ -55,6 +55,7 @@ export async function PlayerPage(props: {
 
   return (
     <Layout
+      user={props.user}
       title={makeTitle(props.player.name)}
       description={`${props.player.name}'s profile on ${environment.WEBSITE_NAME}`}
       canonical={`/players/${props.player.steamId}`}

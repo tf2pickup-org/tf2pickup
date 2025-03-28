@@ -95,6 +95,7 @@ export function Admin(props: {
 }) {
   return (
     <Layout
+      user={props.user}
       title={makeTitle(adminPages[props.activePage].title)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >

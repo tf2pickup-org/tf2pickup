@@ -54,6 +54,8 @@ async function ConnectString(props: { game: GameModel; actor: SteamId64 | undefi
           navigator.clipboard.writeText("${connectString}").then(() => console.log('copied'))
         end
         `}
+          data-umami-event="copy-connect-string"
+          data-umami-event-game-number={props.game.number}
         >
           <IconCopy size={24} />
           <span class="sr-only">Copy connect string</span>

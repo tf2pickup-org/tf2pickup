@@ -21,6 +21,7 @@ export async function HallOfFamePage(props: { user?: User | undefined }) {
 
   return (
     <Layout
+      user={props.user}
       title={makeTitle('Hall of fame')}
       description="Hall of fame"
       canonical="/hall-of-fame"

@@ -12,6 +12,7 @@ import { PlayedMapsCount } from './played-maps-count'
 export async function StatisticsPage(user?: User) {
   return (
     <Layout
+      user={user}
       title={makeTitle('statistics')}
       description={`${environment.WEBSITE_NAME} statistics`}
       canonical="/statistics"
