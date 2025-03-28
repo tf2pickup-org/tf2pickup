@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-alpha.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.7...4.0.0-alpha.8) (2025-03-28)
+
+
+### Bug Fixes
+
+* add missing CSP directive ([#202](https://github.com/tf2pickup-org/tf2pickup/issues/202)) ([52291eb](https://github.com/tf2pickup-org/tf2pickup/commit/52291ebc5b5ec5c60cc6d57751c4734724dc8da9))
+
 # [4.0.0-alpha.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.6...4.0.0-alpha.7) (2025-03-28)
 
 
