@@ -17,11 +17,12 @@ export default fp(
         socket => socket.player?.steamId === player,
       )
       logger.debug(`verify online status for ${player} (${playerSockets.length} sockets)`)
+      if (playerSockets.length > 0) {
+        return
+      }
+
       const { deletedCount } = await collections.onlinePlayers.deleteOne({
         steamId: player,
-        ipAddress: {
-          $size: 0,
-        },
       })
       if (deletedCount > 0) {
         events.emit('player:disconnected', { steamId: player })
@@ -43,9 +44,6 @@ export default fp(
             steamId: socket.player.steamId,
           },
           {
-            $addToSet: {
-              ipAddress,
-            },
             $set: {
               name: player.name,
             },
