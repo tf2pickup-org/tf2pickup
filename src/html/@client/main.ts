@@ -5,6 +5,7 @@ import 'htmx-ext-head-support'
 import 'htmx-ext-remove-me'
 
 // internal htmx extensions
+import './copy-to-clipboard'
 import './notifications'
 import './play-sound'
 

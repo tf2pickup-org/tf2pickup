@@ -49,11 +49,7 @@ async function ConnectString(props: { game: GameModel; actor: SteamId64 | undefi
       csBtn = (
         <button
           class="hover:text-abru-light-85"
-          _={`
-        on click js
-          navigator.clipboard.writeText("${connectString}").then(() => console.log('copied'))
-        end
-        `}
+          copy-to-clipboard={connectString}
           data-umami-event="copy-connect-string"
           data-umami-event-game-number={props.game.number}
         >
