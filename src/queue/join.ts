@@ -43,11 +43,6 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       throw errors.badRequest(`player does not meet skill threshold`)
     }
 
-    const [currentPlayerCount, requiredPlayerCount] = await Promise.all([
-      collections.queueSlots.countDocuments({ player: { $ne: null } }),
-      collections.queueSlots.countDocuments(),
-    ])
-
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
         player: player.steamId,
@@ -65,13 +60,15 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       {
         $set: {
           player: player.steamId,
-          ready: requiredPlayerCount - currentPlayerCount <= 1 || state === QueueState.ready,
+          ready: state === QueueState.ready,
         },
       },
       {
         returnDocument: 'after',
       },
     )
+
+    await collections.queueState.updateOne({}, { $set: { last: player.steamId } })
 
     const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
     events.emit('queue/slots:updated', { slots })

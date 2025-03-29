@@ -124,3 +124,32 @@ test('pre-ready up enables automatically after readying up', async ({
     await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
   }
 })
+
+test('does not ready up if switching classes as 11th player', async ({
+  users,
+  players,
+  desiredSlots,
+}) => {
+  const polemic = users.byName('Polemic')
+  const firstSlot = desiredSlots.get('Polemic')!
+  const secondSlot = desiredSlots.get('Shadowhunter')!
+
+  await Promise.all(
+    players
+      .filter(p => p.playerName !== 'Shadowhunter')
+      .filter(p => p.playerName !== 'Polemic')
+      .map(async user => {
+        const page = await user.queuePage()
+        await page.goto()
+        const slot = desiredSlots.get(user.playerName)!
+        await page.slot(slot).join()
+      }),
+  )
+
+  const page = await polemic.queuePage()
+  await page.goto()
+  await page.slot(firstSlot).join()
+  const slot = page.slot(secondSlot)
+  await slot.join()
+  expect(await slot.isReady()).toBe(false)
+})
