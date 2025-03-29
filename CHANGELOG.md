@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-alpha.9](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.8...4.0.0-alpha.9) (2025-03-29)
+
+
+### Bug Fixes
+
+* fix tracking online players ([#203](https://github.com/tf2pickup-org/tf2pickup/issues/203)) ([a6cb045](https://github.com/tf2pickup-org/tf2pickup/commit/a6cb045aac79ae1f1d40e3f7a7a37cfeb0248e83))
+
 # [4.0.0-alpha.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.7...4.0.0-alpha.8) (2025-03-28)
 
 
