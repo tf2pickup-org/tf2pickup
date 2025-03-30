@@ -80,6 +80,17 @@ export default fp(
         })
       }
     })
+
+    app.addHook('onReady', async () => {
+      const players = (await collections.onlinePlayers.find().toArray()).map(
+        ({ steamId }) => steamId,
+      )
+      await Promise.all(
+        players.map(async player => {
+          await tasks.schedule('onlinePlayers:validatePlayer', verifyPlayerTimeout, { player })
+        }),
+      )
+    })
   },
   { name: 'online players' },
 )

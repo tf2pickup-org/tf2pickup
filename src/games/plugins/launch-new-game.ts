@@ -11,7 +11,9 @@ const launchGame = debounce(async () => {
     logger.info('launching game')
     const slots = await queue.getSlots()
     const map = await queue.getMapWinner()
-    await create(slots, map)
+    const friends = await queue.getFriends()
+    logger.trace({ slots, map, friends }, 'launchGame()')
+    await create(slots, map, friends)
   } catch (error) {
     logger.error(error)
   }

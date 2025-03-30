@@ -43,17 +43,6 @@ export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> 
       events.emit('queue/slots:updated', { slots })
       await collections.queueMapVotes.deleteMany({ player: { $in: steamIds } })
       events.emit('queue/mapVoteResults:updated', { results: await getMapVoteResults() })
-
-      const friendships = await collections.queueFriends
-        .find({ source: { $in: steamIds } })
-        .toArray()
-      for (const friendship of friendships) {
-        await collections.queueFriends.deleteOne({ source: friendship.source })
-        events.emit('queue/friendship:removed', {
-          source: friendship.source,
-          target: friendship.target,
-        })
-      }
       for (const steamId of steamIds) {
         await preReady.cancel(steamId)
       }

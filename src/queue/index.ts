@@ -9,6 +9,7 @@ import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { reset } from './reset'
 import { resetMapOptions } from './reset-map-options'
+import { getFriends } from './get-friends'
 
 const slotCount = await collections.queueSlots.countDocuments()
 if (slotCount === 0) {
@@ -18,6 +19,7 @@ if (slotCount === 0) {
 
 export const queue = {
   config,
+  getFriends,
   getMapWinner,
   getSlots,
   getState,
