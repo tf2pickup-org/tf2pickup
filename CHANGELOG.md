@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-alpha.11](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.10...4.0.0-alpha.11) (2025-03-30)
+
+
+### Bug Fixes
+
+* add gameClass property to PlayerReplaced event ([#207](https://github.com/tf2pickup-org/tf2pickup/issues/207)) ([72aaf6d](https://github.com/tf2pickup-org/tf2pickup/commit/72aaf6da4477d3019a2b426185e7b234f447086b))
+* respect friendships, cleanup friendships on class change ([#208](https://github.com/tf2pickup-org/tf2pickup/issues/208)) ([3edfcec](https://github.com/tf2pickup-org/tf2pickup/commit/3edfcece57a4812a4401ed50dadf4bad6116cdfd))
+
 # [4.0.0-alpha.10](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.9...4.0.0-alpha.10) (2025-03-30)
 
 
