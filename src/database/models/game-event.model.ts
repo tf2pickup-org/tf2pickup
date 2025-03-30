@@ -89,6 +89,7 @@ export interface PlayerReplaced {
   at: Date
   replacee: SteamId64
   replacement: SteamId64
+  gameClass: Tf2ClassName
 }
 
 export interface RoundEnded {
