@@ -1,5 +1,14 @@
 # Changelog
 
+# [4.0.0-alpha.10](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.9...4.0.0-alpha.10) (2025-03-30)
+
+
+### Bug Fixes
+
+* don't ready up when switching classes as 11th player in the queue ([#205](https://github.com/tf2pickup-org/tf2pickup/issues/205)) ([06d6acf](https://github.com/tf2pickup-org/tf2pickup/commit/06d6acf044b8d6990e17d975fb1512cdecf536ab))
+* handle long nicknames in queue slot ([#204](https://github.com/tf2pickup-org/tf2pickup/issues/204)) ([fda7396](https://github.com/tf2pickup-org/tf2pickup/commit/fda7396a759093ae90311a14f3cefeb8730dd980))
+* make copy connect string button work properly ([#206](https://github.com/tf2pickup-org/tf2pickup/issues/206)) ([84f7157](https://github.com/tf2pickup-org/tf2pickup/commit/84f715756be3f09b9c7cd282fd58d887c699eedc))
+
 # [4.0.0-alpha.9](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.8...4.0.0-alpha.9) (2025-03-29)
 
 
