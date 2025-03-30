@@ -76,7 +76,6 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
     if (targetSlot?.ready) {
       await preReady.start(steamId)
     }
-
     return slots
   })
 }
