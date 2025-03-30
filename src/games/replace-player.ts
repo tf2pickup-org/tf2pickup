@@ -63,6 +63,7 @@ export async function replacePlayer({
             at: new Date(),
             replacee,
             replacement,
+            gameClass: slot.gameClass,
           },
         },
       },

@@ -202,13 +202,6 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         throw new Error(`replacement not found: ${replacement}`)
       }
 
-      const slot = props.game.slots.find(({ player }) => player === replacement.steamId)
-      if (!slot) {
-        throw new Error(
-          `replacement slot not found (gameNumber=${props.game.number}; replacement=${props.event.replacement.toString()}`,
-        )
-      }
-
       return (
         <span>
           <a href={`/players/${replacement.steamId}`} class="whitespace-nowrap font-bold" safe>
@@ -218,7 +211,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           <a href={`/players/${replacee.steamId}`} class="whitespace-nowrap font-bold" safe>
             {replacee.name}
           </a>{' '}
-          on <GameClassIcon gameClass={slot.gameClass} size={20} /> {slot.gameClass}
+          on <GameClassIcon gameClass={props.event.gameClass} size={20} /> {props.event.gameClass}
         </span>
       )
     }
