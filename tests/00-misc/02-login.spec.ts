@@ -5,8 +5,7 @@ test.skip(
   'STEAM_USERNAME and STEAM_PASSWORD are required to run this test',
 )
 
-// steam requires e-mail verification
-test.skip('login', async ({ page }) => {
+test('login', async ({ page }) => {
   const username = process.env['STEAM_USERNAME']!
   const password = process.env['STEAM_PASSWORD']!
 
