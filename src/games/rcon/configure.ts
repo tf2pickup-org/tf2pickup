@@ -31,10 +31,11 @@ import { events } from '../../events'
 import { withRcon } from './with-rcon'
 import { servemeTf } from '../../serveme-tf'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
+import { errors } from '../../errors'
 
 export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
-    throw new Error(`gameServer is undefined`)
+    throw errors.badRequest('gameServer is undefined')
   }
   logger.info({ game }, `configuring game #${game.number}...`)
   const { signal } = options

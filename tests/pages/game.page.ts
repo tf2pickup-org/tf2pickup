@@ -92,9 +92,15 @@ export class GamePage {
   }
 
   async forceEnd() {
-    this.page.on('dialog', dialog => dialog.accept())
+    this.page.once('dialog', dialog => dialog.accept())
     await this.adminActions().click()
     const btn = this.page.getByRole('button', { name: 'Force-end' })
     await btn.click()
+  }
+
+  async reinitializeGameServer() {
+    this.page.once('dialog', dialog => dialog.accept())
+    await this.adminActions().click()
+    await this.page.getByRole('button', { name: 'Reinitialize game server' }).click()
   }
 }

@@ -10,6 +10,7 @@ import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { PlayerRole } from '../database/models/player.model'
 import { findOne } from './find-one'
+import { requestGameServerReinitialization } from './request-game-server-reinitialization'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -110,6 +111,26 @@ export default fp(
         },
         async (request, reply) => {
           await forceEnd(request.params.number, request.user!.player.steamId)
+          await reply.status(204).send()
+        },
+      )
+      .put(
+        '/games/:number/reinitialize-gameserver',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              number: gameNumber,
+            }),
+          },
+        },
+        async (request, reply) => {
+          await requestGameServerReinitialization(
+            request.params.number,
+            request.user!.player.steamId,
+          )
           await reply.status(204).send()
         },
       )

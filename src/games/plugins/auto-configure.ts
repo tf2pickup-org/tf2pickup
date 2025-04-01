@@ -3,15 +3,16 @@ import { logger } from '../../logger'
 import { assertIsError } from '../../utils/assert-is-error'
 import { events } from '../../events'
 import { configure } from '../rcon/configure'
-import { GameState, type GameNumber } from '../../database/models/game.model'
+import { GameState, type GameModel, type GameNumber } from '../../database/models/game.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     const configurators = new Map<GameNumber, AbortController>()
 
-    events.on('game:gameServerAssigned', async ({ game }) => {
+    async function configureExclusive(game: GameModel) {
       try {
+        configurators.get(game.number)?.abort()
         const controller = new AbortController()
         const signal = controller.signal
         const configurator = configure(game, { signal })
@@ -23,6 +24,14 @@ export default fp(
       } finally {
         configurators.delete(game.number)
       }
+    }
+
+    events.on('game:gameServerAssigned', async ({ game }) => {
+      await configureExclusive(game)
+    })
+
+    events.on('game:gameServerReinitializationRequested', async ({ game }) => {
+      await configureExclusive(game)
     })
 
     // eslint-disable-next-line @typescript-eslint/require-await

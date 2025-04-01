@@ -16,6 +16,7 @@ const renderedEvents = [
   GameEventType.gameEnded,
 
   GameEventType.gameServerAssigned,
+  GameEventType.gameServerReinitializationOrdered,
   GameEventType.gameServerInitialized,
 
   GameEventType.substituteRequested,
@@ -109,6 +110,21 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
         </span>
       )
+    }
+    case GameEventType.gameServerReinitializationOrdered: {
+      let actor = <></>
+      if (props.event.actor) {
+        const a = await players.bySteamId(props.event.actor)
+        actor = (
+          <>
+            by{' '}
+            <a href={`/players/${a.steamId}`} class="whitespace-nowrap font-bold" safe>
+              {a.name}
+            </a>
+          </>
+        )
+      }
+      return <span>Game reserver reinitialized {actor}</span>
     }
     case GameEventType.gameServerInitialized:
       return <span>Game server initialized</span>

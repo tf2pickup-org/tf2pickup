@@ -31,6 +31,9 @@ export interface Events {
   'game:gameServerAssigned': {
     game: GameModel
   }
+  'game:gameServerReinitializationRequested': {
+    game: GameModel
+  }
   'game:gameServerInitialized': {
     game: GameModel
   }

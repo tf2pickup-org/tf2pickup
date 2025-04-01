@@ -21,7 +21,14 @@ export function AdminActions(props: { gameNumber: GameNumber }) {
           <IconX />
           Force-end
         </button>
-        <button class="admin-action-button">
+        <button
+          class="admin-action-button"
+          hx-trigger="click"
+          hx-put={`/games/${props.gameNumber}/reinitialize-gameserver`}
+          hx-confirm="Are you sure you want to reinitialize the game server?"
+          data-umami-event="reinitialize-game-server"
+          data-umami-event-game-number={props.gameNumber}
+        >
           <IconRefreshDot />
           Reinitialize game server
         </button>
