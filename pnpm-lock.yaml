@@ -57,8 +57,8 @@ importers:
         specifier: 0.5.16
         version: 0.5.16(tailwindcss@3.4.17)
       '@tf2pickup-org/mumble-client':
-        specifier: 0.12.2
-        version: 0.12.2
+        specifier: 0.12.3
+        version: 0.12.3
       '@tf2pickup-org/serveme-tf-client':
         specifier: 0.1.2
         version: 0.1.2
@@ -1003,8 +1003,8 @@ packages:
     resolution: {integrity: sha512-c83qWb22rNRuB0UaVCI0uRPNRr8Z0FWnEIvT47jiHAmOIUHbBOg5XvV7pM5x+rKn9HRpjxquDbXYSXr3fAKFcw==}
     engines: {node: '>=12'}
 
-  '@protobuf-ts/runtime@2.9.4':
-    resolution: {integrity: sha512-vHRFWtJJB/SiogWDF0ypoKfRIZ41Kq+G9cEFj6Qm1eQaAhJ1LDFvgZ7Ja4tb3iLOQhz0PaoPnnOijF1qmEqTxg==}
+  '@protobuf-ts/runtime@2.9.6':
+    resolution: {integrity: sha512-C0CfpKx4n4LBbUrajOdRj2BTbd3qBoK0SiKWLq7RgCoU6xiN4wesBMFHUOBp3fFzKeZwgU8Q2KtzaqzIvPLRXg==}
 
   '@release-it/conventional-changelog@10.0.0':
     resolution: {integrity: sha512-49qf9phGmPUIGpY2kwfgehs9en1znbPv2zdNn1WMLAH9DtHUh4m6KNSB+mLFGAMUhv24JhsA8ruYRYgluc2UJw==}
@@ -1149,11 +1149,11 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
-  '@tf2pickup-org/mumble-client@0.12.2':
-    resolution: {integrity: sha512-+lrbvnpKXgss8SWgXYdttdS3/j7n8vocHejZT7SlD8+YdYUihCRyHi3qlH9KaqRKCP67ryPXoz9roFBUio3HnA==}
+  '@tf2pickup-org/mumble-client@0.12.3':
+    resolution: {integrity: sha512-ON+fefovKolteMcrYtVNqX4S8PDairKUJlg9eCQH3U4bhnTfuYOaJAVHqX5h5lpexvH1mvNYIkyNNfHqqQGFOw==}
 
-  '@tf2pickup-org/mumble-protocol@1.0.8':
-    resolution: {integrity: sha512-+tNExBudEewj4jt1fDBmggktChjsfQ9AC1hvK7e+f20ScLCJvjE73KeHcuz2eXHQ72ygs4UyssvSirhtXWbi9g==}
+  '@tf2pickup-org/mumble-protocol@1.0.9':
+    resolution: {integrity: sha512-gFNVqOevpyJWaJ5nhch7R6pJbr3SvOI1rq9b+K7AROFpw9u2ypPqbWxQTpxHjcutbC9wBNURlxzcgeKEP44zxA==}
 
   '@tf2pickup-org/serveme-tf-client@0.1.2':
     resolution: {integrity: sha512-cVEEbUwfc9ooVHLsjirXzHgWfzwjJ7seXy6blzxgKv2KpcB59iGDyzQq80Hu4b6C6OXOQctQCndfZqupKTednQ==}
@@ -3751,6 +3751,9 @@ packages:
   rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
 
+  rxjs@7.8.2:
+    resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
+
   safe-buffer@5.2.1:
     resolution: {integrity: sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ==}
 
@@ -5012,7 +5015,7 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@protobuf-ts/runtime@2.9.4': {}
+  '@protobuf-ts/runtime@2.9.6': {}
 
   '@release-it/conventional-changelog@10.0.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.1.0)(release-it@18.1.2(@types/node@22.13.14)(typescript@5.8.2))':
     dependencies:
@@ -5132,15 +5135,15 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17
 
-  '@tf2pickup-org/mumble-client@0.12.2':
+  '@tf2pickup-org/mumble-client@0.12.3':
     dependencies:
-      '@protobuf-ts/runtime': 2.9.4
-      '@tf2pickup-org/mumble-protocol': 1.0.8
-      rxjs: 7.8.1
+      '@protobuf-ts/runtime': 2.9.6
+      '@tf2pickup-org/mumble-protocol': 1.0.9
+      rxjs: 7.8.2
 
-  '@tf2pickup-org/mumble-protocol@1.0.8':
+  '@tf2pickup-org/mumble-protocol@1.0.9':
     dependencies:
-      '@protobuf-ts/runtime': 2.9.4
+      '@protobuf-ts/runtime': 2.9.6
 
   '@tf2pickup-org/serveme-tf-client@0.1.2':
     dependencies:
@@ -7787,6 +7790,10 @@ snapshots:
       queue-microtask: 1.2.3
 
   rxjs@7.8.1:
+    dependencies:
+      tslib: 2.8.1
+
+  rxjs@7.8.2:
     dependencies:
       tslib: 2.8.1
 
