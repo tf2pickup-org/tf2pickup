@@ -34,6 +34,10 @@ export default fp(
       })
     })
 
+    events.on('game:gameServerReinitializationRequested', async ({ game }) => {
+      await tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number })
+    })
+
     events.on(
       'game:gameServerInitialized',
       safe(async ({ game }) => {
