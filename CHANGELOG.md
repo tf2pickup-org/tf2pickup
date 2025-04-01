@@ -1,5 +1,19 @@
 # Changelog
 
+# [4.0.0-alpha.12](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.11...4.0.0-alpha.12) (2025-04-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @tf2pickup-org/mumble-client to v0.12.3 ([9393c42](https://github.com/tf2pickup-org/tf2pickup/commit/9393c42d091261ca86a74614060a7bbdbcaa673f))
+* **deps:** update dependency esbuild to v0.25.2 ([ebee8d4](https://github.com/tf2pickup-org/tf2pickup/commit/ebee8d49b5108206e46585fec3bc27ec0c23cf94))
+* don't auto-sub players when server is being reinitialized ([#212](https://github.com/tf2pickup-org/tf2pickup/issues/212)) ([29c66ab](https://github.com/tf2pickup-org/tf2pickup/commit/29c66ab582a972d89db56cc4bf2775e4a8c1fa45))
+
+
+### Features
+
+* implement reinitialize game server button ([#210](https://github.com/tf2pickup-org/tf2pickup/issues/210)) ([789dbd3](https://github.com/tf2pickup-org/tf2pickup/commit/789dbd36dd70338aa82577cf109fe71751a57678))
+
 # [4.0.0-alpha.11](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.10...4.0.0-alpha.11) (2025-03-30)
 
 
