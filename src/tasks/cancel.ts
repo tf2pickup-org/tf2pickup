@@ -1,3 +1,4 @@
+import { flattenObject } from 'es-toolkit'
 import { collections } from '../database/collections'
 import { errors } from '../errors'
 import { tasks, type TaskArgs, type Tasks } from './tasks'
@@ -7,5 +8,6 @@ export async function cancel<T extends keyof Tasks>(name: T, ...args: Partial<Ta
     throw errors.internalServerError(`task not registered: ${name}`)
   }
 
-  await collections.tasks.deleteMany({ name, args: args[0] ?? {} })
+  const a = args[0] ? flattenObject({ args: args[0] }) : {}
+  await collections.tasks.deleteMany({ name, ...a })
 }
