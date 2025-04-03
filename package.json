@@ -60,7 +60,7 @@
     "idiomorph": "0.7.3",
     "jsonwebtoken": "9.0.2",
     "marked": "15.0.7",
-    "mime": "4.0.6",
+    "mime": "4.0.7",
     "mongodb": "6.15.0",
     "motion": "12.6.3",
     "nanoid": "5.1.5",
