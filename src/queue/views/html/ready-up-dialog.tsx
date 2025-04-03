@@ -1,4 +1,6 @@
 import { nanoid } from 'nanoid'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../../../players'
 
 const dialogId = 'ready-up-dialog'
 
@@ -50,7 +52,8 @@ export function ReadyUpDialog() {
   )
 }
 
-ReadyUpDialog.show = () => {
+ReadyUpDialog.show = async (actor: SteamId64) => {
+  const player = await players.bySteamId(actor)
   const id = nanoid()
   return (
     <>
@@ -63,6 +66,7 @@ ReadyUpDialog.show = () => {
           notification-body="A game is starting"
           notification-icon="/favicon.png"
           play-sound-src="/sounds/ready_up.webm"
+          play-sound-volume={player.preferences.soundVolume ?? '1.0'}
         ></div>
       </div>
     </>
