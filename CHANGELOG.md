@@ -1,5 +1,15 @@
 # Changelog
 
+# [4.0.0-alpha.13](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.12...4.0.0-alpha.13) (2025-04-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mime to v4.0.7 ([55d6361](https://github.com/tf2pickup-org/tf2pickup/commit/55d636150deb2dc6f2841c43c5d95a5292619c50))
+* **deps:** update dependency motion to v12.6.3 ([e04d411](https://github.com/tf2pickup-org/tf2pickup/commit/e04d411c078c23cc0432e913dbb0db8d1d356ff0))
+* don't report round if the score is the same ([#214](https://github.com/tf2pickup-org/tf2pickup/issues/214)) ([e4dbe7b](https://github.com/tf2pickup-org/tf2pickup/commit/e4dbe7b967f09589c6e53bca64073ecd635d9337))
+* respect user preferences in sound volume ([#213](https://github.com/tf2pickup-org/tf2pickup/issues/213)) ([ca2c8fc](https://github.com/tf2pickup-org/tf2pickup/commit/ca2c8fca6da78cbfc96be1cc835240d146ae8b75))
+
 # [4.0.0-alpha.12](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.11...4.0.0-alpha.12) (2025-04-01)
 
 
