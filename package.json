@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@fastify/accepts": "5.0.2",
-    "@fastify/autoload": "6.2.0",
+    "@fastify/autoload": "6.3.0",
     "@fastify/cookie": "11.0.2",
     "@fastify/etag": "6.0.3",
     "@fastify/flash": "6.0.3",
