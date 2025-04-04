@@ -5,6 +5,7 @@ import { events } from '../../events'
 import { logger } from '../../logger'
 import { update } from '../update'
 import { GameEventType } from '../../database/models/game-event.model'
+import { findOne } from '../find-one'
 
 interface RoundData {
   winner?: Tf2Team
@@ -29,6 +30,13 @@ export default fp(
           value.score.red !== undefined
         ) {
           logger.info({ ...value, gameNumber }, `round ended`)
+
+          const game = await findOne({ number: gameNumber })
+          if (value.score.red === game.score?.red && value.score.blu === game.score.blu) {
+            logger.info(`score is the same, not updating`)
+            rounds.delete(gameNumber)
+            continue
+          }
 
           await update(
             { number: gameNumber },
