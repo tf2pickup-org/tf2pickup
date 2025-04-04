@@ -39,6 +39,7 @@ export const authUsers = test.extend<AuthUsersFixture>({
               roles: 'roles' in user ? user.roles : [],
               hasAcceptedRules: true,
               cooldownLevel: 0,
+              preferences: {},
             },
             $unset: {
               activeGame: 1,

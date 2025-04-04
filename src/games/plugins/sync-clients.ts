@@ -58,7 +58,7 @@ export default fp(async app => {
     if (after.connectString !== undefined && before.connectString !== after.connectString) {
       app.gateway
         .to({ players: after.slots.map(({ player }) => player) })
-        .send(async () => await ServerReadyNotification())
+        .send(async actor => await ServerReadyNotification(actor!))
     }
 
     if (before.logsUrl !== after.logsUrl) {

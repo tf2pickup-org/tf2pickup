@@ -113,8 +113,7 @@ export default fp(
             .map(s => s.player)
             .filter(Boolean) as SteamId64[]
 
-          const show = await ReadyUpDialog.show()
-          app.gateway.to({ players }).send(() => show)
+          app.gateway.to({ players }).send(async actor => await ReadyUpDialog.show(actor!))
         }
       }),
     )
@@ -189,8 +188,9 @@ export default fp(
     }
     events.on('game:substituteRequested', async ({ game, replacee }) => {
       await refreshSubstitutionRequests()
-      const notify = await SubstitutionRequests.notify({ game, replacee })
-      app.gateway.broadcast(() => notify)
+      app.gateway.broadcast(
+        async actor => await SubstitutionRequests.notify({ game, replacee, actor }),
+      )
     })
     events.on('game:playerReplaced', refreshSubstitutionRequests)
     events.on('game:ended', refreshSubstitutionRequests)

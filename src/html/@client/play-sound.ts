@@ -8,7 +8,7 @@ function maybePlaySound(element: Element) {
   }
 
   const playVolume =
-    element.getAttribute('data-play-sound-volume') ?? element.getAttribute('play-sound')
+    element.getAttribute('data-play-sound-volume') ?? element.getAttribute('play-sound-volume')
 
   const volume = playVolume ? parseFloat(playVolume) : 1.0
   const sound = new Howl({
