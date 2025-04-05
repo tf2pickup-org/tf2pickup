@@ -14,9 +14,6 @@ importers:
       '@fastify/autoload':
         specifier: 6.3.0
         version: 6.3.0
-      '@fastify/cookie':
-        specifier: 11.0.2
-        version: 11.0.2
       '@fastify/etag':
         specifier: 6.0.3
         version: 6.0.3

@@ -4,11 +4,11 @@ import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod
 import { resolve } from 'node:path'
 import { logger, logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
-import { hoursToSeconds } from 'date-fns'
 import { environment } from './environment'
 import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { HttpError } from '@fastify/sensible'
+import { secondsInWeek } from 'date-fns/constants'
 
 const app = fastify({ loggerInstance })
 
@@ -50,16 +50,13 @@ await app.register(await import('@fastify/helmet'), {
 })
 await app.register(await import('@fastify/sensible'))
 await app.register(await import('@fastify/formbody'))
-await app.register(await import('@fastify/cookie'), {
-  secret: await secrets.get('cookie'),
-  hook: 'onRequest',
-})
 await app.register(await import('@fastify/secure-session'), {
   key: await secrets.get('session'),
-  expiry: hoursToSeconds(24),
+  expiry: secondsInWeek, // 1 week
   cookie: {
     path: '/',
     httpOnly: true,
+    secure: environment.NODE_ENV === 'production',
   },
 })
 await app.register((await import('@fastify/flash')).default)

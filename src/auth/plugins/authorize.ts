@@ -28,6 +28,7 @@ export default fp(
     })
   },
   {
-    name: 'authorize',
+    name: 'auth/authorize',
+    dependencies: ['auth/steam'],
   },
 )
