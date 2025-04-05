@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 import dotenv from 'dotenv'
-import { minutesToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 
 dotenv.config()
 
@@ -14,6 +14,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: process.env.CI ? 'blob' : 'html',
+  timeout: secondsToMilliseconds(45),
   reportSlowTests: {
     max: 5,
     threshold: minutesToMilliseconds(10),
@@ -24,9 +25,16 @@ export default defineConfig({
   },
 
   projects: [
+    // Setup project
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+      use: { ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
+    },
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
+      dependencies: ['setup'],
     },
     {
       name: 'firefox',
@@ -34,6 +42,7 @@ export default defineConfig({
         ...devices['Desktop Firefox'],
         ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}),
       },
+      dependencies: ['setup'],
     },
 
     // {

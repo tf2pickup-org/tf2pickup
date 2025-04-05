@@ -9,7 +9,7 @@ declare module 'fastify' {
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    app.addHook('onRequest', async (request, reply) => {
+    app.addHook('preHandler', async (request, reply) => {
       if (!request.routeOptions.config.authenticate) {
         return
       }
@@ -20,6 +20,7 @@ export default fp(
     })
   },
   {
-    name: 'authenticate',
+    name: 'auth/authenticate',
+    dependencies: ['auth/steam'],
   },
 )
