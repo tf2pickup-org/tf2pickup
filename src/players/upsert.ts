@@ -10,6 +10,7 @@ import type { CreatePlayerParams } from './types/create-player-params'
 import { etf2l } from '../etf2l'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { errors } from '../errors'
+import { environment } from '../environment'
 
 interface UpsertPlayerParams {
   steamID: string
@@ -29,23 +30,31 @@ export async function upsert(summary: UpsertPlayerParams): Promise<PlayerModel> 
     return player
   }
 
-  let playerParams: CreatePlayerParams = {
+  const playerParams = await verifyPlayer({
     steamId,
     name: summary.nickname,
     avatar: summary.avatar,
-  }
-
-  const bypassedUsers = await configuration.get('players.bypass_registration_restrictions')
-  if (bypassedUsers.some(u => u === steamId)) {
-    logger.info(
-      `${steamId} is on the list of bypassed registration restrictions. Skipping all checks`,
-    )
-  } else {
-    await verifyInGameHours(steamId)
-    playerParams = await verifyEtf2l(playerParams)
-  }
-
+  })
   return await create(playerParams)
+}
+
+async function verifyPlayer(player: CreatePlayerParams) {
+  if (environment.SUPER_USER === player.steamId) {
+    logger.info('registering super user')
+    return player
+  }
+
+  const bypassedPlayers = await configuration.get('players.bypass_registration_restrictions')
+  if (bypassedPlayers.some(steamId => steamId === player.steamId)) {
+    logger.info(
+      `${player.steamId} is on the list of bypassed registration restrictions. Skipping all checks`,
+    )
+    return player
+  }
+
+  await verifyInGameHours(player.steamId)
+  player = await verifyEtf2l(player)
+  return player
 }
 
 async function verifyInGameHours(steamId: SteamId64) {
