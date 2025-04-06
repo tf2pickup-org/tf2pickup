@@ -5,7 +5,7 @@ export const etf2lProfileSchema = z.object({
   id: z.number(),
   name: z.string(),
   country: z.string(),
-  classes: z.array(z.string()),
+  classes: z.array(z.string()).or(z.literal(false)),
   registered: z.number(),
   steam: z.object({
     avatar: z.string().url(),
