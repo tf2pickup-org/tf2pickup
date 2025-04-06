@@ -1,5 +1,14 @@
 # Changelog
 
+# [4.0.0-alpha.14](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.13...4.0.0-alpha.14) (2025-04-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/autoload to v6.3.0 ([0583bad](https://github.com/tf2pickup-org/tf2pickup/commit/0583bad03f145833af16e074e8322e031cc5a821))
+* fix etf2l profile schema ([#215](https://github.com/tf2pickup-org/tf2pickup/issues/215)) ([d288b4c](https://github.com/tf2pickup-org/tf2pickup/commit/d288b4c346507ab4757a24f1689507b05f2903b7))
+* use session for auth ([#166](https://github.com/tf2pickup-org/tf2pickup/issues/166)) ([20cfa82](https://github.com/tf2pickup-org/tf2pickup/commit/20cfa82389f26d3e37096d4187ecbc4ca8a9ed3e))
+
 # [4.0.0-alpha.13](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.12...4.0.0-alpha.13) (2025-04-04)
 
 
