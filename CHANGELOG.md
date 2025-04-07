@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-alpha.15](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.14...4.0.0-alpha.15) (2025-04-07)
+
+
+### Features
+
+* add SUPER_USER env variable ([#217](https://github.com/tf2pickup-org/tf2pickup/issues/217)) ([50f4c28](https://github.com/tf2pickup-org/tf2pickup/commit/50f4c2859111df6013b3aad2e9d5b55d90199fa0))
+* chat initial ([#191](https://github.com/tf2pickup-org/tf2pickup/issues/191)) ([c4be47f](https://github.com/tf2pickup-org/tf2pickup/commit/c4be47fe0dcfc82b33d54147e22fc3811822df8f))
+
 # [4.0.0-alpha.14](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.13...4.0.0-alpha.14) (2025-04-06)
 
 
