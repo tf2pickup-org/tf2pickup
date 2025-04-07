@@ -16,7 +16,7 @@ import { BanAlerts } from '../views/html/ban-alerts'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
 import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 import { OnlinePlayerCount } from '../views/html/online-player-count'
-import { ChatMessageList } from '../views/html/chat'
+import { ChatMessages } from '../views/html/chat'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -44,7 +44,7 @@ export default fp(
       socket.send(await CurrentPlayerCount())
       socket.send(await OnlinePlayerCount())
       socket.send(await OnlinePlayerList())
-      socket.send(await ChatMessageList())
+      socket.send(await ChatMessages())
       socket.send(await StreamList())
 
       if (socket.player) {
@@ -228,7 +228,7 @@ export default fp(
     )
 
     events.on('chat:messageSent', ({ message }) => {
-      app.gateway.to({ url: '/' }).send(() => ChatMessageList.append({ message }))
+      app.gateway.to({ url: '/' }).send(() => ChatMessages.append({ message }))
     })
   },
   { name: 'update clients' },

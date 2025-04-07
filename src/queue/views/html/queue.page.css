@@ -250,20 +250,19 @@
 
   .message-list {
     flex: 1 1 0%;
+    display: flex;
+    flex-direction: column-reverse;
     overflow-y: scroll;
     padding: 8px;
 
-    & * {
-      overflow-anchor: none;
-    }
-
-    #chat-anchor {
-      overflow-anchor: auto;
-      height: 1px;
-    }
-
     p {
       color: theme(colors.white);
+
+      .at {
+        white-space: nowrap;
+        font-size: 12px;
+        color: theme(colors.abru.light.50);
+      }
 
       a {
         font-weight: bold;

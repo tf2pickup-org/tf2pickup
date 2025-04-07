@@ -1,34 +1,54 @@
 import { format } from 'date-fns'
 import { chat } from '../../../chat'
 import type { ChatMessageModel } from '../../../database/models/chat-message.model'
-import { IconSend2 } from '../../../html/components/icons'
+import { IconLoader3, IconSend2 } from '../../../html/components/icons'
 import { players } from '../../../players'
 import type { User } from '../../../auth/types/user'
 
 export async function Chat(props: { user?: User | undefined }) {
   return (
     <div class="chat" id="chat">
-      <ChatMessageList />
+      <ChatMessages />
       {!!props.user && <ChatPrompt />}
     </div>
   )
 }
 
-export async function ChatMessageList() {
-  const snapshot = await chat.getSnapshot()
+export async function ChatMessages() {
   return (
     <div class="message-list" id="chat-message-list">
-      {snapshot.map(message => (
-        <ChatMessage message={message} />
-      ))}
-      <div id="chat-anchor"></div>
+      <ChatMessageList messages={await chat.getSnapshot()} />
     </div>
   )
 }
 
-ChatMessageList.append = function (props: { message: ChatMessageModel }) {
+export function ChatMessageList(props: { messages: ChatMessageModel[] }) {
+  let trigger = <></>
+  if (props.messages.length > 0) {
+    trigger = (
+      <div
+        hx-get={`/chat?before=${props.messages[props.messages.length - 1]!.at.getTime()}`}
+        hx-trigger="intersect once"
+        hx-swap="outerHTML"
+      >
+        <IconLoader3 class="animate-spin text-abru-light-50" />
+      </div>
+    )
+  }
+
   return (
-    <div id="chat-anchor" hx-swap-oob="beforebegin">
+    <>
+      {props.messages.map(message => (
+        <ChatMessage message={message} />
+      ))}
+      {trigger}
+    </>
+  )
+}
+
+ChatMessages.append = function (props: { message: ChatMessageModel }) {
+  return (
+    <div id="chat-message-list" hx-swap-oob="afterbegin">
       <ChatMessage message={props.message} />
     </div>
   )
@@ -65,7 +85,7 @@ async function ChatMessage(props: { message: ChatMessageModel }) {
   const safeAt = format(props.message.at, 'HH:mm')
   return (
     <p>
-      <span class="whitespace-nowrap text-[12px] text-abru-light-50">{safeAt}</span>{' '}
+      <span class="at">{safeAt}</span>{' '}
       <a href={`/players/${author.steamId}`} preload="mousedown" safe>
         {author.name}
       </a>
