@@ -10,6 +10,7 @@
 @import 'satoshi.css';
 @import 'snackbar.css';
 @import 'switch.css';
+@import 'tabs.css';
 @import 'tooltip.css';
 
 @tailwind base;

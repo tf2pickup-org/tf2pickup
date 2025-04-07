@@ -21,5 +21,6 @@ import './disable-when-offline'
 import './fade-scroll'
 import './flash-message'
 import './map-thumbnail'
+import './tabs'
 
 export { goTo } from './navigation'

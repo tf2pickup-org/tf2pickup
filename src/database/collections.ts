@@ -17,9 +17,11 @@ import type { StaticGameServerModel } from './models/static-game-server.model'
 import type { TaskModel } from './models/task.model'
 import type { StreamModel } from './models/stream.model'
 import type { CertificateModel } from './models/certificate.model'
+import type { ChatMessageModel } from './models/chat-message.model'
 
 export const collections = {
   certificates: database.collection<CertificateModel>('certificates'),
+  chatMessages: database.collection<ChatMessageModel>('chat.messages'),
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
   documents: database.collection<DocumentModel>('documents'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),

@@ -8,7 +8,6 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { Page } from '../../../html/components/page'
 import type { User } from '../../../auth/types/user'
 import { environment } from '../../../environment'
-import { OnlinePlayerList } from './online-player-list'
 import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
 import { OfflineAlert } from './offline-alert'
@@ -22,6 +21,7 @@ import { BanAlerts } from './ban-alerts'
 import { AcceptRulesDialog } from './accept-rules-dialog'
 import { CurrentPlayerCount } from './current-player-count'
 import { PreReadyUpButton } from '../../../pre-ready/views/html/pre-ready-up-button'
+import { Sidebar } from './sidebar'
 
 export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()
@@ -59,7 +59,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
           </div>
 
           <div class="order-last lg:order-3 lg:row-span-2">
-            <OnlinePlayerList />
+            <Sidebar user={props.user} />
           </div>
 
           <div class="order-5 lg:col-span-4">

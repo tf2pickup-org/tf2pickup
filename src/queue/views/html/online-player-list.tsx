@@ -1,5 +1,4 @@
 import { collections } from '../../../database/collections'
-import { IconUserCircle } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 interface OnlinePlayer {
@@ -16,17 +15,14 @@ export async function OnlinePlayerList() {
     .toArray()
 
   return (
-    <div class="online-player-list" id="online-player-list">
-      <h6>
-        <IconUserCircle size={18} />
-        <span id="online-player-count">Players online: {onlinePlayers.length}</span>
-      </h6>
-
+    <ul class="online-player-list" id="online-player-list">
       {onlinePlayers.map(player => (
-        <a href={`/players/${player.steamId}`} preload="mousedown" safe>
-          {player.name}
-        </a>
+        <li>
+          <a href={`/players/${player.steamId}`} preload="mousedown" safe>
+            {player.name}
+          </a>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }
