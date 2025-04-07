@@ -59,6 +59,11 @@ vi.mock('../logger', () => ({
   },
 }))
 
+const mockEnv = vi.hoisted(() => ({ SUPER_USER: undefined as string | undefined }))
+vi.mock('../environment', () => ({
+  environment: mockEnv,
+}))
+
 const upsertedPlayer = {
   steamID: '76561198074409147',
   nickname: 'FAKE_PLAYER_NAME',
@@ -117,6 +122,29 @@ describe('upsertPlayer()', () => {
 
         afterEach(() => {
           mockConfig.set('players.bypass_registration_restrictions', [])
+        })
+
+        it('should create player', async () => {
+          await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
+          expect(create).toHaveBeenCalledWith({
+            steamId: '12345678901234567',
+            name: 'FAKE_PLAYER_NAME',
+            avatar: {
+              small: 'FAKE_AVATAR_SMALL',
+              medium: 'FAKE_AVATAR_MEDIUM',
+              large: 'FAKE_AVATAR_LARGE',
+            },
+          })
+        })
+      })
+
+      describe('but the user is super-user', () => {
+        beforeEach(() => {
+          mockEnv.SUPER_USER = '12345678901234567'
+        })
+
+        afterEach(() => {
+          mockEnv.SUPER_USER = undefined
         })
 
         it('should create player', async () => {
