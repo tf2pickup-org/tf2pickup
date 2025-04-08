@@ -1,5 +1,17 @@
 # Changelog
 
+# [4.0.0-alpha.16](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.15...4.0.0-alpha.16) (2025-04-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v15.0.8 ([0a611b4](https://github.com/tf2pickup-org/tf2pickup/commit/0a611b4223942a1fe832f04144f15d064e30a586))
+
+
+### Features
+
+* add chat scroll ([#218](https://github.com/tf2pickup-org/tf2pickup/issues/218)) ([4de2f7e](https://github.com/tf2pickup-org/tf2pickup/commit/4de2f7e9792b5d30bcc88f1132aba1334c6a4132))
+
 # [4.0.0-alpha.15](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.14...4.0.0-alpha.15) (2025-04-07)
 
 
