@@ -36,6 +36,7 @@ export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> 
         continue
       }
 
+      events.emit('queue:playerKicked', { player: steamId })
       slots.push(slot)
     }
 

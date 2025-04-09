@@ -85,6 +85,11 @@ export default fp(
       }),
     )
 
+    events.on('queue:playerKicked', async ({ player }) => {
+      const close = await ReadyUpDialog.close()
+      app.gateway.to({ player }).send(() => close)
+    })
+
     events.on(
       'queue/slots:updated',
       safe(async ({ slots }) => {
