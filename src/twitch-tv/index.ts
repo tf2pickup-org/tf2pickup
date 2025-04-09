@@ -7,12 +7,12 @@ import { minutesToMilliseconds } from 'date-fns'
 
 export default fp(
   async app => {
-    if (environment.TWITCH_CLIENT_ID === undefined) {
+    if (environment.TWITCH_CLIENT_ID === undefined || environment.TWITCH_CLIENT_ID === '') {
       logger.info('TWITCH_CLIENT_ID empty; twitch.tv integration is disabled')
       return
     }
 
-    if (environment.TWITCH_CLIENT_SECRET === undefined) {
+    if (environment.TWITCH_CLIENT_SECRET === undefined || environment.TWITCH_CLIENT_SECRET === '') {
       logger.info('TWITCH_CLIENT_SECRET empty; twitch.tv integration is disabled')
       return
     }
