@@ -1,43 +1,45 @@
-import { mergeTests } from '@playwright/test'
-import { authUsers, expect } from '../fixtures/auth-users'
+import { launchGame as test, expect } from '../fixtures/launch-game'
 import { minutesToMilliseconds } from 'date-fns'
-import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
-import { queueSlots } from '../queue-slots'
 
-const test = mergeTests(authUsers, waitForEmptyQueue)
-
-test('player is late for ready up', async ({ steamIds, users, page }) => {
-  authUsers.setTimeout(minutesToMilliseconds(2))
-  const queueUsers = steamIds.slice(0, 12)
-  const slots = [...queueSlots()]
+test('player is late for ready up', async ({ players, desiredSlots, users, page }) => {
+  test.setTimeout(minutesToMilliseconds(2))
   await Promise.all(
-    queueUsers.map(async (steamId, i) => {
-      const page = await users.bySteamId(steamId).queuePage()
+    players.map(async player => {
+      const page = await player.queuePage()
       await page.goto()
-      await page.joinQueue(slots[i]!)
+      const slot = desiredSlots.get(player.playerName)!
+      await page.slot(slot).join()
     }),
   )
 
-  const readyUsers = queueUsers.slice(1)
+  const lateUser = users.byName('MoonMan')
   await Promise.all(
-    readyUsers.map(async steamId => {
-      const page = await users.bySteamId(steamId).queuePage()
-      await page.readyUpDialog().readyUp()
-    }),
+    players
+      .filter(player => player.playerName !== 'MoonMan')
+      .map(async player => {
+        const page = await player.queuePage()
+        await page.readyUpDialog().readyUp()
+      }),
   )
 
   // player gets kicked
   await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 11/12', {
     timeout: 60000,
   })
-  const kickedUserPage = await users.bySteamId(queueUsers[0]!).queuePage()
-  await expect(kickedUserPage.slot('scout-1').joinButton()).toBeVisible()
+  const kickedUserPage = await lateUser.queuePage()
+  await expect(kickedUserPage.slot('soldier-1').joinButton()).toBeVisible()
+
+  // expect the ready up dialog to close
+  await expect(kickedUserPage.readyUpDialog().readyUpButton()).not.toBeVisible()
+  await expect(kickedUserPage.readyUpDialog().notReadyButton()).not.toBeVisible()
 
   // everybody leaves the queue
   await Promise.all(
-    readyUsers.map(async steamId => {
-      const page = await users.bySteamId(steamId).queuePage()
-      await page.leaveQueue(minutesToMilliseconds(1))
-    }),
+    players
+      .filter(player => player.playerName !== 'MoonMan')
+      .map(async player => {
+        const page = await player.queuePage()
+        await page.leaveQueue(minutesToMilliseconds(1))
+      }),
   )
 })
