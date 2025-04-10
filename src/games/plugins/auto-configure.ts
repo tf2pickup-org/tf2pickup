@@ -4,6 +4,7 @@ import { assertIsError } from '../../utils/assert-is-error'
 import { events } from '../../events'
 import { configure } from '../rcon/configure'
 import { GameState, type GameModel, type GameNumber } from '../../database/models/game.model'
+import { minutesToMilliseconds } from 'date-fns'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -14,7 +15,8 @@ export default fp(
       try {
         configurators.get(game.number)?.abort()
         const controller = new AbortController()
-        const signal = controller.signal
+        const timeout = AbortSignal.timeout(minutesToMilliseconds(1))
+        const signal = AbortSignal.any([controller.signal, timeout])
         const configurator = configure(game, { signal })
         configurators.set(game.number, controller)
         await configurator
