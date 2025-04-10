@@ -26,6 +26,9 @@ importers:
       '@fastify/helmet':
         specifier: 13.0.1
         version: 13.0.1
+      '@fastify/rate-limit':
+        specifier: ^10.2.2
+        version: 10.2.2
       '@fastify/request-context':
         specifier: 6.1.0
         version: 6.1.0
@@ -695,6 +698,9 @@ packages:
 
   '@fastify/proxy-addr@5.0.0':
     resolution: {integrity: sha512-37qVVA1qZ5sgH7KpHkkC4z9SK6StIsIcOmpjvMPXNb3vx2GQxhZocogVYbr2PbbeLCQxYIPDok307xEvRZOzGA==}
+
+  '@fastify/rate-limit@10.2.2':
+    resolution: {integrity: sha512-45vXZImiYthKlMohF4XoHXYiBXCyRYY+zmtjLZuQrGraW0Zj9hYPYNOIa47012+5A65M0KJQxIVbzYCNP90hcg==}
 
   '@fastify/request-context@6.1.0':
     resolution: {integrity: sha512-8Gu7nTIx8+lDVliyk1Re+1VYCjJNA5A14MfA9OOZXBba06XWl59YzKThsFRWB+4z4dUH4Va1OFBV4JsSV74uHg==}
@@ -4692,6 +4698,12 @@ snapshots:
     dependencies:
       '@fastify/forwarded': 3.0.0
       ipaddr.js: 2.2.0
+
+  '@fastify/rate-limit@10.2.2':
+    dependencies:
+      '@lukeed/ms': 2.0.2
+      fastify-plugin: 5.0.1
+      toad-cache: 3.7.0
 
   '@fastify/request-context@6.1.0':
     dependencies:
