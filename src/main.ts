@@ -17,6 +17,7 @@ app.setValidatorCompiler(validatorCompiler)
 
 logger.info(`starting tf2pickup.org ${version}`)
 
+await app.register(await import('@fastify/rate-limit'))
 await app.register(await import('@fastify/helmet'), {
   contentSecurityPolicy:
     environment.NODE_ENV === 'production'
