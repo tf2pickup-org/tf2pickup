@@ -1,5 +1,10 @@
 import type { GameNumber } from '../../../database/models/game.model'
-import { IconExclamationCircleFilled, IconRefreshDot, IconX } from '../../../html/components/icons'
+import {
+  IconClick,
+  IconExclamationCircleFilled,
+  IconRefreshDot,
+  IconX,
+} from '../../../html/components/icons'
 
 export function AdminActions(props: { gameNumber: GameNumber }) {
   return (
@@ -20,6 +25,15 @@ export function AdminActions(props: { gameNumber: GameNumber }) {
         >
           <IconX />
           Force-end
+        </button>
+        <button
+          class="admin-action-button"
+          onclick="htmx.trigger('#choose-game-server-dialog', 'open')"
+          data-umami-event="choose-game-server"
+          data-umami-event-game-number={props.gameNumber}
+        >
+          <IconClick />
+          Reassign game server
         </button>
         <button
           class="admin-action-button"
