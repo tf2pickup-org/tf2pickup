@@ -55,6 +55,7 @@ await app.register(await import('@fastify/secure-session'), {
   expiry: secondsInWeek, // 1 week
   cookie: {
     path: '/',
+    maxAge: secondsInWeek,
     httpOnly: true,
     secure: environment.NODE_ENV === 'production',
   },
