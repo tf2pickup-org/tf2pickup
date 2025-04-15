@@ -36,7 +36,7 @@
     "@tf2pickup-org/serveme-tf-client": "0.1.2",
     "async-mutex": "0.5.0",
     "autoprefixer": "10.4.21",
-    "chart.js": "4.4.8",
+    "chart.js": "4.4.9",
     "country-flag-icons": "1.5.18",
     "croner": "9.0.0",
     "cssnano": "7.0.6",
