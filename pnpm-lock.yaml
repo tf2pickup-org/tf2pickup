@@ -27,7 +27,7 @@ importers:
         specifier: 13.0.1
         version: 13.0.1
       '@fastify/rate-limit':
-        specifier: ^10.2.2
+        specifier: 10.2.2
         version: 10.2.2
       '@fastify/request-context':
         specifier: 6.1.0
