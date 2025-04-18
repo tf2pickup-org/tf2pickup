@@ -11,6 +11,7 @@ import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
 import { AdminActions } from './admin-actions'
 import { makeTitle } from '../../../html/make-title'
+import { ChooseGameServerDialog } from './choose-game-server-dialog'
 
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
@@ -39,6 +40,8 @@ export async function GamePage(props: { game: GameModel; user?: User | undefined
             <></>
           )}
         </div>
+
+        <ChooseGameServerDialog gameNumber={props.game.number} />
       </Page>
       <Footer user={props.user} />
     </Layout>

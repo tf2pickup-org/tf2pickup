@@ -1,4 +1,9 @@
 import fp from 'fastify-plugin'
+import { assign } from './assign'
+
+export const gameServers = {
+  assign,
+} as const
 
 export default fp(
   async app => {
