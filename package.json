@@ -82,7 +82,7 @@
   "devDependencies": {
     "@eslint/js": "9.24.0",
     "@playwright/test": "1.52.0",
-    "@release-it/conventional-changelog": "10.0.0",
+    "@release-it/conventional-changelog": "10.0.1",
     "@tsconfig/strictest": "2.0.5",
     "@types/howler": "2.2.12",
     "@types/jsonwebtoken": "9.0.9",
