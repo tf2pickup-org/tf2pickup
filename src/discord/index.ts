@@ -18,7 +18,7 @@ export default fp(
       dir: resolve(import.meta.dirname, 'plugins'),
     })
 
-    app.addHook('onReady', async () => {
+    app.addHook('onListen', async () => {
       await toAdmins(`tf2pickup.org version ${version} started`)
     })
   },

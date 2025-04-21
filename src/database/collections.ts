@@ -18,11 +18,13 @@ import type { TaskModel } from './models/task.model'
 import type { StreamModel } from './models/stream.model'
 import type { CertificateModel } from './models/certificate.model'
 import type { ChatMessageModel } from './models/chat-message.model'
+import type { DiscordBotStateModel } from './models/discord-bot-state.model'
 
 export const collections = {
   certificates: database.collection<CertificateModel>('certificates'),
   chatMessages: database.collection<ChatMessageModel>('chat.messages'),
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
+  discordBotState: database.collection<DiscordBotStateModel>('discord.botstate'),
   documents: database.collection<DocumentModel>('documents'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
