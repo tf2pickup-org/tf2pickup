@@ -65,8 +65,8 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
         await page.goto()
         const slot = desiredSlots.get(user.playerName)!
         await page.slot(slot).join()
-        await page.readyUpDialog().readyUp()
-        await (await user.page()).waitForURL(/games\/(\d+)/)
+        await page.readyUpDialog().readyUp({ timeout: secondsToMilliseconds(10) })
+        await page.waitForURL(/games\/(\d+)/)
       }),
     )
 

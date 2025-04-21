@@ -49,10 +49,10 @@ class ReadyUpDialog {
     return this.page.getByRole('button', { name: `I'M READY` })
   }
 
-  async readyUp() {
+  async readyUp(props?: { timeout?: number }) {
     const button = this.readyUpButton()
     try {
-      await button.click({ timeout: secondsToMilliseconds(5) })
+      await button.click(props)
     } catch (error) {
       if (error instanceof errors.TimeoutError) {
         return
@@ -77,7 +77,11 @@ class ReadyUpDialog {
 }
 
 export class QueuePage {
-  constructor(public readonly page: Page) {}
+  waitForURL
+
+  constructor(public readonly page: Page) {
+    this.waitForURL = this.page.waitForURL.bind(this.page)
+  }
 
   async goto() {
     await this.page.goto('/')
