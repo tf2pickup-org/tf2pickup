@@ -11,6 +11,8 @@ import { forceEnd } from './force-end'
 import { PlayerRole } from '../database/models/player.model'
 import { findOne } from './find-one'
 import { requestGameServerReinitialization } from './request-game-server-reinitialization'
+import { gameServers } from '../game-servers'
+import { games } from '.'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -132,6 +134,33 @@ export default fp(
             request.user!.player.steamId,
           )
           await reply.status(204).send()
+        },
+      )
+      .put(
+        '/games/:number/reassign-gameserver',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({ number: gameNumber }),
+            body: z.object({
+              gameServer: z.string(),
+            }),
+          },
+        },
+        async (request, reply) => {
+          const { number } = request.params
+          const { gameServer } = request.body
+          const game = await games.findOne({ number })
+          await gameServers.assign(game, gameServer)
+          await reply
+            .status(204)
+            .header(
+              'HX-Trigger',
+              JSON.stringify({ close: { target: '#choose-game-server-dialog' } }),
+            )
+            .send()
         },
       )
   },
