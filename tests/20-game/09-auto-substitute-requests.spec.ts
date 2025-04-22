@@ -1,24 +1,13 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
-import { expect, mergeTests } from '@playwright/test'
-import { accessMongoDb } from '../fixtures/access-mongo-db'
-import { launchGame } from '../fixtures/launch-game'
+import { expect } from '@playwright/test'
+import { launchGame as test } from '../fixtures/launch-game'
 
-const test = mergeTests(launchGame, accessMongoDb)
 test.use({ waitForStage: 'launching' })
 
-test.beforeEach(async ({ db }) => {
-  const configuration = db.collection('configuration')
-  await configuration.updateOne(
-    { key: 'games.join_gameserver_timeout' },
-    { $set: { value: secondsToMilliseconds(10) } },
-    { upsert: true },
-  )
-  await configuration.updateOne(
-    { key: 'games.rejoin_gameserver_timeout' },
-    { $set: { value: secondsToMilliseconds(5) } },
-    { upsert: true },
-  )
+test.beforeEach(async ({ users }) => {
+  const page = await users.getAdmin().adminPage()
+  await page.configureGames({ joinGameServerTimeout: 10, rejoinGameServerTimeout: 5 })
 })
 
 test.describe('when a player does not connect to the gameserver on time', () => {

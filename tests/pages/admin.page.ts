@@ -74,4 +74,26 @@ export class AdminPage {
     await this.page.getByRole('button', { name: 'Save' }).click()
     await expect(this.page.getByText('connected', { exact: true })).toBeVisible()
   }
+
+  async configureGames(config: {
+    joinGameServerTimeout?: number
+    rejoinGameServerTimeout?: number
+  }) {
+    await this.page.goto('/admin/games')
+
+    if (config.joinGameServerTimeout) {
+      await this.page
+        .getByLabel('Join gameserver timeout', { exact: true })
+        .fill(config.joinGameServerTimeout.toString())
+    }
+
+    if (config.rejoinGameServerTimeout) {
+      await this.page
+        .getByLabel('Rejoin gameserver timeout')
+        .fill(config.rejoinGameServerTimeout.toString())
+    }
+
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
 }
