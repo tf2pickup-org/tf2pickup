@@ -1,14 +1,20 @@
+import { z, ZodError } from 'zod'
 import { environment } from '../environment'
 import { logger } from '../logger'
 import { version } from '../version'
 import FormData from 'form-data'
 
-interface UploadLogsResponse {
-  success: boolean
-  error?: string
-  log_id: string
-  url: string
-}
+const uploadLogResponseSchema = z.discriminatedUnion('success', [
+  z.object({
+    success: z.literal(true),
+    log_id: z.string(),
+    url: z.string(),
+  }),
+  z.object({
+    success: z.literal(false),
+    error: z.string(),
+  }),
+])
 
 interface UploadLogsParams {
   mapName: string
@@ -17,7 +23,8 @@ interface UploadLogsParams {
   title?: string
 }
 
-const logsTfUploadEndpointUrl = 'https://logs.tf/upload'
+const logsTfUrl = 'https://logs.tf'
+const logsTfUploadEndpointUrl = `${logsTfUrl}/upload`
 
 export async function uploadLogs(params: UploadLogsParams): Promise<string> {
   if (!environment.LOGS_TF_API_KEY) {
@@ -43,15 +50,15 @@ export async function uploadLogs(params: UploadLogsParams): Promise<string> {
       response.on('data', (chunk: string) => (reply += chunk))
       response.on('end', () => {
         try {
-          const d = JSON.parse(reply) as UploadLogsResponse
+          const d = uploadLogResponseSchema.parse(JSON.parse(reply))
           if (!d.success) {
-            reject(new Error(d.error ?? 'unknown error'))
+            reject(new Error(d.error))
           } else {
-            resolve(`https://logs.tf${d.url}`)
+            resolve(`${logsTfUrl}${d.url}`)
           }
         } catch (error) {
-          if (error instanceof SyntaxError) {
-            logger.error({ logsTfResponse: reply }, 'failed to parse logs.tf response')
+          if (error instanceof ZodError) {
+            logger.error({ logsTfResponse: reply, error }, 'failed to parse logs.tf response')
           }
           reject(error instanceof Error ? error : new Error(error as string))
         }
