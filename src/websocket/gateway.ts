@@ -122,16 +122,22 @@ async function send(client: WebSocket, message: MessageFn) {
 }
 
 interface Filters {
+  authenticated?: boolean
   players?: Set<SteamId64>
   urls?: Set<string>
 }
 type UserFilters =
+  | { authenticated: boolean }
   | { player: SteamId64 }
   | { players: SteamId64[] }
   | { url: string }
   | { urls: string[] }
 
 function mergeFilters(base: Filters, additional: UserFilters) {
+  if ('authenticated' in additional) {
+    base.authenticated = additional.authenticated
+  }
+
   if ('player' in additional) {
     base.players ??= new Set()
     base.players.add(additional.player)
@@ -166,6 +172,12 @@ class BroadcastOperator {
 
   send(message: MessageFn) {
     this.app.websocketServer.clients.forEach(async client => {
+      if ('authenticated' in this.filters) {
+        if (Boolean(client.player) !== this.filters.authenticated) {
+          return
+        }
+      }
+
       if (this.filters.players) {
         if (!client.player || !this.filters.players.has(client.player.steamId)) {
           return

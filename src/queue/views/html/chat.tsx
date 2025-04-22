@@ -8,8 +8,28 @@ import type { User } from '../../../auth/types/user'
 export async function Chat(props: { user?: User | undefined }) {
   return (
     <div class="chat" id="chat">
-      <ChatMessages />
-      {!!props.user && <ChatPrompt />}
+      {props.user ? (
+        <>
+          <ChatMessages />
+          <ChatPrompt />
+        </>
+      ) : (
+        <ChatLogInPrompt />
+      )}
+    </div>
+  )
+}
+
+async function ChatLogInPrompt() {
+  return (
+    <div class="flex flex-1 flex-col items-center">
+      <p class="text-abru-light-50">
+        You need to{' '}
+        <a href="/auth/steam" hx-boost="false" data-umami-event="login-steam">
+          sign in
+        </a>{' '}
+        to see the chat.
+      </p>
     </div>
   )
 }
