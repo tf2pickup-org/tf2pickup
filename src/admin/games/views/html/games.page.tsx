@@ -1,3 +1,4 @@
+import { millisecondsToSeconds } from 'date-fns'
 import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
@@ -39,7 +40,7 @@ export async function GamesPage(props: { user: User }) {
                 <input
                   type="number"
                   name="joinGameserverTimeout"
-                  value={joinGameServerTimeout.toString()}
+                  value={millisecondsToSeconds(joinGameServerTimeout).toString()}
                   id="joinGameserverTimeout"
                   class="col-span-2 me-2"
                 />
@@ -61,7 +62,7 @@ export async function GamesPage(props: { user: User }) {
                 <input
                   type="number"
                   name="rejoinGameserverTimeout"
-                  value={rejoinGameServerTimeout.toString()}
+                  value={millisecondsToSeconds(rejoinGameServerTimeout).toString()}
                   id="rejoinGameserverTimeout"
                   class="col-span-2 me-2"
                 />
