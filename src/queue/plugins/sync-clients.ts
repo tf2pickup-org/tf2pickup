@@ -44,11 +44,11 @@ export default fp(
       socket.send(await CurrentPlayerCount())
       socket.send(await OnlinePlayerCount())
       socket.send(await OnlinePlayerList())
-      socket.send(await ChatMessages())
       socket.send(await StreamList())
 
       if (socket.player) {
         const player = await collections.players.findOne({ steamId: socket.player.steamId })
+        socket.send(await ChatMessages())
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
@@ -233,7 +233,10 @@ export default fp(
     )
 
     events.on('chat:messageSent', ({ message }) => {
-      app.gateway.to({ url: '/' }).send(() => ChatMessages.append({ message }))
+      app.gateway
+        .to({ authenticated: true })
+        .to({ url: '/' })
+        .send(() => ChatMessages.append({ message }))
     })
   },
   { name: 'update clients' },
