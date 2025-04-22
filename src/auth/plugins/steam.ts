@@ -74,10 +74,7 @@ export default fp(
 
     app.get('/auth/steam/return', async (request, reply) => {
       const steamId = await verifySteamCallback(request.url)
-      let user = await steamApi.getUserSummary(steamId)
-      if (Array.isArray(user)) {
-        user = user[0]!
-      }
+      const user = await steamApi.getUserSummary(steamId)
 
       logger.debug({ user }, 'user logged in')
       const player = await players.upsert(user)
