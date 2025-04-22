@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { configuration } from '../../configuration'
 import { standardAdminPage } from '../standard-admin-page'
+import { secondsToMilliseconds } from 'date-fns'
 
 export default standardAdminPage({
   path: '/admin/games',
@@ -22,8 +23,14 @@ export default standardAdminPage({
   }) => {
     await Promise.all([
       configuration.set('games.whitelist_id', whitelistId),
-      configuration.set('games.join_gameserver_timeout', joinGameserverTimeout),
-      configuration.set('games.rejoin_gameserver_timeout', rejoinGameserverTimeout),
+      configuration.set(
+        'games.join_gameserver_timeout',
+        secondsToMilliseconds(joinGameserverTimeout),
+      ),
+      configuration.set(
+        'games.rejoin_gameserver_timeout',
+        secondsToMilliseconds(rejoinGameserverTimeout),
+      ),
       configuration.set('games.execute_extra_commands', executeExtraCommands),
       configuration.set('games.logs_tf_upload_method', logsTfUploadMethod),
     ])
