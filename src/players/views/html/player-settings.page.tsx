@@ -5,6 +5,7 @@ import { Page } from '../../../html/components/page'
 import { IconVolume } from '../../../html/components/icons'
 import { makeTitle } from '../../../html/make-title'
 import { TwitchTvSettingsEntry } from '../../../twitch-tv/views/html/twitch-tv-settings-entry'
+import { Footer } from '../../../html/components/footer'
 
 export async function PlayerSettingsPage(props: { user: User }) {
   const soundVolume = props.user.player.preferences.soundVolume ?? 1
@@ -54,6 +55,7 @@ export async function PlayerSettingsPage(props: { user: User }) {
           </div>
         </div>
       </Page>
+      <Footer user={props.user} />
     </Layout>
   )
 }
