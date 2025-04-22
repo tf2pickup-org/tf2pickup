@@ -1,5 +1,34 @@
 # Changelog
 
+# [4.0.0-alpha.17](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.16...4.0.0-alpha.17) (2025-04-22)
+
+
+### Bug Fixes
+
+* add game server configure timeout ([#224](https://github.com/tf2pickup-org/tf2pickup/issues/224)) ([a7b16f4](https://github.com/tf2pickup-org/tf2pickup/commit/a7b16f478ccbc1e0107b647de1dd2d812d11b73a))
+* add rate limiter ([#226](https://github.com/tf2pickup-org/tf2pickup/issues/226)) ([da10a3e](https://github.com/tf2pickup-org/tf2pickup/commit/da10a3e148052844aaa69ff75e27cff7986a1d83))
+* close ready-up dialog for kicked users ([#222](https://github.com/tf2pickup-org/tf2pickup/issues/222)) ([2bdd574](https://github.com/tf2pickup-org/tf2pickup/commit/2bdd574899487df4870f482f3a7206039e2a8856))
+* **deps:** pin dependency @fastify/rate-limit to 10.2.2 ([84c25f5](https://github.com/tf2pickup-org/tf2pickup/commit/84c25f5ca2c1ab91caf6219bd2346e6399b89f38))
+* **deps:** update dependency @fastify/secure-session to v8.2.0 ([068f35d](https://github.com/tf2pickup-org/tf2pickup/commit/068f35dd132bee12761f35424e8538bd86d5159a))
+* **deps:** update dependency chart.js to v4.4.9 ([a55ef9e](https://github.com/tf2pickup-org/tf2pickup/commit/a55ef9eb224f838a4531bb8f351c42337052b2b7))
+* **deps:** update dependency dotenv to v16.5.0 ([#227](https://github.com/tf2pickup-org/tf2pickup/issues/227)) ([38dab44](https://github.com/tf2pickup-org/tf2pickup/commit/38dab44839880105c56bf875ba6c5b58dcd02c6d))
+* **deps:** update dependency es-toolkit to v1.35.0 ([#232](https://github.com/tf2pickup-org/tf2pickup/issues/232)) ([ca82c62](https://github.com/tf2pickup-org/tf2pickup/commit/ca82c62dd67a9d260e151209d564d78853bc6922))
+* **deps:** update dependency fastify to v5.3.0 ([6b2c099](https://github.com/tf2pickup-org/tf2pickup/commit/6b2c099c2622295cc888b42d921768f8eb7a0e0c))
+* **deps:** update dependency fastify to v5.3.2 ([059a221](https://github.com/tf2pickup-org/tf2pickup/commit/059a2216a03267d49ca1c26aea2d95bf5657c1ee))
+* **deps:** update dependency motion to v12.6.5 ([d443f64](https://github.com/tf2pickup-org/tf2pickup/commit/d443f64abd1301a97286a15d90a4f15d236f71dd))
+* **deps:** update dependency motion to v12.7.2 ([c0e4b04](https://github.com/tf2pickup-org/tf2pickup/commit/c0e4b04e030793a8450b0deb5fa1e3f0707508c8))
+* **deps:** update dependency motion to v12.7.4 ([#231](https://github.com/tf2pickup-org/tf2pickup/issues/231)) ([9f58078](https://github.com/tf2pickup-org/tf2pickup/commit/9f580782063962d9cc919591881c7b7b0a731608))
+* **deps:** update dependency zod to v3.24.3 ([81c3fd3](https://github.com/tf2pickup-org/tf2pickup/commit/81c3fd3902bbf4e554b26c5f23fe3a28ff87fb14))
+* fix env var empty string detection ([#220](https://github.com/tf2pickup-org/tf2pickup/issues/220)) ([cd2ade4](https://github.com/tf2pickup-org/tf2pickup/commit/cd2ade43b76ded1a7e1845869a0ff42498fa5432))
+* fix fight sound path ([#240](https://github.com/tf2pickup-org/tf2pickup/issues/240)) ([902b65c](https://github.com/tf2pickup-org/tf2pickup/commit/902b65c817f8a0287543121a21e6b0cca5914ba4))
+* set session cookie maxAge ([#229](https://github.com/tf2pickup-org/tf2pickup/issues/229)) ([4d61107](https://github.com/tf2pickup-org/tf2pickup/commit/4d61107ec564e87d5cc2e85e91998a6402b2c098))
+
+
+### Features
+
+* add discord queue prompts ([#223](https://github.com/tf2pickup-org/tf2pickup/issues/223)) ([d87ea21](https://github.com/tf2pickup-org/tf2pickup/commit/d87ea21a5a18d83fc8e143bd231f7336182d6360))
+* reassign game server ([#233](https://github.com/tf2pickup-org/tf2pickup/issues/233)) ([c15d1a3](https://github.com/tf2pickup-org/tf2pickup/commit/c15d1a3b5e6c80550939d25573a2fd37e9d01dbf))
+
 # [4.0.0-alpha.16](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.15...4.0.0-alpha.16) (2025-04-08)
 
 
