@@ -144,8 +144,8 @@ importers:
         specifier: 4.0.7
         version: 4.0.7
       mongodb:
-        specifier: 6.15.0
-        version: 6.15.0(socks@2.8.4)
+        specifier: 6.16.0
+        version: 6.16.0(socks@2.8.4)
       motion:
         specifier: 12.7.4
         version: 12.7.4
@@ -2863,8 +2863,8 @@ packages:
   mongodb-connection-string-url@3.0.1:
     resolution: {integrity: sha512-XqMGwRX0Lgn05TDB4PyG2h2kKO/FfWJyCzYQbIhXUxz7ETt0I/FqHjUeqj37irJ+Dl1ZtU82uYyj14u2XsZKfg==}
 
-  mongodb@6.15.0:
-    resolution: {integrity: sha512-ifBhQ0rRzHDzqp9jAQP6OwHSH7dbYIQjD3SbJs9YYk9AikKEettW/9s/tbSFDTpXcRbF+u1aLrhHxDFaYtZpFQ==}
+  mongodb@6.16.0:
+    resolution: {integrity: sha512-D1PNcdT0y4Grhou5Zi/qgipZOYeWrhLEpk33n3nm6LGtz61jvO88WlrWCK/bigMjpnOdAUKKQwsGIl0NtWMyYw==}
     engines: {node: '>=16.20.1'}
     peerDependencies:
       '@aws-sdk/credential-providers': ^3.188.0
@@ -6844,7 +6844,7 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 13.0.0
 
-  mongodb@6.15.0(socks@2.8.4):
+  mongodb@6.16.0(socks@2.8.4):
     dependencies:
       '@mongodb-js/saslprep': 1.1.9
       bson: 6.10.3
