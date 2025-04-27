@@ -72,8 +72,8 @@ importers:
         specifier: 4.4.9
         version: 4.4.9
       country-flag-icons:
-        specifier: 1.5.18
-        version: 1.5.18
+        specifier: 1.5.19
+        version: 1.5.19
       croner:
         specifier: 9.0.0
         version: 9.0.0
@@ -1715,8 +1715,8 @@ packages:
       typescript:
         optional: true
 
-  country-flag-icons@1.5.18:
-    resolution: {integrity: sha512-z+Uzesi8u8IdkViqqbzzbkf3+a7WJpcET5B7sPwTg7GXqPYpVEgNlZ/FC3l8KO4mEf+mNkmzKLppKTN4PlCJEQ==}
+  country-flag-icons@1.5.19:
+    resolution: {integrity: sha512-D/ZkRyj+ywJC6b2IrAN3/tpbReMUqmuRLlcKFoY/o0+EPQN9Ev/e8tV+D3+9scvu/tarxwLErNwS73C3yzxs/g==}
 
   cp-file@10.0.0:
     resolution: {integrity: sha512-vy2Vi1r2epK5WqxOLnskeKeZkdZvTKfFZQCplE3XWsP+SUJyd5XAUFC9lFgTjjXJF2GMne/UML14iEmkAaDfFg==}
@@ -5653,7 +5653,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.3
 
-  country-flag-icons@1.5.18: {}
+  country-flag-icons@1.5.19: {}
 
   cp-file@10.0.0:
     dependencies:
