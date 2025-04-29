@@ -1,5 +1,33 @@
 # Changelog
 
+# [4.0.0-alpha.18](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.17...4.0.0-alpha.18) (2025-04-29)
+
+
+### Bug Fixes
+
+* bring back footer on player settings page ([#241](https://github.com/tf2pickup-org/tf2pickup/issues/241)) ([bd0f590](https://github.com/tf2pickup-org/tf2pickup/commit/bd0f59086f2e0c47617948568b0821686b3211f9))
+* **deps:** update dependency @fastify/request-context to v6.2.0 ([659ef26](https://github.com/tf2pickup-org/tf2pickup/commit/659ef26fc9976fa281e12f1945fae1f92a283d43))
+* **deps:** update dependency country-flag-icons to v1.5.19 ([cf98c99](https://github.com/tf2pickup-org/tf2pickup/commit/cf98c99ace946916e846d64d43bac68b68cfbd79))
+* **deps:** update dependency discord.js to v14.19.1 ([e5460e3](https://github.com/tf2pickup-org/tf2pickup/commit/e5460e3b9185b6f49a17301dff562ea1ca2fe09a))
+* **deps:** update dependency discord.js to v14.19.2 ([890918a](https://github.com/tf2pickup-org/tf2pickup/commit/890918a4ff7d03d8e0a42c0d41c2fb6e18d3893b))
+* **deps:** update dependency es-toolkit to v1.36.0 ([d31b1a5](https://github.com/tf2pickup-org/tf2pickup/commit/d31b1a5f8925cc7ef880d2be8ae07711f4db7552))
+* **deps:** update dependency esbuild to v0.25.3 ([2fd1f69](https://github.com/tf2pickup-org/tf2pickup/commit/2fd1f699e2cb98661ba960eb316aaaef23f1a7f4))
+* **deps:** update dependency marked to v15.0.10 ([7a02022](https://github.com/tf2pickup-org/tf2pickup/commit/7a020226134c2ceb6add96694365ab4226c40aea))
+* **deps:** update dependency marked to v15.0.11 ([f001b9b](https://github.com/tf2pickup-org/tf2pickup/commit/f001b9b8ed9827b029cdded39b6b3f604b2a801a))
+* **deps:** update dependency marked to v15.0.9 ([#239](https://github.com/tf2pickup-org/tf2pickup/issues/239)) ([0fa10be](https://github.com/tf2pickup-org/tf2pickup/commit/0fa10be2605a00556a30034415802cb1dee08f62))
+* **deps:** update dependency mongodb to v6.16.0 ([684f854](https://github.com/tf2pickup-org/tf2pickup/commit/684f8547b44f6cf6f5cf2710134faaa7ce17f59a))
+* **deps:** update dependency motion to v12.8.0 ([c549faf](https://github.com/tf2pickup-org/tf2pickup/commit/c549faf373587ceeb3ac43fb84a631e9f8b46ce7))
+* **deps:** update dependency motion to v12.9.2 ([#248](https://github.com/tf2pickup-org/tf2pickup/issues/248)) ([9409a89](https://github.com/tf2pickup-org/tf2pickup/commit/9409a8970be25d9f3d4508367632e5fb2c83f2f5))
+* **deps:** update dependency steamapi to v3.1.1 ([#228](https://github.com/tf2pickup-org/tf2pickup/issues/228)) ([141a9a0](https://github.com/tf2pickup-org/tf2pickup/commit/141a9a0ce62cef1221eefc235a1d8c725b63fe05))
+* fix admin page games configuration timeout units ([#242](https://github.com/tf2pickup-org/tf2pickup/issues/242)) ([e671727](https://github.com/tf2pickup-org/tf2pickup/commit/e67172714d26017f9cb33efff9ce7b564da7e23e))
+* hide chat for unauthenticated users ([#245](https://github.com/tf2pickup-org/tf2pickup/issues/245)) ([002609b](https://github.com/tf2pickup-org/tf2pickup/commit/002609b019ce8edb8a83fa5a699c2f2f5b238bae))
+* parse logs.tf upload response ([#246](https://github.com/tf2pickup-org/tf2pickup/issues/246)) ([1531eae](https://github.com/tf2pickup-org/tf2pickup/commit/1531eae5e4d89020636ca96912aecf6597ad11b1))
+
+
+### Features
+
+* bump join queue discord prompt ([#247](https://github.com/tf2pickup-org/tf2pickup/issues/247)) ([4097a1b](https://github.com/tf2pickup-org/tf2pickup/commit/4097a1b2aefde4e8b202ba08398659cd427da248))
+
 # [4.0.0-alpha.17](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.16...4.0.0-alpha.17) (2025-04-22)
 
 
