@@ -91,6 +91,7 @@ export function ChatPrompt() {
         name="message"
         autocomplete="off"
         autofocus=""
+        required
       />
       <button class="text-abru-light-75" type="submit">
         <IconSend2 />
