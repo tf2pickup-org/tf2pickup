@@ -19,6 +19,7 @@ import type { StreamModel } from './models/stream.model'
 import type { CertificateModel } from './models/certificate.model'
 import type { ChatMessageModel } from './models/chat-message.model'
 import type { DiscordBotStateModel } from './models/discord-bot-state.model'
+import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 
 export const collections = {
   certificates: database.collection<CertificateModel>('certificates'),
@@ -31,6 +32,7 @@ export const collections = {
   keys: database.collection<KeyModel>('keys'),
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
+  playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
   players: database.collection<PlayerModel>('players'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),

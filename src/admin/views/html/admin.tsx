@@ -13,6 +13,7 @@ import {
   IconArrowsShuffle,
   IconBrandDiscord,
   IconHeadset,
+  IconLogs,
   IconMapPinCog,
   IconMoodNerd,
   IconSectionSign,
@@ -27,6 +28,7 @@ import { Layout } from '../../../html/layout'
 import { Footer } from '../../../html/components/footer'
 import { resolve } from 'path'
 import { makeTitle } from '../../../html/make-title'
+import { PlayerRole } from '../../../database/models/player.model'
 
 const adminPages = {
   'player-restrictions': {
@@ -86,17 +88,29 @@ const adminPages = {
   },
 } as const
 
+const superUserPages = {
+  'player-action-logs': {
+    title: 'Player action logs',
+    icon: IconLogs,
+    section: 'Configuration',
+  },
+} as const
+
 const sections = Array.from(new Set(Object.values(adminPages).map(({ section }) => section)))
 
 export function Admin(props: {
   user: User
-  activePage: keyof typeof adminPages
+  activePage: keyof typeof adminPages | keyof typeof superUserPages
   children: Children
 }) {
+  const title =
+    props.activePage in adminPages
+      ? adminPages[props.activePage as keyof typeof adminPages].title
+      : superUserPages[props.activePage as keyof typeof superUserPages].title
   return (
     <Layout
       user={props.user}
-      title={makeTitle(adminPages[props.activePage].title)}
+      title={makeTitle(title)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar user={props.user} />
@@ -117,10 +131,21 @@ export function Admin(props: {
                   ))}
               </>
             ))}
+            {props.user.player.roles.includes(PlayerRole.superUser) && (
+              <>
+                <AdminPanelSection>Super-user</AdminPanelSection>
+                {Object.entries(superUserPages).map(([key, value]) => (
+                  <AdminPanelLink href={`/admin/${key}`} active={props.activePage === key}>
+                    {value.icon({})}
+                    {value.title}
+                  </AdminPanelLink>
+                ))}
+              </>
+            )}
           </AdminPanelSidebar>
 
           <AdminPanelBody>
-            <AdminPanelHeader>{adminPages[props.activePage].title}</AdminPanelHeader>
+            <AdminPanelHeader>{title}</AdminPanelHeader>
             {props.children}
           </AdminPanelBody>
         </AdminPanel>

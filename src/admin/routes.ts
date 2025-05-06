@@ -9,6 +9,7 @@ export default fp(
     await app.register((await import('./game-servers')).default)
     await app.register((await import('./games')).default)
     await app.register((await import('./map-pool')).default)
+    await app.register((await import('./player-action-logs')).default)
     await app.register((await import('./player-restrictions')).default)
     await app.register((await import('./scramble-maps')).default)
     await app.register((await import('./view-for-nerds')).default)
