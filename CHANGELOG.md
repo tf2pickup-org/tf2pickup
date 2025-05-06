@@ -1,5 +1,25 @@
 # Changelog
 
+# [4.0.0-alpha.19](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.18...4.0.0-alpha.19) (2025-05-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @kitajs/html to v4.2.8 ([b05f410](https://github.com/tf2pickup-org/tf2pickup/commit/b05f4101fb62d032b06a01e8f9ab43d8be8be3f3))
+* **deps:** update dependency discord.js to v14.19.3 ([8b55119](https://github.com/tf2pickup-org/tf2pickup/commit/8b5511974dd408ea808b224e8a32e5397160dba3))
+* **deps:** update dependency es-toolkit to v1.37.1 ([4ebe455](https://github.com/tf2pickup-org/tf2pickup/commit/4ebe4553c7ff945306269ba0f467b67cfd1e737e))
+* **deps:** update dependency es-toolkit to v1.37.2 ([78d7784](https://github.com/tf2pickup-org/tf2pickup/commit/78d778439094ad4ecd35a58d6e9af3c7b3bbd6ef))
+* **deps:** update dependency motion to v12.9.4 ([5015b46](https://github.com/tf2pickup-org/tf2pickup/commit/5015b4679bc2df28a9b31031a021e72179931cda))
+* **deps:** update dependency motion to v12.9.7 ([75113c3](https://github.com/tf2pickup-org/tf2pickup/commit/75113c3e00d2e175f259b7dc0409e94562ce4a65))
+* **deps:** update dependency zod to v3.24.4 ([fcd1fc4](https://github.com/tf2pickup-org/tf2pickup/commit/fcd1fc43dd8759dc4dc90a201b55b9a53fb772c2))
+* disable sending empty chat messages ([#250](https://github.com/tf2pickup-org/tf2pickup/issues/250)) ([aa258cf](https://github.com/tf2pickup-org/tf2pickup/commit/aa258cf2b419b0207bf5304b90c44abd26175e79))
+* hide players IP address in game logs ([#251](https://github.com/tf2pickup-org/tf2pickup/issues/251)) ([0e3fd90](https://github.com/tf2pickup-org/tf2pickup/commit/0e3fd906e137332017f2a027a0b3cb111dbe8e14))
+
+
+### Features
+
+* player action logs ([#249](https://github.com/tf2pickup-org/tf2pickup/issues/249)) ([47f6432](https://github.com/tf2pickup-org/tf2pickup/commit/47f6432cca6daf597e2298c7cce235f6e4fe8673))
+
 # [4.0.0-alpha.18](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.17...4.0.0-alpha.18) (2025-04-29)
 
 
