@@ -81,3 +81,22 @@
     background-color: lighten(theme(colors.abru.light.3), 2%);
   }
 }
+
+.player-skill {
+  display: flex;
+  flex-flow: row nowrap;
+  background-color: theme(colors.abru.light.5);
+  border-radius: 4px;
+
+  img {
+    margin: 4px;
+  }
+
+  input {
+    text-align: center;
+    width: auto;
+    min-width: 20px;
+    background: transparent;
+    border: none;
+  }
+}

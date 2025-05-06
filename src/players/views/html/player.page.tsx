@@ -12,7 +12,6 @@ import {
   IconAlignBoxBottomRight,
   IconBrandSteam,
   IconBrandTwitch,
-  IconEdit,
   IconStars,
   IconSum,
 } from '../../../html/components/icons'
@@ -21,9 +20,9 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
-import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
+import { AdminToolbox } from './admin-toolbox'
 
 const gamesPerPage = 5
 
@@ -63,18 +62,22 @@ export async function PlayerPage(props: {
     >
       <NavigationBar user={props.user} />
       <Page>
-        <div class="container relative mx-auto grid grid-cols-2 gap-[30px]">
-          <div class="col-span-2">
-            <PlayerPresentation
-              player={props.player}
-              gameCount={gameCount}
-              gameCountOnClasses={gameCountOnClasses}
-            />
-          </div>
+        <div class="container relative mx-auto flex flex-col gap-[30px]">
+          <PlayerPresentation
+            player={props.player}
+            gameCount={gameCount}
+            gameCountOnClasses={gameCountOnClasses}
+          />
+
+          {props.user?.player.roles.includes(PlayerRole.admin) ? (
+            <AdminToolbox user={props.user} player={props.player} />
+          ) : (
+            <></>
+          )}
 
           {games.length > 0 ? (
             <>
-              <div class="col-span-2 text-center text-2xl font-bold text-abru-light-75 md:text-start">
+              <div class="text-center text-2xl font-bold text-abru-light-75 md:text-start">
                 Game history
               </div>
               <div class="game-list col-span-2">
@@ -94,11 +97,8 @@ export async function PlayerPage(props: {
               />
             </>
           ) : (
-            <>
-              <div></div>
-            </>
+            <div></div>
           )}
-          <EditPlayerButton user={props.user} steamId={props.player.steamId} />
         </div>
       </Page>
       <Footer user={props.user} />
@@ -209,21 +209,6 @@ function PlayerPresentation(props: {
           <></>
         )}
       </div>
-    </div>
-  )
-}
-
-function EditPlayerButton(props: { user: User | undefined; steamId: SteamId64 }) {
-  return (
-    <div class="grid justify-items-end">
-      {props.user?.player.roles.includes(PlayerRole.admin) ? (
-        <a href={`/players/${props.steamId}/edit`} class="button button--accent drop-shadow">
-          <span class="sr-only">Edit player</span>
-          <IconEdit />
-        </a>
-      ) : (
-        <></>
-      )}
     </div>
   )
 }
