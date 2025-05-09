@@ -1,5 +1,22 @@
 # Changelog
 
+# [4.0.0-alpha.20](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.19...4.0.0-alpha.20) (2025-05-09)
+
+
+### Bug Fixes
+
+* add player actions migration ([#254](https://github.com/tf2pickup-org/tf2pickup/issues/254)) ([11fcfe5](https://github.com/tf2pickup-org/tf2pickup/commit/11fcfe55c241568bf62aa7196d9246398fbd1550))
+* **deps:** update dependency @kitajs/html to v4.2.9 ([#253](https://github.com/tf2pickup-org/tf2pickup/issues/253)) ([52167b0](https://github.com/tf2pickup-org/tf2pickup/commit/52167b0b4315fa196f92f1f9d1efac3216e57ef0))
+* **deps:** update dependency cssnano to v7.0.7 ([afea685](https://github.com/tf2pickup-org/tf2pickup/commit/afea68523933c943fef2e6c22d3bb61553a41150))
+* **deps:** update dependency esbuild to v0.25.4 ([5aaf474](https://github.com/tf2pickup-org/tf2pickup/commit/5aaf474be514e74332e49673a7fb7eaeb3388e85))
+* **deps:** update dependency motion to v12.10.1 ([#252](https://github.com/tf2pickup-org/tf2pickup/issues/252)) ([58ae078](https://github.com/tf2pickup-org/tf2pickup/commit/58ae078ecda2529b24a9553373c7ef715c55108d))
+* **deps:** update dependency motion to v12.10.4 ([d303a2e](https://github.com/tf2pickup-org/tf2pickup/commit/d303a2e5aac4acf9a148bc52ec6da32c06578591))
+
+
+### Features
+
+* add tf2pickup.fr branding ([#255](https://github.com/tf2pickup-org/tf2pickup/issues/255)) ([3c341ef](https://github.com/tf2pickup-org/tf2pickup/commit/3c341efafc6250f098abd97b48f40195684cfd92))
+
 # [4.0.0-alpha.19](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.18...4.0.0-alpha.19) (2025-05-06)
 
 
