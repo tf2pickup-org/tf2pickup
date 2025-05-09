@@ -50,6 +50,15 @@ await app.register(await import('@fastify/helmet'), {
       : false,
 })
 await app.register(await import('@fastify/sensible'))
+await app.register(await import('@fastify/static'), {
+  root: [
+    ...(environment.WEBSITE_BRANDING
+      ? [resolve(import.meta.dirname, '..', 'public', 'branding', environment.WEBSITE_BRANDING)]
+      : []),
+    resolve(import.meta.dirname, '..', 'public'),
+  ],
+  prefix: '/',
+})
 await app.register(await import('@fastify/formbody'))
 await app.register(await import('@fastify/secure-session'), {
   key: await secrets.get('session'),
@@ -63,10 +72,6 @@ await app.register(await import('@fastify/secure-session'), {
 })
 await app.register((await import('@fastify/flash')).default)
 await app.register(await import('@fastify/request-context'))
-await app.register(await import('@fastify/static'), {
-  root: resolve(import.meta.dirname, '..', 'public'),
-  prefix: '/',
-})
 await app.register(await import('@fastify/accepts'))
 await app.register((await import('@kitajs/fastify-html-plugin')).default)
 

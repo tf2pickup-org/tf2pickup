@@ -5,6 +5,7 @@ import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
 import { IconBrandSteam } from './icons/icon-brand-steam'
 import { Profile } from './profile'
 import Html from '@kitajs/html'
+import { configuration } from '../../configuration'
 
 export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
   return (
@@ -22,12 +23,14 @@ export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | unde
   )
 }
 
-function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
+async function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
   const { user } = props
   let btn = <SteamButton />
   if (user) {
     btn = <Profile {...user.player} />
   }
+
+  const discordInvite = await configuration.get('misc.discord_invite_link')
 
   return (
     <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
@@ -47,15 +50,17 @@ function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
 
       <div class="hidden w-8 xl:block" />
 
-      <a
-        href="https://discord.gg/UVFVfc4"
-        class="hidden text-abru-light-75 hover:text-slate-200 xl:inline-block"
-        target="_blank"
-        data-umami-event="social-discord"
-      >
-        <IconBrandDiscord size={32} />
-        <span class="tooltip tooltip--bottom whitespace-nowrap">Join us on Discord!</span>
-      </a>
+      {discordInvite !== null && (
+        <a
+          href={discordInvite}
+          class="hidden text-abru-light-75 hover:text-slate-200 xl:inline-block"
+          target="_blank"
+          data-umami-event="social-discord"
+        >
+          <IconBrandDiscord size={32} />
+          <span class="tooltip tooltip--bottom whitespace-nowrap">Join us on Discord!</span>
+        </a>
+      )}
 
       <a
         href="https://ko-fi.com/tf2pickuporg"

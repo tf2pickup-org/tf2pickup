@@ -14,6 +14,7 @@ const environmentSchema = z.object({
 
   WEBSITE_URL: z.string().url(),
   WEBSITE_NAME: z.string().default('tf2pickup.org'),
+  WEBSITE_BRANDING: z.string().optional(),
   MONGODB_URI: z.string().url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),

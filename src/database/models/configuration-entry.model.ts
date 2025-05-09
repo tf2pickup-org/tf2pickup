@@ -120,6 +120,10 @@ export const configurationSchema = z.discriminatedUnion('key', [
       ),
   }),
   z.object({
+    key: z.literal('misc.discord_invite_link'),
+    value: z.string().url().nullable().default(null),
+  }),
+  z.object({
     key: z.literal('players.etf2l_account_required'),
     value: z.boolean().default(false),
   }),
