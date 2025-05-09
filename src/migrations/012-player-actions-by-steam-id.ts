@@ -24,7 +24,7 @@ export async function up() {
       )
       nUpdated += 1
     }
-
-    logger.info(`updated ${nUpdated} player action logs; deleted ${nDeleted} entries`)
   }
+
+  logger.info(`updated ${nUpdated} player action logs; deleted ${nDeleted} entries`)
 }
