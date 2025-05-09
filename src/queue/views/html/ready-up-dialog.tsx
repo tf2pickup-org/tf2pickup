@@ -29,7 +29,7 @@ export function ReadyUpDialog() {
               name="ready"
               value=""
               class="w-[242px] rounded bg-accent-600 py-[12px] text-xl font-bold uppercase text-gray-50"
-              autofocus=""
+              autofocus
               ws-send
               data-umami-event="ready-up"
             >
