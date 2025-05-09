@@ -81,8 +81,8 @@ export default fp(
       request.session.set('steamId', player.steamId)
 
       const returnUrl = environment.WEBSITE_URL
-      logger.trace({ user }, `redirecting to ${returnUrl}`)
-      return await reply.redirect(returnUrl, 302).send()
+      logger.trace({ user, player }, `redirecting to ${returnUrl}`)
+      return await reply.redirect(returnUrl, 302)
     })
 
     app.decorateRequest('user', undefined)
