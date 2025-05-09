@@ -90,7 +90,7 @@ export function ChatPrompt() {
         placeholder="Send message..."
         name="message"
         autocomplete="off"
-        autofocus=""
+        autofocus
         required
       />
       <button class="text-abru-light-75" type="submit">
