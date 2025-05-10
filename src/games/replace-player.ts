@@ -68,22 +68,11 @@ export async function replacePlayer({
         },
       },
       {
-        arrayFilters: [
-          {
-            $and: [
-              { 'slot.player': { $eq: replacee } },
-              {
-                'slot.status': {
-                  $eq: SlotStatus.waitingForSubstitute,
-                },
-              },
-            ],
-          },
-        ],
+        arrayFilters: [{ 'slot.id': { $eq: slot.id } }],
       },
     )
 
-    events.emit('game:playerReplaced', { game: newGame, replacee, replacement })
+    events.emit('game:playerReplaced', { game: newGame, replacee, replacement, slotId: slot.id })
     return game
   })
 }
