@@ -16,6 +16,7 @@ import type { PlayerConnectionStatus } from './database/models/game-slot.model'
 import type { Configuration } from './database/models/configuration-entry.model'
 import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
+import type { GameSlotId } from './shared/types/game-slot-id'
 
 export interface Events {
   'chat:messageSent': {
@@ -45,6 +46,7 @@ export interface Events {
   'game:substituteRequested': {
     game: GameModel
     replacee: SteamId64
+    slotId: GameSlotId
     actor: SteamId64 | Bot
     reason?: string
   }
@@ -52,6 +54,7 @@ export interface Events {
     game: GameModel
     replacee: SteamId64
     replacement: SteamId64
+    slotId: GameSlotId
   }
   'game:playerConnectionStatusUpdated': {
     game: GameModel

@@ -3,22 +3,25 @@ import { configuration } from '../configuration'
 import { logger } from '../logger'
 import { assertClient } from './assert-client'
 import { client } from './client'
+import type { Configuration } from '../database/models/configuration-entry.model'
 
-export async function forEachEnabledChannel(
-  channel: 'substituteNotifications' | 'queuePrompts' | 'adminNotifications',
-  fn: (channel: TextChannel) => Promise<void>,
+type GuildConfiguration = Configuration['discord.guilds'][number]
+
+export async function forEachEnabledChannel<T extends Exclude<keyof GuildConfiguration, 'id'>>(
+  channel: T,
+  fn: (channel: TextChannel, config: NonNullable<GuildConfiguration[T]>) => Promise<void>,
 ) {
   const config = await configuration.get('discord.guilds')
   const enabledChannels = config
     .filter(guildConfiguration => Boolean(guildConfiguration[channel]?.channel))
-    .map(guildConfig => guildConfig.queuePrompts!.channel)
+    .map(guildConfig => guildConfig[channel]!)
 
   await Promise.all(
-    enabledChannels.map(async channelId => {
+    enabledChannels.map(async channelConfig => {
       assertClient(client)
-      const channel = client.channels.resolve(channelId)
+      const channel = client.channels.resolve(channelConfig.channel)
       if (!channel) {
-        logger.error({ channelId }, `no such channel`)
+        logger.error({ channelId: channelConfig.channel }, `no such channel`)
         return
       }
 
@@ -27,7 +30,7 @@ export async function forEachEnabledChannel(
         return
       }
 
-      await fn(channel)
+      await fn(channel, channelConfig)
     }),
   )
 }

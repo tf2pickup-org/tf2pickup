@@ -61,6 +61,7 @@ export async function requestSubstitute({
   events.emit('game:substituteRequested', {
     game: newGame,
     replacee,
+    slotId: slot.id,
     actor,
     ...(reason && { reason }),
   })

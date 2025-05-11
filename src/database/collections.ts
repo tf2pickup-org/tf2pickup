@@ -20,11 +20,15 @@ import type { CertificateModel } from './models/certificate.model'
 import type { ChatMessageModel } from './models/chat-message.model'
 import type { DiscordBotStateModel } from './models/discord-bot-state.model'
 import type { PlayerActionEntryModel } from './models/player-action-entry.model'
+import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
 
 export const collections = {
   certificates: database.collection<CertificateModel>('certificates'),
   chatMessages: database.collection<ChatMessageModel>('chat.messages'),
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
+  discordSubstituteNotifications: database.collection<DiscordSubstituteNotificationModel>(
+    'discord.substitutenotifications',
+  ),
   discordBotState: database.collection<DiscordBotStateModel>('discord.botstate'),
   documents: database.collection<DocumentModel>('documents'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
