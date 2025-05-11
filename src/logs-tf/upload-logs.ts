@@ -7,7 +7,7 @@ import FormData from 'form-data'
 const uploadLogResponseSchema = z.discriminatedUnion('success', [
   z.object({
     success: z.literal(true),
-    log_id: z.string(),
+    log_id: z.number(),
     url: z.string(),
   }),
   z.object({
