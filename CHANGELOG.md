@@ -1,5 +1,14 @@
 # Changelog
 
+# [4.0.0-alpha.21](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.20...4.0.0-alpha.21) (2025-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency motion to v12.10.5 ([6ed617f](https://github.com/tf2pickup-org/tf2pickup/commit/6ed617fc85b0096701aa4b836ad992d8e0f7b005))
+* log only once during migration ([#256](https://github.com/tf2pickup-org/tf2pickup/issues/256)) ([9417f63](https://github.com/tf2pickup-org/tf2pickup/commit/9417f63e03603b4c2a6bb58bc87502ab00e648a6))
+* **logs.tf:** fix upload log response schema ([#258](https://github.com/tf2pickup-org/tf2pickup/issues/258)) ([bcaec91](https://github.com/tf2pickup-org/tf2pickup/commit/bcaec9130e82d9e5ec514597d1e8cdf64eefb409))
+
 # [4.0.0-alpha.20](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.19...4.0.0-alpha.20) (2025-05-09)
 
 
