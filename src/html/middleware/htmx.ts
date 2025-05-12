@@ -15,9 +15,16 @@ declare module '@fastify/request-context' {
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    app.addHook('onRequest', async (request, response) => {
+    // eslint-disable-next-line @typescript-eslint/require-await
+    app.addHook('onRequest', async request => {
       request.boosted = request.headers['hx-boosted'] === 'true'
-      response.vary('hx-boosted')
+    })
+
+    app.addHook('onSend', async (_, response) => {
+      const contentType = response.getHeader('content-type')
+      if (typeof contentType === 'string' && contentType.startsWith('text/html')) {
+        response.vary('hx-boosted')
+      }
     })
 
     // eslint-disable-next-line @typescript-eslint/require-await
