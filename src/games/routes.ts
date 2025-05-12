@@ -13,6 +13,9 @@ import { findOne } from './find-one'
 import { requestGameServerReinitialization } from './request-game-server-reinitialization'
 import { gameServers } from '../game-servers'
 import { games } from '.'
+import { collections } from '../database/collections'
+import { environment } from '../environment'
+import { Readable } from 'stream'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -161,6 +164,35 @@ export default fp(
               JSON.stringify({ close: { target: '#choose-game-server-dialog' } }),
             )
             .send()
+        },
+      )
+      .get(
+        '/games/:number/logs',
+        {
+          schema: {
+            params: z.object({ number: gameNumber }),
+          },
+        },
+        async (request, reply) => {
+          const { number } = request.params
+          const game = await games.findOne({ number })
+          if (!game.logSecret) {
+            return reply.status(404).send('No logs available for this game')
+          }
+
+          const log = await collections.gameLogs.findOne({ logSecret: game.logSecret })
+          if (!log) {
+            return reply.status(404).send('No logs available for this game')
+          }
+
+          const stream = Readable.from(log.logs).map(line => `${line}\n`)
+          return await reply
+            .header(
+              'content-disposition',
+              `attachment; filename=${environment.WEBSITE_NAME}-${number}.log`,
+            )
+            .type('text/plain')
+            .send(stream)
         },
       )
   },
