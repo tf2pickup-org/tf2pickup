@@ -3,14 +3,18 @@ import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { collections } from '../../database/collections'
 import { getMessage } from '../get-message'
 import { minutesToMilliseconds } from 'date-fns'
+import { queue } from '../../queue'
 
-export default fp(async () => {
-  await ensurePromptIsVisible()
-  setInterval(ensurePromptIsVisible, minutesToMilliseconds(5))
+// eslint-disable-next-line @typescript-eslint/require-await
+export default fp(async app => {
+  app.addHook('onReady', async () => {
+    setInterval(ensurePromptIsVisible, minutesToMilliseconds(5))
+    await ensurePromptIsVisible()
+  })
 })
 
 async function ensurePromptIsVisible() {
-  await forEachEnabledChannel('queuePrompts', async channel => {
+  await forEachEnabledChannel('queuePrompts', async (channel, config) => {
     const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
     const message = await getMessage(channel, state?.promptMessageId)
     if (!message) {
@@ -22,19 +26,30 @@ async function ensurePromptIsVisible() {
       return
     }
 
-    if (message.id !== messages.first()!.id) {
-      const embeds = message.embeds
-      const content = message.content
-      await message.delete()
-
-      const sentMessage = await channel.send({
-        content,
-        embeds,
-      })
-      await collections.discordBotState.updateOne(
-        { guildId: channel.guild.id },
-        { $set: { promptMessageId: sentMessage.id } },
-      )
+    if (message.id === messages.first()!.id) {
+      return
     }
+
+    const thresholdRatio = config.bumpPlayerThresholdRatio
+    const slots = await queue.getSlots()
+    const playerCount = slots.filter(slot => !!slot.player).length
+    const requiredPlayerCount = slots.length
+
+    if (playerCount < requiredPlayerCount * thresholdRatio) {
+      return
+    }
+
+    const embeds = message.embeds
+    const content = message.content
+    await message.delete()
+
+    const sentMessage = await channel.send({
+      content,
+      embeds,
+    })
+    await collections.discordBotState.updateOne(
+      { guildId: channel.guild.id },
+      { $set: { promptMessageId: sentMessage.id } },
+    )
   })
 }
