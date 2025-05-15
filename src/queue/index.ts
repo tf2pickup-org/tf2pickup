@@ -10,6 +10,7 @@ import { logger } from '../logger'
 import { reset } from './reset'
 import { resetMapOptions } from './reset-map-options'
 import { getFriends } from './get-friends'
+import { getMapVoteResults } from './get-map-vote-results'
 
 const slotCount = await collections.queueSlots.countDocuments()
 if (slotCount === 0) {
@@ -20,6 +21,7 @@ if (slotCount === 0) {
 export const queue = {
   config,
   getFriends,
+  getMapVoteResults,
   getMapWinner,
   getSlots,
   getState,
