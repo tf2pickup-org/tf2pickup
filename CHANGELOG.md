@@ -1,5 +1,25 @@
 # Changelog
 
+# [4.0.0-alpha.22](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.21...4.0.0-alpha.22) (2025-05-15)
+
+
+### Bug Fixes
+
+* configure logging level ([#261](https://github.com/tf2pickup-org/tf2pickup/issues/261)) ([0231052](https://github.com/tf2pickup-org/tf2pickup/commit/02310528363ed20411900cda71655aa4ecf7ab39))
+* **deps:** update dependency fastify to v5.3.3 ([6d44ee1](https://github.com/tf2pickup-org/tf2pickup/commit/6d44ee1a0789b46fc073e6e580ae44758054dd20))
+* **deps:** update dependency motion to v12.11.0 ([e2a7c93](https://github.com/tf2pickup-org/tf2pickup/commit/e2a7c939a43aa47882baa10d2e25961bfeb801ca))
+* **deps:** update dependency motion to v12.11.3 ([942582c](https://github.com/tf2pickup-org/tf2pickup/commit/942582c55fc51b06bf3fc786069af08e479f54f6))
+* **deps:** update dependency motion to v12.11.4 ([0dacde9](https://github.com/tf2pickup-org/tf2pickup/commit/0dacde9332ff68bcd2196c6387372ff8ba7f2bcb))
+* **discord:** respect bumpPlayerThresholdRatio config ([#263](https://github.com/tf2pickup-org/tf2pickup/issues/263)) ([a7333d7](https://github.com/tf2pickup-org/tf2pickup/commit/a7333d7ecab2ba5c84a695f44c60d814498a6b33))
+* set vary header for html responses only ([#260](https://github.com/tf2pickup-org/tf2pickup/issues/260)) ([6e4e9c9](https://github.com/tf2pickup-org/tf2pickup/commit/6e4e9c975467ca7857532df851d3de691c08001b))
+
+
+### Features
+
+* **discord:** add map vote results to join queue prompts ([#264](https://github.com/tf2pickup-org/tf2pickup/issues/264)) ([ca430b5](https://github.com/tf2pickup-org/tf2pickup/commit/ca430b51bdbabd356b8c6baa86f51cf92f87720c))
+* **discord:** add substitute request notifications ([#257](https://github.com/tf2pickup-org/tf2pickup/issues/257)) ([7f20949](https://github.com/tf2pickup-org/tf2pickup/commit/7f209497fb438a5c2896dbf37ce33c80d08fea0a))
+* export game logs ([#259](https://github.com/tf2pickup-org/tf2pickup/issues/259)) ([31f4fff](https://github.com/tf2pickup-org/tf2pickup/commit/31f4fff92bd1dcd78aa8d736eaa8f800630dab3a))
+
 # [4.0.0-alpha.21](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.20...4.0.0-alpha.21) (2025-05-11)
 
 
