@@ -24,22 +24,17 @@ export default fp(async () => {
 const clientName = new URL(environment.WEBSITE_URL).hostname
 const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
 
-interface QueuePreviewGameClassData {
-  gameClass: Tf2ClassName
-  emoji?: Emoji | undefined
-  players: { name: string }[]
-  playersRequired: number
-}
-
 async function refreshPrompt() {
   const slots = await queue.getSlots()
   const playerCount = slots.filter(slot => !!slot.player).length
   const requiredPlayerCount = slots.length
+  const mapVoteResults = await queue.getMapVoteResults()
   await forEachEnabledChannel('queuePrompts', async channel => {
     const embed = queuePreview({
       playerCount,
       requiredPlayerCount,
       gameClassData: await slotsToGameClassData(channel.guild.id, slots),
+      mapVoteResults,
     })
 
     const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
@@ -64,10 +59,18 @@ async function refreshPrompt() {
   })
 }
 
+interface QueuePreviewGameClassData {
+  gameClass: Tf2ClassName
+  emoji?: Emoji | undefined
+  players: { name: string }[]
+  playersRequired: number
+}
+
 interface QueuePreviewOptions {
   playerCount: number
   requiredPlayerCount: number
   gameClassData: QueuePreviewGameClassData[]
+  mapVoteResults: Record<string, number>
 }
 
 function queuePreview(options: QueuePreviewOptions): EmbedBuilder {
@@ -76,8 +79,8 @@ function queuePreview(options: QueuePreviewOptions): EmbedBuilder {
     .setTitle(`**${options.playerCount}/${options.requiredPlayerCount} players in the queue!**`)
     .setDescription(`Join [${clientName}](${environment.WEBSITE_URL}) to play the next game!`)
     .setThumbnail(iconUrl)
-    .addFields(
-      options.gameClassData.map(gameClassData => ({
+    .addFields([
+      ...options.gameClassData.map(gameClassData => ({
         name: `${gameClassData.emoji?.toString()} ${gameClassData.gameClass} (${
           gameClassData.players.length
         }/${gameClassData.playersRequired})`,
@@ -87,7 +90,14 @@ function queuePreview(options: QueuePreviewOptions): EmbedBuilder {
             : '\u200B',
         inline: true,
       })),
-    )
+      {
+        name: 'map votes',
+        value: Object.entries(options.mapVoteResults)
+          .map(([mapName, count]) => `\u25CF\u2000${mapName}: ${count}`)
+          .join('\n'),
+        inline: false,
+      },
+    ])
     .setFooter({
       iconURL: iconUrl,
       text: clientName,
