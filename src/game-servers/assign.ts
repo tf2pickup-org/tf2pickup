@@ -46,5 +46,10 @@ function assignSelected(game: GameModel, selected: string): Promise<GameServer> 
     return staticGameServers.assign(game, id)
   }
 
+  if (selected.startsWith('servemeTf:')) {
+    const name = selected.substring(10)
+    return servemeTf.assign(game, name)
+  }
+
   throw errors.badRequest(`unknown game server selection: ${selected}`)
 }
