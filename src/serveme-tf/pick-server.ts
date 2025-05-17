@@ -9,7 +9,26 @@ interface ServerData {
   name: string
 }
 
-export async function pickServer(servers: ServerData[]): Promise<ServerId> {
+export async function pickServer(servers: ServerData[], name?: string): Promise<ServerId> {
+  if (name) {
+    if (name.startsWith('anyOf:')) {
+      const anyOf = name.substring(6)
+      const server = servers.find(({ name }) => name.startsWith(anyOf))
+      if (!server) {
+        throw errors.notFound('could not find any gameservers meeting given criteria')
+      }
+
+      return server.id
+    }
+
+    const server = servers.find(server => server.name === name)
+    if (!server) {
+      throw errors.notFound(`could not find gameserver named ${name}`)
+    }
+
+    return server.id
+  }
+
   const bannedServers = await configuration.get('serveme_tf.ban_gameservers')
 
   const validServers = (await byFilterRegion(servers)).filter(s =>

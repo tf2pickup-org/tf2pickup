@@ -4,7 +4,7 @@ import { logger } from '../logger'
 import { pickServer } from './pick-server'
 import { errors } from '../errors'
 
-export async function assign(game: GameModel): Promise<GameServer> {
+export async function assign(game: GameModel, name?: string): Promise<GameServer> {
   if (!client) {
     throw errors.badRequest(`serveme.tf is disabled`)
   }
@@ -12,7 +12,7 @@ export async function assign(game: GameModel): Promise<GameServer> {
   const { servers } = await client.findOptions()
   logger.debug({ servers }, 'serveme.tf servers listed')
 
-  const serverId = await pickServer(servers)
+  const serverId = await pickServer(servers, name)
   logger.debug({ serverId }, 'serveme.tf server selected')
 
   const reservation = await client.create({
