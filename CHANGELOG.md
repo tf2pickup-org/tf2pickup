@@ -1,5 +1,16 @@
 # Changelog
 
+# [4.0.0-alpha.23](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.22...4.0.0-alpha.23) (2025-05-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/rate-limit to v10.3.0 ([9144677](https://github.com/tf2pickup-org/tf2pickup/commit/9144677e2acb020ab5ecf6d50f2fcd2070346e9c))
+* **deps:** update dependency es-toolkit to v1.38.0 ([b42a8a1](https://github.com/tf2pickup-org/tf2pickup/commit/b42a8a12f9ada0c32dfb729660175dca4f2d0407))
+* **deps:** update dependency motion to v12.12.1 ([393b848](https://github.com/tf2pickup-org/tf2pickup/commit/393b84821648a8ccb01326072533f4a843410e1b))
+* **deps:** update dependency pino to v9.7.0 ([121a285](https://github.com/tf2pickup-org/tf2pickup/commit/121a285a90528afe656f39502a8ae00ebf003d77))
+* **serveme.tf:** implement anyOf ([#266](https://github.com/tf2pickup-org/tf2pickup/issues/266)) ([4820b00](https://github.com/tf2pickup-org/tf2pickup/commit/4820b00c7874786b75db4f26b278d6c85d4d6b38))
+
 # [4.0.0-alpha.22](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.21...4.0.0-alpha.22) (2025-05-15)
 
 
