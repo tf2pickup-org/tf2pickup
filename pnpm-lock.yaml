@@ -244,8 +244,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       pino-princess:
-        specifier: 1.0.0
-        version: 1.0.0(typescript@5.8.3)
+        specifier: 1.1.0
+        version: 1.1.0(typescript@5.8.3)
       postcss-cli:
         specifier: 11.0.1
         version: 11.0.1(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.4)
@@ -1516,10 +1516,6 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
-  chalk@5.3.0:
-    resolution: {integrity: sha512-dLitG79d+GV1Nb/VYcCDFivJeK1hiukt9QjRNVOsUtTy1rR1YJsmpGGTZ3qJos+uw7WmWF4wUwBd9jxjocFC2w==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-
   chalk@5.4.1:
     resolution: {integrity: sha512-zgVZuo2WcZgfUEmsn6eO3kINexW8RAE4maiQ8QNs8CtpPCSyMiYsULR3HQYkm3w8FIA3SberyMJMSldGsW+U3w==}
     engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
@@ -1801,9 +1797,6 @@ packages:
     resolution: {integrity: sha512-7hvf7/GW8e86rW0ptuwS3OcBGDjIi6SZva7hCyWC0yYry2cOPmLIjXAUHI6DK2HsnwJd9ifmt57i8eV2n4YNpw==}
     engines: {node: '>= 14'}
 
-  date-fns@3.6.0:
-    resolution: {integrity: sha512-fRHTG8g/Gif+kSh50gaGEdToemgfj74aRX3swtiouboip5JDLAyDE9F11nHMIcvOaXeOC6D7SpNhi7uFyB7Uww==}
-
   date-fns@4.1.0:
     resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
 
@@ -1984,10 +1977,6 @@ packages:
     resolution: {integrity: sha512-8pgjLUcUjcgDg+2Q4NYXnPbo/vncAY4UmyaCm0jZevERqCHZIaWwdJHkf8XQtu4AxSKCdvrUbT0XUr1IdZzI8Q==}
     engines: {node: '>=18'}
     hasBin: true
-
-  escalade@3.1.2:
-    resolution: {integrity: sha512-ErCHMCae19vR8vQGe50xIsVomy19rg6gFu3+r3jkEO46suLMWBksvVyoGgQV+jOfl84ZSOSlmv6Gxa89PmTGmA==}
-    engines: {node: '>=6'}
 
   escalade@3.2.0:
     resolution: {integrity: sha512-WUj2qlxaQtO4g6Pq5c29GTcWGDyd8itL8zTlipgECz3JesAiiOKotd8JU6otB3PACgG6xkJUyVhboMS+bje/jA==}
@@ -3183,8 +3172,8 @@ packages:
   pino-abstract-transport@2.0.0:
     resolution: {integrity: sha512-F63x5tizV6WCh4R6RHyi2Ml+M70DNRXt/+HANowMflpgGFMAym/VKm6G7ZOQRjqN7XbGxK1Lg9t6ZrtzOaivMw==}
 
-  pino-princess@1.0.0:
-    resolution: {integrity: sha512-AReZ0kiilCK+qZWQAywY/mAd3Jh4rLsVuXd0+a5wgQP84rbEQoKPoOWG0GWHoI7kz7uTBYdbSqlQ4jAIVWei/w==}
+  pino-princess@1.1.0:
+    resolution: {integrity: sha512-okHOik+oxHvroc2/Ytxdw5dJGqvLiz7zD8rwqSDNunHRhcZru5IeOh06wfd+fnp3ygHGD0xZbya+xHRg0uHfgw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -3559,8 +3548,8 @@ packages:
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
-  pump@3.0.0:
-    resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
+  pump@3.0.2:
+    resolution: {integrity: sha512-tUPXtzlGM8FE3P0ZL6DVs/3P58k9nk8/jZeQCurTJylQA8qFYzHFfhBJkuqyE0FifOsQ0uKWekiZ5g8wtr28cw==}
 
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -5443,8 +5432,6 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
-  chalk@5.3.0: {}
-
   chalk@5.4.1: {}
 
   chardet@0.7.0: {}
@@ -5759,8 +5746,6 @@ snapshots:
 
   data-uri-to-buffer@6.0.2: {}
 
-  date-fns@3.6.0: {}
-
   date-fns@4.1.0: {}
 
   debug@4.4.0:
@@ -5974,8 +5959,6 @@ snapshots:
       '@esbuild/win32-arm64': 0.25.4
       '@esbuild/win32-ia32': 0.25.4
       '@esbuild/win32-x64': 0.25.4
-
-  escalade@3.1.2: {}
 
   escalade@3.2.0: {}
 
@@ -7115,19 +7098,19 @@ snapshots:
     dependencies:
       split2: 4.2.0
 
-  pino-princess@1.0.0(typescript@5.8.3):
+  pino-princess@1.1.0(typescript@5.8.3):
     dependencies:
-      chalk: 5.3.0
+      chalk: 5.4.1
       cli-highlight: 2.1.11
       cosmiconfig: 9.0.0(typescript@5.8.3)
-      date-fns: 3.6.0
+      date-fns: 4.1.0
       json-log-line: 0.0.2
       json-stringify-pretty-compact: 4.0.0
       meow: 13.2.0
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 2.0.0
       pretty-ms: 9.1.0
-      pump: 3.0.0
+      pump: 3.0.2
       sonic-boom: 4.2.0
     transitivePeerDependencies:
       - typescript
@@ -7447,7 +7430,7 @@ snapshots:
 
   proxy-from-env@1.1.0: {}
 
-  pump@3.0.0:
+  pump@3.0.2:
     dependencies:
       end-of-stream: 1.4.4
       once: 1.4.0
@@ -8143,7 +8126,7 @@ snapshots:
   yargs@16.2.0:
     dependencies:
       cliui: 7.0.4
-      escalade: 3.1.2
+      escalade: 3.2.0
       get-caller-file: 2.0.5
       require-directory: 2.1.1
       string-width: 4.2.3
