@@ -69,11 +69,11 @@ export async function PlayerPage(props: {
             gameCountOnClasses={gameCountOnClasses}
           />
 
-          {props.user?.player.roles.includes(PlayerRole.admin) ? (
-            <AdminToolbox user={props.user} player={props.player} />
-          ) : (
-            <></>
-          )}
+          {/* {props.user?.player.roles.includes(PlayerRole.admin) ? ( */}
+          <AdminToolbox user={props.user} player={props.player} />
+          {/* ) : ( */}
+          {/* <></> */}
+          {/* )} */}
 
           {games.length > 0 ? (
             <>

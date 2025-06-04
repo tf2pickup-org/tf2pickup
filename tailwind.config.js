@@ -62,6 +62,10 @@ export default {
         'team-blu': 'rgb(88 121 138)',
         'team-red': 'rgb(189 59 59)',
 
+        'game-result-win': '#52FFB8',
+        'game-result-loss': '#A71D31',
+        'game-result-tie': '#F4F4ED',
+
         'place-1st': '#E3C392',
         'place-2nd': '#BBBBBB',
         'place-3rd': '#E3A592',
