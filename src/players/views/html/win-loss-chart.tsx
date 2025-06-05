@@ -10,11 +10,23 @@ interface GameResult {
   gameNumber: GameNumber
 }
 
-export async function WinLossChart(props: { steamId: SteamId64 }) {
-  const allGames: GameResult[] = (
+export type ChartSelection = Tf2ClassName | 'all'
+
+export async function WinLossChart(props: { steamId: SteamId64; selection?: ChartSelection }) {
+  const selection = props.selection ?? 'all'
+  const games: GameResult[] = (
     await collections.games
       .find(
-        { state: GameState.ended, 'slots.player': props.steamId, score: { $exists: true } },
+        {
+          state: GameState.ended,
+          slots: {
+            $elemMatch: {
+              player: props.steamId,
+              ...(selection === 'all' ? {} : { gameClass: selection }),
+            },
+          },
+          score: { $exists: true },
+        },
         { limit: 10, sort: { 'events.0.at': -1 } },
       )
       .toArray()
@@ -38,20 +50,17 @@ export async function WinLossChart(props: { steamId: SteamId64 }) {
           <GameClassIcon gameClass={Tf2ClassName.demoman} size={24} />
           <GameClassIcon gameClass={Tf2ClassName.medic} size={24} />
         </div>
-        <div class="flex flex-row gap-4">
-          <span class="text-game-result-win font-medium">
-            W: {allGames.filter(({ result }) => result === 'win').length}
-          </span>
-          <span class="text-game-result-tie font-medium">
-            T: {allGames.filter(({ result }) => result === 'tie').length}
-          </span>
-          <span class="text-game-result-loss font-medium">
-            L: {allGames.filter(({ result }) => result === 'loss').length}
-          </span>
+        <div class="game-count">
+          <span class="sr-only">Wins</span>
+          <span class="wins">W: {games.filter(({ result }) => result === 'win').length}</span>
+          <span class="sr-only">Ties</span>
+          <span class="ties">T: {games.filter(({ result }) => result === 'tie').length}</span>
+          <span class="sr-only">Losses</span>
+          <span class="losses">L: {games.filter(({ result }) => result === 'loss').length}</span>
         </div>
       </div>
       <div class="grid grid-cols-10 justify-around gap-1">
-        {allGames.map(game => (
+        {games.map(game => (
           <div class={`game-result ${game.result}`}>
             <span class="tooltip tooltip--bottom whitespace-nowrap" safe>
               #{game.gameNumber}

@@ -152,4 +152,26 @@
       background-color: theme(colors.game-result-tie);
     }
   }
+
+  .game-count {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    font-weight: 500;
+
+    .wins {
+      color: theme(colors.game-result-win);
+    }
+
+    .losses {
+      color: theme(colors.game-result-loss);
+    }
+
+    .ties {
+      color: theme(colors.game-result-tie);
+    }
+  }
 }
