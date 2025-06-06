@@ -10,22 +10,22 @@ import { configuration } from '../../configuration'
 export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
   return (
     <nav class="flex min-h-[95px] flex-row justify-center">
-      <div class="container flex flex-row items-center justify-between">
-        <a href="/" class="mx-4 self-center md:mx-1">
+      <div class="container relative flex flex-row items-center justify-between">
+        <a href="/" class="logo">
           <img alt="tf2pickup.org logo" src="/logo.png" height="120" class="h-[44px]" />
         </a>
 
-        <div class="hidden flex-row items-center gap-5 font-medium lg:flex" id="navbar-menu">
+        <div class="menu-container" id="navbar-menu">
           <Menu {...props} />
         </div>
 
-        <button class="mx-4 text-ash lg:hidden" id="toggle-menu-button">
+        <button class="toggle-menu-button" id="toggle-menu-button">
           <IconMenu2 size={42} />
         </button>
 
         <script type="module">{`
         document.getElementById('toggle-menu-button').addEventListener('click', () => {
-          document.getElementById('navbar-menu').classList.toggle('hidden');
+          document.getElementById('navbar-menu').classList.toggle('active');
         });
       `}</script>
       </div>
@@ -43,7 +43,7 @@ async function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) 
   const discordInvite = await configuration.get('misc.discord_invite_link')
 
   return (
-    <div class="absolute left-0 top-0 flex flex-col gap-[10px] px-4 lg:static lg:flex-row lg:items-center lg:px-0">
+    <div class="menu">
       <GamesLink />
       <MenuItem href="/players">Players</MenuItem>
       <MenuItem href="/rules">Rules</MenuItem>
@@ -83,7 +83,7 @@ async function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) 
       </a>
 
       <div class="hidden w-2 lg:block" />
-      <div class="my-2 h-[2px] grow bg-abru-light-15 lg:hidden" />
+      <div class="my-2 h-[2px] bg-abru-light-15 lg:hidden" />
 
       {btn}
     </div>
