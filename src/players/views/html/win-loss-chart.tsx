@@ -41,14 +41,65 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
   })
 
   return (
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-2" id="win-loss-chart">
       <div class="flex flex-row justify-between">
-        <div class="flex flex-row gap-4 text-ash">
-          All
-          <GameClassIcon gameClass={Tf2ClassName.scout} size={24} />
-          <GameClassIcon gameClass={Tf2ClassName.soldier} size={24} />
-          <GameClassIcon gameClass={Tf2ClassName.demoman} size={24} />
-          <GameClassIcon gameClass={Tf2ClassName.medic} size={24} />
+        <div class="game-count-selection">
+          <input
+            type="radio"
+            name="game-class-selection"
+            id="all"
+            value="all"
+            checked={selection === 'all'}
+          />
+          <label for="all">All</label>
+
+          <input
+            type="radio"
+            name="game-class-selection"
+            id="scout"
+            value={Tf2ClassName.scout}
+            checked={selection === Tf2ClassName.scout}
+          />
+          <label for="scout">
+            <span class="sr-only">Scout</span>
+            <GameClassIcon gameClass={Tf2ClassName.scout} size={24} />
+          </label>
+
+          <input
+            type="radio"
+            name="game-class-selection"
+            id="soldier"
+            value={Tf2ClassName.soldier}
+            checked={selection === Tf2ClassName.soldier}
+          />
+          <label for="soldier">
+            <span class="sr-only">Soldier</span>
+            <GameClassIcon gameClass={Tf2ClassName.soldier} size={24} />
+          </label>
+
+          <input
+            type="radio"
+            name="game-class-selection"
+            id="demoman"
+            value={Tf2ClassName.demoman}
+            checked={selection === Tf2ClassName.demoman}
+          />
+          <label for="demoman">
+            <span class="sr-only">Demoman</span>
+            <GameClassIcon gameClass={Tf2ClassName.demoman} size={24} />
+          </label>
+
+          <input
+            type="radio"
+            name="game-class-selection"
+            id="medic"
+            value={Tf2ClassName.medic}
+            checked={selection === Tf2ClassName.medic}
+          />
+          <label for="medic">
+            <span class="sr-only">Medic</span>
+            <GameClassIcon gameClass={Tf2ClassName.medic} size={24} />
+          </label>
         </div>
         <div class="game-count">
           <span class="sr-only">Wins</span>

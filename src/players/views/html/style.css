@@ -153,6 +153,30 @@
     }
   }
 
+  .game-count-selection {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    input[type='radio'] {
+      display: none;
+    }
+
+    label {
+      cursor: pointer;
+      display: inline-block;
+
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+
+    input[type='radio']:checked + label {
+      background-color: theme(colors.abru.light.5);
+    }
+  }
+
   .game-count {
     display: flex;
     flex-flow: row nowrap;

@@ -22,6 +22,7 @@ import { getBanExpiryDate } from './get-ban-expiry-date'
 import { addBan } from './add-ban'
 import { revokeBan } from './revoke-ban'
 import { bySteamId } from './by-steam-id'
+import { WinLossChart } from './views/html/win-loss-chart'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -258,6 +259,24 @@ export default fp(
           })
           request.flash('success', `Player ban added`)
           reply.redirect(`/players/${request.params.steamId}/edit/bans`)
+        },
+      )
+      .get(
+        '/players/:steamId/win-loss-chart/:selection?',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+              selection: z.nativeEnum(Tf2ClassName).or(z.literal('all')).optional().default('all'),
+            }),
+          },
+        },
+        async (request, reply) => {
+          const { steamId, selection } = request.params
+          reply.status(200).html(await WinLossChart({ steamId, selection }))
         },
       )
       .get(
