@@ -103,11 +103,12 @@
   background: theme(colors.abru.dark.29);
   padding: 24px;
 
-  @media screen(md) {
+  @media screen(xl) {
     grid-template-areas:
-      'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill captionWinLoss  captionWinLoss  . linkEdit'
-      'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  winLoss         winLoss         winLoss linkEdit';
-    grid-template-columns: repeat(9, minmax(0, 1fr)) auto;
+      'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
+      'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  . winLoss         winLoss         winLoss . linkEdit';
+    grid-template-columns: repeat(6, minmax(0, 2fr)) 1fr repeat(3, 2fr) 1fr 2fr;
+    align-items: flex-end;
   }
 
   .caption {
@@ -121,9 +122,11 @@
     flex-flow: row nowrap;
     background-color: theme(colors.abru.light.5);
     border-radius: 4px;
+    height: 48px;
+    align-items: center;
 
     img {
-      margin: 4px;
+      margin-left: 16px;
     }
 
     input {
@@ -160,20 +163,17 @@
     justify-content: center;
     gap: 8px;
 
-    input[type='radio'] {
-      display: none;
-    }
-
-    label {
+    button {
       cursor: pointer;
       display: inline-block;
 
       padding: 4px 8px;
       border-radius: 4px;
-    }
+      color: theme(colors.ash);
 
-    input[type='radio']:checked + label {
-      background-color: theme(colors.abru.light.5);
+      &.selected {
+        background-color: theme(colors.abru.light.5);
+      }
     }
   }
 

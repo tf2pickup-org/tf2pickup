@@ -69,7 +69,7 @@ export async function AdminToolbox(props: { user?: User | undefined; player: Pla
 
       <a
         href={`/players/${player.steamId}/edit`}
-        class="button button--accent whitespace-nowrap"
+        class="button button--accent self-center whitespace-nowrap"
         style="grid-area: linkEdit"
       >
         <IconEdit />

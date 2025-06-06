@@ -1,12 +1,14 @@
 import { collections } from '../../../database/collections'
-import { GameState, type GameNumber } from '../../../database/models/game.model'
+import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
+import { queue } from '../../../queue'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'
 
 interface GameResult {
   result: 'win' | 'loss' | 'tie'
+  score: NonNullable<GameModel['score']>
   gameNumber: GameNumber
 }
 
@@ -27,7 +29,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
           },
           score: { $exists: true },
         },
-        { limit: 10, sort: { 'events.0.at': -1 } },
+        { limit: 12, sort: { 'events.0.at': -1 } },
       )
       .toArray()
   ).map(game => {
@@ -36,6 +38,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
     const opponentScore = game.score![playerSlot.team === Tf2Team.red ? Tf2Team.blu : Tf2Team.red]
     return {
       result: myScore > opponentScore ? 'win' : myScore < opponentScore ? 'loss' : 'tie',
+      score: game.score!,
       gameNumber: game.number,
     }
   })
@@ -44,62 +47,30 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
     <div class="flex flex-col gap-2" id="win-loss-chart">
       <div class="flex flex-row justify-between">
         <div class="game-count-selection">
-          <input
-            type="radio"
-            name="game-class-selection"
-            id="all"
-            value="all"
-            checked={selection === 'all'}
-          />
-          <label for="all">All</label>
+          <button
+            hx-get={`/players/${props.steamId}/win-loss-chart/all`}
+            hx-target="#win-loss-chart"
+            hx-swap="outerHTML"
+            class={[selection === 'all' && 'selected']}
+            role="tab"
+            aria-selected={selection === 'all'}
+          >
+            All
+          </button>
 
-          <input
-            type="radio"
-            name="game-class-selection"
-            id="scout"
-            value={Tf2ClassName.scout}
-            checked={selection === Tf2ClassName.scout}
-          />
-          <label for="scout">
-            <span class="sr-only">Scout</span>
-            <GameClassIcon gameClass={Tf2ClassName.scout} size={24} />
-          </label>
-
-          <input
-            type="radio"
-            name="game-class-selection"
-            id="soldier"
-            value={Tf2ClassName.soldier}
-            checked={selection === Tf2ClassName.soldier}
-          />
-          <label for="soldier">
-            <span class="sr-only">Soldier</span>
-            <GameClassIcon gameClass={Tf2ClassName.soldier} size={24} />
-          </label>
-
-          <input
-            type="radio"
-            name="game-class-selection"
-            id="demoman"
-            value={Tf2ClassName.demoman}
-            checked={selection === Tf2ClassName.demoman}
-          />
-          <label for="demoman">
-            <span class="sr-only">Demoman</span>
-            <GameClassIcon gameClass={Tf2ClassName.demoman} size={24} />
-          </label>
-
-          <input
-            type="radio"
-            name="game-class-selection"
-            id="medic"
-            value={Tf2ClassName.medic}
-            checked={selection === Tf2ClassName.medic}
-          />
-          <label for="medic">
-            <span class="sr-only">Medic</span>
-            <GameClassIcon gameClass={Tf2ClassName.medic} size={24} />
-          </label>
+          {queue.config.classes.map(({ name }) => (
+            <button
+              hx-get={`/players/${props.steamId}/win-loss-chart/${name}`}
+              hx-target="#win-loss-chart"
+              hx-swap="outerHTML"
+              class={[selection === name && 'selected']}
+              role="tab"
+              aria-selected={selection === name}
+            >
+              <span class="sr-only">{name}</span>
+              <GameClassIcon gameClass={name} size={24} />
+            </button>
+          ))}
         </div>
         <div class="game-count">
           <span class="sr-only">Wins</span>
@@ -110,13 +81,18 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
           <span class="losses">L: {games.filter(({ result }) => result === 'loss').length}</span>
         </div>
       </div>
-      <div class="grid grid-cols-10 justify-around gap-1">
+      <div class="grid min-h-[24px] grid-cols-12 justify-around gap-1">
         {games.map(game => (
-          <div class={`game-result ${game.result}`}>
-            <span class="tooltip tooltip--bottom whitespace-nowrap" safe>
-              #{game.gameNumber}
-            </span>
-          </div>
+          <a class={`game-result ${game.result}`} href={`/games/${game.gameNumber}`}>
+            <div class="tooltip tooltip--bottom flex flex-col whitespace-nowrap">
+              <span safe>#{game.gameNumber}</span>
+              <div>
+                <span class="text-team-blu">{game.score[Tf2Team.blu]}</span>{' '}
+                <span class="text-ash">:</span>{' '}
+                <span class="text-team-red">{game.score[Tf2Team.red]}</span>
+              </div>
+            </div>
+          </a>
         ))}
       </div>
     </div>
