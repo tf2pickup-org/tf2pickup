@@ -103,7 +103,7 @@ importers:
         version: 5.0.1
       fastify-type-provider-zod:
         specifier: 4.0.2
-        version: 4.0.2(fastify@5.3.3)(zod@3.25.56)
+        version: 4.0.2(fastify@5.3.3)(zod@3.25.57)
       form-data:
         specifier: 4.0.3
         version: 4.0.3
@@ -192,8 +192,8 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       zod:
-        specifier: 3.25.56
-        version: 3.25.56
+        specifier: 3.25.57
+        version: 3.25.57
     devDependencies:
       '@eslint/js':
         specifier: 9.28.0
@@ -4285,8 +4285,8 @@ packages:
     peerDependencies:
       zod: ^3.23.3
 
-  zod@3.25.56:
-    resolution: {integrity: sha512-rd6eEF3BTNvQnR2e2wwolfTmUTnp70aUTqr0oaGbHifzC3BKJsoV+Gat8vxUMR1hwOKBs6El+qWehrHbCpW6SQ==}
+  zod@3.25.57:
+    resolution: {integrity: sha512-6tgzLuwVST5oLUxXTmBqoinKMd3JeesgbgseXeFasKKj8Q1FCZrHnbqJOyiEvr4cVAlbug+CgIsmJ8cl/pU5FA==}
 
 snapshots:
 
@@ -6175,12 +6175,12 @@ snapshots:
 
   fastify-plugin@5.0.1: {}
 
-  fastify-type-provider-zod@4.0.2(fastify@5.3.3)(zod@3.25.56):
+  fastify-type-provider-zod@4.0.2(fastify@5.3.3)(zod@3.25.57):
     dependencies:
       '@fastify/error': 4.0.0
       fastify: 5.3.3
-      zod: 3.25.56
-      zod-to-json-schema: 3.23.3(zod@3.25.56)
+      zod: 3.25.57
+      zod-to-json-schema: 3.23.3(zod@3.25.57)
 
   fastify@5.3.3:
     dependencies:
@@ -8211,8 +8211,8 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod-to-json-schema@3.23.3(zod@3.25.56):
+  zod-to-json-schema@3.23.3(zod@3.25.57):
     dependencies:
-      zod: 3.25.56
+      zod: 3.25.57
 
-  zod@3.25.56: {}
+  zod@3.25.57: {}
