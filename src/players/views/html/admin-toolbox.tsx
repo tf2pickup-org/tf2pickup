@@ -9,7 +9,6 @@ import { WinLossChart } from './win-loss-chart'
 
 export async function AdminToolbox(props: { user?: User | undefined; player: PlayerModel }) {
   const { player } = props
-  const config = queue.config
   const defaultSkill = await configuration.get('games.default_player_skill')
 
   return (
@@ -25,8 +24,8 @@ export async function AdminToolbox(props: { user?: User | undefined; player: Pla
         Win-loss chart
       </h4>
 
-      {config.classes.map(gameClass => {
-        const skill = player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
+      {queue.config.classes.map(gameClass => {
+        const s = player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
         return (
           <div class="player-skill" style={`grid-area: skill${capitalize(gameClass.name)}`}>
             <GameClassIcon gameClass={gameClass.name} size={32} />
@@ -37,7 +36,7 @@ export async function AdminToolbox(props: { user?: User | undefined; player: Pla
               type="number"
               id={`playerSkill${gameClass.name}`}
               name={`skill.${gameClass.name}`}
-              value={skill.toString()}
+              value={s.toString()}
               required
               step="1"
             />
@@ -56,8 +55,8 @@ export async function AdminToolbox(props: { user?: User | undefined; player: Pla
         style="grid-area: buttonReset"
         hx-get={`/players/${player.steamId}/edit/skill/default`}
         hx-trigger="click"
-        hx-swap="outerHTML"
         hx-disabled-elt="this"
+        hx-swap="none"
       >
         <IconInputX size={20} />
         Reset
@@ -76,5 +75,27 @@ export async function AdminToolbox(props: { user?: User | undefined; player: Pla
         Edit player
       </a>
     </form>
+  )
+}
+
+AdminToolbox.replaceSkillValues = async (props: { skill?: PlayerModel['skill'] }) => {
+  const defaultSkill = await configuration.get('games.default_player_skill')
+  return (
+    <>
+      {queue.config.classes.map(gameClass => {
+        const s = props.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
+        return (
+          <input
+            type="number"
+            id={`playerSkill${gameClass.name}`}
+            hx-swap-oob="true"
+            name={`skill.${gameClass.name}`}
+            value={s.toString()}
+            required
+            step="1"
+          />
+        )
+      })}
+    </>
   )
 }

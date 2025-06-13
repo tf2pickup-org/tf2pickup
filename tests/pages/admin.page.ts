@@ -29,13 +29,12 @@ export class AdminPage {
     skill: { scout: number; soldier: number; demoman: number; medic: number },
   ) {
     await this.page.goto(`/players/${steamId}`)
-    await this.page.getByRole('link', { name: 'Edit player' }).click()
     await this.page.getByLabel("Player's skill on scout").fill(skill.scout.toString())
     await this.page.getByLabel("Player's skill on soldier").fill(skill.soldier.toString())
     await this.page.getByLabel("Player's skill on demoman").fill(skill.demoman.toString())
     await this.page.getByLabel("Player's skill on medic").fill(skill.medic.toString())
     await this.page.getByRole('button', { name: 'Save' }).click()
-    await this.page.waitForURL(/\/players\/[^/]+$/)
+    await this.page.waitForURL(`/players/${steamId}`)
   }
 
   async freeStaticGameServer() {
