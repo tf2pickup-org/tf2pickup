@@ -81,3 +81,121 @@
     background-color: lighten(theme(colors.abru.light.3), 2%);
   }
 }
+
+.player-admin-toolbox {
+  display: grid;
+  grid-template-areas:
+    'captionSkill     captionSkill'
+    'skillScout       skillScout'
+    'skillSoldier     skillSoldier'
+    'skillDemoman     skillDemoman'
+    'skillMedic       skillMedic'
+    'buttonSave       buttonReset'
+    'captionWinLoss   captionWinLoss'
+    'winLoss          winLoss'
+    'linkEdit         linkEdit';
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 8px;
+  border-radius: 8px;
+  background: theme(colors.abru.dark.29);
+  padding: 24px;
+
+  @media screen(xl) {
+    grid-template-areas:
+      'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
+      'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  . winLoss         winLoss         winLoss . linkEdit';
+    grid-template-columns: repeat(6, minmax(0, 2fr)) 1fr repeat(3, 2fr) 1fr 2fr;
+    align-items: flex-end;
+  }
+
+  .caption {
+    font-size: 18px;
+    font-weight: 700;
+    color: theme(colors.abru.light.75);
+  }
+
+  .player-skill {
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: theme(colors.abru.light.5);
+    border-radius: 4px;
+    height: 48px;
+    align-items: center;
+
+    img {
+      margin-left: 16px;
+    }
+
+    input {
+      text-align: center;
+      width: auto;
+      min-width: 20px;
+      background: transparent;
+      border: none;
+    }
+  }
+
+  .game-result {
+    height: 24px;
+    width: 24px;
+    border-radius: 4px;
+
+    &.win {
+      background-color: theme(colors.game-result-win);
+    }
+
+    &.loss {
+      background-color: theme(colors.game-result-loss);
+    }
+
+    &.tie {
+      background-color: theme(colors.game-result-tie);
+    }
+  }
+
+  .game-count-selection {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    button {
+      cursor: pointer;
+      display: inline-block;
+
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: theme(colors.ash);
+
+      &.selected {
+        background-color: theme(colors.abru.light.5);
+      }
+    }
+  }
+
+  .game-count {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    font-weight: 500;
+
+    .wins {
+      color: theme(colors.game-result-win);
+    }
+
+    .losses {
+      color: theme(colors.game-result-loss);
+    }
+
+    .ties {
+      color: theme(colors.game-result-tie);
+    }
+  }
+}

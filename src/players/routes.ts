@@ -8,7 +8,6 @@ import {
   BanDetails,
   EditPlayerBansPage,
   EditPlayerProfilePage,
-  EditPlayerSkill,
 } from './views/html/edit-player.page'
 import { collections } from '../database/collections'
 import { PlayerRole, type PlayerPreferences } from '../database/models/player.model'
@@ -22,6 +21,9 @@ import { getBanExpiryDate } from './get-ban-expiry-date'
 import { addBan } from './add-ban'
 import { revokeBan } from './revoke-ban'
 import { bySteamId } from './by-steam-id'
+import { WinLossChart } from './views/html/win-loss-chart'
+import { queue } from '../queue'
+import { AdminToolbox } from './views/html/admin-toolbox'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -142,6 +144,39 @@ export default fp(
           await reply.redirect(`/players/${steamId}`)
         },
       )
+      .post(
+        '/players/:steamId/edit/skill',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+            }),
+            body: z.object({
+              ...queue.config.classes
+                .map(({ name }) => name)
+                .reduce<
+                  Partial<Record<`skill.${Tf2ClassName}`, z.ZodNumber>>
+                >((acc, key) => ({ ...acc, [`skill.${key}`]: z.coerce.number() }), {}),
+            }),
+          },
+        },
+        async (request, reply) => {
+          const { steamId } = request.params
+          const player = await bySteamId(steamId)
+          const skill = Object.entries(request.body)
+            .filter(([key]) => key.startsWith('skill.'))
+            .reduce<Partial<Record<Tf2ClassName, number>>>(
+              (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
+              {},
+            )
+          await update(player.steamId, { $set: { skill } }, {}, request.user!.player.steamId)
+          request.flash('success', `Player skill updated`)
+          await reply.redirect(`/players/${steamId}`)
+        },
+      )
       .get(
         '/players/:steamId/edit/skill/default',
         {
@@ -154,9 +189,8 @@ export default fp(
             }),
           },
         },
-        async (request, reply) => {
-          const { steamId } = request.params
-          return reply.html(EditPlayerSkill({ steamId, skill: {} }))
+        async (_, reply) => {
+          return reply.html(AdminToolbox.replaceSkillValues({ skill: {} }))
         },
       )
       .get(
@@ -258,6 +292,24 @@ export default fp(
           })
           request.flash('success', `Player ban added`)
           reply.redirect(`/players/${request.params.steamId}/edit/bans`)
+        },
+      )
+      .get(
+        '/players/:steamId/win-loss-chart/:selection?',
+        {
+          config: {
+            authorize: [PlayerRole.admin],
+          },
+          schema: {
+            params: z.object({
+              steamId: steamId64,
+              selection: z.nativeEnum(Tf2ClassName).or(z.literal('all')).optional().default('all'),
+            }),
+          },
+        },
+        async (request, reply) => {
+          const { steamId, selection } = request.params
+          reply.status(200).html(await WinLossChart({ steamId, selection }))
         },
       )
       .get(
