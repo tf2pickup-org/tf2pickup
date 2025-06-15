@@ -69,8 +69,8 @@ importers:
         specifier: 10.4.21
         version: 10.4.21(postcss@8.5.5)
       chart.js:
-        specifier: 4.4.9
-        version: 4.4.9
+        specifier: 4.5.0
+        version: 4.5.0
       country-flag-icons:
         specifier: 1.5.19
         version: 1.5.19
@@ -1549,8 +1549,8 @@ packages:
   charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
 
-  chart.js@4.4.9:
-    resolution: {integrity: sha512-EyZ9wWKgpAU0fLJ43YAEIF8sr5F2W3LqbS40ZJyHIner2lY14ufqv2VMp69MAiZ2rpwxEUxEhIH/0U3xyRynxg==}
+  chart.js@4.5.0:
+    resolution: {integrity: sha512-aYeC/jDgSEx8SHWZvANYMioYMZ2KX02W6f6uVfyteuCGcadDLcYVHdfdygsTQkQ4TKn5lghoojAsPj5pu0SnvQ==}
     engines: {pnpm: '>=8'}
 
   check-error@2.1.1:
@@ -5503,7 +5503,7 @@ snapshots:
 
   charenc@0.0.2: {}
 
-  chart.js@4.4.9:
+  chart.js@4.5.0:
     dependencies:
       '@kurkle/color': 0.3.2
 
