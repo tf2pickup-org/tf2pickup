@@ -85,7 +85,7 @@
     "@release-it/conventional-changelog": "10.0.1",
     "@tsconfig/strictest": "2.0.5",
     "@types/howler": "2.2.12",
-    "@types/jsonwebtoken": "9.0.9",
+    "@types/jsonwebtoken": "9.0.10",
     "@types/node": "22.15.31",
     "@types/openid": "2.0.5",
     "@types/pem": "1.14.4",
