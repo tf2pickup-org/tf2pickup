@@ -58,7 +58,7 @@ export default fp(
     async function updateOnlinePlayers() {
       const opl = await OnlinePlayerList()
       const opc = await OnlinePlayerCount()
-      app.gateway.broadcast(() => [opl, opc])
+      app.gateway.to({ url: '/' }).send(() => [opl, opc])
     }
 
     events.on('player:connected', safe(updateOnlinePlayers))
@@ -193,7 +193,7 @@ export default fp(
 
     const refreshSubstitutionRequests = async () => {
       const cmp = await SubstitutionRequests()
-      app.gateway.broadcast(() => cmp)
+      app.gateway.to({ url: '/' }).send(() => cmp)
     }
     events.on('game:substituteRequested', async ({ game, replacee }) => {
       await refreshSubstitutionRequests()
