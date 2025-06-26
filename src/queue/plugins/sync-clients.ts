@@ -128,7 +128,7 @@ export default fp(
     )
 
     events.on('queue/mapOptions:reset', () => {
-      app.gateway.broadcast(async actor => await MapVote({ actor }))
+      app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
     })
 
     events.on(
@@ -136,7 +136,7 @@ export default fp(
       safe(async ({ results }) => {
         const mapOptions = await collections.queueMapOptions.find().toArray()
         for (const map of mapOptions.map(option => option.name)) {
-          app.gateway.broadcast(async () => MapResult({ results, map }))
+          app.gateway.to({ url: '/' }).send(async () => MapResult({ results, map }))
         }
       }),
     )
@@ -207,7 +207,7 @@ export default fp(
       'twitch.tv/streams:updated',
       safe(async () => {
         const cmp = await StreamList()
-        app.gateway.broadcast(() => cmp)
+        app.gateway.to({ url: '/' }).send(() => cmp)
       }),
     )
 

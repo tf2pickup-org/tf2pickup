@@ -129,10 +129,10 @@ export default fp(async app => {
       .send(async actor => await ConnectInfo({ game, actor }))
   })
 
-  events.on('game:substituteRequested', ({ game, replacee }) => {
-    const slot = game.slots.find(s => s.player === replacee)
+  events.on('game:substituteRequested', ({ game, slotId }) => {
+    const slot = game.slots.find(({ id }) => id === slotId)
     if (!slot) {
-      throw new Error(`no such game slot: ${game.number} ${replacee}`)
+      throw errors.internalServerError(`no such game slot: ${game.number} ${slotId}`)
     }
 
     app.gateway
