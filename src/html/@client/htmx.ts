@@ -4,8 +4,13 @@ import htmx from 'htmx.org'
 window.htmx = htmx
 
 htmx.on('htmx:oobErrorNoTarget', event => {
-  // @ts-expect-error not properly typed
-  console.log(event.detail.content.id)
+  console.log(
+    `htmx:oobErrorNoTarget: ${(event as CustomEvent<{ content: Element }>).detail.content.id}`,
+  )
 })
+
+// htmx.on('htmx:pushedIntoHistory', event => {
+//   console.log(`navigated to ${(event as CustomEvent<{ path: string }>).detail.path}`)
+// })
 
 export default htmx

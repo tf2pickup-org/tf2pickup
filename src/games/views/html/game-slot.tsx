@@ -115,9 +115,6 @@ async function GameSlotContent(props: {
         return <></>
       }
     }
-
-    default:
-      return <></>
   }
 }
 
