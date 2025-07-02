@@ -7,6 +7,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
+import { errors } from '../../../errors'
 
 export async function GameSlot(props: {
   game: GameModel
@@ -15,7 +16,7 @@ export async function GameSlot(props: {
 }) {
   const player = await collections.players.findOne({ steamId: props.slot.player })
   if (!player) {
-    throw new Error(`no such player: ${props.slot.player.toString()}`)
+    throw errors.internalServerError(`no such player: ${props.slot.player.toString()}`)
   }
 
   return (
@@ -114,9 +115,6 @@ async function GameSlotContent(props: {
         return <></>
       }
     }
-
-    default:
-      return <></>
   }
 }
 

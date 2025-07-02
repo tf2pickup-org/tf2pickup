@@ -47,3 +47,13 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
     </>
   )
 }
+
+GameSlotList.refreshAll = function (props: { game: GameModel; actor?: SteamId64 | undefined }) {
+  return (
+    <>
+      {props.game.slots.map(slot => (
+        <GameSlot slot={slot} game={props.game} actor={props.actor} />
+      ))}
+    </>
+  )
+}
