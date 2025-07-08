@@ -344,3 +344,9 @@
     margin-top: 16px;
   }
 }
+
+.game-admin-toolbox {
+  background-color: theme('colors.abru.dark.29');
+  border-radius: 8px;
+  padding: 10px;
+}
