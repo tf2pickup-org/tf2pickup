@@ -359,7 +359,6 @@
   background-color: theme('colors.abru.dark.29');
   border-radius: 8px;
   padding: 10px;
-  margin-top: 16px;
 
   display: flex;
   flex-direction: column;
@@ -367,5 +366,6 @@
 
   @media screen(lg) {
     flex-direction: row;
+    margin-top: 16px;
   }
 }
