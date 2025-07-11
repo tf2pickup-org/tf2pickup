@@ -11,10 +11,11 @@
 
   @media screen(lg) {
     grid-template-areas:
-      'gameSummary gameSummary    gameSummary    gameSummary'
-      'scoreBlu    scoreBlu       scoreRed       scoreRed'
-      'slotsBlu    gameClassIcons gameClassIcons slotsRed'
-      'gameEvents  gameEvents     gameEvents     gameEvents';
+      'gameSummary  gameSummary     gameSummary     gameSummary'
+      'scoreBlu     scoreBlu        scoreRed        scoreRed'
+      'slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
+      'gameEvents   gameEvents      gameEvents      gameEvents'
+      'adminToolbox adminToolbox    adminToolbox    adminToolbox';
     grid-template-columns: 1fr auto auto 1fr;
   }
 
@@ -22,7 +23,8 @@
     grid-template-areas:
       'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
       'gameSummary slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
-      'gameEvents  adminToolbox adminToolbox    adminToolbox    adminToolbox';
+      'gameEvents  adminToolbox adminToolbox    adminToolbox    adminToolbox'
+      'gameEvents  .            .               .               .';
     grid-template-columns: 2fr 3fr auto auto 3fr;
   }
 
@@ -353,7 +355,17 @@
 }
 
 .game-admin-toolbox {
+  grid-area: adminToolbox;
   background-color: theme('colors.abru.dark.29');
   border-radius: 8px;
   padding: 10px;
+  margin-top: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  @media screen(lg) {
+    flex-direction: row;
+  }
 }
