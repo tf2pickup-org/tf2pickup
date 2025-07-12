@@ -87,20 +87,13 @@ export class GamePage {
     return this.page.getByLabel('Game events').getByText(event)
   }
 
-  adminActions() {
-    return this.page.getByRole('button', { name: 'Admin actions' })
-  }
-
   async forceEnd() {
     this.page.once('dialog', dialog => dialog.accept())
-    await this.adminActions().click()
-    const btn = this.page.getByRole('button', { name: 'Force-end' })
-    await btn.click()
+    await this.page.getByRole('button', { name: 'Force-end' }).click()
   }
 
   async reinitializeGameServer() {
     this.page.once('dialog', dialog => dialog.accept())
-    await this.adminActions().click()
     await this.page.getByRole('button', { name: 'Reinitialize game server' }).click()
   }
 }

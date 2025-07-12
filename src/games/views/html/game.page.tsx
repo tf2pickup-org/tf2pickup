@@ -9,9 +9,9 @@ import { GameSlotList } from './game-slot-list'
 import { Footer } from '../../../html/components/footer'
 import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
-import { AdminActions } from './admin-actions'
 import { makeTitle } from '../../../html/make-title'
 import { ChooseGameServerDialog } from './choose-game-server-dialog'
+import { AdminToolbox } from './admin-toolbox'
 
 export async function GamePage(props: { game: GameModel; user?: User | undefined }) {
   return (
@@ -34,11 +34,10 @@ export async function GamePage(props: { game: GameModel; user?: User | undefined
             GameState.configuring,
             GameState.launching,
             GameState.started,
-          ].includes(props.game.state) && props.user?.player.roles.includes(PlayerRole.admin) ? (
-            <AdminActions gameNumber={props.game.number} />
-          ) : (
-            <></>
-          )}
+          ].includes(props.game.state) &&
+            props.user?.player.roles.includes(PlayerRole.admin) && (
+              <AdminToolbox game={props.game} />
+            )}
         </div>
 
         <ChooseGameServerDialog gameNumber={props.game.number} />

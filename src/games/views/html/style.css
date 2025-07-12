@@ -6,22 +6,25 @@
     'slotsBlu'
     'scoreRed'
     'slotsRed'
-    'gameEvents';
+    'gameEvents'
+    'adminToolbox';
 
   @media screen(lg) {
     grid-template-areas:
-      'gameSummary gameSummary    gameSummary    gameSummary'
-      'scoreBlu    scoreBlu       scoreRed       scoreRed'
-      'slotsBlu    gameClassIcons gameClassIcons slotsRed'
-      'gameEvents  gameEvents     gameEvents     gameEvents';
+      'gameSummary  gameSummary     gameSummary     gameSummary'
+      'scoreBlu     scoreBlu        scoreRed        scoreRed'
+      'slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
+      'gameEvents   gameEvents      gameEvents      gameEvents'
+      'adminToolbox adminToolbox    adminToolbox    adminToolbox';
     grid-template-columns: 1fr auto auto 1fr;
   }
 
   @media screen(xl) {
     grid-template-areas:
-      'gameSummary scoreBlu scoreBlu       scoreRed       scoreRed'
-      'gameSummary slotsBlu gameClassIcons gameClassIcons slotsRed'
-      'gameEvents  .        .              .              .';
+      'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
+      'gameSummary slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
+      'gameEvents  adminToolbox adminToolbox    adminToolbox    adminToolbox'
+      'gameEvents  .            .               .               .';
     grid-template-columns: 2fr 3fr auto auto 3fr;
   }
 
@@ -326,27 +329,18 @@
   }
 }
 
-.admin-action-button {
-  @apply transition-colors;
-  @apply duration-75;
+.game-admin-toolbox {
+  grid-area: adminToolbox;
+  background-color: theme('colors.abru.dark.29');
+  border-radius: 8px;
+  padding: 10px;
 
   display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  flex-direction: column;
+  gap: 16px;
 
-  padding: 12px 24px;
-  font-size: 16px;
-  line-height: normal;
-  font-weight: 700;
-  border-radius: 4px;
-
-  color: theme(colors.ash);
-
-  background-color: theme(colors.abru.dark.29);
-
-  &:hover {
-    background-color: lighten(theme('colors.abru.dark.29'), 2%);
+  @media screen(lg) {
+    flex-direction: row;
+    margin-top: 16px;
   }
 }
