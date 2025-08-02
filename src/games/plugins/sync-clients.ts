@@ -15,6 +15,7 @@ import { JoinVoiceButton } from '../views/html/join-voice-button'
 import { JoinGameButton } from '../views/html/join-game-button'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { ServerReadyNotification } from '../views/html/server-ready-notification'
+import { errors } from '../../errors'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -30,7 +31,7 @@ export default fp(async app => {
       if ([GameState.launching, GameState.ended, GameState.interrupted].includes(after.state)) {
         app.gateway
           .to({ url: `/games/${after.number}` })
-          .send(async actor => await GameSlotList({ game: after, actor }))
+          .send(async actor => await GameSlotList.refreshAll({ game: after, actor }))
       }
     }
 
@@ -128,10 +129,10 @@ export default fp(async app => {
       .send(async actor => await ConnectInfo({ game, actor }))
   })
 
-  events.on('game:substituteRequested', ({ game, replacee }) => {
-    const slot = game.slots.find(s => s.player === replacee)
+  events.on('game:substituteRequested', ({ game, slotId }) => {
+    const slot = game.slots.find(({ id }) => id === slotId)
     if (!slot) {
-      throw new Error(`no such game slot: ${game.number} ${replacee}`)
+      throw errors.internalServerError(`no such game slot: ${game.number} ${slotId}`)
     }
 
     app.gateway
@@ -139,10 +140,13 @@ export default fp(async app => {
       .send(async actor => await GameSlot({ game, slot, actor }))
   })
 
-  events.on('game:playerReplaced', ({ game }) => {
-    // fixme refresh only one slot
+  events.on('game:playerReplaced', ({ game, slotId }) => {
+    const slot = game.slots.find(({ id }) => id === slotId)
+    if (!slot) {
+      throw errors.internalServerError(`no such game slot: ${slotId}`)
+    }
     app.gateway
       .to({ url: `/games/${game.number}` })
-      .send(async actor => await GameSlotList({ game, actor }))
+      .send(async actor => await GameSlot({ game, slot, actor }))
   })
 })

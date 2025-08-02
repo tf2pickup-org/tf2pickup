@@ -23,6 +23,6 @@ htmx.on('htmx:wsOpen', event => {
 })
 
 htmx.on('htmx:pushedIntoHistory', event => {
-  const detail = (event as CustomEvent<{ path: string }>).detail
-  reportNavigation(detail.path)
+  const path = (event as CustomEvent<{ path: string }>).detail.path.split('?')[0]!
+  reportNavigation(path)
 })

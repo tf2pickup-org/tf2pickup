@@ -6,11 +6,11 @@ import { StaticGameServerList } from '../../admin/game-servers/views/html/static
 export default fp(async app => {
   events.on('staticGameServer:updated', () => {
     const list = StaticGameServerList()
-    app.gateway.broadcast(() => list)
+    app.gateway.to({ url: '/admin/game-servers' }).send(() => list)
   })
 
   events.on('staticGameServer:added', () => {
     const list = StaticGameServerList()
-    app.gateway.broadcast(() => list)
+    app.gateway.to({ url: '/admin/game-servers' }).send(() => list)
   })
 })
