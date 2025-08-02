@@ -9,8 +9,4 @@ htmx.on('htmx:oobErrorNoTarget', event => {
   )
 })
 
-// htmx.on('htmx:pushedIntoHistory', event => {
-//   console.log(`navigated to ${(event as CustomEvent<{ path: string }>).detail.path}`)
-// })
-
 export default htmx
