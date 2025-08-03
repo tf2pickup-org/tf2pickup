@@ -48,6 +48,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
       <div class="flex flex-row justify-between">
         <div class="game-count-selection">
           <button
+            type="button"
             hx-get={`/players/${props.steamId}/win-loss-chart/all`}
             hx-target="#win-loss-chart"
             hx-swap="outerHTML"
@@ -60,6 +61,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
 
           {queue.config.classes.map(({ name }) => (
             <button
+              type="button"
               hx-get={`/players/${props.steamId}/win-loss-chart/${name}`}
               hx-target="#win-loss-chart"
               hx-swap="outerHTML"
