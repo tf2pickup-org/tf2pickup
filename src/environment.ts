@@ -13,10 +13,10 @@ const environmentSchema = z.object({
 
   ENABLE_TEST_AUTH: z.enum(['true', 'false']).default('false'),
 
-  WEBSITE_URL: z.string().url(),
+  WEBSITE_URL: z.url(),
   WEBSITE_NAME: z.string().default('tf2pickup.org'),
   WEBSITE_BRANDING: z.string().optional(),
-  MONGODB_URI: z.string().url(),
+  MONGODB_URI: z.url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),
   QUEUE_CONFIG: z.enum(['test', '6v6', '9v9', 'bball', 'ultiduo']).default('6v6'),
@@ -25,7 +25,7 @@ const environmentSchema = z.object({
   LOG_RELAY_PORT: z.coerce.number(),
   LOGS_TF_API_KEY: z.string().optional(),
   GAME_SERVER_SECRET: z.string(),
-  THUMBNAIL_SERVICE_URL: z.string().url(),
+  THUMBNAIL_SERVICE_URL: z.url(),
 
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),

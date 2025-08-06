@@ -9,9 +9,9 @@ import { Admin } from '../../../views/html/admin'
 
 export async function ViewForNerdsPage(props: { user: User }) {
   const entries = await Promise.all(
-    configurationSchema._def.options.map(async option => {
-      const _key = option._def.shape().key._def.value
-      const defaultValue = option._def.shape().value._def.defaultValue()
+    configurationSchema._zod.def.options.map(async option => {
+      const _key = option._zod.def.shape.key._zod.def.values[0]!
+      const defaultValue = option._zod.def.shape.value._zod.def.defaultValue
       const value = await configuration.get(_key)
       return { _key, value, defaultValue }
     }),

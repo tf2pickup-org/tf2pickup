@@ -8,7 +8,7 @@ export const banExpiryFormSchema = z.discriminatedUnion('lengthSelector', [
   }),
   z.object({
     lengthSelector: z.literal('date'),
-    date: z.string().datetime(),
+    date: z.iso.datetime(),
   }),
   z.object({
     lengthSelector: z.literal('forever'),

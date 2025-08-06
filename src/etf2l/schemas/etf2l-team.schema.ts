@@ -10,7 +10,7 @@ export const etf2lTeamSchema = z.object({
   homepage: z.string().nullable(),
   type: z.string(),
   steam: z.object({
-    avatar: z.string().url(),
+    avatar: z.url(),
     steam_group: z.string().nullable(),
   }),
   irc: z.object({
@@ -19,9 +19,9 @@ export const etf2lTeamSchema = z.object({
   }),
   competitions: z.record(z.string(), etf2lCompetitionSchema),
   urls: z.object({
-    matches: z.string().url(),
-    results: z.string().url(),
-    self: z.string().url(),
-    transfers: z.string().url(),
+    matches: z.url(),
+    results: z.url(),
+    self: z.url(),
+    transfers: z.url(),
   }),
 })

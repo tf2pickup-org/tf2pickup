@@ -12,7 +12,7 @@ export default standardAdminPage({
     joinGameserverTimeout: z.coerce.number(),
     rejoinGameserverTimeout: z.coerce.number(),
     executeExtraCommands: z.string().transform(value => value.split('\n')),
-    logsTfUploadMethod: z.nativeEnum(LogsTfUploadMethod),
+    logsTfUploadMethod: z.enum(LogsTfUploadMethod),
   }),
   save: async ({
     whitelistId,
