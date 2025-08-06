@@ -303,7 +303,7 @@ export default fp(
           schema: {
             params: z.object({
               steamId: steamId64,
-              selection: z.nativeEnum(Tf2ClassName).or(z.literal('all')).optional().default('all'),
+              selection: z.enum(Tf2ClassName).or(z.literal('all')).optional().default('all'),
             }),
           },
         },
