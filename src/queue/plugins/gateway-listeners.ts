@@ -34,9 +34,10 @@ export default fp(
         fn(socket, ...args).catch(async (error: unknown) => {
           logger.error(error)
           if (error instanceof Error) {
-            const msg = (
-              await FlashMessages.append({ message: `Error: ${error.message}`, type: 'error' })
-            ).toString()
+            const msg = await FlashMessages.append({
+              message: `Error: ${error.message}`,
+              type: 'error',
+            })
             socket.send(msg)
           }
         })
