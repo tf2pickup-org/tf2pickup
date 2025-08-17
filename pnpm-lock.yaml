@@ -90,8 +90,8 @@ importers:
         specifier: 17.2.1
         version: 17.2.1
       es-toolkit:
-        specifier: 1.39.9
-        version: 1.39.9
+        specifier: 1.39.10
+        version: 1.39.10
       esbuild:
         specifier: 0.25.8
         version: 0.25.8
@@ -2033,8 +2033,8 @@ packages:
     resolution: {integrity: sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==}
     engines: {node: '>= 0.4'}
 
-  es-toolkit@1.39.9:
-    resolution: {integrity: sha512-9OtbkZmTA2Qc9groyA1PUNeb6knVTkvB2RSdr/LcJXDL8IdEakaxwXLHXa7VX/Wj0GmdMJPR3WhnPGhiP3E+qg==}
+  es-toolkit@1.39.10:
+    resolution: {integrity: sha512-E0iGnTtbDhkeczB0T+mxmoVlT4YNweEKBLq7oaU4p11mecdsZpNWOglI4895Vh4usbQ+LsJiuLuI2L0Vdmfm2w==}
 
   es6-promisify@7.0.0:
     resolution: {integrity: sha512-ginqzK3J90Rd4/Yz7qRrqUeIpe3TwSXTPPZtPne7tGBPeAaQiU8qt4fpKApnxHcq1AwtUdHVg5P77x/yrggG8Q==}
@@ -6041,7 +6041,7 @@ snapshots:
       has-tostringtag: 1.0.2
       hasown: 2.0.2
 
-  es-toolkit@1.39.9: {}
+  es-toolkit@1.39.10: {}
 
   es6-promisify@7.0.0: {}
 
