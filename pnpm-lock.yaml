@@ -30,8 +30,8 @@ importers:
         specifier: 10.3.0
         version: 10.3.0
       '@fastify/request-context':
-        specifier: 6.2.0
-        version: 6.2.0
+        specifier: 6.2.1
+        version: 6.2.1
       '@fastify/secure-session':
         specifier: 8.2.0
         version: 8.2.0
@@ -708,8 +708,8 @@ packages:
   '@fastify/rate-limit@10.3.0':
     resolution: {integrity: sha512-eIGkG9XKQs0nyynatApA3EVrojHOuq4l6fhB4eeCk4PIOeadvOJz9/4w3vGI44Go17uaXOWEcPkaD8kuKm7g6Q==}
 
-  '@fastify/request-context@6.2.0':
-    resolution: {integrity: sha512-uptkFQCz6EAreLGrJu7gHneHHE03dJpv/3ZSDiD3OGAzRbGthhttU4HQ5iDqRJSr0UljAIQ1a/tchmH1vijKuw==}
+  '@fastify/request-context@6.2.1':
+    resolution: {integrity: sha512-WJTWXI59ViguS/JFgVck6mnwpv+5UrvMLb711pOGIlyN6ghV4Pb/eEbJG01XvQsTAr/AbjMETjk7Jq9ARIxKnQ==}
 
   '@fastify/secure-session@8.2.0':
     resolution: {integrity: sha512-E1linEHVV86c0Gt+ohujcuRsCeedhD2M3X5+a2aU9Ln0YDC0bbuA7bE6QQzf/HAacOpt9+CJqV5NqdlQr9ui0A==}
@@ -4660,7 +4660,7 @@ snapshots:
       fastify-plugin: 5.0.1
       toad-cache: 3.7.0
 
-  '@fastify/request-context@6.2.0':
+  '@fastify/request-context@6.2.1':
     dependencies:
       fastify-plugin: 5.0.1
 
