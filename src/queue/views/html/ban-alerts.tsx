@@ -30,7 +30,10 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
     <>
       {bans.map(ban => (
         <div class="banner banner--warning">
-          You are banned until&nbsp;<span class="font-bold">{ban.end.toLocaleString()}</span>
+          You are banned until&nbsp;
+          <span class="font-bold" safe>
+            {ban.end.toLocaleString()}
+          </span>
           &nbsp;for&nbsp;
           <span class="font-bold" safe>
             {ban.reason}

@@ -86,7 +86,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         return (
           <span>
             Game server assigned:{' '}
-            <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
+            <strong class="whitespace-nowrap" safe>
+              {props.event.gameServerName}
+            </strong>
           </span>
         )
       }
@@ -95,7 +97,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         return (
           <span>
             Bot assigned game server:{' '}
-            <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
+            <strong class="whitespace-nowrap" safe>
+              {props.event.gameServerName}
+            </strong>
           </span>
         )
       }
@@ -107,7 +111,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             {actor.name}
           </a>{' '}
           assigned game server:{' '}
-          <strong class="whitespace-nowrap">{props.event.gameServerName}</strong>
+          <strong class="whitespace-nowrap" safe>
+            {props.event.gameServerName}
+          </strong>
         </span>
       )
     }
@@ -183,7 +189,8 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
         let reason = <></>
         if (props.event.reason) {
-          reason = <> (reason: {props.event.reason})</>
+          const safeReason = props.event.reason
+          reason = <> (reason: {safeReason})</>
         }
 
         return (
