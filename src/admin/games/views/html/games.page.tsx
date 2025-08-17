@@ -12,6 +12,8 @@ export async function GamesPage(props: { user: User }) {
   const executeExtraCommands = await configuration.get('games.execute_extra_commands')
   const logsTfUploadMethod = await configuration.get('games.logs_tf_upload_method')
 
+  const safeExecuteExtraCommands = executeExtraCommands.join('\n')
+
   return (
     <Admin activePage="games" user={props.user}>
       <form action="" method="post">
@@ -81,7 +83,7 @@ export async function GamesPage(props: { user: User }) {
             </dt>
             <dd class="flex flex-col">
               <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
-                {executeExtraCommands.join('\n')}
+                {safeExecuteExtraCommands}
               </textarea>
               <span class="text-sm text-abru-light-75">
                 Extra commands to execute on the gameserver before the match starts. One command per

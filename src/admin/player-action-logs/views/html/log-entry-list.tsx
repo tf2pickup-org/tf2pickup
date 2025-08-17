@@ -41,7 +41,9 @@ async function LogEntry(props: { action: PlayerActionEntryModel }) {
       <td class="px-4 py-2" safe>
         {props.action.ipAddress}
       </td>
-      <td class="px-4 py-2">{ellipsis(props.action.userAgent ?? '', 64)}</td>
+      <td class="px-4 py-2" safe>
+        {ellipsis(props.action.userAgent ?? '', 64)}
+      </td>
       <td class="px-4 py-2" safe>
         {props.action.action}
       </td>
