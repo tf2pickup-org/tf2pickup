@@ -248,7 +248,7 @@ importers:
         version: 1.2.0(typescript@5.9.2)
       postcss-cli:
         specifier: 11.0.1
-        version: 11.0.1(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)
+        version: 11.0.1(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.4)
       prettier:
         specifier: 3.6.2
         version: 3.6.2
@@ -265,8 +265,8 @@ importers:
         specifier: 1.8.16
         version: 1.8.16
       tsx:
-        specifier: 4.20.3
-        version: 4.20.3
+        specifier: 4.20.4
+        version: 4.20.4
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -4065,8 +4065,8 @@ packages:
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
-  tsx@4.20.3:
-    resolution: {integrity: sha512-qjbnuR9Tr+FJOMBqJCW5ehvIo/buZq7vH7qD7JziU98h6l3qGy0a/yPFjwO+y0/T7GFpNgNAvEcPPVfyT8rrPQ==}
+  tsx@4.20.4:
+    resolution: {integrity: sha512-yyxBKfORQ7LuRt/BQKBXrpcq59ZvSW0XxwfjAt3w2/8PmdxaFzijtMhTawprSHhpzeM5BgU2hXHG3lklIERZXg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -7311,14 +7311,14 @@ snapshots:
       postcss-selector-parser: 7.1.0
       postcss-value-parser: 4.2.0
 
-  postcss-cli@11.0.1(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3):
+  postcss-cli@11.0.1(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.4):
     dependencies:
       chokidar: 3.6.0
       dependency-graph: 1.0.0
       fs-extra: 11.2.0
       picocolors: 1.1.1
       postcss: 8.5.6
-      postcss-load-config: 5.1.0(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)
+      postcss-load-config: 5.1.0(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.4)
       postcss-reporter: 7.1.0(postcss@8.5.6)
       pretty-hrtime: 1.0.3
       read-cache: 1.0.0
@@ -7392,14 +7392,14 @@ snapshots:
     optionalDependencies:
       postcss: 8.5.6
 
-  postcss-load-config@5.1.0(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3):
+  postcss-load-config@5.1.0(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.4):
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.5.0
     optionalDependencies:
       jiti: 2.4.2
       postcss: 8.5.6
-      tsx: 4.20.3
+      tsx: 4.20.4
 
   postcss-merge-longhand@7.0.5(postcss@8.5.6):
     dependencies:
@@ -8059,7 +8059,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsx@4.20.3:
+  tsx@4.20.4:
     dependencies:
       esbuild: 0.25.8
       get-tsconfig: 4.10.0
