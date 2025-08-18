@@ -23,7 +23,7 @@ interface UpsertPlayerParams {
 }
 
 export async function upsert(summary: UpsertPlayerParams): Promise<PlayerModel> {
-  logger.trace('players.upsert()', { summary })
+  logger.trace({ summary }, 'players.upsert()')
   const steamId = steamId64.parse(summary.steamID)
   const player = await collections.players.findOne({ steamId })
   if (player) {

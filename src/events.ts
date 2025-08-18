@@ -199,7 +199,7 @@ export interface Events {
 
 class TypedEventEmitter extends EventEmitter {
   override emit<K extends keyof Events>(event: K, params: Events[K]): boolean {
-    logger.trace(params, event)
+    logger.trace({ params }, event)
     return super.emit(event, params)
   }
 
