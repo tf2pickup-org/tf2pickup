@@ -1,4 +1,4 @@
-import type { ZodSchema, ZodTypeDef } from 'zod'
+import type { ZodType } from 'zod'
 import fp from 'fastify-plugin'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../database/models/player.model'
@@ -7,8 +7,8 @@ import { requestContext } from '@fastify/request-context'
 
 interface StandardAdminPageArgs<Input, Output> {
   path: string
-  bodySchema: ZodSchema<Input, ZodTypeDef, Output>
-  save: (body: Input) => Promise<void>
+  bodySchema: ZodType<Output, Input>
+  save: (body: Output) => Promise<void>
   page: (user: User) => Promise<string>
 }
 
@@ -45,7 +45,7 @@ export function standardAdminPage<Input, Output>({
             },
           },
           async (request, reply) => {
-            await save(request.body as Input)
+            await save(request.body as Output)
             requestContext.set('messages', { success: ['Configuration saved'] })
             return reply.status(200).html(page(request.user!))
           },

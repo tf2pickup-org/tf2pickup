@@ -102,8 +102,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       fastify-type-provider-zod:
-        specifier: 4.0.2
-        version: 4.0.2(fastify@5.5.0)(zod@3.25.76)
+        specifier: 5.0.2
+        version: 5.0.2(@fastify/swagger@9.5.1)(fastify@5.5.0)(zod@4.0.15)
       form-data:
         specifier: 4.0.4
         version: 4.0.4
@@ -192,8 +192,8 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: 4.0.15
+        version: 4.0.15
     devDependencies:
       '@eslint/js':
         specifier: 9.33.0
@@ -681,6 +681,9 @@ packages:
   '@fastify/error@4.0.0':
     resolution: {integrity: sha512-OO/SA8As24JtT1usTUTKgGH7uLvhfwZPwlptRi2Dp5P4KKmJI3gvsZ8MIHnNwDs4sLf/aai5LzTyl66xr7qMxA==}
 
+  '@fastify/error@4.2.0':
+    resolution: {integrity: sha512-RSo3sVDXfHskiBZKBPRgnQTtIqpi/7zhJOEmAxCiBcM7d0uwdGdxLlsCaLzGs8v8NnxIRlfG0N51p5yFaOentQ==}
+
   '@fastify/etag@6.0.3':
     resolution: {integrity: sha512-pMXohCA6Bk9JBNLl/KhHkSCGN7PCbgwVqHydwMsd1sVKtV8YNuzRW7lEe1VYap/MTNOn/Q8OfcR667lyrNbT/A==}
 
@@ -723,6 +726,9 @@ packages:
 
   '@fastify/static@8.2.0':
     resolution: {integrity: sha512-PejC/DtT7p1yo3p+W7LiUtLMsV8fEvxAK15sozHy9t8kwo5r0uLYmhV/inURmGz1SkHZFz/8CNtHLPyhKcx4SQ==}
+
+  '@fastify/swagger@9.5.1':
+    resolution: {integrity: sha512-EGjYLA7vDmCPK7XViAYMF6y4+K3XUy5soVTVxsyXolNe/Svb4nFQxvtuQvvoQb2Gzc9pxiF3+ZQN/iZDHhKtTg==}
 
   '@fastify/websocket@11.2.0':
     resolution: {integrity: sha512-3HrDPbAG1CzUCqnslgJxppvzaAZffieOVbLp1DAy1huCSynUWPifSvfdEDUR8HlJLp3sp1A36uOM2tJogADS8w==}
@@ -2169,14 +2175,18 @@ packages:
   fast-uri@3.0.1:
     resolution: {integrity: sha512-MWipKbbYiYI0UC7cl8m/i/IWTqfC8YXsqjzybjddLsFjStroQzsHXkc73JutMvBiXmOvapk+axIl79ig5t55Bw==}
 
+  fast-uri@3.0.6:
+    resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
+
   fastify-plugin@5.0.1:
     resolution: {integrity: sha512-HCxs+YnRaWzCl+cWRYFnHmeRFyR5GVnJTAaCJQiYzQSDwK9MgJdyAsuL3nh0EWRCYMgQ5MeziymvmAhUHYHDUQ==}
 
-  fastify-type-provider-zod@4.0.2:
-    resolution: {integrity: sha512-FDRzSL3ZuoZ+4YDevR1YOinmDKkxOdy3QB9dDR845sK+bQvDroPKhHAXLEAOObDxL7SMA0OZN/A4osrNBTdDTQ==}
+  fastify-type-provider-zod@5.0.2:
+    resolution: {integrity: sha512-myolKCxze2rx25Ia88Erb4TZpFIUWyCUqMDgNqE6KQnXoERXwMCPuwfj/1zKkVBlu5dvLo1c/H7GneZUhOWXiw==}
     peerDependencies:
+      '@fastify/swagger': '>=9.5.1'
       fastify: ^5.0.0
-      zod: ^3.14.2
+      zod: '>=3.25.67'
 
   fastify@5.5.0:
     resolution: {integrity: sha512-ZWSWlzj3K/DcULCnCjEiC2zn2FBPdlZsSA/pnPa/dbUfLvxkD/Nqmb0XXMXLrWkeM4uQPUvjdJpwtXmTfriXqw==}
@@ -2656,6 +2666,10 @@ packages:
   json-schema-ref-resolver@1.0.1:
     resolution: {integrity: sha512-EJAj1pgHc1hxF6vo2Z3s69fMjO1INq6eGHXZ8Z6wCQeldCuwxGK9Sxf4/cScGn3FZubCVUehfWtcDM/PLteCQw==}
 
+  json-schema-resolver@3.0.0:
+    resolution: {integrity: sha512-HqMnbz0tz2DaEJ3ntsqtx3ezzZyDE7G56A/pPY/NGmrPu76UzsWquOpHFRAf5beTNXoH2LU5cQePVvRli1nchA==}
+    engines: {node: '>=20'}
+
   json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}
 
@@ -3068,6 +3082,9 @@ packages:
   open@10.2.0:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
+
+  openapi-types@12.1.3:
+    resolution: {integrity: sha512-N4YtSYJqghVu4iek2ZUvcN/0aqH1kRDuNqzcycDxhOUpg7GdvLa2F3DgS6yBNhInhv2r/6I0Flkn7CqL8+nIcw==}
 
   openid@2.0.13:
     resolution: {integrity: sha512-GVHa+EsDeH+jpPOihw2J5L3xUXeyf1cfmVpNP4XKk8twwmclUUcTOA4oVwu5pVrESomQoHFEQIR9FRlNuLofWA==}
@@ -4314,13 +4331,8 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
-  zod-to-json-schema@3.23.3:
-    resolution: {integrity: sha512-TYWChTxKQbRJp5ST22o/Irt9KC5nj7CdBKYB/AosCRdj/wxEMvv4NNaj9XVUHDOIp53ZxArGhnw5HMZziPFjog==}
-    peerDependencies:
-      zod: ^3.23.3
-
-  zod@3.25.76:
-    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+  zod@4.0.15:
+    resolution: {integrity: sha512-2IVHb9h4Mt6+UXkyMs0XbfICUh1eUrlJJAOupBHUhLRnKkruawyDddYRCs0Eizt900ntIMk9/4RksYl+FgSpcQ==}
 
 snapshots:
 
@@ -4602,6 +4614,8 @@ snapshots:
 
   '@fastify/error@4.0.0': {}
 
+  '@fastify/error@4.2.0': {}
+
   '@fastify/etag@6.0.3':
     dependencies:
       fastify-plugin: 5.0.1
@@ -4677,6 +4691,16 @@ snapshots:
       fastify-plugin: 5.0.1
       fastq: 1.17.1
       glob: 11.0.0
+
+  '@fastify/swagger@9.5.1':
+    dependencies:
+      fastify-plugin: 5.0.1
+      json-schema-resolver: 3.0.0
+      openapi-types: 12.1.3
+      rfdc: 1.4.1
+      yaml: 2.5.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@fastify/websocket@11.2.0':
     dependencies:
@@ -6230,14 +6254,16 @@ snapshots:
 
   fast-uri@3.0.1: {}
 
+  fast-uri@3.0.6: {}
+
   fastify-plugin@5.0.1: {}
 
-  fastify-type-provider-zod@4.0.2(fastify@5.5.0)(zod@3.25.76):
+  fastify-type-provider-zod@5.0.2(@fastify/swagger@9.5.1)(fastify@5.5.0)(zod@4.0.15):
     dependencies:
-      '@fastify/error': 4.0.0
+      '@fastify/error': 4.2.0
+      '@fastify/swagger': 9.5.1
       fastify: 5.5.0
-      zod: 3.25.76
-      zod-to-json-schema: 3.23.3(zod@3.25.76)
+      zod: 4.0.15
 
   fastify@5.5.0:
     dependencies:
@@ -6723,6 +6749,14 @@ snapshots:
     dependencies:
       fast-deep-equal: 3.1.3
 
+  json-schema-resolver@3.0.0:
+    dependencies:
+      debug: 4.4.1
+      fast-uri: 3.0.6
+      rfdc: 1.4.1
+    transitivePeerDependencies:
+      - supports-color
+
   json-schema-traverse@0.4.1: {}
 
   json-schema-traverse@1.0.0: {}
@@ -7044,6 +7078,8 @@ snapshots:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
+
+  openapi-types@12.1.3: {}
 
   openid@2.0.13:
     dependencies:
@@ -8277,8 +8313,4 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod-to-json-schema@3.23.3(zod@3.25.76):
-    dependencies:
-      zod: 3.25.76
-
-  zod@3.25.76: {}
+  zod@4.0.15: {}

@@ -7,8 +7,8 @@ import { configuration } from '../../configuration'
 export default standardAdminPage({
   path: '/admin/voice-server',
   bodySchema: z.object({
-    type: z.nativeEnum(VoiceServerType),
-    staticLink: z.string().url().nullable().default(null),
+    type: z.enum(VoiceServerType),
+    staticLink: z.url().nullable().default(null),
     mumbleUrl: z.string().nullable().default(null),
     mumblePort: z.coerce.number().gte(0).lte(65535).optional().default(64738),
     mumblePassword: z.string().nullable().default(null),

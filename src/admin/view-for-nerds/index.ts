@@ -35,8 +35,18 @@ export default fp(
                 key: z.string(),
                 value: z.string(),
               })
-              .transform(({ key, value }) => {
-                return { key, value: JSON.parse(value) as unknown }
+              .transform(({ key, value }, ctx) => {
+                try {
+                  const parsed = JSON.parse(value) as unknown
+                  return { key, value: parsed } as unknown
+                } catch (e) {
+                  ctx.issues.push({
+                    code: 'custom',
+                    message: `Invalid JSON (${String(e)})`,
+                    input: value,
+                  })
+                  return z.NEVER
+                }
               })
               .pipe(configurationSchema),
           },
@@ -58,7 +68,7 @@ export default fp(
             querystring: z.object({
               key: z.custom<keyof Configuration>(v =>
                 configurationSchema.options.find(
-                  option => option._def.shape().key._def.value === v,
+                  option => option._zod.def.shape.key._zod.def.values[0] === v,
                 ),
               ),
             }),

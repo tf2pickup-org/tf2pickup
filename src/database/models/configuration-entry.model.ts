@@ -36,7 +36,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
     key: z.literal('games.default_player_skill'),
     value: z
-      .record(z.nativeEnum(Tf2ClassName), z.number())
+      .partialRecord(z.enum(Tf2ClassName), z.number())
       .default(() =>
         Object.fromEntries(Object.values(Tf2ClassName).map(className => [className, 1])),
       ),
@@ -66,16 +66,16 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z
     .object({
       key: z.literal('games.logs_tf_upload_method'),
-      value: z.nativeEnum(LogsTfUploadMethod).default(LogsTfUploadMethod.backend),
+      value: z.enum(LogsTfUploadMethod).default(LogsTfUploadMethod.backend),
     })
     .describe('Method of uploading logs to the logs.tf service'),
   z.object({
     key: z.literal('games.voice_server_type'),
-    value: z.nativeEnum(VoiceServerType).default(VoiceServerType.none),
+    value: z.enum(VoiceServerType).default(VoiceServerType.none),
   }),
   z.object({
     key: z.literal('games.voice_server.static_link'),
-    value: z.string().url().nullable().default(null),
+    value: z.url().nullable().default(null),
   }),
   z.object({
     key: z.literal('games.voice_server.mumble.url'),
@@ -96,7 +96,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
     key: z.literal('games.join_queue_cooldown'),
     value: z
-      .record(z.nativeEnum(Tf2ClassName), z.number())
+      .record(z.enum(Tf2ClassName), z.number())
       .default({
         [Tf2ClassName.scout]: secondsToMilliseconds(5),
         [Tf2ClassName.soldier]: secondsToMilliseconds(5),
@@ -121,7 +121,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
   }),
   z.object({
     key: z.literal('misc.discord_invite_link'),
-    value: z.string().url().nullable().default(null),
+    value: z.url().nullable().default(null),
   }),
   z.object({
     key: z.literal('players.etf2l_account_required'),

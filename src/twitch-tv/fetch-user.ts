@@ -3,22 +3,20 @@ import { environment } from '../environment'
 import { errors } from '../errors'
 
 const fetchUsersResponseSchema = z.object({
-  data: z
-    .array(
-      z.object({
-        broadcaster_type: z.string(),
-        description: z.string(),
-        display_name: z.string(),
-        email: z.string(),
-        id: z.string(),
-        login: z.string(),
-        offline_image_url: z.string(),
-        profile_image_url: z.string(),
-        type: z.string(),
-        view_count: z.number(),
-      }),
-    )
-    .nonempty(),
+  data: z.tuple([
+    z.object({
+      broadcaster_type: z.string(),
+      description: z.string(),
+      display_name: z.string(),
+      email: z.string(),
+      id: z.string(),
+      login: z.string(),
+      offline_image_url: z.string(),
+      profile_image_url: z.string(),
+      type: z.string(),
+      view_count: z.number(),
+    }),
+  ]),
 })
 
 type User = z.infer<typeof fetchUsersResponseSchema>['data'][0]

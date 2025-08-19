@@ -8,7 +8,7 @@ export const etf2lProfileSchema = z.object({
   classes: z.array(z.string()).or(z.literal(false)),
   registered: z.number(),
   steam: z.object({
-    avatar: z.string().url(),
+    avatar: z.url(),
     id: z.string(),
     id3: z.string(),
     id64: z.string(),
@@ -25,8 +25,8 @@ export const etf2lProfileSchema = z.object({
   teams: z.array(etf2lTeamSchema).nullable(),
   title: z.literal('Player'),
   urls: z.object({
-    results: z.string().url(),
-    self: z.string().url(),
-    transfers: z.string().url(),
+    results: z.url(),
+    self: z.url(),
+    transfers: z.url(),
   }),
 })

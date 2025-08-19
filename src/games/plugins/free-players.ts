@@ -15,7 +15,7 @@ export default fp(
       await Promise.all(
         game.slots.map(async ({ gameClass, player }) => {
           const queueCooldown = await configuration.get('games.join_queue_cooldown')
-          const cooldownMs = queueCooldown[gameClass] ?? 0
+          const cooldownMs = queueCooldown[gameClass]
           await tasks.schedule('games.freePlayer', cooldownMs, { player })
         }),
       )
