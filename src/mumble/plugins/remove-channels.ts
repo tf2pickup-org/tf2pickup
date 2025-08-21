@@ -7,6 +7,8 @@ import { assertClientIsConnected } from '../assert-client-is-connected'
 import { client } from '../client'
 import { logger } from '../../logger'
 import { minutesToMilliseconds } from 'date-fns'
+import { configuration } from '../../configuration'
+import { VoiceServerType } from '../../shared/types/voice-server-type'
 
 const removeChannelDelay = minutesToMilliseconds(1)
 
@@ -40,6 +42,11 @@ export default fp(
     events.on(
       'game:ended',
       safe(async ({ game }) => {
+        const type = await configuration.get('games.voice_server_type')
+        if (type !== VoiceServerType.mumble) {
+          return
+        }
+
         await tasks.schedule('mumble.cleanupChannel', removeChannelDelay, {
           gameNumber: game.number,
         })
