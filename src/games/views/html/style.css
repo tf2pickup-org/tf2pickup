@@ -106,7 +106,7 @@
         .slot {
           flex-flow: row-reverse nowrap;
 
-          .player-name {
+          .player-link {
             text-align: right;
           }
         }
@@ -152,7 +152,7 @@
           }
         }
 
-        .player-name {
+        .player-link {
           flex: 1 1 0;
           font-size: 20px;
           font-weight: 500;
@@ -160,7 +160,16 @@
           text-overflow: ellipsis;
 
           &:hover {
-            text-decoration: underline;
+            .player-name {
+              text-decoration: underline;
+            }
+          }
+
+          .player-assigned-skill {
+            display: none;
+            font-size: 16px;
+            font-weight: 400;
+            margin: 0 4px;
           }
         }
 
@@ -345,8 +354,10 @@
   }
 }
 
-.game-admin-toolbox {
-  background-color: theme('colors.abru.dark.29');
-  border-radius: 8px;
-  padding: 10px;
+body:has(#show-assigned-skills[checked='checked']) {
+  * {
+    .player-assigned-skill {
+      display: block;
+    }
+  }
 }

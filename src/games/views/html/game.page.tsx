@@ -29,15 +29,15 @@ export async function GamePage(props: { game: GameModel; user?: User | undefined
           <GameSlotList game={props.game} actor={props.user?.player.steamId} />
           <GameEventList game={props.game} />
 
-          {[
+          {/* {[
             GameState.created,
             GameState.configuring,
             GameState.launching,
             GameState.started,
           ].includes(props.game.state) &&
-            props.user?.player.roles.includes(PlayerRole.admin) && (
-              <AdminToolbox game={props.game} />
-            )}
+            props.user?.player.roles.includes(PlayerRole.admin) && ( */}
+          <AdminToolbox game={props.game} />
+          {/* )} */}
         </div>
 
         <ChooseGameServerDialog gameNumber={props.game.number} />

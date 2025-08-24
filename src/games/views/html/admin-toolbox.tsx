@@ -1,5 +1,5 @@
 import type { GameModel } from '../../../database/models/game.model'
-import { IconClick, IconRefreshDot, IconX } from '../../../html/components/icons'
+import { IconClick, IconEye, IconRefreshDot, IconX } from '../../../html/components/icons'
 
 export function AdminToolbox(props: { game: GameModel }) {
   return (
@@ -37,6 +37,17 @@ export function AdminToolbox(props: { game: GameModel }) {
         <IconX />
         Force-end
       </button>
+
+      <div class="flex-grow"></div>
+
+      <input
+        type="checkbox"
+        class="button button--accent"
+        checked="checked"
+        id="show-assigned-skills"
+      >
+        <IconEye />
+      </input>
     </div>
   )
 }
