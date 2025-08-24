@@ -77,7 +77,7 @@
     "tailwindcss": "3.4.17",
     "umzug": "3.8.2",
     "ws": "8.18.0",
-    "zod": "4.0.17"
+    "zod": "4.1.1"
   },
   "devDependencies": {
     "@eslint/js": "9.34.0",
