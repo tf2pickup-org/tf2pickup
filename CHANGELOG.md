@@ -1,5 +1,30 @@
 # Changelog
 
+# [4.0.0-alpha.25](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.24...4.0.0-alpha.25) (2025-08-24)
+
+
+### Bug Fixes
+
+* cleanup mumble channels on valid configuration only ([#311](https://github.com/tf2pickup-org/tf2pickup/issues/311)) ([a71430c](https://github.com/tf2pickup-org/tf2pickup/commit/a71430ccfbfd3d3e3a7258657d5b4ed86a540455))
+* **deps:** update dependency @fastify/request-context to v6.2.1 ([b7bc786](https://github.com/tf2pickup-org/tf2pickup/commit/b7bc786eb8a59c21125ca4fc3b50132c7caf70ad))
+* **deps:** update dependency @kitajs/ts-html-plugin to v4.1.2 ([#303](https://github.com/tf2pickup-org/tf2pickup/issues/303)) ([c2c6d10](https://github.com/tf2pickup-org/tf2pickup/commit/c2c6d104ffff34cb3d068db120da357501fb804c))
+* **deps:** update dependency cssnano to v7.1.1 ([0c9497d](https://github.com/tf2pickup-org/tf2pickup/commit/0c9497dda086d621dbe16c4a6c9f9ed735d42d0e))
+* **deps:** update dependency discord.js to v14.22.0 ([b67f5ca](https://github.com/tf2pickup-org/tf2pickup/commit/b67f5ca29d78f7427d1ccad1f9b74c0f0dab6116))
+* **deps:** update dependency discord.js to v14.22.1 ([#312](https://github.com/tf2pickup-org/tf2pickup/issues/312)) ([14d4c7e](https://github.com/tf2pickup-org/tf2pickup/commit/14d4c7e803b53f7d537c51102f1bee49c8867a49))
+* **deps:** update dependency es-toolkit to v1.39.10 ([c31d971](https://github.com/tf2pickup-org/tf2pickup/commit/c31d971f21757c05e9f35ae9e360423b6e5f6c6b))
+* **deps:** update dependency es-toolkit to v1.39.9 ([57965c6](https://github.com/tf2pickup-org/tf2pickup/commit/57965c6128f808a7616813bc335cc164e5dae6f1))
+* **deps:** update dependency esbuild to v0.25.9 ([5f7a0e8](https://github.com/tf2pickup-org/tf2pickup/commit/5f7a0e8ad436a5f338ce20cc7dc6c70e26692b11))
+* **deps:** update dependency fastify to v5.5.0 ([d516ee6](https://github.com/tf2pickup-org/tf2pickup/commit/d516ee6c77081ae0044cef18319361cf838fb456))
+* **deps:** update dependency fastify-type-provider-zod to v5.0.3 ([#275](https://github.com/tf2pickup-org/tf2pickup/issues/275)) ([9b37b9e](https://github.com/tf2pickup-org/tf2pickup/commit/9b37b9e0d779ce9c881004b8f162e90d6970c741))
+* **deps:** update dependency htmx.org to v2.0.6 ([b9e670e](https://github.com/tf2pickup-org/tf2pickup/commit/b9e670e9ceb9c32a1ea9f5221fd8e06409901b37))
+* **deps:** update dependency marked to v16.1.2 ([#299](https://github.com/tf2pickup-org/tf2pickup/issues/299)) ([b53eea9](https://github.com/tf2pickup-org/tf2pickup/commit/b53eea9b312d61aa4211cdd875c25481587cb0c1))
+* **deps:** update dependency marked to v16.2.0 ([9678aee](https://github.com/tf2pickup-org/tf2pickup/commit/9678aee3427e9bfb1881d38958e86768ea10cc46))
+* **deps:** update dependency pino to v9.9.0 ([#302](https://github.com/tf2pickup-org/tf2pickup/issues/302)) ([5bcc115](https://github.com/tf2pickup-org/tf2pickup/commit/5bcc115b94d8e7b0bb81652b11b1da2f44a50892))
+* **deps:** update dependency zod to v4 ([#287](https://github.com/tf2pickup-org/tf2pickup/issues/287)) ([da5b679](https://github.com/tf2pickup-org/tf2pickup/commit/da5b6791f2e29b8b022cacbe8e3cb94dd348b5e0))
+* **deps:** update dependency zod to v4.0.17 ([02f0772](https://github.com/tf2pickup-org/tf2pickup/commit/02f07725b340b60d9acf99d57dd47922b6aeb3c9))
+* fix switching tabs on the win-loss chart ([#298](https://github.com/tf2pickup-org/tf2pickup/issues/298)) ([1e6064c](https://github.com/tf2pickup-org/tf2pickup/commit/1e6064c18d2fe646cf27b23f70492c9c316a9771))
+* get rid of redundant swap ([#310](https://github.com/tf2pickup-org/tf2pickup/issues/310)) ([1b81f4c](https://github.com/tf2pickup-org/tf2pickup/commit/1b81f4c5380ba6e7b7569182f76df740734ca641))
+
 # [4.0.0-alpha.24](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.23...4.0.0-alpha.24) (2025-08-02)
 
 
