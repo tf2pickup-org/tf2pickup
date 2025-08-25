@@ -5,12 +5,13 @@ import { launchGame, expect } from '../fixtures/launch-game'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
 const test = mergeTests(accessMongoDb, launchGame, waitForEmptyQueue)
+const readyUpTimeout = secondsToMilliseconds(20)
 
 test.beforeEach(async ({ db }) => {
   const configuration = db.collection('configuration')
   await configuration.updateOne(
     { key: 'queue.pre_ready_up_timeout' },
-    { $set: { value: secondsToMilliseconds(10) } },
+    { $set: { value: readyUpTimeout } },
     { upsert: true },
   )
 })
@@ -39,7 +40,7 @@ test('pre-ready expires', async ({ users }) => {
   await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
   await expect(page.preReadyUpButton()).toContainText(/\d+:\d+/)
   await expect(page.preReadyUpButton()).not.toHaveAttribute('aria-selected', {
-    timeout: secondsToMilliseconds(12),
+    timeout: readyUpTimeout + secondsToMilliseconds(2),
   })
   await expect(page.preReadyUpButton()).not.toContainText(/\d+:\d+/, {
     useInnerText: true,
