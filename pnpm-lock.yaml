@@ -103,7 +103,7 @@ importers:
         version: 5.0.1
       fastify-type-provider-zod:
         specifier: 5.0.3
-        version: 5.0.3(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.3)
+        version: 5.0.3(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.4)
       form-data:
         specifier: 4.0.4
         version: 4.0.4
@@ -192,8 +192,8 @@ importers:
         specifier: 8.18.0
         version: 8.18.0
       zod:
-        specifier: 4.1.3
-        version: 4.1.3
+        specifier: 4.1.4
+        version: 4.1.4
     devDependencies:
       '@eslint/js':
         specifier: 9.34.0
@@ -4329,8 +4329,8 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
-  zod@4.1.3:
-    resolution: {integrity: sha512-1neef4bMce1hNTrxvHVKxWjKfGDn0oAli3Wy1Uwb7TRO1+wEwoZUZNP1NXIEESybOBiFnBOhI6a4m6tCLE8dog==}
+  zod@4.1.4:
+    resolution: {integrity: sha512-2YqJuWkU6IIK9qcE4k1lLLhyZ6zFw7XVRdQGpV97jEIZwTrscUw+DY31Xczd8nwaoksyJUIxCojZXwckJovWxA==}
 
 snapshots:
 
@@ -6254,13 +6254,13 @@ snapshots:
 
   fastify-plugin@5.0.1: {}
 
-  fastify-type-provider-zod@5.0.3(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.3):
+  fastify-type-provider-zod@5.0.3(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.4):
     dependencies:
       '@fastify/error': 4.2.0
       '@fastify/swagger': 9.5.1
       fastify: 5.5.0
       openapi-types: 12.1.3
-      zod: 4.1.3
+      zod: 4.1.4
 
   fastify@5.5.0:
     dependencies:
@@ -8310,4 +8310,4 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod@4.1.3: {}
+  zod@4.1.4: {}
