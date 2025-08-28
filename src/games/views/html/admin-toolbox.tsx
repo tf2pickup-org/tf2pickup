@@ -40,12 +40,7 @@ export function AdminToolbox(props: { game: GameModel }) {
 
       <div class="flex-grow"></div>
 
-      <input
-        type="checkbox"
-        class="button button--accent"
-        checked="checked"
-        id="show-assigned-skills"
-      >
+      <input type="checkbox" class="button button--accent" checked id="show-assigned-skills">
         <IconEye />
       </input>
     </div>

@@ -107,7 +107,9 @@
           flex-flow: row-reverse nowrap;
 
           .player-link {
-            text-align: right;
+            /* text-align: right; */
+            /* flex-flow: row-reverse nowrap; */
+            justify-content: flex-end;
           }
         }
       }
@@ -154,10 +156,11 @@
 
         .player-link {
           flex: 1 1 0;
-          font-size: 20px;
-          font-weight: 500;
-          overflow: hidden;
-          text-overflow: ellipsis;
+
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: baseline;
+          gap: 4px;
 
           &:hover {
             .player-name {
@@ -165,9 +168,16 @@
             }
           }
 
+          .player-name {
+            font-size: 20px;
+            font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
           .player-assigned-skill {
             display: none;
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 400;
             margin: 0 4px;
           }
@@ -354,10 +364,8 @@
   }
 }
 
-body:has(#show-assigned-skills[checked='checked']) {
-  * {
-    .player-assigned-skill {
-      display: block;
-    }
+body:has(#show-assigned-skills:checked) {
+  .player-assigned-skill {
+    display: block;
   }
 }
