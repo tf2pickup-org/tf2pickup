@@ -102,8 +102,8 @@ importers:
         specifier: 5.0.1
         version: 5.0.1
       fastify-type-provider-zod:
-        specifier: 5.1.0
-        version: 5.1.0(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.4)
+        specifier: 6.0.0
+        version: 6.0.0(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.4)
       form-data:
         specifier: 4.0.4
         version: 4.0.4
@@ -2178,13 +2178,13 @@ packages:
   fastify-plugin@5.0.1:
     resolution: {integrity: sha512-HCxs+YnRaWzCl+cWRYFnHmeRFyR5GVnJTAaCJQiYzQSDwK9MgJdyAsuL3nh0EWRCYMgQ5MeziymvmAhUHYHDUQ==}
 
-  fastify-type-provider-zod@5.1.0:
-    resolution: {integrity: sha512-IdLEE16XWOkzTskK/onYQ4FLo6zB4/UXxzbZdvskprSAoNAFQoWdjfmSWjWVIDLIn/9Wa6MuKERQC8t7VxFFag==}
+  fastify-type-provider-zod@6.0.0:
+    resolution: {integrity: sha512-Bz+Qll2XuvvueHz0yhcr67V/43q1VecSyIqZm+P8OL8KZHznUXECZXkuwQePR5b6fWY/kzhhadmgNs9dB/Nifg==}
     peerDependencies:
       '@fastify/swagger': '>=9.5.1'
       fastify: ^5.0.0
       openapi-types: ^12.1.3
-      zod: '>=3.25.67'
+      zod: '>=4.1.5'
 
   fastify@5.5.0:
     resolution: {integrity: sha512-ZWSWlzj3K/DcULCnCjEiC2zn2FBPdlZsSA/pnPa/dbUfLvxkD/Nqmb0XXMXLrWkeM4uQPUvjdJpwtXmTfriXqw==}
@@ -6254,7 +6254,7 @@ snapshots:
 
   fastify-plugin@5.0.1: {}
 
-  fastify-type-provider-zod@5.1.0(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.4):
+  fastify-type-provider-zod@6.0.0(@fastify/swagger@9.5.1)(fastify@5.5.0)(openapi-types@12.1.3)(zod@4.1.4):
     dependencies:
       '@fastify/error': 4.2.0
       '@fastify/swagger': 9.5.1
