@@ -26,7 +26,7 @@ export default fp(
       },
       async (request, reply) => {
         request.session.set('steamId', request.query.steamId)
-        return await reply.redirect(environment.WEBSITE_URL, 302).send()
+        return await reply.redirect(environment.WEBSITE_URL, 302)
       },
     )
   },
