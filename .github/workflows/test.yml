@@ -95,6 +95,7 @@ jobs:
       KEY_STORE_PASSPHRASE: 'a_password'
       MUMBLE_SUPERUSER_PASSWORD: '123456'
       ENABLE_TEST_AUTH: 'true'
+      LOG_LEVEL: 'trace'
 
     strategy:
       fail-fast: false
@@ -161,6 +162,7 @@ jobs:
             -e GAME_SERVER_SECRET \
             -e THUMBNAIL_SERVICE_URL \
             -e ENABLE_TEST_AUTH \
+            -e LOG_LEVEL \
             -p 3000:3000/tcp \
             -p 9871:9871/udp \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.tag }}
