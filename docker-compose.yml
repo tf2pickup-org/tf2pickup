@@ -6,6 +6,15 @@ services:
     volumes:
       - mongo:/data/db
 
+  mumble:
+    image: mumblevoip/mumble-server:latest
+    environment:
+      - MUMBLE_SUPERUSER_PASSWORD=123456
+    ports:
+      - 64738:64738/tcp
+      - 64738:64738/udp
+    profiles: [mumble]
+
   gameserver:
     image: ghcr.io/tf2pickup-org/tf2-gameserver:latest
     environment:
@@ -20,16 +29,7 @@ services:
     network_mode: host
     stdin_open: true
     tty: true
-    profiles:
-      - dev
-
-  mumble:
-    image: mumblevoip/mumble-server:latest
-    environment:
-      - MUMBLE_SUPERUSER_PASSWORD=123456
-    ports:
-      - 64738:64738/tcp
-      - 64738:64738/udp
+    profiles: [gameserver]
 
   umami:
     container_name: umami
@@ -43,6 +43,7 @@ services:
     depends_on:
       - umami-db
     restart: always
+    profiles: [analytics]
 
   umami-db:
     container_name: umami-db
@@ -54,6 +55,7 @@ services:
     volumes:
       - umami-db:/var/lib/postgresql/data
     restart: always
+    profiles: [analytics]
 
 volumes:
   mongo:
