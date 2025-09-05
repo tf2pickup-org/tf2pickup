@@ -119,6 +119,12 @@ export class QueuePage {
     return this.page.getByRole('button', { name: 'Pre-ready up' })
   }
 
+  async preReadyUp() {
+    await expect(this.preReadyUpButton()).not.toHaveAttribute('aria-selected')
+    await this.preReadyUpButton().click()
+    await expect(this.preReadyUpButton()).toHaveAttribute('aria-selected')
+  }
+
   async waitToBeEmpty(options?: { timeout?: number }) {
     await Promise.all(
       Array.from(queueSlots()).map(async i => {
