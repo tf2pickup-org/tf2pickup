@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
 import type { User } from '../../../auth/types/user'
-import { GameState, type GameModel } from '../../../database/models/game.model'
+import { type GameModel } from '../../../database/models/game.model'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
@@ -29,15 +29,9 @@ export async function GamePage(props: { game: GameModel; user?: User | undefined
           <GameSlotList game={props.game} actor={props.user?.player.steamId} />
           <GameEventList game={props.game} />
 
-          {/* {[
-            GameState.created,
-            GameState.configuring,
-            GameState.launching,
-            GameState.started,
-          ].includes(props.game.state) &&
-            props.user?.player.roles.includes(PlayerRole.admin) && ( */}
-          <AdminToolbox game={props.game} />
-          {/* )} */}
+          {props.user?.player.roles.includes(PlayerRole.admin) && (
+            <AdminToolbox game={props.game} />
+          )}
         </div>
 
         <ChooseGameServerDialog gameNumber={props.game.number} />
