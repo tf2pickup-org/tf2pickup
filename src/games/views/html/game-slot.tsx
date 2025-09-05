@@ -72,8 +72,14 @@ async function GameSlotContent(props: {
             height="38"
             alt={`${props.player.name}'s avatar`}
           />
-          <a href={`/players/${props.player.steamId}`} class="player-name" safe>
-            {props.player.name}
+          <a href={`/players/${props.player.steamId}`} class="player-link">
+            <span class="player-name" safe>
+              {props.player.name}
+            </span>
+
+            {props.slot.skill !== undefined && (
+              <span class="player-assigned-skill">{props.slot.skill}</span>
+            )}
           </a>
 
           {showRequestSubstituteButton ? (

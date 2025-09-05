@@ -77,7 +77,7 @@ const clientMessage = z.union([
 
 type MessageFn = (
   player: SteamId64 | undefined,
-) => string | Promise<string> | string[] | Promise<string[]>
+) => string | string[] | undefined | Promise<string | string[] | undefined>
 interface Broadcaster {
   broadcast: (messageFn: MessageFn) => void
 }
@@ -108,6 +108,10 @@ async function sendSafe(client: WebSocket, msg: string) {
 async function send(client: WebSocket, message: MessageFn) {
   try {
     const m = await message(client.player?.steamId)
+    if (!m) {
+      return
+    }
+
     if (Array.isArray(m)) {
       for (const msg of m) {
         await sendSafe(client, msg)

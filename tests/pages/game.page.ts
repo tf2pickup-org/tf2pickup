@@ -87,13 +87,25 @@ export class GamePage {
     return this.page.getByLabel('Game events').getByText(event)
   }
 
+  get forceEndButton() {
+    return this.page.getByRole('button', { name: 'Force-end' })
+  }
+
   async forceEnd() {
     this.page.once('dialog', dialog => dialog.accept())
-    await this.page.getByRole('button', { name: 'Force-end' }).click()
+    await this.forceEndButton.click()
+  }
+
+  get reinitializeGameServerButton() {
+    return this.page.getByRole('button', { name: 'Reinitialize game server' })
   }
 
   async reinitializeGameServer() {
     this.page.once('dialog', dialog => dialog.accept())
-    await this.page.getByRole('button', { name: 'Reinitialize game server' }).click()
+    await this.reinitializeGameServerButton.click()
+  }
+
+  get reassignGameServerButton() {
+    return this.page.getByRole('button', { name: 'Reassign game server' })
   }
 }

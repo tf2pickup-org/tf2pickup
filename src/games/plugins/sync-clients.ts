@@ -16,6 +16,9 @@ import { JoinGameButton } from '../views/html/join-game-button'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { ServerReadyNotification } from '../views/html/server-ready-notification'
 import { errors } from '../../errors'
+import { AdminToolbox } from '../views/html/admin-toolbox'
+import { players } from '../../players'
+import { PlayerRole } from '../../database/models/player.model'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -148,5 +151,21 @@ export default fp(async app => {
     app.gateway
       .to({ url: `/games/${game.number}` })
       .send(async actor => await GameSlot({ game, slot, actor }))
+  })
+
+  events.on('game:ended', ({ game }) => {
+    const buttons = AdminToolbox.gameControlButtons({ game })
+    app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
+      if (!actor) {
+        return
+      }
+
+      const player = await players.bySteamId(actor)
+      if (player.roles.includes(PlayerRole.admin)) {
+        return buttons
+      }
+
+      return
+    })
   })
 })
