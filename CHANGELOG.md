@@ -1,5 +1,27 @@
 # Changelog
 
+# [4.0.0-alpha.26](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.25...4.0.0-alpha.26) (2025-09-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v17.2.2 ([#320](https://github.com/tf2pickup-org/tf2pickup/issues/320)) ([deda2d7](https://github.com/tf2pickup-org/tf2pickup/commit/deda2d73114929d2aa5e2b82a4a6c95c2f82675e))
+* **deps:** update dependency fastify to v5.6.0 ([e78dd2e](https://github.com/tf2pickup-org/tf2pickup/commit/e78dd2e6db53cdc831eb0f11b654ad148891eb36))
+* **deps:** update dependency fastify-type-provider-zod to v5.1.0 ([#318](https://github.com/tf2pickup-org/tf2pickup/issues/318)) ([98a0cd4](https://github.com/tf2pickup-org/tf2pickup/commit/98a0cd41d624ec835a3faa6bb6fe355089fe809f))
+* **deps:** update dependency fastify-type-provider-zod to v6 ([#319](https://github.com/tf2pickup-org/tf2pickup/issues/319)) ([6aea8e6](https://github.com/tf2pickup-org/tf2pickup/commit/6aea8e6c322b42bfcd163912216824133d0a7bef))
+* **deps:** update dependency marked to v16.2.1 ([b1857f1](https://github.com/tf2pickup-org/tf2pickup/commit/b1857f1934110e5d35df97aadeff118253f39918))
+* **deps:** update dependency mongodb to v6.19.0 ([198abaf](https://github.com/tf2pickup-org/tf2pickup/commit/198abaf9a49237fcaa8f863eb80a623183463ddb))
+* **deps:** update dependency pino to v9.9.2 ([#321](https://github.com/tf2pickup-org/tf2pickup/issues/321)) ([8f4f796](https://github.com/tf2pickup-org/tf2pickup/commit/8f4f796f63e476d502e0d3c2e8e517e6ccbb36de))
+* **deps:** update dependency zod to v4.1.1 ([#313](https://github.com/tf2pickup-org/tf2pickup/issues/313)) ([c9697d9](https://github.com/tf2pickup-org/tf2pickup/commit/c9697d9bce124439758330442e37dd630e4d3bc4))
+* **deps:** update dependency zod to v4.1.3 ([#316](https://github.com/tf2pickup-org/tf2pickup/issues/316)) ([16f4944](https://github.com/tf2pickup-org/tf2pickup/commit/16f494417e9ce109cab2ebb53e55575dffacc6db))
+* **deps:** update dependency zod to v4.1.4 ([a9635c7](https://github.com/tf2pickup-org/tf2pickup/commit/a9635c70516b3999c95d26c2ef783f3bfe739e68))
+* **deps:** update dependency zod to v4.1.5 ([#317](https://github.com/tf2pickup-org/tf2pickup/issues/317)) ([c97aeac](https://github.com/tf2pickup-org/tf2pickup/commit/c97aeac3124c182bb58d0afa105c16e8ff851b83))
+
+
+### Features
+
+* game page admin toolbox ([#325](https://github.com/tf2pickup-org/tf2pickup/issues/325)) ([452f2f8](https://github.com/tf2pickup-org/tf2pickup/commit/452f2f8145b03e808a48f19692dd96b4027ed53f))
+
 # [4.0.0-alpha.25](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.24...4.0.0-alpha.25) (2025-08-24)
 
 
