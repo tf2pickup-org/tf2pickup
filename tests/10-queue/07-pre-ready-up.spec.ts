@@ -61,7 +61,7 @@ test('pre-ready up readies up when the queue is ready', async ({
       await page.goto()
       const slot = desiredSlots.get(user.playerName)!
       await page.slot(slot).join()
-      await page.preReadyUpButton().click()
+      await page.preReadyUp()
     }),
   )
 
