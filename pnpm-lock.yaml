@@ -126,8 +126,8 @@ importers:
         specifier: 2.0.3
         version: 2.0.3
       htmx.org:
-        specifier: 2.0.6
-        version: 2.0.6
+        specifier: 2.0.7
+        version: 2.0.7
       hyperscript.org:
         specifier: 0.9.14
         version: 0.9.14
@@ -2457,8 +2457,8 @@ packages:
   htmx-ext-ws@2.0.3:
     resolution: {integrity: sha512-782KDh1EHS1iJk9SWXlbNN8DkwHR3ujt8lFnsuQ+o2uBwnZM8WeZOkv1WOER7xXhpZJe4u9oLPhQg5RgCuRAHA==}
 
-  htmx.org@2.0.6:
-    resolution: {integrity: sha512-7ythjYneGSk3yCHgtCnQeaoF+D+o7U2LF37WU3O0JYv3gTZSicdEFiI/Ai/NJyC5ZpYJWMpUb11OC5Lr6AfAqA==}
+  htmx.org@2.0.7:
+    resolution: {integrity: sha512-YiJqF3U5KyO28VC5mPfehKJPF+n1Gni+cupK+D69TF0nm7wY6AXn3a4mPWIikfAXtl1u1F1+ZhSCS7KT8pVmqA==}
 
   http-errors@2.0.0:
     resolution: {integrity: sha512-FtwrG/euBzaEjYeRqOgly7G0qviiXoJWnvEH2Z1plBdXgbyjv34pHTSb9zoeHMyDy33+DWy5Wt9Wo+TURtOYSQ==}
@@ -6551,21 +6551,21 @@ snapshots:
 
   htmx-ext-head-support@2.0.4:
     dependencies:
-      htmx.org: 2.0.6
+      htmx.org: 2.0.7
 
   htmx-ext-preload@2.1.1:
     dependencies:
-      htmx.org: 2.0.6
+      htmx.org: 2.0.7
 
   htmx-ext-remove-me@2.0.1:
     dependencies:
-      htmx.org: 2.0.6
+      htmx.org: 2.0.7
 
   htmx-ext-ws@2.0.3:
     dependencies:
-      htmx.org: 2.0.6
+      htmx.org: 2.0.7
 
-  htmx.org@2.0.6: {}
+  htmx.org@2.0.7: {}
 
   http-errors@2.0.0:
     dependencies:
