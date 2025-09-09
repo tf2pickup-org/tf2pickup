@@ -95,7 +95,7 @@
     "cpy-cli": "6.0.0",
     "cssnano": "7.1.1",
     "eslint": "9.35.0",
-    "globals": "16.3.0",
+    "globals": "16.4.0",
     "lorem-ipsum": "2.0.8",
     "pino-princess": "1.2.0",
     "postcss-cli": "11.0.1",
