@@ -19,30 +19,30 @@ test.beforeEach(async ({ db }) => {
 test('pre-ready up button is visible for logged-in-users', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
-  await expect(page.preReadyUpButton()).toBeVisible()
+  await expect(page.preReadyUpButton).toBeVisible()
 })
 
 test('pre-ready up button is enabled when a player joins the queue', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
-  await expect(page.preReadyUpButton()).toBeDisabled()
+  await expect(page.preReadyUpButton).toBeDisabled()
   await page.joinQueue('soldier-1')
-  await expect(page.preReadyUpButton()).toBeEnabled()
+  await expect(page.preReadyUpButton).toBeEnabled()
   await page.leaveQueue()
-  await expect(page.preReadyUpButton()).toBeDisabled()
+  await expect(page.preReadyUpButton).toBeDisabled()
 })
 
 test('pre-ready expires', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
   await page.joinQueue('soldier-1')
-  await page.preReadyUpButton().click()
-  await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
-  await expect(page.preReadyUpButton()).toContainText(/\d+:\d+/)
-  await expect(page.preReadyUpButton()).not.toHaveAttribute('aria-selected', {
+  await page.preReadyUpButton.click()
+  await expect(page.preReadyUpButton).toHaveAttribute('aria-selected')
+  await expect(page.preReadyUpButton).toContainText(/\d+:\d+/)
+  await expect(page.preReadyUpButton).not.toHaveAttribute('aria-selected', {
     timeout: readyUpTimeout + secondsToMilliseconds(2),
   })
-  await expect(page.preReadyUpButton()).not.toContainText(/\d+:\d+/, {
+  await expect(page.preReadyUpButton).not.toContainText(/\d+:\d+/, {
     useInnerText: true,
   })
 })
@@ -117,12 +117,12 @@ test('pre-ready up enables automatically after readying up', async ({
   const page = await polemic.queuePage()
   await page.goto()
   await page.slot(desiredSlots.get('Polemic')!).join()
-  await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
+  await expect(page.preReadyUpButton).toHaveAttribute('aria-selected')
 
   {
     const page = await shadowhunter.queuePage()
     await page.readyUpDialog().readyUp()
-    await expect(page.preReadyUpButton()).toHaveAttribute('aria-selected')
+    await expect(page.preReadyUpButton).toHaveAttribute('aria-selected')
   }
 })
 
