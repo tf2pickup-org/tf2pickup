@@ -34,5 +34,5 @@ test('has 3 map vote buttons', async ({ page }) => {
 test('pre-ready up button is not rendered', async ({ page }) => {
   const queuePage = new QueuePage(page)
   await queuePage.goto()
-  await expect(queuePage.preReadyUpButton()).not.toBeVisible()
+  await expect(queuePage.preReadyUpButton).not.toBeVisible()
 })
