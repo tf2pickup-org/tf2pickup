@@ -59,7 +59,7 @@
     "hyperscript.org": "0.9.14",
     "idiomorph": "0.7.3",
     "jsonwebtoken": "9.0.2",
-    "marked": "16.2.1",
+    "marked": "16.3.0",
     "mime": "4.1.0",
     "mongodb": "6.19.0",
     "motion": "12.23.12",
