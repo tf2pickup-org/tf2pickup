@@ -61,7 +61,7 @@
     "jsonwebtoken": "9.0.2",
     "marked": "16.3.0",
     "mime": "4.1.0",
-    "mongodb": "6.19.0",
+    "mongodb": "6.20.0",
     "motion": "12.23.15",
     "nanoid": "5.1.5",
     "openid": "2.0.13",
