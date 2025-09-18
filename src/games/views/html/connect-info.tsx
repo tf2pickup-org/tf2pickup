@@ -1,6 +1,6 @@
 import { GameState, type GameModel } from '../../../database/models/game.model'
-import { IconCopy } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { ConnectString } from './connect-string'
 import { JoinGameButton } from './join-game-button'
 import { JoinVoiceButton } from './join-voice-button'
 
@@ -16,7 +16,7 @@ export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefin
   if (connectInfoVisible) {
     connectInfo = (
       <>
-        <ConnectString game={props.game} actor={props.actor} />
+        <UserConnectString game={props.game} actor={props.actor} />
         <JoinGameButton game={props.game} actor={props.actor} />
         <JoinVoiceButton game={props.game} actor={props.actor} />
       </>
@@ -30,49 +30,26 @@ export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefin
   )
 }
 
-async function ConnectString(props: { game: GameModel; actor: SteamId64 | undefined }) {
-  let csBoxContent: JSX.Element
-  let csBtn = <></>
-  switch (props.game.state) {
-    case GameState.created:
-      csBoxContent = <i>waiting for server...</i>
-      break
-    case GameState.configuring:
-      csBoxContent = <i>configuring server...</i>
-      break
-    default: {
-      const connectString =
-        (actorInGame(props.game, props.actor)
-          ? props.game.connectString
-          : props.game.stvConnectString) ?? ''
-      csBoxContent = connectString
-      csBtn = (
-        <button
-          class="hover:text-abru-light-85"
-          copy-to-clipboard={connectString}
-          data-umami-event="copy-connect-string"
-          data-umami-event-game-number={props.game.number}
-        >
-          <IconCopy size={24} />
-          <span class="sr-only">Copy connect string</span>
-        </button>
-      )
-    }
-  }
-
-  return (
-    <div class="connect-string">
-      <div
-        class="fade block flex-1 cursor-text select-all overflow-hidden whitespace-nowrap bg-abru-light-5 text-base text-abru-light-75"
-        aria-label="Connect string"
-        aria-readonly
-      >
-        {csBoxContent}
-      </div>
-
-      {csBtn}
-    </div>
-  )
+async function UserConnectString(props: { game: GameModel; actor: SteamId64 | undefined }) {
+  return ConnectString({
+    gameNumber: props.game.number,
+    ...(() => {
+      switch (props.game.state) {
+        case GameState.created:
+          return { status: 'waiting for server...' }
+        case GameState.configuring:
+          return { status: 'configuring server...' }
+        default:
+          return actorInGame(props.game, props.actor)
+            ? {
+                connectString: props.game.connectString ?? '',
+              }
+            : {
+                connectString: props.game.stvConnectString ?? '',
+              }
+      }
+    })(),
+  })
 }
 
 function actorInGame(game: GameModel, actor?: SteamId64) {

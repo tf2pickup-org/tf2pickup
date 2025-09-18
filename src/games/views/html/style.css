@@ -264,6 +264,7 @@
 }
 
 .connect-string {
+  flex: 1 1 0%;
   display: flex;
   flex-direction: row;
   gap: 16px;
@@ -275,9 +276,19 @@
   font-size: 16px;
   font-weight: 500;
   color: theme(colors.abru.light.75);
+  min-width: 0px;
 
-  .fade {
+  .content {
+    display: block;
+    flex: 1 1 0%;
     mask-image: linear-gradient(90deg, #000 80%, transparent);
+
+    cursor: text;
+    user-select: all;
+    overflow: hidden;
+    white-space: nowrap;
+    background-color: theme(colors.abru.light.5);
+    color: theme(colors.abru.light.75);
   }
 }
 
@@ -356,7 +367,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 
   @media screen(lg) {
     flex-direction: row;

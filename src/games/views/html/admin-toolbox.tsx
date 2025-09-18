@@ -1,4 +1,4 @@
-import { GameState, type GameModel } from '../../../database/models/game.model'
+import { GameState, type GameModel, type GameServer } from '../../../database/models/game.model'
 import {
   IconClick,
   IconEye,
@@ -6,13 +6,21 @@ import {
   IconRefreshDot,
   IconX,
 } from '../../../html/components/icons'
+import { ConnectString } from './connect-string'
 
 export function AdminToolbox(props: { game: GameModel }) {
   return (
     <div class="game-admin-toolbox">
       {AdminToolbox.gameControlButtons(props)}
 
-      <div class="flex-grow"></div>
+      {props.game.gameServer ? (
+        <ConnectString
+          gameNumber={props.game.number}
+          connectString={makeRconConnectString(props.game.gameServer.rcon)}
+        />
+      ) : (
+        <div class="flex-grow"></div>
+      )}
 
       <label class="show-assigned-skills-checkbox">
         <input type="checkbox" class="button button--accent" id="show-assigned-skills" />
@@ -83,4 +91,8 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
       </button>
     </>
   )
+}
+
+function makeRconConnectString(rcon: GameServer['rcon']) {
+  return `rcon_address ${rcon.address}:${rcon.port}; rcon_password "${rcon.password}"`
 }
