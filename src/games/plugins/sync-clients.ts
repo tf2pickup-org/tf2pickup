@@ -168,4 +168,20 @@ export default fp(async app => {
       return
     })
   })
+
+  events.on('game:gameServerAssigned', ({ game }) => {
+    const rconConnect = AdminToolbox.rconConnect({ game })
+    app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
+      if (!actor) {
+        return
+      }
+
+      const player = await players.bySteamId(actor)
+      if (player.roles.includes(PlayerRole.admin)) {
+        return rconConnect
+      }
+
+      return
+    })
+  })
 })
