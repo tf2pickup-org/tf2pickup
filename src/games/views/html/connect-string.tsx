@@ -1,23 +1,16 @@
+import type { Children } from '@kitajs/html'
 import type { GameNumber } from '../../../database/models/game.model'
 import { IconCopy } from '../../../html/components/icons'
 
-interface NoConnectStringAvailable {
-  status: string
-}
-
-interface ConnectStringAvailable {
-  connectString: string
-}
-
-export async function ConnectString(
-  props: (NoConnectStringAvailable | ConnectStringAvailable) & { gameNumber: GameNumber },
-) {
-  let csBoxContent: JSX.Element
+export async function ConnectString(props: {
+  connectString?: string | undefined
+  gameNumber: GameNumber
+  id?: undefined | number | string
+  children: Children
+}) {
   let csBtn = <></>
-  if ('status' in props) {
-    csBoxContent = <i safe>{props.status}</i>
-  } else {
-    csBoxContent = props.connectString
+
+  if (props.connectString) {
     csBtn = (
       <button
         class="hover:text-abru-light-85"
@@ -32,9 +25,9 @@ export async function ConnectString(
   }
 
   return (
-    <div class="connect-string">
+    <div class="connect-string" id={props.id}>
       <div class="content" aria-label="Connect string" aria-readonly>
-        {csBoxContent}
+        {props.children}
       </div>
 
       {csBtn}

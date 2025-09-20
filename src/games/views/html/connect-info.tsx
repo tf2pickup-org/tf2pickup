@@ -31,25 +31,28 @@ export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefin
 }
 
 async function UserConnectString(props: { game: GameModel; actor: SteamId64 | undefined }) {
-  return ConnectString({
-    gameNumber: props.game.number,
-    ...(() => {
-      switch (props.game.state) {
-        case GameState.created:
-          return { status: 'waiting for server...' }
-        case GameState.configuring:
-          return { status: 'configuring server...' }
-        default:
-          return actorInGame(props.game, props.actor)
-            ? {
-                connectString: props.game.connectString ?? '',
-              }
-            : {
-                connectString: props.game.stvConnectString ?? '',
-              }
-      }
-    })(),
-  })
+  let connectString: string | undefined
+  let content = <></>
+
+  switch (props.game.state) {
+    case GameState.created:
+      content = <i>waiting for server...</i>
+      break
+    case GameState.configuring:
+      content = <i>configuring server...</i>
+      break
+    default:
+      connectString = actorInGame(props.game, props.actor)
+        ? (props.game.connectString ?? '')
+        : (props.game.stvConnectString ?? '')
+      content = connectString
+  }
+
+  return (
+    <ConnectString gameNumber={props.game.number} connectString={connectString}>
+      {content}
+    </ConnectString>
+  )
 }
 
 function actorInGame(game: GameModel, actor?: SteamId64) {
