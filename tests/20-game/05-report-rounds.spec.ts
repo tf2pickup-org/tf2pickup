@@ -25,5 +25,5 @@ launchGame('report rounds', async ({ gameNumber, page, gameServer }) => {
   await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
 
   await delay(secondsToMilliseconds(1))
-  // await gameServer.matchEnds()
+  await gameServer.matchEnds()
 })

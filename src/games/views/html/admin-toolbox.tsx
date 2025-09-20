@@ -89,7 +89,10 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
 AdminToolbox.rconConnect = (props: { game: GameModel }) => {
   const id = `game-${props.game.number}-rcon-connect-string`
 
-  if (!props.game.gameServer) {
+  if (
+    ![GameState.launching, GameState.started].includes(props.game.state) ||
+    !props.game.gameServer
+  ) {
     return <div class="flex-grow" id={id}></div>
   }
 
