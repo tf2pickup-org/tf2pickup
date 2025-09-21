@@ -54,7 +54,7 @@ export class GamePage {
   }
 
   connectString() {
-    return this.page.getByLabel('Connect string')
+    return this.page.getByLabel('Connect string', { exact: true })
   }
 
   waitingForGameServer() {

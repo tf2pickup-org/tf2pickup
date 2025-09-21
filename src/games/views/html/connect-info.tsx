@@ -49,7 +49,11 @@ async function UserConnectString(props: { game: GameModel; actor: SteamId64 | un
   }
 
   return (
-    <ConnectString gameNumber={props.game.number} connectString={connectString}>
+    <ConnectString
+      gameNumber={props.game.number}
+      connectString={connectString}
+      ariaLabel="Connect string"
+    >
       {content}
     </ConnectString>
   )

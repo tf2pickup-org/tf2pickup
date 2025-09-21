@@ -98,7 +98,12 @@ AdminToolbox.rconConnect = (props: { game: GameModel }) => {
 
   const rconConnect = `rcon_address ${props.game.gameServer.rcon.address}:${props.game.gameServer.rcon.port}; rcon_password "${props.game.gameServer.rcon.password}"`
   return (
-    <ConnectString gameNumber={props.game.number} connectString={rconConnect} id={id}>
+    <ConnectString
+      gameNumber={props.game.number}
+      connectString={rconConnect}
+      id={id}
+      ariaLabel="RCON connect string"
+    >
       {Html.escapeHtml(rconConnect)}
     </ConnectString>
   )

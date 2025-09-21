@@ -6,6 +6,7 @@ export async function ConnectString(props: {
   connectString?: string | undefined
   gameNumber: GameNumber
   id?: undefined | number | string
+  ariaLabel?: string
   children: Children
 }) {
   let csBtn = <></>
@@ -26,7 +27,7 @@ export async function ConnectString(props: {
 
   return (
     <div class="connect-string" id={props.id}>
-      <div class="content" aria-label="Connect string" aria-readonly>
+      <div class="content" aria-label={props.ariaLabel} aria-readonly>
         {props.children}
       </div>
 
