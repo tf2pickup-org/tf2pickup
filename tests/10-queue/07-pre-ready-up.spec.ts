@@ -4,6 +4,7 @@ import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { launchGame, expect } from '../fixtures/launch-game'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 const test = mergeTests(accessMongoDb, launchGame, waitForEmptyQueue)
 const readyUpTimeout = secondsToMilliseconds(20)
 
