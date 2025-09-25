@@ -1,5 +1,44 @@
 # Changelog
 
+# [4.0.0-alpha.27](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.26...4.0.0-alpha.27) (2025-09-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @kitajs/fastify-html-plugin to v4.2.1 ([76da618](https://github.com/tf2pickup-org/tf2pickup/commit/76da618fa8cca14e83649f2a15f013c807aa1a18))
+* **deps:** update dependency @kitajs/html to v4.2.10 ([363862d](https://github.com/tf2pickup-org/tf2pickup/commit/363862d0a3a6feb6da52c3de440b5516a31b9670))
+* **deps:** update dependency @kitajs/ts-html-plugin to v4.1.3 ([03c37c9](https://github.com/tf2pickup-org/tf2pickup/commit/03c37c911c0e64dbb7f083f68f30cf764c7642be))
+* **deps:** update dependency @tailwindcss/typography to v0.5.18 ([fd8e12c](https://github.com/tf2pickup-org/tf2pickup/commit/fd8e12c8db47be0f29a636dc69c45cfa3927e2e9))
+* **deps:** update dependency @tailwindcss/typography to v0.5.19 ([2367754](https://github.com/tf2pickup-org/tf2pickup/commit/2367754fdf38890b4407bb72810e3c20be81c86f))
+* **deps:** update dependency country-flag-icons to v1.5.20 ([9f01088](https://github.com/tf2pickup-org/tf2pickup/commit/9f010882a513903e3efd13d99c057483bbfe8c0a))
+* **deps:** update dependency country-flag-icons to v1.5.21 ([#338](https://github.com/tf2pickup-org/tf2pickup/issues/338)) ([2a8b8f3](https://github.com/tf2pickup-org/tf2pickup/commit/2a8b8f30e301d20040aea380664accbb01eeaa36))
+* **deps:** update dependency esbuild to v0.25.10 ([711c937](https://github.com/tf2pickup-org/tf2pickup/commit/711c937afdef7afc5ae547780b7ed86198a6ebf2))
+* **deps:** update dependency fastify to v5.6.1 ([0af54b8](https://github.com/tf2pickup-org/tf2pickup/commit/0af54b8b5b4018bde5bdcdc489abd5d8ea941051))
+* **deps:** update dependency htmx.org to v2.0.7 ([43a09f1](https://github.com/tf2pickup-org/tf2pickup/commit/43a09f1aead1e618d8fbe0369792198450bc4f84))
+* **deps:** update dependency marked to v16.3.0 ([43a5750](https://github.com/tf2pickup-org/tf2pickup/commit/43a575014622f2a13b7f1e6b7a68f6aebfdb15b1))
+* **deps:** update dependency mime to v4.1.0 ([577d1ba](https://github.com/tf2pickup-org/tf2pickup/commit/577d1ba50578bc7b367b09b2121fbf92950bada4))
+* **deps:** update dependency mongodb to v6.20.0 ([142a233](https://github.com/tf2pickup-org/tf2pickup/commit/142a2336913ee98d931ef205dea357765492310e))
+* **deps:** update dependency motion to v12.23.13 ([43c7aae](https://github.com/tf2pickup-org/tf2pickup/commit/43c7aae0ca2a6608dcf04d2813cf3755385f0502))
+* **deps:** update dependency motion to v12.23.14 ([0d00b76](https://github.com/tf2pickup-org/tf2pickup/commit/0d00b76cdcc9379e4f4b8845644434f7cfccb0bd))
+* **deps:** update dependency motion to v12.23.15 ([b207e46](https://github.com/tf2pickup-org/tf2pickup/commit/b207e46169dda46b275f028f053d5af45e74690d))
+* **deps:** update dependency motion to v12.23.16 ([#335](https://github.com/tf2pickup-org/tf2pickup/issues/335)) ([4698cd7](https://github.com/tf2pickup-org/tf2pickup/commit/4698cd7bc8e073549e3f5f05436c0d4a2eff6564))
+* **deps:** update dependency motion to v12.23.18 ([2947adc](https://github.com/tf2pickup-org/tf2pickup/commit/2947adcb1353d44f77c95bf3fde62295bbe436b2))
+* **deps:** update dependency motion to v12.23.19 ([#340](https://github.com/tf2pickup-org/tf2pickup/issues/340)) ([1b17f5c](https://github.com/tf2pickup-org/tf2pickup/commit/1b17f5c7a3987584f16cb96041fbbd743d87d20c))
+* **deps:** update dependency motion to v12.23.21 ([#341](https://github.com/tf2pickup-org/tf2pickup/issues/341)) ([2a578b2](https://github.com/tf2pickup-org/tf2pickup/commit/2a578b2f01e2779daaeef2fb3a380f87c15680bf))
+* **deps:** update dependency nanoid to v5.1.6 ([2c10218](https://github.com/tf2pickup-org/tf2pickup/commit/2c10218b407ec3da749d99cb402fcb0b3c9da125))
+* **deps:** update dependency pino to v9.10.0 ([#334](https://github.com/tf2pickup-org/tf2pickup/issues/334)) ([ad0529f](https://github.com/tf2pickup-org/tf2pickup/commit/ad0529f24773680670f889ad266b30830a256b8f))
+* **deps:** update dependency pino to v9.11.0 ([cea7dad](https://github.com/tf2pickup-org/tf2pickup/commit/cea7dad35316e0c4813462472ea3531ba37d3ca1))
+* **deps:** update dependency pino to v9.9.5 ([#324](https://github.com/tf2pickup-org/tf2pickup/issues/324)) ([3e141f4](https://github.com/tf2pickup-org/tf2pickup/commit/3e141f45daeeb491d8d40ff0b39313f732fadb4c))
+* **deps:** update dependency zod to v4.1.11 ([#337](https://github.com/tf2pickup-org/tf2pickup/issues/337)) ([6897f18](https://github.com/tf2pickup-org/tf2pickup/commit/6897f1808c3c3f852f5215ede4596d4b9d1a08fb))
+* **deps:** update dependency zod to v4.1.7 ([9abd11a](https://github.com/tf2pickup-org/tf2pickup/commit/9abd11a9f4ae2645a67de56b38144a513801d037))
+* **deps:** update dependency zod to v4.1.8 ([362f088](https://github.com/tf2pickup-org/tf2pickup/commit/362f088043922a652d2132644f82cf4e442e8c91))
+* **deps:** update dependency zod to v4.1.9 ([f8d36b6](https://github.com/tf2pickup-org/tf2pickup/commit/f8d36b6461af381c54120e7bed6697ed4c65bad2))
+
+
+### Features
+
+* show rcon connect in game admin toolbox ([#336](https://github.com/tf2pickup-org/tf2pickup/issues/336)) ([94f41d6](https://github.com/tf2pickup-org/tf2pickup/commit/94f41d640cdaa4517c25ffdbee9b489739eec1ae))
+
 # [4.0.0-alpha.26](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.25...4.0.0-alpha.26) (2025-09-05)
 
 
