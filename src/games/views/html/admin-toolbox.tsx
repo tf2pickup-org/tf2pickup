@@ -1,3 +1,4 @@
+import { Html } from '@kitajs/html'
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import {
   IconClick,
@@ -6,13 +7,13 @@ import {
   IconRefreshDot,
   IconX,
 } from '../../../html/components/icons'
+import { ConnectString } from './connect-string'
 
 export function AdminToolbox(props: { game: GameModel }) {
   return (
     <div class="game-admin-toolbox">
-      {AdminToolbox.gameControlButtons(props)}
-
-      <div class="flex-grow"></div>
+      <AdminToolbox.gameControlButtons {...props} />
+      <AdminToolbox.rconConnect {...props} />
 
       <label class="show-assigned-skills-checkbox">
         <input type="checkbox" class="button button--accent" id="show-assigned-skills" />
@@ -45,7 +46,7 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
       <button
         class="button"
         disabled={disabled}
-        id={`game-slot-${props.game.number}-reinitialize-game-server-button`}
+        id={`game-${props.game.number}-reinitialize-game-server-button`}
         hx-trigger="click"
         hx-put={`/games/${props.game.number}/reinitialize-gameserver`}
         hx-confirm="Are you sure you want to reinitialize the game server?"
@@ -59,7 +60,7 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
       <button
         class="button"
         disabled={disabled}
-        id={`game-slot-${props.game.number}-reassign-game-server-button`}
+        id={`game-${props.game.number}-reassign-game-server-button`}
         onclick="htmx.trigger('#choose-game-server-dialog', 'open')"
         data-umami-event="choose-game-server"
         data-umami-event-game-number={props.game.number}
@@ -71,7 +72,7 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
       <button
         class="button"
         disabled={disabled}
-        id={`game-slot-${props.game.number}-force-end-game-button`}
+        id={`game-${props.game.number}-force-end-game-button`}
         hx-trigger="click"
         hx-put={`/games/${props.game.number}/force-end`}
         hx-confirm="Are you sure you want to force-end this game?"
@@ -82,5 +83,28 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
         Force-end
       </button>
     </>
+  )
+}
+
+AdminToolbox.rconConnect = (props: { game: GameModel }) => {
+  const id = `game-${props.game.number}-rcon-connect-string`
+
+  if (
+    ![GameState.launching, GameState.started].includes(props.game.state) ||
+    !props.game.gameServer
+  ) {
+    return <div class="flex-grow" id={id}></div>
+  }
+
+  const rconConnect = `rcon_address ${props.game.gameServer.rcon.address}:${props.game.gameServer.rcon.port}; rcon_password "${props.game.gameServer.rcon.password}"`
+  return (
+    <ConnectString
+      gameNumber={props.game.number}
+      connectString={rconConnect}
+      id={id}
+      ariaLabel="RCON connect string"
+    >
+      {Html.escapeHtml(rconConnect)}
+    </ConnectString>
   )
 }

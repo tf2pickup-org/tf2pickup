@@ -1,6 +1,9 @@
 import test from '@playwright/test'
 import { Db, MongoClient } from 'mongodb'
 
+/**
+ * @deprecated If possible, try not to use this fixture.
+ */
 export const accessMongoDb = test.extend<{ db: Db }>({
   db: async ({}, use) => {
     if (!('MONGODB_URI' in process.env)) {

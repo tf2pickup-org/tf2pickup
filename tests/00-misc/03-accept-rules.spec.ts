@@ -2,6 +2,7 @@ import { authUsers, expect } from '../fixtures/auth-users'
 import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 const test = mergeTests(authUsers, accessMongoDb)
 
 test.describe('when user has not accepted the rules yet', () => {

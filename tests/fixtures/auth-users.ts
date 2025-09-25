@@ -8,6 +8,7 @@ interface AuthUsersFixture {
   users: UserManager
 }
 
+// eslint-disable-next-line @typescript-eslint/no-deprecated
 export const authUsers = test.extend<AuthUsersFixture>({
   steamIds: async ({}, use) => {
     await use(users.map(u => u.steamId))

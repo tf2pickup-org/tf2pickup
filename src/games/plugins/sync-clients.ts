@@ -36,6 +36,20 @@ export default fp(async app => {
           .to({ url: `/games/${after.number}` })
           .send(async actor => await GameSlotList.refreshAll({ game: after, actor }))
       }
+
+      const rconConnect = AdminToolbox.rconConnect({ game: after })
+      app.gateway.to({ url: `/games/${after.number}` }).send(async actor => {
+        if (!actor) {
+          return
+        }
+
+        const player = await players.bySteamId(actor)
+        if (player.roles.includes(PlayerRole.admin)) {
+          return rconConnect
+        }
+
+        return
+      })
     }
 
     if (before.score?.blu !== after.score?.blu) {
@@ -163,6 +177,22 @@ export default fp(async app => {
       const player = await players.bySteamId(actor)
       if (player.roles.includes(PlayerRole.admin)) {
         return buttons
+      }
+
+      return
+    })
+  })
+
+  events.on('game:gameServerAssigned', ({ game }) => {
+    const rconConnect = AdminToolbox.rconConnect({ game })
+    app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
+      if (!actor) {
+        return
+      }
+
+      const player = await players.bySteamId(actor)
+      if (player.roles.includes(PlayerRole.admin)) {
+        return rconConnect
       }
 
       return
