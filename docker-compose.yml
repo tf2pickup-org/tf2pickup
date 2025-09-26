@@ -47,7 +47,7 @@ services:
 
   umami-db:
     container_name: umami-db
-    image: postgres:17-alpine
+    image: postgres:18-alpine
     environment:
       POSTGRES_DB: umami
       POSTGRES_USER: umami
