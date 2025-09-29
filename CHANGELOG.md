@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-alpha.29](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.28...4.0.0-alpha.29) (2025-09-29)
+
+
+### Bug Fixes
+
+* create gamelog sparse index ([#345](https://github.com/tf2pickup-org/tf2pickup/issues/345)) ([c2a0e33](https://github.com/tf2pickup-org/tf2pickup/commit/c2a0e3349d92d9282dc5d0c2ea932a524c64dc95))
+
 # [4.0.0-alpha.28](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.27...4.0.0-alpha.28) (2025-09-29)
 
 
