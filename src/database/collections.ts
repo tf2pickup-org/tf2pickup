@@ -52,7 +52,7 @@ export const collections = {
 }
 
 try {
-  await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true })
+  await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true, sparse: true })
   logger.info('gamelogs index created successfully')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
 } catch (error) {
@@ -75,6 +75,6 @@ try {
     await collections.gameLogs.deleteMany({ _id: { $in: doc.dups } })
   }
 
-  await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true })
+  await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true, sparse: true })
   logger.info('gamelogs index created successfully')
 }
