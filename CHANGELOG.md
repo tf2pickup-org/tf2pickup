@@ -1,5 +1,17 @@
 # Changelog
 
+# [4.0.0-alpha.28](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.27...4.0.0-alpha.28) (2025-09-29)
+
+
+### Bug Fixes
+
+* create gamelogs unique index ([#344](https://github.com/tf2pickup-org/tf2pickup/issues/344)) ([5ee2235](https://github.com/tf2pickup-org/tf2pickup/commit/5ee2235f659a79e2e8caaf0f0d5bb76e4fb95413))
+* **deps:** update dependency @fastify/accepts to v5.0.3 ([403cc0d](https://github.com/tf2pickup-org/tf2pickup/commit/403cc0da71a06b0a66d98f24b6ef4cea6074e1be))
+* **deps:** update dependency @fastify/helmet to v13.0.2 ([ac9fc81](https://github.com/tf2pickup-org/tf2pickup/commit/ac9fc81bd33b74bba74a36a82004f68d2e828ad1))
+* **deps:** update dependency fastify-plugin to v5.1.0 ([#343](https://github.com/tf2pickup-org/tf2pickup/issues/343)) ([f96f6e0](https://github.com/tf2pickup-org/tf2pickup/commit/f96f6e0233dbde4e5cc11c75f7e8f46bff2d6307))
+* **deps:** update dependency motion to v12.23.22 ([011c53e](https://github.com/tf2pickup-org/tf2pickup/commit/011c53eb5300dbdca0308567146151034040de98))
+* **deps:** update dependency pino to v9.12.0 ([778d4d4](https://github.com/tf2pickup-org/tf2pickup/commit/778d4d4eaeeb2b45d2d93562824bd39dd5fae88b))
+
 # [4.0.0-alpha.27](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.26...4.0.0-alpha.27) (2025-09-25)
 
 
