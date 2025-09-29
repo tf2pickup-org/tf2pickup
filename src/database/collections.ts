@@ -21,6 +21,8 @@ import type { ChatMessageModel } from './models/chat-message.model'
 import type { DiscordBotStateModel } from './models/discord-bot-state.model'
 import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
+import { logger } from '../logger'
+import type { ObjectId } from 'mongodb'
 
 export const collections = {
   certificates: database.collection<CertificateModel>('certificates'),
@@ -47,4 +49,32 @@ export const collections = {
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
+}
+
+try {
+  await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true })
+  logger.info('gamelogs index created successfully')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+} catch (error) {
+  // remove duplicates
+  for await (const doc of collections.gameLogs.aggregate<{
+    _id: ObjectId
+    dups: ObjectId[]
+    count: number
+  }>([
+    {
+      $group: {
+        _id: { logSecret: '$logSecret' },
+        dups: { $push: '$_id' },
+        count: { $sum: 1 },
+      },
+    },
+    { $match: { count: { $gt: 1 } } },
+  ])) {
+    doc.dups.shift()
+    await collections.gameLogs.deleteMany({ _id: { $in: doc.dups } })
+  }
+
+  await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true })
+  logger.info('gamelogs index created successfully')
 }
