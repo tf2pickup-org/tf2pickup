@@ -1,10 +1,7 @@
-import fp from 'fastify-plugin'
 import { config } from './config'
-import { QueuePage } from './views/html/queue.page'
 import { getSlots } from './get-slots'
 import { getState } from './get-state'
 import { getMapWinner } from './get-map-winner'
-import { resolve } from 'node:path'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { reset } from './reset'
@@ -27,18 +24,3 @@ export const queue = {
   getState,
   resetMapOptions,
 } as const
-
-export default fp(
-  async app => {
-    await app.register((await import('@fastify/autoload')).default, {
-      dir: resolve(import.meta.dirname, 'plugins'),
-    })
-
-    app.get('/', async (req, reply) => {
-      return reply.status(200).html(QueuePage({ user: req.user }))
-    })
-  },
-  {
-    name: 'queue',
-  },
-)

@@ -9,7 +9,6 @@ import {
   EditPlayerBansPage,
   EditPlayerProfilePage,
 } from './views/html/edit-player.page'
-import { collections } from '../database/collections'
 import { PlayerRole, type PlayerPreferences } from '../database/models/player.model'
 import { update } from './update'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
@@ -28,122 +27,8 @@ import { AdminToolbox } from './views/html/admin-toolbox'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    app.get('/players', async (req, reply) => {
-      reply.status(200).html(await PlayerListPage(req.user))
-    })
-
     app
       .withTypeProvider<ZodTypeProvider>()
-      .get(
-        '/players/:steamId',
-        {
-          schema: {
-            params: z.object({
-              steamId: steamId64,
-            }),
-            querystring: z.object({
-              gamespage: z.coerce.number().optional(),
-            }),
-          },
-        },
-        async (req, reply) => {
-          const { steamId } = req.params
-          const player = await bySteamId(steamId)
-          reply.status(200).html(
-            await PlayerPage({
-              player,
-              user: req.user,
-              page: Number(req.query.gamespage) || 1,
-            }),
-          )
-        },
-      )
-      .post(
-        '/players/:steamId/accept-rules',
-        {
-          schema: {
-            params: z.object({
-              steamId: steamId64,
-            }),
-          },
-        },
-        async (request, reply) => {
-          await collections.players.updateOne(
-            { steamId: request.params.steamId },
-            { $set: { hasAcceptedRules: true } },
-          )
-          await reply.redirect('/')
-        },
-      )
-      .get(
-        '/players/:steamId/edit',
-        {
-          config: {
-            authorize: [PlayerRole.admin],
-          },
-          schema: {
-            params: z.object({
-              steamId: steamId64,
-            }),
-          },
-        },
-        async (req, reply) => {
-          const { steamId } = req.params
-          await reply.redirect(`/players/${steamId}/edit/profile`)
-        },
-      )
-      .get(
-        '/players/:steamId/edit/profile',
-        {
-          config: {
-            authorize: [PlayerRole.admin],
-          },
-          schema: {
-            params: z.object({
-              steamId: steamId64,
-            }),
-          },
-        },
-        async (req, reply) => {
-          const { steamId } = req.params
-          const player = await bySteamId(steamId)
-          reply.status(200).html(await EditPlayerProfilePage({ player, user: req.user! }))
-        },
-      )
-      .post(
-        '/players/:steamId/edit/profile',
-        {
-          config: {
-            authorize: [PlayerRole.admin],
-          },
-          schema: {
-            params: z.object({
-              steamId: steamId64,
-            }),
-            body: z.object({
-              name: z.string(),
-              ...Object.keys(Tf2ClassName).reduce<
-                Partial<Record<`skill.${Tf2ClassName}`, z.ZodNumber>>
-              >((acc, key) => ({ ...acc, [`skill.${key}`]: z.coerce.number().optional() }), {}),
-            }),
-          },
-        },
-        async (req, reply) => {
-          const { steamId } = req.params
-          const { name } = req.body
-          const player = await bySteamId(steamId)
-          const skill = Object.entries(req.body)
-            .filter(([key]) => key.startsWith('skill.'))
-            .reduce<Partial<Record<Tf2ClassName, number>>>(
-              (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
-              {},
-            )
-
-          await update(player.steamId, { $set: { name, skill } }, {}, req.user!.player.steamId)
-          req.flash('success', `Player updated`)
-          await reply.redirect(`/players/${steamId}`)
-        },
-      )
       .post(
         '/players/:steamId/edit/skill',
         {
