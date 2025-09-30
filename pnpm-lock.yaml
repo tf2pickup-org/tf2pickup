@@ -226,8 +226,8 @@ importers:
         specifier: 14.0.3
         version: 14.0.3
       '@types/steamid':
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.4
+        version: 2.0.4
       '@types/ws':
         specifier: 8.5.13
         version: 8.5.13
@@ -1228,8 +1228,8 @@ packages:
   '@types/semver@7.5.8':
     resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
 
-  '@types/steamid@2.0.3':
-    resolution: {integrity: sha512-ozNMQViUYLU+NBN4v7X0bV1O8uTL1bA+WvfHtt9IKcydS4tyYKH7w1vq+xcPGWGL0PRhGtY7C1Zhaeyj2IsETw==}
+  '@types/steamid@2.0.4':
+    resolution: {integrity: sha512-LC0oaiNq3gqMI18MV935CnlyHmDooKRszK56jHv0+b7EbJwf5k++YsD52zWeJUD8nuYqP9LpIgpXGiYBOxpcYQ==}
 
   '@types/webidl-conversions@7.0.3':
     resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
@@ -5160,7 +5160,7 @@ snapshots:
 
   '@types/semver@7.5.8': {}
 
-  '@types/steamid@2.0.3': {}
+  '@types/steamid@2.0.4': {}
 
   '@types/webidl-conversions@7.0.3': {}
 
