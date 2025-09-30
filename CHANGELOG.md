@@ -1,5 +1,14 @@
 # Changelog
 
+# [4.0.0-alpha.30](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.29...4.0.0-alpha.30) (2025-09-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency dotenv to v17.2.3 ([4b96b65](https://github.com/tf2pickup-org/tf2pickup/commit/4b96b6501b5a94fd77e64aa685c8c1b9021c7908))
+* **deps:** update dependency idiomorph to v0.7.4 ([55ed74f](https://github.com/tf2pickup-org/tf2pickup/commit/55ed74f0b4037569f5156b6cf006d7a1e1b795be))
+* handle failed gamelog push update ([#346](https://github.com/tf2pickup-org/tf2pickup/issues/346)) ([b8cc49b](https://github.com/tf2pickup-org/tf2pickup/commit/b8cc49b643a185103807756452e74f18f7c07dbf))
+
 # [4.0.0-alpha.29](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.28...4.0.0-alpha.29) (2025-09-29)
 
 
