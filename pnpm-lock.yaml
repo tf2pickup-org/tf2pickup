@@ -15,8 +15,8 @@ importers:
         specifier: 6.3.1
         version: 6.3.1
       '@fastify/etag':
-        specifier: 6.0.3
-        version: 6.0.3
+        specifier: 6.1.0
+        version: 6.1.0
       '@fastify/flash':
         specifier: 6.0.3
         version: 6.0.3
@@ -681,8 +681,8 @@ packages:
   '@fastify/error@4.2.0':
     resolution: {integrity: sha512-RSo3sVDXfHskiBZKBPRgnQTtIqpi/7zhJOEmAxCiBcM7d0uwdGdxLlsCaLzGs8v8NnxIRlfG0N51p5yFaOentQ==}
 
-  '@fastify/etag@6.0.3':
-    resolution: {integrity: sha512-pMXohCA6Bk9JBNLl/KhHkSCGN7PCbgwVqHydwMsd1sVKtV8YNuzRW7lEe1VYap/MTNOn/Q8OfcR667lyrNbT/A==}
+  '@fastify/etag@6.1.0':
+    resolution: {integrity: sha512-95fxJ1YHSh1p76+tXyFvluy/H1G1Z+f7fSlv8CQxAFCuGIr/DgtwAYAfZIG//WuKZ7UB4TBLJOX14ZaIPqEirQ==}
 
   '@fastify/fast-json-stringify-compiler@5.0.0':
     resolution: {integrity: sha512-tywfuZfXsyxLC5kEqrMubbFa9vpAxNtuPE7j9w5si1r+6p5b981pDfZ5Y8HBqmjDQl+PABT7cV5jZgXI2j+I5g==}
@@ -4595,7 +4595,7 @@ snapshots:
 
   '@fastify/error@4.2.0': {}
 
-  '@fastify/etag@6.0.3':
+  '@fastify/etag@6.1.0':
     dependencies:
       fastify-plugin: 5.1.0
 
