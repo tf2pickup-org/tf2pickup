@@ -22,7 +22,7 @@ import { PlayerRole } from '../../database/models/player.model'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
-  events.on('game:updated', async ({ before, after }) => {
+  events.on('game:updated', ({ before, after }) => {
     if (before.state !== after.state) {
       app.gateway
         .to({ url: `/games/${after.number}` })
@@ -101,28 +101,26 @@ export default fp(async app => {
       }
     }
 
-    await Promise.all(
-      after.slots.map(slot => {
-        const beforeSlot = before.slots.find(s => s.player === slot.player)
-        if (!beforeSlot) {
-          return
-        }
+    for (const slot of after.slots) {
+      const beforeSlot = before.slots.find(s => s.player === slot.player)
+      if (!beforeSlot) {
+        return
+      }
 
-        if (beforeSlot.shouldJoinBy !== slot.shouldJoinBy) {
-          app.gateway
-            .to({ url: `/games/${after.number}` })
-            .to({ player: slot.player })
-            .send(async actor => await JoinGameButton({ game: after, actor }))
-        }
+      if (beforeSlot.shouldJoinBy !== slot.shouldJoinBy) {
+        app.gateway
+          .to({ url: `/games/${after.number}` })
+          .to({ player: slot.player })
+          .send(async actor => await JoinGameButton({ game: after, actor }))
+      }
 
-        if (beforeSlot.voiceServerUrl !== slot.voiceServerUrl) {
-          app.gateway
-            .to({ url: `/games/${after.number}` })
-            .to({ player: slot.player })
-            .send(async actor => await JoinVoiceButton({ game: after, actor }))
-        }
-      }),
-    )
+      if (beforeSlot.voiceServerUrl !== slot.voiceServerUrl) {
+        app.gateway
+          .to({ url: `/games/${after.number}` })
+          .to({ player: slot.player })
+          .send(async actor => await JoinVoiceButton({ game: after, actor }))
+      }
+    }
   })
 
   async function refreshGamesLink() {
