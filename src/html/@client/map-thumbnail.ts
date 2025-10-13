@@ -13,7 +13,7 @@ const resizeObserver = new ResizeObserver(entries => {
     }
 
     const tag = entry.target.children[0]
-    if (!tag || tag.tagName !== 'IMG') {
+    if (tag?.tagName !== 'IMG') {
       continue
     }
 
