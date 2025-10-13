@@ -21,17 +21,15 @@ export async function create(
     number: await getNextGameNumber(),
     map,
     state: GameState.created,
-    slots: await Promise.all(
-      slots.map(slot => ({
-        id: slot.id,
-        player: slot.player,
-        team: slot.team,
-        gameClass: slot.gameClass,
-        status: SlotStatus.active,
-        connectionStatus: PlayerConnectionStatus.offline,
-        skill: slot.skill,
-      })),
-    ),
+    slots: slots.map(slot => ({
+      id: slot.id,
+      player: slot.player,
+      team: slot.team,
+      gameClass: slot.gameClass,
+      status: SlotStatus.active,
+      connectionStatus: PlayerConnectionStatus.offline,
+      skill: slot.skill,
+    })),
     events: [
       {
         at: new Date(),

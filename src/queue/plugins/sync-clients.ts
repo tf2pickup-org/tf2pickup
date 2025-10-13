@@ -94,13 +94,10 @@ export default fp(
       'queue/slots:updated',
       safe(async ({ slots }) => {
         const playerCount = await CurrentPlayerCount()
-        app.gateway.broadcast(
-          async player =>
-            await Promise.all([
-              ...slots.map(async slot => await QueueSlot({ slot, actor: player })),
-              playerCount,
-            ]),
-        )
+        app.gateway.broadcast(async player => [
+          ...(await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor: player })))),
+          playerCount,
+        ])
 
         const [current, required] = await Promise.all([
           collections.queueSlots.countDocuments({ player: { $ne: null } }),
