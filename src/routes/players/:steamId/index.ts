@@ -1,10 +1,10 @@
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { bySteamId } from '../../../players/by-steam-id'
 import { PlayerPage } from '../../../players/views/html/player.page'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
 import { collections } from '../../../database/collections'
+import { players } from '../../../players'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default async function (app: FastifyInstance) {
@@ -24,7 +24,7 @@ export default async function (app: FastifyInstance) {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        const player = await bySteamId(steamId)
+        const player = await players.bySteamId(steamId)
         reply.status(200).html(
           await PlayerPage({
             player,

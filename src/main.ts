@@ -115,6 +115,7 @@ app.setNotFoundHandler(async (request, reply) => {
 
 await app.register((await import('./websocket')).default)
 await app.register((await import('./online-players')).default)
+await app.register((await import('./log-receiver')).default)
 
 await app.register((await import('@fastify/autoload')).default, {
   dir: resolve(import.meta.dirname, '.'),
@@ -123,12 +124,6 @@ await app.register((await import('@fastify/autoload')).default, {
   },
 })
 
-await app.register((await import('./static-game-servers')).default)
-await app.register((await import('./game-servers')).default)
-await app.register((await import('./log-receiver')).default)
-await app.register((await import('./documents')).default)
-await app.register((await import('./statistics')).default)
-await app.register((await import('./twitch-tv')).default)
 await app.register((await import('./admin')).default)
 await app.register((await import('./hall-of-game')).default)
 await app.register((await import('./pre-ready')).default)

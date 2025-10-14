@@ -5,7 +5,6 @@ import z from 'zod'
 import { games } from '../../../../games'
 import { collections } from '../../../../database/collections'
 import { environment } from '../../../../environment'
-import { gameNumber } from '../../../../games/schemas/game-number'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default async function (app: FastifyInstance) {
@@ -13,7 +12,7 @@ export default async function (app: FastifyInstance) {
     '/',
     {
       schema: {
-        params: z.object({ number: gameNumber }),
+        params: z.object({ number: games.schemas.gameNumber }),
       },
     },
     async (request, reply) => {

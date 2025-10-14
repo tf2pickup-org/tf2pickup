@@ -1,15 +1,10 @@
 import type { FastifyInstance } from 'fastify'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { gameNumber } from '../../../games/schemas/game-number'
 import { GamePage } from '../../../games/views/html/game.page'
 import { games } from '../../../games'
 import { PlayerRole } from '../../../database/models/player.model'
-import { requestSubstitute } from '../../../games/request-substitute'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import { replacePlayer } from '../../../games/replace-player'
-import { forceEnd } from '../../../games/force-end'
-import { requestGameServerReinitialization } from '../../../games/request-game-server-reinitialization'
 import { gameServers } from '../../../game-servers'
 
 // eslint-disable-next-line @typescript-eslint/require-await
@@ -21,7 +16,7 @@ export default async function (app: FastifyInstance) {
       {
         schema: {
           params: z.object({
-            number: gameNumber,
+            number: games.schemas.gameNumber,
           }),
         },
       },
@@ -39,7 +34,7 @@ export default async function (app: FastifyInstance) {
         },
         schema: {
           params: z.object({
-            number: gameNumber,
+            number: games.schemas.gameNumber,
           }),
           body: z.object({
             player: steamId64,
@@ -50,7 +45,7 @@ export default async function (app: FastifyInstance) {
         const number = request.params.number
         const replacee = request.body.player
 
-        await requestSubstitute({ number, replacee, actor: request.user!.player.steamId })
+        await games.requestSubstitute({ number, replacee, actor: request.user!.player.steamId })
         await reply.status(204).send()
       },
     )
@@ -62,7 +57,7 @@ export default async function (app: FastifyInstance) {
         },
         schema: {
           params: z.object({
-            number: gameNumber,
+            number: games.schemas.gameNumber,
           }),
           body: z.object({
             player: steamId64,
@@ -74,7 +69,7 @@ export default async function (app: FastifyInstance) {
         const replacee = request.body.player
         const replacement = request.user!.player.steamId
 
-        await replacePlayer({ number, replacee, replacement })
+        await games.replacePlayer({ number, replacee, replacement })
         await reply.status(204).send()
       },
     )
@@ -86,12 +81,12 @@ export default async function (app: FastifyInstance) {
         },
         schema: {
           params: z.object({
-            number: gameNumber,
+            number: games.schemas.gameNumber,
           }),
         },
       },
       async (request, reply) => {
-        await forceEnd(request.params.number, request.user!.player.steamId)
+        await games.forceEnd(request.params.number, request.user!.player.steamId)
         await reply.status(204).send()
       },
     )
@@ -103,12 +98,15 @@ export default async function (app: FastifyInstance) {
         },
         schema: {
           params: z.object({
-            number: gameNumber,
+            number: games.schemas.gameNumber,
           }),
         },
       },
       async (request, reply) => {
-        await requestGameServerReinitialization(request.params.number, request.user!.player.steamId)
+        await games.requestGameServerReinitialization(
+          request.params.number,
+          request.user!.player.steamId,
+        )
         await reply.status(204).send()
       },
     )
@@ -119,7 +117,7 @@ export default async function (app: FastifyInstance) {
           authorize: [PlayerRole.admin],
         },
         schema: {
-          params: z.object({ number: gameNumber }),
+          params: z.object({ number: games.schemas.gameNumber }),
           body: z.object({
             gameServer: z.string(),
           }),
