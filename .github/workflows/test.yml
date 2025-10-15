@@ -152,6 +152,7 @@ jobs:
             --name=tf2pickup-app \
             --detach \
             --network=${{ job.services.mongo.network }} \
+            -e CI \
             -e WEBSITE_URL \
             -e MONGODB_URI \
             -e STEAM_API_KEY \
