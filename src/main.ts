@@ -114,30 +114,18 @@ app.setNotFoundHandler(async (request, reply) => {
 })
 
 await app.register((await import('./websocket')).default)
-await app.register((await import('./online-players')).default)
-await app.register((await import('./log-receiver')).default)
-
-await app.register((await import('@fastify/autoload')).default, {
-  dir: resolve(import.meta.dirname, '.'),
-  matchFilter: path => {
-    return path.includes('/middleware/')
-  },
-})
-
-await app.register((await import('./admin')).default)
-await app.register((await import('./hall-of-game')).default)
-await app.register((await import('./pre-ready')).default)
-await app.register((await import('./serveme-tf')).default)
-await app.register((await import('./mumble')).default)
-await app.register((await import('./logs-tf')).default)
-await app.register((await import('./discord')).default)
-await app.register((await import('./chat')).default)
-await app.register((await import('./player-actions')).default)
 
 await app.register((await import('@fastify/autoload')).default, {
   dir: resolve(import.meta.dirname, '.'),
   matchFilter: path => {
     return path.includes('/plugins/')
+  },
+})
+
+await app.register((await import('@fastify/autoload')).default, {
+  dir: resolve(import.meta.dirname, '.'),
+  matchFilter: path => {
+    return path.includes('/middleware/')
   },
 })
 

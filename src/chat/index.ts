@@ -1,10 +1,7 @@
-import fp from 'fastify-plugin'
 import { getSnapshot } from './get-snapshot'
+import { send } from './send'
 
 export const chat = {
   getSnapshot,
+  send,
 } as const
-
-export default fp(async app => {
-  await app.register((await import('./routes')).default)
-})

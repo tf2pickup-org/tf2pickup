@@ -4,10 +4,15 @@ import { players } from '../../players'
 import { toAdmins } from '../to-admins'
 import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
+import { client } from '../client'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    if (!client) {
+      return
+    }
+
     events.on('player:created', async ({ steamId }) => {
       const player = await players.bySteamId(steamId)
       await toAdmins({
