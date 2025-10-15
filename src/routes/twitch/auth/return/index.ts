@@ -1,17 +1,16 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { logger } from '../../../../logger'
 import { errors } from '../../../../errors'
 import { twitchTv } from '../../../../twitch-tv'
+import { routes } from '../../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   if (!twitchTv.enabled) {
     return
   }
 
-  app.withTypeProvider<ZodTypeProvider>().get(
+  app.get(
     '/',
     {
       config: {
@@ -45,4 +44,4 @@ export default async function (app: FastifyInstance) {
       reply.redirect('/settings', 302)
     },
   )
-}
+})

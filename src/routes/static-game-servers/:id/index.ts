@@ -1,11 +1,10 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { staticGameServers } from '../../../static-game-servers'
+import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().delete(
+export default routes(async app => {
+  app.delete(
     '/game',
     {
       schema: {
@@ -19,4 +18,4 @@ export default async function (app: FastifyInstance) {
       await reply.status(204).send()
     },
   )
-}
+})

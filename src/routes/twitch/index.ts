@@ -1,16 +1,15 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { players } from '../../players'
 import { TwitchTvSettingsEntry } from '../../twitch-tv/views/html/twitch-tv-settings-entry'
 import { twitchTv } from '../../twitch-tv'
+import { routes } from '../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   if (!twitchTv.enabled) {
     return
   }
 
-  app.withTypeProvider<ZodTypeProvider>().put(
+  app.put(
     '/disconnect',
     {
       config: {
@@ -30,4 +29,4 @@ export default async function (app: FastifyInstance) {
       reply.html(await TwitchTvSettingsEntry({ user: { player } }))
     },
   )
-}
+})

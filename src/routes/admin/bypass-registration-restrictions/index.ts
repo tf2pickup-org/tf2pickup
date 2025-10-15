@@ -1,5 +1,3 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import { BypassRegistrationRestrictionsPage } from '../../../admin/bypass-registration-restrictions/views/html/bypass-registration-restrictions.page'
 import { z } from 'zod'
@@ -8,11 +6,11 @@ import { steamId64 } from '../../../shared/schemas/steam-id-64'
 import { requestContext } from '@fastify/request-context'
 import { configuration } from '../../../configuration'
 import { BypassedSteamIds } from '../../../admin/bypass-registration-restrictions/views/html/bypassed-steam-ids'
+import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .get(
       '/',
       {
@@ -76,4 +74,4 @@ export default async function (app: FastifyInstance) {
         return reply.html(BypassedSteamIds())
       },
     )
-}
+})

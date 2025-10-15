@@ -1,10 +1,9 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
 import { z } from 'zod'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
+import { routes } from '../../../utils/routes'
 
 const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEnabled', [
   z.object({
@@ -17,9 +16,8 @@ const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEna
 ])
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .get(
       '/',
       {
@@ -65,4 +63,4 @@ export default async function (app: FastifyInstance) {
         reply.status(200).html(await PlayerRestrictionsPage({ user: request.user! }))
       },
     )
-}
+})

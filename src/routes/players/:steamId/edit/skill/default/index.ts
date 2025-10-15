@@ -1,13 +1,12 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../../../../database/models/player.model'
 import { z } from 'zod'
 import { steamId64 } from '../../../../../../shared/schemas/steam-id-64'
 import { AdminToolbox } from '../../../../../../players/views/html/admin-toolbox'
+import { routes } from '../../../../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get(
+export default routes(async app => {
+  app.get(
     '/',
     {
       config: {
@@ -23,4 +22,4 @@ export default async function (app: FastifyInstance) {
       return reply.html(AdminToolbox.replaceSkillValues({ skill: {} }))
     },
   )
-}
+})

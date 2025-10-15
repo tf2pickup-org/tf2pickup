@@ -1,16 +1,14 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import { z } from 'zod'
 import { VoiceServerType } from '../../../shared/types/voice-server-type'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { VoiceServerPage } from '../../../admin/voice-server/views/html/voice-server.page'
+import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .get(
       '/',
       {
@@ -57,4 +55,4 @@ export default async function (app: FastifyInstance) {
         reply.status(200).html(await VoiceServerPage({ user: request.user! }))
       },
     )
-}
+})

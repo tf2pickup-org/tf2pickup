@@ -1,5 +1,3 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import {
   ConfigurationEntryEdit,
@@ -11,11 +9,11 @@ import {
   type Configuration,
 } from '../../../database/models/configuration-entry.model'
 import { configuration } from '../../../configuration'
+import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .get(
       '/',
       {
@@ -83,4 +81,4 @@ export default async function (app: FastifyInstance) {
         reply.html(await ConfigurationEntryEdit({ _key: key, value, defaultValue }))
       },
     )
-}
+})

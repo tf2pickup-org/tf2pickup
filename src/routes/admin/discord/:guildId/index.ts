@@ -1,14 +1,12 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { discord } from '../../../../discord'
 import { configuration } from '../../../../configuration'
 import { GuildConfiguration } from '../../../../admin/discord/views/html/guild-configuration'
+import { routes } from '../../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .post(
       '/',
       {
@@ -105,4 +103,4 @@ export default async function (app: FastifyInstance) {
         return reply.html(GuildConfiguration({ guild, enabled }))
       },
     )
-}
+})

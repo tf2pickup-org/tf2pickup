@@ -1,13 +1,12 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../../database/models/player.model'
 import { z } from 'zod'
 import { RegionList } from '../../../../admin/game-servers/views/html/serveme-tf-preferred-region'
 import { configuration } from '../../../../configuration'
+import { routes } from '../../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().put(
+export default routes(async app => {
+  app.put(
     '/preferred-region',
     {
       config: {
@@ -24,4 +23,4 @@ export default async function (app: FastifyInstance) {
       return reply.status(200).html(RegionList({ saveResult: { success: true } }))
     },
   )
-}
+})

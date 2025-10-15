@@ -1,13 +1,12 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../../database/models/player.model'
 import { z } from 'zod'
 import { getLogs } from '../../../../admin/player-action-logs/get-logs'
 import { LogEntryList } from '../../../../admin/player-action-logs/views/html/log-entry-list'
+import { routes } from '../../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get(
+export default routes(async app => {
+  app.get(
     '/',
     {
       config: {
@@ -25,4 +24,4 @@ export default async function (app: FastifyInstance) {
       return reply.status(200).send(await LogEntryList({ logs }))
     },
   )
-}
+})

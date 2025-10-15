@@ -1,11 +1,10 @@
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
 import { GameListPage } from '../../games/views/html/game-list.page'
-import type { FastifyInstance } from 'fastify'
+import { routes } from '../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
-  app.withTypeProvider<ZodTypeProvider>().get(
+export default routes(async app => {
+  app.get(
     '/',
     {
       schema: {
@@ -23,4 +22,4 @@ export default async function (app: FastifyInstance) {
       )
     },
   )
-}
+})

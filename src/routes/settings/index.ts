@@ -1,14 +1,12 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerSettingsPage } from '../../players/views/html/player-settings.page'
 import { z } from 'zod'
 import { players } from '../../players'
 import type { PlayerPreferences } from '../../database/models/player.model'
+import { routes } from '../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .get(
       '/',
       {
@@ -42,4 +40,4 @@ export default async function (app: FastifyInstance) {
         await reply.redirect(`/settings`)
       },
     )
-}
+})

@@ -1,5 +1,3 @@
-import type { FastifyInstance } from 'fastify'
-import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import {
   MapPoolEntry as MapPoolEntryCmp,
@@ -9,11 +7,11 @@ import { z } from 'zod'
 import type { MapPoolEntry } from '../../../database/models/map-pool-entry.model'
 import { mapPool } from '../../../queue/map-pool'
 import { requestContext } from '@fastify/request-context'
+import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
-export default async function (app: FastifyInstance) {
+export default routes(async app => {
   app
-    .withTypeProvider<ZodTypeProvider>()
     .get(
       '/',
       {
@@ -61,4 +59,4 @@ export default async function (app: FastifyInstance) {
     .post('/admin/map-pool/create', async (_request, response) => {
       return await response.send(await MapPoolEntryCmp({ name: '' }))
     })
-}
+})
