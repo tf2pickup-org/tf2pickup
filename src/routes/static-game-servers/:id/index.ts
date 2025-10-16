@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { staticGameServers } from '../../../static-game-servers'
 import { routes } from '../../../utils/routes'
+import { PlayerRole } from '../../../database/models/player.model'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -8,6 +9,9 @@ export default routes(async app => {
     '/game',
     {
       schema: {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
         params: z.object({
           id: z.string(),
         }),
