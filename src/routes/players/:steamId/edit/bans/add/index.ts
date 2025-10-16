@@ -10,7 +10,7 @@ import { routes } from '../../../../../../utils/routes'
 export default routes(async app => {
   app
     .get(
-      '/players/:steamId/edit/bans/add',
+      '/',
       {
         config: {
           authorize: [PlayerRole.admin],
@@ -28,7 +28,7 @@ export default routes(async app => {
       },
     )
     .post(
-      '/players/:steamId/edit/bans/add',
+      '/',
       {
         config: {
           authorize: [PlayerRole.admin],
