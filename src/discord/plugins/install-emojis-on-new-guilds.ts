@@ -42,6 +42,10 @@ async function installEmojisOnAllGuilds() {
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
+  if (!client) {
+    return
+  }
+
   events.on('configuration:updated', async ({ key }) => {
     if (key !== 'discord.guilds') {
       return

@@ -7,6 +7,7 @@ import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { toAdmins } from '../to-admins'
 import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
+import { client } from '../client'
 
 function generateChangesText(
   oldSkill: PlayerModel['skill'],
@@ -26,6 +27,10 @@ function generateChangesText(
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    if (!client) {
+      return
+    }
+
     events.on('player:updated', async ({ before, after, adminId }) => {
       if (!isEqual(before.skill, after.skill)) {
         const admin = await players.bySteamId(adminId!)

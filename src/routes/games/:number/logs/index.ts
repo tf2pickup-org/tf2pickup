@@ -1,0 +1,39 @@
+import { Readable } from 'stream'
+import z from 'zod'
+import { games } from '../../../../games'
+import { collections } from '../../../../database/collections'
+import { environment } from '../../../../environment'
+import { routes } from '../../../../utils/routes'
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export default routes(async app => {
+  app.get(
+    '/',
+    {
+      schema: {
+        params: z.object({ number: games.schemas.gameNumber }),
+      },
+    },
+    async (request, reply) => {
+      const { number } = request.params
+      const game = await games.findOne({ number })
+      if (!game.logSecret) {
+        return reply.status(404).send('No logs available for this game')
+      }
+
+      const log = await collections.gameLogs.findOne({ logSecret: game.logSecret })
+      if (!log) {
+        return reply.status(404).send('No logs available for this game')
+      }
+
+      const stream = Readable.from(log.logs).map(line => `${line}\n`)
+      return await reply
+        .header(
+          'content-disposition',
+          `attachment; filename=${environment.WEBSITE_NAME}-${number}.log`,
+        )
+        .type('text/plain')
+        .send(stream)
+    },
+  )
+})

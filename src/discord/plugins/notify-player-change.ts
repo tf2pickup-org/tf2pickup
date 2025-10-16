@@ -4,6 +4,7 @@ import { toAdmins } from '../to-admins'
 import { EmbedBuilder } from 'discord.js'
 import { players } from '../../players'
 import { environment } from '../../environment'
+import { client } from '../client'
 
 interface Change {
   old: string
@@ -22,6 +23,10 @@ function generateChangesText(changes: Record<string, Change>) {
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    if (!client) {
+      return
+    }
+
     events.on('player:updated', async ({ before, after, adminId }) => {
       if (before.name !== after.name) {
         const admin = await players.bySteamId(adminId!)

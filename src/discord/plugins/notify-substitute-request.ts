@@ -8,9 +8,14 @@ import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import type { GameSlotId } from '../../shared/types/game-slot-id'
+import { client } from '../client'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
+  if (!client) {
+    return
+  }
+
   events.on('game:substituteRequested', ({ game, slotId }) => notify(game, slotId))
   events.on('game:playerReplaced', ({ game, slotId }) => invalidate(game, slotId))
   events.on('game:ended', ({ game }) => invalidateAll(game))

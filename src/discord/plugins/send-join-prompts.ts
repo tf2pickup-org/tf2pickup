@@ -18,6 +18,10 @@ import { getMessage } from '../get-message'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
+  if (!client) {
+    return
+  }
+
   events.on('queue/slots:updated', debounce(refreshPrompt, secondsToMilliseconds(3)))
 })
 

@@ -4,9 +4,14 @@ import { collections } from '../../database/collections'
 import { getMessage } from '../get-message'
 import { minutesToMilliseconds } from 'date-fns'
 import { queue } from '../../queue'
+import { client } from '../client'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
+  if (!client) {
+    return
+  }
+
   app.addHook('onReady', async () => {
     setInterval(ensurePromptIsVisible, minutesToMilliseconds(5))
     await ensurePromptIsVisible()

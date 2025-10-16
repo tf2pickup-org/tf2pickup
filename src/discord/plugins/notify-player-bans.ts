@@ -6,10 +6,15 @@ import { players } from '../../players'
 import { isBot } from '../../shared/types/bot'
 import { environment } from '../../environment'
 import { formatDistanceToNow } from 'date-fns'
+import { client } from '../client'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    if (!client) {
+      return
+    }
+
     events.on('player/ban:added', async ({ player, ban }) => {
       let author: EmbedAuthorOptions
       if (isBot(ban.actor)) {

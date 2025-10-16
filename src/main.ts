@@ -7,8 +7,8 @@ import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
-import { HttpError } from '@fastify/sensible'
 import { secondsInWeek } from 'date-fns/constants'
+import autoload from '@fastify/autoload'
 
 const app = fastify({ loggerInstance })
 
@@ -83,8 +83,11 @@ app.setErrorHandler((error, request, reply) => {
 
   let statusCode = 500
   let message = 'Internal Server Error'
-  if (error instanceof HttpError) {
-    statusCode = error.statusCode as number
+  if ('statusCode' in error) {
+    statusCode = error.statusCode
+  }
+
+  if ('message' in error) {
     message = error.message
   }
 
@@ -113,27 +116,25 @@ app.setNotFoundHandler(async (request, reply) => {
   }
 })
 
-await app.register((await import('./html')).default)
 await app.register((await import('./websocket')).default)
-await app.register((await import('./auth')).default)
-await app.register((await import('./queue')).default)
-await app.register((await import('./online-players')).default)
-await app.register((await import('./players')).default)
-await app.register((await import('./games')).default)
-await app.register((await import('./static-game-servers')).default)
-await app.register((await import('./game-servers')).default)
-await app.register((await import('./log-receiver')).default)
-await app.register((await import('./documents')).default)
-await app.register((await import('./statistics')).default)
-await app.register((await import('./twitch-tv')).default)
-await app.register((await import('./admin')).default)
-await app.register((await import('./hall-of-game')).default)
-await app.register((await import('./pre-ready')).default)
-await app.register((await import('./serveme-tf')).default)
-await app.register((await import('./mumble')).default)
-await app.register((await import('./logs-tf')).default)
-await app.register((await import('./discord')).default)
-await app.register((await import('./chat')).default)
-await app.register((await import('./player-actions')).default)
+
+await app.register(autoload, {
+  dir: resolve(import.meta.dirname, '.'),
+  matchFilter: path => {
+    return path.includes('/plugins/')
+  },
+})
+
+await app.register(autoload, {
+  dir: resolve(import.meta.dirname, '.'),
+  matchFilter: path => {
+    return path.includes('/middleware/')
+  },
+})
+
+await app.register(autoload, {
+  dir: resolve(import.meta.dirname, 'routes'),
+  dirNameRoutePrefix: true,
+})
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })
