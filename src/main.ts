@@ -9,6 +9,7 @@ import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { HttpError } from '@fastify/sensible'
 import { secondsInWeek } from 'date-fns/constants'
+import autoload from '@fastify/autoload'
 
 const app = fastify({ loggerInstance })
 
@@ -115,21 +116,21 @@ app.setNotFoundHandler(async (request, reply) => {
 
 await app.register((await import('./websocket')).default)
 
-await app.register((await import('@fastify/autoload')).default, {
+await app.register(autoload, {
   dir: resolve(import.meta.dirname, '.'),
   matchFilter: path => {
     return path.includes('/plugins/')
   },
 })
 
-await app.register((await import('@fastify/autoload')).default, {
+await app.register(autoload, {
   dir: resolve(import.meta.dirname, '.'),
   matchFilter: path => {
     return path.includes('/middleware/')
   },
 })
 
-await app.register((await import('@fastify/autoload')).default, {
+await app.register(autoload, {
   dir: resolve(import.meta.dirname, 'routes'),
   dirNameRoutePrefix: true,
 })
