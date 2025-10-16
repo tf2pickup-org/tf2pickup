@@ -24,7 +24,7 @@ export default routes(async app => {
     async (req, reply) => {
       const { name, address, port, rconPassword, priority, internalIpAddress } = req.body
       logger.info(
-        { name, address, port, rconPassword, priority, internalIpAddress },
+        { name, address, port, rconPassword: 'xxxxxxxxx', priority, internalIpAddress },
         'game server heartbeat',
       )
       await staticGameServers.heartbeat({
