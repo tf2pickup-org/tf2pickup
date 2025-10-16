@@ -4,7 +4,7 @@ import type { BanExpiryForm } from './types/ban-expiry-form'
 export function getBanExpiryDate(banExpiryForm: BanExpiryForm): Date {
   switch (banExpiryForm.lengthSelector) {
     case 'date': {
-      return parse(banExpiryForm.date, 'yyyy-MM-ddTHH:mm', new Date())
+      return parse(banExpiryForm.date, "yyyy-MM-dd'T'HH:mm", new Date())
     }
 
     case 'duration': {

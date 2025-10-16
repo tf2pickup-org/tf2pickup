@@ -7,7 +7,6 @@ import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
-import { HttpError } from '@fastify/sensible'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 
@@ -84,8 +83,11 @@ app.setErrorHandler((error, request, reply) => {
 
   let statusCode = 500
   let message = 'Internal Server Error'
-  if (error instanceof HttpError) {
-    statusCode = error.statusCode as number
+  if ('statusCode' in error) {
+    statusCode = error.statusCode
+  }
+
+  if ('message' in error) {
     message = error.message
   }
 
