@@ -100,7 +100,7 @@
     "pino-princess": "1.2.0",
     "postcss-cli": "11.0.1",
     "prettier": "3.6.2",
-    "prettier-plugin-tailwindcss": "0.7.0",
+    "prettier-plugin-tailwindcss": "0.7.1",
     "release-it": "19.0.5",
     "rimraf": "6.0.1",
     "tsc-alias": "1.8.16",
