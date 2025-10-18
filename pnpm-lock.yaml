@@ -123,8 +123,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       htmx-ext-ws:
-        specifier: 2.0.3
-        version: 2.0.3
+        specifier: 2.0.4
+        version: 2.0.4
       htmx.org:
         specifier: 2.0.7
         version: 2.0.7
@@ -2428,8 +2428,8 @@ packages:
   htmx-ext-remove-me@2.0.2:
     resolution: {integrity: sha512-ljtDmi6PBNMD12PO4N4p1ecfg9Xv7ZEOEjKxhq7bqLWQ2PaPPdhrf++DGc8Yag+2sf0Ii1ul2OG7LoLMFuq1fg==}
 
-  htmx-ext-ws@2.0.3:
-    resolution: {integrity: sha512-782KDh1EHS1iJk9SWXlbNN8DkwHR3ujt8lFnsuQ+o2uBwnZM8WeZOkv1WOER7xXhpZJe4u9oLPhQg5RgCuRAHA==}
+  htmx-ext-ws@2.0.4:
+    resolution: {integrity: sha512-LnOpFRL/2hInhdKl/9N0OJsb4GYQ5/teUdTHNZYY9ytYdxYEqjfLEe0MWgF3ODjfwGJRb4E95igAbU66te48ZA==}
 
   htmx.org@2.0.7:
     resolution: {integrity: sha512-YiJqF3U5KyO28VC5mPfehKJPF+n1Gni+cupK+D69TF0nm7wY6AXn3a4mPWIikfAXtl1u1F1+ZhSCS7KT8pVmqA==}
@@ -6519,7 +6519,7 @@ snapshots:
     dependencies:
       htmx.org: 2.0.7
 
-  htmx-ext-ws@2.0.3:
+  htmx-ext-ws@2.0.4:
     dependencies:
       htmx.org: 2.0.7
 
