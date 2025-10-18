@@ -120,8 +120,8 @@ importers:
         specifier: 2.1.2
         version: 2.1.2
       htmx-ext-remove-me:
-        specifier: 2.0.1
-        version: 2.0.1
+        specifier: 2.0.2
+        version: 2.0.2
       htmx-ext-ws:
         specifier: 2.0.3
         version: 2.0.3
@@ -2425,8 +2425,8 @@ packages:
   htmx-ext-preload@2.1.2:
     resolution: {integrity: sha512-foD06XAITUUQApCUQnPexyJ6B7+4vFGMQ+t42unTVTGRu/CYHdAAt6oHg7eekPHT7NRnbM5hjnGVKtClryPabg==}
 
-  htmx-ext-remove-me@2.0.1:
-    resolution: {integrity: sha512-GYkBDZq2oErjyPK9uzBlMaUjf6WWYkqIcdABsgYR2/I2BmXjFSN1QTcsWabefFHabhrWdT0qHz0zgiaglex2Pw==}
+  htmx-ext-remove-me@2.0.2:
+    resolution: {integrity: sha512-ljtDmi6PBNMD12PO4N4p1ecfg9Xv7ZEOEjKxhq7bqLWQ2PaPPdhrf++DGc8Yag+2sf0Ii1ul2OG7LoLMFuq1fg==}
 
   htmx-ext-ws@2.0.3:
     resolution: {integrity: sha512-782KDh1EHS1iJk9SWXlbNN8DkwHR3ujt8lFnsuQ+o2uBwnZM8WeZOkv1WOER7xXhpZJe4u9oLPhQg5RgCuRAHA==}
@@ -6515,7 +6515,7 @@ snapshots:
     dependencies:
       htmx.org: 2.0.7
 
-  htmx-ext-remove-me@2.0.1:
+  htmx-ext-remove-me@2.0.2:
     dependencies:
       htmx.org: 2.0.7
 
