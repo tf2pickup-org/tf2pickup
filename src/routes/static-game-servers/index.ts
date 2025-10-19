@@ -2,6 +2,8 @@ import { z } from 'zod'
 import { logger } from '../../logger'
 import { staticGameServers } from '../../static-game-servers'
 import { routes } from '../../utils/routes'
+import { errors } from '../../errors'
+import { environment } from '../../environment'
 
 const gameServerHeartbeatSchema = z.object({
   name: z.string(),
@@ -22,6 +24,15 @@ export default routes(async app => {
       },
     },
     async (req, reply) => {
+      const auth = req.headers.authorization
+      if (!auth) {
+        throw errors.notFound()
+      }
+
+      if (auth !== `secret ${environment.GAME_SERVER_SECRET}`) {
+        throw errors.forbidden()
+      }
+
       const { name, address, port, rconPassword, priority, internalIpAddress } = req.body
       logger.info(
         { name, address, port, rconPassword: 'xxxxxxxxx', priority, internalIpAddress },
