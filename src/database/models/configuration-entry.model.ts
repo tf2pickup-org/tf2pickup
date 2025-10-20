@@ -82,6 +82,10 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.string().nullable().default(null),
   }),
   z.object({
+    key: z.literal('games.voice_server.mumble.internal_url'),
+    value: z.string().nullable().default(null),
+  }),
+  z.object({
     key: z.literal('games.voice_server.mumble.port'),
     value: z.number().gte(0).lte(65535).default(64738),
   }),
