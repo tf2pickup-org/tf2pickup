@@ -20,15 +20,18 @@ export async function tryConnect() {
     return
   }
 
-  const [host, port, channelName, password] = await Promise.all([
+  const [url, internalUrl, port, channelName, password] = await Promise.all([
     configuration.get('games.voice_server.mumble.url'),
+    configuration.get('games.voice_server.mumble.internal_url'),
     configuration.get('games.voice_server.mumble.port'),
     configuration.get('games.voice_server.mumble.channel_name'),
     configuration.get('games.voice_server.mumble.password'),
   ])
-  if (!host) {
+  if (!url) {
     throw errors.internalServerError(`mumble configuration malformed`)
   }
+
+  const host = internalUrl ?? url
 
   logger.info({ host, port, channelName }, `connecting to mumble server...`)
   setStatus(MumbleClientStatus.connecting)

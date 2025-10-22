@@ -6,6 +6,8 @@ import { requestContext } from '@fastify/request-context'
 import { VoiceServerPage } from '../../../admin/voice-server/views/html/voice-server.page'
 import { routes } from '../../../utils/routes'
 
+const emptyString = z.union([z.literal('').transform(() => null), z.string()]).nullable()
+
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
@@ -30,25 +32,34 @@ export default routes(async app => {
           body: z.object({
             type: z.enum(VoiceServerType),
             staticLink: z.url().nullable().default(null),
-            mumbleUrl: z.string().nullable().default(null),
+            mumbleUrl: emptyString,
+            mumbleInternalUrl: emptyString,
             mumblePort: z.coerce.number().gte(0).lte(65535).optional().default(64738),
-            mumblePassword: z.string().nullable().default(null),
-            mumbleChannelName: z.string().nullable().default(null),
+            mumblePassword: emptyString,
+            mumbleChannelName: emptyString,
           }),
         },
       },
       async (request, reply) => {
-        const { type, staticLink, mumbleUrl, mumblePort, mumblePassword, mumbleChannelName } =
-          request.body
+        const {
+          type,
+          staticLink,
+          mumbleUrl,
+          mumbleInternalUrl,
+          mumblePort,
+          mumblePassword,
+          mumbleChannelName,
+        } = request.body
         await configuration.set('games.voice_server_type', type)
         if (type === VoiceServerType.staticLink) {
           await configuration.set('games.voice_server.static_link', staticLink)
         } else if (type === VoiceServerType.mumble) {
           await Promise.all([
-            configuration.set('games.voice_server.mumble.url', mumbleUrl ?? null),
+            configuration.set('games.voice_server.mumble.url', mumbleUrl),
+            configuration.set('games.voice_server.mumble.internal_url', mumbleInternalUrl),
             configuration.set('games.voice_server.mumble.port', mumblePort),
-            configuration.set('games.voice_server.mumble.password', mumblePassword ?? null),
-            configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName ?? null),
+            configuration.set('games.voice_server.mumble.password', mumblePassword),
+            configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName),
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })

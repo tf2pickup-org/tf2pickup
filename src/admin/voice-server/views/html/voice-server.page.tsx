@@ -8,12 +8,14 @@ import { MumbleClientStatus } from './mumble-client-status'
 export async function VoiceServerPage(props: { user: User }) {
   const type = await configuration.get('games.voice_server_type')
   const staticLink = await configuration.get('games.voice_server.static_link')
-  const [mumbleUrl, mumblePort, mumblePassword, mumbleChannelName] = await Promise.all([
-    configuration.get('games.voice_server.mumble.url'),
-    configuration.get('games.voice_server.mumble.port'),
-    configuration.get('games.voice_server.mumble.password'),
-    configuration.get('games.voice_server.mumble.channel_name'),
-  ])
+  const [mumbleUrl, mumbleInternalUrl, mumblePort, mumblePassword, mumbleChannelName] =
+    await Promise.all([
+      configuration.get('games.voice_server.mumble.url'),
+      configuration.get('games.voice_server.mumble.internal_url'),
+      configuration.get('games.voice_server.mumble.port'),
+      configuration.get('games.voice_server.mumble.password'),
+      configuration.get('games.voice_server.mumble.channel_name'),
+    ])
 
   return (
     <Admin activePage="voice-server" user={props.user}>
@@ -109,6 +111,22 @@ export async function VoiceServerPage(props: { user: User }) {
                   placeholder="mumble.tf2pickup.org"
                 />
                 <input type="number" name="mumblePort" value={mumblePort.toString()} />
+              </dd>
+            </dl>
+
+            <dl>
+              <dt>
+                <label for="mumble-internal-url" class="font-medium">
+                  (Optional) Internal server URL
+                </label>
+              </dt>
+              <dd>
+                <input
+                  type="text"
+                  id="mumble-internal-url"
+                  name="mumbleInternalUrl"
+                  value={mumbleInternalUrl ?? ''}
+                />
               </dd>
             </dl>
 
