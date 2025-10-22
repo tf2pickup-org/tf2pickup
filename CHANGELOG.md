@@ -1,5 +1,35 @@
 # Changelog
 
+# [4.0.0-alpha.31](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.30...4.0.0-alpha.31) (2025-10-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/etag to v6.1.0 ([ffc4f5c](https://github.com/tf2pickup-org/tf2pickup/commit/ffc4f5ccbb7d2a6519d603f8061183dc39a69aac))
+* **deps:** update dependency @fastify/static to v8.3.0 ([1db1560](https://github.com/tf2pickup-org/tf2pickup/commit/1db1560fa808114db5af2294b08e5df0348419fc))
+* **deps:** update dependency chart.js to v4.5.1 ([86c049c](https://github.com/tf2pickup-org/tf2pickup/commit/86c049c3747e8466aac3504b2bdb64f1059af569))
+* **deps:** update dependency discord.js to v14.23.2 ([3d735e7](https://github.com/tf2pickup-org/tf2pickup/commit/3d735e7f097122e2b1555904a22012bb5c08ad5b))
+* **deps:** update dependency es-toolkit to v1.40.0 ([e78c5cb](https://github.com/tf2pickup-org/tf2pickup/commit/e78c5cbda25388c2d1a5f0b20fa589a03737a621))
+* **deps:** update dependency esbuild to v0.25.11 ([83660a1](https://github.com/tf2pickup-org/tf2pickup/commit/83660a14dcdc05c49110da90dbfb7093370bd20a))
+* **deps:** update dependency htmx-ext-head-support to v2.0.5 ([34231d2](https://github.com/tf2pickup-org/tf2pickup/commit/34231d2dd59343825859336685ad30489986dc3d))
+* **deps:** update dependency htmx-ext-preload to v2.1.2 ([701173f](https://github.com/tf2pickup-org/tf2pickup/commit/701173f61d39f6d0be7ebdf8132e365ff744d1aa))
+* **deps:** update dependency htmx-ext-remove-me to v2.0.2 ([0766946](https://github.com/tf2pickup-org/tf2pickup/commit/0766946e9a96bbad9ee54007ca22a94c2aafa379))
+* **deps:** update dependency htmx-ext-ws to v2.0.4 ([1e5f585](https://github.com/tf2pickup-org/tf2pickup/commit/1e5f58553ec716b71bc0c045f03e2f0040fd6a25))
+* **deps:** update dependency marked to v16.4.0 ([4b3694b](https://github.com/tf2pickup-org/tf2pickup/commit/4b3694b923edb16ea18d5647dbfca2ed125374d4))
+* **deps:** update dependency marked to v16.4.1 ([8ff25d0](https://github.com/tf2pickup-org/tf2pickup/commit/8ff25d00dffcdd316e3731b0092b554a369d4a20))
+* **deps:** update dependency motion to v12.23.24 ([#355](https://github.com/tf2pickup-org/tf2pickup/issues/355)) ([7101593](https://github.com/tf2pickup-org/tf2pickup/commit/710159380eb5ee1ada0d449f7a70ee5f0f3f5283))
+* **deps:** update dependency pino to v10 ([#349](https://github.com/tf2pickup-org/tf2pickup/issues/349)) ([3b3488f](https://github.com/tf2pickup-org/tf2pickup/commit/3b3488f76987165b094ed1647bfd8d60d7886527))
+* **deps:** update dependency pino to v10.1.0 ([9b3fe82](https://github.com/tf2pickup-org/tf2pickup/commit/9b3fe828137d24521c225d30200714f378dfe86d))
+* **deps:** update dependency pino to v9.13.0 ([99e645e](https://github.com/tf2pickup-org/tf2pickup/commit/99e645e65b120ab274b439e36d2063069a5d444c))
+* **deps:** update dependency tailwindcss to v3.4.18 ([636623e](https://github.com/tf2pickup-org/tf2pickup/commit/636623eeb13b563f158b10ee64dea5121625bba3))
+* **deps:** update dependency zod to v4.1.12 ([#353](https://github.com/tf2pickup-org/tf2pickup/issues/353)) ([a97c871](https://github.com/tf2pickup-org/tf2pickup/commit/a97c871ad441d12b0a90f5de813953006e2ac374))
+* verify static game server secret ([#362](https://github.com/tf2pickup-org/tf2pickup/issues/362)) ([8ab5e03](https://github.com/tf2pickup-org/tf2pickup/commit/8ab5e03228ab51d963703181516542ca3ed97221))
+
+
+### Features
+
+* add mumble internal url ([#363](https://github.com/tf2pickup-org/tf2pickup/issues/363)) ([de02f7c](https://github.com/tf2pickup-org/tf2pickup/commit/de02f7cba5e06d594f505ef0f3ba4ce586ccfa7b))
+
 # [4.0.0-alpha.30](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.29...4.0.0-alpha.30) (2025-09-30)
 
 
