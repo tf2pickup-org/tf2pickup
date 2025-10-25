@@ -73,7 +73,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: image
           path: /tmp/image.tar
@@ -136,7 +136,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Download artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: image
           path: /tmp
@@ -219,7 +219,7 @@ jobs:
         run: docker container logs nginx
 
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: blob-report-${{ matrix.shard }}
           path: blob-report
@@ -243,7 +243,7 @@ jobs:
         run: pnpm install
 
       - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           path: all-blob-reports
           pattern: blob-report-*
@@ -253,7 +253,7 @@ jobs:
         run: PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter=html,json ./all-blob-reports
 
       - name: Upload HTML report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: html-report-attempt-${{ github.run_attempt }}
           path: playwright-report
