@@ -79,7 +79,7 @@ class AddedPlayer {
 export class GameServerSimulator {
   private readonly socket: Socket
   private server: Server
-  private addresses: string[] = []
+  logAddresses = new Set<string>()
   logSecret: string | undefined
   commands: string[] = []
   private cvars: CVar[] = [
@@ -135,7 +135,7 @@ export class GameServerSimulator {
               socket.write(response.toBuffer())
             } else if (/logaddress_add (.+)/.test(packet.body)) {
               const [, address] = /logaddress_add (.+)/.exec(packet.body) ?? []
-              this.addresses.push(address!)
+              this.logAddresses.add(address!)
 
               const response = new RconPacket()
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
@@ -143,13 +143,8 @@ export class GameServerSimulator {
               response.body = `logaddress_add ${address}`
               socket.write(response.toBuffer())
             } else if (/^logaddress_del (.+)/.test(packet.body)) {
-              const [, address] = /logaddress_add (.+)/.exec(packet.body) ?? []
-              if (address) {
-                const index = this.addresses.indexOf(address)
-                if (index > -1) {
-                  this.addresses.splice(index, 1)
-                }
-              }
+              const [, address] = /logaddress_del (.+)/.exec(packet.body) ?? []
+              this.logAddresses.delete(address!)
 
               const response = new RconPacket()
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
@@ -238,7 +233,7 @@ export class GameServerSimulator {
   }
 
   log(message: string) {
-    this.addresses.forEach(async address => {
+    this.logAddresses.forEach(async address => {
       const [host, port] = address.split(':')
       const release = await this.sendMutex.acquire()
       this.socket.send(this.prepareMessage(message), Number(port), host, error => {
