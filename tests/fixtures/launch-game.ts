@@ -110,11 +110,11 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
     }
 
     await expect
-      .poll(() => gameServer.logAddresses.size, {
+      .poll(() => gameServer.logAddresses.size === 0, {
         message: 'make sure logaddress is cleared',
         timeout: secondsToMilliseconds(40),
       })
-      .toBe(0)
+      .toBe(true)
 
     const adminPage = await users.getAdmin().adminPage()
     await adminPage.freeStaticGameServer()
