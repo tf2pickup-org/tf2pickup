@@ -14,5 +14,6 @@ launchGame('cleanup game server', async ({ gameServer, gameNumber }) => {
     timeout: secondsToMilliseconds(40),
   })
   await expect(gameServer).toHaveCommand('sm_game_player_whitelist 0')
+  await expect(gameServer).toHaveCommand('sm_game_player_delall')
   expect(gameServer.addedPlayers.length).toBe(0)
 })

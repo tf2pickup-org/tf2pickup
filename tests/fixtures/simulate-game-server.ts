@@ -36,6 +36,7 @@ export const expect = baseExpect.extend({
         }
       })
 
+    let id: ReturnType<typeof setInterval> | undefined
     try {
       await withTimeout(
         () =>
@@ -44,7 +45,7 @@ export const expect = baseExpect.extend({
               resolve()
             }
 
-            setInterval(() => {
+            id = setInterval(() => {
               if (hasCommand()) {
                 resolve()
               }
@@ -59,6 +60,8 @@ export const expect = baseExpect.extend({
       } else {
         throw error
       }
+    } finally {
+      clearInterval(id)
     }
 
     const message = () => {
