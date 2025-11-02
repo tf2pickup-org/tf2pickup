@@ -1,11 +1,10 @@
-import { capitalize } from 'es-toolkit'
 import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
-import { GameClassIcon } from '../../../../html/components/game-class-icon'
 import { Switch } from '../../../../html/components/switch'
 import { queue } from '../../../../queue'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
+import { GameClassSkillInput } from '../../../../html/components/game-class-skill-input'
 
 export async function PlayerRestrictionsPage(props: { user: User }) {
   return (
@@ -163,26 +162,13 @@ async function DefaultPlayerSkill() {
       </dt>
       <dd class="flex flex-col">
         <div class="flex flex-row gap-2">
-          {classes.map(gameClass => {
-            const s = defaultPlayerSkill[gameClass] ?? 1
-            const id = `playerSkill${capitalize(gameClass)}`
-            return (
-              <div class="player-skill">
-                <GameClassIcon gameClass={gameClass} size={32} />
-                <label class="sr-only" for={id}>
-                  Player's skill on {gameClass}
-                </label>
-                <input
-                  type="number"
-                  id={id}
-                  name={`defaultPlayerSkill.${gameClass}`}
-                  value={s.toString()}
-                  required
-                  step="1"
-                />
-              </div>
-            )
-          })}
+          {classes.map(gameClass => (
+            <GameClassSkillInput
+              gameClass={gameClass}
+              name={`defaultPlayerSkill.${gameClass}`}
+              value={defaultPlayerSkill[gameClass] ?? 1}
+            />
+          ))}
         </div>
         <p class="text-sm text-abru-light-75">
           If a player starts a game without skill assigned for them, the game balance system will
