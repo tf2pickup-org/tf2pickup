@@ -104,6 +104,7 @@ export async function EditPlayerBansPage(props: { player: PlayerModel; user: Use
 
 export async function EditPlayerRolesPage(props: { player: PlayerModel; user: User }) {
   const roles = props.player.roles
+  const safeWebsiteName = environment.WEBSITE_NAME
   return (
     <EditPlayer player={props.player} user={props.user} activePage="/roles">
       <form action="" method="post">
@@ -117,9 +118,9 @@ export async function EditPlayerRolesPage(props: { player: PlayerModel; user: Us
               checked={roles.includes(PlayerRole.admin)}
             />
             <label for="playerRoleAdmin">Admin</label>
-            <p class="description" safe>
+            <p class="description">
               Admins are able to edit players' skill and their profiles as well as modify{' '}
-              {environment.WEBSITE_NAME} configuration options.
+              {safeWebsiteName} configuration options.
             </p>
           </div>
 
