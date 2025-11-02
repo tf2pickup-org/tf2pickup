@@ -1,5 +1,5 @@
 import { resolve } from 'node:path'
-import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
+import { PlayerRole, type PlayerBan, type PlayerModel } from '../../../database/models/player.model'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import type { User } from '../../../auth/types/user'
@@ -14,6 +14,7 @@ import {
   AdminPanelSidebar,
 } from '../../../html/components/admin-panel'
 import {
+  IconAirTrafficControl,
   IconArrowBackUp,
   IconBan,
   IconDeviceFloppy,
@@ -26,10 +27,12 @@ import { collections } from '../../../database/collections'
 import { format } from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
+import { environment } from '../../../environment'
 
 const editPlayerPages = {
   '/profile': 'Profile',
   '/bans': 'Bans',
+  '/roles': 'Roles',
 } as const
 
 export async function EditPlayerProfilePage(props: { player: PlayerModel; user: User }) {
@@ -99,6 +102,52 @@ export async function EditPlayerBansPage(props: { player: PlayerModel; user: Use
   )
 }
 
+export async function EditPlayerRolesPage(props: { player: PlayerModel; user: User }) {
+  const roles = props.player.roles
+  const safeWebsiteName = environment.WEBSITE_NAME
+  return (
+    <EditPlayer player={props.player} user={props.user} activePage="/roles">
+      <form action="" method="post">
+        <div class="admin-panel-set">
+          <div class="form-checkbox">
+            <input
+              type="checkbox"
+              name="roles"
+              value={PlayerRole.admin}
+              id="playerRoleAdmin"
+              checked={roles.includes(PlayerRole.admin)}
+            />
+            <label for="playerRoleAdmin">Admin</label>
+            <p class="description">
+              Admins are able to edit players' skill and their profiles as well as modify{' '}
+              {safeWebsiteName} configuration options.
+            </p>
+          </div>
+
+          <div class="form-checkbox">
+            <input
+              type="checkbox"
+              name="roles"
+              value={PlayerRole.superUser}
+              id="playerRoleSuperUser"
+              checked={roles.includes(PlayerRole.superUser)}
+            />
+            <label for="playerRoleSuperUser">Super-user</label>
+            <p class="description">
+              Super-users can edit player's roles and access player action logs.
+            </p>
+          </div>
+
+          <button type="submit" class="button button--accent button--dense">
+            <IconDeviceFloppy size={20} />
+            <span>Save</span>
+          </button>
+        </div>
+      </form>
+    </EditPlayer>
+  )
+}
+
 function EditPlayer(props: {
   player: PlayerModel
   user: User
@@ -136,6 +185,19 @@ function EditPlayer(props: {
               <IconBan />
               Bans
             </AdminPanelLink>
+
+            {props.user.player.roles.includes(PlayerRole.superUser) && (
+              <>
+                <AdminPanelSection>Super-user</AdminPanelSection>
+                <AdminPanelLink
+                  href={`/players/${props.player.steamId}/edit/roles`}
+                  active={props.activePage === '/roles'}
+                >
+                  <IconAirTrafficControl />
+                  Roles
+                </AdminPanelLink>
+              </>
+            )}
           </AdminPanelSidebar>
           <AdminPanelBody>
             <div class="admin-panel-header">
