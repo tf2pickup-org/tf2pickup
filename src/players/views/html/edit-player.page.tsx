@@ -17,20 +17,15 @@ import {
   IconArrowBackUp,
   IconBan,
   IconDeviceFloppy,
-  IconInputX,
   IconPlus,
   IconUserScan,
   IconX,
 } from '../../../html/components/icons'
 import type { Children } from '@kitajs/html'
-import { queue } from '../../../queue'
-import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { configuration } from '../../../configuration'
 import { collections } from '../../../database/collections'
 import { format } from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
-import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -50,7 +45,7 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
               <input type="text" name="name" value={props.player.name} id="player-nickname" />
             </div>
 
-            <div class="row-span-3">
+            <div class="row-span-2">
               <img
                 src={props.player.avatar.large}
                 width="184"
@@ -60,14 +55,7 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
               />
             </div>
 
-            <div class="input-group">
-              <label class="label" for="player-skill">
-                Skill
-              </label>
-              <EditPlayerSkill steamId={props.player.steamId} skill={props.player.skill} />
-            </div>
-
-            <div>
+            <div class="self-end">
               <button type="submit" class="button button--accent button--dense">
                 <IconDeviceFloppy size={20} />
                 <span>Save</span>
@@ -77,47 +65,6 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
         </div>
       </form>
     </EditPlayer>
-  )
-}
-
-export async function EditPlayerSkill(props: { steamId: SteamId64; skill: PlayerModel['skill'] }) {
-  const config = queue.config
-  const defaultSkill = await configuration.get('games.default_player_skill')
-
-  return (
-    <div class="flex flex-row gap-6" hx-target="this">
-      {config.classes.map(gameClass => {
-        const skill = props.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
-        return (
-          <div class="flex flex-row items-center gap-2">
-            <GameClassIcon gameClass={gameClass.name} size={32} />
-            <label class="sr-only" for={`playerSkill${gameClass.name}`}>
-              Player's skill on {gameClass.name}
-            </label>
-            <input
-              type="number"
-              id={`playerSkill${gameClass.name}`}
-              name={`skill.${gameClass.name}`}
-              value={skill.toString()}
-              class="player-skill"
-              required
-              step="0.1"
-            />
-          </div>
-        )
-      })}
-      <button
-        type="button"
-        class="button button--dense"
-        hx-get={`/players/${props.steamId}/edit/skill/default`}
-        hx-trigger="click"
-        hx-swap="outerHTML"
-        hx-disabled-elt="this"
-      >
-        <IconInputX />
-        Reset
-      </button>
-    </div>
   )
 }
 

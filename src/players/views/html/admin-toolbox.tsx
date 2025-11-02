@@ -2,10 +2,10 @@ import { capitalize } from 'es-toolkit'
 import type { User } from '../../../auth/types/user'
 import { configuration } from '../../../configuration'
 import type { PlayerModel } from '../../../database/models/player.model'
-import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { IconDeviceFloppy, IconEdit, IconInputX } from '../../../html/components/icons'
 import { queue } from '../../../queue'
 import { WinLossChart } from './win-loss-chart'
+import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
 
 export async function AdminToolbox(props: { user?: User | undefined; player: PlayerModel }) {
   const { player } = props
@@ -24,25 +24,14 @@ export async function AdminToolbox(props: { user?: User | undefined; player: Pla
         Win-loss chart
       </h4>
 
-      {queue.config.classes.map(gameClass => {
-        const s = player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
-        return (
-          <div class="player-skill" style={`grid-area: skill${capitalize(gameClass.name)}`}>
-            <GameClassIcon gameClass={gameClass.name} size={32} />
-            <label class="sr-only" for={`playerSkill${gameClass.name}`}>
-              Player's skill on {gameClass.name}
-            </label>
-            <input
-              type="number"
-              id={`playerSkill${gameClass.name}`}
-              name={`skill.${gameClass.name}`}
-              value={s.toString()}
-              required
-              step="1"
-            />
-          </div>
-        )
-      })}
+      {queue.config.classes.map(gameClass => (
+        <GameClassSkillInput
+          gameClass={gameClass.name}
+          name={`skill.${gameClass.name}`}
+          value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
+          style={`grid-area: skill${capitalize(gameClass.name)}`}
+        />
+      ))}
 
       <button type="submit" class="button button--accent" style="grid-area: buttonSave">
         <IconDeviceFloppy size={20} />

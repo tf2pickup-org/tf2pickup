@@ -117,27 +117,6 @@
     color: theme(colors.abru.light.75);
   }
 
-  .player-skill {
-    display: flex;
-    flex-flow: row nowrap;
-    background-color: theme(colors.abru.light.5);
-    border-radius: 4px;
-    height: 48px;
-    align-items: center;
-
-    img {
-      margin-left: 16px;
-    }
-
-    input {
-      text-align: center;
-      width: auto;
-      min-width: 20px;
-      background: transparent;
-      border: none;
-    }
-  }
-
   .game-result {
     height: 24px;
     width: 24px;
