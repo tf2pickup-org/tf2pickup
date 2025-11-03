@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-alpha.33](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.32...4.0.0-alpha.33) (2025-11-03)
+
+
+### Bug Fixes
+
+* fix player profile update ([#371](https://github.com/tf2pickup-org/tf2pickup/issues/371)) ([a072378](https://github.com/tf2pickup-org/tf2pickup/commit/a072378624ce973d480366b9aee551402e9e01a0))
+
 # [4.0.0-alpha.32](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.31...4.0.0-alpha.32) (2025-11-03)
 
 
