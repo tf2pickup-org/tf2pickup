@@ -1,5 +1,22 @@
 # Changelog
 
+# [4.0.0-alpha.32](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.31...4.0.0-alpha.32) (2025-11-03)
+
+
+### Bug Fixes
+
+* configure default player skill ([#368](https://github.com/tf2pickup-org/tf2pickup/issues/368)) ([f6e345d](https://github.com/tf2pickup-org/tf2pickup/commit/f6e345da2403d3737a886dd971aeb05300743991))
+* **deps:** update dependency cssnano to v7.1.2 ([657adc9](https://github.com/tf2pickup-org/tf2pickup/commit/657adc9a94ca471f44fdeb42c6f7e436e7bcc22c))
+* **deps:** update dependency discord.js to v14.24.0 ([5a551ca](https://github.com/tf2pickup-org/tf2pickup/commit/5a551caca65b811e9b3acffb16f8f692b15b451d))
+* **deps:** update dependency discord.js to v14.24.1 ([c5bb23a](https://github.com/tf2pickup-org/tf2pickup/commit/c5bb23a515a5f2924ee984e8e74a3237c482c9e1))
+* **deps:** update dependency discord.js to v14.24.2 ([034e26f](https://github.com/tf2pickup-org/tf2pickup/commit/034e26f7f86b608225f9be0bd9f39311cbdc570d))
+* **deps:** update dependency es-toolkit to v1.41.0 ([392b521](https://github.com/tf2pickup-org/tf2pickup/commit/392b521d2cef881d1dca6fd79f19fd4aad574e8f))
+* **deps:** update dependency esbuild to v0.25.12 ([d175af9](https://github.com/tf2pickup-org/tf2pickup/commit/d175af9b6ac5b9f02465a713cceddec30c2d5bbe))
+* **deps:** update dependency fastify-type-provider-zod to v6.1.0 ([11f1807](https://github.com/tf2pickup-org/tf2pickup/commit/11f1807688d53b81fd5336bea90324fa97d917ed))
+* **deps:** update dependency htmx.org to v2.0.8 ([2eb58e9](https://github.com/tf2pickup-org/tf2pickup/commit/2eb58e9975f33b002c2d19a86562957a7a51382f))
+* edit player role ([#370](https://github.com/tf2pickup-org/tf2pickup/issues/370)) ([29cd683](https://github.com/tf2pickup-org/tf2pickup/commit/29cd683880f6ee35191e3c7bd396af0834c8155c))
+* uniform game class input ([#369](https://github.com/tf2pickup-org/tf2pickup/issues/369)) ([69d9f50](https://github.com/tf2pickup-org/tf2pickup/commit/69d9f50be7b2210b1cfacc1f595a7c15293e9623))
+
 # [4.0.0-alpha.31](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.30...4.0.0-alpha.31) (2025-10-22)
 
 
