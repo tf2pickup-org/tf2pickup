@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-beta.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.33...4.0.0-beta.0) (2025-11-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency openid to v2.0.14 ([8e7524d](https://github.com/tf2pickup-org/tf2pickup/commit/8e7524d43bff069751204116257180b4f0941c23))
+* implement player cooldown ([#372](https://github.com/tf2pickup-org/tf2pickup/issues/372)) ([5b56c94](https://github.com/tf2pickup-org/tf2pickup/commit/5b56c9485013e77caac403c92ddb01664a960a57))
+
 # [4.0.0-alpha.33](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.32...4.0.0-alpha.33) (2025-11-03)
 
 
