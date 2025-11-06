@@ -14,11 +14,13 @@ export async function requestSubstitute({
   replacee,
   actor,
   reason,
+  applyCooldown,
 }: {
   number: GameNumber
   replacee: SteamId64
   actor: SteamId64 | Bot
   reason?: string
+  applyCooldown?: boolean
 }): Promise<GameModel> {
   logger.trace({ number, replacee, actor, reason }, 'games.requestSubstitute()')
   const game = await findOne({ number })
@@ -41,6 +43,7 @@ export async function requestSubstitute({
     {
       $set: {
         'slots.$[slot].status': SlotStatus.waitingForSubstitute,
+        'slots.$[slot].applyCooldown': applyCooldown,
       },
       $push: {
         events: {

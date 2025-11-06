@@ -37,6 +37,18 @@ export class AdminPage {
     await this.page.waitForURL(`/players/${steamId}`)
   }
 
+  async playerCooldown(steamId: string) {
+    await this.page.goto(`/players/${steamId}`)
+    await this.page.getByRole('link', { name: 'Edit player' }).click()
+    return this.page.getByLabel('Cooldown level')
+  }
+
+  async setPlayerCooldown(steamId: string, cooldown: number) {
+    await (await this.playerCooldown(steamId)).fill(cooldown.toString())
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await this.page.waitForURL(`/players/${steamId}`)
+  }
+
   async freeStaticGameServer() {
     await this.page.goto('/admin/game-servers')
     try {

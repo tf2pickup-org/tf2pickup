@@ -24,4 +24,5 @@ export interface GameSlotModel {
   skill?: number
   shouldJoinBy?: Date
   voiceServerUrl?: string
+  applyCooldown?: boolean // should apply cooldown to player if they get replaced
 }

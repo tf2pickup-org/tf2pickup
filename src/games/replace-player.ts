@@ -7,6 +7,7 @@ import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot
 import { update } from './update'
 import { GameEventType } from '../database/models/game-event.model'
 import { events } from '../events'
+import { applyCooldown } from './apply-cooldown'
 
 const replacePlayerMutex = new Mutex()
 
@@ -47,6 +48,8 @@ export async function replacePlayer({
       }
     }
 
+    const shouldApplyCooldown = slot.applyCooldown && replacee !== replacement
+
     const newGame = await update(
       { number },
       {
@@ -56,6 +59,9 @@ export async function replacePlayer({
           ...(replacee === replacement
             ? {}
             : { 'slots.$[slot].connectionStatus': PlayerConnectionStatus.offline }),
+        },
+        $unset: {
+          'slots.$[slot].applyCooldown': 1,
         },
         $push: {
           events: {
@@ -73,6 +79,11 @@ export async function replacePlayer({
     )
 
     events.emit('game:playerReplaced', { game: newGame, replacee, replacement, slotId: slot.id })
+
+    if (shouldApplyCooldown) {
+      await applyCooldown(replacee)
+    }
+
     return game
   })
 }

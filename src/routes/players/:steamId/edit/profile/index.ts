@@ -38,14 +38,20 @@ export default routes(async app => {
           }),
           body: z.object({
             name: z.string(),
+            cooldownLevel: z.coerce.number().min(0),
           }),
         },
       },
       async (req, reply) => {
         const { steamId } = req.params
-        const { name } = req.body
+        const { name, cooldownLevel } = req.body
 
-        await players.update(steamId, { $set: { name } }, {}, req.user!.player.steamId)
+        await players.update(
+          steamId,
+          { $set: { name, cooldownLevel } },
+          {},
+          req.user!.player.steamId,
+        )
         req.flash('success', `Player updated`)
         await reply.redirect(`/players/${steamId}`)
       },
