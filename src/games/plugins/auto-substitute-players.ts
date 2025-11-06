@@ -16,6 +16,7 @@ export default fp(
         replacee: player,
         actor: 'bot',
         reason: 'Player is offline',
+        applyCooldown: true,
       })
     })
 

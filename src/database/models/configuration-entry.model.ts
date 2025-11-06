@@ -1,4 +1,4 @@
-import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { milliseconds, minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { z } from 'zod'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
@@ -32,6 +32,58 @@ export const configurationSchema = z.discriminatedUnion('key', [
         }),
       )
       .default([]),
+  }),
+  z.object({
+    key: z.literal('games.cooldown_levels'),
+    value: z
+      .array(
+        z.object({
+          level: z.number().min(0),
+          banLengthMs: z.number(),
+        }),
+      )
+      .default([
+        {
+          level: 0,
+          banLengthMs: milliseconds({ minutes: 30 }),
+        },
+        {
+          level: 1,
+          banLengthMs: milliseconds({ hours: 6 }),
+        },
+        {
+          level: 2,
+          banLengthMs: milliseconds({ hours: 24 }),
+        },
+        {
+          level: 3,
+          banLengthMs: milliseconds({ days: 2 }),
+        },
+        {
+          level: 4,
+          banLengthMs: milliseconds({ days: 7 }),
+        },
+        {
+          level: 5,
+          banLengthMs: milliseconds({ days: 14 }),
+        },
+        {
+          level: 6,
+          banLengthMs: milliseconds({ months: 1 }),
+        },
+        {
+          level: 7,
+          banLengthMs: milliseconds({ months: 2 }),
+        },
+        {
+          level: 8,
+          banLengthMs: milliseconds({ months: 6 }),
+        },
+        {
+          level: 9,
+          banLengthMs: milliseconds({ years: 1 }),
+        },
+      ]),
   }),
   z.object({
     key: z.literal('games.default_player_skill'),

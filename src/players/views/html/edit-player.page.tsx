@@ -24,10 +24,19 @@ import {
 } from '../../../html/components/icons'
 import type { Children } from '@kitajs/html'
 import { collections } from '../../../database/collections'
-import { format } from 'date-fns'
+import {
+  format,
+  formatDuration,
+  hoursToMilliseconds,
+  milliseconds,
+  millisecondsToHours,
+  millisecondsToMinutes,
+  minutesToMilliseconds,
+} from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
+import { configuration } from '../../../configuration'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -48,7 +57,7 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
               <input type="text" name="name" value={props.player.name} id="player-nickname" />
             </div>
 
-            <div class="row-span-2">
+            <div class="row-span-3">
               <img
                 src={props.player.avatar.large}
                 width="184"
@@ -56,6 +65,20 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
                 class="player-avatar rounded"
                 alt={`${props.player.name}'s avatar`}
               />
+            </div>
+
+            <div class="input-group">
+              <label class="label" for="cooldown-level">
+                Cooldown level
+              </label>
+              <input
+                type="number"
+                name="cooldownLevel"
+                value={props.player.cooldownLevel.toString()}
+                id="cooldown-level"
+                min="0"
+              />
+              <CooldownLevelsOverview />
             </div>
 
             <div class="self-end">
@@ -266,5 +289,46 @@ export async function BanDetails(props: { player: PlayerModel; ban: PlayerBan })
         </span>
       </form>
     </div>
+  )
+}
+
+async function CooldownLevelsOverview() {
+  const cooldownLevels = await configuration.get('games.cooldown_levels')
+  return (
+    <details>
+      <summary>Cooldown levels</summary>
+      <ul class="grid grid-cols-[auto_1fr] gap-x-1">
+        {cooldownLevels.map(({ level, banLengthMs }) => {
+          const years = Math.floor(banLengthMs / milliseconds({ years: 1 }))
+          banLengthMs -= milliseconds({ years })
+          const months = Math.floor(banLengthMs / milliseconds({ months: 1 }))
+          banLengthMs -= milliseconds({ months })
+          const weeks = Math.floor(banLengthMs / milliseconds({ weeks: 1 }))
+          banLengthMs -= milliseconds({ weeks })
+          const days = Math.floor(banLengthMs / milliseconds({ days: 1 }))
+          banLengthMs -= milliseconds({ days })
+          const hours = millisecondsToHours(banLengthMs)
+          banLengthMs -= hoursToMilliseconds(hours)
+          const minutes = millisecondsToMinutes(banLengthMs)
+          banLengthMs -= minutesToMilliseconds(minutes)
+          const seconds = millisecondsToHours(banLengthMs)
+
+          const safeDuration = formatDuration({
+            years,
+            months,
+            weeks,
+            days,
+            hours,
+            minutes,
+            seconds,
+          })
+          return (
+            <li class="col-span-2 grid grid-cols-subgrid">
+              <strong class="text-end">{level}:</strong> <p>{safeDuration}</p>
+            </li>
+          )
+        })}
+      </ul>
+    </details>
   )
 }
