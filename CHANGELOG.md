@@ -1,5 +1,19 @@
 # Changelog
 
+# [4.0.0-beta.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.0...4.0.0-beta.1) (2025-11-07)
+
+
+### Bug Fixes
+
+* cleanup player changes notification body ([#375](https://github.com/tf2pickup-org/tf2pickup/issues/375)) ([9e7c0fd](https://github.com/tf2pickup-org/tf2pickup/commit/9e7c0fd180bfe2e90eb86c791129e44afc9d8501))
+* **deps:** update dependency marked to v16.4.2 ([7caf059](https://github.com/tf2pickup-org/tf2pickup/commit/7caf059f2c954086e67693a020b50588ec72986e))
+* **deps:** update dependency marked to v17 ([#374](https://github.com/tf2pickup-org/tf2pickup/issues/374)) ([6d42f82](https://github.com/tf2pickup-org/tf2pickup/commit/6d42f82da5035a943e465a785345a44f8833f222))
+
+
+### Features
+
+* add unbalanced game discord notification ([#376](https://github.com/tf2pickup-org/tf2pickup/issues/376)) ([87b51f4](https://github.com/tf2pickup-org/tf2pickup/commit/87b51f48c5bd284078415441b01f46b8d28a4228))
+
 # [4.0.0-beta.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-alpha.33...4.0.0-beta.0) (2025-11-06)
 
 
