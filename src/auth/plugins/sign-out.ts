@@ -6,7 +6,7 @@ export default fp(
   async app => {
     app.get('/auth/sign-out', async (request, reply) => {
       request.session.regenerate()
-      return await reply.redirect(environment.WEBSITE_URL, 302).send()
+      return await reply.redirect(environment.WEBSITE_URL, 302)
     })
   },
   {
