@@ -57,7 +57,7 @@ export default fp(
     const gateway = new Gateway(app)
     app.decorate('gateway', gateway)
 
-    app.get('/ws', { websocket: true }, (socket, req) => {
+    app.get('/ws', { config: { otel: false }, websocket: true }, (socket, req) => {
       socket.id = nanoid()
 
       if (req.user) {
