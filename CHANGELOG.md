@@ -1,5 +1,20 @@
 # Changelog
 
+# [4.0.0-beta.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.1...4.0.0-beta.2) (2025-11-12)
+
+
+### Bug Fixes
+
+* **deps:** update dependency autoprefixer to v10.4.22 ([a214891](https://github.com/tf2pickup-org/tf2pickup/commit/a21489197f804491a8e6f56d8b2a95636058c430))
+* **deps:** update dependency esbuild to v0.26.0 ([181504b](https://github.com/tf2pickup-org/tf2pickup/commit/181504b6ebc884378163d0f3719e9b7a53ff3874))
+* **deps:** update dependency esbuild to v0.27.0 ([2e0185c](https://github.com/tf2pickup-org/tf2pickup/commit/2e0185c74cb599362e957f2a0647422baed75464))
+* fix signing out route ([#379](https://github.com/tf2pickup-org/tf2pickup/issues/379)) ([3fa0115](https://github.com/tf2pickup-org/tf2pickup/commit/3fa0115f3398abf38dc25da9d9b363f171937b5a))
+
+
+### Features
+
+* add otel support ([#378](https://github.com/tf2pickup-org/tf2pickup/issues/378)) ([36b6f3d](https://github.com/tf2pickup-org/tf2pickup/commit/36b6f3d5f2de25b5355e6281de8353b6dc45a327))
+
 # [4.0.0-beta.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.0...4.0.0-beta.1) (2025-11-07)
 
 
