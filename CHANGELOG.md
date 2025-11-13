@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.3...4.0.0-beta.4) (2025-11-13)
+
+
+### Bug Fixes
+
+* use otlp metric exporter ([#381](https://github.com/tf2pickup-org/tf2pickup/issues/381)) ([860abd0](https://github.com/tf2pickup-org/tf2pickup/commit/860abd08bd8f21d313fc61371055a98d4666f26a))
+
 # [4.0.0-beta.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.2...4.0.0-beta.3) (2025-11-13)
 
 
