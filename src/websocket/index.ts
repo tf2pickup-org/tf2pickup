@@ -6,6 +6,8 @@ import websocket from '@fastify/websocket'
 import { secondsToMilliseconds } from 'date-fns'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { nanoid } from 'nanoid'
+import { meter } from '../otel'
+import { ValueType } from '@opentelemetry/api'
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -30,6 +32,15 @@ export default fp(
       options: {
         clientTracking: true,
       },
+    })
+
+    const counter = meter.createObservableUpDownCounter('websocket.clients.count', {
+      description: 'Number of websocket clients',
+      unit: '1',
+      valueType: ValueType.INT,
+    })
+    counter.addCallback(result => {
+      result.observe(app.websocketServer.clients.size)
     })
 
     const isAliveInterval = setInterval(() => {
