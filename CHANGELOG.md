@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.0.0-beta.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.2...4.0.0-beta.3) (2025-11-13)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([ee02fa1](https://github.com/tf2pickup-org/tf2pickup/commit/ee02fa1339a3e246d01513ed413ffef300baee8b))
+* **deps:** update dependency mongodb to v6.21.0 ([3ac34cd](https://github.com/tf2pickup-org/tf2pickup/commit/3ac34cdbe3f55a8c0377eef42cef541017a06305))
+
+
+### Features
+
+* add otel metrics ([#380](https://github.com/tf2pickup-org/tf2pickup/issues/380)) ([0ed869d](https://github.com/tf2pickup-org/tf2pickup/commit/0ed869d969e5419845f359248393f359bef435bc))
+
 # [4.0.0-beta.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.1...4.0.0-beta.2) (2025-11-12)
 
 
