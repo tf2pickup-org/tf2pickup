@@ -94,7 +94,7 @@ export default fp(
       )
     })
 
-    const counter = meter.createObservableUpDownCounter('online_players.count', {
+    const counter = meter.createObservableUpDownCounter('tf2pickup.online_players.count', {
       description: 'Online player count',
       unit: '1',
       valueType: ValueType.INT,

@@ -34,7 +34,7 @@ export default fp(
       },
     })
 
-    const counter = meter.createObservableUpDownCounter('websocket.clients.count', {
+    const counter = meter.createObservableUpDownCounter('tf2pickup.websocket.clients.count', {
       description: 'Number of websocket clients',
       unit: '1',
       valueType: ValueType.INT,

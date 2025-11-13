@@ -6,6 +6,8 @@ import type { Tf2Team } from '../../shared/types/tf2-team'
 import SteamID from 'steamid'
 import { collections } from '../../database/collections'
 import { logger } from '../../logger'
+import { meter } from '../../otel'
+import { ValueType } from '@opentelemetry/api'
 
 interface GameEvent {
   /* name of the game event */
@@ -185,27 +187,48 @@ const gameEvents: GameEvent[] = [
   },
 ]
 
-async function testForGameEvent(message: string, logSecret: string) {
+const eventCounter = meter.createCounter('tf2pickup.games.events.count', {
+  description: 'Game events that come from the gameserver',
+  unit: '1',
+  valueType: ValueType.INT,
+})
+
+type EventHandledResult =
+  | {
+      handled: true
+      gameNumber: GameNumber
+    }
+  | {
+      handled: false
+    }
+
+async function testForGameEvent(message: string, logSecret: string): Promise<EventHandledResult> {
   for (const gameEvent of gameEvents) {
     const matches = message.match(gameEvent.regex)
     if (matches) {
       const game = await collections.games.findOne({ logSecret })
       if (game === null) {
         logger.error({ message }, `error handling game event: no such game`)
-        return
+        return { handled: false }
       }
       logger.debug(`#${game.number}: ${gameEvent.name}`)
       gameEvent.handle(game.number, matches)
-      break
+      return { handled: true, gameNumber: game.number }
     }
   }
+
+  return { handled: false }
 }
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('gamelog:message', async ({ message }) => {
-      await testForGameEvent(message.payload, message.password)
+      const result = await testForGameEvent(message.payload, message.password)
+      eventCounter.add(1, {
+        'tf2pickup.games.event.handled': result.handled,
+        ...(result.handled ? { 'tf2pickup.game.number': result.gameNumber } : {}),
+      })
     })
   },
   {
