@@ -5,6 +5,8 @@ import { logger } from '../../logger'
 import { events } from '../../events'
 import { secondsToMilliseconds } from 'date-fns'
 import { tasks } from '../../tasks'
+import { meter } from '../../otel'
+import { ValueType } from '@opentelemetry/api'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
@@ -90,6 +92,15 @@ export default fp(
           await tasks.schedule('onlinePlayers:validatePlayer', verifyPlayerTimeout, { player })
         }),
       )
+    })
+
+    const counter = meter.createObservableUpDownCounter('online_players.count', {
+      description: 'Online player count',
+      unit: '1',
+      valueType: ValueType.INT,
+    })
+    counter.addCallback(async result => {
+      result.observe(await collections.onlinePlayers.countDocuments())
     })
   },
   { name: 'online players' },
