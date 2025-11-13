@@ -91,7 +91,7 @@
     "@eslint/js": "9.39.1",
     "@playwright/test": "1.56.1",
     "@release-it/conventional-changelog": "10.0.1",
-    "@tsconfig/strictest": "2.0.7",
+    "@tsconfig/strictest": "2.0.8",
     "@types/howler": "2.2.12",
     "@types/jsonwebtoken": "9.0.10",
     "@types/node": "24.10.1",
