@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.4...4.0.0-beta.5) (2025-11-13)
+
+
+### Bug Fixes
+
+* cleanup otel metrics names ([#382](https://github.com/tf2pickup-org/tf2pickup/issues/382)) ([7e1d098](https://github.com/tf2pickup-org/tf2pickup/commit/7e1d098581e8011721a3cdb9b3065199f72859ea))
+
 # [4.0.0-beta.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.3...4.0.0-beta.4) (2025-11-13)
 
 
