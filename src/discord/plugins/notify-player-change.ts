@@ -14,36 +14,34 @@ export default fp(
     }
 
     events.on('player:updated', async ({ before, after, adminId }) => {
-      if (before.name !== after.name) {
-        const admin = await players.bySteamId(adminId!)
-        const changes = makePlayerChangesNotificationBody({ before, after })
+      const admin = await players.bySteamId(adminId!)
+      const changes = makePlayerChangesNotificationBody({ before, after })
 
-        if (changes === '') {
-          return
-        }
-
-        await toAdmins({
-          embeds: [
-            new EmbedBuilder()
-              .setColor('#5230dc')
-              .setAuthor({
-                name: admin.name,
-                iconURL: admin.avatar.medium,
-                url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
-              })
-              .setTitle('Player profile updated')
-              .setThumbnail(after.avatar.large)
-              .setDescription(
-                `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${admin.steamId})**\n${changes}`,
-              )
-              .setFooter({
-                text: environment.WEBSITE_NAME,
-                iconURL: `${environment.WEBSITE_URL}/favicon.png`,
-              })
-              .setTimestamp(),
-          ],
-        })
+      if (changes === '') {
+        return
       }
+
+      await toAdmins({
+        embeds: [
+          new EmbedBuilder()
+            .setColor('#5230dc')
+            .setAuthor({
+              name: admin.name,
+              iconURL: admin.avatar.medium,
+              url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
+            })
+            .setTitle('Player profile updated')
+            .setThumbnail(after.avatar.large)
+            .setDescription(
+              `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${admin.steamId})**\n${changes}`,
+            )
+            .setFooter({
+              text: environment.WEBSITE_NAME,
+              iconURL: `${environment.WEBSITE_URL}/favicon.png`,
+            })
+            .setTimestamp(),
+        ],
+      })
     })
   },
   {
