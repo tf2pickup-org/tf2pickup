@@ -1,5 +1,21 @@
 # Changelog
 
+# [4.0.0-beta.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.5...4.0.0-beta.6) (2025-11-15)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([879561b](https://github.com/tf2pickup-org/tf2pickup/commit/879561b17efa7e41689c7d17967b25aecae96cee))
+* **deps:** update dependency @fastify/otel to v0.14.0 ([3c7e6bb](https://github.com/tf2pickup-org/tf2pickup/commit/3c7e6bbd41dc1db59696c4760861e949acf2b918))
+* **deps:** update dependency @kitajs/html to v4.2.11 ([e037ed4](https://github.com/tf2pickup-org/tf2pickup/commit/e037ed4f23058c9d3495fd28b469cd4a88d97230))
+* **deps:** update dependency mongodb to v7 ([#373](https://github.com/tf2pickup-org/tf2pickup/issues/373)) ([5e27702](https://github.com/tf2pickup-org/tf2pickup/commit/5e2770243f3fe59f3942732f75ca73aaf343413c))
+* fix player updated discord notification ([#384](https://github.com/tf2pickup-org/tf2pickup/issues/384)) ([4ba9799](https://github.com/tf2pickup-org/tf2pickup/commit/4ba97995c6d72c947c8da3fe231464a363de1ba0))
+
+
+### Features
+
+* add new otel metrics ([#383](https://github.com/tf2pickup-org/tf2pickup/issues/383)) ([369d2b6](https://github.com/tf2pickup-org/tf2pickup/commit/369d2b60c91b3bd6999cdd43604bb15480e4814d))
+
 # [4.0.0-beta.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.4...4.0.0-beta.5) (2025-11-13)
 
 
