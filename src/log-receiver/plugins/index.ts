@@ -5,7 +5,6 @@ import { logger } from '../../logger'
 import { environment } from '../../environment'
 import { events } from '../../events'
 import { meter } from '../../otel'
-import { ValueType } from '@opentelemetry/api'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -13,13 +12,14 @@ export default fp(
     const messageCount = meter.createCounter('tf2pickup.log_receiver.message.count', {
       description: 'Messages coming to the log receiver',
       unit: '1',
-      valueType: ValueType.INT,
     })
     const socket = createSocket('udp4')
 
-    socket.on('message', message => {
+    socket.on('message', (message, rinfo) => {
       try {
-        messageCount.add(1)
+        messageCount.add(1, {
+          source_ip: rinfo.address,
+        })
         const logMessage = parseLogMessage(message)
         events.emit('gamelog:message', { message: logMessage })
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

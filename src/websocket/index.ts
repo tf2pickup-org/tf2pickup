@@ -34,13 +34,18 @@ export default fp(
       },
     })
 
-    const counter = meter.createObservableUpDownCounter('tf2pickup.websocket.clients.count', {
+    const clientCount = meter.createObservableUpDownCounter('tf2pickup.websocket.clients.count', {
       description: 'Number of websocket clients',
       unit: '1',
       valueType: ValueType.INT,
     })
-    counter.addCallback(result => {
+    clientCount.addCallback(result => {
       result.observe(app.websocketServer.clients.size)
+    })
+
+    const incomingWsMessages = meter.createCounter('tf2pickup.websocket.incoming_message.count', {
+      description: 'Messages received via websockets',
+      unit: '1',
     })
 
     const isAliveInterval = setInterval(() => {
@@ -86,6 +91,9 @@ export default fp(
         } else {
           messageString = message.toString()
         }
+        incomingWsMessages.add(1, {
+          steamId: req.user?.player.steamId,
+        })
         gateway.parse(socket, messageString)
       })
 

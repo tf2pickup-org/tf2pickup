@@ -11,6 +11,7 @@ import { RuntimeNodeInstrumentation } from '@opentelemetry/instrumentation-runti
 import { metrics } from '@opentelemetry/api'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto'
+import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
@@ -23,9 +24,21 @@ const sdk = new NodeSDK({
   }),
   instrumentations: [
     new RuntimeNodeInstrumentation(),
-    new FastifyOtel({ registerOnInitialization: true }),
+    new HttpInstrumentation(),
+    new FastifyOtel({
+      registerOnInitialization: true,
+      requestHook: (span, request) => {
+        span.updateName(`${request.method} ${request.routeOptions.url}`)
+      },
+    }),
     new MongoDBInstrumentation(),
-    new PinoInstrumentation(),
+    new PinoInstrumentation({
+      logKeys: {
+        traceId: 'trace_id',
+        spanId: 'span_id',
+        traceFlags: 'trace_flags',
+      },
+    }),
   ],
 })
 
