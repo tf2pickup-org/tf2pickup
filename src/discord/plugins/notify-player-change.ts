@@ -14,13 +14,16 @@ export default fp(
     }
 
     events.on('player:updated', async ({ before, after, adminId }) => {
-      const admin = await players.bySteamId(adminId!)
-      const changes = makePlayerChangesNotificationBody({ before, after })
+      if (!adminId) {
+        return
+      }
 
+      const changes = makePlayerChangesNotificationBody({ before, after })
       if (changes === '') {
         return
       }
 
+      const admin = await players.bySteamId(adminId)
       await toAdmins({
         embeds: [
           new EmbedBuilder()
