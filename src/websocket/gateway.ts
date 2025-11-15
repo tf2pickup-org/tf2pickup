@@ -6,6 +6,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { assertIsError } from '../utils/assert-is-error'
 import { logger } from '../logger'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
+import { meter } from '../otel'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
@@ -82,6 +83,11 @@ interface Broadcaster {
   broadcast: (messageFn: MessageFn) => void
 }
 
+const outgoingWsMessages = meter.createCounter('tf2pickup.websocket.outgoing_message.count', {
+  description: 'Messages sent via websockets',
+  unit: '1',
+})
+
 async function sendSafe(client: WebSocket, msg: string) {
   return new Promise<void>((resolve, reject) => {
     if (client.readyState !== WebSocket.OPEN) {
@@ -99,6 +105,7 @@ async function sendSafe(client: WebSocket, msg: string) {
 
         reject(err)
       } else {
+        outgoingWsMessages.add(1, { steamId: client.player?.steamId })
         resolve()
       }
     })
