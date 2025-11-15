@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.6...4.0.0-beta.7) (2025-11-15)
+
+
+### Bug Fixes
+
+* add admin check in notify player change ([#385](https://github.com/tf2pickup-org/tf2pickup/issues/385)) ([0f6b020](https://github.com/tf2pickup-org/tf2pickup/commit/0f6b020ff5f6763a25d5a6afea28416b2ffaf7e1))
+
 # [4.0.0-beta.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.5...4.0.0-beta.6) (2025-11-15)
 
 
