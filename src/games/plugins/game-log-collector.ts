@@ -4,12 +4,17 @@ import { collections } from '../../database/collections'
 import { hideIpAddresses } from '../../utils/hide-ip-addresses'
 import type { LogMessage } from '../../log-receiver/parse-log-message'
 import { MongoError } from 'mongodb'
+import { findOne } from '../find-one'
+import type { GameNumber } from '../../database/models/game.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('gamelog:message', async ({ message }) => {
       await safePushLogMessage(message)
+    })
+    events.on('match:restarted', async ({ gameNumber }) => {
+      await pruneLogs(gameNumber)
     })
   },
   { name: 'game log collector', encapsulate: true },
@@ -40,4 +45,13 @@ async function safePushLogMessage(message: LogMessage) {
       throw error
     }
   }
+}
+
+async function pruneLogs(number: GameNumber) {
+  const game = await findOne({ number })
+  if (!game.logSecret) {
+    return
+  }
+
+  await collections.gameLogs.deleteOne({ logSecret: game.logSecret })
 }

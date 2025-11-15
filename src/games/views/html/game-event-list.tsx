@@ -13,6 +13,7 @@ import { players } from '../../../players'
 const renderedEvents = [
   GameEventType.gameCreated,
   GameEventType.gameStarted,
+  GameEventType.gameRestarted,
   GameEventType.gameEnded,
 
   GameEventType.gameServerAssigned,
@@ -136,6 +137,8 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       return <span>Game server initialized</span>
     case GameEventType.gameStarted:
       return <span>Game started</span>
+    case GameEventType.gameRestarted:
+      return <span>Game restarted</span>
     case GameEventType.gameEnded:
       switch (props.event.reason) {
         case GameEndedReason.interrupted: {

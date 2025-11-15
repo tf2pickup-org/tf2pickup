@@ -2,14 +2,15 @@ import { Rcon } from 'rcon-client'
 import { type GameModel } from '../../database/models/game.model'
 import { assertIsError } from '../../utils/assert-is-error'
 import { logger } from '../../logger'
+import { errors } from '../../errors'
 
 export async function withRcon<T>(
   game: GameModel,
   callback: (args: { rcon: Rcon }) => Promise<T>,
 ): Promise<T> {
-  logger.trace({ game }, `withRcon()`)
+  logger.trace({ gameNumber: game.number }, `withRcon()`)
   if (game.gameServer === undefined) {
-    throw new Error(`gameServer is undefined`)
+    throw errors.internalServerError(`gameServer is undefined`)
   }
 
   let rcon: Rcon | undefined = undefined

@@ -6,6 +6,7 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 export enum GameEventType {
   gameCreated = 'created',
   gameStarted = 'started',
+  gameRestarted = 'restarted',
   gameEnded = 'ended',
 
   gameServerAssigned = 'game server assigned',
@@ -42,6 +43,11 @@ export interface GameEnded {
 
 export interface GameStarted {
   event: GameEventType.gameStarted
+  at: Date
+}
+
+export interface GameRestarted {
+  event: GameEventType.gameRestarted
   at: Date
 }
 
@@ -110,6 +116,7 @@ export interface RoundEnded {
 export type GameEventModel =
   | GameCreated
   | GameStarted
+  | GameRestarted
   | GameEnded
   | GameServerAssigned
   | GameServerReinitializationOrdered

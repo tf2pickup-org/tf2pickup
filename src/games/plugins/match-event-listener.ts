@@ -31,6 +31,11 @@ const gameEvents: GameEvent[] = [
     handle: gameNumber => events.emit('match:started', { gameNumber }),
   },
   {
+    name: 'game restarted',
+    regex: /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\srcon from ".+": command "exec etf2l_.+"$/,
+    handle: gameNumber => events.emit('match:restarted', { gameNumber }),
+  },
+  {
     name: 'round win',
     // https://regex101.com/r/41LfKS/2
     regex:
