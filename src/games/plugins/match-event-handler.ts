@@ -35,6 +35,29 @@ export default fp(
     )
 
     events.on(
+      'match:restarted',
+      safe(async ({ gameNumber }) => {
+        await update(
+          { number: gameNumber, state: GameState.started },
+          {
+            $set: {
+              state: GameState.launching,
+            },
+            $unset: {
+              score: 1,
+            },
+            $push: {
+              events: {
+                at: new Date(),
+                event: GameEventType.gameRestarted,
+              },
+            },
+          },
+        )
+      }),
+    )
+
+    events.on(
       'match:ended',
       safe(async ({ gameNumber }) => {
         const game = await update(
