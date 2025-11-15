@@ -52,16 +52,16 @@ export default fp(
       })
     })
 
-    events.on('player/ban:revoked', async ({ player, ban }) => {
+    events.on('player/ban:revoked', async ({ player, ban, admin }) => {
       let author: EmbedAuthorOptions
-      if (isBot(ban.actor)) {
+      if (isBot(admin)) {
         author = { name: 'tf2pickup.org bot' }
       } else {
-        const admin = await players.bySteamId(ban.actor)
+        const { name, avatar } = await players.bySteamId(admin)
         author = {
-          name: admin.name,
-          iconURL: admin.avatar.medium,
-          url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
+          name,
+          iconURL: avatar.medium,
+          url: `${environment.WEBSITE_URL}/players/${admin}`,
         }
       }
 
