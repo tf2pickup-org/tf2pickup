@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.0.0-beta.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.7...4.0.0-beta.8) (2025-11-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v5.6.2 ([#377](https://github.com/tf2pickup-org/tf2pickup/issues/377)) ([36c0cf3](https://github.com/tf2pickup-org/tf2pickup/commit/36c0cf3cc7bf7829839afa168af779d90b8fa472))
+
+
+### Features
+
+* add ban revoker info ([#387](https://github.com/tf2pickup-org/tf2pickup/issues/387)) ([3e96b1c](https://github.com/tf2pickup-org/tf2pickup/commit/3e96b1c0843637e1f2f663e9ae760a8094dfa775))
+* handle game restart gracefully ([#386](https://github.com/tf2pickup-org/tf2pickup/issues/386)) ([5827f3a](https://github.com/tf2pickup-org/tf2pickup/commit/5827f3a3c007eec742155ec8243a6b796cf1844f))
+
 # [4.0.0-beta.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.6...4.0.0-beta.7) (2025-11-15)
 
 
