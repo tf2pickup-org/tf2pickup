@@ -33,8 +33,24 @@ export default defineConfig({
     },
     {
       name: 'chromium',
+      testIgnore: '**/90-api/**',
       use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
       dependencies: ['setup'],
+    },
+    {
+      name: 'api',
+      testMatch: '**/90-api/**/*.@(spec|test).?(c|m)[jt]s?(x)',
+      use: {
+        ...(process.env.CI
+          ? {
+              baseURL: 'https://www.localhost/api',
+              ignoreHTTPSErrors: true,
+            }
+          : {
+              baseURL: 'http://localhost:3000/api',
+            }),
+        extraHTTPHeaders: { Accept: 'application/json' },
+      },
     },
     // {
     //   name: 'firefox',
