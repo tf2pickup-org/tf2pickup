@@ -82,13 +82,14 @@ await app.register((await import('@kitajs/fastify-html-plugin')).default)
 app.setErrorHandler((error, request, reply) => {
   logger.error(error)
 
-  let statusCode = 500
-  let message = 'Internal Server Error'
-  if ('statusCode' in error) {
-    statusCode = error.statusCode
+  if (!(error instanceof Error)) {
+    return
   }
 
-  if ('message' in error) {
+  let statusCode = 500
+  let message = 'Internal Server Error'
+  if ('statusCode' in error && typeof error.statusCode === 'number') {
+    statusCode = error.statusCode
     message = error.message
   }
 
