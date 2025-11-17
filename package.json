@@ -54,7 +54,7 @@
     "date-fns": "4.1.0",
     "discord.js": "14.24.2",
     "dotenv": "17.2.3",
-    "es-toolkit": "1.41.0",
+    "es-toolkit": "1.42.0",
     "esbuild": "0.27.0",
     "fastify": "5.6.2",
     "fastify-plugin": "5.1.0",
