@@ -21,7 +21,7 @@ export function GameClassSkillInput(props: {
         name={props.name}
         value={props.value.toString()}
         required
-        step="1"
+        step=".5"
       />
     </div>
   )
