@@ -211,12 +211,11 @@ async function testForGameEvent(message: string, logSecret: string): Promise<Eve
   for (const gameEvent of gameEvents) {
     const matches = message.match(gameEvent.regex)
     if (matches) {
-      const game = await collections.games.findOne({ logSecret })
+      const game = await collections.games.findOne({ logSecret }, { projection: { number: 1 } })
       if (game === null) {
         logger.error({ message }, `error handling game event: no such game`)
         return { handled: false }
       }
-      logger.debug(`#${game.number}: ${gameEvent.name}`)
       gameEvent.handle(game.number, matches)
       return { handled: true, gameNumber: game.number }
     }
