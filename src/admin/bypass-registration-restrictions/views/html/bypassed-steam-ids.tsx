@@ -14,7 +14,7 @@ export async function BypassedSteamIds() {
               class="text-gray-400"
               hx-delete={`/admin/bypass-registration-restrictions/${steamId}`}
               hx-target="#bypassedSteamIds"
-              hx-swap="innerHTML"
+              hx-swap="outerHTML"
             >
               <IconX size={16} />
             </button>
