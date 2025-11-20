@@ -166,13 +166,17 @@
 }
 
 .queue-sidebar {
-  display: flex;
   flex-flow: column nowrap;
   height: 100%;
   max-height: 100%;
   border-radius: 8px;
   background-color: theme(colors.abru.dark.6);
   padding: 8px;
+  display: none;
+
+  @media screen(lg) {
+    display: flex;
+  }
 
   .tab {
     margin: 10px;
