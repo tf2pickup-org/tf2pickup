@@ -1,5 +1,24 @@
 # Changelog
 
+# [4.0.0-beta.9](/compare/4.0.0-beta.8...4.0.0-beta.9) (2025-11-20)
+
+
+### Bug Fixes
+
+* allow decimal values in player skill input (#388) 6248abe, closes #388
+* **deps:** update dependency country-flag-icons to v1.6.1 b1f61c0
+* **deps:** update dependency discord.js to v14.25.0 c5e138f
+* **deps:** update dependency es-toolkit to v1.42.0 5a48559
+* **deps:** update dependency form-data to v4.0.5 cd4df9c
+* fix rendering bypass restrictions page (#390) ac16eaf, closes #390
+* hide online player list & chat in mobile views (#393) 221bd55, closes #393
+* prune config players.bypass_registration_restrictions (#391) 02b1c8a, closes #391
+
+
+### Features
+
+* add uberfest branding (#392) c29ac2e, closes #392
+
 # [4.0.0-beta.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.7...4.0.0-beta.8) (2025-11-16)
 
 
