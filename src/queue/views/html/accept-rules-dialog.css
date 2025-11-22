@@ -1,0 +1,16 @@
+.accept-rules-dialog {
+  background-color: theme(colors.abru.dark.29);
+  max-width: 1018px;
+  border-radius: 8px;
+  padding: 24px 32px;
+  box-shadow: 0px 29px 37px 3px rgba(0, 0, 0, 0.4);
+
+  .rules-wrapper {
+    height: auto;
+    max-height: calc(100vh - 64px);
+
+    @media screen(lg) {
+      max-height: calc(100vh - 300px);
+    }
+  }
+}

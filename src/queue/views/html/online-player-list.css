@@ -1,0 +1,32 @@
+.online-player-list {
+  flex: 1 1 0;
+  list-style-type: none;
+
+  li {
+    &:nth-child(odd) {
+      background-color: theme(colors.abru.dark.6);
+    }
+
+    &:nth-child(even) {
+      background-color: theme(colors.abru.light.5);
+    }
+  }
+
+  a {
+    color: theme(colors.abru.light.75);
+    border-radius: 2px;
+    padding: 4px 8px;
+    font-weight: 300;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+
+    @media screen(lg) {
+      text-align: start;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
