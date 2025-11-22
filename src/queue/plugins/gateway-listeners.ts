@@ -12,11 +12,11 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../get-state'
 import { QueueState } from '../../database/models/queue-state.model'
-import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 import { preReady } from '../../pre-ready'
 import { FlashMessages } from '../../html/components/flash-messages'
 import { WebSocket } from 'ws'
 import { errors } from '../../errors'
+import { IsInQueue } from '../views/html/is-in-queue'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -52,16 +52,13 @@ export default fp(
         }
 
         const slots = await join(slotId, socket.player.steamId)
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await MapVote({ actor: socket.player?.steamId }))
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await PreReadyUpButton({ actor: socket.player?.steamId }))
-
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
           await refreshTakenSlots(socket.player.steamId)
         }
+
+        app.gateway
+          .to({ player: socket.player.steamId })
+          .send(async () => await IsInQueue({ actor: socket.player?.steamId }))
       }),
     )
 
@@ -73,16 +70,13 @@ export default fp(
         }
 
         const slot = await leave(socket.player.steamId)
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await MapVote({ actor: socket.player?.steamId }))
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await PreReadyUpButton({ actor: socket.player?.steamId }))
-
         if (slot.canMakeFriendsWith?.length) {
           await refreshTakenSlots(socket.player.steamId)
         }
+
+        app.gateway
+          .to({ player: socket.player.steamId })
+          .send(async () => await IsInQueue({ actor: socket.player?.steamId }))
 
         const queueState = await getState()
         if (queueState === QueueState.ready) {

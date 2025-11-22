@@ -22,6 +22,7 @@ import { AcceptRulesDialog } from './accept-rules-dialog'
 import { CurrentPlayerCount } from './current-player-count'
 import { PreReadyUpButton } from '../../../pre-ready/views/html/pre-ready-up-button'
 import { Sidebar } from './sidebar'
+import { IsInQueue } from './is-in-queue'
 
 export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()
@@ -39,6 +40,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
     >
       <NavigationBar user={props.user} />
       <Page>
+        <IsInQueue actor={props.user?.player.steamId} />
         <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />

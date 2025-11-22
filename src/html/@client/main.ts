@@ -8,6 +8,7 @@ import 'htmx-ext-remove-me'
 import './copy-to-clipboard'
 import './notifications'
 import './play-sound'
+import './sync-attribute'
 
 import * as hyperscript from 'hyperscript.org'
 hyperscript.browserInit()

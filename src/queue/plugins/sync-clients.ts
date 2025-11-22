@@ -17,6 +17,7 @@ import { CurrentPlayerCount } from '../views/html/current-player-count'
 import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 import { OnlinePlayerCount } from '../views/html/online-player-count'
 import { ChatMessages } from '../views/html/chat'
+import { IsInQueue } from '../views/html/is-in-queue'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -40,6 +41,7 @@ export default fp(
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
       })
+      socket.send(await IsInQueue({ actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
       socket.send(await CurrentPlayerCount())
       socket.send(await OnlinePlayerCount())
