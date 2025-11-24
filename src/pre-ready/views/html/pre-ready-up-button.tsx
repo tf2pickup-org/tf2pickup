@@ -19,7 +19,7 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
       name="prereadytoggle"
       ws-send
       hx-trigger="click"
-      sync-attribute="disabled:#isInQueue.value === false"
+      sync-attr:disabled="#isInQueue.value === false"
       aria-selected={timeLeft > 0}
       data-umami-event={timeLeft > 0 ? 'pre-ready-up-cancel' : 'pre-ready-up'}
     >

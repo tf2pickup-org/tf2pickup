@@ -1,45 +1,62 @@
 import htmx from './htmx.js'
 
-const attrName = 'sync-attribute'
-
 function sync(element: Element) {
-  const syncDisabled = element.getAttribute(attrName)
-  if (!syncDisabled) {
-    console.error('sync-disabled empty', element)
-    return
-  }
+  const attributes = element.attributes
+  for (const attr of attributes) {
+    if (!attr.name.startsWith('sync-attr:')) {
+      continue
+    }
 
-  const matches = /^(\w+):([a-zA-Z0-9#]+)\.(\w+)\s===\s?(.+)$/.exec(syncDisabled)
-  if (!matches) {
-    console.error('sync-disabled has invalid syntax', element)
-    return
-  }
+    const [, targetAttr] = attr.name.split(':')
+    if (!targetAttr) {
+      continue
+    }
 
-  const targetAttr = matches[1]!
-  const selector = matches[2]!
-  const sourceAttr = matches[3]!
-  const cond = matches[4]!
+    const matches = /^([a-zA-Z0-9#]+)\.([a-zA-Z0-9-]+)\s?===\s?(.+)$/.exec(attr.value)
+    if (!matches) {
+      console.error('sync-attribute has invalid syntax', element)
+      continue
+    }
 
-  const source = htmx.find(selector)
-  if (!source) {
-    return
-  }
+    const selector = matches[1]!
+    const sourceAttr = matches[2]!
+    const cond = matches[3]!
 
-  const result = source.getAttribute(sourceAttr) === cond
-  if (result) {
-    element.setAttribute(targetAttr, `${result}`)
-  } else {
-    element.removeAttribute(targetAttr)
+    const source = htmx.find(selector)
+    if (!source) {
+      continue
+    }
+
+    const result = source.getAttribute(sourceAttr) === cond
+    if (result) {
+      element.setAttribute(targetAttr, `${result}`)
+    } else {
+      element.removeAttribute(targetAttr)
+    }
   }
 }
 
+const expression = new XPathEvaluator().createExpression(
+  './/*[@*[ starts-with(name(), "sync-attr:")]]',
+)
+
 htmx.defineExtension('sync-attribute', {
   onEvent: (name: string) => {
-    if (name !== 'htmx:afterProcessNode') {
+    if (name !== 'htmx:load') {
       return true
     }
 
-    htmx.findAll(`[${attrName}]`).forEach(sync)
+    const result = expression.evaluate(document)
+    const elements: Element[] = []
+
+    let node: Node | null = null
+    while ((node = result.iterateNext())) {
+      if (node instanceof Element) {
+        elements.push(node)
+      }
+    }
+
+    elements.forEach(sync)
     return true
   },
 })

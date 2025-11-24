@@ -33,22 +33,14 @@ async function MapVoteButton(props: {
   map: string
   actor?: SteamId64 | undefined
 }) {
-  let mapVote: string | undefined = undefined
-
-  if (props.actor) {
-    mapVote = (await collections.queueMapVotes.findOne({ player: props.actor }))?.map
-  }
-
-  const selected = mapVote === props.map
-
   return (
     <button
       class="map-vote-button text-white"
       name="votemap"
-      sync-attribute="disabled:#isInQueue.value === false"
       value={props.map}
+      sync-attr:disabled="#isInQueue.value === false"
+      sync-attr:aria-checked={`#mapVoteSelection.value === ${props.map}`}
       aria-label={`Vote for map ${props.map}`}
-      aria-checked={`${selected}`}
       data-umami-event="vote-map"
       data-umami-event-map={props.map}
     >
@@ -63,12 +55,6 @@ async function MapVoteButton(props: {
       <div class="absolute bottom-0 left-1/3 right-0 top-0 -z-10">
         <MapThumbnail map={props.map} />
       </div>
-
-      {selected ? (
-        <div class="absolute bottom-0 left-0 right-0 top-0 z-10 rounded-lg border-4 border-white"></div>
-      ) : (
-        <></>
-      )}
     </button>
   )
 }
