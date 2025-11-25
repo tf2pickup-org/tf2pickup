@@ -13,8 +13,6 @@ import './sync-attribute'
 import * as hyperscript from 'hyperscript.org'
 hyperscript.browserInit()
 
-import './idiomorph.ts'
-
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
 
 import './countdown'
