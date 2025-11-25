@@ -1,5 +1,5 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { debounce } from 'es-toolkit'
+import { debounce, retry } from 'es-toolkit'
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { queue } from '../../queue'
@@ -15,6 +15,7 @@ import { players } from '../../players'
 import { collections } from '../../database/collections'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { getMessage } from '../get-message'
+import { safe } from '../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
@@ -22,7 +23,7 @@ export default fp(async () => {
     return
   }
 
-  events.on('queue/slots:updated', debounce(refreshPrompt, secondsToMilliseconds(3)))
+  events.on('queue/slots:updated', debounce(safe(refreshPrompt), secondsToMilliseconds(3)))
 })
 
 const clientName = new URL(environment.WEBSITE_URL).hostname
@@ -42,24 +43,29 @@ async function refreshPrompt() {
     })
 
     const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
-    const message = await getMessage(channel, state?.promptMessageId)
-    if (message) {
-      await message.edit({ embeds: [embed] })
-      return
-    }
-
     const config = await configuration.get('discord.guilds')
     const thresholdRatio = config.find(gc => gc.id === channel.guildId)!.queuePrompts!
       .bumpPlayerThresholdRatio
 
-    if (playerCount >= requiredPlayerCount * thresholdRatio) {
-      const sentMessage = await channel.send({ embeds: [embed] })
-      await collections.discordBotState.updateOne(
-        { guildId: channel.guild.id },
-        { $set: { promptMessageId: sentMessage.id } },
-        { upsert: true },
-      )
-    }
+    await retry(
+      async () => {
+        const message = await getMessage(channel, state?.promptMessageId)
+        if (message) {
+          await message.edit({ embeds: [embed] })
+          return
+        }
+
+        if (playerCount >= requiredPlayerCount * thresholdRatio) {
+          const sentMessage = await channel.send({ embeds: [embed] })
+          await collections.discordBotState.updateOne(
+            { guildId: channel.guild.id },
+            { $set: { promptMessageId: sentMessage.id } },
+            { upsert: true },
+          )
+        }
+      },
+      { retries: 3 },
+    )
   })
 }
 
