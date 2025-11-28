@@ -51,4 +51,3 @@ export async function up() {
 
   logger.info(`initialized stats for ${nUpdated} players`)
 }
-

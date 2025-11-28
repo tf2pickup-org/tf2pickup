@@ -21,23 +21,19 @@ export default fp(
           game.slots
             .filter(slot => slot.status === SlotStatus.active)
             .map(async slot => {
-              await players.update(
-                slot.player,
-                {
-                  $setOnInsert: {
-                    'stats.totalGames': 0,
-                    'stats.gamesByClass': {},
-                  },
-                  $inc: {
-                    'stats.totalGames': 1,
-                    [`stats.gamesByClass.${slot.gameClass}`]: 1,
-                  },
+              await players.update(slot.player, {
+                $setOnInsert: {
+                  'stats.totalGames': 0,
+                  'stats.gamesByClass': {},
                 },
-              )
+                $inc: {
+                  'stats.totalGames': 1,
+                  [`stats.gamesByClass.${slot.gameClass}`]: 1,
+                },
+              })
             }),
         )
       }),
     )
-  }
+  },
 )
-
