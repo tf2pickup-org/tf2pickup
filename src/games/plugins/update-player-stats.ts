@@ -38,10 +38,6 @@ export default fp(
         )
       }),
     )
-  },
-  {
-    name: 'update player stats',
-    encapsulate: true,
-  },
+  }
 )
 
