@@ -1,18 +1,13 @@
 import { IconCoffee } from '../../../html/components/icons'
-import { collections } from '../../../database/collections'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../../../players'
 
 export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined }) {
   if (!props.actor) {
     return <></>
   }
 
-  const isInQueue = (await collections.queueSlots.countDocuments({ player: props.actor })) > 0
-  const player = await collections.players.findOne({ steamId: props.actor })
-  if (player === null) {
-    throw new Error(`player ${props.actor} not found`)
-  }
-
+  const player = await players.bySteamId(props.actor)
   const timeLeft = player.preReadyUntil
     ? Math.max(player.preReadyUntil.getTime() - Date.now(), 0)
     : 0
@@ -24,7 +19,7 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
       name="prereadytoggle"
       ws-send
       hx-trigger="click"
-      disabled={!isInQueue}
+      sync-attr:disabled="#isInQueue.value === false"
       aria-selected={timeLeft > 0}
       data-umami-event={timeLeft > 0 ? 'pre-ready-up-cancel' : 'pre-ready-up'}
     >

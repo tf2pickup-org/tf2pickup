@@ -8,7 +8,7 @@ test('vote for map', async ({ users }) => {
   const page = await users.byName('SlitherTuft').queuePage()
   await page.goto()
   const mapBtn = page.voteForMapButton(0)
-  expect(await mapBtn.getAttribute('aria-checked')).toBe('false')
+  expect(await mapBtn.getAttribute('aria-checked')).toBe(null)
 
   await expect(mapBtn).toContainText(/^0%/)
   await expect(mapBtn).toBeDisabled()

@@ -8,11 +8,10 @@ import 'htmx-ext-remove-me'
 import './copy-to-clipboard'
 import './notifications'
 import './play-sound'
+import './sync-attribute'
 
 import * as hyperscript from 'hyperscript.org'
 hyperscript.browserInit()
-
-import './idiomorph.ts'
 
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
 

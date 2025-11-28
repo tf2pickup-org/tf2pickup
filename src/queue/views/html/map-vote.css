@@ -24,4 +24,19 @@
       theme(colors.transparent) 90%
     );
   }
+
+  &[aria-checked='true'] {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 10;
+      border-radius: 8px;
+      border-width: 4px;
+      border-color: theme(colors.white);
+    }
+  }
 }

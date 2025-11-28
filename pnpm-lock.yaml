@@ -131,6 +131,9 @@ importers:
       fastify:
         specifier: 5.6.2
         version: 5.6.2
+      fastify-disablecache:
+        specifier: 5.0.0
+        version: 5.0.0
       fastify-plugin:
         specifier: 5.1.0
         version: 5.1.0
@@ -164,9 +167,6 @@ importers:
       hyperscript.org:
         specifier: 0.9.14
         version: 0.9.14
-      idiomorph:
-        specifier: 0.7.4
-        version: 0.7.4
       jsonwebtoken:
         specifier: 9.0.2
         version: 9.0.2
@@ -2719,6 +2719,10 @@ packages:
   fast-uri@3.0.6:
     resolution: {integrity: sha512-Atfo14OibSv5wAp4VWNsFYE1AchQRTv9cBGWET4pZWHzYshFSS9NQI6I57rdKn9croWVMbYFbLhJ+yJvmZIIHw==}
 
+  fastify-disablecache@5.0.0:
+    resolution: {integrity: sha512-ZtJo9c116CQR1xGMLjFZAo6befJOAkTZ0SghsgUjhQ2HGu2Dfe8OYOx13EBp7olW1nOetjVM/l8AKimd4UI78w==}
+    engines: {node: '>=20'}
+
   fastify-plugin@5.1.0:
     resolution: {integrity: sha512-FAIDA8eovSt5qcDgcBvDuX/v0Cjz0ohGhENZ/wpc3y+oZCY2afZ9Baqql3g/lC+OHRnciQol4ww7tuthOb9idw==}
 
@@ -3040,9 +3044,6 @@ packages:
   iconv-lite@0.7.0:
     resolution: {integrity: sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==}
     engines: {node: '>=0.10.0'}
-
-  idiomorph@0.7.4:
-    resolution: {integrity: sha512-uCdSpLo3uMfqOmrwXTpR1k/sq4sSmKC7l4o/LdJOEU+MMMq+wkevRqOQYn3lP7vfz9Mv+USBEqPvi0XhdL9ENw==}
 
   ignore@5.3.1:
     resolution: {integrity: sha512-5Fytz/IraMjqpwfd34ke28PTVMjZjJG2MPn5t7OE4eUCUNf8BAa7b5WUS9/Qvr6mwOQS7Mk6vdsMno5he+T8Xw==}
@@ -7596,6 +7597,10 @@ snapshots:
 
   fast-uri@3.0.6: {}
 
+  fastify-disablecache@5.0.0:
+    dependencies:
+      fastify-plugin: 5.1.0
+
   fastify-plugin@5.1.0: {}
 
   fastify-type-provider-zod@6.1.0(@fastify/swagger@9.5.1)(fastify@5.6.2)(openapi-types@12.1.3)(zod@4.1.13):
@@ -7960,8 +7965,6 @@ snapshots:
   iconv-lite@0.7.0:
     dependencies:
       safer-buffer: 2.1.2
-
-  idiomorph@0.7.4: {}
 
   ignore@5.3.1: {}
 
