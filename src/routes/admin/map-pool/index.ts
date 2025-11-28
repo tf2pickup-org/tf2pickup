@@ -56,7 +56,7 @@ export default routes(async app => {
         reply.status(200).html(await MapPoolPage({ user: request.user! }))
       },
     )
-    .post('/admin/map-pool/create', async (_request, response) => {
+    .post('/create', async (_request, response) => {
       return await response.send(await MapPoolEntryCmp({ name: '' }))
     })
 })
