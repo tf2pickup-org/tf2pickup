@@ -5,7 +5,6 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { format } from 'date-fns'
 import { GameState } from '../../../database/models/game.model'
-import { getPlayerGameCountOnClasses } from '../../get-player-game-count-on-classes'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
@@ -46,12 +45,6 @@ export async function PlayerPage(props: {
     await collections.games.countDocuments({ 'slots.player': props.player.steamId }),
   )
 
-  const gameCount = await collections.games.countDocuments({
-    $and: [{ state: GameState.ended }, { ['slots.player']: props.player.steamId }],
-  })
-
-  const gameCountOnClasses = await getPlayerGameCountOnClasses(props.player.steamId)
-
   return (
     <Layout
       user={props.user}
@@ -65,8 +58,8 @@ export async function PlayerPage(props: {
         <div class="container relative mx-auto flex flex-col gap-[30px]">
           <PlayerPresentation
             player={props.player}
-            gameCount={gameCount}
-            gameCountOnClasses={gameCountOnClasses}
+            gameCount={props.player.stats.totalGames}
+            gameCountOnClasses={props.player.stats.gamesByClass}
           />
 
           {props.user?.player.roles.includes(PlayerRole.admin) && (
