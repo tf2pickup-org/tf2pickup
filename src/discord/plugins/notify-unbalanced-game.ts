@@ -6,6 +6,7 @@ import { logger } from '../../logger'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
+import { safe } from '../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
@@ -13,7 +14,10 @@ export default fp(async () => {
     return
   }
 
-  events.on('game:ended', ({ game }) => maybeNotify(game))
+  events.on(
+    'game:ended',
+    safe(({ game }) => maybeNotify(game)),
+  )
 })
 
 async function maybeNotify(game: GameModel) {

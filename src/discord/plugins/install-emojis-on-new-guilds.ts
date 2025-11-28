@@ -6,6 +6,7 @@ import { Guild } from 'discord.js'
 import { emojisToInstall } from '../emojis-to-install'
 import { logger } from '../../logger'
 import { assertClient } from '../assert-client'
+import { safe } from '../../utils/safe'
 
 async function installEmojis(guild: Guild) {
   for (const emoji of emojisToInstall) {
@@ -46,11 +47,14 @@ export default fp(async () => {
     return
   }
 
-  events.on('configuration:updated', async ({ key }) => {
-    if (key !== 'discord.guilds') {
-      return
-    }
+  events.on(
+    'configuration:updated',
+    safe(async ({ key }) => {
+      if (key !== 'discord.guilds') {
+        return
+      }
 
-    await installEmojisOnAllGuilds()
-  })
+      await installEmojisOnAllGuilds()
+    }),
+  )
 })

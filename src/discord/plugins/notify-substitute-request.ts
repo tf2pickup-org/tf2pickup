@@ -9,6 +9,7 @@ import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import type { GameSlotId } from '../../shared/types/game-slot-id'
 import { client } from '../client'
+import { safe } from '../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
@@ -16,9 +17,18 @@ export default fp(async () => {
     return
   }
 
-  events.on('game:substituteRequested', ({ game, slotId }) => notify(game, slotId))
-  events.on('game:playerReplaced', ({ game, slotId }) => invalidate(game, slotId))
-  events.on('game:ended', ({ game }) => invalidateAll(game))
+  events.on(
+    'game:substituteRequested',
+    safe(({ game, slotId }) => notify(game, slotId)),
+  )
+  events.on(
+    'game:playerReplaced',
+    safe(({ game, slotId }) => invalidate(game, slotId)),
+  )
+  events.on(
+    'game:ended',
+    safe(({ game }) => invalidateAll(game)),
+  )
 })
 
 async function notify(game: GameModel, slotId: GameSlotId) {
