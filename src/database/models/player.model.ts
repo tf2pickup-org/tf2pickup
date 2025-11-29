@@ -32,6 +32,11 @@ export interface TwitchTvProfile {
   profileImageUrl: string
 }
 
+export interface PlayerStats {
+  totalGames: number
+  gamesByClass: Partial<Record<Tf2ClassName, number>>
+}
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -47,4 +52,5 @@ export interface PlayerModel {
   preferences: PlayerPreferences
   bans?: PlayerBan[]
   twitchTvProfile?: TwitchTvProfile
+  stats: PlayerStats
 }

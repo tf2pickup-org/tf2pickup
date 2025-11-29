@@ -26,6 +26,10 @@ setup('authenticate', async ({ browser, db }) => {
           hasAcceptedRules: true,
           cooldownLevel: 0,
           preferences: {},
+          stats: {
+            totalGames: 0,
+            gamesByClass: {},
+          },
         },
         $unset: {
           activeGame: 1,

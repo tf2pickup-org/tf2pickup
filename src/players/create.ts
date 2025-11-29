@@ -13,6 +13,10 @@ export async function create({ steamId, name, avatar }: CreatePlayerParams): Pro
     hasAcceptedRules: false,
     cooldownLevel: 0,
     preferences: {},
+    stats: {
+      totalGames: 0,
+      gamesByClass: {},
+    },
   })
   const player = (await collections.players.findOne({ _id: insertedId }))!
   events.emit('player:created', { steamId: player.steamId })
