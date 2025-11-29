@@ -40,3 +40,29 @@ test('users are able to send messages to chat', async ({ users }) => {
     }
   }
 })
+
+test('links inside chat messages are clickable', async ({ users }) => {
+  const [sender, receiver] = users.getMany(2)
+
+  for (const user of [sender, receiver]) {
+    const page = await user.page()
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Chat' }).click()
+  }
+
+  const uniqueUrl = `https://example.com/${Date.now()}`
+
+  const senderPage = await sender.page()
+  await senderPage.getByPlaceholder('Send message...').fill(uniqueUrl)
+  await senderPage.getByRole('button', { name: 'Send message' }).click()
+  await expect(senderPage.getByPlaceholder('Send message...')).toBeEmpty()
+
+  for (const user of [sender, receiver]) {
+    const page = await user.page()
+    const link = page.getByRole('link', { name: uniqueUrl })
+    await expect(link).toBeVisible()
+    await expect(link).toHaveAttribute('href', uniqueUrl)
+    await expect(link).toHaveAttribute('target', '_blank')
+    await expect(link).toHaveAttribute('rel', 'noreferrer noopener')
+  }
+})

@@ -4,4 +4,5 @@ export interface ChatMessageModel {
   at: Date
   author: SteamId64
   body: string
+  originalBody?: string
 }

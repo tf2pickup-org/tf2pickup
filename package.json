@@ -70,6 +70,7 @@
     "htmx.org": "2.0.8",
     "hyperscript.org": "0.9.14",
     "jsonwebtoken": "9.0.2",
+    "linkifyjs": "^4.3.2",
     "marked": "17.0.1",
     "mime": "4.1.0",
     "mongodb": "7.0.0",
