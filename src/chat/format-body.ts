@@ -1,6 +1,6 @@
 import linkifyHtml from 'linkifyjs/html'
 
-const LINKIFY_OPTIONS = {
+const linkifyOptions = {
   attributes: {
     rel: 'noreferrer noopener',
   },
@@ -8,5 +8,5 @@ const LINKIFY_OPTIONS = {
 } as const
 
 export function formatChatMessageBody(originalBody: string): string {
-  return linkifyHtml(originalBody, LINKIFY_OPTIONS)
+  return linkifyHtml(originalBody, linkifyOptions)
 }

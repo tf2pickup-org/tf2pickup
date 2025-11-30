@@ -98,6 +98,7 @@
     "@tsconfig/strictest": "2.0.8",
     "@types/howler": "2.2.12",
     "@types/jsonwebtoken": "9.0.10",
+    "@types/linkifyjs": "^2.1.7",
     "@types/node": "24.10.1",
     "@types/openid": "2.0.5",
     "@types/pem": "1.14.4",
