@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.11](/compare/4.0.0-beta.10...4.0.0-beta.11) (2025-11-30)
+
+
+### Bug Fixes
+
+* render long online player list correctly (#406) 5d9e8d9, closes #406
+
 # [4.0.0-beta.10](/compare/4.0.0-beta.9...4.0.0-beta.10) (2025-11-30)
 
 
