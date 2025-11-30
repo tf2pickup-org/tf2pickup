@@ -1,4 +1,4 @@
-import linkifyHtml from 'linkifyjs/html'
+import linkifyHtml from 'linkify-html'
 
 const linkifyOptions = {
   attributes: {
