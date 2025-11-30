@@ -15,7 +15,7 @@ export async function OnlinePlayerList() {
     .toArray()
 
   return (
-    <ul class="online-player-list" id="online-player-list">
+    <ul class="online-player-list fade-scroll" id="online-player-list" data-fade-scroll>
       {onlinePlayers.map(player => (
         <li>
           <a href={`/players/${player.steamId}`} preload="mousedown" safe>
