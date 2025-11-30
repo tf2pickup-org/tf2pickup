@@ -104,13 +104,14 @@ export function ChatPrompt() {
 async function ChatMessage(props: { message: ChatMessageModel }) {
   const author = await players.bySteamId(props.message.author)
   const safeAt = format(props.message.at, 'HH:mm')
+  const safeBody = props.message.body
   return (
     <p>
       <span class="at">{safeAt}</span>{' '}
-      <a href={`/players/${author.steamId}`} preload="mousedown" safe>
+      <a href={`/players/${author.steamId}`} class="author" preload="mousedown" safe>
         {author.name}
       </a>
-      : <span safe>{props.message.body}</span>
+      : <span class="body">{safeBody}</span>
     </p>
   )
 }
