@@ -3,16 +3,13 @@ import { logger } from '../logger'
 import { formatBody } from '../chat/format-body'
 
 export async function up() {
-  const cursor = collections.chatMessages.find()
+  const cursor = collections.chatMessages.find({ originalBody: { $exists: false } })
 
   let updated = 0
 
   while (await cursor.hasNext()) {
     const message = await cursor.next()
     if (!message) {
-      continue
-    }
-    if (message.originalBody !== undefined) {
       continue
     }
 
