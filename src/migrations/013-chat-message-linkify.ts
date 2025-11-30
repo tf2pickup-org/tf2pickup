@@ -1,6 +1,6 @@
 import { collections } from '../database/collections'
 import { logger } from '../logger'
-import { formatChatMessageBody } from '../chat/format-body'
+import { formatBody } from '../chat/format-body'
 
 export async function up() {
   const cursor = collections.chatMessages.find()
@@ -17,7 +17,7 @@ export async function up() {
     }
 
     const originalBody = message.body
-    const formattedBody = formatChatMessageBody(originalBody)
+    const formattedBody = formatBody(originalBody)
 
     await collections.chatMessages.updateOne(
       { _id: message._id },

@@ -3,7 +3,7 @@ import type { ChatMessageModel } from '../database/models/chat-message.model'
 import { errors } from '../errors'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { formatChatMessageBody } from './format-body'
+import { formatBody } from './format-body'
 
 interface SendParams {
   author: SteamId64
@@ -12,7 +12,7 @@ interface SendParams {
 
 export async function send(params: SendParams): Promise<ChatMessageModel> {
   const originalBody = params.body
-  const formattedBody = formatChatMessageBody(originalBody)
+  const formattedBody = formatBody(originalBody)
 
   await collections.chatMessages.insertOne({
     author: params.author,

@@ -20,8 +20,18 @@
         color: theme(colors.abru.light.50);
       }
 
-      a {
+      a.author {
         font-weight: bold;
+      }
+
+      .body {
+        a {
+          text-decoration: underline dotted 1px;
+
+          &:hover {
+            text-decoration: underline solid 1px;
+          }
+        }
       }
     }
   }

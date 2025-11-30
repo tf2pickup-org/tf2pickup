@@ -7,6 +7,6 @@ const linkifyOptions = {
   target: '_blank',
 } as const
 
-export function formatChatBody(originalBody: string): string {
+export function formatBody(originalBody: string): string {
   return linkifyHtml(originalBody, linkifyOptions)
 }
