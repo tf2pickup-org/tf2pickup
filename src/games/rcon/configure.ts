@@ -95,13 +95,13 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
 
     logger.info(game, `game ${game.number} configured`)
 
-    const connectString = makeConnectString({
+    const connectString = await makeConnectString({
       ...game.gameServer!,
       password,
     })
     logger.info(game, `connect string: ${connectString}`)
 
-    const stvConnectString = makeConnectString({
+    const stvConnectString = await makeConnectString({
       address: game.gameServer!.address,
       port: extractConVarValue(await rcon.send(tvPort())) ?? 27020,
       password: extractConVarValue(await rcon.send(tvPassword())),
