@@ -1,5 +1,31 @@
 # Changelog
 
+# [4.0.0-beta.10](/compare/4.0.0-beta.9...4.0.0-beta.10) (2025-11-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/otel to v0.15.0 97a0116
+* **deps:** update dependency @fastify/otel to v0.16.0 461fea6
+* **deps:** update dependency @opentelemetry/auto-instrumentations-node to v0.67.1 29f0277
+* **deps:** update dependency @opentelemetry/auto-instrumentations-node to v0.67.2 60c8407
+* **deps:** update dependency country-flag-icons to v1.6.3 050505e
+* **deps:** update dependency country-flag-icons to v1.6.4 50a8912
+* **deps:** update dependency discord.js to v14.25.1 9b382ee
+* **deps:** update dependency marked to v17.0.1 589fafe
+* **deps:** update dependency zod to v4.1.13 1b2ddcd
+* disable htmx cache (#398) 3d84555, closes #398
+* fix adding map to the map pool (#400) 03205ea, closes #400
+* get rid of player stats aggregation (#399) 3179166, closes #399
+* handle discord errors gracefully (#396) 94bb304, closes #396
+* resolve gameserver IP address for connect string (#405) bc0ebd2, closes #405
+
+
+### Features
+
+* add sync-attribute plugin (#397) 029a19b, closes #397
+* linkify chat messages (#404) 70072b0, closes #404
+
 # [4.0.0-beta.9](/compare/4.0.0-beta.8...4.0.0-beta.9) (2025-11-20)
 
 
