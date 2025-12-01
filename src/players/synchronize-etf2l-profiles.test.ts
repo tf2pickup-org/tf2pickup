@@ -6,12 +6,16 @@ import type { Etf2lProfile } from '../etf2l/types/etf2l-profile'
 
 const findMock = vi.hoisted(() => vi.fn())
 const updateOneMock = vi.hoisted(() => vi.fn())
+const progressUpdateMock = vi.hoisted(() => vi.fn())
 
 vi.mock('../database/collections', () => ({
   collections: {
     players: {
       find: findMock,
       updateOne: updateOneMock,
+    },
+    etf2lSyncProgress: {
+      updateOne: progressUpdateMock,
     },
   },
 }))
@@ -26,6 +30,12 @@ vi.mock('../logger', () => ({
 vi.mock('../etf2l', () => ({
   etf2l: {
     getPlayerProfile: vi.fn(),
+  },
+}))
+
+vi.mock('../environment', () => ({
+  environment: {
+    NODE_ENV: 'test',
   },
 }))
 
@@ -71,6 +81,9 @@ describe('synchronizeEtf2lProfiles()', () => {
   beforeEach(() => {
     findMock.mockReset()
     updateOneMock.mockReset()
+    progressUpdateMock.mockReset()
+    updateOneMock.mockResolvedValue(undefined)
+    progressUpdateMock.mockResolvedValue(undefined)
     vi.mocked(etf2l.getPlayerProfile).mockReset()
   })
 
@@ -82,6 +95,14 @@ describe('synchronizeEtf2lProfiles()', () => {
     await synchronizeEtf2lProfiles()
 
     expect(updateOneMock).toHaveBeenCalledWith({ steamId: '1' }, { $set: { etf2lProfileId: 111 } })
+    expectProgressUpdates(2)
+    expectProgressSnapshot({
+      processed: 1,
+      updated: 1,
+      removed: 0,
+      skipped: 0,
+      lastSteamId: '1',
+    })
   })
 
   it('replaces outdated etf2l ids', async () => {
@@ -92,6 +113,14 @@ describe('synchronizeEtf2lProfiles()', () => {
     await synchronizeEtf2lProfiles()
 
     expect(updateOneMock).toHaveBeenCalledWith({ steamId: '1' }, { $set: { etf2lProfileId: 10 } })
+    expectProgressUpdates(2)
+    expectProgressSnapshot({
+      processed: 1,
+      updated: 1,
+      removed: 0,
+      skipped: 0,
+      lastSteamId: '1',
+    })
   })
 
   it('removes ids when ETF2L is missing the player', async () => {
@@ -108,6 +137,14 @@ describe('synchronizeEtf2lProfiles()', () => {
     await synchronizeEtf2lProfiles()
 
     expect(updateOneMock).toHaveBeenCalledWith({ steamId: '1' }, { $unset: { etf2lProfileId: '' } })
+    expectProgressUpdates(2)
+    expectProgressSnapshot({
+      processed: 1,
+      updated: 0,
+      removed: 1,
+      skipped: 0,
+      lastSteamId: '1',
+    })
   })
 
   it('skips updates when ids already match', async () => {
@@ -118,6 +155,14 @@ describe('synchronizeEtf2lProfiles()', () => {
     await synchronizeEtf2lProfiles()
 
     expect(updateOneMock).not.toHaveBeenCalled()
+    expectProgressUpdates(2)
+    expectProgressSnapshot({
+      processed: 1,
+      updated: 0,
+      removed: 0,
+      skipped: 1,
+      lastSteamId: '1',
+    })
   })
 
   it('rethrows unexpected errors', async () => {
@@ -126,5 +171,34 @@ describe('synchronizeEtf2lProfiles()', () => {
     vi.mocked(etf2l.getPlayerProfile).mockRejectedValue(new Error('boom'))
 
     await expect(synchronizeEtf2lProfiles()).rejects.toThrow('boom')
+    expectProgressUpdates(1)
   })
 })
+
+function expectProgressUpdates(expected: number) {
+  expect(progressUpdateMock).toHaveBeenCalledTimes(expected)
+}
+
+function expectProgressSnapshot({
+  processed,
+  updated,
+  removed,
+  skipped,
+  lastSteamId,
+}: {
+  processed: number
+  updated: number
+  removed: number
+  skipped: number
+  lastSteamId: string
+}) {
+  const lastCall = progressUpdateMock.mock.calls[progressUpdateMock.mock.calls.length - 1]
+  expect(lastCall?.[0]).toEqual({ _id: 'players.etf2l-profile-sync' })
+  expect(lastCall?.[1]?.$set).toMatchObject({
+    processed,
+    updated,
+    removed,
+    skipped,
+    lastSteamId,
+  })
+}
