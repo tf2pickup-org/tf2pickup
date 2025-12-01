@@ -3,13 +3,18 @@ import type { PlayerModel } from '../database/models/player.model'
 import { events } from '../events'
 import type { CreatePlayerParams } from './types/create-player-params'
 
-export async function create({ steamId, name, avatar }: CreatePlayerParams): Promise<PlayerModel> {
+export async function create({
+  steamId,
+  name,
+  avatar,
+  roles = [],
+}: CreatePlayerParams): Promise<PlayerModel> {
   const { insertedId } = await collections.players.insertOne({
     name,
     steamId,
     joinedAt: new Date(),
     avatar,
-    roles: [],
+    roles,
     hasAcceptedRules: false,
     cooldownLevel: 0,
     preferences: {},

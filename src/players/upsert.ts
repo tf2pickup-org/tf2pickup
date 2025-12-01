@@ -1,4 +1,5 @@
 import type { PlayerModel } from '../database/models/player.model'
+import { PlayerRole } from '../database/models/player.model'
 import { collections } from '../database/collections'
 import { create } from './create'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -41,7 +42,10 @@ export async function upsert(summary: UpsertPlayerParams): Promise<PlayerModel> 
 async function verifyPlayer(player: CreatePlayerParams) {
   if (environment.SUPER_USER === player.steamId) {
     logger.info('registering super user')
-    return player
+    return {
+      ...player,
+      roles: [PlayerRole.superUser],
+    }
   }
 
   const bypassedPlayers = await configuration.get('players.bypass_registration_restrictions')
