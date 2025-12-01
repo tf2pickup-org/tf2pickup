@@ -1,5 +1,16 @@
 # Changelog
 
+# [4.0.0-beta.12](/compare/4.0.0-beta.11...4.0.0-beta.12) (2025-12-01)
+
+
+### Bug Fixes
+
+* assign super user role on registration (#407) 3d38fbb, closes #407
+* **deps:** pin dependencies d1ab833
+* **deps:** update dependency @fastify/accepts to v5.0.4 ba10619
+* fix updating player stats (#410) f129c93, closes #410
+* update etf2l profile schema (#409) 173b2bf, closes #409
+
 # [4.0.0-beta.11](/compare/4.0.0-beta.10...4.0.0-beta.11) (2025-11-30)
 
 
