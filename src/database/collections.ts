@@ -16,7 +16,7 @@ import type { SecretModel } from './models/secret.model'
 import type { StaticGameServerModel } from './models/static-game-server.model'
 import type { TaskModel } from './models/task.model'
 import type { StreamModel } from './models/stream.model'
-import type { Etf2lSyncProgressModel } from './models/etf2l-sync-progress.model'
+import type { Etf2lSyncProgressDocument } from './models/etf2l-sync-progress.model'
 import type { CertificateModel } from './models/certificate.model'
 import type { ChatMessageModel } from './models/chat-message.model'
 import type { DiscordBotStateModel } from './models/discord-bot-state.model'
@@ -50,7 +50,7 @@ export const collections = {
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
-  etf2lSyncProgress: database.collection<Etf2lSyncProgressModel>('players.etf2lSyncProgress'),
+  etf2lSyncProgress: database.collection<Etf2lSyncProgressDocument>('players.etf2lSyncProgress'),
 }
 
 try {
