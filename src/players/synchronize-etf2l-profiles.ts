@@ -1,3 +1,5 @@
+import { delay } from 'es-toolkit'
+import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../database/collections'
 import type { PlayerModel } from '../database/models/player.model'
 import { etf2l } from '../etf2l'
@@ -7,8 +9,7 @@ import { environment } from '../environment'
 
 type PlayerProjection = Pick<PlayerModel, 'steamId' | 'etf2lProfileId'>
 
-const requestIntervalMs = environment.NODE_ENV === 'test' ? 0 : 30_000
-const progressDocumentId = 'players.etf2l-profile-sync'
+const requestIntervalMs = environment.NODE_ENV === 'test' ? 0 : secondsToMilliseconds(30)
 
 export async function synchronizeEtf2lProfiles(): Promise<void> {
   logger.info('synchronizing ETF2L.org data for all players')
@@ -31,7 +32,7 @@ export async function synchronizeEtf2lProfiles(): Promise<void> {
   let lastRequestTimestamp: number | undefined
 
   await collections.etf2lSyncProgress.updateOne(
-    { _id: progressDocumentId },
+    {},
     {
       $set: {
         processed,
@@ -48,7 +49,7 @@ export async function synchronizeEtf2lProfiles(): Promise<void> {
 
   const recordProgress = async (steamId: PlayerProjection['steamId']) => {
     await collections.etf2lSyncProgress.updateOne(
-      { _id: progressDocumentId },
+      {},
       {
         $set: {
           processed,
@@ -110,6 +111,8 @@ export async function synchronizeEtf2lProfiles(): Promise<void> {
     { processed, updated, removed, skipped },
     'finished synchronizing ETF2L.org player data',
   )
+
+  await collections.etf2lSyncProgress.deleteMany({})
 }
 
 async function enforceRateLimit(lastRequestTimestamp: number | undefined) {
@@ -122,8 +125,4 @@ async function enforceRateLimit(lastRequestTimestamp: number | undefined) {
   if (waitTime > 0) {
     await delay(waitTime)
   }
-}
-
-function delay(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
 }

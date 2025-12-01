@@ -7,6 +7,7 @@ import type { Etf2lProfile } from '../etf2l/types/etf2l-profile'
 const findMock = vi.hoisted(() => vi.fn())
 const updateOneMock = vi.hoisted(() => vi.fn())
 const progressUpdateMock = vi.hoisted(() => vi.fn())
+const progressDeleteMock = vi.hoisted(() => vi.fn())
 
 vi.mock('../database/collections', () => ({
   collections: {
@@ -16,6 +17,7 @@ vi.mock('../database/collections', () => ({
     },
     etf2lSyncProgress: {
       updateOne: progressUpdateMock,
+      deleteMany: progressDeleteMock,
     },
   },
 }))
@@ -82,8 +84,10 @@ describe('synchronizeEtf2lProfiles()', () => {
     findMock.mockReset()
     updateOneMock.mockReset()
     progressUpdateMock.mockReset()
+    progressDeleteMock.mockReset()
     updateOneMock.mockResolvedValue(undefined)
     progressUpdateMock.mockResolvedValue(undefined)
+    progressDeleteMock.mockResolvedValue(undefined)
     vi.mocked(etf2l.getPlayerProfile).mockReset()
   })
 
@@ -103,6 +107,7 @@ describe('synchronizeEtf2lProfiles()', () => {
       skipped: 0,
       lastSteamId: '1',
     })
+    expectProgressCleanup()
   })
 
   it('replaces outdated etf2l ids', async () => {
@@ -121,6 +126,7 @@ describe('synchronizeEtf2lProfiles()', () => {
       skipped: 0,
       lastSteamId: '1',
     })
+    expectProgressCleanup()
   })
 
   it('removes ids when ETF2L is missing the player', async () => {
@@ -145,6 +151,7 @@ describe('synchronizeEtf2lProfiles()', () => {
       skipped: 0,
       lastSteamId: '1',
     })
+    expectProgressCleanup()
   })
 
   it('skips updates when ids already match', async () => {
@@ -163,6 +170,7 @@ describe('synchronizeEtf2lProfiles()', () => {
       skipped: 1,
       lastSteamId: '1',
     })
+    expectProgressCleanup()
   })
 
   it('rethrows unexpected errors', async () => {
@@ -172,11 +180,17 @@ describe('synchronizeEtf2lProfiles()', () => {
 
     await expect(synchronizeEtf2lProfiles()).rejects.toThrow('boom')
     expectProgressUpdates(1)
+    expect(progressDeleteMock).not.toHaveBeenCalled()
   })
 })
 
 function expectProgressUpdates(expected: number) {
   expect(progressUpdateMock).toHaveBeenCalledTimes(expected)
+}
+
+function expectProgressCleanup() {
+  expect(progressDeleteMock).toHaveBeenCalledTimes(1)
+  expect(progressDeleteMock).toHaveBeenCalledWith({})
 }
 
 function expectProgressSnapshot({
@@ -193,7 +207,7 @@ function expectProgressSnapshot({
   lastSteamId: string
 }) {
   const lastCall = progressUpdateMock.mock.calls[progressUpdateMock.mock.calls.length - 1]
-  expect(lastCall?.[0]).toEqual({ _id: 'players.etf2l-profile-sync' })
+  expect(lastCall?.[0]).toEqual({})
   expect(lastCall?.[1]?.$set).toMatchObject({
     processed,
     updated,
