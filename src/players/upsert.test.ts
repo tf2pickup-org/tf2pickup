@@ -4,6 +4,7 @@ import { create } from './create'
 import { getTf2InGameHours } from '../steam/get-tf2-in-game-hours'
 import { etf2l } from '../etf2l'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
+import { PlayerRole } from '../database/models/player.model'
 
 const mockPlayer = vi.hoisted(() => ({
   steamId: '76561198074409147',
@@ -157,6 +158,7 @@ describe('upsertPlayer()', () => {
               medium: 'FAKE_AVATAR_MEDIUM',
               large: 'FAKE_AVATAR_LARGE',
             },
+            roles: [PlayerRole.superUser],
           })
         })
       })
