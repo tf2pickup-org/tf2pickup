@@ -17,15 +17,14 @@ export default fp(
 
         // Update stats for each player slot that was active
         await Promise.all(
-          game.slots
-            .map(async slot => {
-              await players.update(slot.player, {
-                $inc: {
-                  'stats.totalGames': 1,
-                  [`stats.gamesByClass.${slot.gameClass}`]: 1,
-                },
-              })
-            }),
+          game.slots.map(async slot => {
+            await players.update(slot.player, {
+              $inc: {
+                'stats.totalGames': 1,
+                [`stats.gamesByClass.${slot.gameClass}`]: 1,
+              },
+            })
+          }),
         )
       }),
     )
