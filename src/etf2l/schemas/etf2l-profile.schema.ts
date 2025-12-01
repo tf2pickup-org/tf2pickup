@@ -23,7 +23,7 @@ export const etf2lProfileSchema = z.object({
     )
     .nullable(),
   teams: z.array(etf2lTeamSchema).nullable(),
-  title: z.literal('Player'),
+  title: z.string(),
   urls: z.object({
     results: z.url(),
     self: z.url(),
