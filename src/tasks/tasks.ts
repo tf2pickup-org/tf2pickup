@@ -4,6 +4,12 @@ import { gameNumber } from '../games/schemas/game-number'
 
 export const tasksSchema = z.discriminatedUnion('name', [
   z.object({
+    name: z.literal('etf2l:syncPlayerProfile'),
+    args: z.object({
+      player: steamId64,
+    }),
+  }),
+  z.object({
     name: z.literal('onlinePlayers:validatePlayer'),
     args: z.object({
       player: steamId64,

@@ -1,9 +1,11 @@
 import z from 'zod'
 import { PlayerPage } from '../../../players/views/html/player.page'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import { collections } from '../../../database/collections'
 import { players } from '../../../players'
 import { routes } from '../../../utils/routes'
+import { tasks } from '../../../tasks'
+import { shouldSyncEtf2lProfile } from '../../../etf2l/should-sync-etf2l-profile'
+import { collections } from '../../../database/collections'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -23,6 +25,11 @@ export default routes(async app => {
       async (req, reply) => {
         const { steamId } = req.params
         const player = await players.bySteamId(steamId)
+
+        if (shouldSyncEtf2lProfile(player)) {
+          await tasks.schedule('etf2l:syncPlayerProfile', 0, { player: steamId })
+        }
+
         reply.status(200).html(
           await PlayerPage({
             player,

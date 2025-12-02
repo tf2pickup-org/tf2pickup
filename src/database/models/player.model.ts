@@ -45,6 +45,7 @@ export interface PlayerModel {
   roles: PlayerRole[]
   hasAcceptedRules: boolean
   etf2lProfileId?: number
+  etf2lProfileLastSyncedAt?: Date
   cooldownLevel: number
   activeGame?: GameNumber
   skill?: Partial<Record<Tf2ClassName, number>>
