@@ -7,7 +7,7 @@ import { OnlinePlayerList } from './online-player-list'
 export function Sidebar(props: { user?: User | undefined }) {
   return (
     <div class="queue-sidebar">
-      <div class="tab" data-tabs>
+      <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
         <button class="tablink" data-tabs-select="tab-online-player-list">
           <IconUserCircle size={18} />
           <OnlinePlayerCount />
