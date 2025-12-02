@@ -1,6 +1,7 @@
 import type { User } from '../../../../auth/types/user'
 import { servemeTf } from '../../../../serveme-tf'
 import { Admin } from '../../../views/html/admin'
+import { ServemeTfBanGameServers } from './serveme-tf-ban-gameservers'
 import { ServemeTfPreferredRegion } from './serveme-tf-preferred-region'
 import { ServemeTfStatus } from './serveme-tf-status'
 import { StaticGameServerList } from './static-game-server-list'
@@ -19,7 +20,12 @@ export async function GameServersPage(props: { user: User }) {
           <ServemeTfStatus />
         </div>
 
-        {servemeTf.isEnabled && <ServemeTfPreferredRegion />}
+        {servemeTf.isEnabled && (
+          <>
+            <ServemeTfPreferredRegion />
+            <ServemeTfBanGameServers />
+          </>
+        )}
       </div>
     </Admin>
   )
