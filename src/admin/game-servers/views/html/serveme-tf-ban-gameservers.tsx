@@ -6,9 +6,7 @@ export function ServemeTfBanGameServers() {
     <p class="mt-2">
       <dl>
         <dt>
-          <label for="serveme-tf-ban-gameservers-input">
-            Banned game server name patterns
-          </label>
+          <label for="serveme-tf-ban-gameservers-input">Banned game server name patterns</label>
         </dt>
         <dd>
           <div>
@@ -17,7 +15,7 @@ export function ServemeTfBanGameServers() {
           <form
             method="post"
             action="/admin/game-servers/serveme-tf/ban-gameservers"
-            class="row flex items-center gap-2 mt-2"
+            class="row mt-2 flex items-center gap-2"
             hx-post="/admin/game-servers/serveme-tf/ban-gameservers"
             hx-target="#bannedGameServersList"
             hx-swap="outerHTML"
@@ -70,4 +68,3 @@ export async function BannedGameServersList() {
     </div>
   )
 }
-
