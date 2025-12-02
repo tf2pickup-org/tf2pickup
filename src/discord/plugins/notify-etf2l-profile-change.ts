@@ -20,16 +20,13 @@ export default fp(
           return
         }
 
-        const oldId = before.etf2lProfileId
-        const newId = after.etf2lProfileId
-
         const embed = new EmbedBuilder()
           .setColor('#5230dc')
           .setTitle('ETF2L profile updated')
           .setDescription(
             [
               `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**`,
-              `ETF2L profile: ${oldId ?? 'none'} → ${newId ?? 'none'}`,
+              `ETF2L profile: ${before.etf2lProfileId ?? 'none'} → ${after.etf2lProfileId ?? 'none'}`,
             ].join('\n'),
           )
           .setFooter({
