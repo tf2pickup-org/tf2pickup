@@ -25,7 +25,7 @@ function init(container: HTMLElement) {
 
   const shouldPersist = container.hasAttribute('data-tabs-persist')
   const storageKey = shouldPersist
-    ? `tabs-${(container.getAttribute('data-tabs-persist') ?? tabs.item(0).getAttribute('data-tabs-select')) ?? 'default'}`
+    ? `tabs-${container.getAttribute('data-tabs-persist') ?? tabs.item(0).getAttribute('data-tabs-select') ?? 'default'}`
     : null
 
   function selectTab(tab: Element) {
@@ -72,7 +72,7 @@ function init(container: HTMLElement) {
       const savedTabId = sessionStorage.getItem(storageKey)
       if (savedTabId) {
         const savedTab = Array.from(tabs).find(
-          tab => tab.getAttribute('data-tabs-select') === savedTabId
+          tab => tab.getAttribute('data-tabs-select') === savedTabId,
         )
         if (savedTab) {
           initialTab = savedTab
