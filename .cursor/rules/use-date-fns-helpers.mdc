@@ -1,0 +1,20 @@
+---
+description: Defining time durations, intervals, etc.
+alwaysApply: false
+---
+
+Use date-fns helpers to specify time durations and intervals.
+
+```ts
+// BAD
+setInterval(() => {
+  /* ... */
+}, 1000)
+
+import { secondsToMilliseconds } from 'date-fns'
+
+// GOOD
+setInterval(() => {
+  /* ... */
+}, secondsToMilliseconds(1))
+```

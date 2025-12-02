@@ -1,0 +1,5 @@
+---
+description: Creating new pull requests
+alwaysApply: false
+---
+Use conventional commits standard for naming PRs. Look through git history to see examples on how to prefix your PRs.

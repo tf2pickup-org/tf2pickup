@@ -1,0 +1,15 @@
+---
+alwaysApply: true
+---
+
+Export one function per one file; the file name must match exported function name.
+
+```ts
+// BAD
+// file name: foo-bar.ts
+export function barFoo() {}
+
+// GOOD
+// file name: foo-bar.ts
+export function fooBar() {}
+```
