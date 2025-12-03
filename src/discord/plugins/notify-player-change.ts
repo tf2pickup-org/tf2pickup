@@ -39,7 +39,7 @@ export default fp(
               .setTitle('Player profile updated')
               .setThumbnail(after.avatar.large)
               .setDescription(
-                `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${admin.steamId})**\n${changes}`,
+                `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**\n${changes}`,
               )
               .setFooter({
                 text: environment.WEBSITE_NAME,
