@@ -231,11 +231,16 @@ export default fp(
       }),
     )
 
-    events.on('chat:messageSent', ({ message }) => {
+    events.on('chat:messageSent', ({ message, previousMessage }) => {
       app.gateway
         .to({ authenticated: true })
         .to({ url: '/' })
-        .send(() => ChatMessages.append({ message }))
+        .send(() =>
+          ChatMessages.append({
+            message,
+            previousMessageAt: previousMessage?.at,
+          }),
+        )
     })
   },
   { name: 'update clients' },
