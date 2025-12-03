@@ -1,5 +1,20 @@
 # Changelog
 
+# [4.0.0-beta.13](/compare/4.0.0-beta.12...4.0.0-beta.13) (2025-12-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/sensible to v6.0.4 61d3e8e
+* **deps:** update dependency motion to v12.23.25 c204c28
+
+
+### Features
+
+* add ban gameservers configuration to admin panel (#412) e956113, closes #412
+* persist sidebar tab selection in sessionStorage (#413) afa05d1, closes #413
+* sync etf2l profiles (#411) 82e3229, closes #411
+
 # [4.0.0-beta.12](/compare/4.0.0-beta.11...4.0.0-beta.12) (2025-12-01)
 
 
