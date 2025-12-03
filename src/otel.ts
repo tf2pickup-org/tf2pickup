@@ -12,6 +12,7 @@ import { metrics } from '@opentelemetry/api'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto'
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
+import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici'
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
@@ -39,6 +40,7 @@ const sdk = new NodeSDK({
         traceFlags: 'trace_flags',
       },
     }),
+    new UndiciInstrumentation(),
   ],
 })
 
