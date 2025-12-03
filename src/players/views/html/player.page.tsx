@@ -171,9 +171,9 @@ function PlayerPresentation(props: {
           <span>logs</span>
         </a>
 
-        {props.player.etf2lProfileId ? (
+        {props.player.etf2lProfile ? (
           <a
-            href={`https://etf2l.org/forum/user/${props.player.etf2lProfileId}`}
+            href={`https://etf2l.org/forum/user/${props.player.etf2lProfile.id}`}
             target="_blank"
             rel="noreferrer"
             class="player-presentation-link"
