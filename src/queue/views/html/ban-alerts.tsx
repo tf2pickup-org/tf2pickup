@@ -1,5 +1,6 @@
 import { collections } from '../../../database/collections'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../../../players'
 
 export async function BanAlerts(props: { actor?: SteamId64 | undefined }) {
   return (
@@ -19,10 +20,11 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
     return <></>
   }
 
-  const bans = actor.bans
-    ?.filter(({ end }) => end.getTime() > new Date().getTime())
+  const allBans = await players.getBansForPlayer(props.actor)
+  const bans = allBans
+    .filter(({ end }) => end.getTime() > new Date().getTime())
     .toSorted((a, b) => b.start.getTime() - a.start.getTime())
-  if (!bans?.length) {
+  if (!bans.length) {
     return <></>
   }
 

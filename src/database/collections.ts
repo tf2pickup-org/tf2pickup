@@ -7,6 +7,7 @@ import type { KeyModel } from './models/key.model'
 import type { MapPoolEntry } from './models/map-pool-entry.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
 import type { PlayerModel } from './models/player.model'
+import type { PlayerBansModel } from './models/player-bans.model'
 import type { QueueFriendshipModel } from './models/queue-friendship.model'
 import type { QueueMapOptionModel } from './models/queue-map-option.model'
 import type { QueueMapVoteModel } from './models/queue-map-vote.model'
@@ -39,6 +40,7 @@ export const collections = {
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
+  playerBans: database.collection<PlayerBansModel>('playerbans'),
   players: database.collection<PlayerModel>('players'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),
@@ -77,4 +79,12 @@ try {
 
   await collections.gameLogs.createIndex({ logSecret: 1 }, { unique: true, sparse: true })
   logger.info('gamelogs index created successfully')
+}
+
+try {
+  await collections.playerBans.createIndex({ steamId: 1 }, { unique: true })
+  logger.info('playerbans index created successfully')
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+} catch (error) {
+  logger.warn({ error }, 'playerbans index creation failed')
 }

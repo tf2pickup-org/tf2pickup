@@ -1,9 +1,8 @@
 import type { PlayerBan } from '../database/models/player.model'
-import { events } from '../events'
 import { isBot, type Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { bySteamId } from './by-steam-id'
-import { update } from './update'
+import { addBanForPlayer } from './player-bans'
 
 export async function addBan(props: {
   player: SteamId64
@@ -19,7 +18,6 @@ export async function addBan(props: {
     reason: props.reason,
   }
 
-  await update(props.player, { $push: { bans: ban } })
-  events.emit('player/ban:added', { player: props.player, ban })
+  await addBanForPlayer(props.player, ban)
   return ban
 }

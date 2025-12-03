@@ -10,6 +10,7 @@ import {
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../types/queue-slot-id'
+import { players } from '../../../players'
 
 const enum MarkAsFriendButtonState {
   none,
@@ -28,7 +29,8 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       throw new Error(`actor invalid: ${props.actor}`)
     }
 
-    const activeBans = actor.bans?.filter(b => b.end.getTime() > new Date().getTime()).length ?? 0
+    const bans = await players.getBansForPlayer(props.actor)
+    const activeBans = bans.filter(b => b.end.getTime() > new Date().getTime()).length
     let disabled: string | undefined = undefined
     if (activeBans > 0) {
       disabled = 'You have active bans'

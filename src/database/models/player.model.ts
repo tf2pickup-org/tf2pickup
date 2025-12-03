@@ -51,7 +51,6 @@ export interface PlayerModel {
   skill?: Partial<Record<Tf2ClassName, number>>
   preReadyUntil?: Date
   preferences: PlayerPreferences
-  bans?: PlayerBan[]
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
 }

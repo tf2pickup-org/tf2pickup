@@ -24,6 +24,7 @@ import {
 } from '../../../html/components/icons'
 import type { Children } from '@kitajs/html'
 import { collections } from '../../../database/collections'
+import { players } from '../../../players'
 import {
   format,
   formatDuration,
@@ -95,7 +96,9 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
 }
 
 export async function EditPlayerBansPage(props: { player: PlayerModel; user: User }) {
-  const bans = props.player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
+  const bans = (await players.getBansForPlayer(props.player.steamId)).toSorted(
+    (a, b) => b.start.getTime() - a.start.getTime(),
+  )
   return (
     <EditPlayer
       player={props.player}
