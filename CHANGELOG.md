@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.14](/compare/4.0.0-beta.13...4.0.0-beta.14) (2025-12-03)
+
+
+### Features
+
+* **queue:** add chat date separators and group messages by day (#414) 03151d2, closes #414
+
 # [4.0.0-beta.13](/compare/4.0.0-beta.12...4.0.0-beta.13) (2025-12-03)
 
 
