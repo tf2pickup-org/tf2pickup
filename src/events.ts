@@ -21,6 +21,7 @@ import type { GameSlotId } from './shared/types/game-slot-id'
 export interface Events {
   'chat:messageSent': {
     message: ChatMessageModel
+    previousMessage?: ChatMessageModel | undefined
   }
 
   'configuration:updated': {

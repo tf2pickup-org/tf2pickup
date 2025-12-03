@@ -11,6 +11,29 @@
     overflow-y: scroll;
     padding: 8px;
 
+    .chat-date-separator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 8px 0;
+      color: theme(colors.abru.light.50);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+
+      &::before,
+      &::after {
+        content: '';
+        flex: 1 1 0%;
+        border-bottom: 1px solid theme(colors.abru.light.50);
+        margin: 0 8px;
+      }
+
+      span {
+        white-space: nowrap;
+      }
+    }
+
     p {
       color: theme(colors.white);
 
@@ -22,6 +45,10 @@
 
       a.author {
         font-weight: bold;
+
+        &.admin {
+          color: theme(colors.alert);
+        }
       }
 
       .body {

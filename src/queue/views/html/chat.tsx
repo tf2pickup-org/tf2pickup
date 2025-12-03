@@ -1,9 +1,10 @@
-import { format } from 'date-fns'
+import { format, isSameDay, isToday, isYesterday } from 'date-fns'
 import { chat } from '../../../chat'
 import type { ChatMessageModel } from '../../../database/models/chat-message.model'
 import { IconLoader3, IconSend2 } from '../../../html/components/icons'
 import { players } from '../../../players'
 import type { User } from '../../../auth/types/user'
+import { PlayerRole } from '../../../database/models/player.model'
 
 export async function Chat(props: { user?: User | undefined }) {
   return (
@@ -42,6 +43,28 @@ export async function ChatMessages() {
   )
 }
 
+function formatChatDateLabel(date: Date): string {
+  if (isToday(date)) {
+    return 'Today'
+  }
+
+  if (isYesterday(date)) {
+    return 'Yesterday'
+  }
+
+  return format(date, 'yyyy-MM-dd')
+}
+
+function ChatDateSeparator(props: { at: Date }) {
+  const label = formatChatDateLabel(props.at)
+
+  return (
+    <div class="chat-date-separator">
+      <span safe>{label}</span>
+    </div>
+  )
+}
+
 export function ChatMessageList(props: { messages: ChatMessageModel[] }) {
   let trigger = <></>
   if (props.messages.length > 0) {
@@ -56,20 +79,47 @@ export function ChatMessageList(props: { messages: ChatMessageModel[] }) {
     )
   }
 
+  const nodes: JSX.Element[] = []
+  let previousAt: Date | undefined
+
+  for (const message of props.messages) {
+    if (previousAt && !isSameDay(message.at, previousAt)) {
+      // We are crossing from a newer day (previousAt) to an older day (message.at).
+      // Place the separator for the newer day *after* its last message in DOM.
+      nodes.push(<ChatDateSeparator at={previousAt} />)
+    }
+
+    nodes.push(<ChatMessage message={message} />)
+    previousAt = message.at
+  }
+
+  if (previousAt) {
+    // Add a separator for the oldest day at the end so it appears above that
+    // day's messages once column-reverse is applied.
+    nodes.push(<ChatDateSeparator at={previousAt} />)
+  }
+
   return (
     <>
-      {props.messages.map(message => (
-        <ChatMessage message={message} />
-      ))}
+      {nodes}
       {trigger}
     </>
   )
 }
 
-ChatMessages.append = function (props: { message: ChatMessageModel }) {
+ChatMessages.append = function (props: {
+  message: ChatMessageModel
+  previousMessageAt?: Date | undefined
+}) {
   return (
     <div id="chat-message-list" hx-swap-oob="afterbegin">
       <ChatMessage message={props.message} />
+      {/* When the new message starts a new day compared to the previous message, insert a
+          separator for the newer (current) day after it so it appears visually above
+          this day's messages in the column-reverse list. */}
+      {(!props.previousMessageAt || !isSameDay(props.message.at, props.previousMessageAt)) && (
+        <ChatDateSeparator at={props.message.at} />
+      )}
     </div>
   )
 }
@@ -105,10 +155,16 @@ async function ChatMessage(props: { message: ChatMessageModel }) {
   const author = await players.bySteamId(props.message.author)
   const safeAt = format(props.message.at, 'HH:mm')
   const safeBody = props.message.body
+  const isAdmin = author.roles.includes(PlayerRole.admin)
   return (
     <p>
       <span class="at">{safeAt}</span>{' '}
-      <a href={`/players/${author.steamId}`} class="author" preload="mousedown" safe>
+      <a
+        href={`/players/${author.steamId}`}
+        class={`author ${isAdmin ? 'admin' : ''}`}
+        preload="mousedown"
+        safe
+      >
         {author.name}
       </a>
       : <span class="body">{safeBody}</span>
