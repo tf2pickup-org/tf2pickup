@@ -1,5 +1,15 @@
 # Changelog
 
+# [4.0.0-beta.15](/compare/4.0.0-beta.14...4.0.0-beta.15) (2025-12-04)
+
+
+### Bug Fixes
+
+* add undici instrumentation (#415) bf873c4, closes #415
+* **deps:** pin dependency @opentelemetry/instrumentation-undici to 0.19.0 897c27e
+* **deps:** update dependency esbuild to v0.27.1 ca9e675
+* fix discord notification player link (#416) be118c0, closes #416
+
 # [4.0.0-beta.14](/compare/4.0.0-beta.13...4.0.0-beta.14) (2025-12-03)
 
 
