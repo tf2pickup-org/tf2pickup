@@ -34,6 +34,7 @@ await app.register(await import('@fastify/helmet'), {
                 ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
                 : []),
             ],
+            'script-src-attr': ["'unsafe-inline'"],
             'img-src': [
               "'self'",
               'https://mapthumbnails.tf2pickup.org',
