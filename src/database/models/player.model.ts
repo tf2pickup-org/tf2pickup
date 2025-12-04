@@ -32,6 +32,12 @@ export interface TwitchTvProfile {
   profileImageUrl: string
 }
 
+export interface Etf2lProfile {
+  id: number
+  name: string
+  country: string
+}
+
 export interface PlayerStats {
   totalGames: number
   gamesByClass: Partial<Record<Tf2ClassName, number>>
@@ -44,7 +50,7 @@ export interface PlayerModel {
   avatar: PlayerAvatar
   roles: PlayerRole[]
   hasAcceptedRules: boolean
-  etf2lProfileId?: number
+  etf2lProfile?: Etf2lProfile
   etf2lProfileLastSyncedAt?: Date
   cooldownLevel: number
   activeGame?: GameNumber

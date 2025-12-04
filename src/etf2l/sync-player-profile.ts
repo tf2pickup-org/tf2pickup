@@ -14,7 +14,11 @@ export async function syncPlayerProfile(playerId: SteamId64) {
 
     await players.update(player.steamId, {
       $set: {
-        etf2lProfileId: profile.id,
+        etf2lProfile: {
+          id: profile.id,
+          name: profile.name,
+          country: profile.country,
+        },
         etf2lProfileLastSyncedAt: new Date(),
       },
     })
@@ -23,7 +27,8 @@ export async function syncPlayerProfile(playerId: SteamId64) {
       switch (error.response.status) {
         case 404:
           await players.update(player.steamId, {
-            $unset: { etf2lProfileId: 1 },
+            $unset: { etf2lProfile: 1 },
+            $set: { etf2lProfileLastSyncedAt: new Date() },
           })
           break
         case 429:

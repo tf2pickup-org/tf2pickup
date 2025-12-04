@@ -16,7 +16,7 @@ export default fp(
     events.on(
       'player:updated',
       safe(async ({ before, after }) => {
-        if (before.etf2lProfileId === after.etf2lProfileId) {
+        if (before.etf2lProfile?.id === after.etf2lProfile?.id) {
           return
         }
 
@@ -26,7 +26,7 @@ export default fp(
           .setDescription(
             [
               `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**`,
-              `ETF2L profile: ${before.etf2lProfileId ?? 'none'} → ${after.etf2lProfileId ?? 'none'}`,
+              `ETF2L profile: ${before.etf2lProfile?.id ?? 'none'} → ${after.etf2lProfile?.id ?? 'none'}`,
             ].join('\n'),
           )
           .setFooter({
