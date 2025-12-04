@@ -61,6 +61,11 @@ const adminPages = {
     icon: IconBrandDiscord,
     section: 'Configuration',
   },
+  'player-skills': {
+    title: 'Player skills',
+    icon: IconAdjustments,
+    section: 'Configuration',
+  },
   'view-for-nerds': {
     title: 'View for nerds',
     icon: IconMoodNerd,
