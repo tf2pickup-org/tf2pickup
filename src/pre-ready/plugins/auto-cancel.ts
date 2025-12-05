@@ -4,9 +4,14 @@ import { update } from '../../players/update'
 import { secondsToMilliseconds } from 'date-fns'
 import { events } from '../../events'
 import { safe } from '../../utils/safe'
+import type { PlayerModel } from '../../database/models/player.model'
 
 async function process() {
-  const toRemove = await collections.players.find({ preReadyUntil: { $lte: new Date() } }).toArray()
+  const toRemove = await collections.players
+    .find<
+      Pick<PlayerModel, 'steamId'>
+    >({ preReadyUntil: { $lte: new Date() } }, { projection: { steamId: 1 } })
+    .toArray()
   for (const p of toRemove) {
     await update(p.steamId, { $unset: { preReadyUntil: 1 } })
   }

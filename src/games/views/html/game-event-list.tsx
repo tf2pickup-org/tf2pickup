@@ -9,6 +9,8 @@ import { collections } from '../../../database/collections'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { isBot } from '../../../shared/types/bot'
 import { players } from '../../../players'
+import type { PlayerModel } from '../../../database/models/player.model'
+import { errors } from '../../../errors'
 
 const renderedEvents = [
   GameEventType.gameCreated,
@@ -166,9 +168,12 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           return <span>Game ended</span>
       }
     case GameEventType.substituteRequested: {
-      const player = await collections.players.findOne({ steamId: props.event.player })
+      const player = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
+        { steamId: props.event.player },
+        { projection: { steamId: 1, name: 1 } },
+      )
       if (!player) {
-        throw new Error(`player not found: ${props.event.player}`)
+        throw errors.internalServerError(`player not found: ${props.event.player}`)
       }
 
       if (props.event.actor) {
@@ -176,9 +181,14 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         if (isBot(props.event.actor)) {
           safeActorDesc = 'bot'
         } else {
-          const actor = await collections.players.findOne({ steamId: props.event.actor })
+          const actor = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
+            {
+              steamId: props.event.actor,
+            },
+            { projection: { steamId: 1, name: 1 } },
+          )
           if (!actor) {
-            throw new Error(`actor not found: ${props.event.actor}`)
+            throw errors.internalServerError(`actor not found: ${props.event.actor}`)
           }
 
           safeActorDesc = (
@@ -219,13 +229,23 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       }
     }
     case GameEventType.playerReplaced: {
-      const replacee = await collections.players.findOne({ steamId: props.event.replacee })
+      const replacee = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
+        {
+          steamId: props.event.replacee,
+        },
+        { projection: { steamId: 1, name: 1 } },
+      )
       if (!replacee) {
-        throw new Error(`replacee not found: ${replacee}`)
+        throw errors.internalServerError(`replacee not found: ${replacee}`)
       }
-      const replacement = await collections.players.findOne({ steamId: props.event.replacement })
+      const replacement = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
+        {
+          steamId: props.event.replacement,
+        },
+        { projection: { steamId: 1, name: 1 } },
+      )
       if (!replacement) {
-        throw new Error(`replacement not found: ${replacement}`)
+        throw errors.internalServerError(`replacement not found: ${replacement}`)
       }
 
       return (

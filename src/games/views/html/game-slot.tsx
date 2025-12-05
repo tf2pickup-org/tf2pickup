@@ -8,13 +8,16 @@ import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
+import type { PickDeep } from 'type-fest'
 
 export async function GameSlot(props: {
   game: GameModel
   slot: GameSlotModel
   actor: SteamId64 | undefined
 }) {
-  const player = await collections.players.findOne({ steamId: props.slot.player })
+  const player = await collections.players.findOne<
+    PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>
+  >({ steamId: props.slot.player }, { projection: { steamId: 1, name: 1, 'avatar.medium': 1 } })
   if (!player) {
     throw errors.internalServerError(`no such player: ${props.slot.player.toString()}`)
   }
@@ -46,11 +49,16 @@ export async function GameSlot(props: {
 async function GameSlotContent(props: {
   game: GameModel
   slot: GameSlotModel
-  player: PlayerModel
+  player: PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>
   actor: SteamId64 | undefined
 }) {
-  const a = props.actor ? await collections.players.findOne({ steamId: props.actor }) : null
-  const isAdmin = a?.roles.includes(PlayerRole.admin)
+  const actor = props.actor
+    ? await collections.players.findOne<Pick<PlayerModel, 'roles' | 'steamId' | 'activeGame'>>(
+        { steamId: props.actor },
+        { projection: { roles: 1, steamId: 1, activeGame: 1 } },
+      )
+    : null
+  const isAdmin = actor?.roles.includes(PlayerRole.admin)
 
   const showConnectionState = [GameState.launching, GameState.started].includes(props.game.state)
   const showRequestSubstituteButton =
@@ -100,7 +108,7 @@ async function GameSlotContent(props: {
       )
 
     case SlotStatus.waitingForSubstitute: {
-      if (a && (props.slot.player === a.steamId || a.activeGame === undefined)) {
+      if (actor && (props.slot.player === actor.steamId || actor.activeGame === undefined)) {
         return (
           <button
             class="flex flex-1 justify-center text-abru-light-60 hover:text-abru-light-70"
