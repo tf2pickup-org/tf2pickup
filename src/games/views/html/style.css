@@ -356,6 +356,10 @@
     &--warning {
       border-color: #ff9e1f;
     }
+
+    &--error {
+      border-color: theme('colors.accent.600');
+    }
   }
 }
 
