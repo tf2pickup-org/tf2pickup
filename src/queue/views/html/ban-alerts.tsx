@@ -1,4 +1,5 @@
 import { collections } from '../../../database/collections'
+import type { PlayerModel } from '../../../database/models/player.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function BanAlerts(props: { actor?: SteamId64 | undefined }) {
@@ -14,7 +15,10 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
     return <></>
   }
 
-  const actor = await collections.players.findOne({ steamId: props.actor })
+  const actor = await collections.players.findOne<Pick<PlayerModel, 'bans'>>(
+    { steamId: props.actor },
+    { projection: { bans: 1 } },
+  )
   if (!actor) {
     return <></>
   }

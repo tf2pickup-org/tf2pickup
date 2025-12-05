@@ -13,7 +13,9 @@ const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
 const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 
 export async function PlayerListPage(user?: User) {
-  const players = await collections.players.find().toArray()
+  const players = await collections.players
+    .find<Pick<PlayerModel, 'steamId' | 'name'>>({}, { projection: { steamId: 1, name: 1 } })
+    .toArray()
   const groupedPlayers = groupPlayers(players)
 
   return (
@@ -66,7 +68,9 @@ export async function PlayerListPage(user?: User) {
   )
 }
 
-function groupPlayers(players: PlayerModel[]): Map<string, PlayerModel[]> {
+function groupPlayers(
+  players: Pick<PlayerModel, 'steamId' | 'name'>[],
+): Map<string, Pick<PlayerModel, 'steamId' | 'name'>[]> {
   return players.reduce((result, player) => {
     let key = player.name
       .replace(
@@ -87,5 +91,5 @@ function groupPlayers(players: PlayerModel[]): Map<string, PlayerModel[]> {
     result.get(key)!.push(player)
 
     return result
-  }, new Map<string, PlayerModel[]>())
+  }, new Map<string, Pick<PlayerModel, 'steamId' | 'name'>[]>())
 }

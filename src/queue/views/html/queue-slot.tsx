@@ -1,5 +1,8 @@
+import type { PickDeep } from 'type-fest'
 import { collections } from '../../../database/collections'
+import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
+import { errors } from '../../../errors'
 import {
   IconHeart,
   IconHeartFilled,
@@ -23,9 +26,11 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
-    const actor = await collections.players.findOne({ steamId: props.actor })
+    const actor = await collections.players.findOne<
+      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill'>
+    >({ steamId: props.actor }, { projection: { bans: 1, activeGame: 1, skill: 1 } })
     if (!actor) {
-      throw new Error(`actor invalid: ${props.actor}`)
+      throw errors.internalServerError(`actor invalid: ${props.actor}`)
     }
 
     const activeBans = actor.bans?.filter(b => b.end.getTime() > new Date().getTime()).length ?? 0
@@ -78,9 +83,11 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
     return <></>
   }
 
-  const player = await collections.players.findOne({ steamId: props.slot.player })
-  if (!player) {
-    throw new Error(`player does not exist: ${props.slot.player}`)
+  const player = await collections.players.findOne<
+    PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>
+  >({ steamId: props.slot.player }, { projection: { steamId: 1, name: 1, 'avatar.medium': 1 } })
+  if (player === null) {
+    throw errors.internalServerError(`player does not exist: ${props.slot.player}`)
   }
 
   let slotActionButton: JSX.Element

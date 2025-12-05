@@ -18,6 +18,7 @@ import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button
 import { OnlinePlayerCount } from '../views/html/online-player-count'
 import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
+import type { PlayerModel } from '../../database/models/player.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -49,7 +50,10 @@ export default fp(
       socket.send(await StreamList())
 
       if (socket.player) {
-        const player = await collections.players.findOne({ steamId: socket.player.steamId })
+        const player = await collections.players.findOne<Pick<PlayerModel, 'activeGame'>>(
+          { steamId: socket.player.steamId },
+          { projection: { activeGame: 1 } },
+        )
         socket.send(await ChatMessages())
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
