@@ -24,6 +24,8 @@ const renderedEvents = [
   GameEventType.playerReplaced,
 
   GameEventType.roundEnded,
+
+  GameEventType.runtimeError,
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
@@ -66,6 +68,7 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
         props.event.event === GameEventType.gameServerInitialized && 'game-event--info',
         props.event.event === GameEventType.substituteRequested && 'game-event--warning',
         props.event.event === GameEventType.playerReplaced && 'game-event--success',
+        props.event.event === GameEventType.runtimeError && 'game-event--error',
       ]}
     >
       <span class="at" safe>
@@ -249,6 +252,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           <span class="rounded bg-team-red px-2 py-1">RED: {props.event.score.red}</span>
         </div>
       )
+    }
+    case GameEventType.runtimeError: {
+      return <span safe>{props.event.message}</span>
     }
 
     default:
