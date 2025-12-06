@@ -24,7 +24,7 @@ export default routes(async app => {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        const player = await players.bySteamId(steamId)
+        const player = await players.bySteamId(steamId, ['etf2lProfileLastSyncedAt'])
 
         if (shouldSyncEtf2lProfile(player)) {
           await tasks.schedule('etf2l:syncPlayerProfile', 0, { player: steamId })
@@ -32,7 +32,7 @@ export default routes(async app => {
 
         reply.status(200).html(
           await PlayerPage({
-            player,
+            steamId,
             user: req.user,
             page: Number(req.query.gamespage) || 1,
           }),

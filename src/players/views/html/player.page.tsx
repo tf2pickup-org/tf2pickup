@@ -21,19 +21,32 @@ import { Pagination, paginate } from '../../../html/components/pagination'
 import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
 import { AdminToolbox } from './admin-toolbox'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../..'
+import type { PickDeep } from 'type-fest'
 
 const gamesPerPage = 5
 
 export async function PlayerPage(props: {
-  player: PlayerModel
+  steamId: SteamId64
   user?: User | undefined
   page: number
 }) {
+  const player = await players.bySteamId(props.steamId, [
+    'steamId',
+    'name',
+    'joinedAt',
+    'roles',
+    'etf2lProfile',
+    'twitchTvProfile',
+    'avatar.large',
+    'stats',
+  ])
   const skip = (props.page - 1) * gamesPerPage
 
   const games = await collections.games
     .find(
-      { 'slots.player': props.player.steamId },
+      { 'slots.player': props.steamId },
       { limit: gamesPerPage, skip, sort: { 'events.0.at': -1 } },
     )
     .toArray()
@@ -41,28 +54,28 @@ export async function PlayerPage(props: {
   const { last, around } = paginate(
     props.page,
     gamesPerPage,
-    await collections.games.countDocuments({ 'slots.player': props.player.steamId }),
+    await collections.games.countDocuments({ 'slots.player': props.steamId }),
   )
 
   return (
     <Layout
       user={props.user}
-      title={makeTitle(props.player.name)}
-      description={`${props.player.name}'s profile on ${environment.WEBSITE_NAME}`}
-      canonical={`/players/${props.player.steamId}`}
+      title={makeTitle(player.name)}
+      description={`${player.name}'s profile on ${environment.WEBSITE_NAME}`}
+      canonical={`/players/${player.steamId}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar user={props.user} />
       <Page>
         <div class="container relative mx-auto flex flex-col gap-[30px]">
           <PlayerPresentation
-            player={props.player}
-            gameCount={props.player.stats.totalGames}
-            gameCountOnClasses={props.player.stats.gamesByClass}
+            player={player}
+            gameCount={player.stats.totalGames}
+            gameCountOnClasses={player.stats.gamesByClass}
           />
 
           {props.user?.player.roles.includes(PlayerRole.admin) && (
-            <AdminToolbox user={props.user} player={props.player} />
+            <AdminToolbox user={props.user} player={player} />
           )}
 
           {games.length > 0 ? (
@@ -74,13 +87,13 @@ export async function PlayerPage(props: {
                 {games.map(game => (
                   <GameListItem
                     game={game}
-                    classPlayed={game.slots.find(s => s.player === props.player.steamId)!.gameClass}
+                    classPlayed={game.slots.find(s => s.player === player.steamId)!.gameClass}
                   />
                 ))}
               </div>
 
               <Pagination
-                hrefFn={page => `/players/${props.player.steamId}?gamespage=${page}`}
+                hrefFn={page => `/players/${player.steamId}?gamespage=${page}`}
                 lastPage={last}
                 currentPage={props.page}
                 around={around}
@@ -97,7 +110,10 @@ export async function PlayerPage(props: {
 }
 
 function PlayerPresentation(props: {
-  player: PlayerModel
+  player: PickDeep<
+    PlayerModel,
+    'avatar.large' | 'name' | 'roles' | 'joinedAt' | 'etf2lProfile' | 'twitchTvProfile' | 'steamId'
+  >
   gameCount: number
   gameCountOnClasses: Partial<Record<Tf2ClassName, number>>
 }) {

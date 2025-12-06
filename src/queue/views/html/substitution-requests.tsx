@@ -47,7 +47,7 @@ SubstitutionRequests.notify = async ({
 
   let volume = 1.0
   if (actor) {
-    const player = await players.bySteamId(actor)
+    const player = await players.bySteamId(actor, ['preferences.soundVolume'])
     volume = player.preferences.soundVolume ?? 1.0
   }
 

@@ -2,8 +2,9 @@ import { resolve } from 'node:path'
 import type { PlayerModel } from '../../database/models/player.model'
 import { bundle } from '../bundle'
 import { IconLogout, IconSettings, IconSettingsFilled, IconUserCircle } from './icons'
+import type { PickDeep } from 'type-fest'
 
-export async function Profile(player: PlayerModel) {
+export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>) {
   const animateProfileMenuJs = await bundle(
     resolve(import.meta.dirname, '../@client/animate-profile-menu.ts'),
   )

@@ -23,7 +23,6 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import type { Children } from '@kitajs/html'
-import { collections } from '../../../database/collections'
 import {
   format,
   formatDuration,
@@ -37,6 +36,8 @@ import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
 import { configuration } from '../../../configuration'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../..'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -44,9 +45,15 @@ const editPlayerPages = {
   '/roles': 'Roles',
 } as const
 
-export async function EditPlayerProfilePage(props: { player: PlayerModel; user: User }) {
+export async function EditPlayerProfilePage(props: { steamId: SteamId64; user: User }) {
+  const player = await players.bySteamId(props.steamId, [
+    'name',
+    'steamId',
+    'avatar.large',
+    'cooldownLevel',
+  ])
   return (
-    <EditPlayer player={props.player} user={props.user} activePage="/profile">
+    <EditPlayer player={player} user={props.user} activePage="/profile">
       <form action="" method="post">
         <div class="admin-panel-set">
           <div class="grid grid-cols-[1fr_184px] gap-y-4">
@@ -54,16 +61,16 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
               <label class="label" for="player-nickname">
                 Nickname
               </label>
-              <input type="text" name="name" value={props.player.name} id="player-nickname" />
+              <input type="text" name="name" value={player.name} id="player-nickname" />
             </div>
 
             <div class="row-span-3">
               <img
-                src={props.player.avatar.large}
+                src={player.avatar.large}
                 width="184"
                 height="184"
                 class="player-avatar rounded"
-                alt={`${props.player.name}'s avatar`}
+                alt={`${player.name}'s avatar`}
               />
             </div>
 
@@ -74,7 +81,7 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
               <input
                 type="number"
                 name="cooldownLevel"
-                value={props.player.cooldownLevel.toString()}
+                value={player.cooldownLevel.toString()}
                 id="cooldown-level"
                 min="0"
               />
@@ -94,15 +101,16 @@ export async function EditPlayerProfilePage(props: { player: PlayerModel; user: 
   )
 }
 
-export async function EditPlayerBansPage(props: { player: PlayerModel; user: User }) {
-  const bans = props.player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
+export async function EditPlayerBansPage(props: { steamId: SteamId64; user: User }) {
+  const player = await players.bySteamId(props.steamId, ['bans', 'name', 'steamId'])
+  const bans = player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
   return (
     <EditPlayer
-      player={props.player}
+      player={player}
       user={props.user}
       activePage="/bans"
       action={
-        <a href={`/players/${props.player.steamId}/edit/bans/add`} class="button button--accent">
+        <a href={`/players/${player.steamId}/edit/bans/add`} class="button button--accent">
           <IconPlus />
           Add ban
         </a>
@@ -113,7 +121,7 @@ export async function EditPlayerBansPage(props: { player: PlayerModel; user: Use
           <>
             <div class="edit-player-ban-list">
               {bans.map(ban => (
-                <BanDetails player={props.player} ban={ban} />
+                <BanDetails player={player} ban={ban} />
               ))}
             </div>
           </>
@@ -125,11 +133,12 @@ export async function EditPlayerBansPage(props: { player: PlayerModel; user: Use
   )
 }
 
-export async function EditPlayerRolesPage(props: { player: PlayerModel; user: User }) {
-  const roles = props.player.roles
+export async function EditPlayerRolesPage(props: { steamId: SteamId64; user: User }) {
+  const player = await players.bySteamId(props.steamId, ['roles', 'name', 'steamId'])
+  const roles = player.roles
   const safeWebsiteName = environment.WEBSITE_NAME
   return (
-    <EditPlayer player={props.player} user={props.user} activePage="/roles">
+    <EditPlayer player={player} user={props.user} activePage="/roles">
       <form action="" method="post">
         <div class="admin-panel-set">
           <div class="form-checkbox">
@@ -172,7 +181,7 @@ export async function EditPlayerRolesPage(props: { player: PlayerModel; user: Us
 }
 
 function EditPlayer(props: {
-  player: PlayerModel
+  player: Pick<PlayerModel, 'name' | 'steamId'>
   user: User
   children: Children
   activePage: keyof typeof editPlayerPages
@@ -236,16 +245,15 @@ function EditPlayer(props: {
   )
 }
 
-export async function BanDetails(props: { player: PlayerModel; ban: PlayerBan }) {
+export async function BanDetails(props: {
+  player: Pick<PlayerModel, 'name' | 'steamId'>
+  ban: PlayerBan
+}) {
   let actorDesc = <></>
   if (isBot(props.ban.actor)) {
     actorDesc = <>bot</>
   } else {
-    const actor = await collections.players.findOne({ steamId: props.ban.actor })
-    if (actor === null) {
-      throw new Error(`actor not found: ${props.ban.actor}`)
-    }
-
+    const actor = await players.bySteamId(props.ban.actor, ['name', 'steamId'])
     actorDesc = (
       <a href={`/players/${actor.steamId}`} safe>
         {actor.name}

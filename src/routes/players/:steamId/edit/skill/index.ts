@@ -29,7 +29,7 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const { steamId } = request.params
-      const player = await players.bySteamId(steamId)
+      const player = await players.bySteamId(steamId, ['steamId'])
       const skill = Object.entries(request.body)
         .filter(([key]) => key.startsWith('skill.'))
         .reduce<Partial<Record<Tf2ClassName, number>>>(

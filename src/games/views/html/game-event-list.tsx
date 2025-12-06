@@ -107,7 +107,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         )
       }
 
-      const actor = await players.bySteamId(props.event.actor)
+      const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
       return (
         <span>
           <a href={`/players/${actor.steamId}`} safe>
@@ -123,7 +123,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameServerReinitializationOrdered: {
       let actor = <></>
       if (props.event.actor) {
-        const a = await players.bySteamId(props.event.actor)
+        const a = await players.bySteamId(props.event.actor, ['steamId', 'name'])
         actor = (
           <>
             by{' '}
@@ -152,7 +152,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             return <span>Game interrupted by bot</span>
           }
 
-          const actor = await players.bySteamId(props.event.actor)
+          const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
           return (
             <span>
               Game interrupted by{' '}

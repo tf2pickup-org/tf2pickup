@@ -5,7 +5,7 @@ import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
 export async function mumbleDirectUrl(game: GameModel, steamId: SteamId64): Promise<URL> {
-  const p = await players.bySteamId(steamId)
+  const player = await players.bySteamId(steamId, ['name'])
   const slot = game.slots.find(s => s.player === steamId)
   if (!slot) {
     throw errors.badRequest(`player is not in the game`)
@@ -20,7 +20,7 @@ export async function mumbleDirectUrl(game: GameModel, steamId: SteamId64): Prom
 
   const url = new URL(`mumble://${host}`)
   url.pathname = [rootChannelName, String(game.number), slot.team.toUpperCase()].join('/')
-  url.username = p.name.replace(/\s+/g, '_')
+  url.username = player.name.replace(/\s+/g, '_')
   if (password) {
     url.password = password
   }

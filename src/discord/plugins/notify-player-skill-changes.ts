@@ -36,7 +36,7 @@ export default fp(
       'player:updated',
       safe(async ({ before, after, adminId }) => {
         if (!isEqual(before.skill, after.skill)) {
-          const admin = await players.bySteamId(adminId!)
+          const admin = await players.bySteamId(adminId!, ['name', 'steamId', 'avatar.medium'])
           const changes = generateChangesText(before.skill, after.skill)
 
           await toAdmins({

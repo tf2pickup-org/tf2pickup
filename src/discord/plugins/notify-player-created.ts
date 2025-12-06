@@ -17,7 +17,7 @@ export default fp(
     events.on(
       'player:created',
       safe(async ({ steamId }) => {
-        const player = await players.bySteamId(steamId)
+        const player = await players.bySteamId(steamId, ['steamId', 'name', 'avatar.large'])
         await toAdmins({
           embeds: [
             new EmbedBuilder()

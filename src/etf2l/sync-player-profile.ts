@@ -7,7 +7,7 @@ import { Etf2lApiError } from './errors/etf2l-api.error'
 import { tasks } from '../tasks'
 
 export async function syncPlayerProfile(playerId: SteamId64) {
-  const player = await players.bySteamId(playerId)
+  const player = await players.bySteamId(playerId, ['steamId'])
 
   try {
     const profile = await etf2l.getPlayerProfile(player.steamId)

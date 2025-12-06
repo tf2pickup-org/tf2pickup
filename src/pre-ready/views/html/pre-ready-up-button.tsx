@@ -7,7 +7,7 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
     return <></>
   }
 
-  const player = await players.bySteamId(props.actor)
+  const player = await players.bySteamId(props.actor, ['preReadyUntil'])
   const timeLeft = player.preReadyUntil
     ? Math.max(player.preReadyUntil.getTime() - Date.now(), 0)
     : 0

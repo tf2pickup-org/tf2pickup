@@ -12,7 +12,7 @@ export async function applyCooldown(steamId: SteamId64) {
     return
   }
 
-  const player = await players.bySteamId(steamId)
+  const player = await players.bySteamId(steamId, ['steamId', 'cooldownLevel'])
   const cooldown =
     cooldownLevels.find(({ level }) => level === player.cooldownLevel) ?? cooldownLevels.at(-1)!
 

@@ -24,7 +24,7 @@ export async function LogEntryList(props: { logs: PlayerActionEntryModel[] }) {
 }
 
 async function LogEntry(props: { action: PlayerActionEntryModel }) {
-  const player = await players.bySteamId(props.action.player)
+  const player = await players.bySteamId(props.action.player, ['steamId', 'name'])
   return (
     <tr class="even:bg-abru-dark-6">
       <th scope="row" class="px-4 py-2" safe>
