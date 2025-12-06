@@ -3,7 +3,10 @@ import type { GameModel } from '../../../database/models/game.model'
 import { IconHeadset } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
-export async function JoinVoiceButton(props: { game: GameModel; actor: SteamId64 | undefined }) {
+export async function JoinVoiceButton(props: {
+  game: Pick<GameModel, 'number' | 'state' | 'slots'>
+  actor: SteamId64 | undefined
+}) {
   return (
     <div class="contents" id={`game-${props.game.number}-join-voice-button`}>
       <JoinVoiceButtonContent {...props} />
@@ -11,7 +14,10 @@ export async function JoinVoiceButton(props: { game: GameModel; actor: SteamId64
   )
 }
 
-async function JoinVoiceButtonContent(props: { game: GameModel; actor: SteamId64 | undefined }) {
+async function JoinVoiceButtonContent(props: {
+  game: Pick<GameModel, 'number' | 'state' | 'slots'>
+  actor: SteamId64 | undefined
+}) {
   if (!props.actor) {
     return <></>
   }
@@ -39,7 +45,7 @@ async function JoinVoiceButtonContent(props: { game: GameModel; actor: SteamId64
   )
 }
 
-function getPlayerSlot(game: GameModel, actor?: SteamId64) {
+function getPlayerSlot(game: Pick<GameModel, 'slots'>, actor?: SteamId64) {
   if (!actor) {
     return undefined
   }

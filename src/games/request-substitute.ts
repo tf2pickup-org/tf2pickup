@@ -23,7 +23,7 @@ export async function requestSubstitute({
   applyCooldown?: boolean
 }): Promise<GameModel> {
   logger.trace({ number, replacee, actor, reason }, 'games.requestSubstitute()')
-  const game = await findOne({ number })
+  const game = await findOne({ number }, ['state', 'number', 'slots'])
 
   if ([GameState.ended, GameState.interrupted].includes(game.state)) {
     throw errors.badRequest(`game ${game.number} in wrong state: ${game.state}`)

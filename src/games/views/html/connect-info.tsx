@@ -4,7 +4,10 @@ import { ConnectString } from './connect-string'
 import { JoinGameButton } from './join-game-button'
 import { JoinVoiceButton } from './join-voice-button'
 
-export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefined }) {
+export function ConnectInfo(props: {
+  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  actor: SteamId64 | undefined
+}) {
   const connectInfoVisible = [
     GameState.created,
     GameState.configuring,
@@ -30,7 +33,10 @@ export function ConnectInfo(props: { game: GameModel; actor: SteamId64 | undefin
   )
 }
 
-async function UserConnectString(props: { game: GameModel; actor: SteamId64 | undefined }) {
+async function UserConnectString(props: {
+  game: Pick<GameModel, 'state' | 'number' | 'slots' | 'connectString' | 'stvConnectString'>
+  actor: SteamId64 | undefined
+}) {
   let connectString: string | undefined
   let content = <></>
 
@@ -59,7 +65,7 @@ async function UserConnectString(props: { game: GameModel; actor: SteamId64 | un
   )
 }
 
-function actorInGame(game: GameModel, actor?: SteamId64) {
+function actorInGame(game: Pick<GameModel, 'slots'>, actor?: SteamId64) {
   if (!actor) {
     return false
   }

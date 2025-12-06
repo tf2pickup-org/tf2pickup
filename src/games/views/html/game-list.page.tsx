@@ -8,6 +8,8 @@ import { Footer } from '../../../html/components/footer'
 import { GameListItem } from './game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
 import { makeTitle } from '../../../html/make-title'
+import type { PickDeep } from 'type-fest'
+import type { GameModel } from '../../../database/models/game.model'
 
 const itemsPerPage = 8
 
@@ -17,7 +19,21 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
   const skip = (page - 1) * itemsPerPage
 
   const games = await collections.games
-    .find({}, { limit: itemsPerPage, skip, sort: { 'events.0.at': -1 } })
+    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'>>(
+      {},
+      {
+        limit: itemsPerPage,
+        skip,
+        sort: { 'events.0.at': -1 },
+        projection: {
+          number: 1,
+          state: 1,
+          score: 1,
+          map: 1,
+          'events.0': 1,
+        },
+      },
+    )
     .toArray()
 
   return (

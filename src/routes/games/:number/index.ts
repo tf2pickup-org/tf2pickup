@@ -20,8 +20,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { number } = request.params
-        const game = await games.findOne({ number })
-        reply.status(200).html(await GamePage({ game, user: request.user }))
+        reply.status(200).html(await GamePage({ number, user: request.user }))
       },
     )
     .put(

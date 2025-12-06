@@ -4,8 +4,12 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { GameLiveIndicator } from '../../../html/components/game-live-indicator'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import type { PickDeep } from 'type-fest'
 
-export function GameListItem(props: { game: GameModel; classPlayed?: Tf2ClassName }) {
+export function GameListItem(props: {
+  game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'>
+  classPlayed?: Tf2ClassName
+}) {
   const isRunning = [
     GameState.created,
     GameState.configuring,

@@ -48,7 +48,7 @@ async function safePushLogMessage(message: LogMessage) {
 }
 
 async function pruneLogs(number: GameNumber) {
-  const game = await findOne({ number })
+  const game = await findOne({ number }, ['logSecret'])
   if (!game.logSecret) {
     return
   }
