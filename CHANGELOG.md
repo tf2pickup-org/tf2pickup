@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.0.0-beta.16](/compare/4.0.0-beta.15...4.0.0-beta.16) (2025-12-07)
+
+
+### Bug Fixes
+
+* add admin role for super-user (#420) be960f6, closes #420
+* add some mongodb query optimizations (#421) a9d307f, closes #421
+* auto sync etf2l profile on player created (#424) 6d8deb2, closes #424
+* **deps:** update dependency jsonwebtoken to v9.0.3 d8879e9
+* fix choose game server dialog (#419) 970afb1, closes #419
+* render empty game list properly (#425) b8710f9, closes #425
+* update player avatar on sign in (#423) 4c4a33a, closes #423
+
 # [4.0.0-beta.15](/compare/4.0.0-beta.14...4.0.0-beta.15) (2025-12-04)
 
 
