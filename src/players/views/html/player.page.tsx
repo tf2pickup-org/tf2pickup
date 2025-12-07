@@ -24,6 +24,7 @@ import { AdminToolbox } from './admin-toolbox'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
 import type { PickDeep } from 'type-fest'
+import type { GameModel } from '../../../database/models/game.model'
 
 const gamesPerPage = 5
 
@@ -45,9 +46,21 @@ export async function PlayerPage(props: {
   const skip = (props.page - 1) * gamesPerPage
 
   const games = await collections.games
-    .find(
+    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'slots'>>(
       { 'slots.player': props.steamId },
-      { limit: gamesPerPage, skip, sort: { 'events.0.at': -1 } },
+      {
+        limit: gamesPerPage,
+        skip,
+        sort: { 'events.0.at': -1 },
+        projection: {
+          number: 1,
+          state: 1,
+          'events.0': 1,
+          score: 1,
+          map: 1,
+          slots: 1,
+        },
+      },
     )
     .toArray()
 

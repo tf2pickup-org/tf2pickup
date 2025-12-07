@@ -15,15 +15,7 @@ import { AdminToolbox } from './admin-toolbox'
 import { findOne } from '../../find-one'
 
 export async function GamePage(props: { number: GameNumber; user?: User | undefined }) {
-  const game = await findOne({ number: props.number }, [
-    'number',
-    'state',
-    'events',
-    'slots',
-    'map',
-    'connectString',
-    'stvConnectString',
-  ])
+  const game = await findOne({ number: props.number })
   return (
     <Layout
       user={props.user}

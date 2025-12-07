@@ -6,10 +6,10 @@ import type { Paths, PickDeep } from 'type-fest'
 
 export async function findOne<Keys extends Paths<GameModel>>(
   filter: Filter<GameModel>,
-  pluck: Keys[],
+  pluck?: Keys[],
 ): Promise<PickDeep<GameModel, Keys>> {
   const game = await collections.games.findOne<PickDeep<GameModel, Keys>>(filter, {
-    projection: Object.fromEntries(pluck.map(key => [key, 1])),
+    ...(pluck ? { projection: Object.fromEntries(pluck.map(key => [key, 1])) } : {}),
   })
   if (game === null) {
     throw errors.notFound(`Game not found`)
