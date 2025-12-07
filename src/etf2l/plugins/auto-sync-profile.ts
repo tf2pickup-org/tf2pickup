@@ -12,6 +12,10 @@ export default fp(
       await syncPlayerProfile(player)
     })
 
+    events.on('player:created', async ({ steamId }) => {
+      await tasks.schedule('etf2l:syncPlayerProfile', 0, { player: steamId })
+    })
+
     events.on('game:created', async ({ game }) => {
       const playerIds = Array.from(new Set(game.slots.map(slot => slot.player)))
       const playerDocs = await collections.players.find({ steamId: { $in: playerIds } }).toArray()
