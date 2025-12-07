@@ -158,7 +158,7 @@ describe('upsertPlayer()', () => {
               medium: 'FAKE_AVATAR_MEDIUM',
               large: 'FAKE_AVATAR_LARGE',
             },
-            roles: [PlayerRole.superUser],
+            roles: [PlayerRole.admin, PlayerRole.superUser],
           })
         })
       })

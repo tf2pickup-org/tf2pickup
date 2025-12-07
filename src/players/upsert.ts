@@ -44,7 +44,7 @@ async function verifyPlayer(player: CreatePlayerParams) {
     logger.info('registering super user')
     return {
       ...player,
-      roles: [PlayerRole.superUser],
+      roles: [PlayerRole.admin, PlayerRole.superUser],
     }
   }
 
