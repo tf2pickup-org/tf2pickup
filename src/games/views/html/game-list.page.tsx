@@ -30,7 +30,7 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
           state: 1,
           score: 1,
           map: 1,
-          'events.0': 1,
+          events: { $slice: 1 },
         },
       },
     )

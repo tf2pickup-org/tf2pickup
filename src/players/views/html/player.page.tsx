@@ -55,7 +55,7 @@ export async function PlayerPage(props: {
         projection: {
           number: 1,
           state: 1,
-          'events.0': 1,
+          events: { $slice: 1 },
           score: 1,
           map: 1,
           slots: 1,
