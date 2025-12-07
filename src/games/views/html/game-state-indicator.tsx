@@ -2,7 +2,7 @@ import { type GameModel, GameState } from '../../../database/models/game.model'
 import { GameLiveIndicator } from '../../../html/components/game-live-indicator'
 import { IconX } from '../../../html/components/icons'
 
-export function GameStateIndicator(props: { game: GameModel }) {
+export function GameStateIndicator(props: { game: Pick<GameModel, 'state' | 'number'> }) {
   const gameIsLive = [
     GameState.created,
     GameState.configuring,

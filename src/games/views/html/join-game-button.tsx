@@ -8,7 +8,10 @@ import { IconEye, IconLoader3, IconPlayerPlayFilled } from '../../../html/compon
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { connectStringToLink } from '../../connect-string-to-link'
 
-export async function JoinGameButton(props: { game: GameModel; actor: SteamId64 | undefined }) {
+export async function JoinGameButton(props: {
+  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  actor: SteamId64 | undefined
+}) {
   return (
     <div class="contents" id={`game-${props.game.number}-join-game-button`}>
       <JoinGameButtonContent {...props} />
@@ -16,7 +19,10 @@ export async function JoinGameButton(props: { game: GameModel; actor: SteamId64 
   )
 }
 
-async function JoinGameButtonContent(props: { game: GameModel; actor: SteamId64 | undefined }) {
+async function JoinGameButtonContent(props: {
+  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  actor: SteamId64 | undefined
+}) {
   let btnContent: JSX.Element
   let connectLink: string | undefined
   if ([GameState.created, GameState.configuring].includes(props.game.state)) {
@@ -88,7 +94,7 @@ async function JoinAsSpectator() {
   )
 }
 
-function getPlayerSlot(game: GameModel, actor?: SteamId64) {
+function getPlayerSlot(game: Pick<GameModel, 'slots'>, actor?: SteamId64) {
   if (!actor) {
     return undefined
   }

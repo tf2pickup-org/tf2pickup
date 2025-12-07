@@ -152,7 +152,7 @@ export function ChatPrompt() {
 }
 
 async function ChatMessage(props: { message: ChatMessageModel }) {
-  const author = await players.bySteamId(props.message.author)
+  const author = await players.bySteamId(props.message.author, ['name', 'roles', 'steamId'])
   const safeAt = format(props.message.at, 'HH:mm')
   const safeBody = props.message.body
   const isAdmin = author.roles.includes(PlayerRole.admin)

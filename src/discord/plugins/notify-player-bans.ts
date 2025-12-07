@@ -23,7 +23,7 @@ export default fp(
         if (isBot(ban.actor)) {
           author = { name: 'tf2pickup.org bot' }
         } else {
-          const admin = await players.bySteamId(ban.actor)
+          const admin = await players.bySteamId(ban.actor, ['name', 'steamId', 'avatar.medium'])
           author = {
             name: admin.name,
             iconURL: admin.avatar.medium,
@@ -31,7 +31,7 @@ export default fp(
           }
         }
 
-        const p = await players.bySteamId(player)
+        const p = await players.bySteamId(player, ['name', 'steamId', 'avatar.large'])
         await toAdmins({
           embeds: [
             new EmbedBuilder()
@@ -63,7 +63,7 @@ export default fp(
         if (isBot(admin)) {
           author = { name: 'tf2pickup.org bot' }
         } else {
-          const { name, avatar } = await players.bySteamId(admin)
+          const { name, avatar } = await players.bySteamId(admin, ['name', 'avatar.medium'])
           author = {
             name,
             iconURL: avatar.medium,
@@ -71,7 +71,7 @@ export default fp(
           }
         }
 
-        const p = await players.bySteamId(player)
+        const p = await players.bySteamId(player, ['name', 'steamId', 'avatar.large'])
         await toAdmins({
           embeds: [
             new EmbedBuilder()

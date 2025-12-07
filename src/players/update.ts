@@ -4,7 +4,7 @@ import type { PlayerModel } from '../database/models/player.model'
 import { mutex } from './mutex'
 import { collections } from '../database/collections'
 import { events } from '../events'
-import { bySteamId } from './by-steam-id'
+import { errors } from '../errors'
 
 export async function update(
   steamId: SteamId64,
@@ -13,7 +13,11 @@ export async function update(
   adminId?: SteamId64,
 ): Promise<PlayerModel> {
   return await mutex.runExclusive(async () => {
-    const before = await bySteamId(steamId)
+    const before = await collections.players.findOne({ steamId })
+    if (before === null) {
+      throw errors.notFound(`Player with steamId ${steamId} does not exist`)
+    }
+
     const after = (await collections.players.findOneAndUpdate({ steamId }, update, {
       returnDocument: 'after',
       ...options,

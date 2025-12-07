@@ -26,7 +26,7 @@ export default fp(
           return
         }
 
-        const admin = await players.bySteamId(adminId)
+        const admin = await players.bySteamId(adminId, ['name', 'steamId', 'avatar.medium'])
         await toAdmins({
           embeds: [
             new EmbedBuilder()

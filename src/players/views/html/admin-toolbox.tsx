@@ -7,7 +7,10 @@ import { queue } from '../../../queue'
 import { WinLossChart } from './win-loss-chart'
 import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
 
-export async function AdminToolbox(props: { user?: User | undefined; player: PlayerModel }) {
+export async function AdminToolbox(props: {
+  user?: User | undefined
+  player: Pick<PlayerModel, 'skill' | 'steamId'>
+}) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
 

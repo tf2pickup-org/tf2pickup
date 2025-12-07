@@ -48,7 +48,7 @@ tasks.register('logsTf:uploadLogs', async ({ gameNumber }) => {
 })
 
 async function getGameLogs(gameNumber: GameNumber): Promise<{ logFile: string; map: string }> {
-  const game = await games.findOne({ number: gameNumber })
+  const game = await games.findOne({ number: gameNumber }, ['logSecret', 'map'])
   if (!game.logSecret) {
     throw errors.badRequest(`game is missing log secret: #${gameNumber}`)
   }

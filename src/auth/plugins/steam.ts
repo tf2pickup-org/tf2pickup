@@ -91,7 +91,16 @@ export default fp(
       const steamId = request.session.get('steamId')
       if (steamId) {
         try {
-          const player = await players.bySteamId(steamId)
+          const player = await players.bySteamId(steamId, [
+            'steamId',
+            'roles',
+            'name',
+            'avatar.medium',
+            'preferences.soundVolume',
+            'hasAcceptedRules',
+            'activeGame',
+            'twitchTvProfile',
+          ])
           request.user = { player }
         } catch (e) {
           logger.error(e)

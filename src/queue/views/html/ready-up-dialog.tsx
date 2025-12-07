@@ -53,7 +53,7 @@ export function ReadyUpDialog() {
 }
 
 ReadyUpDialog.show = async (actor: SteamId64) => {
-  const player = await players.bySteamId(actor)
+  const player = await players.bySteamId(actor, ['preferences.soundVolume'])
   const id = nanoid()
   return (
     <>

@@ -27,7 +27,6 @@ import { MapVoteSelection } from './map-vote-selection'
 
 export async function QueuePage(props: { user?: User | undefined }) {
   const slots = await collections.queueSlots.find().toArray()
-
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
 
@@ -53,7 +52,7 @@ export async function QueuePage(props: { user?: User | undefined }) {
 
           <div class="order-2 lg:col-span-3">
             <div class="flex flex-col gap-8">
-              <QueueState actor={props.user} />
+              <QueueState actor={props.user} required={required} />
               <Queue slots={slots} actor={props.user?.player.steamId} />
             </div>
           </div>
@@ -80,13 +79,12 @@ export async function QueuePage(props: { user?: User | undefined }) {
   )
 }
 
-async function QueueState(props: { actor?: User | undefined }) {
-  const required = await collections.queueSlots.countDocuments()
+async function QueueState(props: { actor?: User | undefined; required: number }) {
   return (
     <div class="flex flex-col gap-2">
       <form ws-send class="flex flex-row items-center justify-center">
         <h3 class="flex-1 text-center text-2xl font-bold text-ash md:text-start">
-          Players: <CurrentPlayerCount />/{required}
+          Players: <CurrentPlayerCount />/{props.required}
         </h3>
 
         <PreReadyUpButton actor={props.actor?.player.steamId} />

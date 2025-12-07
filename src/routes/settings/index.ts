@@ -31,7 +31,7 @@ export default routes(async app => {
         },
       },
       async (req, reply) => {
-        const player = await players.bySteamId(req.user!.player.steamId)
+        const player = await players.bySteamId(req.user!.player.steamId, ['steamId'])
         const preferences: PlayerPreferences = {
           soundVolume: req.body.soundVolume,
         }

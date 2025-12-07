@@ -120,7 +120,7 @@ async function slotsToGameClassData(guildId: string, slots: QueueSlotModel[]) {
     slots
       .filter(slot => Boolean(slot.player))
       .map(async slot => {
-        const player = await players.bySteamId(slot.player!)
+        const player = await players.bySteamId(slot.player!, ['name'])
         return {
           name: player.name,
           gameClass: slot.gameClass,

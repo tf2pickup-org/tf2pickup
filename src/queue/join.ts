@@ -15,7 +15,12 @@ import type { QueueSlotId } from './types/queue-slot-id'
 export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
   return await mutex.runExclusive(async () => {
     logger.trace({ steamId, slotId }, `queue.join()`)
-    const player = await players.bySteamId(steamId)
+    const player = await players.bySteamId(steamId, [
+      'hasAcceptedRules',
+      'activeGame',
+      'skill',
+      'steamId',
+    ])
 
     if (!player.hasAcceptedRules) {
       throw errors.badRequest(`player has not accepted rules`)

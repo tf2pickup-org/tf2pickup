@@ -31,7 +31,7 @@ export default fp(
         ) {
           logger.info({ ...value, gameNumber }, `round ended`)
 
-          const game = await findOne({ number: gameNumber })
+          const game = await findOne({ number: gameNumber }, ['score'])
           if (value.score.red === game.score?.red && value.score.blu === game.score.blu) {
             logger.info(`score is the same, not updating`)
             rounds.delete(gameNumber)

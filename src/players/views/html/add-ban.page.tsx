@@ -1,18 +1,20 @@
 import { resolve } from 'path'
 import type { User } from '../../../auth/types/user'
-import type { PlayerModel } from '../../../database/models/player.model'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { format } from 'date-fns'
 import { makeTitle } from '../../../html/make-title'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../..'
 
-export async function AddBanPage(props: { player: PlayerModel; user: User }) {
+export async function AddBanPage(props: { steamId: SteamId64; user: User }) {
+  const player = await players.bySteamId(props.steamId, ['name'])
   return (
     <Layout
       user={props.user}
-      title={makeTitle(`Ban ${props.player.name}`)}
+      title={makeTitle(`Ban ${player.name}`)}
       embedStyle={resolve(
         import.meta.dirname,
         '..',

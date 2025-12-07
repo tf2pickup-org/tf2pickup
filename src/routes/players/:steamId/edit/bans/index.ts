@@ -22,8 +22,7 @@ export default routes(async app => {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        const player = await players.bySteamId(steamId)
-        reply.status(200).html(await EditPlayerBansPage({ player, user: req.user! }))
+        reply.status(200).html(await EditPlayerBansPage({ steamId, user: req.user! }))
       },
     )
     .put(
@@ -41,7 +40,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId, banStart } = request.params
-        const player = await players.bySteamId(steamId)
+        const player = await players.bySteamId(steamId, ['name', 'steamId'])
         const ban = await players.revokeBan({
           player: steamId,
           banStart,

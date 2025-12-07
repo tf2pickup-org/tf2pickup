@@ -43,7 +43,7 @@ export default fp(async app => {
           return
         }
 
-        const player = await players.bySteamId(actor)
+        const player = await players.bySteamId(actor, ['roles'])
         if (player.roles.includes(PlayerRole.admin)) {
           return rconConnect
         }
@@ -172,7 +172,7 @@ export default fp(async app => {
         return
       }
 
-      const player = await players.bySteamId(actor)
+      const player = await players.bySteamId(actor, ['roles'])
       if (player.roles.includes(PlayerRole.admin)) {
         return buttons
       }
@@ -188,7 +188,7 @@ export default fp(async app => {
         return
       }
 
-      const player = await players.bySteamId(actor)
+      const player = await players.bySteamId(actor, ['roles'])
       if (player.roles.includes(PlayerRole.admin)) {
         return rconConnect
       }

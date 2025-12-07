@@ -7,7 +7,13 @@ import { ConnectInfo } from './connect-info'
 import { LogsLink } from './logs-link'
 import { DemoLink } from './demo-link'
 
-export function GameSummary(props: { game: GameModel; actor?: SteamId64 | undefined }) {
+export function GameSummary(props: {
+  game: Pick<
+    GameModel,
+    'events' | 'number' | 'map' | 'state' | 'connectString' | 'stvConnectString' | 'slots'
+  >
+  actor?: SteamId64 | undefined
+}) {
   const launchedAt = props.game.events[0].at
   return (
     <div

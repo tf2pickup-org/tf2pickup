@@ -3,8 +3,8 @@ import type { PlayerModel } from '../database/models/player.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 
 export async function meetsSkillThreshold(
-  player: PlayerModel,
-  slot: QueueSlotModel,
+  player: Pick<PlayerModel, 'skill'>,
+  slot: Pick<QueueSlotModel, 'gameClass'>,
 ): Promise<boolean> {
   const skillThreshold = await configuration.get('queue.player_skill_threshold')
   if (skillThreshold === null) {
