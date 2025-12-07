@@ -1,17 +1,16 @@
-import type { PlayerModel } from '../database/models/player.model'
+import type { PlayerAvatar, PlayerModel } from '../database/models/player.model'
 import { PlayerRole } from '../database/models/player.model'
 import { collections } from '../database/collections'
-import { create } from './create'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import { configuration } from '../configuration'
 import { getTf2InGameHours } from '../steam/get-tf2-in-game-hours'
 import { logger } from '../logger'
-import type { CreatePlayerParams } from './types/create-player-params'
 import { etf2l } from '../etf2l'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { errors } from '../errors'
 import { environment } from '../environment'
+import { events } from '../events'
 
 interface UpsertPlayerParams {
   steamID: string
@@ -23,11 +22,12 @@ interface UpsertPlayerParams {
   }
 }
 
-export async function upsert(summary: UpsertPlayerParams): Promise<PlayerModel> {
+export async function upsert(summary: UpsertPlayerParams): Promise<Pick<PlayerModel, 'steamId'>> {
   logger.trace({ summary }, 'players.upsert()')
   const steamId = steamId64.parse(summary.steamID)
-  const player = await collections.players.findOne({ steamId })
+  const player = await collections.players.findOne({ steamId }, { projection: { steamId: 1 } })
   if (player) {
+    await collections.players.updateOne({ steamId }, { $set: { avatar: summary.avatar } })
     return player
   }
 
@@ -102,4 +102,36 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
       throw error
     }
   }
+}
+
+export interface CreatePlayerParams {
+  steamId: SteamId64
+  name: string
+  avatar: PlayerAvatar
+  roles?: PlayerRole[]
+}
+
+export async function create({
+  steamId,
+  name,
+  avatar,
+  roles = [],
+}: CreatePlayerParams): Promise<PlayerModel> {
+  const { insertedId } = await collections.players.insertOne({
+    name,
+    steamId,
+    joinedAt: new Date(),
+    avatar,
+    roles,
+    hasAcceptedRules: false,
+    cooldownLevel: 0,
+    preferences: {},
+    stats: {
+      totalGames: 0,
+      gamesByClass: {},
+    },
+  })
+  const player = (await collections.players.findOne({ _id: insertedId }))!
+  events.emit('player:created', { steamId: player.steamId })
+  return player
 }
