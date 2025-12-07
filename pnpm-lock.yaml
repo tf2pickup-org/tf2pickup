@@ -228,7 +228,7 @@ importers:
         specifier: 3.4.18
         version: 3.4.18(tsx@4.21.0)
       type-fest:
-        specifier: ^5.3.0
+        specifier: 5.3.0
         version: 5.3.0
       umzug:
         specifier: 3.8.2
