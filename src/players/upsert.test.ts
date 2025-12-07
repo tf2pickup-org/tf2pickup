@@ -1,24 +1,41 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { upsert } from './upsert'
-import { create } from './create'
 import { getTf2InGameHours } from '../steam/get-tf2-in-game-hours'
 import { etf2l } from '../etf2l'
 import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { PlayerRole } from '../database/models/player.model'
+import { collections } from '../database/collections'
+import { ObjectId } from 'mongodb'
 
 const mockPlayer = vi.hoisted(() => ({
   steamId: '76561198074409147',
   name: 'FAKE_PLAYER_NAME',
 }))
 
+const mockId = await vi.hoisted(async () => {
+  return new (await import('mongodb')).ObjectId()
+})
+
 vi.mock('../database/collections', () => ({
   collections: {
     players: {
-      findOne: vi.fn().mockImplementation(({ steamId }: { steamId?: string }) => {
-        if (steamId === mockPlayer.steamId) {
-          return Promise.resolve(mockPlayer)
+      insertOne: vi.fn().mockImplementation(() => ({ insertedId: mockId })),
+      findOne: vi
+        .fn()
+        .mockImplementation(({ _id, steamId }: { _id?: ObjectId; steamId?: string }) => {
+          if (_id === mockId) {
+            return Promise.resolve(mockPlayer)
+          }
+          if (steamId === mockPlayer.steamId) {
+            return Promise.resolve(mockPlayer)
+          }
+          return Promise.resolve(null)
+        }),
+      updateOne: vi.fn().mockImplementation(({ steamId }: { steamId: string }) => {
+        if (steamId !== mockPlayer.steamId) {
+          return Promise.reject()
         }
-        return Promise.resolve(null)
+        return Promise.resolve()
       }),
     },
   },
@@ -49,9 +66,6 @@ vi.mock('../etf2l', () => ({
   },
 }))
 
-vi.mock('./create', () => ({
-  create: vi.fn(),
-}))
 vi.mock('../logger', () => ({
   logger: {
     info: vi.fn(),
@@ -75,23 +89,65 @@ const upsertedPlayer = {
   },
 }
 
+let now: Date
+
+beforeEach(() => {
+  // tell vitest we use mocked time
+  vi.useFakeTimers()
+
+  now = new Date(2000, 1, 1, 13)
+  vi.setSystemTime(now)
+})
+
+afterEach(() => {
+  // restoring date after each test run
+  vi.useRealTimers()
+})
+
 describe('upsertPlayer()', () => {
   describe('when player exists', () => {
     it('should return existing player', async () => {
       const player = await upsert(upsertedPlayer)
       expect(player).toBe(mockPlayer)
     })
+
+    it('should update player avatar', async () => {
+      await upsert(upsertedPlayer)
+      expect(collections.players.updateOne).toHaveBeenCalledWith(
+        {
+          steamId: '76561198074409147',
+        },
+        {
+          $set: {
+            avatar: {
+              small: 'FAKE_AVATAR_SMALL',
+              medium: 'FAKE_AVATAR_MEDIUM',
+              large: 'FAKE_AVATAR_LARGE',
+            },
+          },
+        },
+      )
+    })
   })
 
   it('should create player', async () => {
     await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
-    expect(create).toHaveBeenCalledWith({
+    expect(collections.players.insertOne).toHaveBeenCalledWith({
       steamId: '12345678901234567',
+      joinedAt: now,
       name: 'FAKE_PLAYER_NAME',
       avatar: {
         small: 'FAKE_AVATAR_SMALL',
         medium: 'FAKE_AVATAR_MEDIUM',
         large: 'FAKE_AVATAR_LARGE',
+      },
+      roles: [],
+      hasAcceptedRules: false,
+      cooldownLevel: 0,
+      preferences: {},
+      stats: {
+        totalGames: 0,
+        gamesByClass: {},
       },
     })
   })
@@ -127,13 +183,22 @@ describe('upsertPlayer()', () => {
 
         it('should create player', async () => {
           await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
-          expect(create).toHaveBeenCalledWith({
+          expect(collections.players.insertOne).toHaveBeenCalledWith({
             steamId: '12345678901234567',
+            joinedAt: now,
             name: 'FAKE_PLAYER_NAME',
             avatar: {
               small: 'FAKE_AVATAR_SMALL',
               medium: 'FAKE_AVATAR_MEDIUM',
               large: 'FAKE_AVATAR_LARGE',
+            },
+            roles: [],
+            hasAcceptedRules: false,
+            cooldownLevel: 0,
+            preferences: {},
+            stats: {
+              totalGames: 0,
+              gamesByClass: {},
             },
           })
         })
@@ -150,8 +215,9 @@ describe('upsertPlayer()', () => {
 
         it('should create player', async () => {
           await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
-          expect(create).toHaveBeenCalledWith({
+          expect(collections.players.insertOne).toHaveBeenCalledWith({
             steamId: '12345678901234567',
+            joinedAt: now,
             name: 'FAKE_PLAYER_NAME',
             avatar: {
               small: 'FAKE_AVATAR_SMALL',
@@ -159,6 +225,13 @@ describe('upsertPlayer()', () => {
               large: 'FAKE_AVATAR_LARGE',
             },
             roles: [PlayerRole.admin, PlayerRole.superUser],
+            hasAcceptedRules: false,
+            cooldownLevel: 0,
+            preferences: {},
+            stats: {
+              totalGames: 0,
+              gamesByClass: {},
+            },
           })
         })
       })
@@ -171,13 +244,22 @@ describe('upsertPlayer()', () => {
 
       it('should create player', async () => {
         await upsert({ ...upsertedPlayer, steamID: '12345678901234567' })
-        expect(create).toHaveBeenCalledWith({
+        expect(collections.players.insertOne).toHaveBeenCalledWith({
           steamId: '12345678901234567',
+          joinedAt: now,
           name: 'FAKE_PLAYER_NAME',
           avatar: {
             small: 'FAKE_AVATAR_SMALL',
             medium: 'FAKE_AVATAR_MEDIUM',
             large: 'FAKE_AVATAR_LARGE',
+          },
+          roles: [],
+          hasAcceptedRules: false,
+          cooldownLevel: 0,
+          preferences: {},
+          stats: {
+            totalGames: 0,
+            gamesByClass: {},
           },
         })
       })
