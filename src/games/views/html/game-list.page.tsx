@@ -49,17 +49,23 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
         <div class="container mx-auto">
           <div class="my-9 text-[48px] font-bold text-abru-light-75">Games</div>
 
-          <div class="game-list">
-            {games.map(game => (
-              <GameListItem game={game} />
-            ))}
-          </div>
-          <Pagination
-            hrefFn={page => `/games?page=${page}`}
-            lastPage={last}
-            currentPage={page}
-            around={around}
-          />
+          {games.length > 0 ? (
+            <>
+              <div class="game-list">
+                {games.map(game => (
+                  <GameListItem game={game} />
+                ))}
+              </div>
+              <Pagination
+                hrefFn={page => `/games?page=${page}`}
+                lastPage={last}
+                currentPage={page}
+                around={around}
+              />
+            </>
+          ) : (
+            <p class="text-abru-light-50">No games yet.</p>
+          )}
         </div>
       </Page>
       <Footer user={props.user} />
