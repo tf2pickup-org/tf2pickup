@@ -99,7 +99,7 @@ app.setErrorHandler((error, request, reply) => {
     case 'json':
       return reply.type('application/json').code(statusCode).send({ message })
     case 'html':
-      return reply.code(statusCode).html(ErrorPage({ user: request.user, statusCode, message }))
+      return reply.code(statusCode).html(ErrorPage({ statusCode, message }))
     default:
       return reply.code(406).send('Not Acceptable')
   }
@@ -111,9 +111,7 @@ app.setNotFoundHandler(async (request, reply) => {
     case 'json':
       return reply.type('application/json').code(404).send({ message: 'Not found' })
     case 'html':
-      return reply
-        .code(404)
-        .html(ErrorPage({ user: request.user, statusCode: 404, message: 'Not found' }))
+      return reply.code(404).html(ErrorPage({ statusCode: 404, message: 'Not found' }))
     default:
       return reply.code(406).send('Not Acceptable')
   }
