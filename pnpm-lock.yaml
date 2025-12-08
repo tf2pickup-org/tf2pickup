@@ -228,8 +228,8 @@ importers:
         specifier: 3.4.18
         version: 3.4.18(tsx@4.21.0)
       type-fest:
-        specifier: 5.3.0
-        version: 5.3.0
+        specifier: 5.3.1
+        version: 5.3.1
       umzug:
         specifier: 3.8.2
         version: 3.8.2(@types/node@24.10.1)
@@ -4693,8 +4693,8 @@ packages:
     resolution: {integrity: sha512-G6zXWS1dLj6eagy6sVhOMQiLtJdxQBHIA9Z6HFUNLOlr6MFOgzV8wvmidtPONfPtEUv0uZsy77XJNzTAfwPDaA==}
     engines: {node: '>=16'}
 
-  type-fest@5.3.0:
-    resolution: {integrity: sha512-d9CwU93nN0IA1QL+GSNDdwLAu1Ew5ZjTwupvedwg3WdfoH6pIDvYQ2hV0Uc2nKBLPq7NB5apCx57MLS5qlmO5g==}
+  type-fest@5.3.1:
+    resolution: {integrity: sha512-VCn+LMHbd4t6sF3wfU/+HKT63C9OoyrSIf4b+vtWHpt2U7/4InZG467YDNMFMR70DdHjAdpPWmw2lzRdg0Xqqg==}
     engines: {node: '>=20'}
 
   type-is@2.0.1:
@@ -9541,7 +9541,7 @@ snapshots:
 
   type-fest@4.30.0: {}
 
-  type-fest@5.3.0:
+  type-fest@5.3.1:
     dependencies:
       tagged-tag: 1.0.0
 
