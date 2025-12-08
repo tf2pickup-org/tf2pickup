@@ -8,11 +8,9 @@ import { requestContext } from '@fastify/request-context'
 import { embed } from './embed'
 import { bundle } from './bundle'
 import { mainTsPath } from './main-ts-path'
-import type { User } from '../auth/types/user'
 
 export async function Layout(
   props?: Html.PropsWithChildren<{
-    user?: User | undefined
     title?: string
     description?: string
     canonical?: string
@@ -32,6 +30,7 @@ export async function Layout(
   )
 
   const boosted = requestContext.get('boosted')
+  const user = requestContext.get('user')
 
   // if we're coming from boosted request, render only the fragment
   if (boosted) {
@@ -73,8 +72,8 @@ export async function Layout(
         class="h-screen"
         hx-boost="true"
       >
-        {umamiEnabled && !!props?.user && (
-          <script>{`document.addEventListener('DOMContentLoaded', () => {umami.identify({ steamId: '${props.user.player.steamId}' });});`}</script>
+        {umamiEnabled && !!user && (
+          <script>{`document.addEventListener('DOMContentLoaded', () => {umami.identify({ steamId: '${user.player.steamId}' });});`}</script>
         )}
         {body}
       </body>

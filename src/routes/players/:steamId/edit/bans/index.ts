@@ -22,7 +22,7 @@ export default routes(async app => {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        reply.status(200).html(await EditPlayerBansPage({ steamId, user: req.user! }))
+        reply.status(200).html(await EditPlayerBansPage({ steamId }))
       },
     )
     .put(

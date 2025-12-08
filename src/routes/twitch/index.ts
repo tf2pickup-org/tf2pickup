@@ -17,16 +17,12 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      const player = await players.update(
-        request.user!.player.steamId,
-
-        {
-          $unset: {
-            twitchTvProfile: 1,
-          },
+      const player = await players.update(request.user!.player.steamId, {
+        $unset: {
+          twitchTvProfile: 1,
         },
-      )
-      reply.html(await TwitchTvSettingsEntry({ user: { player } }))
+      })
+      reply.html(await TwitchTvSettingsEntry({ player }))
     },
   )
 })

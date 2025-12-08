@@ -1,10 +1,9 @@
-import type { User } from '../../../../auth/types/user'
 import { Admin } from '../../../views/html/admin'
 import { MapVoteOptions } from './map-vote-options'
 
-export async function ScrambleMaps(props: { user: User }) {
+export async function ScrambleMaps() {
   return (
-    <Admin activePage="scramble-maps" user={props.user}>
+    <Admin activePage="scramble-maps">
       <div class="admin-panel-set">
         <MapVoteOptions />
 

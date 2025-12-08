@@ -6,7 +6,7 @@ import { IconLoader3 } from '../../../../html/components/icons'
 
 export function ServemeTfPreferredRegion() {
   return (
-    <p>
+    <p class="mt-2">
       <dl>
         <dt>
           <label for="serveme-tf-preferred-region-select">

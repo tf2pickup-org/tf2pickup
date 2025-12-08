@@ -4,7 +4,6 @@ import { Layout } from '../../../html/layout'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { deburr } from 'es-toolkit'
 import { collections } from '../../../database/collections'
-import type { User } from '../../../auth/types/user'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { makeTitle } from '../../../html/make-title'
@@ -12,7 +11,7 @@ import { makeTitle } from '../../../html/make-title'
 const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
 const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 
-export async function PlayerListPage(user?: User) {
+export async function PlayerListPage() {
   const players = await collections.players
     .find<Pick<PlayerModel, 'steamId' | 'name'>>({}, { projection: { steamId: 1, name: 1 } })
     .toArray()
@@ -20,13 +19,12 @@ export async function PlayerListPage(user?: User) {
 
   return (
     <Layout
-      user={user}
       title={makeTitle('players')}
       description="player list"
       canonical="/players"
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar user={user} />
+      <NavigationBar />
       <Page>
         <div class="container mx-auto">
           <div class="my-9 text-[48px] font-bold text-abru-light-75">Players</div>
@@ -63,7 +61,7 @@ export async function PlayerListPage(user?: User) {
           ))}
         </div>
       </Page>
-      <Footer user={user} />
+      <Footer />
     </Layout>
   )
 }

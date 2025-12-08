@@ -1,5 +1,4 @@
 import { requestContext } from '@fastify/request-context'
-import type { User } from '../../auth/types/user'
 import { GamesLink } from './games-link'
 import { IconBrandDiscord, IconChartPie, IconCrown, IconHeart } from './icons'
 import { IconBrandSteam } from './icons/icon-brand-steam'
@@ -7,7 +6,7 @@ import { Profile } from './profile'
 import Html from '@kitajs/html'
 import { configuration } from '../../configuration'
 
-export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
+export function NavigationBar() {
   return (
     <nav class="flex min-h-[95px] flex-row justify-center">
       <div class="container flex flex-row items-center justify-between">
@@ -16,15 +15,15 @@ export function NavigationBar(props: Html.PropsWithChildren<{ user?: User | unde
         </a>
 
         <div class="hidden flex-row items-center gap-5 font-medium lg:flex">
-          <Menu {...props} />
+          <Menu />
         </div>
       </div>
     </nav>
   )
 }
 
-async function Menu(props: Html.PropsWithChildren<{ user?: User | undefined }>) {
-  const { user } = props
+async function Menu() {
+  const user = requestContext.get('user')
   let btn = <SteamButton />
   if (user) {
     btn = <Profile {...user.player} />

@@ -1,4 +1,3 @@
-import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
 import {
   configurationSchema,
@@ -7,7 +6,7 @@ import {
 import { IconArrowBackUp } from '../../../../html/components/icons'
 import { Admin } from '../../../views/html/admin'
 
-export async function ViewForNerdsPage(props: { user: User }) {
+export async function ViewForNerdsPage() {
   const entries = await Promise.all(
     configurationSchema._zod.def.options.map(async option => {
       const _key = option._zod.def.shape.key._zod.def.values[0]!
@@ -18,7 +17,7 @@ export async function ViewForNerdsPage(props: { user: User }) {
   )
 
   return (
-    <Admin activePage="view-for-nerds" user={props.user}>
+    <Admin activePage="view-for-nerds">
       <div class="admin-panel-set">
         <div class="table w-full">
           <div class="table-header-group">

@@ -1,5 +1,4 @@
 import { resolve } from 'node:path'
-import type { User } from '../../../auth/types/user'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Layout } from '../../../html/layout'
 import { collections } from '../../../database/collections'
@@ -13,7 +12,7 @@ import type { GameModel } from '../../../database/models/game.model'
 
 const itemsPerPage = 8
 
-export async function GameListPage(props: { user?: User | undefined; page: number }) {
+export async function GameListPage(props: { page: number }) {
   const { page } = props
   const { last, around } = paginate(page, itemsPerPage, await collections.games.countDocuments())
   const skip = (page - 1) * itemsPerPage
@@ -38,13 +37,12 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
 
   return (
     <Layout
-      user={props.user}
       title={makeTitle('games')}
       description={`games - page ${page}`}
       canonical="/games"
       embedStyle={resolve(import.meta.dirname, 'game-list.css')}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar />
       <Page>
         <div class="container mx-auto">
           <div class="my-9 text-[48px] font-bold text-abru-light-75">Games</div>
@@ -68,7 +66,7 @@ export async function GameListPage(props: { user?: User | undefined; page: numbe
           )}
         </div>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
     </Layout>
   )
 }

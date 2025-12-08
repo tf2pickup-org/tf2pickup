@@ -5,10 +5,17 @@ import SteamAPI from 'steamapi'
 import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { players } from '../../players'
+import type { User } from '../types/user'
 
 declare module '@fastify/secure-session' {
   interface SessionData {
     steamId: SteamId64
+  }
+}
+
+declare module '@fastify/request-context' {
+  interface RequestContextData {
+    user?: User
   }
 }
 
@@ -102,6 +109,7 @@ export default fp(
             'twitchTvProfile',
           ])
           request.user = { player }
+          request.requestContext.set('user', { player })
         } catch (e) {
           logger.error(e)
           request.session.regenerate()

@@ -27,8 +27,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        reply.status(200).html(await PlayerRestrictionsPage({ user: request.user! }))
+      async (_request, reply) => {
+        reply.status(200).html(await PlayerRestrictionsPage())
       },
     )
     .post(
@@ -81,7 +81,7 @@ export default routes(async app => {
           configuration.set('games.default_player_skill', defaultPlayerSkill),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await PlayerRestrictionsPage({ user: request.user! }))
+        reply.status(200).html(await PlayerRestrictionsPage())
       },
     )
 })

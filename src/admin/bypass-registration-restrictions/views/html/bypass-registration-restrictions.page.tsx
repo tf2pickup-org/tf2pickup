@@ -1,11 +1,10 @@
-import type { User } from '../../../../auth/types/user'
 import { IconPlus } from '../../../../html/components/icons'
 import { Admin } from '../../../views/html/admin'
 import { BypassedSteamIds } from './bypassed-steam-ids'
 
-export function BypassRegistrationRestrictionsPage(props: { user: User }) {
+export function BypassRegistrationRestrictionsPage() {
   return (
-    <Admin activePage="bypass-registration-restrictions" user={props.user}>
+    <Admin activePage="bypass-registration-restrictions">
       <div class="admin-panel-set">
         <p>
           Allow users to register without checking if they meet the criteria described in the{' '}

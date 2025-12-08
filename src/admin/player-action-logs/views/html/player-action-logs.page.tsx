@@ -1,11 +1,10 @@
-import type { User } from '../../../../auth/types/user'
 import { Admin } from '../../../views/html/admin'
 import { getLogs } from '../../get-logs'
 import { LogEntryList } from './log-entry-list'
 
-export async function PlayerActionLogsPage(props: { user: User }) {
+export async function PlayerActionLogsPage() {
   return (
-    <Admin activePage="player-action-logs" user={props.user}>
+    <Admin activePage="player-action-logs">
       <div class="admin-panel-set max-h-[750px] overflow-y-scroll">
         <table class="w-full text-left text-sm rtl:text-right">
           <thead>

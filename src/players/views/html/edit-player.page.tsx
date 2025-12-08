@@ -2,7 +2,6 @@ import { resolve } from 'node:path'
 import { PlayerRole, type PlayerBan, type PlayerModel } from '../../../database/models/player.model'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
-import type { User } from '../../../auth/types/user'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import {
@@ -38,6 +37,7 @@ import { environment } from '../../../environment'
 import { configuration } from '../../../configuration'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
+import { requestContext } from '@fastify/request-context'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -45,7 +45,7 @@ const editPlayerPages = {
   '/roles': 'Roles',
 } as const
 
-export async function EditPlayerProfilePage(props: { steamId: SteamId64; user: User }) {
+export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, [
     'name',
     'steamId',
@@ -53,7 +53,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64; user: U
     'cooldownLevel',
   ])
   return (
-    <EditPlayer player={player} user={props.user} activePage="/profile">
+    <EditPlayer player={player} activePage="/profile">
       <form action="" method="post">
         <div class="admin-panel-set">
           <div class="grid grid-cols-[1fr_184px] gap-y-4">
@@ -101,13 +101,12 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64; user: U
   )
 }
 
-export async function EditPlayerBansPage(props: { steamId: SteamId64; user: User }) {
+export async function EditPlayerBansPage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['bans', 'name', 'steamId'])
   const bans = player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
   return (
     <EditPlayer
       player={player}
-      user={props.user}
       activePage="/bans"
       action={
         <a href={`/players/${player.steamId}/edit/bans/add`} class="button button--accent">
@@ -133,12 +132,12 @@ export async function EditPlayerBansPage(props: { steamId: SteamId64; user: User
   )
 }
 
-export async function EditPlayerRolesPage(props: { steamId: SteamId64; user: User }) {
+export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['roles', 'name', 'steamId'])
   const roles = player.roles
   const safeWebsiteName = environment.WEBSITE_NAME
   return (
-    <EditPlayer player={player} user={props.user} activePage="/roles">
+    <EditPlayer player={player} activePage="/roles">
       <form action="" method="post">
         <div class="admin-panel-set">
           <div class="form-checkbox">
@@ -182,19 +181,18 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64; user: Use
 
 function EditPlayer(props: {
   player: Pick<PlayerModel, 'name' | 'steamId'>
-  user: User
   children: Children
   activePage: keyof typeof editPlayerPages
   action?: Children
 }) {
+  const user = requestContext.get('user')!
   const safeName = props.player.name
   return (
     <Layout
-      user={props.user}
       title={makeTitle(`Edit ${props.player.name}`)}
       embedStyle={resolve(import.meta.dirname, 'edit-player.page.css')}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar />
       <Page>
         <AdminPanel>
           <AdminPanelSidebar>
@@ -218,7 +216,7 @@ function EditPlayer(props: {
               Bans
             </AdminPanelLink>
 
-            {props.user.player.roles.includes(PlayerRole.superUser) && (
+            {user.player.roles.includes(PlayerRole.superUser) && (
               <>
                 <AdminPanelSection>Super-user</AdminPanelSection>
                 <AdminPanelLink
@@ -240,7 +238,7 @@ function EditPlayer(props: {
           </AdminPanelBody>
         </AdminPanel>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
     </Layout>
   )
 }

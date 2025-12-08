@@ -1,11 +1,10 @@
-import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
 import { VoiceServerType } from '../../../../shared/types/voice-server-type'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 import { MumbleClientStatus } from './mumble-client-status'
 
-export async function VoiceServerPage(props: { user: User }) {
+export async function VoiceServerPage() {
   const type = await configuration.get('games.voice_server_type')
   const staticLink = await configuration.get('games.voice_server.static_link')
   const [mumbleUrl, mumbleInternalUrl, mumblePort, mumblePassword, mumbleChannelName] =
@@ -18,7 +17,7 @@ export async function VoiceServerPage(props: { user: User }) {
     ])
 
   return (
-    <Admin activePage="voice-server" user={props.user}>
+    <Admin activePage="voice-server">
       <form action="" method="post" id="voiceServerForm">
         <div class="admin-panel-set">
           <div class="form-checkbox">

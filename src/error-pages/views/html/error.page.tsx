@@ -1,14 +1,13 @@
-import type { User } from '../../../auth/types/user'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { makeTitle } from '../../../html/make-title'
 
-export function ErrorPage(props: { statusCode: number; message: string; user?: User | undefined }) {
+export function ErrorPage(props: { statusCode: number; message: string }) {
   return (
-    <Layout user={props.user} title={makeTitle('Error')}>
-      <NavigationBar user={props.user} />
+    <Layout title={makeTitle('Error')}>
+      <NavigationBar />
       <Page>
         <div class="flex h-full flex-col items-center justify-center">
           <span class="text-[384px] font-bold leading-none text-abru-light-75">
@@ -22,7 +21,7 @@ export function ErrorPage(props: { statusCode: number; message: string; user?: U
           </a>
         </div>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
     </Layout>
   )
 }

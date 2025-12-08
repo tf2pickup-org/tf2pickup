@@ -1,4 +1,3 @@
-import type { User } from '../../../auth/types/user'
 import { environment } from '../../../environment'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
@@ -9,15 +8,14 @@ import { GameLaunchTimeSpans } from './game-launch-time-spans'
 import { GameLaunchesPerDay } from './game-launches-per-day'
 import { PlayedMapsCount } from './played-maps-count'
 
-export async function StatisticsPage(user?: User) {
+export async function StatisticsPage() {
   return (
     <Layout
-      user={user}
       title={makeTitle('statistics')}
       description={`${environment.WEBSITE_NAME} statistics`}
       canonical="/statistics"
     >
-      <NavigationBar user={user} />
+      <NavigationBar />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">
           <div class="lg:col-span-2">
@@ -37,7 +35,7 @@ export async function StatisticsPage(user?: User) {
           </div>
         </div>
       </Page>
-      <Footer user={user} />
+      <Footer />
     </Layout>
   )
 }

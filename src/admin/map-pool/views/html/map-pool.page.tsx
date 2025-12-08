@@ -1,14 +1,13 @@
-import type { User } from '../../../../auth/types/user'
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { mapPool } from '../../../../queue/map-pool'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 
-export async function MapPoolPage(props: { user: User }) {
+export async function MapPoolPage() {
   const maps = await mapPool.get()
 
   return (
-    <Admin activePage="map-pool" user={props.user}>
+    <Admin activePage="map-pool">
       <form action="" method="post">
         <div class="admin-panel-set">
           <table class="table-auto">

@@ -16,7 +16,6 @@ export default routes(async app => {
     async (request, reply) => {
       reply.status(200).html(
         await GameListPage({
-          user: request.user,
           page: Number(request.query.page) || 1,
         }),
       )

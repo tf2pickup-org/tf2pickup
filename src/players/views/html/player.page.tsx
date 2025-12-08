@@ -1,4 +1,3 @@
-import type { User } from '../../../auth/types/user'
 import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
@@ -25,14 +24,11 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
 import type { PickDeep } from 'type-fest'
 import type { GameModel } from '../../../database/models/game.model'
+import { requestContext } from '@fastify/request-context'
 
 const gamesPerPage = 5
 
-export async function PlayerPage(props: {
-  steamId: SteamId64
-  user?: User | undefined
-  page: number
-}) {
+export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
   const player = await players.bySteamId(props.steamId, [
     'steamId',
     'name',
@@ -43,6 +39,7 @@ export async function PlayerPage(props: {
     'avatar.large',
     'stats',
   ])
+  const user = requestContext.get('user')
   const skip = (props.page - 1) * gamesPerPage
 
   const games = await collections.games
@@ -72,13 +69,12 @@ export async function PlayerPage(props: {
 
   return (
     <Layout
-      user={props.user}
       title={makeTitle(player.name)}
       description={`${player.name}'s profile on ${environment.WEBSITE_NAME}`}
       canonical={`/players/${player.steamId}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar />
       <Page>
         <div class="container relative mx-auto flex flex-col gap-[30px]">
           <PlayerPresentation
@@ -87,9 +83,7 @@ export async function PlayerPage(props: {
             gameCountOnClasses={player.stats.gamesByClass}
           />
 
-          {props.user?.player.roles.includes(PlayerRole.admin) && (
-            <AdminToolbox user={props.user} player={player} />
-          )}
+          {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
 
           {games.length > 0 ? (
             <>
@@ -117,7 +111,7 @@ export async function PlayerPage(props: {
           )}
         </div>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
     </Layout>
   )
 }

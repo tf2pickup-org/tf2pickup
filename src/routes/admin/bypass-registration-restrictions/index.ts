@@ -18,8 +18,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        return reply.html(BypassRegistrationRestrictionsPage({ user: request.user! }))
+      async (_request, reply) => {
+        return reply.html(BypassRegistrationRestrictionsPage())
       },
     )
     .post(
@@ -38,18 +38,18 @@ export default routes(async app => {
         const isRegistered = (await collections.players.countDocuments({ steamId })) > 0
         if (isRegistered) {
           requestContext.set('messages', { error: ['Player is already registered'] })
-          return reply.html(BypassRegistrationRestrictionsPage({ user: request.user! }))
+          return reply.html(BypassRegistrationRestrictionsPage())
         }
 
         const config = await configuration.get('players.bypass_registration_restrictions')
         if (config.some(c => c === steamId)) {
           requestContext.set('messages', { error: ['This Steam ID is already added'] })
-          return reply.html(BypassRegistrationRestrictionsPage({ user: request.user! }))
+          return reply.html(BypassRegistrationRestrictionsPage())
         }
 
         await configuration.set('players.bypass_registration_restrictions', [...config, steamId])
         requestContext.set('messages', { success: ['Steam ID added'] })
-        return reply.html(BypassRegistrationRestrictionsPage({ user: request.user! }))
+        return reply.html(BypassRegistrationRestrictionsPage())
       },
     )
     .delete(
