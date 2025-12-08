@@ -6,7 +6,10 @@ import { requestContext } from '@fastify/request-context'
 import { VoiceServerPage } from '../../../admin/voice-server/views/html/voice-server.page'
 import { routes } from '../../../utils/routes'
 
-const emptyString = z.union([z.literal('').transform(() => null), z.string()]).nullable()
+const emptyString = z
+  .union([z.literal('').transform(() => null), z.string()])
+  .nullable()
+  .default(null)
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
