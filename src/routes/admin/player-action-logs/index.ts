@@ -11,8 +11,8 @@ export default routes(async app => {
         authorize: [PlayerRole.superUser],
       },
     },
-    async (request, reply) => {
-      await reply.status(200).html(PlayerActionLogsPage({ user: request.user! }))
+    async (_request, reply) => {
+      await reply.status(200).html(PlayerActionLogsPage())
     },
   )
 })

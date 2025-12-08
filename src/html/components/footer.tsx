@@ -1,10 +1,11 @@
-import type { User } from '../../auth/types/user'
+import { requestContext } from '@fastify/request-context'
 import { PlayerRole } from '../../database/models/player.model'
 import { version as safeVersion } from '../../version'
 
 const currentYear = new Date().getFullYear()
 
-export function Footer(props: { user?: User | undefined }) {
+export function Footer() {
+  const user = requestContext.get('user')
   return (
     <footer class="w-full">
       <div class="container mx-auto my-4">
@@ -30,9 +31,7 @@ export function Footer(props: { user?: User | undefined }) {
               Changelog
             </a>
 
-            {props.user?.player.roles.includes(PlayerRole.admin) && (
-              <a href="/admin">Admin panel</a>
-            )}
+            {user?.player.roles.includes(PlayerRole.admin) && <a href="/admin">Admin panel</a>}
           </div>
         </div>
       </div>

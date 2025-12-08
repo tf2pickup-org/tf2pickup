@@ -1,5 +1,4 @@
 import type { Children } from '@kitajs/html'
-import type { User } from '../../../auth/types/user'
 import {
   AdminPanel,
   AdminPanelBody,
@@ -29,6 +28,7 @@ import { Footer } from '../../../html/components/footer'
 import { resolve } from 'path'
 import { makeTitle } from '../../../html/make-title'
 import { PlayerRole } from '../../../database/models/player.model'
+import { requestContext } from '@fastify/request-context'
 
 const adminPages = {
   'player-restrictions': {
@@ -99,21 +99,17 @@ const superUserPages = {
 const sections = Array.from(new Set(Object.values(adminPages).map(({ section }) => section)))
 
 export function Admin(props: {
-  user: User
   activePage: keyof typeof adminPages | keyof typeof superUserPages
   children: Children
 }) {
+  const user = requestContext.get('user')
   const title =
     props.activePage in adminPages
       ? adminPages[props.activePage as keyof typeof adminPages].title
       : superUserPages[props.activePage as keyof typeof superUserPages].title
   return (
-    <Layout
-      user={props.user}
-      title={makeTitle(title)}
-      embedStyle={resolve(import.meta.dirname, 'style.css')}
-    >
-      <NavigationBar user={props.user} />
+    <Layout title={makeTitle(title)} embedStyle={resolve(import.meta.dirname, 'style.css')}>
+      <NavigationBar />
       <Page>
         <AdminPanel>
           <AdminPanelSidebar>
@@ -131,7 +127,7 @@ export function Admin(props: {
                   ))}
               </>
             ))}
-            {props.user.player.roles.includes(PlayerRole.superUser) && (
+            {user?.player.roles.includes(PlayerRole.superUser) && (
               <>
                 <AdminPanelSection>Super-user</AdminPanelSection>
                 {Object.entries(superUserPages).map(([key, value]) => (
@@ -150,7 +146,7 @@ export function Admin(props: {
           </AdminPanelBody>
         </AdminPanel>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
     </Layout>
   )
 }

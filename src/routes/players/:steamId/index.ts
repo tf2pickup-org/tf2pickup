@@ -33,7 +33,6 @@ export default routes(async app => {
         reply.status(200).html(
           await PlayerPage({
             steamId,
-            user: req.user,
             page: Number(req.query.gamespage) || 1,
           }),
         )

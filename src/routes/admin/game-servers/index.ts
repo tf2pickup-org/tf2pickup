@@ -11,8 +11,8 @@ export default routes(async app => {
         authorize: [PlayerRole.admin],
       },
     },
-    async (request, reply) => {
-      await reply.status(200).html(GameServersPage({ user: request.user! }))
+    async (_request, reply) => {
+      await reply.status(200).html(GameServersPage())
     },
   )
 })

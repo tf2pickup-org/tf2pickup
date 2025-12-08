@@ -24,45 +24,47 @@ import { PreReadyUpButton } from '../../../pre-ready/views/html/pre-ready-up-but
 import { Sidebar } from './sidebar'
 import { IsInQueue } from './is-in-queue'
 import { MapVoteSelection } from './map-vote-selection'
+import { requestContext } from '@fastify/request-context'
 
-export async function QueuePage(props: { user?: User | undefined }) {
+export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
 
+  const user = requestContext.get('user')
+
   return (
     <Layout
-      user={props.user}
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
       description="6v6 competitive pick-up games for everyone"
       canonical="/"
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar />
       <Page>
-        <IsInQueue actor={props.user?.player.steamId} />
-        <MapVoteSelection actor={props.user?.player.steamId} />
+        <IsInQueue actor={user?.player.steamId} />
+        <MapVoteSelection actor={user?.player.steamId} />
         <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />
-            {!!props.user && <RequestNotificationPermissions />}
-            <BanAlerts actor={props.user?.player.steamId} />
+            {!!user && <RequestNotificationPermissions />}
+            <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
           </div>
 
           <div class="order-2 lg:col-span-3">
             <div class="flex flex-col gap-8">
-              <QueueState actor={props.user} required={required} />
-              <Queue slots={slots} actor={props.user?.player.steamId} />
+              <QueueState actor={user} required={required} />
+              <Queue slots={slots} actor={user?.player.steamId} />
             </div>
           </div>
 
           <div class="order-4 lg:col-span-3">
-            <MapVote actor={props.user?.player.steamId} />
+            <MapVote actor={user?.player.steamId} />
           </div>
 
           <div class="order-last lg:order-3 lg:row-span-2">
-            <Sidebar user={props.user} />
+            <Sidebar user={user} />
           </div>
 
           <div class="order-5 lg:col-span-4">
@@ -70,11 +72,11 @@ export async function QueuePage(props: { user?: User | undefined }) {
           </div>
         </div>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
 
       <div id="queue-notify-container"></div>
-      <RunningGameSnackbar gameNumber={props.user?.player.activeGame} />
-      <AcceptRulesDialog actor={props.user} />
+      <RunningGameSnackbar gameNumber={user?.player.activeGame} />
+      <AcceptRulesDialog actor={user} />
     </Layout>
   )
 }

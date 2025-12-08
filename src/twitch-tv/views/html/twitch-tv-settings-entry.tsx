@@ -1,7 +1,7 @@
-import type { User } from '../../../auth/types/user'
+import type { PlayerModel } from '../../../database/models/player.model'
 import { IconBrandTwitch } from '../../../html/components/icons'
 
-export function TwitchTvSettingsEntry(props: { user: User }) {
+export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitchTvProfile'> }) {
   return (
     <div
       class="flex flex-row items-center gap-4 rounded bg-abru-light-5 p-2"
@@ -10,16 +10,16 @@ export function TwitchTvSettingsEntry(props: { user: User }) {
     >
       <IconBrandTwitch size={32} />
       <p class="font-bold">twitch.tv</p>
-      {props.user.player.twitchTvProfile ? (
+      {props.player.twitchTvProfile ? (
         <>
           <p>
             Logged in as{' '}
             <a
-              href={`https://www.twitch.tv/${props.user.player.twitchTvProfile.login}`}
+              href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}`}
               target="_blank"
               safe
             >
-              {props.user.player.twitchTvProfile.login}
+              {props.player.twitchTvProfile.login}
             </a>
           </p>
           <div class="flex-1"></div>

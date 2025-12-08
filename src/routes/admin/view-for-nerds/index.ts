@@ -21,8 +21,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        await reply.html(ViewForNerdsPage({ user: request.user! }))
+      async (_request, reply) => {
+        await reply.html(ViewForNerdsPage())
       },
     )
     .post(

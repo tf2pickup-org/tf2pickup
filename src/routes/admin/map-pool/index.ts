@@ -19,8 +19,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        reply.status(200).html(await MapPoolPage({ user: request.user! }))
+      async (_request, reply) => {
+        reply.status(200).html(await MapPoolPage())
       },
     )
     .post(
@@ -53,7 +53,7 @@ export default routes(async app => {
       async (request, reply) => {
         await mapPool.set(request.body.maps)
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await MapPoolPage({ user: request.user! }))
+        reply.status(200).html(await MapPoolPage())
       },
     )
     .post('/create', async (_request, response) => {

@@ -4,7 +4,7 @@ import disableCache from 'fastify-disablecache'
 
 export default routes(async app => {
   await app.register(disableCache)
-  app.get('/', async (req, reply) => {
-    return reply.status(200).html(QueuePage({ user: req.user }))
+  app.get('/', async (_req, reply) => {
+    return reply.html(QueuePage())
   })
 })

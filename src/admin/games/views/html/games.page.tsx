@@ -1,11 +1,10 @@
 import { millisecondsToSeconds } from 'date-fns'
-import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 
-export async function GamesPage(props: { user: User }) {
+export async function GamesPage() {
   const whitelistId = await configuration.get('games.whitelist_id')
   const joinGameServerTimeout = await configuration.get('games.join_gameserver_timeout')
   const rejoinGameServerTimeout = await configuration.get('games.rejoin_gameserver_timeout')
@@ -15,7 +14,7 @@ export async function GamesPage(props: { user: User }) {
   const safeExecuteExtraCommands = executeExtraCommands.join('\n')
 
   return (
-    <Admin activePage="games" user={props.user}>
+    <Admin activePage="games">
       <form action="" method="post">
         <div class="admin-panel-set flex flex-col gap-4">
           <dl>

@@ -18,8 +18,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        reply.status(200).html(await VoiceServerPage({ user: request.user! }))
+      async (_request, reply) => {
+        reply.status(200).html(await VoiceServerPage())
       },
     )
     .post(
@@ -63,7 +63,7 @@ export default routes(async app => {
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await VoiceServerPage({ user: request.user! }))
+        reply.status(200).html(await VoiceServerPage())
       },
     )
 })

@@ -11,8 +11,8 @@ export default routes(async app => {
         authorize: [PlayerRole.admin],
       },
     },
-    async (request, reply) => {
-      reply.status(200).html(await DiscordPage({ user: request.user! }))
+    async (_request, reply) => {
+      reply.status(200).html(await DiscordPage())
     },
   )
 })

@@ -17,8 +17,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        reply.status(200).html(await GamesPage({ user: request.user! }))
+      async (_request, reply) => {
+        reply.status(200).html(await GamesPage())
       },
     )
     .post(
@@ -52,7 +52,7 @@ export default routes(async app => {
           configuration.set('games.logs_tf_upload_method', request.body.logsTfUploadMethod),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await GamesPage({ user: request.user! }))
+        reply.status(200).html(await GamesPage())
       },
     )
 })

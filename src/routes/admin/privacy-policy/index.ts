@@ -15,8 +15,8 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        reply.status(200).html(await DocumentsPage({ user: request.user!, name: 'privacy policy' }))
+      async (_request, reply) => {
+        reply.status(200).html(await DocumentsPage({ name: 'privacy policy' }))
       },
     )
     .post(
@@ -35,7 +35,7 @@ export default routes(async app => {
           { $set: { body: request.body.body } },
         )
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await DocumentsPage({ user: request.user!, name: 'privacy policy' }))
+        reply.status(200).html(await DocumentsPage({ name: 'privacy policy' }))
       },
     )
 })

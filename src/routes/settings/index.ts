@@ -14,8 +14,8 @@ export default routes(async app => {
           authenticate: true,
         },
       },
-      async (req, reply) => {
-        await reply.status(200).html(PlayerSettingsPage({ user: req.user! }))
+      async (_req, reply) => {
+        await reply.status(200).html(PlayerSettingsPage())
       },
     )
     .post(

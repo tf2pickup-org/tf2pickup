@@ -1,5 +1,4 @@
 import { resolve } from 'path'
-import type { User } from '../../../auth/types/user'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
@@ -9,11 +8,10 @@ import { makeTitle } from '../../../html/make-title'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
 
-export async function AddBanPage(props: { steamId: SteamId64; user: User }) {
+export async function AddBanPage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['name'])
   return (
     <Layout
-      user={props.user}
       title={makeTitle(`Ban ${player.name}`)}
       embedStyle={resolve(
         import.meta.dirname,
@@ -26,7 +24,7 @@ export async function AddBanPage(props: { steamId: SteamId64; user: User }) {
         'style.css',
       )}
     >
-      <NavigationBar user={props.user} />
+      <NavigationBar />
       <Page>
         <div class="container mx-auto">
           <form action="" method="post" id="addBanForm">
@@ -127,7 +125,7 @@ export async function AddBanPage(props: { steamId: SteamId64; user: User }) {
           </form>
         </div>
       </Page>
-      <Footer user={props.user} />
+      <Footer />
     </Layout>
   )
 }

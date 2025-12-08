@@ -1,12 +1,11 @@
-import type { User } from '../../../../auth/types/user'
 import { Admin } from '../../../views/html/admin'
 import { DiscordConfiguration } from './discord-configuration'
 import { IconX } from '../../../../html/components/icons'
 import { discord } from '../../../../discord'
 
-export function DiscordPage(props: { user: User }) {
+export function DiscordPage() {
   return (
-    <Admin activePage="discord" user={props.user}>
+    <Admin activePage="discord">
       <div class="admin-panel-set">
         {discord.client?.isReady() ? (
           <DiscordConfiguration client={discord.client} />

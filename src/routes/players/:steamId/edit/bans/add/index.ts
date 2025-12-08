@@ -23,7 +23,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId } = request.params
-        reply.status(200).html(await AddBanPage({ steamId, user: request.user! }))
+        reply.status(200).html(await AddBanPage({ steamId }))
       },
     )
     .post(

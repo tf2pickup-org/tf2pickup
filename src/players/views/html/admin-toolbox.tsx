@@ -1,5 +1,4 @@
 import { capitalize } from 'es-toolkit'
-import type { User } from '../../../auth/types/user'
 import { configuration } from '../../../configuration'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { IconDeviceFloppy, IconEdit, IconInputX } from '../../../html/components/icons'
@@ -7,10 +6,7 @@ import { queue } from '../../../queue'
 import { WinLossChart } from './win-loss-chart'
 import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
 
-export async function AdminToolbox(props: {
-  user?: User | undefined
-  player: Pick<PlayerModel, 'skill' | 'steamId'>
-}) {
+export async function AdminToolbox(props: { player: Pick<PlayerModel, 'skill' | 'steamId'> }) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
 

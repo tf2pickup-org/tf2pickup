@@ -1,4 +1,3 @@
-import type { User } from '../../../../auth/types/user'
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
 import { queue } from '../../../../queue'
@@ -6,9 +5,9 @@ import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 import { GameClassSkillInput } from '../../../../html/components/game-class-skill-input'
 
-export async function PlayerRestrictionsPage(props: { user: User }) {
+export async function PlayerRestrictionsPage() {
   return (
-    <Admin activePage="player-restrictions" user={props.user}>
+    <Admin activePage="player-restrictions">
       <form action="" method="post" id="playerRestrictionsForm">
         <div class="admin-panel-set flex flex-col gap-4">
           <RequireEtf2lAccount />
