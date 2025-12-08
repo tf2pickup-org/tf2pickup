@@ -27,6 +27,7 @@ await app.register(await import('@fastify/helmet'), {
     environment.NODE_ENV === 'production'
       ? {
           directives: {
+            'script-src': ["'self'", "'unsafe-eval'"], // unsafe-eval is for hx-on attributes
             'script-src-elem': [
               "'self'",
               "'unsafe-inline'",
