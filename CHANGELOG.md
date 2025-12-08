@@ -1,5 +1,15 @@
 # Changelog
 
+# [4.0.0-beta.17](/compare/4.0.0-beta.16...4.0.0-beta.17) (2025-12-08)
+
+
+### Bug Fixes
+
+* add unsafe-eval to csp (#428) 49dbda6, closes #428
+* **deps:** pin dependency type-fest to v5.3.0 e01e22a
+* **deps:** update dependency type-fest to v5.3.1 66ecca3
+* fix admin panel voice server schema (#426) f424587, closes #426
+
 # [4.0.0-beta.16](/compare/4.0.0-beta.15...4.0.0-beta.16) (2025-12-07)
 
 
