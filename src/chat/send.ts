@@ -5,6 +5,7 @@ import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { formatBody } from './format-body'
 import { Mutex } from 'async-mutex'
+import { escape } from 'es-toolkit'
 
 interface SendParams {
   author: SteamId64
@@ -15,7 +16,7 @@ const mutex = new Mutex()
 
 export async function send(params: SendParams): Promise<ChatMessageModel> {
   return await mutex.runExclusive(async () => {
-    const originalBody = params.body
+    const originalBody = escape(params.body)
     const formattedBody = formatBody(originalBody)
 
     await collections.chatMessages.insertOne({
