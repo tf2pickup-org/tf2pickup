@@ -9,6 +9,9 @@ export default routes(async app => {
     .get(
       '/',
       {
+        config: {
+          authenticate: true,
+        },
         schema: {
           querystring: z.object({
             before: z.string().transform(val => new Date(Number(val))),
