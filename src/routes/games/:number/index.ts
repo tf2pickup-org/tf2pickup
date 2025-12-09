@@ -126,8 +126,8 @@ export default routes(async app => {
         const game = await games.findOne({ number })
         await gameServers.assign(game, gameServer)
         await reply
+          .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)
-          .header('HX-Trigger', JSON.stringify({ close: { target: '#choose-game-server-dialog' } }))
           .send()
       },
     )
