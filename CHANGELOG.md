@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-beta.18](/compare/4.0.0-beta.17...4.0.0-beta.18) (2025-12-09)
+
+
+### Bug Fixes
+
+* display player skill (#430) de3de62, closes #430
+* fix chat endpoint authentication (#429) ec84255, closes #429
+
 # [4.0.0-beta.17](/compare/4.0.0-beta.16...4.0.0-beta.17) (2025-12-08)
 
 
