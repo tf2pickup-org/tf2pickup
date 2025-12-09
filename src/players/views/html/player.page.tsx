@@ -38,6 +38,7 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
     'twitchTvProfile',
     'avatar.large',
     'stats',
+    'skill',
   ])
   const user = requestContext.get('user')
   const skip = (props.page - 1) * gamesPerPage
