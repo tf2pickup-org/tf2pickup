@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.19](/compare/4.0.0-beta.18...4.0.0-beta.19) (2025-12-09)
+
+
+### Bug Fixes
+
+* escape chat messages (#431) 9722d5a, closes #431
+
 # [4.0.0-beta.18](/compare/4.0.0-beta.17...4.0.0-beta.18) (2025-12-09)
 
 
