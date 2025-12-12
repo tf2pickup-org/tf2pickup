@@ -54,7 +54,7 @@ export default fp(
         await collections.queueSlots
           .find({ player: { $ne: null }, ready: { $eq: false } })
           .toArray()
-      ).map(slot => slot.player!)
+      ).map(slot => slot.player!.steamId)
       await kick(...unreadyPlayers)
     }
 
@@ -63,7 +63,7 @@ export default fp(
       await setState(QueueState.waiting)
       const allPlayers = (
         await collections.queueSlots.find({ player: { $ne: null } }).toArray()
-      ).map(slot => slot.player!)
+      ).map(slot => slot.player!.steamId)
       await unready(...allPlayers)
     }
 
