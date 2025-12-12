@@ -14,6 +14,7 @@ import {
   IconHeadset,
   IconLogs,
   IconMapPinCog,
+  IconMessageCircle,
   IconMoodNerd,
   IconSectionSign,
   IconServer,
@@ -59,6 +60,11 @@ const adminPages = {
   discord: {
     title: 'Discord',
     icon: IconBrandDiscord,
+    section: 'Configuration',
+  },
+  announcements: {
+    title: 'Announcements',
+    icon: IconMessageCircle,
     section: 'Configuration',
   },
   'view-for-nerds': {

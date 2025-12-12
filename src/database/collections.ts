@@ -1,4 +1,5 @@
 import { database } from './database'
+import type { AnnouncementModel } from './models/announcement.model'
 import type { ConfigurationEntryModel } from './models/configuration-entry.model'
 import type { DocumentModel } from './models/document.model'
 import type { GameLogsModel } from './models/game-logs.model'
@@ -25,6 +26,7 @@ import { logger } from '../logger'
 import type { ObjectId } from 'mongodb'
 
 export const collections = {
+  announcements: database.collection<AnnouncementModel>('announcements'),
   certificates: database.collection<CertificateModel>('certificates'),
   chatMessages: database.collection<ChatMessageModel>('chat.messages'),
   configuration: database.collection<ConfigurationEntryModel>('configuration'),
