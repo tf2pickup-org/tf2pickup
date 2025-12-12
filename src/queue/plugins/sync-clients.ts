@@ -121,9 +121,7 @@ export default fp(
             await collections.queueSlots
               .find({ player: { $ne: null }, ready: { $eq: false } })
               .toArray()
-          )
-            .map(s => s.player)
-            .filter(Boolean) as SteamId64[]
+          ).map(s => s.player!.steamId)
 
           app.gateway.to({ players }).send(async actor => await ReadyUpDialog.show(actor!))
         }
@@ -147,7 +145,7 @@ export default fp(
     events.on(
       'queue/friendship:created',
       safe(async ({ target }) => {
-        const slot = await collections.queueSlots.findOne({ player: target })
+        const slot = await collections.queueSlots.findOne({ 'player.steamId': target })
         if (!slot) {
           return
         }
@@ -155,7 +153,7 @@ export default fp(
           await collections.queueSlots
             .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
             .toArray()
-        ).map(({ player }) => player!)
+        ).map(({ player }) => player!.steamId)
         app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
       }),
     )
@@ -167,10 +165,10 @@ export default fp(
           await collections.queueSlots
             .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
             .toArray()
-        ).map(({ player }) => player!)
+        ).map(({ player }) => player!.steamId)
 
         const slots = await collections.queueSlots
-          .find({ player: { $in: [target.before, target.after] } })
+          .find({ 'player.steamId': { $in: [target.before, target.after] } })
           .toArray()
         slots.forEach(slot => {
           app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
@@ -181,7 +179,7 @@ export default fp(
     events.on(
       'queue/friendship:removed',
       safe(async ({ target }) => {
-        const slot = await collections.queueSlots.findOne({ player: target })
+        const slot = await collections.queueSlots.findOne({ 'player.steamId': target })
         if (!slot) {
           return
         }
@@ -189,7 +187,7 @@ export default fp(
           await collections.queueSlots
             .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
             .toArray()
-        ).map(({ player }) => player!)
+        ).map(({ player }) => player!.steamId)
         app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
       }),
     )
