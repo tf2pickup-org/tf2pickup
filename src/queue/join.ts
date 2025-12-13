@@ -52,7 +52,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
 
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
-        player: player.steamId,
+        'player.steamId': player.steamId,
       },
       {
         $set: { player: null, ready: false },
