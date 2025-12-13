@@ -160,7 +160,7 @@ async function determineMarkAsFriendButtonState(
     return MarkAsFriendButtonState.none
   }
 
-  const actorsSlot = await collections.queueSlots.findOne({ player: actor })
+  const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor })
   if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
     const friendship = await collections.queueFriends.findOne({
       target: slot.player,

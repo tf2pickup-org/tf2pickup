@@ -31,7 +31,7 @@ export async function setState(state: QueueState) {
           [...toReadyUp, last].map(
             async player =>
               await collections.queueSlots.findOneAndUpdate(
-                { player },
+                { 'player.steamId': player },
                 {
                   $set: { ready: true },
                 },

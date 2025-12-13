@@ -14,7 +14,7 @@ export async function voteMap(steamId: SteamId64, map: string): Promise<Record<s
       throw errors.notFound('this map not an option in the vote')
     }
 
-    const slotCount = await collections.queueSlots.countDocuments({ player: steamId })
+    const slotCount = await collections.queueSlots.countDocuments({ 'player.steamId': steamId })
     if (slotCount === 0) {
       throw errors.badRequest('player not in the queue')
     }
