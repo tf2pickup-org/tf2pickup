@@ -7,7 +7,7 @@ export async function getFriends(): Promise<SteamId64[][]> {
 
   return friendships
     .filter(({ source, target }) =>
-      slots.some(({ player }) => player === source || player === target),
+      slots.some(({ player }) => player?.steamId === source || player?.steamId === target),
     )
     .map(({ source, target }) => [source, target])
 }

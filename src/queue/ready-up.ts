@@ -18,7 +18,7 @@ export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
     }
 
     const slot = await collections.queueSlots.findOneAndUpdate(
-      { player: steamId },
+      { 'player.steamId': steamId },
       { $set: { ready: true } },
       { returnDocument: 'after' },
     )

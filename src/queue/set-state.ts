@@ -22,16 +22,16 @@ export async function setState(state: QueueState) {
         .toArray()
       const toReadyUp = (
         await collections.queueSlots
-          .find({ player: { $in: preReadiesPlayers.map(({ steamId }) => steamId) } })
+          .find({ 'player.steamId': { $in: preReadiesPlayers.map(({ steamId }) => steamId) } })
           .toArray()
-      ).map(slot => slot.player!)
+      ).map(slot => slot.player!.steamId)
 
       const slots = (
         await Promise.all(
           [...toReadyUp, last].map(
             async player =>
               await collections.queueSlots.findOneAndUpdate(
-                { player },
+                { 'player.steamId': player },
                 {
                   $set: { ready: true },
                 },

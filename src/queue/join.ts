@@ -20,6 +20,8 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       'activeGame',
       'skill',
       'steamId',
+      'name',
+      'avatar.medium',
     ])
 
     if (!player.hasAcceptedRules) {
@@ -50,7 +52,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
 
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
-        player: player.steamId,
+        'player.steamId': player.steamId,
       },
       {
         $set: { player: null, ready: false },
@@ -64,7 +66,11 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       { _id: targetSlot._id },
       {
         $set: {
-          player: player.steamId,
+          player: {
+            steamId: player.steamId,
+            name: player.name,
+            avatarUrl: player.avatar.medium,
+          },
           ready: state === QueueState.ready,
         },
       },

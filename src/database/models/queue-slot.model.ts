@@ -5,7 +5,11 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 export interface QueueSlotModel {
   id: QueueSlotId
   gameClass: Tf2ClassName
-  player: SteamId64 | null
+  player: null | {
+    steamId: SteamId64
+    name: string
+    avatarUrl: string // medium
+  }
   ready: boolean
   canMakeFriendsWith?: Tf2ClassName[]
 }
