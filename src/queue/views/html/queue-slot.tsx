@@ -129,11 +129,11 @@ async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId
           markasfriend:
             markAsFriendButtonState === MarkAsFriendButtonState.selected
               ? null
-              : props.slot.player!,
+              : props.slot.player!.steamId,
         })}
         hx-trigger="change"
         data-umami-event="mark-as-friend"
-        data-umami-event-player={props.slot.player}
+        data-umami-event-player={props.slot.player?.steamId}
       />
       <span class="sr-only">Mark as friend</span>
       <span class="tooltip">Mark as friend</span>
@@ -163,7 +163,7 @@ async function determineMarkAsFriendButtonState(
   const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor })
   if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
     const friendship = await collections.queueFriends.findOne({
-      target: slot.player,
+      target: slot.player.steamId,
     })
     if (friendship === null) {
       return MarkAsFriendButtonState.enabled

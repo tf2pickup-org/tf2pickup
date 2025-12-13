@@ -20,7 +20,7 @@ export async function markAsFriend(
       throw errors.badRequest('cannot mark as friend at this stage')
     }
 
-    const sourceSlot = await collections.queueSlots.findOne({ player: source })
+    const sourceSlot = await collections.queueSlots.findOne({ 'player.steamId': source })
     if (!sourceSlot) {
       throw errors.notFound(`source slot not found: ${source}`)
     }
