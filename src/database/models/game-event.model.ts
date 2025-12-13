@@ -21,6 +21,8 @@ export enum GameEventType {
   playerLeftGameServer = 'player left game server',
 
   roundEnded = 'round ended',
+
+  runtimeError = 'runtime error',
 }
 
 export interface GameCreated {
@@ -113,6 +115,12 @@ export interface RoundEnded {
   score: Record<Tf2Team, number>
 }
 
+export interface RuntimeError {
+  event: GameEventType.runtimeError
+  at: Date
+  message: string
+}
+
 export type GameEventModel =
   | GameCreated
   | GameStarted
@@ -127,3 +135,4 @@ export type GameEventModel =
   | SubstituteRequested
   | PlayerReplaced
   | RoundEnded
+  | RuntimeError
