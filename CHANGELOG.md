@@ -1,5 +1,16 @@
 # Changelog
 
+# [4.0.0-beta.20](/compare/4.0.0-beta.19...4.0.0-beta.20) (2025-12-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/secure-session to v8.3.0 9ee17fc
+* **deps:** update dependency es-toolkit to v1.43.0 bbc0ec2
+* **deps:** update dependency motion to v12.23.26 d1cb3f6
+* **deps:** update dependency tailwindcss to v3.4.19 00403ec
+* store player data in queue slot model (#433) 2c45adb, closes #433
+
 # [4.0.0-beta.19](/compare/4.0.0-beta.18...4.0.0-beta.19) (2025-12-09)
 
 
