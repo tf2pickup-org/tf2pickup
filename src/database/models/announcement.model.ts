@@ -5,4 +5,3 @@ export interface AnnouncementModel {
   createdAt: Date
   updatedAt: Date
 }
-

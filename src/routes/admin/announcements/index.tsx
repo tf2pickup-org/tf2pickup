@@ -35,7 +35,10 @@ export default routes(async app => {
         schema: {
           body: z.object({
             body: z.string().min(1),
-            enabled: z.string().optional().transform(val => val === 'true'),
+            enabled: z
+              .string()
+              .optional()
+              .transform(val => val === 'true'),
           }),
         },
       },
@@ -48,10 +51,12 @@ export default routes(async app => {
           createdAt: now,
           updatedAt: now,
         })
-        await reply.html(<>
-          <AnnouncementsPage />
-          <FlashMessage type="success" message="Announcement created" />
-        </>)
+        await reply.html(
+          <>
+            <AnnouncementsPage />
+            <FlashMessage type="success" message="Announcement created" />
+          </>,
+        )
       },
     )
     .get(
@@ -110,7 +115,10 @@ export default routes(async app => {
           }),
           body: z.object({
             body: z.string().min(1),
-            enabled: z.string().optional().transform(val => val === 'true'),
+            enabled: z
+              .string()
+              .optional()
+              .transform(val => val === 'true'),
           }),
         },
       },
@@ -130,10 +138,12 @@ export default routes(async app => {
         if (!result) {
           throw errors.notFound('Announcement not found')
         }
-        await reply.html(<>
-          <AnnouncementEntry announcement={result} />
-          <FlashMessage type="success" message="Announcement updated" />
-        </>)
+        await reply.html(
+          <>
+            <AnnouncementEntry announcement={result} />
+            <FlashMessage type="success" message="Announcement updated" />
+          </>,
+        )
       },
     )
     .post(
@@ -168,10 +178,15 @@ export default routes(async app => {
         if (!result) {
           throw errors.notFound('Announcement not found')
         }
-        await reply.html(<>
-          <AnnouncementEntry announcement={result} />
-          <FlashMessage type="success" message={result.enabled ? 'Announcement enabled' : 'Announcement disabled'} />
-        </>)
+        await reply.html(
+          <>
+            <AnnouncementEntry announcement={result} />
+            <FlashMessage
+              type="success"
+              message={result.enabled ? 'Announcement enabled' : 'Announcement disabled'}
+            />
+          </>,
+        )
       },
     )
     .delete(
@@ -193,11 +208,12 @@ export default routes(async app => {
         if (result.deletedCount === 0) {
           throw errors.notFound('Announcement not found')
         }
-        await reply.html(<>
-          <FlashMessage type="success" message="Announcement deleted" />
-        </>)
+        await reply.html(
+          <>
+            <FlashMessage type="success" message="Announcement deleted" />
+          </>,
+        )
         // reply.status(200).send('')
       },
     )
 })
-

@@ -70,7 +70,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
         </div>
         <div class="flex gap-2">
           <button
-            class="flex items-center gap-1 text-accent-500 hover:underline"
+            class="text-accent-500 flex items-center gap-1 hover:underline"
             hx-post={`/admin/announcements/${id}/toggle`}
             hx-target="closest div.rounded"
             hx-swap="outerHTML"
@@ -96,7 +96,9 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
           </button>
         </div>
       </div>
-      <div class="whitespace-pre-wrap rounded bg-abru-dark-15 p-2 text-sm">{announcement.body as 'safe'}</div>
+      <div class="whitespace-pre-wrap rounded bg-abru-dark-15 p-2 text-sm">
+        {announcement.body as 'safe'}
+      </div>
     </div>
   )
 }
@@ -144,4 +146,3 @@ export function AnnouncementEditForm(props: { announcement: WithId<AnnouncementM
     </div>
   )
 }
-
