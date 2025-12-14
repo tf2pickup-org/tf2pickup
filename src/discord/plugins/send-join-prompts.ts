@@ -11,7 +11,6 @@ import { assertClient } from '../assert-client'
 import { logger } from '../../logger'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
-import { players } from '../../players'
 import { collections } from '../../database/collections'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { getMessage } from '../get-message'
@@ -38,7 +37,7 @@ async function refreshPrompt() {
     const embed = queuePreview({
       playerCount,
       requiredPlayerCount,
-      gameClassData: await slotsToGameClassData(channel.guild.id, slots),
+      gameClassData: slotsToGameClassData(channel.guild.id, slots),
       mapVoteResults,
     })
 
@@ -115,18 +114,13 @@ function queuePreview(options: QueuePreviewOptions): EmbedBuilder {
     .setTimestamp()
 }
 
-async function slotsToGameClassData(guildId: string, slots: QueueSlotModel[]) {
-  const playerData = await Promise.all(
-    slots
-      .filter(slot => Boolean(slot.player))
-      .map(async slot => {
-        const player = await players.bySteamId(slot.player!, ['name'])
-        return {
-          name: player.name,
-          gameClass: slot.gameClass,
-        }
-      }),
-  )
+function slotsToGameClassData(guildId: string, slots: QueueSlotModel[]) {
+  const playerData = slots
+    .filter(slot => Boolean(slot.player))
+    .map(slot => ({
+      name: slot.player!.name,
+      gameClass: slot.gameClass,
+    }))
 
   return queue.config.classes.map(gameClass => {
     assertClient(client)

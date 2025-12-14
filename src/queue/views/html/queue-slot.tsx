@@ -1,4 +1,3 @@
-import type { PickDeep } from 'type-fest'
 import { collections } from '../../../database/collections'
 import type { PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
@@ -50,7 +49,7 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       class="queue-slot"
       id={`queue-slot-${props.slot.id}`}
       aria-label={`Queue slot ${props.slot.id}`}
-      data-player={props.slot.player}
+      data-player={props.slot.player?.steamId}
     >
       {slotContent}
     </div>
@@ -83,15 +82,8 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
     return <></>
   }
 
-  const player = await collections.players.findOne<
-    PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>
-  >({ steamId: props.slot.player }, { projection: { steamId: 1, name: 1, 'avatar.medium': 1 } })
-  if (player === null) {
-    throw errors.internalServerError(`player does not exist: ${props.slot.player}`)
-  }
-
   let slotActionButton: JSX.Element
-  if (props.actor === props.slot.player && !props.slot.ready) {
+  if (props.actor === props.slot.player.steamId && !props.slot.ready) {
     slotActionButton = (
       <button class="leave-queue-button" name="leave" value="" data-umami-event="leave-queue">
         <IconMinus />
@@ -105,9 +97,14 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
 
   return (
     <div class="player-info" data-player-ready={`${props.slot.ready}`}>
-      <img src={player.avatar.medium} width="64" height="64" alt={`${player.name}'s name`} />
-      <a href={`/players/${player.steamId}`} preload="mousedown" safe>
-        {player.name}
+      <img
+        src={props.slot.player.avatarUrl}
+        width="64"
+        height="64"
+        alt={`${props.slot.player.name}'s name`}
+      />
+      <a href={`/players/${props.slot.player.steamId}`} preload="mousedown" safe>
+        {props.slot.player.name}
       </a>
       {slotActionButton}
     </div>
@@ -132,11 +129,11 @@ async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId
           markasfriend:
             markAsFriendButtonState === MarkAsFriendButtonState.selected
               ? null
-              : props.slot.player!,
+              : props.slot.player!.steamId,
         })}
         hx-trigger="change"
         data-umami-event="mark-as-friend"
-        data-umami-event-player={props.slot.player}
+        data-umami-event-player={props.slot.player?.steamId}
       />
       <span class="sr-only">Mark as friend</span>
       <span class="tooltip">Mark as friend</span>
@@ -163,10 +160,10 @@ async function determineMarkAsFriendButtonState(
     return MarkAsFriendButtonState.none
   }
 
-  const actorsSlot = await collections.queueSlots.findOne({ player: actor })
+  const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor })
   if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
     const friendship = await collections.queueFriends.findOne({
-      target: slot.player,
+      target: slot.player.steamId,
     })
     if (friendship === null) {
       return MarkAsFriendButtonState.enabled

@@ -22,7 +22,7 @@ export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> 
     for (const steamId of steamIds) {
       const slot = await collections.queueSlots.findOneAndUpdate(
         {
-          player: steamId,
+          'player.steamId': steamId,
         },
         {
           $set: { player: null, ready: false },

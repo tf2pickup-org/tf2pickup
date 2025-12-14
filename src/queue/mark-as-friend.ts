@@ -20,7 +20,7 @@ export async function markAsFriend(
       throw errors.badRequest('cannot mark as friend at this stage')
     }
 
-    const sourceSlot = await collections.queueSlots.findOne({ player: source })
+    const sourceSlot = await collections.queueSlots.findOne({ 'player.steamId': source })
     if (!sourceSlot) {
       throw errors.notFound(`source slot not found: ${source}`)
     }
@@ -30,12 +30,14 @@ export async function markAsFriend(
       if (!friendship) {
         throw errors.notFound(`friendship not found: ${source}`)
       }
-      const targetSlot = await collections.queueSlots.findOne({ player: friendship.target })
+      const targetSlot = await collections.queueSlots.findOne({
+        'player.steamId': friendship.target,
+      })
       await collections.queueFriends.deleteOne({ source })
       events.emit('queue/friendship:removed', { source, target: friendship.target })
       return targetSlot
     } else {
-      const targetSlot = await collections.queueSlots.findOne({ player: target })
+      const targetSlot = await collections.queueSlots.findOne({ 'player.steamId': target })
       const friendship = await collections.queueFriends.findOne({ source })
       const after = await collections.queueFriends.findOneAndUpdate(
         { source },

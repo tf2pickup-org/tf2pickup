@@ -20,7 +20,7 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
 
     const slot = await collections.queueSlots.findOneAndUpdate(
       {
-        player: steamId,
+        'player.steamId': steamId,
       },
       {
         $set: { player: null },
