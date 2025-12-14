@@ -1,8 +1,13 @@
 import fp from 'fastify-plugin'
+import type { Jsonifiable } from 'type-fest'
 
 declare module 'fastify' {
   interface FastifyRequest {
     boosted: boolean
+  }
+
+  interface FastifyReply {
+    trigger: (val: Record<string, Jsonifiable>) => this
   }
 }
 
@@ -30,6 +35,11 @@ export default fp(
     // eslint-disable-next-line @typescript-eslint/require-await
     app.addHook('preHandler', async request => {
       request.requestContext.set('boosted', request.boosted)
+    })
+
+    app.decorateReply('trigger', function (val) {
+      this.header('HX-Trigger', JSON.stringify(val))
+      return this
     })
   },
   {

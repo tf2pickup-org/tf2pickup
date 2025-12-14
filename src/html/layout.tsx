@@ -2,12 +2,12 @@
 import { environment } from '../environment'
 import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
 import Html from '@kitajs/html'
-import { FlashMessages } from './components/flash-messages'
 import { resolve } from 'path'
 import { requestContext } from '@fastify/request-context'
 import { embed } from './embed'
 import { bundle } from './bundle'
 import { mainTsPath } from './main-ts-path'
+import { FlashMessageList } from './components/flash-message'
 
 export async function Layout(
   props?: Html.PropsWithChildren<{
@@ -25,7 +25,7 @@ export async function Layout(
       <div class="flex h-full flex-col">{props?.children}</div>
       <div id="notify-container"></div>
       <ReadyUpDialog />
-      <FlashMessages />
+      <FlashMessageList />
     </>
   )
 
