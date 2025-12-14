@@ -19,6 +19,7 @@ import { OnlinePlayerCount } from '../views/html/online-player-count'
 import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
+import { WebSocket } from 'ws'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -33,11 +34,7 @@ export default fp(
       })
     }
 
-    app.gateway.on('ready', async socket => {
-      if (socket.currentUrl !== '/') {
-        return
-      }
-
+    async function syncQueuePage(socket: WebSocket) {
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
@@ -45,6 +42,7 @@ export default fp(
       socket.send(await IsInQueue({ actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
       socket.send(await CurrentPlayerCount())
+      socket.send(await SetTitle())
       socket.send(await OnlinePlayerCount())
       socket.send(await OnlinePlayerList())
       socket.send(await StreamList())
@@ -59,6 +57,22 @@ export default fp(
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
       }
+    }
+
+    app.gateway.on('ready', async socket => {
+      if (socket.currentUrl !== '/') {
+        return
+      }
+
+      await syncQueuePage(socket)
+    })
+
+    app.gateway.on('navigated', async (socket, url) => {
+      if (url !== '/') {
+        return
+      }
+
+      await syncQueuePage(socket)
     })
 
     async function updateOnlinePlayers() {
@@ -105,11 +119,7 @@ export default fp(
           playerCount,
         ])
 
-        const [current, required] = await Promise.all([
-          collections.queueSlots.countDocuments({ player: { $ne: null } }),
-          collections.queueSlots.countDocuments(),
-        ])
-        app.gateway.broadcast(async () => await SetTitle({ current, required }))
+        app.gateway.broadcast(async () => await SetTitle())
       }),
     )
 
