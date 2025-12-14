@@ -22,5 +22,10 @@
       background-color: theme(colors.alert);
       color: theme(colors.abru.light.3);
     }
+
+    &--info {
+      background-color: theme(colors.abru.light.70);
+      color: theme(colors.abru.light.3);
+    }
   }
 }

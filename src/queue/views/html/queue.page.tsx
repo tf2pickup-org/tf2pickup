@@ -25,6 +25,7 @@ import { Sidebar } from './sidebar'
 import { IsInQueue } from './is-in-queue'
 import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
+import { Announcements } from './announcements'
 
 export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
@@ -50,6 +51,7 @@ export async function QueuePage() {
             {!!user && <RequestNotificationPermissions />}
             <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
+            <Announcements />
           </div>
 
           <div class="order-2 lg:col-span-3">
