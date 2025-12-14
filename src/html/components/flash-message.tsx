@@ -1,4 +1,4 @@
-import { requestContext } from "@fastify/request-context"
+import { requestContext } from '@fastify/request-context'
 
 export interface FlashMessage {
   type: string
@@ -7,9 +7,11 @@ export interface FlashMessage {
 
 export async function FlashMessageList() {
   const messages = requestContext.get('messages')
-  const safeMessageList = messages ? Object.entries(messages).map(([type, message]) =>
-    message?.map(message => <Message type={type} message={message} />),
-  ) : []
+  const safeMessageList = messages
+    ? Object.entries(messages).map(([type, message]) =>
+        message?.map(message => <Message type={type} message={message} />),
+      )
+    : []
   return (
     <div class="flash-messages" id="flash-messages">
       {safeMessageList}
