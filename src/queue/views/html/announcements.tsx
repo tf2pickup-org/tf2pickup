@@ -1,5 +1,4 @@
 import { collections } from '../../../database/collections'
-import { parse } from 'marked'
 
 export async function Announcements() {
   const announcements = await collections.announcements
@@ -14,10 +13,9 @@ export async function Announcements() {
   return (
     <>
       {announcements.map(announcement => {
-        const safeParsed = parse(announcement.body)
         return (
           <div class="banner banner--info">
-            <div class="prose max-w-none">{safeParsed}</div>
+            <div class="prose max-w-none">{announcement.body as 'safe'}</div>
           </div>
         )
       })}

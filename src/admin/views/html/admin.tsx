@@ -9,12 +9,12 @@ import {
 } from '../../../html/components/admin-panel'
 import {
   IconAdjustments,
+  IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
   IconHeadset,
   IconLogs,
   IconMapPinCog,
-  IconMessageCircle,
   IconMoodNerd,
   IconSectionSign,
   IconServer,
@@ -64,7 +64,7 @@ const adminPages = {
   },
   announcements: {
     title: 'Announcements',
-    icon: IconMessageCircle,
+    icon: IconAlertSquareRounded,
     section: 'Configuration',
   },
   'view-for-nerds': {

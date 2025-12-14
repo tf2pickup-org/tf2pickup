@@ -10,6 +10,11 @@ import { routes } from '../../../utils/routes'
 import { ObjectId } from 'mongodb'
 import { errors } from '../../../errors'
 import { FlashMessage } from '../../../html/components/flash-message'
+import { marked } from 'marked'
+
+marked.use({
+  gfm: true,
+})
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -41,7 +46,8 @@ export default routes(async app => {
       async (request, reply) => {
         const now = new Date()
         await collections.announcements.insertOne({
-          body: request.body.body,
+          body: await marked.parse(request.body.body),
+          originalBody: request.body.body,
           enabled: request.body.enabled,
           createdAt: now,
           updatedAt: now,
@@ -117,7 +123,8 @@ export default routes(async app => {
           { _id: new ObjectId(request.params.id) },
           {
             $set: {
-              body: request.body.body,
+              body: await marked.parse(request.body.body),
+              originalBody: request.body.body,
               enabled: request.body.enabled,
               updatedAt: new Date(),
             },
@@ -191,10 +198,9 @@ export default routes(async app => {
           throw errors.notFound('Announcement not found')
         }
         await reply.html(<>
-          <AnnouncementsPage />
           <FlashMessage type="success" message="Announcement deleted" />
         </>)
-        reply.status(200).send('')
+        // reply.status(200).send('')
       },
     )
 })

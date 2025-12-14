@@ -96,7 +96,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
           </button>
         </div>
       </div>
-      <div class="whitespace-pre-wrap rounded bg-abru-dark-15 p-2 text-sm" safe>{announcement.body}</div>
+      <div class="whitespace-pre-wrap rounded bg-abru-dark-15 p-2 text-sm">{announcement.body as 'safe'}</div>
     </div>
   )
 }
@@ -116,7 +116,7 @@ export function AnnouncementEditForm(props: { announcement: WithId<AnnouncementM
         hx-swap="outerHTML"
       >
         <textarea name="body" class="min-h-[100px]" required safe>
-          {announcement.body}
+          {announcement.originalBody}
         </textarea>
         <div class="flex items-center gap-2">
           <input

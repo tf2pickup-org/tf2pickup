@@ -1,5 +1,6 @@
 export { IconAdjustments } from './icon-adjustments'
 export { IconAirTrafficControl } from './icon-air-traffic-control'
+export { IconAlertSquareRounded } from './icon-alert-square-rounded'
 export { IconAlignBoxBottomRight } from './icon-align-box-bottom-right'
 export { IconArrowBackUp } from './icon-arrow-back-up'
 export { IconArrowsShuffle } from './icon-arrows-shuffle'
