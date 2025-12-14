@@ -3,7 +3,7 @@ import { ScrambleMaps } from '../../../admin/scramble-maps/views/html/scramble-m
 import { queue } from '../../../queue'
 import { MapVoteOptions } from '../../../admin/scramble-maps/views/html/map-vote-options'
 import { routes } from '../../../utils/routes'
-import { FlashMessages } from '../../../html/components/flash-messages'
+import { FlashMessage } from '../../../html/components/flash-message'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -24,7 +24,7 @@ export default routes(async app => {
       await reply.html(
         <>
           <MapVoteOptions />
-          <FlashMessages.append type="success" message="Maps scrambled" />
+          <FlashMessage type="success" message="Maps scrambled" />
         </>,
       )
     })

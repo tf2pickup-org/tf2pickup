@@ -12,11 +12,11 @@ import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../get-state'
 import { QueueState } from '../../database/models/queue-state.model'
 import { preReady } from '../../pre-ready'
-import { FlashMessages } from '../../html/components/flash-messages'
 import { WebSocket } from 'ws'
 import { errors } from '../../errors'
 import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../views/html/map-vote-selection'
+import { FlashMessage } from '../../html/components/flash-message'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -34,7 +34,7 @@ export default fp(
         fn(socket, ...args).catch(async (error: unknown) => {
           logger.error(error)
           if (error instanceof Error) {
-            const msg = await FlashMessages.append({
+            const msg = await FlashMessage({
               message: `Error: ${error.message}`,
               type: 'error',
             })
