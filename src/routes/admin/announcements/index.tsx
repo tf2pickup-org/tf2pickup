@@ -10,11 +10,7 @@ import { routes } from '../../../utils/routes'
 import { ObjectId } from 'mongodb'
 import { errors } from '../../../errors'
 import { FlashMessage } from '../../../html/components/flash-message'
-import { marked } from 'marked'
-
-marked.use({
-  gfm: true,
-})
+import { parseMarkdown } from '../../../utils/parse-markdown'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -46,7 +42,7 @@ export default routes(async app => {
       async (request, reply) => {
         const now = new Date()
         await collections.announcements.insertOne({
-          body: await marked.parse(request.body.body),
+          body: await parseMarkdown(request.body.body),
           originalBody: request.body.body,
           enabled: request.body.enabled,
           createdAt: now,
@@ -123,7 +119,7 @@ export default routes(async app => {
           { _id: new ObjectId(request.params.id) },
           {
             $set: {
-              body: await marked.parse(request.body.body),
+              body: await parseMarkdown(request.body.body),
               originalBody: request.body.body,
               enabled: request.body.enabled,
               updatedAt: new Date(),
