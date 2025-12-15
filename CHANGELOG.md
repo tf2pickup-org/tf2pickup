@@ -1,5 +1,19 @@
 # Changelog
 
+# [4.0.0-beta.21](/compare/4.0.0-beta.20...4.0.0-beta.21) (2025-12-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency autoprefixer to v10.4.23 4464c20
+* sync queue page on navigation (#435) 114cd74, closes #435
+
+
+### Features
+
+* add discord invite link configuration option (#438) db266e8, closes #438
+* announcements (#437) 4a02d77, closes #437
+
 # [4.0.0-beta.20](/compare/4.0.0-beta.19...4.0.0-beta.20) (2025-12-14)
 
 
