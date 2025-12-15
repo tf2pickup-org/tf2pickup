@@ -83,7 +83,8 @@
       font-size: 18px;
 
       input[type='text'],
-      input[type='number'] {
+      input[type='number'],
+      input[type='url'] {
         background-color: theme(colors.abru.dark.25);
         color: theme(colors.white);
         border-radius: 8px;

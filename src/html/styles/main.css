@@ -63,6 +63,7 @@ dl {
 
 input[type='text'],
 input[type='number'],
+input[type='url'],
 select,
 textarea {
   background-color: theme(colors.abru.light.5);
