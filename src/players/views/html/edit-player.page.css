@@ -1,4 +1,4 @@
-/* @import 'admin/views/html/style.css'; */
+@import 'admin/views/html/style.css';
 
 .player-skill {
   appearance: textfield;
