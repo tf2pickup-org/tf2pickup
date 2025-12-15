@@ -9,6 +9,7 @@ import {
 } from '../../../html/components/admin-panel'
 import {
   IconAdjustments,
+  IconAdjustmentsStar,
   IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
@@ -65,6 +66,11 @@ const adminPages = {
   announcements: {
     title: 'Announcements',
     icon: IconAlertSquareRounded,
+    section: 'Configuration',
+  },
+  miscellaneous: {
+    title: 'Miscellaneous',
+    icon: IconAdjustmentsStar,
     section: 'Configuration',
   },
   'view-for-nerds': {
