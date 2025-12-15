@@ -1,4 +1,4 @@
-@import 'games/views/html/game-list.css';
+/* @import 'games/views/html/game-list.css'; */
 
 .player-group {
   grid-template-columns: subgrid;
