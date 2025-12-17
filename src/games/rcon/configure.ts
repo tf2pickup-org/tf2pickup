@@ -9,21 +9,6 @@ import { logger } from '../../logger'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { generateGameserverPassword } from '../../utils/generate-game-server-password'
 import { makeConnectString } from '../make-connect-string'
-import {
-  logAddressAdd,
-  kickAll,
-  changelevel,
-  tftrueWhitelistId,
-  setPassword,
-  addGamePlayer,
-  enablePlayerWhitelist,
-  logsTfTitle,
-  logsTfAutoupload,
-  tvPort,
-  tvPassword,
-  svLogsecret,
-  execConfig,
-} from './commands'
 import { update } from '../update'
 import { extractConVarValue } from '../extract-con-var-value'
 import { generate } from 'generate-password'
@@ -33,6 +18,7 @@ import { servemeTf } from '../../serveme-tf'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
 import { errors } from '../../errors'
 import { players } from '../../players'
+import type { RconCommand } from '../../shared/types/rcon-command'
 
 export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
@@ -61,7 +47,7 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
         lowercase: false,
         uppercase: false,
       })
-      await rcon.send(svLogsecret(logSecret))
+      await rcon.send(`sv_logsecret ${logSecret}`)
     } else {
       logSecret = game.gameServer!.logSecret
     }
@@ -87,10 +73,6 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
       if (line.startsWith('changelevel')) {
         await delay(secondsToMilliseconds(10))
       }
-
-      if (!rcon.authenticated) {
-        await rcon.connect()
-      }
     }
 
     logger.info(game, `game ${game.number} configured`)
@@ -103,8 +85,8 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
 
     const stvConnectString = await makeConnectString({
       address: game.gameServer!.address,
-      port: extractConVarValue(await rcon.send(tvPort())) ?? 27020,
-      password: extractConVarValue(await rcon.send(tvPassword())),
+      port: extractConVarValue(await rcon.send(`tv_port`)) ?? 27020,
+      password: extractConVarValue(await rcon.send(`tv_password`)),
     })
     logger.info(game, `stv connect string: ${stvConnectString}`)
 
@@ -133,44 +115,44 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
   })
 }
 
-async function* compileConfig(game: GameModel, password: string): AsyncGenerator<string> {
-  yield logAddressAdd(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`)
-  yield kickAll()
+async function* compileConfig(game: GameModel, password: string): AsyncGenerator<RconCommand> {
+  yield `logaddress_add ${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`
+  yield 'kickall'
 
   if (game.gameServer?.provider !== GameServerProvider.servemeTf) {
     // serveme.tf servers are already started with the proper map
-    yield changelevel(game.map)
+    yield `changelevel ${game.map}`
   }
 
   const map = await collections.maps.findOne({ name: game.map })
   if (map?.execConfig) {
-    yield execConfig(map.execConfig)
+    yield `exec ${map.execConfig}`
   }
 
   const whitelistId = await configuration.get('games.whitelist_id')
   if (whitelistId !== null) {
-    yield tftrueWhitelistId(whitelistId)
+    yield `tftrue_whitelist_id ${whitelistId}`
   }
 
-  yield setPassword(password)
+  yield `sv_password ${password}`
 
   for (const slot of game.slots) {
     const player = await players.bySteamId(slot.player, ['name'])
-    yield addGamePlayer(slot.player, deburr(player.name), slot.team, slot.gameClass)
+    yield `sm_game_player_add ${slot.player} -name "${deburr(player.name)}" -team ${slot.team} -class ${slot.gameClass}`
   }
 
-  yield enablePlayerWhitelist()
-  yield logsTfTitle(`${environment.WEBSITE_NAME} #${game.number}`)
+  yield 'sm_game_player_whitelist 1'
+  yield `logstf_title ${environment.WEBSITE_NAME} #${game.number}`
 
   const logsTfUploadMethod = await configuration.get('games.logs_tf_upload_method')
   if (logsTfUploadMethod === LogsTfUploadMethod.gameserver) {
-    yield logsTfAutoupload(2)
+    yield `logstf_autoupload 2`
   } else {
-    yield logsTfAutoupload(0)
+    yield `logstf_autoupload 0`
   }
 
   const extraCommands = await configuration.get('games.execute_extra_commands')
   for (const command of extraCommands) {
-    yield command
+    yield command as RconCommand
   }
 }
