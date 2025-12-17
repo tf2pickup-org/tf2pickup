@@ -32,6 +32,7 @@ import { withRcon } from './with-rcon'
 import { servemeTf } from '../../serveme-tf'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
 import { errors } from '../../errors'
+import { players } from '../../players'
 
 export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
@@ -49,7 +50,6 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
   }
 
   const password = generateGameserverPassword()
-  const configLines = await compileConfig(game, password)
 
   return await withRcon(game, async ({ rcon }) => {
     let logSecret: string
@@ -81,7 +81,7 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
       },
     })
 
-    for (const line of configLines) {
+    for await (const line of compileConfig(game, password)) {
       logger.debug(line)
       await rcon.send(line)
       if (line.startsWith('changelevel')) {
@@ -133,47 +133,44 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
   })
 }
 
-async function compileConfig(game: GameModel, password: string): Promise<string[]> {
-  return [
-    logAddressAdd(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`),
-    kickAll(),
-  ]
-    .concat(game.gameServer?.provider === GameServerProvider.static ? changelevel(game.map) : [])
-    .concat(
-      await (async () => {
-        const map = await collections.maps.findOne({ name: game.map })
-        return map?.execConfig ? execConfig(map.execConfig) : []
-      })(),
-    )
-    .concat(
-      await (async () => {
-        const whitelistId = await configuration.get('games.whitelist_id')
-        if (whitelistId !== null) {
-          return tftrueWhitelistId(whitelistId)
-        } else {
-          return []
-        }
-      })(),
-    )
-    .concat(setPassword(password))
-    .concat(
-      await Promise.all(
-        game.slots.map(async slot => {
-          const player = await collections.players.findOne({ steamId: slot.player })
-          if (player === null) {
-            throw new Error(`player ${slot.player} not found`)
-          }
-          return addGamePlayer(player.steamId, deburr(player.name), slot.team, slot.gameClass)
-        }),
-      ),
-    )
-    .concat(enablePlayerWhitelist())
-    .concat(logsTfTitle(`${environment.WEBSITE_NAME} #${game.number}`))
-    .concat(
-      (await configuration.get('games.logs_tf_upload_method')) === LogsTfUploadMethod.gameserver
-        ? logsTfAutoupload(2)
-        : logsTfAutoupload(0),
-    )
-    .concat(await configuration.get('games.execute_extra_commands'))
-    .filter(Boolean)
+async function* compileConfig(game: GameModel, password: string): AsyncGenerator<string> {
+  yield logAddressAdd(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`)
+  yield kickAll()
+
+  if (game.gameServer?.provider !== GameServerProvider.servemeTf) {
+    // serveme.tf servers are already started with the proper map
+    yield changelevel(game.map)
+  }
+
+  const map = await collections.maps.findOne({ name: game.map })
+  if (map?.execConfig) {
+    yield execConfig(map.execConfig)
+  }
+
+  const whitelistId = await configuration.get('games.whitelist_id')
+  if (whitelistId !== null) {
+    yield tftrueWhitelistId(whitelistId)
+  }
+
+  yield setPassword(password)
+
+  for (const slot of game.slots) {
+    const player = await players.bySteamId(slot.player, ['name'])
+    yield addGamePlayer(slot.player, deburr(player.name), slot.team, slot.gameClass)
+  }
+
+  yield enablePlayerWhitelist()
+  yield logsTfTitle(`${environment.WEBSITE_NAME} #${game.number}`)
+
+  const logsTfUploadMethod = await configuration.get('games.logs_tf_upload_method')
+  if (logsTfUploadMethod === LogsTfUploadMethod.gameserver) {
+    yield logsTfAutoupload(2)
+  } else {
+    yield logsTfAutoupload(0)
+  }
+
+  const extraCommands = await configuration.get('games.execute_extra_commands')
+  for (const command of extraCommands) {
+    yield command
+  }
 }
