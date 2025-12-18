@@ -1,8 +1,13 @@
-import { Rcon } from 'rcon-client'
+import { Rcon as RconClient } from 'rcon-client'
 import { type GameModel } from '../../database/models/game.model'
 import { assertIsError } from '../../utils/assert-is-error'
 import { logger } from '../../logger'
 import { errors } from '../../errors'
+import type { RconCommand } from '../../shared/types/rcon-command'
+
+interface Rcon {
+  send: (command: RconCommand) => Promise<string>
+}
 
 export async function withRcon<T>(
   game: GameModel,
@@ -13,11 +18,11 @@ export async function withRcon<T>(
     throw errors.internalServerError(`gameServer is undefined`)
   }
 
-  let rcon: Rcon | undefined = undefined
+  let rcon: RconClient | undefined
   const { address, port, password } = game.gameServer.rcon
 
   try {
-    rcon = await Rcon.connect({
+    rcon = await RconClient.connect({
       host: address,
       port: Number(port),
       password: password,
@@ -28,7 +33,17 @@ export async function withRcon<T>(
       logger.error(error, `game #${game.number}: rcon error`)
     })
 
-    return await callback({ rcon })
+    return await callback({
+      rcon: {
+        send: async (command: RconCommand) => {
+          const ret = await rcon!.send(command)
+          if (!rcon!.authenticated) {
+            await rcon!.connect()
+          }
+          return ret
+        },
+      },
+    })
   } finally {
     await rcon?.end()
   }
