@@ -1,5 +1,20 @@
 # Changelog
 
+# [4.0.0-beta.22](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.21...4.0.0-beta.22) (2025-12-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency esbuild to v0.27.2 ([9e5e804](https://github.com/tf2pickup-org/tf2pickup/commit/9e5e8048050efc70dcaa15abb1d0b6307fec5329))
+* **deps:** update dependency zod to v4.2.0 ([4ed884f](https://github.com/tf2pickup-org/tf2pickup/commit/4ed884f11059f8db6e5b4cb097d375e31e4778d9))
+* **deps:** update dependency zod to v4.2.1 ([2dd8ee7](https://github.com/tf2pickup-org/tf2pickup/commit/2dd8ee7f464e31a34ce729b2bd03548251755a53))
+* **deps:** update opentelemetry-js-contrib monorepo ([caaee37](https://github.com/tf2pickup-org/tf2pickup/commit/caaee370b4cc356550defcfe317d7cfdfe55cdae))
+
+
+### Features
+
+* add tf2pickup.ru branding ([#440](https://github.com/tf2pickup-org/tf2pickup/issues/440)) ([832ff06](https://github.com/tf2pickup-org/tf2pickup/commit/832ff06cfb055c3d9db3cca504d8a0ce7cace74b))
+
 # [4.0.0-beta.21](/compare/4.0.0-beta.20...4.0.0-beta.21) (2025-12-15)
 
 
