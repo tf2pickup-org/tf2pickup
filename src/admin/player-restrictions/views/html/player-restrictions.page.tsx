@@ -36,10 +36,10 @@ async function RequireEtf2lAccount() {
           </label>
         </dt>
         <dd class="text-abru-light-75">
-          <span class="hidden group-has-[:checked]:inline-block">
+          <span class="hidden group-has-checked:inline-block">
             Players that do not have an ETF2L profile will not be able to register
           </span>
-          <span class="group-has-[:checked]:hidden">All players will be able to register</span>
+          <span class="group-has-checked:hidden">All players will be able to register</span>
         </dd>
       </dl>
 
@@ -84,10 +84,10 @@ async function DenyPlayersWithNoSkillAssigned() {
           </label>
         </dt>
         <dd class="text-abru-light-75">
-          <span class="hidden group-has-[:checked]:inline-block">
+          <span class="hidden group-has-checked:inline-block">
             Players with no skill assigned won't be allowed to join the queue
           </span>
-          <span class="group-has-[:checked]:hidden">
+          <span class="group-has-checked:hidden">
             Players that have no skill assigned will be able to join the queue and the default skill
             will be used for them when launching a game
           </span>
@@ -118,8 +118,8 @@ async function PlayerSkillThreshold() {
           value="enabled"
           checked={playerSkillThresholdEnabled}
         />
-        <span class="hidden group-has-[:checked]:inline-block">enabled</span>
-        <span class="group-has-[:checked]:hidden">disabled</span>
+        <span class="hidden group-has-checked:inline-block">enabled</span>
+        <span class="group-has-checked:hidden">disabled</span>
       </dt>
       <dd class="flex flex-col">
         <div>

@@ -220,11 +220,7 @@
 }
 
 .game-summary-caption {
-  background: linear-gradient(
-    180deg,
-    theme(colors.transparent) 35%,
-    theme(colors.abru.dark.29) 90%
-  );
+  background: linear-gradient(180deg, var(--color-transparent) 35%, var(--color-abru-dark-29) 90%);
 
   .floating-label {
     background-color: theme(colors.abru.DEFAULT/90);

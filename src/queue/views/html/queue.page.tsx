@@ -93,7 +93,7 @@ async function QueueState(props: { actor?: User | undefined; required: number })
 
         <PreReadyUpButton actor={props.actor?.player.steamId} />
       </form>
-      <div class="h-[2px] rounded-sm bg-abru-light-25"></div>
+      <div class="h-[2px] rounded-xs bg-abru-light-25"></div>
     </div>
   )
 }

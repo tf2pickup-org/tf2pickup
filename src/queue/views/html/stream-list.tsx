@@ -32,7 +32,7 @@ async function Stream(props: StreamModel) {
       target="_blank"
       rel="noreferrer"
     >
-      <img src={thumbnail} alt="stream thumbnail" class="rounded-sm" width="177" height="100" />
+      <img src={thumbnail} alt="stream thumbnail" class="rounded-xs" width="177" height="100" />
       <div class="flex flex-col justify-center font-medium text-abru-light-75">
         <span class="text-lg" safe>
           {props.userName}

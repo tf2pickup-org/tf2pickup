@@ -1,5 +1,5 @@
 .accept-rules-dialog {
-  background-color: theme(colors.abru.dark.29);
+  background-color: var(--color-abru-dark-29);
   max-width: 1018px;
   border-radius: 8px;
   padding: 24px 32px;

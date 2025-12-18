@@ -69,7 +69,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
                 src={player.avatar.large}
                 width="184"
                 height="184"
-                class="player-avatar rounded"
+                class="player-avatar rounded-sm"
                 alt={`${player.name}'s avatar`}
               />
             </div>

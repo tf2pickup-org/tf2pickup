@@ -1,5 +1,5 @@
-@layer components {
-  *:has(> .tooltip) {
+@utility tooltip {
+  *:has(> &) {
     position: relative;
 
     &:hover .tooltip {
@@ -7,48 +7,45 @@
       opacity: 1;
     }
   }
+  visibility: hidden;
+  min-width: 120px;
+  background-color: var(--color-abru-dark-6);
+  color: var(--color-abru-light-75);
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 6px;
 
-  .tooltip {
-    visibility: hidden;
-    min-width: 120px;
-    background-color: theme(colors.abru.dark.6);
-    color: theme(colors.abru.light.75);
-    text-align: center;
-    padding: 5px 8px;
-    border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
 
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  &::after {
+    content: '';
     position: absolute;
-    z-index: 1;
-    bottom: 125%;
+    top: 100%;
     left: 50%;
-    transform: translateX(-50%);
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: var(--color-abru-dark-6) transparent transparent transparent;
+  }
 
-    opacity: 0;
-    transition: opacity 0.3s;
-    box-shadow:
-      0 4px 6px -1px rgb(0 0 0 / 0.1),
-      0 2px 4px -2px rgb(0 0 0 / 0.1);
+  &.tooltip--bottom {
+    bottom: auto;
+    top: 125%;
 
     &::after {
-      content: '';
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: theme(colors.abru.dark.6) transparent transparent transparent;
-    }
-
-    &.tooltip--bottom {
-      bottom: auto;
-      top: 125%;
-
-      &::after {
-        top: auto;
-        bottom: 100%;
-        border-color: transparent transparent theme(colors.abru.dark.6) transparent;
-      }
+      top: auto;
+      bottom: 100%;
+      border-color: transparent transparent var(--color-abru-dark-6) transparent;
     }
   }
 }

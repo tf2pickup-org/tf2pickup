@@ -1,99 +1,97 @@
-@layer components {
-  .button {
-    @apply transition-colors;
-    @apply duration-75;
+@utility button {
+  @apply transition-colors;
+  @apply duration-75;
 
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-    padding: 12px 24px;
-    font-size: 16px;
-    line-height: normal;
-    font-weight: 700;
-    border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  line-height: normal;
+  font-weight: 700;
+  border-radius: 4px;
 
-    text-transform: uppercase;
+  text-transform: uppercase;
 
-    color: theme(colors.ash);
+  color: var(--color-ash);
 
-    background-color: theme(colors.abru.light.15);
+  background-color: var(--color-abru-light-15);
+
+  &:hover {
+    background-color: darken(var(--color-abru-light-15), 5%);
+  }
+
+  &:disabled,
+  a&:not([href]) {
+    background-color: var(--color-abru-light-35);
+    color: var(--color-abru-light-60);
 
     &:hover {
-      background-color: darken(theme(colors.abru.light.15), 5%);
+      background-color: var(--color-abru-light-35);
+      color: var(--color-abru-light-60);
+    }
+  }
+
+  &--dense {
+    padding: 5px 28px;
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  &--accent {
+    background-color: var(--color-accent);
+
+    &:hover {
+      background-color: darken(var(--color-accent), 10%);
     }
 
     &:disabled,
     a&:not([href]) {
-      background-color: theme(colors.abru.light.35);
-      color: theme(colors.abru.light.60);
+      background-color: var(--color-accent);
+      color: var(--color-ash);
 
       &:hover {
-        background-color: theme(colors.abru.light.35);
-        color: theme(colors.abru.light.60);
+        background-color: var(--color-accent);
+        color: var(--color-ash);
       }
     }
+  }
 
-    &--dense {
-      padding: 5px 28px;
-      font-size: 16px;
-      line-height: 22px;
+  &--alert {
+    background-color: var(--color-abru);
+    color: var(--color-alert);
+
+    &:hover {
+      background-color: lighten(var(--color-abru), 4%);
+    }
+  }
+
+  &--darker {
+    background-color: var(--color-abru-dark-25);
+    &:hover {
+      background-color: darken(var(--color-abru-dark-25), 5%);
+    }
+  }
+
+  &--lighter {
+    background-color: var(--color-abru-light-85);
+    color: var(--color-abru-light-3);
+
+    &:hover {
+      background-color: darken(var(--color-abru-light-85), 5%);
     }
 
-    &--accent {
-      background-color: theme(colors.accent.DEFAULT);
+    &:disabled,
+    a&:not([href]) {
+      background-color: var(--color-abru-light-85);
+      color: var(--color-abru-light-60);
 
       &:hover {
-        background-color: darken(theme(colors.accent.DEFAULT), 10%);
-      }
-
-      &:disabled,
-      a&:not([href]) {
-        background-color: theme(colors.accent.DEFAULT);
-        color: theme(colors.ash);
-
-        &:hover {
-          background-color: theme(colors.accent.DEFAULT);
-          color: theme(colors.ash);
-        }
-      }
-    }
-
-    &--alert {
-      background-color: theme(colors.abru.DEFAULT);
-      color: theme(colors.alert);
-
-      &:hover {
-        background-color: lighten(theme(colors.abru.DEFAULT), 4%);
-      }
-    }
-
-    &--darker {
-      background-color: theme(colors.abru.dark.25);
-      &:hover {
-        background-color: darken(theme(colors.abru.dark.25), 5%);
-      }
-    }
-
-    &--lighter {
-      background-color: theme(colors.abru.light.85);
-      color: theme(colors.abru.light.3);
-
-      &:hover {
-        background-color: darken(theme(colors.abru.light.85), 5%);
-      }
-
-      &:disabled,
-      a&:not([href]) {
-        background-color: theme(colors.abru.light.85);
-        color: theme(colors.abru.light.60);
-
-        &:hover {
-          background-color: theme(colors.abru.light.85);
-          color: theme(colors.abru.light.60);
-        }
+        background-color: var(--color-abru-light-85);
+        color: var(--color-abru-light-60);
       }
     }
   }

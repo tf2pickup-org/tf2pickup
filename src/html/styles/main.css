@@ -1,22 +1,102 @@
-@import 'admin-panel.css';
-@import 'banner.css';
-@import 'button.css';
-@import 'dialog.css';
-@import 'fade-scroll.css';
-@import 'flash-messages.css';
-@import 'footer.css';
-@import 'game-class-skill-input.css';
-@import 'navigation-bar.css';
-@import 'pagination.css';
-@import 'satoshi.css';
-@import 'snackbar.css';
-@import 'switch.css';
-@import 'tabs.css';
-@import 'tooltip.css';
+@import './admin-panel.css';
+@import './banner.css';
+@import './button.css';
+@import './dialog.css' layer(base);
+@import './fade-scroll.css';
+@import './flash-messages.css';
+@import './footer.css' layer(base);
+@import './game-class-skill-input.css' layer(base);
+@import './navigation-bar.css';
+@import './pagination.css';
+@import './satoshi.css' layer(base);
+@import './snackbar.css';
+@import './switch.css';
+@import './tabs.css';
+@import './tooltip.css';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans:
+    Satoshi, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-abru: #1c1320;
+
+  --color-abru-light-3: #221d24;
+  --color-abru-light-5: #272129;
+  --color-abru-light-10: #332b36;
+  --color-abru-light-15: #3e3641;
+  --color-abru-light-20: #49424d;
+  --color-abru-light-25: #564d59;
+  --color-abru-light-30: #605b62;
+  --color-abru-light-35: #6b666e;
+  --color-abru-light-50: #8d898f;
+  --color-abru-light-55: #99959b;
+  --color-abru-light-60: #a6a0a6;
+  --color-abru-light-70: #bbb8bc;
+  --color-abru-light-75: #c7c4c7;
+  --color-abru-light-85: #dddcdd;
+
+  --color-abru-dark-3: #1a161b;
+  --color-abru-dark-6: #19161a;
+  --color-abru-dark-10: #181519;
+  --color-abru-dark-15: #171418;
+  --color-abru-dark-20: #161216;
+  --color-abru-dark-25: #141115;
+  --color-abru-dark-29: #131014;
+
+  --color-accent-200: #fdcfde;
+  --color-accent-400: #f84c82;
+  --color-accent-600: #f61059;
+  --color-accent: #f61059;
+  --color-accent-hover: #dd0e50;
+
+  --color-ash: #f4f4ed;
+  --color-alert: #ff9e1f;
+  --color-steam: #6f9f31;
+  --color-team-blu: rgb(88 121 138);
+  --color-team-red: rgb(189 59 59);
+  --color-game-result-win: #52ffb8;
+  --color-game-result-loss: #a71d31;
+  --color-game-result-tie: #f4f4ed;
+  --color-place-1st: #e3c392;
+  --color-place-2nd: #bbbbbb;
+  --color-place-3rd: #e3a592;
+
+  --aspect-3\/1: 3 / 1;
+
+  --animate-rotate: rotate 500ms linear;
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
+  }
+}
 
 html {
   scroll-behavior: smooth;
@@ -41,7 +121,7 @@ table,
 .table {
   thead,
   .table-header-group {
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
   }
 
   td,
@@ -52,7 +132,7 @@ table,
 
 label {
   font-weight: 600;
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
 }
 
 dl {
@@ -66,13 +146,13 @@ input[type='number'],
 input[type='url'],
 select,
 textarea {
-  background-color: theme(colors.abru.light.5);
+  background-color: var(--color-abru-light-5);
   border-radius: 4px;
   padding: 4px 8px;
   color: #ffffff;
 
   &:disabled {
-    color: theme(colors.abru.light.50);
+    color: var(--color-abru-light-50);
   }
 }
 
@@ -102,20 +182,20 @@ input[type='range'] {
     height: 18px;
     width: 18px;
     border-radius: 50%;
-    background-color: theme('colors.accent.DEFAULT');
+    background-color: var(--color-accent);
     cursor: pointer;
     border: none;
   }
 
   &:hover::-webkit-slider-thumb,
   &:hover::-moz-range-thumb {
-    background-color: darken(theme('colors.accent.DEFAULT'), 10%);
+    background-color: darken(var(--color-accent), 10%);
   }
 
   &:focus::-webkit-slider-thumb,
   &:focus::-moz-range-thumb {
-    border: 1px solid theme('colors.accent.DEFAULT');
-    outline: 3px solid theme('colors.accent.DEFAULT');
+    border: 1px solid var(--color-accent);
+    outline: 3px solid var(--color-accent);
     outline-offset: 0.125rem;
   }
 
@@ -124,7 +204,7 @@ input[type='range'] {
     width: 100%;
     height: 8px;
     cursor: pointer;
-    background-color: theme('colors.abru.light.5');
+    background-color: var(--color-abru-light-5);
     border-radius: 4px;
   }
 }

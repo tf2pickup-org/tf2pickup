@@ -11,7 +11,7 @@
   gap: 10px;
   border-radius: 8px;
   padding: 22px;
-  background-color: theme(colors.abru.dark.29);
+  background-color: var(--color-abru-dark-29);
   color: theme(colors.abru.light.75);
   row-gap: 24px;
 
@@ -100,7 +100,7 @@
   column-gap: 8px;
   row-gap: 8px;
   border-radius: 8px;
-  background: theme(colors.abru.dark.29);
+  background: var(--color-abru-dark-29);
   padding: 24px;
 
   @media screen(xl) {

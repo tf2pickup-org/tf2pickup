@@ -1,52 +1,48 @@
-@layer utilities {
-  .fade-scroll {
-    --scrollbar-width: 16px;
-    overflow-y: auto;
+@utility fade-scroll {
+  --scrollbar-width: 16px;
+  overflow-y: auto;
 
-    max-height: 100%;
-    mask-image: linear-gradient(
-      to bottom,
-      transparent 0,
-      black var(--top-mask-size, 0),
-      black calc(100% - var(--bottom-mask-size, 0)),
-      transparent 100%
-    );
-    mask-repeat: no-repeat, no-repeat;
-    --top-mask-size: 0px;
-    --bottom-mask-size: 0px;
+  max-height: 100%;
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    black var(--top-mask-size, 0),
+    black calc(100% - var(--bottom-mask-size, 0)),
+    transparent 100%
+  );
+  mask-repeat: no-repeat, no-repeat;
+  --top-mask-size: 0px;
+  --bottom-mask-size: 0px;
 
-    &.mask-top {
-      @media screen(lg) {
-        padding-right: 16px;
-      }
-      --top-mask-size: 48px !important;
+  &.mask-top {
+    @media (width >= theme(--breakpoint-lg)) {
+      padding-right: 16px;
     }
+    --top-mask-size: 48px !important;
+  }
 
-    &.mask-bottom {
-      @media screen(lg) {
-        padding-right: 16px;
-      }
-      --bottom-mask-size: 48px !important;
+  &.mask-bottom {
+    @media (width >= theme(--breakpoint-lg)) {
+      padding-right: 16px;
     }
+    --bottom-mask-size: 48px !important;
   }
 
   /* Firefox */
-  .fade-scroll {
-    scrollbar-width: auto;
-    scrollbar-color: theme(colors.abru.light.30) transparent;
-  }
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-abru-light-30) transparent;
 
   /* Webkit / Blink */
-  .fade-scroll::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: var(--scrollbar-width);
   }
 
-  .fade-scroll::-webkit-scrollbar-thumb {
-    background-color: theme(colors.abru.light.30);
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-abru-light-30);
     border-radius: 9999px; /* always round */
   }
 
-  .fade-scroll::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     background-color: transparent;
   }
 }

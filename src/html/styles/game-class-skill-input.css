@@ -1,7 +1,7 @@
 .game-class-skill-input {
   display: flex;
   flex-flow: row nowrap;
-  background-color: theme(colors.abru.light.5);
+  background-color: var(--color-abru-light-5);
   border-radius: 4px;
   height: 48px;
   align-items: center;

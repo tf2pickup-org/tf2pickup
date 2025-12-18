@@ -11,17 +11,13 @@
   aspect-ratio: 3 / 1;
 
   background: theme(colors.abru.light.25);
-  background: linear-gradient(
-    90deg,
-    theme(colors.abru.light.25) 35%,
-    theme(colors.transparent) 90%
-  );
+  background: linear-gradient(90deg, theme(colors.abru.light.25) 35%, var(--color-transparent) 90%);
 
   &:hover:enabled {
     background: linear-gradient(
       90deg,
       lighten(theme(colors.abru.light.25), 3%) 35%,
-      theme(colors.transparent) 90%
+      var(--color-transparent) 90%
     );
   }
 

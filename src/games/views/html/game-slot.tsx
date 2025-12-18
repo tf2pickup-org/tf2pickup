@@ -135,7 +135,7 @@ async function GameSlotContent(props: {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
+      class="rounded-xs bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"

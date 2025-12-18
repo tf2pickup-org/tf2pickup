@@ -28,7 +28,7 @@ export function ReadyUpDialog() {
             <button
               name="ready"
               value=""
-              class="w-[242px] rounded bg-accent-600 py-[12px] text-xl font-bold uppercase text-gray-50"
+              class="w-[242px] rounded-sm bg-accent-600 py-[12px] text-xl font-bold uppercase text-gray-50"
               autofocus
               ws-send
               data-umami-event="ready-up"
@@ -38,7 +38,7 @@ export function ReadyUpDialog() {
             <button
               name="leave"
               value=""
-              class="w-[242px] rounded bg-abru-light-5 py-[12px] text-xl font-bold text-gray-50"
+              class="w-[242px] rounded-sm bg-abru-light-5 py-[12px] text-xl font-bold text-gray-50"
               ws-send
               data-umami-event="not-ready"
             >
