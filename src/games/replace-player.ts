@@ -78,6 +78,10 @@ export async function replacePlayer({
       },
     )
 
+    await collections.gamesSubstituteRequests.deleteOne({
+      gameNumber: newGame.number,
+      slotId: slot.id,
+    })
     events.emit('game:playerReplaced', { game: newGame, replacee, replacement, slotId: slot.id })
 
     if (shouldApplyCooldown) {

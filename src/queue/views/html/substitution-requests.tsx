@@ -1,20 +1,19 @@
+import { collections } from '../../../database/collections'
 import type { GameModel } from '../../../database/models/game.model'
-import { games } from '../../../games'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function SubstitutionRequests() {
-  const requests = await games.getSubstitutionRequests()
+  const requests = await collections.gamesSubstituteRequests.find().toArray()
   return (
     <div id="substitution-requests" class="contents">
       {requests.map(request => (
         <div class="banner banner--alert flex flex-row items-center">
           <p class="flex-1">
-            Team <strong safe>{request.slot.team.toUpperCase()}</strong> needs a substitute for{' '}
+            Team <strong safe>{request.team.toUpperCase()}</strong> needs a substitute for{' '}
             <strong class="whitespace-nowrap">
-              <GameClassIcon gameClass={request.slot.gameClass} size={20} />{' '}
-              {request.slot.gameClass}
+              <GameClassIcon gameClass={request.gameClass} size={20} /> {request.gameClass}
             </strong>{' '}
             in game&nbsp;<span safe>#{request.gameNumber}</span>
           </p>
