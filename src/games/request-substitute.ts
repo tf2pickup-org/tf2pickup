@@ -1,3 +1,4 @@
+import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
 import { SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
@@ -61,6 +62,12 @@ export async function requestSubstitute({
     },
   )
 
+  await collections.gamesSubstituteRequests.insertOne({
+    gameNumber: newGame.number,
+    slotId: slot.id,
+    team: slot.team,
+    gameClass: slot.gameClass,
+  })
   events.emit('game:substituteRequested', {
     game: newGame,
     replacee,

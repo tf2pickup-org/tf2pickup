@@ -6,6 +6,7 @@ import { GameEndedReason, GameEventType } from '../../database/models/game-event
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
 import { update } from '../update'
 import { safe } from '../../utils/safe'
+import { collections } from '../../database/collections'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -60,6 +61,7 @@ export default fp(
     events.on(
       'match:ended',
       safe(async ({ gameNumber }) => {
+        await collections.gamesSubstituteRequests.deleteMany({ gameNumber })
         const game = await update(
           { number: gameNumber, state: GameState.started },
           {

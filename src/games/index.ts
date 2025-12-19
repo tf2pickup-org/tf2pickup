@@ -1,5 +1,4 @@
 import { update } from './update'
-import { getSubstitutionRequests } from './get-substitution-requests'
 import { findOne } from './find-one'
 import { gameNumber } from './schemas/game-number'
 import { requestSubstitute } from './request-substitute'
@@ -10,7 +9,6 @@ import { requestGameServerReinitialization } from './request-game-server-reiniti
 export const games = {
   findOne,
   forceEnd,
-  getSubstitutionRequests,
   replacePlayer,
   requestGameServerReinitialization,
   requestSubstitute,

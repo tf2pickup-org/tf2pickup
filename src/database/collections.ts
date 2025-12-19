@@ -24,6 +24,7 @@ import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
 import { logger } from '../logger'
 import type { ObjectId } from 'mongodb'
+import type { SubstituteRequestModel } from './models/substitute-request.model'
 
 export const collections = {
   announcements: database.collection<AnnouncementModel>('announcements'),
@@ -37,6 +38,7 @@ export const collections = {
   documents: database.collection<DocumentModel>('documents'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
+  gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
