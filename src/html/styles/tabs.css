@@ -1,3 +1,5 @@
-@utility tabcontent {
-  display: contents;
+@layer components {
+  .tabcontent {
+    display: contents;
+  }
 }

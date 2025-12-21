@@ -4,16 +4,16 @@
 
   li {
     &:nth-child(odd) {
-      background-color: theme(colors.abru.dark.6);
+      background-color: var(--color-abru-dark-6);
     }
 
     &:nth-child(even) {
-      background-color: theme(colors.abru.light.5);
+      background-color: var(--color-abru-light-5);
     }
   }
 
   a {
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
     border-radius: 2px;
     padding: 4px 8px;
     font-weight: 300;

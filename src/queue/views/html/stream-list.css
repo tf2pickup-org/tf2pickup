@@ -2,9 +2,9 @@
   @apply transition-colors;
   @apply duration-75;
 
-  background-color: theme(colors.abru.light.15);
+  background-color: var(--color-abru-light-15);
 
   &:hover {
-    background-color: lighten(theme(colors.abru.light.15), 4%);
+    background-color: color-mix(in hsl, var(--color-abru-light-15), white 4%);
   }
 }

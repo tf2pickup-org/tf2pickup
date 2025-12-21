@@ -1,27 +1,26 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
 @import './admin-panel.css';
 @import './banner.css';
 @import './button.css';
-@import './dialog.css' layer(base);
+@import './dialog.css';
 @import './fade-scroll.css';
 @import './flash-messages.css';
-@import './footer.css' layer(base);
-@import './game-class-skill-input.css' layer(base);
+@import './footer.css';
+@import './game-class-skill-input.css';
 @import './navigation-bar.css';
 @import './pagination.css';
-@import './satoshi.css' layer(base);
+@import './satoshi.css';
 @import './snackbar.css';
 @import './switch.css';
 @import './tabs.css';
 @import './tooltip.css';
 
-@import 'tailwindcss';
-
-@plugin '@tailwindcss/typography';
-
 @theme {
   --font-sans:
-    Satoshi, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    Satoshi, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
 
   --color-abru: #1c1320;
 
@@ -189,7 +188,7 @@ input[type='range'] {
 
   &:hover::-webkit-slider-thumb,
   &:hover::-moz-range-thumb {
-    background-color: darken(var(--color-accent), 10%);
+    background-color: color-mix(in hsl, var(--color-accent), black 10%);
   }
 
   &:focus::-webkit-slider-thumb,

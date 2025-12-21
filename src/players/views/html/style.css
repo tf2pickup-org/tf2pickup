@@ -1,4 +1,4 @@
-@import 'games/views/html/game-list.css';
+@import '../../../games/views/html/game-list.css';
 
 .player-group {
   grid-template-columns: subgrid;
@@ -12,7 +12,7 @@
   border-radius: 8px;
   padding: 22px;
   background-color: var(--color-abru-dark-29);
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
   row-gap: 24px;
 
   @media screen(md) {
@@ -61,8 +61,8 @@
   justify-content: center;
   gap: 8px;
 
-  background-color: theme(colors.abru.light.3);
-  color: theme(colors.abru.light.75);
+  background-color: var(--color-abru-light-3);
+  color: var(--color-abru-light-75);
   height: 48px;
   min-width: 200px;
 
@@ -78,7 +78,7 @@
   }
 
   &:hover {
-    background-color: lighten(theme(colors.abru.light.3), 2%);
+    background-color: color-mix(in hsl, var(--color-abru-light-3), white 2%);
   }
 }
 
@@ -114,7 +114,7 @@
   .caption {
     font-size: 18px;
     font-weight: 700;
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
   }
 
   .game-result {
@@ -123,15 +123,15 @@
     border-radius: 4px;
 
     &.win {
-      background-color: theme(colors.game-result-win);
+      background-color: var(--color-game-result-win);
     }
 
     &.loss {
-      background-color: theme(colors.game-result-loss);
+      background-color: var(--color-game-result-loss);
     }
 
     &.tie {
-      background-color: theme(colors.game-result-tie);
+      background-color: var(--color-game-result-tie);
     }
   }
 
@@ -148,10 +148,10 @@
 
       padding: 4px 8px;
       border-radius: 4px;
-      color: theme(colors.ash);
+      color: var(--color-ash);
 
       &.selected {
-        background-color: theme(colors.abru.light.5);
+        background-color: var(--color-abru-light-5);
       }
     }
   }
@@ -166,15 +166,15 @@
     font-weight: 500;
 
     .wins {
-      color: theme(colors.game-result-win);
+      color: var(--color-game-result-win);
     }
 
     .losses {
-      color: theme(colors.game-result-loss);
+      color: var(--color-game-result-loss);
     }
 
     .ties {
-      color: theme(colors.game-result-tie);
+      color: var(--color-game-result-tie);
     }
   }
 }

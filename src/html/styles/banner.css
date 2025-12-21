@@ -1,29 +1,31 @@
-@utility banner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-radius: 8px;
-  padding: 8px 12px;
-  font-size: 18px;
-  font-weight: 500;
-  color: var(--color-abru-dark-3);
-
-  @media (width >= theme(--breakpoint-md)) {
-    flex-direction: row;
-  }
-
-  &--warning {
-    background-color: var(--color-accent-600);
+@layer components {
+  .banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 18px;
+    font-weight: 500;
     color: var(--color-abru-dark-3);
-  }
 
-  &--alert {
-    background-color: var(--color-alert);
-    color: var(--color-abru-light-3);
-  }
+    @media (width >= theme(--breakpoint-md)) {
+      flex-direction: row;
+    }
 
-  &--info {
-    background-color: var(--color-abru-light-70);
-    color: var(--color-abru-light-3);
+    &--warning {
+      background-color: var(--color-accent-600);
+      color: var(--color-abru-dark-3);
+    }
+
+    &--alert {
+      background-color: var(--color-alert);
+      color: var(--color-abru-light-3);
+    }
+
+    &--info {
+      background-color: var(--color-abru-light-70);
+      color: var(--color-abru-light-3);
+    }
   }
 }

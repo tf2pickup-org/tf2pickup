@@ -7,7 +7,7 @@
   padding: 10px 14px;
 
   background-color: rgba(19, 16, 20, 0.5);
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
   border-radius: 8px;
 
   font-size: 20px;
@@ -30,7 +30,7 @@
     padding: 0px 8px 0px 0px;
 
     &:hover {
-      background-color: theme(colors.abru.light.5 / 40%);
+      background-color: color-mix(in srgb, var(--color-abru-light-5) 40%, transparent);
     }
 
     &.is-1st,
@@ -40,23 +40,23 @@
     }
 
     &.is-1st {
-      background-color: theme(colors.abru.light.15);
+      background-color: var(--color-abru-light-15);
       &:hover {
-        background-color: darken(theme(colors.abru.light.15), 2%);
+        background-color: color-mix(in hsl, var(--color-abru-light-15), black 2%);
       }
     }
 
     &.is-2nd {
-      background-color: theme(colors.abru.light.10);
+      background-color: var(--color-abru-light-10);
       &:hover {
-        background-color: darken(theme(colors.abru.light.10), 2%);
+        background-color: color-mix(in hsl, var(--color-abru-light-10), black 2%);
       }
     }
 
     &.is-3rd {
-      background-color: theme(colors.abru.light.5);
+      background-color: var(--color-abru-light-5);
       &:hover {
-        background-color: darken(theme(colors.abru.light.5), 2%);
+        background-color: color-mix(in hsl, var(--color-abru-light-5), black 2%);
       }
     }
   }

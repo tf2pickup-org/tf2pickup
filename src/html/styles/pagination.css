@@ -1,29 +1,31 @@
-@utility page {
-  height: 32px;
-  min-width: 28px;
-  display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  vertical-align: middle;
-  font-weight: 500;
-  border-radius: 4px;
-  color: var(--color-white);
-  cursor: pointer;
+@layer components {
+  .page {
+    height: 32px;
+    min-width: 28px;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    vertical-align: middle;
+    font-weight: 500;
+    border-radius: 4px;
+    color: var(--color-white);
+    cursor: pointer;
 
-  &:hover {
-    background-color: var(--color-abru-light-10);
+    &:hover {
+      background-color: var(--color-abru-light-10);
+    }
   }
-}
 
-@utility page--active {
-  background-color: var(--color-abru-light-15);
-}
+  .page--active {
+    background-color: var(--color-abru-light-15);
+  }
 
-@utility page--disabled {
-  color: var(--color-abru-light-15);
-  cursor: default;
+  .page--disabled {
+    color: var(--color-abru-light-15);
+    cursor: default;
 
-  &:hover {
-    background-color: initial;
+    &:hover {
+      background-color: initial;
+    }
   }
 }

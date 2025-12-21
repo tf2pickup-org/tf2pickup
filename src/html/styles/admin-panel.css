@@ -1,106 +1,108 @@
-@utility admin-panel-section {
-  font-size: 14px;
-  color: var(--color-abru-light-50);
-  font-weight: 500;
-  padding: 8px 12px;
-
-  &:not(:first-child) {
-    border-top: 1px solid var(--color-abru-light-25);
-    padding-top: 16px;
-    margin-top: 8px;
-  }
-}
-
-@utility admin-panel-header {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-
-  h1 {
-    font-size: 32px;
-    color: var(--color-abru-light-75);
-  }
-}
-
-@utility input-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-
-  .label {
-    font-size: 16px;
+@layer components {
+  admin-panel-section {
+    font-size: 14px;
+    color: var(--color-abru-light-50);
     font-weight: 500;
-  }
-}
+    padding: 8px 12px;
 
-@utility admin-panel-link {
-  display: flex;
-  flex-flow: flex nowrap;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-abru-light-75);
-  font-weight: 500;
-  font-size: 18px;
-  border-radius: 4px;
-  padding: 6px 12px;
-  position: relative;
-
-  &:hover {
-    background-color: --theme(--color-abru-dark-25 / 20%);
-  }
-
-  &.active {
-    background-color: var(--color-abru-dark-25);
-
-    &:before {
-      position: absolute;
-      left: 4px;
-      top: 4px;
-      content: '';
-      width: 4px;
-      height: calc(100% - 8px);
-      background-color: var(--color-accent);
-      border-radius: 2px;
+    &:not(:first-child) {
+      border-top: 1px solid var(--color-abru-light-25);
+      padding-top: 16px;
+      margin-top: 8px;
     }
   }
-}
 
-@utility admin-panel-content {
-  background-color: var(--color-abru-dark-25);
-  border-radius: 16px;
-  padding: 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  .admin-panel-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
 
-  .group {
-    background-color: var(--color-abru-light-5);
-    border-radius: 8px;
-    padding: 16px;
-    color: var(--color-abru-light-75);
-    font-size: 18px;
+    h1 {
+      font-size: 32px;
+      color: var(--color-abru-light-75);
+    }
+  }
 
-    input[type='text'],
-    input[type='number'],
-    input[type='url'] {
-      background-color: var(--color-abru-dark-25);
-      color: var(--color-white);
-      border-radius: 8px;
-      padding: 8px;
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    .label {
       font-size: 16px;
       font-weight: 500;
     }
+  }
 
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+  .admin-panel-link {
+    display: flex;
+    flex-flow: flex nowrap;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-abru-light-75);
+    font-weight: 500;
+    font-size: 18px;
+    border-radius: 4px;
+    padding: 6px 12px;
+    position: relative;
 
-      .label {
-        color: var(--color-abru-light-50);
+    &:hover {
+      background-color: --theme(--color-abru-dark-25 / 20%);
+    }
+
+    &.active {
+      background-color: var(--color-abru-dark-25);
+
+      &:before {
+        position: absolute;
+        left: 4px;
+        top: 4px;
+        content: '';
+        width: 4px;
+        height: calc(100% - 8px);
+        background-color: var(--color-accent);
+        border-radius: 2px;
+      }
+    }
+  }
+
+  .admin-panel-content {
+    background-color: var(--color-abru-dark-25);
+    border-radius: 16px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .group {
+      background-color: var(--color-abru-light-5);
+      border-radius: 8px;
+      padding: 16px;
+      color: var(--color-abru-light-75);
+      font-size: 18px;
+
+      input[type='text'],
+      input[type='number'],
+      input[type='url'] {
+        background-color: var(--color-abru-dark-25);
+        color: var(--color-white);
+        border-radius: 8px;
+        padding: 8px;
         font-size: 16px;
         font-weight: 500;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .label {
+          color: var(--color-abru-light-50);
+          font-size: 16px;
+          font-weight: 500;
+        }
       }
     }
   }

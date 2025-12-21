@@ -41,7 +41,7 @@
     border-radius: 8px 8px 0 0;
     margin-top: 16px;
 
-    color: theme('colors.ash');
+    color: var(--color-ash);
 
     @media screen(xl) {
       margin-top: 0;
@@ -49,7 +49,7 @@
 
     &.team-blu {
       grid-area: scoreBlu;
-      background-color: theme('colors.team-blu');
+      background-color: var(--color-team-blu);
 
       @media screen(lg) {
         border-radius: 8px 0 0 0;
@@ -59,7 +59,7 @@
 
     &.team-red {
       grid-area: scoreRed;
-      background-color: theme('colors.team-red');
+      background-color: var(--color-team-red);
 
       @media screen(lg) {
         grid-template-areas: 'score teamName';
@@ -146,7 +146,7 @@
       padding: 10px;
 
       &.active {
-        background-color: theme(colors.abru.light.60);
+        background-color: var(--color-abru-light-60);
 
         .class-icon {
           @media screen(lg) {
@@ -203,8 +203,8 @@
       }
 
       &.waiting-for-substitute {
-        background-color: theme(colors.abru.light.30);
-        color: theme(colors.abru.light.60);
+        background-color: var(--color-abru-light-30);
+        color: var(--color-abru-light-60);
       }
     }
   }
@@ -223,7 +223,7 @@
   background: linear-gradient(180deg, var(--color-transparent) 35%, var(--color-abru-dark-29) 90%);
 
   .floating-label {
-    background-color: theme(colors.abru.DEFAULT/90);
+    background: color-mix(in srgb, var(--color-abru) 90%, transparent);
     position: absolute;
     height: 28px;
     display: flex;
@@ -248,7 +248,7 @@
   display: flex;
   flex-flow: column nowrap;
 
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
 
   .label {
     font-weight: 300;
@@ -266,12 +266,12 @@
   gap: 16px;
   border-radius: 4px;
   border-width: 1px;
-  border-color: theme(colors.abru.light.25);
-  background-color: theme(colors.abru.light.5);
+  border-color: var(--color-abru-light-25);
+  background-color: var(--color-abru-light-5);
   padding: 10px 12px;
   font-size: 16px;
   font-weight: 500;
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
   min-width: 0px;
 
   .content {
@@ -283,8 +283,8 @@
     user-select: all;
     overflow: hidden;
     white-space: nowrap;
-    background-color: theme(colors.abru.light.5);
-    color: theme(colors.abru.light.75);
+    background-color: var(--color-abru-light-5);
+    color: var(--color-abru-light-75);
   }
 }
 
@@ -303,10 +303,10 @@
   font-weight: 700;
   text-transform: uppercase;
 
-  background-color: theme(colors.abru.light.3);
+  background-color: var(--color-abru-light-3);
 
   &:hover {
-    background-color: theme(colors.abru.light.5);
+    background-color: var(--color-abru-light-5);
   }
 }
 
@@ -325,16 +325,16 @@
     gap: 12px;
 
     border-radius: 8px;
-    background-color: theme(colors.abru.dark.15);
+    background-color: var(--color-abru-dark-15);
 
     padding: 10px;
 
     font-size: 16px;
     font-weight: 500;
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
     line-height: normal;
 
-    border: 1px solid theme(colors.abru.light.25);
+    border: 1px solid var(--color-abru-light-25);
 
     .at {
       font-size: 12px;
@@ -362,7 +362,7 @@
 
 .game-admin-toolbox {
   grid-area: adminToolbox;
-  background-color: theme('colors.abru.dark.29');
+  background-color: var(--color-abru-dark-29);
   border-radius: 8px;
   padding: 10px;
 
@@ -399,8 +399,8 @@
     height: 100%;
     width: 100%;
 
-    color: theme(colors.ash);
-    background-color: theme(colors.accent.DEFAULT);
+    color: var(--color-ash);
+    background-color: var(--color-accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -409,7 +409,7 @@
     border-radius: 4px;
 
     &:hover {
-      background-color: darken(theme(colors.accent.DEFAULT), 10%);
+      background-color: color-mix(in hsl, var(--color-accent), black 10%);
     }
   }
 
