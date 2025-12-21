@@ -36,7 +36,21 @@ export default routes(async app => {
           (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
           {},
         )
-      await players.update(player.steamId, { $set: { skill } }, {}, request.user!.player.steamId)
+      await players.update(
+        player.steamId,
+        {
+          $set: { skill },
+          $push: {
+            skillHistory: {
+              at: new Date(),
+              skill,
+              actor: request.user!.player.steamId,
+            },
+          },
+        },
+        {},
+        request.user!.player.steamId,
+      )
       request.flash('success', `Player skill updated`)
       await reply.redirect(`/players/${steamId}`)
     },
