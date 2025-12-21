@@ -43,6 +43,8 @@ export interface PlayerStats {
   gamesByClass: Partial<Record<Tf2ClassName, number>>
 }
 
+export type PlayerSkill = Partial<Record<Tf2ClassName, number>>
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -54,7 +56,12 @@ export interface PlayerModel {
   etf2lProfileLastSyncedAt?: Date
   cooldownLevel: number
   activeGame?: GameNumber
-  skill?: Partial<Record<Tf2ClassName, number>>
+  skill?: PlayerSkill
+  skillHistory?: {
+    at: Date
+    skill: PlayerSkill
+    actor: SteamId64
+  }[]
   preReadyUntil?: Date
   preferences: PlayerPreferences
   bans?: PlayerBan[]
