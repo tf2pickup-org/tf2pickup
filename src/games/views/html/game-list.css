@@ -47,11 +47,7 @@
       height: 80px;
 
       background: var(--color-abru-light-15);
-      background: linear-gradient(
-        90deg,
-        var(--color-abru-light-15) 35%,
-        var(--color-transparent) 90%
-      );
+      background: linear-gradient(90deg, var(--color-abru-light-15) 35%, transparent 90%);
     }
 
     &:hover {
@@ -61,7 +57,7 @@
         background: linear-gradient(
           90deg,
           color-mix(in hsl, var(--color-abru-light-15), white 3%) 35%,
-          var(--color-transparent) 90%
+          transparent 90%
         );
       }
     }

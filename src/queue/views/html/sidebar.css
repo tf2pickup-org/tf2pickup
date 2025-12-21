@@ -1,3 +1,5 @@
+@reference '../../../html/styles/main.css';
+
 .queue-sidebar {
   flex-flow: column nowrap;
   height: 100%;
@@ -7,7 +9,7 @@
   padding: 8px;
   display: none;
 
-  @media screen(lg) {
+  @media (width >= theme(--breakpoint-lg)) {
     display: flex;
   }
 

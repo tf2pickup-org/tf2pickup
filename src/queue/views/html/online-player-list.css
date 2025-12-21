@@ -1,3 +1,5 @@
+@reference '../../../html/styles/main.css';
+
 .online-player-list {
   flex: 1 1 0;
   list-style-type: none;
@@ -21,7 +23,7 @@
     display: inline-block;
     width: 100%;
 
-    @media screen(lg) {
+    @media (width >= theme(--breakpoint-lg)) {
       text-align: start;
     }
 
