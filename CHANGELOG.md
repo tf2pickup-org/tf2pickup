@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.25](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.24...4.0.0-beta.25) (2025-12-22)
+
+
+### Bug Fixes
+
+* provide setSkill() actor properly ([#447](https://github.com/tf2pickup-org/tf2pickup/issues/447)) ([203bf51](https://github.com/tf2pickup-org/tf2pickup/commit/203bf51302a57efe490d38d46828a62d7e246f64))
+
 # [4.0.0-beta.24](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.23...4.0.0-beta.24) (2025-12-22)
 
 
