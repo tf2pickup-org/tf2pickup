@@ -26,7 +26,7 @@ export async function GamePage(props: { number: GameNumber }) {
     >
       <NavigationBar />
       <Page>
-        <div class="game-page container relative mx-auto">
+        <div class="game-page relative container mx-auto">
           <GameSummary game={game} actor={user?.player.steamId} />
           <GameSlotList game={game} actor={user?.player.steamId} />
           <GameEventList game={game} />

@@ -10,10 +10,10 @@ export function ErrorPage(props: { statusCode: number; message: string }) {
       <NavigationBar />
       <Page>
         <div class="flex h-full flex-col items-center justify-center">
-          <span class="text-[384px] font-bold leading-none text-abru-light-75">
+          <span class="text-abru-light-75 text-[384px] leading-none font-bold">
             {props.statusCode}
           </span>
-          <span class="text-[36px] font-bold text-abru-light-75" safe>
+          <span class="text-abru-light-75 text-[36px] font-bold" safe>
             {props.message}
           </span>
           <a href="/" class="button button--accent mt-4 px-16">

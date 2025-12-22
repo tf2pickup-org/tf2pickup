@@ -74,7 +74,7 @@ export function ChatMessageList(props: { messages: ChatMessageModel[] }) {
         hx-trigger="intersect once"
         hx-swap="outerHTML"
       >
-        <IconLoader3 class="animate-spin text-abru-light-50" />
+        <IconLoader3 class="text-abru-light-50 animate-spin" />
       </div>
     )
   }

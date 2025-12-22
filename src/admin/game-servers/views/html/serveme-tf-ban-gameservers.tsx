@@ -33,7 +33,7 @@ export function ServemeTfBanGameServers() {
               <span>Add pattern</span>
             </button>
           </form>
-          <span class="text-sm text-abru-light-75">
+          <span class="text-abru-light-75 text-sm">
             Game servers whose names contain any of these patterns will be excluded when picking a
             server.
           </span>

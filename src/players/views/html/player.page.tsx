@@ -52,7 +52,7 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
     >
       <NavigationBar />
       <Page>
-        <div class="container relative mx-auto flex flex-col gap-[30px]">
+        <div class="relative container mx-auto flex flex-col gap-[30px]">
           <PlayerPresentation
             player={player}
             gameCount={player.stats.totalGames}
@@ -100,7 +100,7 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
 
   return games.length > 0 ? (
     <>
-      <div class="text-center text-2xl font-bold text-abru-light-75 md:text-start">
+      <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
         Game history
       </div>
       <div class="game-list col-span-2">
@@ -144,11 +144,11 @@ function PlayerPresentation(props: {
       />
 
       <div class="flex flex-row items-center gap-[10px]">
-        <span class="-mt-[6px] text-[48px] font-bold leading-none" safe>
+        <span class="-mt-[6px] text-[48px] leading-none font-bold" safe>
           {props.player.name}
         </span>
         {props.player.roles.includes(PlayerRole.admin) ? (
-          <span class="rounded-[3px] bg-alert px-[8px] py-[6px] font-bold leading-none text-abru-light-3">
+          <span class="bg-alert text-abru-light-3 rounded-[3px] px-[8px] py-[6px] leading-none font-bold">
             admin
           </span>
         ) : (
@@ -170,7 +170,7 @@ function PlayerPresentation(props: {
         <span class="hidden text-base font-light md:inline">Total games played:</span>
         <span class="justify-self-start text-2xl font-bold">{props.gameCount}</span>
 
-        <div class="row-span-2 mx-2 hidden h-[48px] w-[2px] self-center bg-abru-light-15 md:block"></div>
+        <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
 
         {[Tf2ClassName.scout, Tf2ClassName.soldier, Tf2ClassName.demoman, Tf2ClassName.medic].map(
           gameClass => (

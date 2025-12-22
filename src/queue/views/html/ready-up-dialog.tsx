@@ -8,7 +8,7 @@ export function ReadyUpDialog() {
   return (
     <>
       <dialog
-        class="w-[616px] rounded-xl bg-abru-dark-29 px-[59px] py-[42px] shadow-xl"
+        class="bg-abru-dark-29 w-[616px] rounded-xl px-[59px] py-[42px] shadow-xl"
         id={dialogId}
         _={`
         on show me.showModal() then remove [@disabled] from <#${dialogId} button/> end
@@ -19,7 +19,7 @@ export function ReadyUpDialog() {
           class="flex flex-col items-center gap-11"
           _={`on submit add [@disabled] to <#${dialogId} button/>`}
         >
-          <div class="flex flex-col items-center text-[32px] font-bold text-abru-light-75">
+          <div class="text-abru-light-75 flex flex-col items-center text-[32px] font-bold">
             <span>Game is starting!</span>
             <span>Are you ready to play?</span>
           </div>
@@ -28,7 +28,7 @@ export function ReadyUpDialog() {
             <button
               name="ready"
               value=""
-              class="w-[242px] rounded-sm bg-accent-600 py-[12px] text-xl font-bold uppercase text-gray-50"
+              class="bg-accent-600 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50 uppercase"
               autofocus
               ws-send
               data-umami-event="ready-up"
@@ -38,7 +38,7 @@ export function ReadyUpDialog() {
             <button
               name="leave"
               value=""
-              class="w-[242px] rounded-sm bg-abru-light-5 py-[12px] text-xl font-bold text-gray-50"
+              class="bg-abru-light-5 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50"
               ws-send
               data-umami-event="not-ready"
             >

@@ -125,7 +125,7 @@ export async function EditPlayerBansPage(props: { steamId: SteamId64 }) {
             </div>
           </>
         ) : (
-          <span class="italic text-abru-light-75">No bans</span>
+          <span class="text-abru-light-75 italic">No bans</span>
         )}
       </div>
     </EditPlayer>

@@ -9,7 +9,7 @@ export function Footer() {
   return (
     <footer class="w-full">
       <div class="container mx-auto my-4">
-        <div class="flex flex-col items-center gap-2 text-sm font-normal text-abru-light-75 md:flex-row md:gap-0">
+        <div class="text-abru-light-75 flex flex-col items-center gap-2 text-sm font-normal md:flex-row md:gap-0">
           <span>
             © 2019-{currentYear} tf2pickup.org | version {safeVersion}
           </span>

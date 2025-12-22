@@ -28,7 +28,7 @@ export async function HallOfFamePage() {
       <NavigationBar />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-x-4 gap-y-2 p-2 lg:grid-cols-2 lg:gap-y-0 lg:p-0">
-          <div class="my-9 text-[48px] font-bold text-abru-light-75 lg:col-span-2">
+          <div class="text-abru-light-75 my-9 text-[48px] font-bold lg:col-span-2">
             Hall of Fame
           </div>
 
@@ -68,11 +68,11 @@ function Board(props: { title: string; entries: HallOfFameEntry[] }) {
 function MaybeAward(props: { i: number }) {
   switch (props.i) {
     case 0:
-      return <IconAwardFilled size={32} class="place-self-center text-place-1st"></IconAwardFilled>
+      return <IconAwardFilled size={32} class="text-place-1st place-self-center"></IconAwardFilled>
     case 1:
-      return <IconAwardFilled size={32} class="place-self-center text-place-2nd"></IconAwardFilled>
+      return <IconAwardFilled size={32} class="text-place-2nd place-self-center"></IconAwardFilled>
     case 2:
-      return <IconAwardFilled size={32} class="place-self-center text-place-3rd"></IconAwardFilled>
+      return <IconAwardFilled size={32} class="text-place-3rd place-self-center"></IconAwardFilled>
     default:
       return <span class="place-self-center">{props.i + 1}.</span>
   }

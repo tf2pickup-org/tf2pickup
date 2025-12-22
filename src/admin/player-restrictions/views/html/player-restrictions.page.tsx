@@ -142,7 +142,7 @@ async function PlayerSkillThreshold() {
                   `}
           />
         </div>
-        <p class="text-sm text-abru-light-75">
+        <p class="text-abru-light-75 text-sm">
           Players will be able to join queue only on classes that meet the given criteria.
         </p>
       </dd>
@@ -157,7 +157,7 @@ async function DefaultPlayerSkill() {
   return (
     <dl>
       <dt>
-        <span class="font-bold text-abru-light-75">Default player skill</span>
+        <span class="text-abru-light-75 font-bold">Default player skill</span>
       </dt>
       <dd class="flex flex-col">
         <div class="flex flex-row gap-2">
@@ -169,7 +169,7 @@ async function DefaultPlayerSkill() {
             />
           ))}
         </div>
-        <p class="text-sm text-abru-light-75">
+        <p class="text-abru-light-75 text-sm">
           If a player starts a game without skill assigned for them, the game balance system will
           use this fallback value.
         </p>

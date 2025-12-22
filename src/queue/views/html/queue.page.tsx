@@ -87,13 +87,13 @@ async function QueueState(props: { actor?: User | undefined; required: number })
   return (
     <div class="flex flex-col gap-2">
       <form ws-send class="flex flex-row items-center justify-center">
-        <h3 class="flex-1 text-center text-2xl font-bold text-ash md:text-start">
+        <h3 class="text-ash flex-1 text-center text-2xl font-bold md:text-start">
           Players: <CurrentPlayerCount />/{props.required}
         </h3>
 
         <PreReadyUpButton actor={props.actor?.player.steamId} />
       </form>
-      <div class="h-[2px] rounded-xs bg-abru-light-25"></div>
+      <div class="bg-abru-light-25 h-[2px] rounded-xs"></div>
     </div>
   )
 }
