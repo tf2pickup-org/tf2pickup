@@ -15,7 +15,7 @@
   color: var(--color-abru-light-75);
   row-gap: 24px;
 
-  @media screen(md) {
+  @media (width >= theme(--breakpoint-md)) {
     grid-auto-flow: row;
     grid-template-columns: 218px auto auto;
     justify-items: normal;
@@ -36,14 +36,14 @@
     align-items: center;
     gap: 10px;
 
-    @media screen(md) {
+    @media (width >= theme(--breakpoint-md)) {
       grid-auto-flow: column;
       grid-template-rows: 1fr 1fr;
       justify-items: center;
       justify-self: start;
       column-gap: 24px;
 
-      @media not all and screen(lg) {
+      @media not all and (width >= theme(--breakpoint-lg)) {
         grid-column: span 2 / span 2;
         width: 100%;
       }
@@ -73,7 +73,7 @@
   font-weight: 700;
   text-transform: uppercase;
 
-  @media screen(md) {
+  @media (width >= theme(--breakpoint-md)) {
     min-width: 0;
   }
 
@@ -103,7 +103,7 @@
   background: var(--color-abru-dark-29);
   padding: 24px;
 
-  @media screen(xl) {
+  @media (width >= theme(--breakpoint-xl)) {
     grid-template-areas:
       'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
       'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  . winLoss         winLoss         winLoss . linkEdit';

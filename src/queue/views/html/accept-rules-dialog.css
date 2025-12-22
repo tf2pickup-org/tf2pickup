@@ -9,7 +9,7 @@
     height: auto;
     max-height: calc(100vh - 64px);
 
-    @media screen(lg) {
+    @media (width >= theme(--breakpoint-lg)) {
       max-height: calc(100vh - 300px);
     }
   }
