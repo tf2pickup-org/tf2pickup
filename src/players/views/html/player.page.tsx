@@ -41,8 +41,37 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
     'skill',
   ])
   const user = requestContext.get('user')
-  const skip = (props.page - 1) * gamesPerPage
 
+  return (
+    <Layout
+      title={makeTitle(player.name)}
+      description={`${player.name}'s profile on ${environment.WEBSITE_NAME}`}
+      canonical={`/players/${player.steamId}`}
+      embedStyle={resolve(import.meta.dirname, 'style.css')}
+    >
+      <NavigationBar />
+      <Page>
+        <div class="container relative mx-auto flex flex-col gap-[30px]">
+          <PlayerPresentation
+            player={player}
+            gameCount={player.stats.totalGames}
+            gameCountOnClasses={player.stats.gamesByClass}
+          />
+
+          {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
+
+          <div id="gameList" class="contents">
+            <PlayerGameList steamId={player.steamId} page={props.page} />
+          </div>
+        </div>
+      </Page>
+      <Footer />
+    </Layout>
+  )
+}
+
+export async function PlayerGameList(props: { steamId: SteamId64; page: number }) {
+  const skip = (props.page - 1) * gamesPerPage
   const games = await collections.games
     .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'slots'>>(
       { 'slots.player': props.steamId },
@@ -68,52 +97,30 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
     await collections.games.countDocuments({ 'slots.player': props.steamId }),
   )
 
-  return (
-    <Layout
-      title={makeTitle(player.name)}
-      description={`${player.name}'s profile on ${environment.WEBSITE_NAME}`}
-      canonical={`/players/${player.steamId}`}
-      embedStyle={resolve(import.meta.dirname, 'style.css')}
-    >
-      <NavigationBar />
-      <Page>
-        <div class="container relative mx-auto flex flex-col gap-[30px]">
-          <PlayerPresentation
-            player={player}
-            gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass}
+  return games.length > 0 ? (
+    <>
+      <div class="text-center text-2xl font-bold text-abru-light-75 md:text-start">
+        Game history
+      </div>
+      <div class="game-list col-span-2">
+        {games.map(game => (
+          <GameListItem
+            game={game}
+            classPlayed={game.slots.find(s => s.player === props.steamId)!.gameClass}
           />
+        ))}
+      </div>
 
-          {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
-
-          {games.length > 0 ? (
-            <>
-              <div class="text-center text-2xl font-bold text-abru-light-75 md:text-start">
-                Game history
-              </div>
-              <div class="game-list col-span-2">
-                {games.map(game => (
-                  <GameListItem
-                    game={game}
-                    classPlayed={game.slots.find(s => s.player === player.steamId)!.gameClass}
-                  />
-                ))}
-              </div>
-
-              <Pagination
-                hrefFn={page => `/players/${player.steamId}?gamespage=${page}`}
-                lastPage={last}
-                currentPage={props.page}
-                around={around}
-              />
-            </>
-          ) : (
-            <div></div>
-          )}
-        </div>
-      </Page>
-      <Footer />
-    </Layout>
+      <Pagination
+        hrefFn={page => `/players/${props.steamId}?gamespage=${page}`}
+        lastPage={last}
+        currentPage={props.page}
+        around={around}
+        hxTarget="#gameList"
+      />
+    </>
+  ) : (
+    <div></div>
   )
 }
 

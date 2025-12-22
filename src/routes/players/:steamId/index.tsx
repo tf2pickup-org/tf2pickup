@@ -1,5 +1,5 @@
 import z from 'zod'
-import { PlayerPage } from '../../../players/views/html/player.page'
+import { PlayerGameList, PlayerPage } from '../../../players/views/html/player.page'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
 import { players } from '../../../players'
 import { routes } from '../../../utils/routes'
@@ -30,11 +30,13 @@ export default routes(async app => {
           await tasks.schedule('etf2l:syncPlayerProfile', 0, { player: steamId })
         }
 
-        reply.status(200).html(
-          await PlayerPage({
-            steamId,
-            page: Number(req.query.gamespage) || 1,
-          }),
+        const page = Number(req.query.gamespage) || 1
+        await reply.html(
+          req.isPartialFor('gameList') ? (
+            <PlayerGameList steamId={steamId} page={page} />
+          ) : (
+            <PlayerPage steamId={steamId} page={page} />
+          ),
         )
       },
     )

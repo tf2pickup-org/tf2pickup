@@ -1,5 +1,5 @@
 import z from 'zod'
-import { GameListPage } from '../../games/views/html/game-list.page'
+import { GameList, GameListPage } from '../../games/views/html/game-list.page'
 import { routes } from '../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
@@ -14,10 +14,9 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      reply.status(200).html(
-        await GameListPage({
-          page: Number(request.query.page) || 1,
-        }),
+      const page = Number(request.query.page) || 1
+      await reply.html(
+        request.isPartialFor('gameList') ? <GameList page={page} /> : <GameListPage page={page} />,
       )
     },
   )
