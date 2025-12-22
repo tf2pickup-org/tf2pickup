@@ -12,17 +12,22 @@ interface SetSkillParams {
 
 export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
   const lastGame = await getLastGameNumber()
-  await update(steamId, {
-    $set: { skill },
-    $push: {
-      skillHistory: {
-        at: new Date(),
-        skill,
-        actor,
-        lastGame,
+  await update(
+    steamId,
+    {
+      $set: { skill },
+      $push: {
+        skillHistory: {
+          at: new Date(),
+          skill,
+          actor,
+          lastGame,
+        },
       },
     },
-  })
+    {},
+    actor,
+  )
 }
 
 async function getLastGameNumber(): Promise<GameNumber | undefined> {
