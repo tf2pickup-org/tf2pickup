@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.23](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.22...4.0.0-beta.23) (2025-12-22)
+
+
+### Features
+
+* record skill history ([#444](https://github.com/tf2pickup-org/tf2pickup/issues/444)) ([5e47246](https://github.com/tf2pickup-org/tf2pickup/commit/5e472468de6da87602e159149a8678e6621e98a5))
+
 # [4.0.0-beta.22](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.21...4.0.0-beta.22) (2025-12-18)
 
 
