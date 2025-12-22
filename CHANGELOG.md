@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.24](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.23...4.0.0-beta.24) (2025-12-22)
+
+
+### Bug Fixes
+
+* store game number in skill history ([#446](https://github.com/tf2pickup-org/tf2pickup/issues/446)) ([2e8a48d](https://github.com/tf2pickup-org/tf2pickup/commit/2e8a48dac79db8d467f589110041786def8ea58f))
+
 # [4.0.0-beta.23](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.22...4.0.0-beta.23) (2025-12-22)
 
 
