@@ -85,15 +85,16 @@
 .player-admin-toolbox {
   display: grid;
   grid-template-areas:
-    'captionSkill     captionSkill'
-    'skillScout       skillScout'
-    'skillSoldier     skillSoldier'
-    'skillDemoman     skillDemoman'
-    'skillMedic       skillMedic'
-    'buttonSave       buttonReset'
-    'captionWinLoss   captionWinLoss'
-    'winLoss          winLoss'
-    'linkEdit         linkEdit';
+    'captionSkill       captionSkill'
+    'skillScout         skillScout'
+    'skillSoldier       skillSoldier'
+    'skillDemoman       skillDemoman'
+    'skillMedic         skillMedic'
+    'buttonSave         buttonReset'
+    'buttonSkillHistory buttonSkillHistory'
+    'captionWinLoss     captionWinLoss'
+    'winLoss            winLoss'
+    'linkEdit           linkEdit';
   grid-template-columns: repeat(2, minmax(0, 1fr));
 
   align-items: center;
@@ -105,9 +106,9 @@
 
   @media screen(xl) {
     grid-template-areas:
-      'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
-      'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  . winLoss         winLoss         winLoss . linkEdit';
-    grid-template-columns: repeat(6, minmax(0, 2fr)) 1fr repeat(3, 2fr) 1fr 2fr;
+      'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill .                  . captionWinLoss  captionWinLoss  .       . linkEdit'
+      'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  buttonSkillHistory . winLoss         winLoss         winLoss . linkEdit';
+    grid-template-columns: repeat(5, minmax(0, 2fr)) repeat(3, 1fr) repeat(3, 2fr) 1fr 2fr;
     align-items: flex-end;
   }
 
