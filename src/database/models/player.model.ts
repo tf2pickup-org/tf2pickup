@@ -61,6 +61,7 @@ export interface PlayerModel {
     at: Date
     skill: PlayerSkill
     actor: SteamId64
+    lastGame?: GameNumber | undefined
   }[]
   preReadyUntil?: Date
   preferences: PlayerPreferences
