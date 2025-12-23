@@ -1,9 +1,18 @@
+import fp from 'fastify-plugin'
 import { secondsToMilliseconds } from 'date-fns'
-import { collections } from '../database/collections'
-import { logger } from '../logger'
-import { assertIsError } from '../utils/assert-is-error'
-import { tasks, tasksSchema } from './tasks'
-import { errors } from '../errors'
+import { collections } from '../../database/collections'
+import { logger } from '../../logger'
+import { assertIsError } from '../../utils/assert-is-error'
+import { tasks, tasksSchema } from '../tasks'
+import { errors } from '../../errors'
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export default fp(async app => {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  app.addHook('onReady', async () => {
+    setInterval(process, secondsToMilliseconds(1))
+  })
+})
 
 async function process() {
   const pendingTasks = await collections.tasks.find({ at: { $lte: new Date() } }).toArray()
@@ -28,5 +37,3 @@ async function process() {
     }),
   )
 }
-
-setInterval(process, secondsToMilliseconds(1))
