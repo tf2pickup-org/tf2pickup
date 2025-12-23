@@ -128,10 +128,11 @@ export function ChatPrompt() {
   return (
     <form
       class="m-2 flex flex-row gap-2"
-      hx-post="/chat"
-      hx-target="this"
-      hx-swap="outerHTML"
       id="chat-prompt"
+      hx-post="/chat"
+      hx-swap="none"
+      hx-disabled-elt="find input[type='text'], find button"
+      hx-on--after-request="if(event.detail.successful) this.reset()"
       data-disable-when-offline
     >
       <input
