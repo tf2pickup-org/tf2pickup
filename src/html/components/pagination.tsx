@@ -34,6 +34,7 @@ export function Pagination(props: {
   currentPage: number
   around: number[]
   hrefFn: (page: number) => string
+  hxTarget?: string
 }) {
   return (
     <div class="flex h-12 flex-row flex-nowrap items-center gap-2 text-lg text-white">
@@ -41,6 +42,7 @@ export function Pagination(props: {
         href={props.hrefFn(props.currentPage - 1)}
         class={['page', props.currentPage <= 1 && 'page--disabled']}
         preload="mousedown"
+        {...(props.hxTarget && { 'hx-target': props.hxTarget })}
       >
         <IconChevronLeft />
       </a>
@@ -50,6 +52,7 @@ export function Pagination(props: {
           href={props.hrefFn(page)}
           class={['page', props.currentPage === page && 'page--active']}
           preload="mousedown"
+          {...(props.hxTarget && { 'hx-target': props.hxTarget })}
         >
           <span class="px-[10px]">{page}</span>
         </a>
@@ -59,6 +62,7 @@ export function Pagination(props: {
         href={props.hrefFn(props.currentPage + 1)}
         class={['page', props.currentPage >= props.lastPage && 'page--disabled']}
         preload="mousedown"
+        {...(props.hxTarget && { 'hx-target': props.hxTarget })}
       >
         <IconChevronRight />
       </a>

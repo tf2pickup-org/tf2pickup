@@ -1,9 +1,12 @@
+import type { FastifyRequest } from 'fastify'
 import fp from 'fastify-plugin'
 import type { Jsonifiable } from 'type-fest'
 
 declare module 'fastify' {
   interface FastifyRequest {
     boosted: boolean
+    partialFor: string | null
+    isPartialFor: (target: string) => boolean
   }
 
   interface FastifyReply {
@@ -23,6 +26,11 @@ export default fp(
     // eslint-disable-next-line @typescript-eslint/require-await
     app.addHook('onRequest', async request => {
       request.boosted = request.headers['hx-boosted'] === 'true'
+      request.partialFor =
+        request.headers['hx-history-restore-request'] !== 'true' &&
+        request.headers['hx-request'] === 'true'
+          ? (request.headers['hx-target'] as string)
+          : null
     })
 
     app.addHook('onSend', async (_, response) => {
@@ -32,10 +40,16 @@ export default fp(
       }
     })
 
+    app.decorateRequest('isPartialFor', isPartialFor)
+
     // eslint-disable-next-line @typescript-eslint/require-await
     app.addHook('preHandler', async request => {
       request.requestContext.set('boosted', request.boosted)
     })
+
+    function isPartialFor(this: FastifyRequest, target: string) {
+      return this.partialFor === target
+    }
 
     app.decorateReply('trigger', function (val) {
       this.header('HX-Trigger', JSON.stringify(val))

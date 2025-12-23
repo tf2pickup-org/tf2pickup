@@ -13,6 +13,28 @@ import type { GameModel } from '../../../database/models/game.model'
 const itemsPerPage = 8
 
 export async function GameListPage(props: { page: number }) {
+  return (
+    <Layout
+      title={makeTitle('games')}
+      description={`games - page ${props.page}`}
+      canonical="/games"
+      embedStyle={resolve(import.meta.dirname, 'game-list.css')}
+    >
+      <NavigationBar />
+      <Page>
+        <div class="container mx-auto">
+          <div class="my-9 text-[48px] font-bold text-abru-light-75">Games</div>
+          <div class="contents" id="gameList">
+            <GameList {...props} />
+          </div>
+        </div>
+      </Page>
+      <Footer />
+    </Layout>
+  )
+}
+
+export async function GameList(props: { page: number }) {
   const { page } = props
   const { last, around } = paginate(page, itemsPerPage, await collections.games.countDocuments())
   const skip = (page - 1) * itemsPerPage
@@ -35,38 +57,22 @@ export async function GameListPage(props: { page: number }) {
     )
     .toArray()
 
-  return (
-    <Layout
-      title={makeTitle('games')}
-      description={`games - page ${page}`}
-      canonical="/games"
-      embedStyle={resolve(import.meta.dirname, 'game-list.css')}
-    >
-      <NavigationBar />
-      <Page>
-        <div class="container mx-auto">
-          <div class="my-9 text-[48px] font-bold text-abru-light-75">Games</div>
-
-          {games.length > 0 ? (
-            <>
-              <div class="game-list">
-                {games.map(game => (
-                  <GameListItem game={game} />
-                ))}
-              </div>
-              <Pagination
-                hrefFn={page => `/games?page=${page}`}
-                lastPage={last}
-                currentPage={page}
-                around={around}
-              />
-            </>
-          ) : (
-            <p class="text-abru-light-50">No games yet.</p>
-          )}
-        </div>
-      </Page>
-      <Footer />
-    </Layout>
+  return games.length > 0 ? (
+    <>
+      <div class="game-list">
+        {games.map(game => (
+          <GameListItem game={game} />
+        ))}
+      </div>
+      <Pagination
+        hrefFn={page => `/games?page=${page}`}
+        lastPage={last}
+        currentPage={page}
+        around={around}
+        hxTarget="#gameList"
+      />
+    </>
+  ) : (
+    <p class="text-abru-light-50">No games yet.</p>
   )
 }
