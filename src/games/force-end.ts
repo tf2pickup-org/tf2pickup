@@ -1,3 +1,4 @@
+import { collections } from '../database/collections'
 import { GameEndedReason, GameEventType } from '../database/models/game-event.model'
 import { SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameNumber } from '../database/models/game.model'
@@ -11,6 +12,7 @@ export async function forceEnd(
   actor?: SteamId64 | Bot,
   reason = GameEndedReason.interrupted,
 ) {
+  await collections.gamesSubstituteRequests.deleteMany({ gameNumber })
   const game = await update(
     {
       number: gameNumber,
