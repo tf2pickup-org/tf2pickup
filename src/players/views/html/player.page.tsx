@@ -39,6 +39,7 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
     'avatar.large',
     'stats',
     'skill',
+    'skillHistory',
   ])
   const user = requestContext.get('user')
 

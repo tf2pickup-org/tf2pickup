@@ -1,3 +1,4 @@
+import type { Children } from '@kitajs/html'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { GameClassIcon } from './game-class-icon'
 
@@ -7,6 +8,7 @@ export function GameClassSkillInput(props: {
   name?: undefined | string
   id?: undefined | string
   style?: undefined | string
+  children?: undefined | Children
 }) {
   const id = props.id ?? `playerSkill-${props.gameClass}`
   return (
@@ -23,6 +25,7 @@ export function GameClassSkillInput(props: {
         required
         step=".5"
       />
+      {props.children}
     </div>
   )
 }
