@@ -15,8 +15,10 @@ export function MapThumbnail(props: { map: string }) {
     `${mapThumbnailUrl(1200, 675)} 1200w`,
   ].join(', ')
 
-  // sizes attribute describes expected display size to help browser select appropriate image
-  const sizes = '(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw'
+  // sizes attribute tells browser the expected display width of the image
+  // These thumbnails are typically rendered at small sizes (150-400px) in the UI
+  // Using conservative estimates ensures we don't download oversized images
+  const sizes = '(min-width: 1280px) 300px, (min-width: 768px) 250px, 50vw'
 
   return (
     <div class="map-thumbnail flex h-full w-full items-center justify-center text-slate-700">
