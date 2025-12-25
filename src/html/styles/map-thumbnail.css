@@ -1,0 +1,65 @@
+.map-thumbnail {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+
+  /* Background image from CSS variable */
+  background-image: var(--map-thumbnail-url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Visual styling */
+  color: theme(colors.slate.700);
+
+  /* Loading state: show skeleton/placeholder */
+  background-color: theme(colors.abru.light.5);
+
+  /* Smooth transition for image loading */
+  transition: opacity 0.3s ease-in-out;
+
+  /* Image rendering optimizations */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+/* Optional: Add a loading indicator using CSS */
+.map-thumbnail::before {
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.05),
+    transparent
+  );
+  animation: map-thumbnail-loading 1.5s infinite;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+}
+
+/* Show loading animation only when image is loading */
+.map-thumbnail:empty::before {
+  opacity: 1;
+}
+
+@keyframes map-thumbnail-loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Hover effect */
+.map-thumbnail:hover {
+  opacity: 0.9;
+}
