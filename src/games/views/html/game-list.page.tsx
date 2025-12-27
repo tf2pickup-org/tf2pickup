@@ -57,38 +57,21 @@ export async function GameList(props: { page: number }) {
     )
     .toArray()
 
-  return (
-    <Layout
-      title={makeTitle('games')}
-      description={`games - page ${page}`}
-      canonical="/games"
-      embedStyle={resolve(import.meta.dirname, 'game-list.css')}
-    >
-      <NavigationBar />
-      <Page>
-        <div class="container mx-auto">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Games</div>
-
-          {games.length > 0 ? (
-            <>
-              <div class="game-list">
-                {games.map(game => (
-                  <GameListItem game={game} />
-                ))}
-              </div>
-              <Pagination
-                hrefFn={page => `/games?page=${page}`}
-                lastPage={last}
-                currentPage={page}
-                around={around}
-              />
-            </>
-          ) : (
-            <p class="text-abru-light-50">No games yet.</p>
-          )}
-        </div>
-      </Page>
-      <Footer />
-    </Layout>
+  return games.length > 0 ? (
+    <>
+      <div class="game-list">
+        {games.map(game => (
+          <GameListItem game={game} />
+        ))}
+      </div>
+      <Pagination
+        hrefFn={page => `/games?page=${page}`}
+        lastPage={last}
+        currentPage={page}
+        around={around}
+      />
+    </>
+  ) : (
+    <p class="text-abru-light-50">No games yet.</p>
   )
 }
