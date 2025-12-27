@@ -1,5 +1,21 @@
 # Changelog
 
+# [4.0.0-beta.26](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.25...4.0.0-beta.26) (2025-12-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/static to v9 ([#452](https://github.com/tf2pickup-org/tf2pickup/issues/452)) ([1ad35f6](https://github.com/tf2pickup-org/tf2pickup/commit/1ad35f6dd4793f8d9edf6f6e3b1ed3492589497b))
+* register task processor in onReady hook ([#449](https://github.com/tf2pickup-org/tf2pickup/issues/449)) ([208122b](https://github.com/tf2pickup-org/tf2pickup/commit/208122ba943238a911c8db9079f5e9122049fbd3))
+* remove game substitute request when game is force-ended ([#450](https://github.com/tf2pickup-org/tf2pickup/issues/450)) ([a9c2526](https://github.com/tf2pickup-org/tf2pickup/commit/a9c2526ab31d35fec223853c569ecfd9a2dea36b))
+
+
+### Features
+
+* add dismiss notifications disabled banner button ([#456](https://github.com/tf2pickup-org/tf2pickup/issues/456)) ([c3c8b9b](https://github.com/tf2pickup-org/tf2pickup/commit/c3c8b9bb487d51c40c6a9c9ed64960497fa0c0a3))
+* render partials ([#448](https://github.com/tf2pickup-org/tf2pickup/issues/448)) ([c7dcd2f](https://github.com/tf2pickup-org/tf2pickup/commit/c7dcd2f9de21ece7be56340b34f7a2c650bd8245))
+* show last skill update ([#453](https://github.com/tf2pickup-org/tf2pickup/issues/453)) ([f4ff21f](https://github.com/tf2pickup-org/tf2pickup/commit/f4ff21fbad9447fd1dcb0294d66ed02e278b2329))
+
 # [4.0.0-beta.25](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.24...4.0.0-beta.25) (2025-12-22)
 
 
