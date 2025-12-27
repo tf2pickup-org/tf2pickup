@@ -5,8 +5,14 @@ import { IconDeviceFloppy, IconEdit, IconInputX } from '../../../html/components
 import { queue } from '../../../queue'
 import { WinLossChart } from './win-loss-chart'
 import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
+import { players } from '../..'
+import { formatDistanceToNow } from 'date-fns'
+import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { pluckLastEdit } from '../../pluck-last-edit'
 
-export async function AdminToolbox(props: { player: Pick<PlayerModel, 'skill' | 'steamId'> }) {
+export async function AdminToolbox(props: {
+  player: Pick<PlayerModel, 'skill' | 'steamId' | 'skillHistory'>
+}) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
 
@@ -29,7 +35,9 @@ export async function AdminToolbox(props: { player: Pick<PlayerModel, 'skill' | 
           name={`skill.${gameClass.name}`}
           value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
           style={`grid-area: skill${capitalize(gameClass.name)}`}
-        />
+        >
+          <SkillLastUpdated className={gameClass.name} skillHistory={player.skillHistory} />
+        </GameClassSkillInput>
       ))}
 
       <button type="submit" class="button button--accent" style="grid-area: buttonSave">
@@ -85,5 +93,33 @@ AdminToolbox.replaceSkillValues = async (props: { skill?: PlayerModel['skill'] }
         )
       })}
     </>
+  )
+}
+
+async function SkillLastUpdated(props: {
+  className: Tf2ClassName
+  skillHistory: PlayerModel['skillHistory']
+}) {
+  const skillHistory = props.skillHistory
+  if (!skillHistory) {
+    return <></>
+  }
+
+  const { lastEdit, previousValue } = pluckLastEdit(skillHistory, props.className)
+  if (previousValue === 'unknown') {
+    return <></>
+  }
+
+  const admin = await players.bySteamId(lastEdit.actor, ['name'])
+  return (
+    <div class="tooltip">
+      <p class="text-nowrap">
+        Last updated by <strong safe>{admin.name}</strong>{' '}
+        {formatDistanceToNow(lastEdit.at, { addSuffix: true }) as 'safe'}
+      </p>
+      <p class="text-nowrap">
+        <strong>{previousValue}</strong> → <strong>{lastEdit.skill[props.className]}</strong>
+      </p>
+    </div>
   )
 }
