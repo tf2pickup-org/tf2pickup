@@ -10,6 +10,7 @@ export enum GameEventType {
   gameEnded = 'ended',
 
   gameServerAssigned = 'game server assigned',
+  gameServerAssignmentFailed = 'game server assignment failed',
   gameServerReinitializationOrdered = 'game server reinitialization ordered',
   gameServerInitialized = 'game server initialized',
 
@@ -56,6 +57,12 @@ export interface GameServerAssigned {
   at: Date
   gameServerName: string
   actor?: SteamId64 | Bot
+}
+
+export interface GameServerAssignmentFailed {
+  event: GameEventType.gameServerAssignmentFailed
+  at: Date
+  reason: string
 }
 
 export interface GameServerReinitializationOrdered {
@@ -119,6 +126,7 @@ export type GameEventModel =
   | GameRestarted
   | GameEnded
   | GameServerAssigned
+  | GameServerAssignmentFailed
   | GameServerReinitializationOrdered
   | GameServerInitialized
   | PlayerJoinedGameServer

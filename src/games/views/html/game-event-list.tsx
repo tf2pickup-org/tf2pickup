@@ -19,6 +19,7 @@ const renderedEvents = [
   GameEventType.gameEnded,
 
   GameEventType.gameServerAssigned,
+  GameEventType.gameServerAssignmentFailed,
   GameEventType.gameServerReinitializationOrdered,
   GameEventType.gameServerInitialized,
 
@@ -68,6 +69,7 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
         props.event.event === GameEventType.gameServerInitialized && 'game-event--info',
         props.event.event === GameEventType.substituteRequested && 'game-event--warning',
         props.event.event === GameEventType.playerReplaced && 'game-event--success',
+        props.event.event === GameEventType.gameServerAssignmentFailed && 'game-event--error',
       ]}
     >
       <span class="at" safe>
@@ -120,6 +122,12 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         </span>
       )
     }
+    case GameEventType.gameServerAssignmentFailed:
+      return (
+        <span>
+          Error: <strong safe>{props.event.reason}</strong>
+        </span>
+      )
     case GameEventType.gameServerReinitializationOrdered: {
       let actor = <></>
       if (props.event.actor) {
