@@ -15,6 +15,7 @@ import { collections } from '../../database/collections'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { getMessage } from '../get-message'
 import { safe } from '../../utils/safe'
+import { Mutex } from 'async-mutex'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
@@ -27,44 +28,47 @@ export default fp(async () => {
 
 const clientName = new URL(environment.WEBSITE_URL).hostname
 const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
+const mutex = new Mutex()
 
 async function refreshPrompt() {
-  const slots = await queue.getSlots()
-  const playerCount = slots.filter(slot => !!slot.player).length
-  const requiredPlayerCount = slots.length
-  const mapVoteResults = await queue.getMapVoteResults()
-  await forEachEnabledChannel('queuePrompts', async channel => {
-    const embed = queuePreview({
-      playerCount,
-      requiredPlayerCount,
-      gameClassData: slotsToGameClassData(channel.guild.id, slots),
-      mapVoteResults,
+  await mutex.runExclusive(async () => {
+    const slots = await queue.getSlots()
+    const playerCount = slots.filter(slot => !!slot.player).length
+    const requiredPlayerCount = slots.length
+    const mapVoteResults = await queue.getMapVoteResults()
+    await forEachEnabledChannel('queuePrompts', async channel => {
+      const embed = queuePreview({
+        playerCount,
+        requiredPlayerCount,
+        gameClassData: slotsToGameClassData(channel.guild.id, slots),
+        mapVoteResults,
+      })
+
+      const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
+      const config = await configuration.get('discord.guilds')
+      const thresholdRatio = config.find(gc => gc.id === channel.guildId)!.queuePrompts!
+        .bumpPlayerThresholdRatio
+
+      await retry(
+        async () => {
+          const message = await getMessage(channel, state?.promptMessageId)
+          if (message) {
+            await message.edit({ embeds: [embed] })
+            return
+          }
+
+          if (playerCount >= requiredPlayerCount * thresholdRatio) {
+            const sentMessage = await channel.send({ embeds: [embed] })
+            await collections.discordBotState.updateOne(
+              { guildId: channel.guild.id },
+              { $set: { promptMessageId: sentMessage.id } },
+              { upsert: true },
+            )
+          }
+        },
+        { retries: 3 },
+      )
     })
-
-    const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
-    const config = await configuration.get('discord.guilds')
-    const thresholdRatio = config.find(gc => gc.id === channel.guildId)!.queuePrompts!
-      .bumpPlayerThresholdRatio
-
-    await retry(
-      async () => {
-        const message = await getMessage(channel, state?.promptMessageId)
-        if (message) {
-          await message.edit({ embeds: [embed] })
-          return
-        }
-
-        if (playerCount >= requiredPlayerCount * thresholdRatio) {
-          const sentMessage = await channel.send({ embeds: [embed] })
-          await collections.discordBotState.updateOne(
-            { guildId: channel.guild.id },
-            { $set: { promptMessageId: sentMessage.id } },
-            { upsert: true },
-          )
-        }
-      },
-      { retries: 3 },
-    )
   })
 }
 
