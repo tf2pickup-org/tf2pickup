@@ -356,6 +356,11 @@
     &--warning {
       border-color: #ff9e1f;
     }
+
+    &--error {
+      border-color: #dc3545;
+      background-color: rgb(220 53 69 / 0.1);
+    }
   }
 }
 
