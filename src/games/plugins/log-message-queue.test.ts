@@ -1,13 +1,7 @@
-import { describe, expect, it, beforeEach } from 'vitest'
-import { LogMessageQueue } from './log-message-queue'
+import { describe, expect, it } from 'vitest'
+import { logMessageQueue } from './log-message-queue'
 
-describe('LogMessageQueue', () => {
-  let queue: LogMessageQueue
-
-  beforeEach(() => {
-    queue = new LogMessageQueue()
-  })
-
+describe('logMessageQueue', () => {
   it('should execute operations sequentially for the same key', async () => {
     const results: number[] = []
     const resolvers: (() => void)[] = []
@@ -21,7 +15,7 @@ describe('LogMessageQueue', () => {
       })
       resolvers.push(resolve!)
 
-      queue.enqueue('key1', async () => {
+      logMessageQueue.enqueue('test-sequential', async () => {
         await promise
         results.push(value)
       })
@@ -32,7 +26,7 @@ describe('LogMessageQueue', () => {
     resolvers[1]!()
     resolvers[0]!()
 
-    await queue.waitForCompletion('key1')
+    await logMessageQueue.waitForCompletion('test-sequential')
 
     expect(results).toEqual([1, 2, 3])
   })
@@ -49,24 +43,24 @@ describe('LogMessageQueue', () => {
       resolveKey2 = r
     })
 
-    queue.enqueue('key1', async () => {
+    logMessageQueue.enqueue('test-concurrent-1', async () => {
       await promiseKey1
       results.push('key1')
     })
-    queue.enqueue('key2', async () => {
+    logMessageQueue.enqueue('test-concurrent-2', async () => {
       await promiseKey2
       results.push('key2')
     })
 
     // Resolve key2 first
     resolveKey2!()
-    await queue.waitForCompletion('key2')
+    await logMessageQueue.waitForCompletion('test-concurrent-2')
 
     // key2 should finish first because different keys run concurrently
     expect(results).toEqual(['key2'])
 
     resolveKey1!()
-    await queue.waitForCompletion('key1')
+    await logMessageQueue.waitForCompletion('test-concurrent-1')
 
     expect(results).toEqual(['key2', 'key1'])
   })
@@ -74,15 +68,15 @@ describe('LogMessageQueue', () => {
   it('should continue processing after an error', async () => {
     const results: number[] = []
 
-    queue.enqueue('key1', async () => {
+    logMessageQueue.enqueue('test-error', async () => {
       throw new Error('error')
     })
 
-    queue.enqueue('key1', async () => {
+    logMessageQueue.enqueue('test-error', async () => {
       results.push(1)
     })
 
-    await queue.waitForCompletion('key1')
+    await logMessageQueue.waitForCompletion('test-error')
 
     expect(results).toEqual([1])
   })
@@ -99,23 +93,23 @@ describe('LogMessageQueue', () => {
       resolveSecond = r
     })
 
-    queue.enqueue('key1', async () => {
+    logMessageQueue.enqueue('test-clear', async () => {
       await promiseFirst
       results.push(1)
     })
 
     // Clear the queue chain
-    queue.clear('key1')
+    logMessageQueue.clear('test-clear')
 
     // This operation starts a new chain, doesn't wait for the first
-    queue.enqueue('key1', async () => {
+    logMessageQueue.enqueue('test-clear', async () => {
       await promiseSecond
       results.push(2)
     })
 
     // Resolve second first - it should complete before first since chain was cleared
     resolveSecond!()
-    await queue.waitForCompletion('key1')
+    await logMessageQueue.waitForCompletion('test-clear')
 
     expect(results).toEqual([2])
 
@@ -132,12 +126,12 @@ describe('LogMessageQueue', () => {
 
     for (let i = 1; i <= 5; i++) {
       const value = i
-      queue.enqueue('key1', async () => {
+      logMessageQueue.enqueue('test-multiple', async () => {
         results.push(value)
       })
     }
 
-    await queue.waitForCompletion('key1')
+    await logMessageQueue.waitForCompletion('test-multiple')
 
     expect(results).toEqual([1, 2, 3, 4, 5])
   })
@@ -155,7 +149,7 @@ describe('LogMessageQueue', () => {
       })
       resolvers.push(resolve!)
 
-      queue.enqueue('key1', async () => {
+      logMessageQueue.enqueue('test-concurrent-same', async () => {
         await promise
         results.push(value)
       })
@@ -167,14 +161,14 @@ describe('LogMessageQueue', () => {
       resolvers[i - 1]!()
     }
 
-    await queue.waitForCompletion('key1')
+    await logMessageQueue.waitForCompletion('test-concurrent-same')
 
     // Despite random resolution order, results should be sequential
     expect(results).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
 
   it('should return nothing', () => {
-    const result = queue.enqueue('key1', () => Promise.resolve())
+    const result = logMessageQueue.enqueue('test-void', () => Promise.resolve())
 
     expect(result).toBeUndefined()
   })
@@ -192,11 +186,11 @@ describe('LogMessageQueue', () => {
         resolve2 = r
       })
 
-      queue.enqueue('key1', async () => {
+      logMessageQueue.enqueue('test-wait', async () => {
         await promise1
         results.push(1)
       })
-      queue.enqueue('key1', async () => {
+      logMessageQueue.enqueue('test-wait', async () => {
         await promise2
         results.push(2)
       })
@@ -204,7 +198,7 @@ describe('LogMessageQueue', () => {
       expect(results).toEqual([])
 
       // Start waiting, then resolve
-      const waitPromise = queue.waitForCompletion('key1')
+      const waitPromise = logMessageQueue.waitForCompletion('test-wait')
       resolve1!()
       resolve2!()
 
@@ -214,18 +208,18 @@ describe('LogMessageQueue', () => {
     })
 
     it('should resolve immediately if no operations are pending', async () => {
-      await queue.waitForCompletion('nonexistent-key')
+      await logMessageQueue.waitForCompletion('nonexistent-key')
       // If we get here without hanging, the test passes
       expect(true).toBe(true)
     })
 
     it('should resolve immediately if all operations have completed', async () => {
-      queue.enqueue('key1', () => Promise.resolve())
+      logMessageQueue.enqueue('test-completed', () => Promise.resolve())
 
-      await queue.waitForCompletion('key1')
+      await logMessageQueue.waitForCompletion('test-completed')
 
       // Second wait should resolve immediately
-      await queue.waitForCompletion('key1')
+      await logMessageQueue.waitForCompletion('test-completed')
       expect(true).toBe(true)
     })
 
@@ -241,24 +235,24 @@ describe('LogMessageQueue', () => {
         resolveKey2 = r
       })
 
-      queue.enqueue('key1', async () => {
+      logMessageQueue.enqueue('test-specific-1', async () => {
         await promiseKey1
         results.push('key1')
       })
-      queue.enqueue('key2', async () => {
+      logMessageQueue.enqueue('test-specific-2', async () => {
         await promiseKey2
         results.push('key2')
       })
 
       // Resolve and wait for key2 only
       resolveKey2!()
-      await queue.waitForCompletion('key2')
+      await logMessageQueue.waitForCompletion('test-specific-2')
 
       expect(results).toEqual(['key2'])
 
       // key1 is still pending
       resolveKey1!()
-      await queue.waitForCompletion('key1')
+      await logMessageQueue.waitForCompletion('test-specific-1')
 
       expect(results).toEqual(['key2', 'key1'])
     })

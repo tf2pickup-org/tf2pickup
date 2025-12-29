@@ -4,7 +4,7 @@ import { noop } from 'es-toolkit'
  * Queue that ensures operations for the same key are executed sequentially.
  * Different keys can be processed concurrently.
  */
-export class LogMessageQueue {
+class LogMessageQueue {
   private readonly queues = new Map<string, Promise<void>>()
 
   enqueue(key: string, operation: () => Promise<void>): void {
