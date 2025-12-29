@@ -5,6 +5,7 @@ import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod
 import { resolve } from 'node:path'
 import { logger, logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
+import { ensureIndexes } from './database/ensure-indexes'
 import { environment } from './environment'
 import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
@@ -17,6 +18,7 @@ app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
 logger.info(`starting tf2pickup.org ${version}`)
+await ensureIndexes()
 
 if (process.env['CI'] !== 'true') {
   await app.register(await import('@fastify/rate-limit'))
