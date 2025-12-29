@@ -6,12 +6,15 @@ import type { LogMessage } from '../../log-receiver/parse-log-message'
 import { MongoError } from 'mongodb'
 import { findOne } from '../find-one'
 import type { GameNumber } from '../../database/models/game.model'
+import { logMessageQueue } from '../log-message-queue'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    events.on('gamelog:message', async ({ message }) => {
-      await safePushLogMessage(message)
+    events.on('gamelog:message', ({ message }) => {
+      logMessageQueue.enqueue(message.password, async () => {
+        await safePushLogMessage(message)
+      })
     })
     events.on('match:restarted', async ({ gameNumber }) => {
       await pruneLogs(gameNumber)
@@ -53,5 +56,6 @@ async function pruneLogs(number: GameNumber) {
     return
   }
 
+  logMessageQueue.clear(game.logSecret)
   await collections.gameLogs.deleteOne({ logSecret: game.logSecret })
 }

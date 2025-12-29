@@ -11,6 +11,7 @@ import { environment } from '../../environment'
 import { tasks } from '../../tasks'
 import { games } from '../../games'
 import { errors } from '../../errors'
+import { logMessageQueue } from '../../games/log-message-queue'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -52,6 +53,9 @@ async function getGameLogs(gameNumber: GameNumber): Promise<{ logFile: string; m
   if (!game.logSecret) {
     throw errors.badRequest(`game is missing log secret: #${gameNumber}`)
   }
+
+  // Wait for all pending log messages to be saved before fetching
+  await logMessageQueue.waitForCompletion(game.logSecret)
 
   const gameLogs = await collections.gameLogs.findOne({
     logSecret: game.logSecret,
