@@ -7,11 +7,29 @@ import { MongoError } from 'mongodb'
 import { findOne } from '../find-one'
 import type { GameNumber } from '../../database/models/game.model'
 
+class KeyedQueue {
+  private queues = new Map<string, Promise<void>>()
+
+  add(key: string, task: () => Promise<void>) {
+    const previous = this.queues.get(key) || Promise.resolve()
+    const next = previous.catch(() => {}).then(task)
+    this.queues.set(key, next)
+    next.finally(() => {
+      if (this.queues.get(key) === next) {
+        this.queues.delete(key)
+      }
+    })
+    return next
+  }
+}
+
+const logQueue = new KeyedQueue()
+
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('gamelog:message', async ({ message }) => {
-      await safePushLogMessage(message)
+      await logQueue.add(message.password, () => safePushLogMessage(message))
     })
     events.on('match:restarted', async ({ gameNumber }) => {
       await pruneLogs(gameNumber)
@@ -49,9 +67,12 @@ async function safePushLogMessage(message: LogMessage) {
 
 async function pruneLogs(number: GameNumber) {
   const game = await findOne({ number }, ['logSecret'])
-  if (!game.logSecret) {
+  const logSecret = game.logSecret
+  if (!logSecret) {
     return
   }
 
-  await collections.gameLogs.deleteOne({ logSecret: game.logSecret })
+  await logQueue.add(logSecret, async () => {
+    await collections.gameLogs.deleteOne({ logSecret })
+  })
 }
