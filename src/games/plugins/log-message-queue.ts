@@ -15,6 +15,13 @@ export class LogMessageQueue {
     this.queues.set(key, current.catch(noop))
   }
 
+  async waitForCompletion(key: string): Promise<void> {
+    const pending = this.queues.get(key)
+    if (pending) {
+      await pending
+    }
+  }
+
   clear(key: string): void {
     this.queues.delete(key)
   }

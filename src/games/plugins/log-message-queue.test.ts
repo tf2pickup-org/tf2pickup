@@ -179,4 +179,72 @@ describe('LogMessageQueue', () => {
 
     expect(result).toBeUndefined()
   })
+
+  describe('waitForCompletion', () => {
+    it('should wait for all enqueued operations to complete', async () => {
+      const results: number[] = []
+
+      queue.enqueue('key1', async () => {
+        await delay(20)
+        results.push(1)
+      })
+      queue.enqueue('key1', async () => {
+        await delay(10)
+        results.push(2)
+      })
+
+      expect(results).toEqual([])
+
+      await queue.waitForCompletion('key1')
+
+      expect(results).toEqual([1, 2])
+    })
+
+    it('should resolve immediately if no operations are pending', async () => {
+      const start = Date.now()
+      await queue.waitForCompletion('nonexistent-key')
+      const elapsed = Date.now() - start
+
+      expect(elapsed).toBeLessThan(10)
+    })
+
+    it('should resolve immediately if all operations have completed', async () => {
+      let resolveDone: () => void
+      const done = new Promise<void>(resolve => {
+        resolveDone = resolve
+      })
+
+      queue.enqueue('key1', async () => {
+        resolveDone()
+      })
+
+      await done
+      // Small delay to ensure the queue has processed
+      await delay(5)
+
+      const start = Date.now()
+      await queue.waitForCompletion('key1')
+      const elapsed = Date.now() - start
+
+      expect(elapsed).toBeLessThan(10)
+    })
+
+    it('should only wait for operations on the specified key', async () => {
+      const results: string[] = []
+
+      queue.enqueue('key1', async () => {
+        await delay(50)
+        results.push('key1')
+      })
+      queue.enqueue('key2', async () => {
+        await delay(10)
+        results.push('key2')
+      })
+
+      await queue.waitForCompletion('key2')
+
+      // key2 should be done, key1 might still be running
+      expect(results).toContain('key2')
+    })
+  })
 })
