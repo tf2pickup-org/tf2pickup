@@ -1,4 +1,5 @@
 import { describe, expect, it, beforeEach } from 'vitest'
+import { delay } from 'es-toolkit'
 import { LogMessageQueue } from './log-message-queue'
 
 describe('LogMessageQueue', () => {
@@ -136,7 +137,3 @@ describe('LogMessageQueue', () => {
     expect(results).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
 })
-
-function delay(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
-}

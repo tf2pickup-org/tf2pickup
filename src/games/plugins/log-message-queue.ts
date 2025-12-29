@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {}
+import { noop } from 'es-toolkit'
 
 /**
  * Queue that ensures operations for the same key are executed sequentially.
@@ -8,7 +7,7 @@ const noop = () => {}
 export class LogMessageQueue {
   private readonly queues = new Map<string, Promise<void>>()
 
-  async enqueue(key: string, operation: () => Promise<void>): Promise<void> {
+  enqueue(key: string, operation: () => Promise<void>): Promise<void> {
     const previous = this.queues.get(key) ?? Promise.resolve()
     const current = previous.then(operation)
 
