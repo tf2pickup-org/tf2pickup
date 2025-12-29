@@ -7,14 +7,12 @@ import { noop } from 'es-toolkit'
 export class LogMessageQueue {
   private readonly queues = new Map<string, Promise<void>>()
 
-  enqueue(key: string, operation: () => Promise<void>): Promise<void> {
+  enqueue(key: string, operation: () => Promise<void>): void {
     const previous = this.queues.get(key) ?? Promise.resolve()
     const current = previous.then(operation)
 
     // Store a caught version to prevent unhandled rejection and to not break the chain
     this.queues.set(key, current.catch(noop))
-
-    return current
   }
 
   clear(key: string): void {

@@ -11,93 +11,117 @@ describe('LogMessageQueue', () => {
 
   it('should execute operations sequentially for the same key', async () => {
     const results: number[] = []
+    let resolve3: () => void
 
-    const promises = [
-      queue.enqueue('key1', async () => {
-        await delay(30)
-        results.push(1)
-      }),
-      queue.enqueue('key1', async () => {
-        await delay(20)
-        results.push(2)
-      }),
-      queue.enqueue('key1', async () => {
-        await delay(10)
-        results.push(3)
-      }),
-    ]
+    const allDone = new Promise<void>(resolve => {
+      resolve3 = resolve
+    })
 
-    await Promise.all(promises)
+    queue.enqueue('key1', async () => {
+      await delay(30)
+      results.push(1)
+    })
+    queue.enqueue('key1', async () => {
+      await delay(20)
+      results.push(2)
+    })
+    queue.enqueue('key1', async () => {
+      await delay(10)
+      results.push(3)
+      resolve3()
+    })
+
+    await allDone
 
     expect(results).toEqual([1, 2, 3])
   })
 
   it('should execute operations concurrently for different keys', async () => {
     const results: string[] = []
+    let completed = 0
+    let resolveAll: () => void
 
-    const promises = [
-      queue.enqueue('key1', async () => {
-        await delay(30)
-        results.push('key1')
-      }),
-      queue.enqueue('key2', async () => {
-        await delay(10)
-        results.push('key2')
-      }),
-    ]
+    const allDone = new Promise<void>(resolve => {
+      resolveAll = resolve
+    })
 
-    await Promise.all(promises)
+    const checkDone = () => {
+      completed++
+      if (completed === 2) resolveAll()
+    }
+
+    queue.enqueue('key1', async () => {
+      await delay(30)
+      results.push('key1')
+      checkDone()
+    })
+    queue.enqueue('key2', async () => {
+      await delay(10)
+      results.push('key2')
+      checkDone()
+    })
+
+    await allDone
 
     // key2 should finish first because it has a shorter delay and runs concurrently
     expect(results).toEqual(['key2', 'key1'])
   })
 
-  it('should propagate errors to the caller', async () => {
-    const error = new Error('test error')
-
-    await expect(
-      queue.enqueue('key1', async () => {
-        throw error
-      }),
-    ).rejects.toThrow('test error')
-  })
-
   it('should continue processing after an error', async () => {
     const results: number[] = []
+    let resolveDone: () => void
+
+    const done = new Promise<void>(resolve => {
+      resolveDone = resolve
+    })
 
     // First operation throws an error
-    await queue
-      .enqueue('key1', async () => {
-        throw new Error('error')
-      })
-      .catch(() => undefined)
+    queue.enqueue('key1', async () => {
+      throw new Error('error')
+    })
 
     // Second operation should still execute
-    await queue.enqueue('key1', async () => {
+    queue.enqueue('key1', async () => {
       results.push(1)
+      resolveDone()
     })
+
+    await done
 
     expect(results).toEqual([1])
   })
 
   it('should clear the queue for a specific key', async () => {
     const results: number[] = []
+    let completed = 0
+    let resolveAll: () => void
+
+    const allDone = new Promise<void>(resolve => {
+      resolveAll = resolve
+    })
+
+    const checkDone = () => {
+      completed++
+      if (completed === 2) resolveAll()
+    }
 
     // Enqueue an operation
-    const promise = queue.enqueue('key1', async () => {
-      await delay(10)
+    queue.enqueue('key1', async () => {
+      await delay(20)
       results.push(1)
+      checkDone()
     })
 
     // Clear and immediately enqueue another
     queue.clear('key1')
 
     // This operation will run concurrently with the first since we cleared the chain
-    const promise2 = queue.enqueue('key1', async () => {
+    queue.enqueue('key1', async () => {
       results.push(2)
+      checkDone()
     })
 
-    await Promise.all([promise, promise2])
+    await allDone
 
     // After clear, the second operation doesn't wait for the first
     expect(results).toEqual([2, 1])
@@ -105,48 +129,54 @@ describe('LogMessageQueue', () => {
 
   it('should handle multiple sequential operations correctly', async () => {
     const results: number[] = []
+    let resolveDone: () => void
+
+    const done = new Promise<void>(resolve => {
+      resolveDone = resolve
+    })
 
     for (let i = 1; i <= 5; i++) {
       const value = i
-      await queue.enqueue('key1', async () => {
+      queue.enqueue('key1', async () => {
         results.push(value)
+        if (value === 5) resolveDone()
       })
     }
+
+    await done
 
     expect(results).toEqual([1, 2, 3, 4, 5])
   })
 
   it('should handle concurrent enqueues on the same key', async () => {
     const results: number[] = []
-    const promises: Promise<void>[] = []
+    let resolveDone: () => void
+
+    const done = new Promise<void>(resolve => {
+      resolveDone = resolve
+    })
 
     // Enqueue 10 operations at once
     for (let i = 1; i <= 10; i++) {
       const value = i
-      promises.push(
-        queue.enqueue('key1', async () => {
-          await delay(Math.random() * 5)
-          results.push(value)
-        }),
-      )
+      queue.enqueue('key1', async () => {
+        await delay(Math.random() * 5)
+        results.push(value)
+        if (value === 10) resolveDone()
+      })
     }
 
-    await Promise.all(promises)
+    await done
 
     // Despite random delays, order should be preserved
     expect(results).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
 
-  it('should return immediately without blocking', () => {
-    let operationStarted = false
-
-    const promise = queue.enqueue('key1', async () => {
-      operationStarted = true
+  it('should return nothing', () => {
+    const result = queue.enqueue('key1', async () => {
       await delay(100)
     })
 
-    // enqueue() returns immediately, operation hasn't started yet
-    expect(promise).toBeInstanceOf(Promise)
-    expect(operationStarted).toBe(false)
+    expect(result).toBeUndefined()
   })
 })

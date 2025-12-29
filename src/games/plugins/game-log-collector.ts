@@ -11,8 +11,8 @@ import { logMessageQueue } from './log-message-queue'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    events.on('gamelog:message', async ({ message }) => {
-      await logMessageQueue.enqueue(message.password, async () => {
+    events.on('gamelog:message', ({ message }) => {
+      logMessageQueue.enqueue(message.password, async () => {
         await safePushLogMessage(message)
       })
     })
