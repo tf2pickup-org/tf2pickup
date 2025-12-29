@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-beta.27](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.26...4.0.0-beta.27) (2025-12-29)
+
+
+### Bug Fixes
+
+* handle game server auto assignment error gracefully ([#457](https://github.com/tf2pickup-org/tf2pickup/issues/457)) ([acfcb95](https://github.com/tf2pickup-org/tf2pickup/commit/acfcb958ea1d60586954fdfa41d9b0b1f4e82b20))
+* use mutex in discord join prompt logic ([#458](https://github.com/tf2pickup-org/tf2pickup/issues/458)) ([554f274](https://github.com/tf2pickup-org/tf2pickup/commit/554f274e6fd5061dbbeab1a2df983ea1f7de255b))
+
 # [4.0.0-beta.26](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.25...4.0.0-beta.26) (2025-12-27)
 
 
