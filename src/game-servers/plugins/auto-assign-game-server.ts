@@ -7,12 +7,13 @@ import { logger } from '../../logger'
 import { games } from '../../games'
 import { GameEventType } from '../../database/models/game-event.model'
 import { notifyGameServerAssignmentFailed } from '../../discord/notify-game-server-assignment-failed'
+import { secondsToMilliseconds } from 'date-fns'
 
 export default fp(
   async () => {
     events.on('game:created', async ({ game }) => {
       try {
-        await retry(() => assign(game), { retries: 3 })
+        await retry(() => assign(game), { retries: 3, delay: secondsToMilliseconds(1) })
       } catch (error) {
         logger.error({ game, error }, 'failed to assign game server after 3 attempts')
 
@@ -34,7 +35,10 @@ export default fp(
 
           await notifyGameServerAssignmentFailed(game.number, reason)
         } catch (innerError) {
-          logger.error({ game, innerError }, 'failed to handle game server assignment failure')
+          logger.error(
+            { game, error, innerError },
+            'failed to handle game server assignment failure',
+          )
         }
       }
     })
@@ -42,7 +46,7 @@ export default fp(
     const orphanedGames = await getOrphanedGames()
     for (const game of orphanedGames) {
       try {
-        await retry(() => assign(game), { retries: 3 })
+        await retry(() => assign(game), { retries: 3, delay: secondsToMilliseconds(1) })
       } catch (error) {
         logger.error(
           { game, error },
@@ -68,7 +72,7 @@ export default fp(
           await notifyGameServerAssignmentFailed(game.number, reason)
         } catch (innerError) {
           logger.error(
-            { game, innerError },
+            { game, error, innerError },
             'failed to handle game server assignment failure for orphaned game',
           )
         }

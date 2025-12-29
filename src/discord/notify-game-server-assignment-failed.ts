@@ -16,7 +16,7 @@ export async function notifyGameServerAssignmentFailed(gameNumber: GameNumber, r
         .setAuthor({
           name: 'tf2pickup.org bot',
         })
-        .setTitle('Game server assignment failed')
+        .setTitle('Failed to assign game server')
         .setDescription(
           [
             `Game: **[#${gameNumber}](${environment.WEBSITE_URL}/games/${gameNumber})**`,
