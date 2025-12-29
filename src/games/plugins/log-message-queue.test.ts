@@ -136,4 +136,17 @@ describe('LogMessageQueue', () => {
     // Despite random delays, order should be preserved
     expect(results).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
   })
+
+  it('should return immediately without blocking', () => {
+    let operationStarted = false
+
+    const promise = queue.enqueue('key1', async () => {
+      operationStarted = true
+      await delay(100)
+    })
+
+    // enqueue() returns immediately, operation hasn't started yet
+    expect(promise).toBeInstanceOf(Promise)
+    expect(operationStarted).toBe(false)
+  })
 })
