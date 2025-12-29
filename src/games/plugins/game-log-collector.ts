@@ -6,7 +6,7 @@ import type { LogMessage } from '../../log-receiver/parse-log-message'
 import { MongoError } from 'mongodb'
 import { findOne } from '../find-one'
 import type { GameNumber } from '../../database/models/game.model'
-import { logMessageQueue } from './log-message-queue'
+import { logMessageQueue } from '../log-message-queue'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

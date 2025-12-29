@@ -11,7 +11,7 @@ import { environment } from '../../environment'
 import { tasks } from '../../tasks'
 import { games } from '../../games'
 import { errors } from '../../errors'
-import { logMessageQueue } from '../../games/plugins/log-message-queue'
+import { logMessageQueue } from '../../games/log-message-queue'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

@@ -173,7 +173,7 @@ describe('logMessageQueue', () => {
     expect(result).toBeUndefined()
   })
 
-  describe('waitForCompletion', () => {
+  describe('waitForCompletion()', () => {
     it('should wait for all enqueued operations to complete', async () => {
       const results: number[] = []
       let resolve1: () => void
