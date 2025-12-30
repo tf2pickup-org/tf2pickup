@@ -69,6 +69,7 @@ export async function GameList(props: { page: number }) {
         lastPage={last}
         currentPage={page}
         around={around}
+        hxTarget="#gameList"
       />
     </>
   ) : (
