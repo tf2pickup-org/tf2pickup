@@ -1,9 +1,5 @@
 import './otel'
 import './migrate'
-import { ensureIndexes } from './database/ensure-indexes'
-
-await ensureIndexes()
-
 import fastify from 'fastify'
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod'
 import { resolve } from 'node:path'

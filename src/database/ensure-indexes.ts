@@ -1,8 +1,13 @@
 import { collections } from './collections'
-import type { CreateIndexesOptions, IndexSpecification } from 'mongodb'
+import {
+  MongoServerError,
+  ObjectId,
+  type CreateIndexesOptions,
+  type IndexSpecification,
+} from 'mongodb'
 import { logger } from '../logger'
 
-type IndexDefinition = {
+interface IndexDefinition {
   spec: IndexSpecification
   options?: CreateIndexesOptions
 }
@@ -24,7 +29,6 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   queueFriends: [{ spec: { source: 1 } }],
   configuration: [{ spec: { key: 1 }, options: { unique: true } }],
   documents: [{ spec: { name: 1 }, options: { unique: true } }],
-  staticGameServers: [{ spec: { name: 1 }, options: { unique: true } }],
   announcements: [{ spec: { createdAt: -1 } }],
   tasks: [{ spec: { at: 1 } }],
   discordBotState: [{ spec: { guildId: 1 }, options: { unique: true } }],
@@ -43,26 +47,20 @@ export async function ensureIndexes() {
   logger.info('ensuring indexes...')
   const promises = Object.entries(definitions).map(async ([collectionName, indexes]) => {
     const collection = collections[collectionName as keyof typeof collections]
-    if (!collection) {
-      logger.warn(`collection ${collectionName} not found`)
-      return
-    }
-
     for (const { spec, options } of indexes) {
       try {
         await collection.createIndex(spec, options)
       } catch (error) {
         if (
           collectionName === 'gameLogs' &&
-          error instanceof Error &&
-          error.name === 'MongoServerError' &&
-          (error as any).code === 11000
+          error instanceof MongoServerError &&
+          error.code === 11000
         ) {
           logger.warn('duplicate game logs found, removing...')
           // remove duplicates
           for await (const doc of collection.aggregate<{
-            _id: any
-            dups: any[]
+            _id: ObjectId
+            dups: ObjectId[]
             count: number
           }>([
             {

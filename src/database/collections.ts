@@ -23,6 +23,7 @@ import type { DiscordBotStateModel } from './models/discord-bot-state.model'
 import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
 import type { SubstituteRequestModel } from './models/substitute-request.model'
+import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
   announcements: database.collection<AnnouncementModel>('announcements'),
@@ -52,3 +53,5 @@ export const collections = {
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
 }
+
+await ensureIndexes()
