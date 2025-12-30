@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.0.0-beta.28](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.27...4.0.0-beta.28) (2025-12-30)
+
+
+### Bug Fixes
+
+* add mongo indices ([#460](https://github.com/tf2pickup-org/tf2pickup/issues/460)) ([56f0462](https://github.com/tf2pickup-org/tf2pickup/commit/56f04622d86437a754553d3556c4db6b618ccd1c))
+* game log order persistence ([#459](https://github.com/tf2pickup-org/tf2pickup/issues/459)) ([5aea8c1](https://github.com/tf2pickup-org/tf2pickup/commit/5aea8c1ef7fe07c6a47514afa9d20217aaebc2a5))
+
 # [4.0.0-beta.27](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.26...4.0.0-beta.27) (2025-12-29)
 
 
