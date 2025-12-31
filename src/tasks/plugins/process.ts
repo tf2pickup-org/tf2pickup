@@ -18,10 +18,9 @@ async function process() {
   const pendingTasks = await collections.tasks.find({ at: { $lte: new Date() } }).toArray()
   await Promise.all(
     pendingTasks.map(async data => {
-      // Atomically claim the task by deleting it first - prevents duplicate processing
       const claimed = await collections.tasks.findOneAndDelete({ _id: data._id })
       if (!claimed) {
-        return // Task was already claimed by a previous interval
+        return
       }
 
       try {
