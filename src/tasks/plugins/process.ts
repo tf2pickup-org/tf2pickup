@@ -18,9 +18,14 @@ async function process() {
   const pendingTasks = await collections.tasks.find({ at: { $lte: new Date() } }).toArray()
   await Promise.all(
     pendingTasks.map(async data => {
+      const claimed = await collections.tasks.findOneAndDelete({ _id: data._id })
+      if (!claimed) {
+        return
+      }
+
       try {
-        logger.debug({ task: data }, `executing scheduled task`)
-        const task = tasksSchema.parse(data)
+        logger.debug({ task: claimed }, `executing scheduled task`)
+        const task = tasksSchema.parse(claimed)
         const t = tasks[task.name]
         if (!t) {
           throw errors.internalServerError(`task not registered: ${task.name}`)
@@ -31,8 +36,6 @@ async function process() {
       } catch (error) {
         assertIsError(error)
         logger.error(error)
-      } finally {
-        await collections.tasks.deleteOne({ _id: data._id })
       }
     }),
   )
