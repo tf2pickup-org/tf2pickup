@@ -16,7 +16,7 @@
       align-items: center;
       justify-content: center;
       margin: 8px 0;
-      color: theme(colors.abru.light.50);
+      color: var(--color-abru-light-50);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
@@ -25,7 +25,7 @@
       &::after {
         content: '';
         flex: 1 1 0%;
-        border-bottom: 1px solid theme(colors.abru.light.50);
+        border-bottom: 1px solid var(--color-abru-light-50);
         margin: 0 8px;
       }
 
@@ -35,19 +35,19 @@
     }
 
     p {
-      color: theme(colors.white);
+      color: var(--color-white);
 
       .at {
         white-space: nowrap;
         font-size: 12px;
-        color: theme(colors.abru.light.50);
+        color: var(--color-abru-light-50);
       }
 
       a.author {
         font-weight: bold;
 
         &.admin {
-          color: theme(colors.alert);
+          color: var(--color-alert);
         }
       }
 

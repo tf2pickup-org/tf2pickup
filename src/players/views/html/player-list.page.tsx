@@ -27,9 +27,9 @@ export async function PlayerListPage() {
       <NavigationBar />
       <Page>
         <div class="container mx-auto">
-          <div class="my-9 text-[48px] font-bold text-abru-light-75">Players</div>
+          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Players</div>
 
-          <div class="hidden flex-row justify-between text-2xl font-bold text-abru-light-75 md:flex">
+          <div class="text-abru-light-75 hidden flex-row justify-between text-2xl font-bold md:flex">
             {groups.map(letter => (
               <a href={`#${letter}`} style="uppercase" safe>
                 {letter}
@@ -39,9 +39,9 @@ export async function PlayerListPage() {
 
           {groups.map(letter => (
             <>
-              <div class="my-4 h-[2px] bg-abru-light-15"></div>
-              <div class="grid min-h-[120px] grid-cols-3 gap-x-2 text-abru-light-75 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-10">
-                <a id={letter} class="text-[64px] font-bold leading-none" safe>
+              <div class="bg-abru-light-15 my-4 h-[2px]"></div>
+              <div class="text-abru-light-75 grid min-h-[120px] grid-cols-3 gap-x-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-10">
+                <a id={letter} class="text-[64px] leading-none font-bold" safe>
                   {letter}
                 </a>
 

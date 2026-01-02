@@ -45,14 +45,14 @@ async function MapVoteButton(props: {
       data-umami-event-map={props.map}
     >
       <div class="grow"></div>
-      <div class="text-2xl font-bold leading-4">
+      <div class="text-2xl leading-4 font-bold">
         <MapResult results={props.results} map={props.map} />%
       </div>
       <span class="text-2xl font-normal" safe>
         {props.map}
       </span>
 
-      <div class="absolute bottom-0 left-1/3 right-0 top-0 -z-10">
+      <div class="absolute top-0 right-0 bottom-0 left-1/3 -z-10">
         <MapThumbnail map={props.map} />
       </div>
     </button>

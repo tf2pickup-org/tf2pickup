@@ -1,4 +1,4 @@
-@import 'games/views/html/game-list.css';
+@import '../../../games/views/html/game-list.css';
 
 .player-group {
   grid-template-columns: subgrid;
@@ -11,11 +11,11 @@
   gap: 10px;
   border-radius: 8px;
   padding: 22px;
-  background-color: theme(colors.abru.dark.29);
-  color: theme(colors.abru.light.75);
+  background-color: var(--color-abru-dark-29);
+  color: var(--color-abru-light-75);
   row-gap: 24px;
 
-  @media screen(md) {
+  @media (width >= theme(--breakpoint-md)) {
     grid-auto-flow: row;
     grid-template-columns: 218px auto auto;
     justify-items: normal;
@@ -36,14 +36,14 @@
     align-items: center;
     gap: 10px;
 
-    @media screen(md) {
+    @media (width >= theme(--breakpoint-md)) {
       grid-auto-flow: column;
       grid-template-rows: 1fr 1fr;
       justify-items: center;
       justify-self: start;
       column-gap: 24px;
 
-      @media not all and screen(lg) {
+      @media not all and (width >= theme(--breakpoint-lg)) {
         grid-column: span 2 / span 2;
         width: 100%;
       }
@@ -61,8 +61,8 @@
   justify-content: center;
   gap: 8px;
 
-  background-color: theme(colors.abru.light.3);
-  color: theme(colors.abru.light.75);
+  background-color: var(--color-abru-light-3);
+  color: var(--color-abru-light-75);
   height: 48px;
   min-width: 200px;
 
@@ -73,12 +73,12 @@
   font-weight: 700;
   text-transform: uppercase;
 
-  @media screen(md) {
+  @media (width >= theme(--breakpoint-md)) {
     min-width: 0;
   }
 
   &:hover {
-    background-color: lighten(theme(colors.abru.light.3), 2%);
+    background-color: color-mix(in hsl, var(--color-abru-light-3), white 2%);
   }
 }
 
@@ -100,10 +100,10 @@
   column-gap: 8px;
   row-gap: 8px;
   border-radius: 8px;
-  background: theme(colors.abru.dark.29);
+  background: var(--color-abru-dark-29);
   padding: 24px;
 
-  @media screen(xl) {
+  @media (width >= theme(--breakpoint-xl)) {
     grid-template-areas:
       'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
       'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  . winLoss         winLoss         winLoss . linkEdit';
@@ -114,7 +114,7 @@
   .caption {
     font-size: 18px;
     font-weight: 700;
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
   }
 
   .game-result {
@@ -123,15 +123,15 @@
     border-radius: 4px;
 
     &.win {
-      background-color: theme(colors.game-result-win);
+      background-color: var(--color-game-result-win);
     }
 
     &.loss {
-      background-color: theme(colors.game-result-loss);
+      background-color: var(--color-game-result-loss);
     }
 
     &.tie {
-      background-color: theme(colors.game-result-tie);
+      background-color: var(--color-game-result-tie);
     }
   }
 
@@ -148,10 +148,10 @@
 
       padding: 4px 8px;
       border-radius: 4px;
-      color: theme(colors.ash);
+      color: var(--color-ash);
 
       &.selected {
-        background-color: theme(colors.abru.light.5);
+        background-color: var(--color-abru-light-5);
       }
     }
   }
@@ -166,15 +166,15 @@
     font-weight: 500;
 
     .wins {
-      color: theme(colors.game-result-win);
+      color: var(--color-game-result-win);
     }
 
     .losses {
-      color: theme(colors.game-result-loss);
+      color: var(--color-game-result-loss);
     }
 
     .ties {
-      color: theme(colors.game-result-tie);
+      color: var(--color-game-result-tie);
     }
   }
 }

@@ -52,7 +52,7 @@ async function Menu() {
       {discordInvite !== null && (
         <a
           href={discordInvite}
-          class="hidden text-abru-light-75 hover:text-slate-200 xl:inline-block"
+          class="text-abru-light-75 hidden hover:text-slate-200 xl:inline-block"
           target="_blank"
           data-umami-event="social-discord"
         >
@@ -63,7 +63,7 @@ async function Menu() {
 
       <a
         href="https://ko-fi.com/tf2pickuporg"
-        class="hidden text-abru-light-75 hover:text-slate-200 xl:inline-block"
+        class="text-abru-light-75 hidden hover:text-slate-200 xl:inline-block"
         target="_blank"
         data-umami-event="social-kofi"
       >
@@ -72,7 +72,7 @@ async function Menu() {
       </a>
 
       <div class="hidden w-2 lg:block" />
-      <div class="my-2 h-[2px] grow bg-abru-light-15 lg:hidden" />
+      <div class="bg-abru-light-15 my-2 h-[2px] grow lg:hidden" />
 
       {btn}
     </div>

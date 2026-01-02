@@ -1,41 +1,30 @@
 import { readFile } from 'fs/promises'
 import { logger } from '../logger'
-import { parse, resolve } from 'node:path'
-import postcss from 'postcss'
-import postcssImport from 'postcss-import'
-import cssnano from 'cssnano'
-import tailwindcssNesting from 'tailwindcss/nesting/index.js'
-import tailwindcss from 'tailwindcss'
-import lightenDarken from 'postcss-lighten-darken'
-import autoprefixer from 'autoprefixer'
+import { parse } from 'node:path'
 import { environment } from '../environment'
 import mime from 'mime'
 import { memoize } from 'es-toolkit'
-
-const srcDir = resolve(import.meta.dirname, '..')
+import postcss from 'postcss'
+import tailwindcss from '@tailwindcss/postcss'
+import postcssNested from 'postcss-nested'
 
 // For production, we memoize the result of the embed function to avoid rebuilding the same file multiple times
 export const embed = environment.NODE_ENV === 'production' ? memoize(doEmbed) : doEmbed
 
 async function doEmbed(fileName: string): Promise<string> {
   logger.debug(`building ${fileName}...`)
-  const css = await readFile(fileName)
+  const css = await readFile(fileName, 'utf-8')
   const { name, ext, dir } = parse(fileName)
+
+  logger.trace({ dir, name, ext }, 'doEmbed()')
+
   const style = (
-    await postcss([
-      postcssImport({
-        path: [dir, srcDir],
-      }),
-      tailwindcssNesting,
-      tailwindcss,
-      lightenDarken,
-      autoprefixer,
-      ...(environment.NODE_ENV === 'production' ? [cssnano] : []),
-    ]).process(css, {
-      from: `${name}${ext}`,
+    await postcss([postcssNested, tailwindcss]).process(css, {
+      from: fileName,
       to: `${name}.min${ext}`,
     })
   ).css
+
   logger.debug({ type: mime.getType(fileName), length: style.length }, `${fileName} built`)
   return style
 }

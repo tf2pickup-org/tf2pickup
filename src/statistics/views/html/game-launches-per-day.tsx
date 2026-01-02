@@ -10,7 +10,7 @@ export async function GameLaunchesPerDay() {
 
   return (
     <>
-      <span class="text-2xl font-bold text-abru-light-75">Game launches per day</span>
+      <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
       <canvas id="game-launches-per-day"></canvas>
       <script type="module">
         {`

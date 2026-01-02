@@ -15,7 +15,7 @@ export async function LogEntryList(props: { logs: PlayerActionEntryModel[] }) {
           hx-swap="outerHTML"
         >
           <td colspan="6">
-            <IconLoader3 class="animate-spin text-abru-light-50" />
+            <IconLoader3 class="text-abru-light-50 animate-spin" />
           </td>
         </tr>
       )}

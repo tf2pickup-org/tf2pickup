@@ -10,7 +10,7 @@ export async function PlayedMapsCount() {
 
   return (
     <>
-      <span class="text-2xl font-bold text-abru-light-75">Most played maps</span>
+      <span class="text-abru-light-75 text-2xl font-bold">Most played maps</span>
       <canvas id="played-maps-count"></canvas>
       <script type="module">
         {`

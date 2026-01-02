@@ -18,7 +18,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
             class="h-[42px] w-[42px] rounded-[3px]"
             alt="{name}'s avatar"
           />
-          <span class="grow overflow-hidden text-ellipsis whitespace-nowrap text-2xl" safe>
+          <span class="grow overflow-hidden text-2xl text-ellipsis whitespace-nowrap" safe>
             {player.name}
           </span>
           <div
@@ -29,7 +29,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
               <IconSettings />
             </div>
             <div
-              class="absolute bottom-0 left-0 right-0 top-0 opacity-0"
+              class="absolute top-0 right-0 bottom-0 left-0 opacity-0"
               id="profile-menu-icon-overlay"
             >
               <IconSettingsFilled size={24} />
@@ -39,10 +39,10 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
 
         <div
           id="profile-menu"
-          class="absolute z-50 mt-2 w-[300px] origin-top rounded-[10px] bg-abru-dark-29 p-2 drop-shadow-xl"
+          class="bg-abru-dark-29 absolute z-50 mt-2 w-[300px] origin-top rounded-[10px] p-2 drop-shadow-xl"
           style="display: none;"
         >
-          <div class="flex flex-col gap-1 text-abru-light-75">
+          <div class="text-abru-light-75 flex flex-col gap-1">
             <a href={`/players/${player.steamId}`} class="profile-menu-item" preload="mousedown">
               <IconUserCircle />
               <span>My profile</span>

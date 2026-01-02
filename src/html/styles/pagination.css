@@ -1,4 +1,4 @@
-@layer utilities {
+@layer components {
   .page {
     height: 32px;
     min-width: 28px;
@@ -8,20 +8,20 @@
     vertical-align: middle;
     font-weight: 500;
     border-radius: 4px;
-    color: theme(colors.white);
+    color: var(--color-white);
     cursor: pointer;
 
     &:hover {
-      background-color: theme(colors.abru.light.10);
+      background-color: var(--color-abru-light-10);
     }
   }
 
   .page--active {
-    background-color: theme(colors.abru.light.15);
+    background-color: var(--color-abru-light-15);
   }
 
   .page--disabled {
-    color: theme(colors.abru.light.15);
+    color: var(--color-abru-light-15);
     cursor: default;
 
     &:hover {

@@ -48,8 +48,8 @@ async function GuildToggle(props: { guild: Guild; enabled: boolean }) {
           </label>
         </dt>
         <dd class="text-abru-light-75">
-          <span class="hidden group-has-[:checked]:inline-block">Enabled</span>
-          <span class="group-has-[:checked]:hidden">Disabled</span>
+          <span class="hidden group-has-checked:inline-block">Enabled</span>
+          <span class="group-has-checked:hidden">Disabled</span>
         </dd>
       </dl>
 

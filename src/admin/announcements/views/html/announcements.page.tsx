@@ -52,7 +52,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
   const id = announcement._id.toString()
 
   return (
-    <div class="rounded border border-abru-light-25 p-4">
+    <div class="border-abru-light-25 rounded-sm border p-4">
       <div class="mb-2 flex items-center justify-between">
         <div class="flex items-center gap-2">
           {announcement.enabled ? (
@@ -60,11 +60,11 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
               <IconEye /> Enabled
             </span>
           ) : (
-            <span class="flex items-center gap-1 text-abru-light-50">
+            <span class="text-abru-light-50 flex items-center gap-1">
               <IconEyeOff /> Disabled
             </span>
           )}
-          <span class="text-sm text-abru-light-50" safe>
+          <span class="text-abru-light-50 text-sm" safe>
             Created: {announcement.createdAt.toLocaleString()}
           </span>
         </div>
@@ -72,7 +72,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
           <button
             class="text-accent-500 flex items-center gap-1 hover:underline"
             hx-post={`/admin/announcements/${id}/toggle`}
-            hx-target="closest div.rounded"
+            hx-target="closest div.rounded-sm"
             hx-swap="outerHTML"
           >
             {announcement.enabled ? 'Disable' : 'Enable'}
@@ -80,23 +80,23 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
           <button
             class="flex items-center gap-1 text-white hover:underline"
             hx-get={`/admin/announcements/${id}/edit`}
-            hx-target="closest div.rounded"
+            hx-target="closest div.rounded-sm"
             hx-swap="outerHTML"
           >
             <IconEdit /> Edit
           </button>
           <button
-            class="flex items-center gap-1 text-alert hover:underline"
+            class="text-alert flex items-center gap-1 hover:underline"
             hx-delete={`/admin/announcements/${id}`}
             hx-confirm="Are you sure you want to delete this announcement?"
-            hx-target="closest div.rounded"
+            hx-target="closest div.rounded-sm"
             hx-swap="outerHTML swap:1s"
           >
             <IconMinus /> Delete
           </button>
         </div>
       </div>
-      <div class="whitespace-pre-wrap rounded bg-abru-dark-15 p-2 text-sm">
+      <div class="bg-abru-dark-15 rounded-sm p-2 text-sm whitespace-pre-wrap">
         {announcement.body as 'safe'}
       </div>
     </div>
@@ -108,13 +108,13 @@ export function AnnouncementEditForm(props: { announcement: WithId<AnnouncementM
   const id = announcement._id.toString()
 
   return (
-    <div class="rounded border border-abru-light-25 p-4">
+    <div class="border-abru-light-25 rounded-sm border p-4">
       <form
         action={`/admin/announcements/${id}`}
         method="post"
         class="flex flex-col gap-2"
         hx-post={`/admin/announcements/${id}`}
-        hx-target="closest div.rounded"
+        hx-target="closest div.rounded-sm"
         hx-swap="outerHTML"
       >
         <textarea name="body" class="min-h-[100px]" required safe>
@@ -136,7 +136,7 @@ export function AnnouncementEditForm(props: { announcement: WithId<AnnouncementM
             type="button"
             class="button"
             hx-get={`/admin/announcements/${id}/cancel`}
-            hx-target="closest div.rounded"
+            hx-target="closest div.rounded-sm"
             hx-swap="outerHTML"
           >
             Cancel

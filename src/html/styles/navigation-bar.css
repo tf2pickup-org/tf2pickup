@@ -8,8 +8,8 @@
     align-items: center;
     gap: 4px;
 
-    background-color: theme(colors.abru.dark.29);
-    color: theme(colors.abru.light.75);
+    background-color: var(--color-abru-dark-29);
+    color: var(--color-abru-light-75);
 
     font-size: 36px;
     font-weight: 500;
@@ -18,10 +18,10 @@
     padding: 7px 34px;
 
     &:hover {
-      background-color: theme(colors.abru.dark.20 / 40%);
+      background-color: --theme(--color-abru-dark-20 / 40%);
     }
 
-    @media screen(lg) {
+    @media (width >= theme(--breakpoint-lg)) {
       background-color: initial;
 
       font-size: 18px;
@@ -31,14 +31,16 @@
     }
 
     &[aria-current='page'] {
-      background-color: theme(colors.abru.dark.20);
+      background-color: var(--color-abru-dark-20);
     }
 
     &.accent {
-      color: theme(colors.accent.DEFAULT);
+      color: var(--color-accent);
     }
   }
+}
 
+@layer components {
   .profile-menu-item {
     @apply transition-colors;
     @apply duration-75;
@@ -48,20 +50,22 @@
     align-items: center;
     padding: 14px 24px;
     border-radius: 0.5rem /* 8px */;
-    background-color: theme('colors.abru.dark.29');
+    background-color: var(--color-abru-dark-29);
     gap: 0.5rem /* 8px */;
 
     &--accent {
-      color: theme(colors.accent.600);
+      color: var(--color-accent-600);
     }
 
     &:hover {
-      background-color: lighten(theme('colors.abru.dark.29'), 2%);
+      background-color: color-mix(in hsl, var(--color-abru-dark-29), white 2%);
     }
   }
+}
 
+@layer components {
   .steam-button {
-    background-color: theme(colors.steam);
+    background-color: var(--color-steam);
     color: #ffffff;
     border-radius: 5px;
     display: flex;
@@ -77,19 +81,21 @@
       font-weight: bold;
       letter-spacing: 0.05em;
 
-      @media screen(lg) {
+      @media (width >= theme(--breakpoint-lg)) {
         font-size: 16px;
       }
     }
 
     .icon {
       background-color: #ffffff;
-      color: theme(colors.steam);
+      color: var(--color-steam);
       border-radius: 3px;
       padding: 1px;
     }
   }
+}
 
+@layer components {
   .profile-button {
     @apply transition-colors;
     @apply duration-75;
@@ -105,27 +111,29 @@
     border-radius: 10px;
     text-overflow: ellipsis;
 
-    background-color: theme(colors.abru.dark.29);
-    color: theme(colors.abru.light.75);
+    background-color: var(--color-abru-dark-29);
+    color: var(--color-abru-light-75);
     text-align: left;
 
-    @media screen(lg) {
+    @media (width >= theme(--breakpoint-lg)) {
       width: 300px;
     }
 
     &:hover {
-      background-color: lighten(theme(colors.abru.dark.29), 2%);
+      background-color: color-mix(in hsl, var(--color-abru-dark-29), white 2%);
     }
 
     &:active {
-      background-color: theme(colors.abru.dark.29);
+      background-color: var(--color-abru-dark-29);
     }
   }
+}
 
+@layer components {
   .divider {
     width: 236px;
     height: 1px;
     align-self: center;
-    background-color: theme(colors.abru.light.5);
+    background-color: var(--color-abru-light-5);
   }
 }

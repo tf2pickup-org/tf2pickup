@@ -14,7 +14,7 @@ export function DocumentPage(document: DocumentModel) {
       <NavigationBar />
       <Page>
         <div class="container mx-auto">
-          <div class="my-9 text-[48px] font-bold capitalize text-abru-light-75" safe>
+          <div class="text-abru-light-75 my-9 text-[48px] font-bold capitalize" safe>
             {document.name}
           </div>
           <article class="prose prose-invert mb-16 max-w-none">{safeParsed}</article>

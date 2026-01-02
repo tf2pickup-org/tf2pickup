@@ -7,7 +7,7 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
   return (
     <dialog
       id="choose-game-server-dialog"
-      class="rounded-xl bg-abru-dark-29 p-10 text-abru-light-75 shadow-xl xl:min-w-[480px]"
+      class="bg-abru-dark-29 text-abru-light-75 rounded-xl p-10 shadow-xl xl:min-w-[480px]"
       hx-on-open="document.getElementById('choose-game-server-dialog').showModal()"
       hx-on-close="document.getElementById('choose-game-server-dialog').close()"
     >

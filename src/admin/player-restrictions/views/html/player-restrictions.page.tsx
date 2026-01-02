@@ -36,10 +36,10 @@ async function RequireEtf2lAccount() {
           </label>
         </dt>
         <dd class="text-abru-light-75">
-          <span class="hidden group-has-[:checked]:inline-block">
+          <span class="hidden group-has-checked:inline-block">
             Players that do not have an ETF2L profile will not be able to register
           </span>
-          <span class="group-has-[:checked]:hidden">All players will be able to register</span>
+          <span class="group-has-checked:hidden">All players will be able to register</span>
         </dd>
       </dl>
 
@@ -84,10 +84,10 @@ async function DenyPlayersWithNoSkillAssigned() {
           </label>
         </dt>
         <dd class="text-abru-light-75">
-          <span class="hidden group-has-[:checked]:inline-block">
+          <span class="hidden group-has-checked:inline-block">
             Players with no skill assigned won't be allowed to join the queue
           </span>
-          <span class="group-has-[:checked]:hidden">
+          <span class="group-has-checked:hidden">
             Players that have no skill assigned will be able to join the queue and the default skill
             will be used for them when launching a game
           </span>
@@ -118,8 +118,8 @@ async function PlayerSkillThreshold() {
           value="enabled"
           checked={playerSkillThresholdEnabled}
         />
-        <span class="hidden group-has-[:checked]:inline-block">enabled</span>
-        <span class="group-has-[:checked]:hidden">disabled</span>
+        <span class="hidden group-has-checked:inline-block">enabled</span>
+        <span class="group-has-checked:hidden">disabled</span>
       </dt>
       <dd class="flex flex-col">
         <div>
@@ -142,7 +142,7 @@ async function PlayerSkillThreshold() {
                   `}
           />
         </div>
-        <p class="text-sm text-abru-light-75">
+        <p class="text-abru-light-75 text-sm">
           Players will be able to join queue only on classes that meet the given criteria.
         </p>
       </dd>
@@ -157,7 +157,7 @@ async function DefaultPlayerSkill() {
   return (
     <dl>
       <dt>
-        <span class="font-bold text-abru-light-75">Default player skill</span>
+        <span class="text-abru-light-75 font-bold">Default player skill</span>
       </dt>
       <dd class="flex flex-col">
         <div class="flex flex-row gap-2">
@@ -169,7 +169,7 @@ async function DefaultPlayerSkill() {
             />
           ))}
         </div>
-        <p class="text-sm text-abru-light-75">
+        <p class="text-abru-light-75 text-sm">
           If a player starts a game without skill assigned for them, the game balance system will
           use this fallback value.
         </p>

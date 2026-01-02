@@ -1,3 +1,5 @@
+@reference '../../../html/styles/main.css';
+
 .game-list {
   display: grid;
   column-gap: 8px;
@@ -5,11 +7,11 @@
 
   grid-template-columns: 22px auto 1fr 1fr auto;
 
-  @media screen(sm) {
+  @media (width >= theme(--breakpoint-sm)) {
     grid-template-columns: 22px repeat(4, auto) 1fr 1fr;
   }
 
-  @media screen(xl) {
+  @media (width >= theme(--breakpoint-xl)) {
     grid-template-columns: 22px repeat(5, auto) 1fr;
   }
 
@@ -27,15 +29,15 @@
 
     padding: 8px;
 
-    color: theme('colors.abru.light.75');
+    color: var(--color-abru-light-75);
     font-weight: 500;
 
-    background: theme('colors.abru.light.15 / 85%');
+    background: --alpha(var(--color-abru-light-15) / 50%);
 
     overflow: hidden;
     border-radius: 8px;
 
-    @media screen(sm) {
+    @media (width >= theme(--breakpoint-sm)) {
       @apply col-span-7;
       @apply row-span-1;
 
@@ -43,25 +45,21 @@
       height: 60px;
     }
 
-    @media screen(xl) {
+    @media (width >= theme(--breakpoint-xl)) {
       height: 80px;
 
-      background: theme('colors.abru.light.15');
-      background: linear-gradient(
-        90deg,
-        theme('colors.abru.light.15') 35%,
-        theme('colors.transparent') 90%
-      );
+      background: var(--color-abru-light-15);
+      background: linear-gradient(90deg, var(--color-abru-light-15) 35%, transparent 90%);
     }
 
     &:hover {
-      background: theme('colors.abru.light.15 / 90%');
+      background: --alpha(var(--color-abru-light-15) / 90%);
 
-      @media screen(xl) {
+      @media (width >= theme(--breakpoint-xl)) {
         background: linear-gradient(
           90deg,
-          lighten(theme('colors.abru.light.15'), 3%) 35%,
-          theme('colors.transparent') 90%
+          color-mix(in hsl, var(--color-abru-light-15), white 3%) 35%,
+          transparent 90%
         );
       }
     }
@@ -70,7 +68,7 @@
       @apply row-span-3;
       order: 0;
 
-      @media screen(sm) {
+      @media (width >= theme(--breakpoint-sm)) {
         @apply row-span-1;
       }
     }
@@ -84,7 +82,7 @@
       font-weight: 500;
       line-height: normal;
 
-      @media screen(sm) {
+      @media (width >= theme(--breakpoint-sm)) {
         @apply row-span-1;
       }
     }
@@ -94,7 +92,7 @@
       order: 3;
       margin: 0 8px;
 
-      @media screen(sm) {
+      @media (width >= theme(--breakpoint-sm)) {
         @apply row-span-1;
         order: 2;
       }
@@ -105,12 +103,12 @@
       order: 2;
       white-space: nowrap;
 
-      @media screen(sm) {
+      @media (width >= theme(--breakpoint-sm)) {
         @apply col-span-1;
         order: 5;
       }
 
-      @media screen(xl) {
+      @media (width >= theme(--breakpoint-xl)) {
         justify-self: start;
         margin: 0 16px;
       }
@@ -121,12 +119,12 @@
       order: 4;
       white-space: nowrap;
 
-      @media screen(sm) {
+      @media (width >= theme(--breakpoint-sm)) {
         @apply col-span-1;
         order: 6;
       }
 
-      @media screen(xl) {
+      @media (width >= theme(--breakpoint-xl)) {
         justify-self: start;
       }
     }
@@ -138,40 +136,40 @@
       white-space: nowrap;
       order: 5;
 
-      @media screen(sm) {
+      @media (width >= theme(--breakpoint-sm)) {
         order: 3;
       }
 
       &--blu {
-        background-color: theme('colors.team-blu');
+        background-color: var(--color-team-blu);
         text-transform: uppercase;
         order: 5;
 
-        @media screen(sm) {
+        @media (width >= theme(--breakpoint-sm)) {
           order: 3;
         }
       }
 
       &--red {
-        background-color: theme('colors.team-red');
+        background-color: var(--color-team-red);
         text-transform: uppercase;
         order: 6;
 
-        @media screen(sm) {
+        @media (width >= theme(--breakpoint-sm)) {
           order: 4;
         }
       }
 
       &--interrupted {
         @apply col-span-2;
-        background-color: theme('colors.abru.light.25');
+        background-color: var(--color-abru-light-25);
         justify-self: stretch;
       }
 
       &--launching {
         @apply col-span-2;
-        background-color: theme('colors.alert');
-        color: theme('colors.abru.light.3');
+        background-color: var(--color-alert);
+        color: var(--color-abru-light-3);
         justify-self: stretch;
       }
     }

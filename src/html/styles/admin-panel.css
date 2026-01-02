@@ -1,12 +1,12 @@
 @layer components {
   .admin-panel-section {
     font-size: 14px;
-    color: theme(colors.abru.light.50);
+    color: var(--color-abru-light-50);
     font-weight: 500;
     padding: 8px 12px;
 
     &:not(:first-child) {
-      border-top: 1px solid theme(colors.abru.light.25);
+      border-top: 1px solid var(--color-abru-light-25);
       padding-top: 16px;
       margin-top: 8px;
     }
@@ -19,7 +19,7 @@
 
     h1 {
       font-size: 32px;
-      color: theme(colors.abru.light.75);
+      color: var(--color-abru-light-75);
     }
   }
 
@@ -40,7 +40,7 @@
     flex-flow: flex nowrap;
     align-items: center;
     gap: 8px;
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
     font-weight: 500;
     font-size: 18px;
     border-radius: 4px;
@@ -48,11 +48,11 @@
     position: relative;
 
     &:hover {
-      background-color: theme(colors.abru.dark.25 / 20%);
+      background-color: --theme(--color-abru-dark-25 / 20%);
     }
 
     &.active {
-      background-color: theme(colors.abru.dark.25);
+      background-color: var(--color-abru-dark-25);
 
       &:before {
         position: absolute;
@@ -61,14 +61,14 @@
         content: '';
         width: 4px;
         height: calc(100% - 8px);
-        background-color: theme(colors.accent.DEFAULT);
+        background-color: var(--color-accent);
         border-radius: 2px;
       }
     }
   }
 
   .admin-panel-content {
-    background-color: theme(colors.abru.dark.25);
+    background-color: var(--color-abru-dark-25);
     border-radius: 16px;
     padding: 32px;
     display: flex;
@@ -76,17 +76,17 @@
     gap: 16px;
 
     .group {
-      background-color: theme(colors.abru.light.5);
+      background-color: var(--color-abru-light-5);
       border-radius: 8px;
       padding: 16px;
-      color: theme(colors.abru.light.75);
+      color: var(--color-abru-light-75);
       font-size: 18px;
 
       input[type='text'],
       input[type='number'],
       input[type='url'] {
-        background-color: theme(colors.abru.dark.25);
-        color: theme(colors.white);
+        background-color: var(--color-abru-dark-25);
+        color: var(--color-white);
         border-radius: 8px;
         padding: 8px;
         font-size: 16px;
@@ -99,7 +99,7 @@
         gap: 4px;
 
         .label {
-          color: theme(colors.abru.light.50);
+          color: var(--color-abru-light-50);
           font-size: 16px;
           font-weight: 500;
         }

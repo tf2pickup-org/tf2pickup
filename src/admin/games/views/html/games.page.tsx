@@ -47,7 +47,7 @@ export async function GamesPage() {
                 />
                 <span class="text-white">seconds</span>
               </div>
-              <span class="text-sm text-abru-light-75">
+              <span class="text-abru-light-75 text-sm">
                 The time a player has to join the gameserver before they are getting subbed
                 automatically. Use 0 to disable.
               </span>
@@ -69,7 +69,7 @@ export async function GamesPage() {
                 />
                 <span class="text-white">seconds</span>
               </div>
-              <span class="text-sm text-abru-light-75">
+              <span class="text-abru-light-75 text-sm">
                 The time a player has to come back to the gameserver after they go offline during
                 the match. Use 0 to disable.
               </span>
@@ -84,7 +84,7 @@ export async function GamesPage() {
               <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
                 {safeExecuteExtraCommands}
               </textarea>
-              <span class="text-sm text-abru-light-75">
+              <span class="text-abru-light-75 text-sm">
                 Extra commands to execute on the gameserver before the match starts. One command per
                 line.
               </span>

@@ -93,7 +93,7 @@ AdminToolbox.rconConnect = (props: { game: GameModel }) => {
     ![GameState.launching, GameState.started].includes(props.game.state) ||
     !props.game.gameServer
   ) {
-    return <div class="flex-grow" id={id}></div>
+    return <div class="grow" id={id}></div>
   }
 
   const rconConnect = `rcon_address ${props.game.gameServer.rcon.address}:${props.game.gameServer.rcon.port}; rcon_password "${props.game.gameServer.rcon.password}"`

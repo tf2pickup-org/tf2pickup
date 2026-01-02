@@ -1,4 +1,4 @@
-@import 'admin/views/html/style.css';
+@import '../../../admin/views/html/style.css';
 
 .player-skill {
   appearance: textfield;
@@ -20,7 +20,7 @@
     grid-template-rows: subgrid;
 
     &:not(:has(button)) {
-      color: theme(colors.abru.light.50);
+      color: var(--color-abru-light-50);
     }
   }
 }

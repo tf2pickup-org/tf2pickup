@@ -17,7 +17,7 @@ export async function PlayerSettingsPage() {
       <Page>
         <div class="container mx-auto flex flex-col gap-8">
           <form action="" method="post">
-            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-abru-dark-25 p-[24px] font-normal text-abru-light-75">
+            <div class="bg-abru-dark-25 text-abru-light-75 flex flex-1 flex-col gap-4 rounded-lg p-[24px] font-normal">
               <h4 class="text-[24px] font-bold">Preferences</h4>
 
               <div class="flex flex-col">
@@ -49,7 +49,7 @@ export async function PlayerSettingsPage() {
             </div>
           </form>
 
-          <div class="flex flex-1 flex-col gap-4 rounded-lg bg-abru-dark-25 p-[24px] font-normal text-abru-light-75">
+          <div class="bg-abru-dark-25 text-abru-light-75 flex flex-1 flex-col gap-4 rounded-lg p-[24px] font-normal">
             <h4 class="text-[24px] font-bold">Linked accounts</h4>
 
             <TwitchTvSettingsEntry player={user.player} />

@@ -17,7 +17,7 @@ export function ServemeTfPreferredRegion() {
           <div>
             <RegionList />
           </div>
-          <span class="text-sm text-abru-light-75">
+          <span class="text-abru-light-75 text-sm">
             If a game server from the preferred region is not available, another one will be picked
             up instead.
           </span>

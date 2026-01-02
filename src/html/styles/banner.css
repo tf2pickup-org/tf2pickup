@@ -7,25 +7,25 @@
     padding: 8px 12px;
     font-size: 18px;
     font-weight: 500;
-    color: theme(colors.abru.dark.3);
+    color: var(--color-abru-dark-3);
 
-    @media screen(md) {
+    @media (width >= theme(--breakpoint-md)) {
       flex-direction: row;
     }
 
     &--warning {
-      background-color: theme(colors.accent.600);
-      color: theme(colors.abru.dark.3);
+      background-color: var(--color-accent-600);
+      color: var(--color-abru-dark-3);
     }
 
     &--alert {
-      background-color: theme(colors.alert);
-      color: theme(colors.abru.light.3);
+      background-color: var(--color-alert);
+      color: var(--color-abru-light-3);
     }
 
     &--info {
-      background-color: theme(colors.abru.light.70);
-      color: theme(colors.abru.light.3);
+      background-color: var(--color-abru-light-70);
+      color: var(--color-abru-light-3);
     }
   }
 }

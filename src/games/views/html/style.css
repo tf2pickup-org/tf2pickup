@@ -1,3 +1,5 @@
+@reference '../../../html/styles/main.css';
+
 .game-page {
   display: grid;
   grid-template-areas:
@@ -9,7 +11,7 @@
     'gameEvents'
     'adminToolbox';
 
-  @media screen(lg) {
+  @media (width >= theme(--breakpoint-lg)) {
     grid-template-areas:
       'gameSummary  gameSummary     gameSummary     gameSummary'
       'scoreBlu     scoreBlu        scoreRed        scoreRed'
@@ -19,7 +21,7 @@
     grid-template-columns: 1fr auto auto 1fr;
   }
 
-  @media screen(xl) {
+  @media (width >= theme(--breakpoint-xl)) {
     grid-template-areas:
       'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
       'gameSummary slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
@@ -41,17 +43,17 @@
     border-radius: 8px 8px 0 0;
     margin-top: 16px;
 
-    color: theme('colors.ash');
+    color: var(--color-ash);
 
-    @media screen(xl) {
+    @media (width >= theme(--breakpoint-xl)) {
       margin-top: 0;
     }
 
     &.team-blu {
       grid-area: scoreBlu;
-      background-color: theme('colors.team-blu');
+      background-color: var(--color-team-blu);
 
-      @media screen(lg) {
+      @media (width >= theme(--breakpoint-lg)) {
         border-radius: 8px 0 0 0;
         margin-right: 2px;
       }
@@ -59,9 +61,9 @@
 
     &.team-red {
       grid-area: scoreRed;
-      background-color: theme('colors.team-red');
+      background-color: var(--color-team-red);
 
-      @media screen(lg) {
+      @media (width >= theme(--breakpoint-lg)) {
         grid-template-areas: 'score teamName';
         border-radius: 0 8px 0 0;
         margin-left: 2px;
@@ -76,7 +78,7 @@
     align-items: center;
     padding: 4px 0;
 
-    @media screen(lg) {
+    @media (width >= theme(--breakpoint-lg)) {
       display: grid;
     }
   }
@@ -100,7 +102,7 @@
         'bluDemoman1'
         'bluMedic1';
 
-      @media screen(lg) {
+      @media (width >= theme(--breakpoint-lg)) {
         border-radius: 0 0 0 8px;
 
         .slot {
@@ -125,7 +127,7 @@
         'redDemoman1'
         'redMedic1';
 
-      @media screen(lg) {
+      @media (width >= theme(--breakpoint-lg)) {
         border-radius: 0 0 8px 0;
       }
     }
@@ -146,10 +148,10 @@
       padding: 10px;
 
       &.active {
-        background-color: theme(colors.abru.light.60);
+        background-color: var(--color-abru-light-60);
 
         .class-icon {
-          @media screen(lg) {
+          @media (width >= theme(--breakpoint-lg)) {
             display: none;
           }
         }
@@ -203,8 +205,8 @@
       }
 
       &.waiting-for-substitute {
-        background-color: theme(colors.abru.light.30);
-        color: theme(colors.abru.light.60);
+        background-color: var(--color-abru-light-30);
+        color: var(--color-abru-light-60);
       }
     }
   }
@@ -220,14 +222,10 @@
 }
 
 .game-summary-caption {
-  background: linear-gradient(
-    180deg,
-    theme(colors.transparent) 35%,
-    theme(colors.abru.dark.29) 90%
-  );
+  background: linear-gradient(180deg, transparent 35%, var(--color-abru-dark-29) 90%);
 
   .floating-label {
-    background-color: theme(colors.abru.DEFAULT/90);
+    background: color-mix(in srgb, var(--color-abru) 90%, transparent);
     position: absolute;
     height: 28px;
     display: flex;
@@ -240,7 +238,7 @@
     line-height: 16px;
     font-weight: 700;
 
-    @apply shadow;
+    @apply shadow-sm;
 
     &:empty {
       display: none;
@@ -252,7 +250,7 @@
   display: flex;
   flex-flow: column nowrap;
 
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
 
   .label {
     font-weight: 300;
@@ -270,12 +268,12 @@
   gap: 16px;
   border-radius: 4px;
   border-width: 1px;
-  border-color: theme(colors.abru.light.25);
-  background-color: theme(colors.abru.light.5);
+  border-color: var(--color-abru-light-25);
+  background-color: var(--color-abru-light-5);
   padding: 10px 12px;
   font-size: 16px;
   font-weight: 500;
-  color: theme(colors.abru.light.75);
+  color: var(--color-abru-light-75);
   min-width: 0px;
 
   .content {
@@ -287,8 +285,8 @@
     user-select: all;
     overflow: hidden;
     white-space: nowrap;
-    background-color: theme(colors.abru.light.5);
-    color: theme(colors.abru.light.75);
+    background-color: var(--color-abru-light-5);
+    color: var(--color-abru-light-75);
   }
 }
 
@@ -307,10 +305,10 @@
   font-weight: 700;
   text-transform: uppercase;
 
-  background-color: theme(colors.abru.light.3);
+  background-color: var(--color-abru-light-3);
 
   &:hover {
-    background-color: theme(colors.abru.light.5);
+    background-color: var(--color-abru-light-5);
   }
 }
 
@@ -329,16 +327,16 @@
     gap: 12px;
 
     border-radius: 8px;
-    background-color: theme(colors.abru.dark.15);
+    background-color: var(--color-abru-dark-15);
 
     padding: 10px;
 
     font-size: 16px;
     font-weight: 500;
-    color: theme(colors.abru.light.75);
+    color: var(--color-abru-light-75);
     line-height: normal;
 
-    border: 1px solid theme(colors.abru.light.25);
+    border: 1px solid var(--color-abru-light-25);
 
     .at {
       font-size: 12px;
@@ -366,7 +364,7 @@
 
 .game-admin-toolbox {
   grid-area: adminToolbox;
-  background-color: theme('colors.abru.dark.29');
+  background-color: var(--color-abru-dark-29);
   border-radius: 8px;
   padding: 10px;
 
@@ -374,7 +372,7 @@
   flex-direction: column;
   gap: 8px;
 
-  @media screen(lg) {
+  @media (width >= theme(--breakpoint-lg)) {
     flex-direction: row;
     margin-top: 16px;
   }
@@ -403,8 +401,8 @@
     height: 100%;
     width: 100%;
 
-    color: theme(colors.ash);
-    background-color: theme(colors.accent.DEFAULT);
+    color: var(--color-ash);
+    background-color: var(--color-accent);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -413,7 +411,7 @@
     border-radius: 4px;
 
     &:hover {
-      background-color: darken(theme(colors.accent.DEFAULT), 10%);
+      background-color: color-mix(in hsl, var(--color-accent), black 10%);
     }
   }
 

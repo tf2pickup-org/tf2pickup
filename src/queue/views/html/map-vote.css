@@ -10,18 +10,14 @@
 
   aspect-ratio: 3 / 1;
 
-  background: theme(colors.abru.light.25);
-  background: linear-gradient(
-    90deg,
-    theme(colors.abru.light.25) 35%,
-    theme(colors.transparent) 90%
-  );
+  background: var(--color-abru-light-25);
+  background: linear-gradient(90deg, var(--color-abru-light-25) 35%, transparent 90%);
 
   &:hover:enabled {
     background: linear-gradient(
       90deg,
-      lighten(theme(colors.abru.light.25), 3%) 35%,
-      theme(colors.transparent) 90%
+      color-mix(in hsl, var(--color-abru-light-25), white 3%) 35%,
+      transparent 90%
     );
   }
 
@@ -36,7 +32,7 @@
       z-index: 10;
       border-radius: 8px;
       border-width: 4px;
-      border-color: theme(colors.white);
+      border-color: var(--color-white);
     }
   }
 }

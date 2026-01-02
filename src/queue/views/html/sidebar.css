@@ -1,13 +1,15 @@
+@reference '../../../html/styles/main.css';
+
 .queue-sidebar {
   flex-flow: column nowrap;
   height: 100%;
   max-height: 100%;
   border-radius: 8px;
-  background-color: theme(colors.abru.dark.6);
+  background-color: var(--color-abru-dark-6);
   padding: 8px;
   display: none;
 
-  @media screen(lg) {
+  @media (width >= theme(--breakpoint-lg)) {
     display: flex;
   }
 
@@ -27,7 +29,7 @@
       gap: 4px;
       padding-bottom: 8px;
 
-      color: theme(colors.abru.light.75);
+      color: var(--color-abru-light-75);
       font-size: 14px;
       font-style: normal;
       font-weight: 700;
@@ -40,7 +42,7 @@
         bottom: 0;
         width: 66px;
         left: calc(50% - 33px);
-        border-bottom: 2px solid theme(colors.accent.DEFAULT);
+        border-bottom: 2px solid var(--color-accent);
       }
     }
   }

@@ -111,7 +111,7 @@ async function GameSlotContent(props: {
       if (actor && (props.slot.player === actor.steamId || actor.activeGame === undefined)) {
         return (
           <button
-            class="flex flex-1 justify-center text-abru-light-60 hover:text-abru-light-70"
+            class="text-abru-light-60 hover:text-abru-light-70 flex flex-1 justify-center"
             hx-put={`/games/${props.game.number}/replace-player`}
             hx-trigger="click"
             aria-label="Replace player"
@@ -135,7 +135,7 @@ async function GameSlotContent(props: {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="rounded-sm bg-abru-light-85 p-2 transition-colors duration-75 hover:bg-abru-light-75"
+      class="bg-abru-light-85 hover:bg-abru-light-75 rounded-xs p-2 transition-colors duration-75"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"

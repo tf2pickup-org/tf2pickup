@@ -1,18 +1,17 @@
 @layer components {
-  *:has(> .tooltip) {
-    position: relative;
-
-    &:hover .tooltip {
-      visibility: visible;
-      opacity: 1;
-    }
-  }
-
   .tooltip {
+    *:has(> &) {
+      position: relative;
+
+      &:hover .tooltip {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
     visibility: hidden;
     min-width: 120px;
-    background-color: theme(colors.abru.dark.6);
-    color: theme(colors.abru.light.75);
+    background-color: var(--color-abru-dark-6);
+    color: var(--color-abru-light-75);
     text-align: center;
     padding: 5px 8px;
     border-radius: 6px;
@@ -37,7 +36,7 @@
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: theme(colors.abru.dark.6) transparent transparent transparent;
+      border-color: var(--color-abru-dark-6) transparent transparent transparent;
     }
 
     &.tooltip--bottom {
@@ -47,7 +46,7 @@
       &::after {
         top: auto;
         bottom: 100%;
-        border-color: transparent transparent theme(colors.abru.dark.6) transparent;
+        border-color: transparent transparent var(--color-abru-dark-6) transparent;
       }
     }
   }

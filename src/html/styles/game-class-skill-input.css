@@ -1,20 +1,22 @@
-.game-class-skill-input {
-  display: flex;
-  flex-flow: row nowrap;
-  background-color: theme(colors.abru.light.5);
-  border-radius: 4px;
-  height: 48px;
-  align-items: center;
+@layer components {
+  .game-class-skill-input {
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: var(--color-abru-light-5);
+    border-radius: 4px;
+    height: 48px;
+    align-items: center;
 
-  img {
-    margin-left: 16px;
-  }
+    img {
+      margin-left: 16px;
+    }
 
-  input {
-    text-align: center;
-    width: auto;
-    min-width: 20px;
-    background: transparent;
-    border: none;
+    input {
+      text-align: center;
+      width: auto;
+      min-width: 20px;
+      background: transparent;
+      border: none;
+    }
   }
 }
