@@ -1,5 +1,14 @@
 # Changelog
 
+# [4.0.0-beta.29](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.28...4.0.0-beta.29) (2026-01-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency zod to v4.3.4 ([3468ae5](https://github.com/tf2pickup-org/tf2pickup/commit/3468ae5901ddc9552da834c0b6dd22fe3dbc0d25))
+* **deps:** upgrade tailwindcss to v4 ([#445](https://github.com/tf2pickup-org/tf2pickup/issues/445)) ([f1d06cc](https://github.com/tf2pickup-org/tf2pickup/commit/f1d06cc8e4fdb88e6ef97ed821b7f71762c38482))
+* pick up tasks atomically ([#461](https://github.com/tf2pickup-org/tf2pickup/issues/461)) ([d763cff](https://github.com/tf2pickup-org/tf2pickup/commit/d763cff8c9f523a7da995c975d7cb9f111a2efc7))
+
 # [4.0.0-beta.28](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.27...4.0.0-beta.28) (2025-12-30)
 
 
