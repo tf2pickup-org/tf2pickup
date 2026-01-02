@@ -7,6 +7,7 @@ import { memoize } from 'es-toolkit'
 import postcss from 'postcss'
 import tailwindcss from '@tailwindcss/postcss'
 import postcssNested from 'postcss-nested'
+import cssnano from 'cssnano'
 
 // For production, we memoize the result of the embed function to avoid rebuilding the same file multiple times
 export const embed = environment.NODE_ENV === 'production' ? memoize(doEmbed) : doEmbed
@@ -19,7 +20,11 @@ async function doEmbed(fileName: string): Promise<string> {
   logger.trace({ dir, name, ext }, 'doEmbed()')
 
   const style = (
-    await postcss([postcssNested, tailwindcss]).process(css, {
+    await postcss([
+      postcssNested,
+      tailwindcss({ optimize: false }),
+      ...(environment.NODE_ENV === 'production' ? [cssnano] : []),
+    ]).process(css, {
       from: fileName,
       to: `${name}.min${ext}`,
     })
