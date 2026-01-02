@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-beta.30](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.29...4.0.0-beta.30) (2026-01-02)
+
+
+### Bug Fixes
+
+* use cssnano for css minification ([#462](https://github.com/tf2pickup-org/tf2pickup/issues/462)) ([aa7a718](https://github.com/tf2pickup-org/tf2pickup/commit/aa7a718e64fcaf306ff647fd058952706d27ad74))
+
 # [4.0.0-beta.29](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.28...4.0.0-beta.29) (2026-01-02)
 
 
