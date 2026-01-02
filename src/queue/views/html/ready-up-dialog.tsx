@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../../../players'
 
@@ -10,14 +9,14 @@ export function ReadyUpDialog() {
       <dialog
         class="bg-abru-dark-29 w-[616px] rounded-xl px-[59px] py-[42px] shadow-xl"
         id={dialogId}
-        _={`
-        on show me.showModal() then remove [@disabled] from <#${dialogId} button/> end
-        on close me.close() end
-      `}
+        play-sound-src="/sounds/ready_up.webm"
+        play-sound-volume="1.0"
+        hx-on-show={`this.showModal(); this.querySelector('button').removeAttribute('disabled')`}
+        hx-on-close-dialog="this.close()"
       >
         <form
           class="flex flex-col items-center gap-11"
-          _={`on submit add [@disabled] to <#${dialogId} button/>`}
+          hx-on-submit={`document.querySelector('#${dialogId} button').setAttribute('disabled', '')`}
         >
           <div class="text-abru-light-75 flex flex-col items-center text-[32px] font-bold">
             <span>Game is starting!</span>
@@ -54,19 +53,21 @@ export function ReadyUpDialog() {
 
 ReadyUpDialog.show = async (actor: SteamId64) => {
   const player = await players.bySteamId(actor, ['preferences.soundVolume'])
-  const id = nanoid()
   return (
     <>
       <div id="notify-container" hx-swap-oob="beforeend">
-        <div id={id} _={`on load trigger show on #${dialogId} then remove me`}></div>
+        <script remove-me="0s">{`(() => {
+          const d = document.getElementById('${dialogId}');
+          d.setAttribute('play-sound-volume', '${player.preferences.soundVolume ?? '1.0'}');
+          d.dispatchEvent(new CustomEvent('tf2pickup:soundPlay'));
+          d.dispatchEvent(new CustomEvent('show'));
+        })()`}</script>
       </div>
       <div id="ready-up-notification-container">
         <div
           notification-title="Ready up!"
           notification-body="A game is starting"
           notification-icon="/favicon.png"
-          play-sound-src="/sounds/ready_up.webm"
-          play-sound-volume={player.preferences.soundVolume ?? '1.0'}
         ></div>
       </div>
     </>
@@ -74,11 +75,12 @@ ReadyUpDialog.show = async (actor: SteamId64) => {
 }
 
 ReadyUpDialog.close = () => {
-  const id = nanoid()
   return (
     <>
       <div id="notify-container" hx-swap-oob="beforeend">
-        <div id={id} _={`on load trigger close on #${dialogId} then remove me`}></div>
+        <script remove-me="0s">{`(() => {
+          document.getElementById('${dialogId}').dispatchEvent(new CustomEvent('close-dialog'));
+        })()`}</script>
       </div>
       <div id="ready-up-notification-container"></div>
     </>
