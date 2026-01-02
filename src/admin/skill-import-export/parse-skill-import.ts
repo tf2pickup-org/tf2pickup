@@ -27,7 +27,9 @@ export async function parseSkillImport(csvContent: string): Promise<ParsedSkillR
   })
 
   if (parseResult.errors.length > 0 && parseResult.data.length === 0) {
-    throw errors.badRequest(`CSV parsing error: ${parseResult.errors[0]?.message ?? 'Unknown error'}`)
+    throw errors.badRequest(
+      `CSV parsing error: ${parseResult.errors[0]?.message ?? 'Unknown error'}`,
+    )
   }
 
   if (parseResult.data.length === 0) {

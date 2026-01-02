@@ -3,7 +3,10 @@ import { SkillImportExportPage } from '../../../admin/skill-import-export/views/
 import { ImportConflictDialog } from '../../../admin/skill-import-export/views/html/import-conflict-dialog'
 import { exportSkills } from '../../../admin/skill-import-export/export-skills'
 import { parseSkillImport } from '../../../admin/skill-import-export/parse-skill-import'
-import { applyImportedSkills, applySkillOverride } from '../../../admin/skill-import-export/apply-imported-skills'
+import {
+  applyImportedSkills,
+  applySkillOverride,
+} from '../../../admin/skill-import-export/apply-imported-skills'
 import { z } from 'zod'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'

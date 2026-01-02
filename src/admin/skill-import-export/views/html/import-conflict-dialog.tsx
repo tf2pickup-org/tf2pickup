@@ -59,10 +59,7 @@ export function ImportConflictDialog({
                 {current ?? '—'}
               </div>
               <div
-                class={[
-                  'font-mono',
-                  hasChange ? 'text-green-400 font-bold' : 'text-abru-light-75',
-                ]}
+                class={['font-mono', hasChange ? 'font-bold text-green-400' : 'text-abru-light-75']}
               >
                 {imported ?? '—'}
               </div>
@@ -105,11 +102,7 @@ export function ImportConflictDialog({
         <form method="post" action="/admin/skill-import-export/resolve" class="contents">
           <input type="hidden" name="action" value="override" />
           <input type="hidden" name="steamId" value={conflict.steamId} />
-          <input
-            type="hidden"
-            name="skill"
-            value={JSON.stringify(conflict.importedSkill)}
-          />
+          <input type="hidden" name="skill" value={JSON.stringify(conflict.importedSkill)} />
           <input type="hidden" name="conflicts" value={conflictsJson} />
           <button type="submit" class="button button--accent">
             Override
