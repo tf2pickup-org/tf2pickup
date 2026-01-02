@@ -7,7 +7,12 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 export async function SubstitutionRequests() {
   const requests = await collections.gamesSubstituteRequests.find().toArray()
   return (
-    <div id="substitution-requests" class="contents">
+    <div
+      id="substitution-requests"
+      class="contents"
+      play-sound-src="/sounds/cmon_tough_guy.webm"
+      play-sound-volume="1.0"
+    >
       {requests.map(request => (
         <div class="banner banner--alert flex flex-row items-center">
           <p class="flex-1">
@@ -56,9 +61,14 @@ SubstitutionRequests.notify = async ({
         notification-title="A substitute is needed!"
         notification-body={`Team ${slot.team} needs a substitute for ${slot.gameClass} in game #${game.number}`}
         notification-icon="/favicon.png"
-        play-sound-src="/sounds/cmon_tough_guy.webm"
-        play-sound-volume={volume}
       ></div>
+      <script>{`(() => {
+        const container = document.getElementById('substitution-requests');
+        if (container) {
+          container.setAttribute('play-sound-volume', '${volume}');
+          container.dispatchEvent(new CustomEvent('tf2pickup:soundPlay'));
+        }
+      })()`}</script>
     </div>
   )
 }
