@@ -31,7 +31,8 @@ export async function SkillImportExportPage() {
           <h2 class="text-abru-light-75 mb-2 text-xl font-bold">Import skills</h2>
           <p class="text-abru-light-50 mb-4">
             Upload a CSV file to import player skills. The file should have columns:{' '}
-            <code class="text-abru-light-75">steamId</code> and class names ({classNames as 'safe'}).
+            <code class="text-abru-light-75">steamId</code> and class names ({classNames as 'safe'}
+            ).
           </p>
 
           <form
