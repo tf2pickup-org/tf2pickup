@@ -182,6 +182,20 @@ export default fp(async app => {
   })
 
   events.on('game:gameServerAssigned', ({ game }) => {
+    const buttons = AdminToolbox.gameControlButtons({ game })
+    app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
+      if (!actor) {
+        return
+      }
+
+      const player = await players.bySteamId(actor, ['roles'])
+      if (player.roles.includes(PlayerRole.admin)) {
+        return buttons
+      }
+
+      return
+    })
+
     const rconConnect = AdminToolbox.rconConnect({ game })
     app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
       if (!actor) {
