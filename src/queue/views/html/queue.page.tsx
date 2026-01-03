@@ -99,9 +99,10 @@ async function QueueState(props: { actor?: User | undefined; required: number })
 }
 
 function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }) {
+  const gridCols = config.classes.length > 4 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'
   return (
     <form
-      class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4"
+      class={['grid grid-cols-1 gap-4 md:grid-cols-2', gridCols]}
       ws-send
       data-disable-when-offline
     >

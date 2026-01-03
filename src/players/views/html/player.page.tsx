@@ -4,6 +4,7 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { queue } from '../../../queue'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
@@ -172,14 +173,12 @@ function PlayerPresentation(props: {
 
         <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
 
-        {[Tf2ClassName.scout, Tf2ClassName.soldier, Tf2ClassName.demoman, Tf2ClassName.medic].map(
-          gameClass => (
-            <>
-              <GameClassIcon gameClass={gameClass} size={32} />
-              <span class="text-2xl font-bold">{props.gameCountOnClasses[gameClass] ?? 0}</span>
-            </>
-          ),
-        )}
+        {queue.config.classes.map(({ name: gameClass }) => (
+          <>
+            <GameClassIcon gameClass={gameClass} size={32} />
+            <span class="text-2xl font-bold">{props.gameCountOnClasses[gameClass] ?? 0}</span>
+          </>
+        ))}
       </div>
 
       <div class="grid gap-[10px] md:grid-flow-col md:grid-rows-1 md:justify-items-center md:max-xl:col-span-3 lg:place-content-end">
@@ -187,7 +186,8 @@ function PlayerPresentation(props: {
           href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class="player-presentation-link"
+          class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+          title="Steam"
         >
           <IconBrandSteam />
           <span>steam</span>
@@ -197,7 +197,8 @@ function PlayerPresentation(props: {
           href={`https://logs.tf/profile/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class="player-presentation-link"
+          class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+          title="Logs"
         >
           <IconAlignBoxBottomRight />
           <span>logs</span>
@@ -208,7 +209,8 @@ function PlayerPresentation(props: {
             href={`https://etf2l.org/forum/user/${props.player.etf2lProfile.id}`}
             target="_blank"
             rel="noreferrer"
-            class="player-presentation-link"
+            class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+            title="ETF2L"
           >
             <IconStars />
             <span>etf2l</span>
@@ -222,7 +224,8 @@ function PlayerPresentation(props: {
             href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}/`}
             target="_blank"
             rel="noreferrer"
-            class="player-presentation-link"
+            class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+            title="Twitch"
           >
             <IconBrandTwitch />
             <span>twitch</span>

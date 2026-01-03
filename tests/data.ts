@@ -13,4 +13,10 @@ export const users = [
   { steamId: '76561199195855422', name: 'AstraGirl' },
   { steamId: '76561199195188363', name: 'BellBoy' },
   { steamId: '76561199203544766', name: 'TommyGun' },
+  // Additional users for 9v9 support
+  { steamId: '76561199999000001', name: 'NeonBlitz' },
+  { steamId: '76561199999000002', name: 'CrazyComet' },
+  { steamId: '76561199999000003', name: 'FrostByte' },
+  { steamId: '76561199999000004', name: 'IronViper' },
+  { steamId: '76561199999000005', name: 'ShadowPulse' },
 ] as const

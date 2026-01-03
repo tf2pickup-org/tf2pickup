@@ -6,7 +6,7 @@ import { queueSlots } from '../queue-slots'
 
 test.use({ waitForStage: 'launching' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-test('free players when the game ends', async ({ players, gameServer, gameNumber }) => {
+test('free players when the game ends @6v6 @9v9', async ({ players, gameServer, gameNumber }) => {
   test.setTimeout(minutesToMilliseconds(1))
   await Promise.all(
     players.map(async player => {

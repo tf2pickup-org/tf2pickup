@@ -160,7 +160,7 @@ async function DefaultPlayerSkill() {
         <span class="text-abru-light-75 font-bold">Default player skill</span>
       </dt>
       <dd class="flex flex-col">
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row flex-wrap gap-2">
           {classes.map(gameClass => (
             <GameClassSkillInput
               gameClass={gameClass}

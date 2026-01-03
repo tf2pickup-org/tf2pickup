@@ -4,7 +4,7 @@ import { configureMumbleServer } from '../fixtures/configure-mumble-server'
 
 const test = mergeTests(launchGame, configureMumbleServer)
 
-test('renders join voice button', async ({
+test('renders join voice button @6v6 @9v9', async ({
   gameNumber,
   users,
   mumbleConfiguration,

@@ -1,6 +1,6 @@
 import { launchGame as test } from '../fixtures/launch-game'
 
-test('redirect player to launched game', async ({ users, players, desiredSlots }) => {
+test('redirect player to launched game @6v6 @9v9 @6v6 @9v9', async ({ users, players, desiredSlots }) => {
   await Promise.all(
     players.map(async player => {
       const queuePage = await player.queuePage()

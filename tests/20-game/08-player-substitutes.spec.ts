@@ -2,8 +2,8 @@ import { secondsToMilliseconds } from 'date-fns'
 import { launchGame as test, expect } from '../fixtures/launch-game'
 
 test.use({ waitForStage: 'started' })
-test.describe('substitutes', () => {
-  test('substitute self', async ({ gameNumber, users, page, gameServer }) => {
+test.describe('substitutes @6v6 @9v9', () => {
+  test('substitute self @6v6 @9v9', async ({ gameNumber, users, page, gameServer }) => {
     const admin = users.getAdmin()
     const adminsPage = await admin.gamePage(gameNumber)
     const mayflowersPage = await users.byName('Mayflower').gamePage(gameNumber)
@@ -32,7 +32,7 @@ test.describe('substitutes', () => {
     await expect(mayflowersPage.gameEvent(`Mayflower replaced Mayflower`)).toBeVisible()
   })
 
-  test('substitute other', async ({ gameNumber, users, page, gameServer }) => {
+  test('substitute other @6v6 @9v9', async ({ gameNumber, users, page, gameServer }) => {
     const admin = users.getAdmin()
     const adminsPage = await admin.gamePage(gameNumber)
     const tommyGunsPage = await users.byName('TommyGun').gamePage(gameNumber)
