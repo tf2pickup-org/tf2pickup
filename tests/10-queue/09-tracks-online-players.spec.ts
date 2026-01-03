@@ -2,7 +2,7 @@ import { secondsToMilliseconds } from 'date-fns'
 import { expect, authUsers as test } from '../fixtures/auth-users'
 import { delay } from 'es-toolkit'
 
-test('tracks online players', async ({ page, users }) => {
+test('tracks online players @6v6 @9v9', async ({ page, users }) => {
   await page.goto('/')
   await expect(page.getByRole('link', { name: 'Blacklight' })).not.toBeVisible()
 
@@ -18,8 +18,8 @@ test('tracks online players', async ({ page, users }) => {
   })
 })
 
-test.describe('when user opens a new tab and then closes it', () => {
-  test('should keep them online', async ({ page, users }) => {
+test.describe('when user opens a new tab and then closes it @6v6 @9v9', () => {
+  test('should keep them online @6v6 @9v9', async ({ page, users }) => {
     await page.goto('/')
     const blacklight = users.byName('Blacklight')
 

@@ -17,13 +17,13 @@ test.beforeEach(async ({ db }) => {
   )
 })
 
-test('pre-ready up button is visible for logged-in-users', async ({ users }) => {
+test('pre-ready up button is visible for logged-in-users @6v6 @9v9', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
   await expect(page.preReadyUpButton).toBeVisible()
 })
 
-test('pre-ready up button is enabled when a player joins the queue', async ({ users }) => {
+test('pre-ready up button is enabled when a player joins the queue @6v6 @9v9', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
   await expect(page.preReadyUpButton).toBeDisabled()
@@ -33,7 +33,7 @@ test('pre-ready up button is enabled when a player joins the queue', async ({ us
   await expect(page.preReadyUpButton).toBeDisabled()
 })
 
-test('pre-ready expires', async ({ users }) => {
+test('pre-ready expires @6v6 @9v9', async ({ users }) => {
   const page = await users.getNext().queuePage()
   await page.goto()
   await page.joinQueue('soldier-1')
@@ -48,7 +48,7 @@ test('pre-ready expires', async ({ users }) => {
   })
 })
 
-test('pre-ready up readies up when the queue is ready', async ({
+test('pre-ready up readies up when the queue is ready @6v6 @9v9', async ({
   users,
   players,
   desiredSlots,
@@ -95,7 +95,7 @@ test('pre-ready up readies up when the queue is ready', async ({
   }
 })
 
-test('pre-ready up enables automatically after readying up', async ({
+test('pre-ready up enables automatically after readying up @6v6 @9v9', async ({
   users,
   players,
   desiredSlots,
@@ -127,7 +127,7 @@ test('pre-ready up enables automatically after readying up', async ({
   }
 })
 
-test('does not ready up if switching classes as 11th player', async ({
+test('does not ready up if switching classes as 11th player @6v6 @9v9', async ({
   users,
   players,
   desiredSlots,

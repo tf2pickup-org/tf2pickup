@@ -1,6 +1,6 @@
 import { authUsers, expect } from '../fixtures/auth-users'
 
-authUsers('banned player sees ban alert', async ({ users }) => {
+authUsers('banned player sees ban alert @6v6 @9v9', async ({ users }) => {
   const player = users.byName('AstraGirl')
   const playerPage = await player.queuePage()
   await playerPage.goto()
