@@ -1,8 +1,11 @@
 import { Admin } from '../../../views/html/admin'
 import { collections } from '../../../../database/collections'
+import { IconFileImport, IconFileSpreadsheet } from '../../../../html/components/icons'
+import { queue } from '../../../../queue'
 
 export async function SkillImportExportPage() {
   const pendingCount = await collections.pendingSkills.countDocuments()
+  const classNames = queue.config.classes.map(({ name }) => name).join(', ')
 
   return (
     <Admin activePage="skill-import-export">
@@ -15,11 +18,10 @@ export async function SkillImportExportPage() {
           </p>
           <a
             href="/admin/skill-import-export/export.csv"
-            class="button button--accent button--dense"
-            download="player-skills.csv"
+            class="text-accent-500 flex items-center gap-1 hover:underline"
             hx-boost="false"
           >
-            Download CSV
+            <IconFileSpreadsheet /> Download CSV
           </a>
         </section>
 
@@ -29,8 +31,7 @@ export async function SkillImportExportPage() {
           <h2 class="text-abru-light-75 mb-2 text-xl font-bold">Import skills</h2>
           <p class="text-abru-light-50 mb-4">
             Upload a CSV file to import player skills. The file should have columns:{' '}
-            <code class="text-abru-light-75">steamId</code> and TF2 class names (scout, soldier,
-            pyro, demoman, heavy, engineer, medic, sniper, spy).
+            <code class="text-abru-light-75">steamId</code> and class names ({classNames as 'safe'}).
           </p>
 
           <form
@@ -54,7 +55,7 @@ export async function SkillImportExportPage() {
               />
             </div>
             <button type="submit" class="button button--accent button--dense">
-              Import
+              <IconFileImport /> Import
             </button>
           </form>
         </section>

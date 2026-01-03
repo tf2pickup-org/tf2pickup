@@ -15,6 +15,7 @@ import type { SkillConflict } from '../../../admin/skill-import-export/types'
 import { Admin } from '../../../admin/views/html/admin'
 import { players } from '../../../players'
 import multipart from '@fastify/multipart'
+import { environment } from '../../../environment'
 
 const conflictSchema = z.object({
   steamId: steamId64,
@@ -56,9 +57,11 @@ export default routes(async app => {
       },
       async (_request, reply) => {
         const csv = await exportSkills()
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
+        const filename = `${environment.WEBSITE_NAME}-skills-${timestamp}.csv`
         await reply
           .header('Content-Type', 'text/csv')
-          .header('Content-Disposition', 'attachment; filename="player-skills.csv"')
+          .header('Content-Disposition', `attachment; filename="${filename}"`)
           .send(csv)
       },
     )
