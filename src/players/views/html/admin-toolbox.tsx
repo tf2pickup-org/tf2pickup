@@ -1,4 +1,3 @@
-import { capitalize } from 'es-toolkit'
 import { configuration } from '../../../configuration'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { IconDeviceFloppy, IconEdit, IconInputX } from '../../../html/components/icons'
@@ -29,34 +28,37 @@ export async function AdminToolbox(props: {
         Win-loss chart
       </h4>
 
-      {queue.config.classes.map(gameClass => (
-        <GameClassSkillInput
-          gameClass={gameClass.name}
-          name={`skill.${gameClass.name}`}
-          value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
-          style={`grid-area: skill${capitalize(gameClass.name)}`}
-        >
-          <SkillLastUpdated className={gameClass.name} skillHistory={player.skillHistory} />
-        </GameClassSkillInput>
-      ))}
+      <div class={['skill-inputs', queue.config.classes.length > 4 && 'compact']}>
+        {queue.config.classes.map(gameClass => (
+          <GameClassSkillInput
+            gameClass={gameClass.name}
+            name={`skill.${gameClass.name}`}
+            value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
+          >
+            <SkillLastUpdated className={gameClass.name} skillHistory={player.skillHistory} />
+          </GameClassSkillInput>
+        ))}
 
-      <button type="submit" class="button button--accent" style="grid-area: buttonSave">
-        <IconDeviceFloppy size={20} />
-        <span>Save</span>
-      </button>
+        <div class={['skill-buttons', queue.config.classes.length > 4 && 'compact']}>
+          <button type="submit" class="button button--accent" title="Save">
+            <IconDeviceFloppy size={20} />
+            <span>Save</span>
+          </button>
 
-      <button
-        type="button"
-        class="button"
-        style="grid-area: buttonReset"
-        hx-get={`/players/${player.steamId}/edit/skill/default`}
-        hx-trigger="click"
-        hx-disabled-elt="this"
-        hx-swap="none"
-      >
-        <IconInputX size={20} />
-        Reset
-      </button>
+          <button
+            type="button"
+            class="button"
+            title="Reset"
+            hx-get={`/players/${player.steamId}/edit/skill/default`}
+            hx-trigger="click"
+            hx-disabled-elt="this"
+            hx-swap="none"
+          >
+            <IconInputX size={20} />
+            <span>Reset</span>
+          </button>
+        </div>
+      </div>
 
       <div class="mx-2" style="grid-area: winLoss">
         <WinLossChart steamId={props.player.steamId} />
@@ -64,11 +66,12 @@ export async function AdminToolbox(props: {
 
       <a
         href={`/players/${player.steamId}/edit`}
-        class="button button--accent self-center whitespace-nowrap"
+        class={['button button--accent self-center whitespace-nowrap', queue.config.classes.length > 4 && 'compact']}
         style="grid-area: linkEdit"
+        title="Edit player"
       >
         <IconEdit />
-        Edit player
+        <span>Edit player</span>
       </a>
     </form>
   )

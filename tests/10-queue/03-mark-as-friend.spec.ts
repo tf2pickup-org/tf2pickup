@@ -5,7 +5,7 @@ import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-test('mark as friend', async ({ users }) => {
+test('mark as friend @6v6 @9v9', async ({ users }) => {
   const [medic1, medic2, soldier] = (await Promise.all(
     users.getMany(3).map(async user => {
       const page = await user.queuePage()
