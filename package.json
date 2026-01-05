@@ -86,7 +86,7 @@
     "postcss-import": "16.1.1",
     "postcss-nested": "7.0.2",
     "rcon-client": "4.2.5",
-    "steamapi": "3.1.3",
+    "steamapi": "3.1.4",
     "steamid": "2.1.0",
     "tailwindcss": "4.1.18",
     "type-fest": "5.3.1",
