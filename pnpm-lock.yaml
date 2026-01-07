@@ -189,8 +189,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       motion:
-        specifier: 12.24.7
-        version: 12.24.7
+        specifier: 12.24.10
+        version: 12.24.10
       nanoid:
         specifier: 5.1.6
         version: 5.1.6
@@ -2922,8 +2922,8 @@ packages:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
 
-  framer-motion@12.24.7:
-    resolution: {integrity: sha512-EolFLm7NdEMhWO/VTMZ0LlR4fLHGDiJItTx3i8dlyQooOOBoYAaysK4paGD4PrwqnoDdeDOS+TxnSBIAnNHs3w==}
+  framer-motion@12.24.10:
+    resolution: {integrity: sha512-8yoyMkCn2RmV9UB9mfmMuzKyenQe909hRQRl0yGBhbZJjZZ9bSU87NIGAruqCXCuTNCA0qHw2LWLrcXLL9GF6A==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -3662,14 +3662,14 @@ packages:
       socks:
         optional: true
 
-  motion-dom@12.24.3:
-    resolution: {integrity: sha512-ZjMZCwhTglim0LM64kC1iFdm4o+2P9IKk3rl/Nb4RKsb5p4O9HJ1C2LWZXOFdsRtp6twpqWRXaFKOduF30ntow==}
+  motion-dom@12.24.10:
+    resolution: {integrity: sha512-H3HStYaJ6wANoZVNT0ZmYZHGvrpvi9pKJRzsgNEHkdITR4Qd9FFu2e9sH4e2Phr4tKCmyyloex6SOSmv0Tlq+g==}
 
-  motion-utils@12.23.28:
-    resolution: {integrity: sha512-0W6cWd5Okoyf8jmessVK3spOmbyE0yTdNKujHctHH9XdAE4QDuZ1/LjSXC68rrhsJU+TkzXURC5OdSWh9ibOwQ==}
+  motion-utils@12.24.10:
+    resolution: {integrity: sha512-x5TFgkCIP4pPsRLpKoI86jv/q8t8FQOiM/0E8QKBzfMozWHfkKap2gA1hOki+B5g3IsBNpxbUnfOum1+dgvYww==}
 
-  motion@12.24.7:
-    resolution: {integrity: sha512-0jOoqFlQ7JBvAcRhRv28pwUgZ1xw9WS4+tCU6aqYjxgiNVZCVi34ED2cihW3EgjIIWPBoZJis5og1mx/LmQWVQ==}
+  motion@12.24.10:
+    resolution: {integrity: sha512-P3tEZfL9N9Feb2sXVZaF085DHNyd4SO/X76Fo37pFv6DDAeL3vU4vYpTZBWiwW66qnF11VmFCM9DxnpAG825yg==}
     peerDependencies:
       '@emotion/is-prop-valid': '*'
       react: ^18.0.0 || ^19.0.0
@@ -7884,10 +7884,10 @@ snapshots:
 
   forwarded@0.2.0: {}
 
-  framer-motion@12.24.7:
+  framer-motion@12.24.10:
     dependencies:
-      motion-dom: 12.24.3
-      motion-utils: 12.23.28
+      motion-dom: 12.24.10
+      motion-utils: 12.24.10
       tslib: 2.8.1
 
   fs-extra@11.2.0:
@@ -8545,15 +8545,15 @@ snapshots:
       bson: 7.0.0
       mongodb-connection-string-url: 7.0.0
 
-  motion-dom@12.24.3:
+  motion-dom@12.24.10:
     dependencies:
-      motion-utils: 12.23.28
+      motion-utils: 12.24.10
 
-  motion-utils@12.23.28: {}
+  motion-utils@12.24.10: {}
 
-  motion@12.24.7:
+  motion@12.24.10:
     dependencies:
-      framer-motion: 12.24.7
+      framer-motion: 12.24.10
       tslib: 2.8.1
 
   ms@2.1.3: {}
