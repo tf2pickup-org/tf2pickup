@@ -2,13 +2,14 @@ import { mergeTests } from '@playwright/test'
 import { authUsers } from '../fixtures/auth-users'
 import { minutesToMilliseconds } from 'date-fns'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
-import { queueSlots } from '../queue-slots'
+import { getPlayerCount, queueSlots } from '../queue-slots'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-test('everybody leaves', async ({ steamIds, users }) => {
+test('everybody leaves @6v6 @9v9', async ({ steamIds, users }) => {
   authUsers.setTimeout(minutesToMilliseconds(2))
-  const queueUsers = steamIds.slice(0, 12)
+  const playerCount = getPlayerCount()
+  const queueUsers = steamIds.slice(0, playerCount)
   const slots = [...queueSlots()]
   for (let i = 0; i < queueUsers.length; ++i) {
     const steamId = queueUsers[i]!
@@ -25,6 +26,7 @@ test('everybody leaves', async ({ steamIds, users }) => {
   )
 
   // last player leaves
-  const page = await users.bySteamId(queueUsers[11]!).queuePage()
+  const page = await users.bySteamId(queueUsers[playerCount - 1]!).queuePage()
   await page.leaveQueue(minutesToMilliseconds(1.5))
 })
+

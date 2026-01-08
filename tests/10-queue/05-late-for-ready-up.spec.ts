@@ -1,7 +1,7 @@
 import { launchGame as test, expect } from '../fixtures/launch-game'
 import { minutesToMilliseconds } from 'date-fns'
 
-test('player is late for ready up', async ({ players, desiredSlots, users, page }) => {
+test('player is late for ready up @6v6', async ({ players, desiredSlots, users, page }) => {
   test.setTimeout(minutesToMilliseconds(2))
 
   const lateUserPage = await users.byName('MoonMan').queuePage()
