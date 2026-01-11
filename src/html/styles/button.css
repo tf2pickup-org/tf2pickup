@@ -96,5 +96,13 @@
         }
       }
     }
+
+    &.compact {
+      padding: 8px;
+
+      span {
+        display: none;
+      }
+    }
   }
 }

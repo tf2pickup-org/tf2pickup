@@ -4,7 +4,7 @@ import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-test('vote for map', async ({ users }) => {
+test('vote for map @6v6 @9v9', async ({ users }) => {
   const page = await users.byName('SlitherTuft').queuePage()
   await page.goto()
   const mapBtn = page.voteForMapButton(0)

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { QueuePage } from '../pages/queue.page'
 
-test('has title', async ({ page }) => {
+test('has title @6v6', async ({ page }) => {
   await page.goto('/')
   await expect(page).toHaveTitle(/\[0\/12\] tf2pickup\.org/)
 })
@@ -17,7 +17,7 @@ test('has queue state', async ({ page }) => {
   expect(queueState).toBeTruthy()
 })
 
-test('has 12 queue slots and no join buttons', async ({ page }) => {
+test('has 12 queue slots and no join buttons @6v6', async ({ page }) => {
   await page.goto('/')
   const slots = page.getByLabel(/Queue slot .+/)
   await expect(slots).toHaveCount(12)
