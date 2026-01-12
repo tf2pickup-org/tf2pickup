@@ -45,7 +45,7 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
     <>
       <button
         class="button"
-        disabled={disabled}
+        disabled={disabled || !props.game.gameServer}
         id={`game-${props.game.number}-reinitialize-game-server-button`}
         hx-trigger="click"
         hx-put={`/games/${props.game.number}/reinitialize-gameserver`}
