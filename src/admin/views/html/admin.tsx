@@ -13,6 +13,7 @@ import {
   IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
+  IconFileSpreadsheet,
   IconHeadset,
   IconLogs,
   IconMapPinCog,
@@ -81,6 +82,11 @@ const adminPages = {
   'scramble-maps': {
     title: 'Scramble maps',
     icon: IconArrowsShuffle,
+    section: 'Actions',
+  },
+  'skill-import-export': {
+    title: 'Skill import/export',
+    icon: IconFileSpreadsheet,
     section: 'Actions',
   },
   'bypass-registration-restrictions': {

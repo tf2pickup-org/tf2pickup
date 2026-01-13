@@ -41,6 +41,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { guildId: 1, gameNumber: 1, slotId: 1 }, options: { unique: true } },
   ],
   gamesSubstituteRequests: [{ spec: { gameNumber: 1, slotId: 1 }, options: { unique: true } }],
+  pendingSkills: [{ spec: { steamId: 1 }, options: { unique: true } }],
 }
 
 export async function ensureIndexes() {
