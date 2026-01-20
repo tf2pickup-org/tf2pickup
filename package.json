@@ -117,7 +117,7 @@
     "postcss-cli": "11.0.1",
     "prettier": "3.8.0",
     "prettier-plugin-tailwindcss": "0.7.2",
-    "release-it": "19.2.3",
+    "release-it": "19.2.4",
     "rimraf": "6.1.2",
     "tsc-alias": "1.8.16",
     "tsx": "4.21.0",
