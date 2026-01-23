@@ -219,8 +219,8 @@ importers:
         specifier: 4.2.5
         version: 4.2.5
       steamapi:
-        specifier: 3.1.4
-        version: 3.1.4
+        specifier: 3.1.5
+        version: 3.1.5
       steamid:
         specifier: 2.1.0
         version: 2.1.0
@@ -4601,8 +4601,8 @@ packages:
     resolution: {integrity: sha512-UhDfHmA92YAlNnCfhmq0VeNL5bDbiZGg7sZ2IvPsXubGkiNa9EC+tUTsjBRsYUAz87btI6/1wf4XoVvQ3uRnmQ==}
     engines: {node: '>=18'}
 
-  steamapi@3.1.4:
-    resolution: {integrity: sha512-pm9L/uqCmlr/3EA3/q2aS41e1Ifs47TvO+CoLjp5u2Pq34BTKVJxa14ByxH/J7ovY4JkCpG8+tADuf/nZOquUA==}
+  steamapi@3.1.5:
+    resolution: {integrity: sha512-ZkqKpS7fV446gH9nxSjCJ+hJic4x1ouWP9c78Pu1sz4RL9tFF6VRA4/8f5RXtd4pw4p8kqHOr0ttR+Km5hFHeg==}
 
   steamid@2.1.0:
     resolution: {integrity: sha512-ndt1cvuuSC+i8fcxVsmeyRlgGsR1QsoAuIXz+eabj8/Y4GIWE2+mgHA7Hys61JDHOxttfWtXHtN2m5TNYTlORg==}
@@ -9486,7 +9486,7 @@ snapshots:
 
   stdin-discarder@0.2.2: {}
 
-  steamapi@3.1.4:
+  steamapi@3.1.5:
     dependencies:
       node-fetch: 3.3.2
       steamid: 2.1.0
