@@ -4,7 +4,7 @@ import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-test.describe('when player skill threshold is set', () => {
+test.describe('when player skill threshold is set @6v6', () => {
   test.beforeAll(async ({ users }) => {
     const admin = await users.getAdmin().adminPage()
     await admin.configurePlayerSkillThreshold(2)
