@@ -23,6 +23,7 @@ import type { DiscordBotStateModel } from './models/discord-bot-state.model'
 import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
 import type { SubstituteRequestModel } from './models/substitute-request.model'
+import type { PendingSkillModel } from './models/pending-skill.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -52,6 +53,7 @@ export const collections = {
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
+  pendingSkills: database.collection<PendingSkillModel>('pendingskills'),
 }
 
 await ensureIndexes()
