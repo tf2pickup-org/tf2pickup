@@ -292,8 +292,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       pino-princess:
-        specifier: 1.4.1
-        version: 1.4.1(typescript@5.9.3)
+        specifier: 1.5.1
+        version: 1.5.1(typescript@5.9.3)
       postcss-cli:
         specifier: 11.0.1
         version: 11.0.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)
@@ -754,8 +754,8 @@ packages:
   '@fastify/cookie@11.0.2':
     resolution: {integrity: sha512-GWdwdGlgJxyvNv+QcKiGNevSspMQXncjMZ1J8IvuDQk0jvkzgWWZFNC2En3s+nHndZBGV8IbLwOI/sxCZw/mzA==}
 
-  '@fastify/deepmerge@3.1.0':
-    resolution: {integrity: sha512-lCVONBQINyNhM6LLezB6+2afusgEYR4G8xenMsfe+AT+iZ7Ca6upM5Ha8UkZuYSnuMw3GWl/BiPXnLMi/gSxuQ==}
+  '@fastify/deepmerge@3.2.0':
+    resolution: {integrity: sha512-aO5giNgFN+rD4fMUAkro9nEL7c9gh5Q3lh0ZGKMDAhQAytf22HLicF/qZ2EYTDmH+XL2WvdazwBfOdmp6NiwBg==}
 
   '@fastify/error@4.2.0':
     resolution: {integrity: sha512-RSo3sVDXfHskiBZKBPRgnQTtIqpi/7zhJOEmAxCiBcM7d0uwdGdxLlsCaLzGs8v8NnxIRlfG0N51p5yFaOentQ==}
@@ -3333,8 +3333,9 @@ packages:
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
 
-  json-log-line@0.0.3:
-    resolution: {integrity: sha512-Ecg6nRysn2solTkjl2ykuhxKyyoOq8yj4rSVyMkXXG3s1Aqx6X4Ps740Krb3C3dauOH0dBwCMPMYynb/FjxVeA==}
+  json-log-line@1.0.6:
+    resolution: {integrity: sha512-v4QNc/5+dZrje28zbmkiVOcSji+0OVNL4z0KiNJfzO94uvUuf+lis0WQRc9ji5p8BMGqjc+LCUJFyDwm+4wuqA==}
+    engines: {node: '>=22'}
 
   json-parse-even-better-errors@2.3.1:
     resolution: {integrity: sha512-xyFwyhro/JEof6Ghe2iz2NcXoj2sloNsWr/XsERDK/oiPCfaNhl5ONfp+jQdAZRQQ0IJWNzH9zIZF7li91kh2w==}
@@ -3601,10 +3602,6 @@ packages:
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
     engines: {node: '>=18'}
-
-  meow@14.0.0:
-    resolution: {integrity: sha512-JhC3R1f6dbspVtmF3vKjAWz1EVIvwFrGGPLSdU6rK79xBwHWTuHoLnRX/t1/zHS1Ch1Y2UtIrih7DAHuH9JFJA==}
-    engines: {node: '>=20'}
 
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
@@ -3998,9 +3995,9 @@ packages:
   pino-abstract-transport@3.0.0:
     resolution: {integrity: sha512-wlfUczU+n7Hy/Ha5j9a/gZNy7We5+cXp8YL+X+PG8S0KXxw7n/JXA3c46Y0zQznIJ83URJiwy7Lh56WLokNuxg==}
 
-  pino-princess@1.4.1:
-    resolution: {integrity: sha512-8w81NwD3Cz+NJx3TKfiV226EB6IcUAjtfYicHLDvET6jaHVFER1OBPEdghFG49G18msNoDhgLmI3NWFlfeDADQ==}
-    engines: {node: '>=20'}
+  pino-princess@1.5.1:
+    resolution: {integrity: sha512-My23oN6MRPo2hnNzf+SQenMy/tlLEipOpX/IrlOKFT7VAR6GRaHdlpIGblAXm2BW1W/S1nH7Q1Wm6lum2jgzJA==}
+    engines: {node: '>=22'}
     hasBin: true
 
   pino-std-serializers@7.0.0:
@@ -5399,7 +5396,7 @@ snapshots:
       cookie: 1.0.0
       fastify-plugin: 5.1.0
 
-  '@fastify/deepmerge@3.1.0': {}
+  '@fastify/deepmerge@3.2.0': {}
 
   '@fastify/error@4.2.0': {}
 
@@ -8319,11 +8316,11 @@ snapshots:
 
   json-buffer@3.0.1: {}
 
-  json-log-line@0.0.3:
+  json-log-line@1.0.6:
     dependencies:
-      '@fastify/deepmerge': 3.1.0
+      '@fastify/deepmerge': 3.2.0
       fast-json-parse: 1.0.3
-      get-value: 3.0.1
+      get-value: 4.0.1
       set-value: 4.1.0
       unset-value: 2.0.1
 
@@ -8547,8 +8544,6 @@ snapshots:
   memory-pager@1.5.0: {}
 
   meow@13.2.0: {}
-
-  meow@14.0.0: {}
 
   merge-stream@2.0.0: {}
 
@@ -8879,16 +8874,16 @@ snapshots:
     dependencies:
       split2: 4.2.0
 
-  pino-princess@1.4.1(typescript@5.9.3):
+  pino-princess@1.5.1(typescript@5.9.3):
     dependencies:
       chalk: 5.6.2
       cli-highlight: 2.1.11
       cosmiconfig: 9.0.0(typescript@5.9.3)
       date-fns: 4.1.0
       get-value: 4.0.1
-      json-log-line: 0.0.3
+      is-unicode-supported: 2.1.0
+      json-log-line: 1.0.6
       json-stringify-pretty-compact: 4.0.0
-      meow: 14.0.0
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 3.0.0
       pretty-ms: 9.1.0
