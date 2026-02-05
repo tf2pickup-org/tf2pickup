@@ -108,7 +108,7 @@
     "@types/postcss-import": "14.0.3",
     "@types/steamid": "2.0.4",
     "@types/ws": "8.5.13",
-    "cpy-cli": "6.0.0",
+    "cpy-cli": "7.0.0",
     "cssnano": "7.1.2",
     "eslint": "9.39.2",
     "globals": "17.3.0",
