@@ -292,8 +292,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8
       pino-princess:
-        specifier: 1.5.2
-        version: 1.5.2(typescript@5.9.3)
+        specifier: 1.6.0
+        version: 1.6.0(typescript@5.9.3)
       postcss-cli:
         specifier: 11.0.1
         version: 11.0.1(jiti@2.6.1)(postcss@8.5.6)(tsx@4.21.0)
@@ -2842,9 +2842,6 @@ packages:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
 
-  fast-json-parse@1.0.3:
-    resolution: {integrity: sha512-FRWsaZRWEJ1ESVNbDWmsAlqDk96gPQezzLghafp5J4GUKjbCz3OkAHuZs5TuPEtkbVQERysLp9xv6c24fBm8Aw==}
-
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
 
@@ -3333,8 +3330,8 @@ packages:
   json-buffer@3.0.1:
     resolution: {integrity: sha512-4bV5BfR2mqfQTJm+V5tPPdf+ZpuhiIvTuAB5g8kcrXOZpTT/QwwVRWBywX1ozr6lEuPdbHxwaJlm9G6mI2sfSQ==}
 
-  json-log-line@1.0.7:
-    resolution: {integrity: sha512-KQM5nvpjf7K/wFM5I08hewiHLYuUs1k7/Ik93TEAZVqui0RXVYAMV6vrQTE1u5aQnIRM6LG9xVw5aWdrpbBfbA==}
+  json-log-line@1.1.3:
+    resolution: {integrity: sha512-Rn1B9cCKmHkfV1lG8E8Eiw8IrHfkM0wFHsHTEk1AwmN/D/7yfiKYP//IwZQdsGDMZq6UjrLdZ9awJ+6yODxuEQ==}
     engines: {node: '>=22'}
 
   json-parse-even-better-errors@2.3.1:
@@ -3995,8 +3992,8 @@ packages:
   pino-abstract-transport@3.0.0:
     resolution: {integrity: sha512-wlfUczU+n7Hy/Ha5j9a/gZNy7We5+cXp8YL+X+PG8S0KXxw7n/JXA3c46Y0zQznIJ83URJiwy7Lh56WLokNuxg==}
 
-  pino-princess@1.5.2:
-    resolution: {integrity: sha512-5iBDQRv3phC0vps3Jj5CMwpSZbh61gpd/QiYhuYtcgxLfvk4cGiR0GhCED7atIpFBqp6NL38TUK7EkMoaUmhGw==}
+  pino-princess@1.6.0:
+    resolution: {integrity: sha512-C/Ww0YnQeigKKgLFPqkaIpaMPH8xkrWqgZr7Fab2mFE0ldGmukEPaNU0BdrxV6d9HVL6SML7o041uZU/vn/e3w==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -7822,8 +7819,6 @@ snapshots:
       merge2: 1.4.1
       micromatch: 4.0.8
 
-  fast-json-parse@1.0.3: {}
-
   fast-json-stable-stringify@2.1.0: {}
 
   fast-json-stringify@6.0.0:
@@ -8317,10 +8312,9 @@ snapshots:
 
   json-buffer@3.0.1: {}
 
-  json-log-line@1.0.7:
+  json-log-line@1.1.3:
     dependencies:
       '@fastify/deepmerge': 3.2.0
-      fast-json-parse: 1.0.3
       get-value: 4.0.1
       set-value: 4.1.0
       unset-value: 2.0.1
@@ -8875,7 +8869,7 @@ snapshots:
     dependencies:
       split2: 4.2.0
 
-  pino-princess@1.5.2(typescript@5.9.3):
+  pino-princess@1.6.0(typescript@5.9.3):
     dependencies:
       chalk: 5.6.2
       cli-highlight: 2.1.11
@@ -8883,7 +8877,7 @@ snapshots:
       date-fns: 4.1.0
       get-value: 4.0.1
       is-unicode-supported: 2.1.0
-      json-log-line: 1.0.7
+      json-log-line: 1.1.3
       json-stringify-pretty-compact: 4.0.0
       on-exit-leak-free: 2.1.2
       pino-abstract-transport: 3.0.0

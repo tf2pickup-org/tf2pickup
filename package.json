@@ -113,7 +113,7 @@
     "eslint": "9.39.2",
     "globals": "17.3.0",
     "lorem-ipsum": "2.0.8",
-    "pino-princess": "1.5.2",
+    "pino-princess": "1.6.0",
     "postcss-cli": "11.0.1",
     "prettier": "3.8.1",
     "prettier-plugin-tailwindcss": "0.7.2",
