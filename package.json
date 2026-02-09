@@ -81,7 +81,7 @@
     "openid": "2.0.14",
     "package-up": "5.0.0",
     "pem": "1.14.8",
-    "pino": "10.3.0",
+    "pino": "10.3.1",
     "postcss": "8.5.6",
     "postcss-import": "16.1.1",
     "postcss-nested": "7.0.2",
