@@ -49,13 +49,13 @@ importers:
         version: 11.2.0
       '@kitajs/fastify-html-plugin':
         specifier: 4.2.1
-        version: 4.2.1(@kitajs/html@4.2.11)(@kitajs/ts-html-plugin@4.1.3(@kitajs/html@4.2.11)(typescript@5.9.3))
+        version: 4.2.1(@kitajs/html@4.2.11)(@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.11)(typescript@5.9.3))
       '@kitajs/html':
         specifier: 4.2.11
         version: 4.2.11
       '@kitajs/ts-html-plugin':
-        specifier: 4.1.3
-        version: 4.1.3(@kitajs/html@4.2.11)(typescript@5.9.3)
+        specifier: 4.1.4
+        version: 4.1.4(@kitajs/html@4.2.11)(typescript@5.9.3)
       '@opentelemetry/api':
         specifier: 1.9.0
         version: 1.9.0
@@ -1025,12 +1025,12 @@ packages:
     resolution: {integrity: sha512-gOe+zzCZKN2fPT1FUK32mHsr21ILcAOUUux/yDqQthInW8egN8RuxVp+zP3KhwWETVACkurBiKV9RWuNw+ceiw==}
     engines: {node: '>=12'}
 
-  '@kitajs/ts-html-plugin@4.1.3':
-    resolution: {integrity: sha512-NlYrID5yMxfRKiO1eiiSC4MWveKe0ffoCJOZm4idNOqwimmLXr0g1NmvCcquOU2XLRrgzynxZqw6rhwR5CY5Nw==}
+  '@kitajs/ts-html-plugin@4.1.4':
+    resolution: {integrity: sha512-xK5mNrhnIy73kJFKx5yVGChJyWFRGmIaE0sjlVxVYllk5dyaEYVCrIh1N8AfnseEHka8gAqzPGW95HlkhDvnJA==}
     hasBin: true
     peerDependencies:
       '@kitajs/html': ^4.2.10
-      typescript: ^5.6.2
+      typescript: ^5.9.3
 
   '@kurkle/color@0.3.2':
     resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
@@ -5689,18 +5689,18 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
-  '@kitajs/fastify-html-plugin@4.2.1(@kitajs/html@4.2.11)(@kitajs/ts-html-plugin@4.1.3(@kitajs/html@4.2.11)(typescript@5.9.3))':
+  '@kitajs/fastify-html-plugin@4.2.1(@kitajs/html@4.2.11)(@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.11)(typescript@5.9.3))':
     dependencies:
       '@kitajs/html': 4.2.11
       fastify-plugin: 5.1.0
     optionalDependencies:
-      '@kitajs/ts-html-plugin': 4.1.3(@kitajs/html@4.2.11)(typescript@5.9.3)
+      '@kitajs/ts-html-plugin': 4.1.4(@kitajs/html@4.2.11)(typescript@5.9.3)
 
   '@kitajs/html@4.2.11':
     dependencies:
       csstype: 3.1.3
 
-  '@kitajs/ts-html-plugin@4.1.3(@kitajs/html@4.2.11)(typescript@5.9.3)':
+  '@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.11)(typescript@5.9.3)':
     dependencies:
       '@kitajs/html': 4.2.11
       chalk: 5.6.2
