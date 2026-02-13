@@ -66,6 +66,7 @@ await app.register(await import('@fastify/static'), {
   prefix: '/',
 })
 await app.register(await import('@fastify/formbody'))
+await app.register(await import('@fastify/multipart'))
 await app.register(await import('@fastify/secure-session'), {
   key: await secrets.get('session'),
   expiry: secondsInWeek, // 1 week
