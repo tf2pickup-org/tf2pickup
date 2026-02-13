@@ -20,6 +20,7 @@ tf2pickup.org — a Team Fortress 2 pick-up game coordination platform. Full-sta
 ## Architecture
 
 ### Tech Stack
+
 - **Fastify 5** with Zod type provider for request validation
 - **MongoDB** (no ORM — raw driver with typed collections in `src/database/collections.ts`)
 - **@kitajs/html** for type-safe JSX → HTML server rendering
@@ -28,13 +29,16 @@ tf2pickup.org — a Team Fortress 2 pick-up game coordination platform. Full-sta
 - **esbuild** bundles client-side JS from `src/html/@client/`
 
 ### Application Startup (`src/main.ts`)
+
 1. OpenTelemetry init (`src/otel.ts`)
 2. Database migrations via Umzug (`src/migrate.ts`)
 3. Fastify plugin registration (security, session, HTML, websocket)
 4. Auto-load all `**/plugins/**` files, then `**/middleware/**` files, then routes from `src/routes/`
 
 ### Module Structure
+
 Feature-driven layout under `src/`. Each module (queue, games, players, admin, etc.) contains:
+
 - Business logic files (e.g., `join.ts`, `leave.ts`)
 - `plugins/` — Fastify plugins auto-loaded at startup (event handlers, hooks)
 - `middleware/` — request middleware auto-loaded at startup
@@ -42,7 +46,9 @@ Feature-driven layout under `src/`. Each module (queue, games, players, admin, e
 - `schemas/` — Zod validation schemas
 
 ### Route Registration
+
 Routes live in `src/routes/` and are auto-loaded by `@fastify/autoload` with directory-name prefixes. Route files export default using the `routes()` wrapper from `src/utils/routes.ts`, which provides the Zod type provider:
+
 ```ts
 export default routes(async app => {
   app.get('/', async (_req, reply) => reply.html(MyPage()))
@@ -50,15 +56,19 @@ export default routes(async app => {
 ```
 
 ### Event System
+
 Typed event emitter in `src/events.ts`. Modules communicate via events (e.g., `game:created`, `queue/slots:updated`, `player:connected`). Plugins subscribe to events.
 
 ### Client-Side Code
+
 Browser JS lives in `src/html/@client/`. Files are bundled by esbuild and served via the `serve-bundles` plugin. These files use browser globals and HTMX extensions.
 
 ### Database
+
 Collections are exported from `src/database/collections.ts` with TypeScript models in `src/database/models/`. Migrations in `src/migrations/` use Umzug.
 
 ### Environment
+
 All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for available variables. Key ones: `MONGODB_URI`, `STEAM_API_KEY`, `QUEUE_CONFIG` (6v6/9v9/bball/ultiduo/test), `WEBSITE_URL`.
 
 ## Conventions
