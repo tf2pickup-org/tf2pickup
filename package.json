@@ -45,7 +45,7 @@
     "@opentelemetry/semantic-conventions": "1.39.0",
     "@tailwindcss/postcss": "4.1.18",
     "@tailwindcss/typography": "0.5.19",
-    "@tf2pickup-org/mumble-client": "0.12.3",
+    "@tf2pickup-org/mumble-client": "0.12.5",
     "@tf2pickup-org/serveme-tf-client": "0.1.2",
     "async-mutex": "0.5.0",
     "chart.js": "4.5.1",

@@ -96,8 +96,8 @@ importers:
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.1.18)
       '@tf2pickup-org/mumble-client':
-        specifier: 0.12.3
-        version: 0.12.3
+        specifier: 0.12.5
+        version: 0.12.5
       '@tf2pickup-org/serveme-tf-client':
         specifier: 0.1.2
         version: 0.1.2
@@ -1762,8 +1762,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  '@protobuf-ts/runtime@2.9.6':
-    resolution: {integrity: sha512-C0CfpKx4n4LBbUrajOdRj2BTbd3qBoK0SiKWLq7RgCoU6xiN4wesBMFHUOBp3fFzKeZwgU8Q2KtzaqzIvPLRXg==}
+  '@protobuf-ts/runtime@2.11.1':
+    resolution: {integrity: sha512-KuDaT1IfHkugM2pyz+FwiY80ejWrkH1pAtOBOZFuR6SXEFTsnb/jiQWQ1rCIrcKx2BtyxnxW6BWwsVSA/Ie+WQ==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -2065,11 +2065,11 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
-  '@tf2pickup-org/mumble-client@0.12.3':
-    resolution: {integrity: sha512-ON+fefovKolteMcrYtVNqX4S8PDairKUJlg9eCQH3U4bhnTfuYOaJAVHqX5h5lpexvH1mvNYIkyNNfHqqQGFOw==}
+  '@tf2pickup-org/mumble-client@0.12.5':
+    resolution: {integrity: sha512-UPrEHYcOhIPvWEkeJqepbrbf678pCoOklONcn8o9/p5+19XaCU2xurZ80ap5yIGBONLmCCGVozRrUXV9QB7IEQ==}
 
-  '@tf2pickup-org/mumble-protocol@1.0.9':
-    resolution: {integrity: sha512-gFNVqOevpyJWaJ5nhch7R6pJbr3SvOI1rq9b+K7AROFpw9u2ypPqbWxQTpxHjcutbC9wBNURlxzcgeKEP44zxA==}
+  '@tf2pickup-org/mumble-protocol@1.0.11':
+    resolution: {integrity: sha512-aBclO2r1WGnh+FO445mlJdVRW8Zes7K4Agu6WbsSkWlTq2yt/f0m6ufFKAgJ9jifBKGbcK9wVEY71OTmwZfD5g==}
 
   '@tf2pickup-org/serveme-tf-client@0.1.2':
     resolution: {integrity: sha512-cVEEbUwfc9ooVHLsjirXzHgWfzwjJ7seXy6blzxgKv2KpcB59iGDyzQq80Hu4b6C6OXOQctQCndfZqupKTednQ==}
@@ -6908,7 +6908,7 @@ snapshots:
     dependencies:
       playwright: 1.58.2
 
-  '@protobuf-ts/runtime@2.9.6': {}
+  '@protobuf-ts/runtime@2.11.1': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -7138,15 +7138,15 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.1.18
 
-  '@tf2pickup-org/mumble-client@0.12.3':
+  '@tf2pickup-org/mumble-client@0.12.5':
     dependencies:
-      '@protobuf-ts/runtime': 2.9.6
-      '@tf2pickup-org/mumble-protocol': 1.0.9
+      '@protobuf-ts/runtime': 2.11.1
+      '@tf2pickup-org/mumble-protocol': 1.0.11
       rxjs: 7.8.2
 
-  '@tf2pickup-org/mumble-protocol@1.0.9':
+  '@tf2pickup-org/mumble-protocol@1.0.11':
     dependencies:
-      '@protobuf-ts/runtime': 2.9.6
+      '@protobuf-ts/runtime': 2.11.1
 
   '@tf2pickup-org/serveme-tf-client@0.1.2':
     dependencies:
