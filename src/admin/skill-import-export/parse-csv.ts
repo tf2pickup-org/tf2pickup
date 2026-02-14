@@ -25,12 +25,12 @@ export function parseCsv(content: string): ParseCsvResult | ParseCsvError {
   const classNames = config.classes.map(c => c.name)
 
   try {
-    const records = parse(content, {
+    const records: Record<string, string>[] = parse(content, {
       columns: true,
       skipEmptyLines: true,
       relaxColumnCount: true,
       trim: true,
-    }) as Record<string, string>[]
+    })
 
     const players: ParsedPlayerSkill[] = []
 
