@@ -40,11 +40,14 @@ authUsers('admin panel is not visible for anonymous users @6v6 @9v9', async ({ p
   '/admin/rules',
   '/admin/privacy-policy',
 ].forEach(adminPage => {
-  authUsers(`admin panel is not available for non-admins on ${adminPage} @6v6 @9v9`, async ({ users }) => {
-    const userPage = await users.getNext(u => !u.isAdmin).page()
-    await userPage.goto(adminPage)
-    await expect(userPage.getByText('403')).toBeVisible()
-    await expect(userPage.getByText('Forbidden')).toBeVisible()
-    await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
-  })
+  authUsers(
+    `admin panel is not available for non-admins on ${adminPage} @6v6 @9v9`,
+    async ({ users }) => {
+      const userPage = await users.getNext(u => !u.isAdmin).page()
+      await userPage.goto(adminPage)
+      await expect(userPage.getByText('403')).toBeVisible()
+      await expect(userPage.getByText('Forbidden')).toBeVisible()
+      await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
+    },
+  )
 })

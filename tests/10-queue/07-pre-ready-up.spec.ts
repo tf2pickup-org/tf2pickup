@@ -23,7 +23,9 @@ test('pre-ready up button is visible for logged-in-users @6v6 @9v9', async ({ us
   await expect(page.preReadyUpButton).toBeVisible()
 })
 
-test('pre-ready up button is enabled when a player joins the queue @6v6 @9v9', async ({ users }) => {
+test('pre-ready up button is enabled when a player joins the queue @6v6 @9v9', async ({
+  users,
+}) => {
   const page = await users.getNext().queuePage()
   await page.goto()
   await expect(page.preReadyUpButton).toBeDisabled()

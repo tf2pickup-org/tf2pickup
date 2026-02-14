@@ -186,7 +186,7 @@ function PlayerPresentation(props: {
           href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+          class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
           title="Steam"
         >
           <IconBrandSteam />
@@ -197,7 +197,7 @@ function PlayerPresentation(props: {
           href={`https://logs.tf/profile/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+          class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
           title="Logs"
         >
           <IconAlignBoxBottomRight />
@@ -209,7 +209,7 @@ function PlayerPresentation(props: {
             href={`https://etf2l.org/forum/user/${props.player.etf2lProfile.id}`}
             target="_blank"
             rel="noreferrer"
-            class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+            class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
             title="ETF2L"
           >
             <IconStars />
@@ -224,7 +224,7 @@ function PlayerPresentation(props: {
             href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}/`}
             target="_blank"
             rel="noreferrer"
-            class={['player-presentation-link', queue.config.classes.length > 4 && ' compact']}
+            class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
             title="Twitch"
           >
             <IconBrandTwitch />

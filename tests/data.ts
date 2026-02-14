@@ -19,4 +19,6 @@ export const users = [
   { steamId: '76561199999000003', name: 'FrostByte' },
   { steamId: '76561199999000004', name: 'IronViper' },
   { steamId: '76561199999000005', name: 'ShadowPulse' },
+  // Extra users not in any game - available for substitute tests
+  { steamId: '76561199999000006', name: 'GhostWalker' },
 ] as const

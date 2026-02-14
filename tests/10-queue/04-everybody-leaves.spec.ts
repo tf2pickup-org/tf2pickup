@@ -29,4 +29,3 @@ test('everybody leaves @6v6 @9v9', async ({ steamIds, users }) => {
   const page = await users.bySteamId(queueUsers[playerCount - 1]!).queuePage()
   await page.leaveQueue(minutesToMilliseconds(1.5))
 })
-

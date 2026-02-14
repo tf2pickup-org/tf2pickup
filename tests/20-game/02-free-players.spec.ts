@@ -5,8 +5,13 @@ import { delay } from 'es-toolkit'
 import { queueSlots } from '../queue-slots'
 
 test.use({ waitForStage: 'launching' })
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-test('free players when the game ends @6v6 @9v9', async ({ players, gameServer, gameNumber }) => {
+test('free players when the game ends @6v6 @9v9', async ({
+  players,
+  gameServer,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  gameNumber,
+  desiredSlots,
+}) => {
   test.setTimeout(minutesToMilliseconds(1))
   await Promise.all(
     players.map(async player => {
@@ -24,7 +29,9 @@ test('free players when the game ends @6v6 @9v9', async ({ players, gameServer, 
   await delay(secondsToMilliseconds(3))
   await gameServer.matchEnds()
 
-  const medics = ['AstraGirl', 'BellBoy']
+  const medics = Array.from(desiredSlots.entries())
+    .filter(([, slotId]) => slotId.startsWith('medic'))
+    .map(([name]) => name)
 
   // medics are freed before other players
   await Promise.all([

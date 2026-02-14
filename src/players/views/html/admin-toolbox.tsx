@@ -66,7 +66,10 @@ export async function AdminToolbox(props: {
 
       <a
         href={`/players/${player.steamId}/edit`}
-        class={['button button--accent self-center whitespace-nowrap', queue.config.classes.length > 4 && 'compact']}
+        class={[
+          'button button--accent self-center whitespace-nowrap',
+          queue.config.classes.length > 4 && 'compact',
+        ]}
         style="grid-area: linkEdit"
         title="Edit player"
       >

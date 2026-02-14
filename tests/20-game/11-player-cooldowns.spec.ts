@@ -29,9 +29,9 @@ test.describe('when a player gets auto-subbed @6v6 @9v9', () => {
 
   test.describe('and they get replaced by other player @6v6 @9v9', () => {
     test.beforeEach(async ({ users, gameNumber }) => {
-      const tommyGun = await users.byName('TommyGun').gamePage(gameNumber)
-      await tommyGun.goto()
-      await tommyGun.replacePlayer('SlitherTuft')
+      const ghostWalker = await users.byName('GhostWalker').gamePage(gameNumber)
+      await ghostWalker.goto()
+      await ghostWalker.replacePlayer('SlitherTuft')
     })
 
     test('the cooldown is increased @6v6 @9v9', async ({ users }) => {
@@ -49,9 +49,9 @@ test.describe('when a player gets auto-subbed @6v6 @9v9', () => {
 
   test.describe('and they replace themselves @6v6 @9v9', () => {
     test.beforeEach(async ({ users, gameNumber }) => {
-      const tommyGun = await users.byName('SlitherTuft').gamePage(gameNumber)
-      await tommyGun.goto()
-      await tommyGun.replacePlayer('SlitherTuft')
+      const slitherTuft = await users.byName('SlitherTuft').gamePage(gameNumber)
+      await slitherTuft.goto()
+      await slitherTuft.replacePlayer('SlitherTuft')
     })
 
     test('the cooldown is not increased @6v6 @9v9', async ({ users }) => {

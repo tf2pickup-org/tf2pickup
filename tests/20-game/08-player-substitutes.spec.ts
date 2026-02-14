@@ -21,7 +21,11 @@ test.describe('substitutes @6v6 @9v9', () => {
     await expect(mayflowersPage.playerLink('Mayflower')).not.toBeVisible()
 
     await expect(
-      page.getByText(`Team BLU needs a substitute for scout in game #${mayflowersPage.gameNumber}`),
+      page.getByText(
+        new RegExp(
+          `Team (BLU|RED) needs a substitute for scout in game #${mayflowersPage.gameNumber}`,
+        ),
+      ),
     ).toBeVisible()
 
     await mayflowersPage.replacePlayer('Mayflower')
@@ -35,8 +39,8 @@ test.describe('substitutes @6v6 @9v9', () => {
   test('substitute other @6v6 @9v9', async ({ gameNumber, users, page, gameServer }) => {
     const admin = users.getAdmin()
     const adminsPage = await admin.gamePage(gameNumber)
-    const tommyGunsPage = await users.byName('TommyGun').gamePage(gameNumber)
-    await tommyGunsPage.goto()
+    const ghostWalkersPage = await users.byName('GhostWalker').gamePage(gameNumber)
+    await ghostWalkersPage.goto()
 
     await expect(adminsPage.playerLink('Mayflower')).toBeVisible()
     await adminsPage.requestSubstitute('Mayflower')
@@ -47,24 +51,30 @@ test.describe('substitutes @6v6 @9v9', () => {
 
     await expect(adminsPage.gameEvent(`${admin.playerName} requested substitute`)).toBeVisible()
     await expect(adminsPage.playerLink('Mayflower')).not.toBeVisible()
-    await expect(tommyGunsPage.gameEvent(`${admin.playerName} requested substitute`)).toBeVisible()
-    await expect(tommyGunsPage.playerLink('Mayflower')).not.toBeVisible()
+    await expect(
+      ghostWalkersPage.gameEvent(`${admin.playerName} requested substitute`),
+    ).toBeVisible()
+    await expect(ghostWalkersPage.playerLink('Mayflower')).not.toBeVisible()
 
     await expect(
-      page.getByText(`Team BLU needs a substitute for scout in game #${adminsPage.gameNumber}`),
+      page.getByText(
+        new RegExp(`Team (BLU|RED) needs a substitute for scout in game #${adminsPage.gameNumber}`),
+      ),
     ).toBeVisible()
 
-    await tommyGunsPage.replacePlayer('Mayflower')
+    await ghostWalkersPage.replacePlayer('Mayflower')
 
-    await expect(adminsPage.playerLink('TommyGun')).toBeVisible()
-    await expect(adminsPage.gameEvent(`TommyGun replaced Mayflower`)).toBeVisible()
-    await expect(tommyGunsPage.playerLink('TommyGun')).toBeVisible()
-    await expect(tommyGunsPage.gameEvent(`TommyGun replaced Mayflower`)).toBeVisible()
+    await expect(adminsPage.playerLink('GhostWalker')).toBeVisible()
+    await expect(adminsPage.gameEvent(`GhostWalker replaced Mayflower`)).toBeVisible()
+    await expect(ghostWalkersPage.playerLink('GhostWalker')).toBeVisible()
+    await expect(ghostWalkersPage.gameEvent(`GhostWalker replaced Mayflower`)).toBeVisible()
 
-    await expect(gameServer).toHaveCommand(`sm_game_player_add ${users.byName('TommyGun').steamId}`)
+    await expect(gameServer).toHaveCommand(
+      `sm_game_player_add ${users.byName('GhostWalker').steamId}`,
+    )
     await expect(gameServer).toHaveCommand(
       `sm_game_player_del ${users.byName('Mayflower').steamId}`,
     )
-    await expect(gameServer).toHaveCommand(`say Mayflower has been replaced by TommyGun`)
+    await expect(gameServer).toHaveCommand(`say Mayflower has been replaced by GhostWalker`)
   })
 })
