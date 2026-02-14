@@ -23,6 +23,8 @@ import type { DiscordBotStateModel } from './models/discord-bot-state.model'
 import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
 import type { SubstituteRequestModel } from './models/substitute-request.model'
+import type { FuturePlayerSkillModel } from './models/future-player-skill.model'
+import type { PendingImportModel } from './models/pending-import.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -35,12 +37,14 @@ export const collections = {
   ),
   discordBotState: database.collection<DiscordBotStateModel>('discord.botstate'),
   documents: database.collection<DocumentModel>('documents'),
+  futurePlayerSkills: database.collection<FuturePlayerSkillModel>('futureplayerskills'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
+  pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
   players: database.collection<PlayerModel>('players'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),

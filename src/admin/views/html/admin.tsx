@@ -20,6 +20,7 @@ import {
   IconSectionSign,
   IconServer,
   IconSpy,
+  IconTable,
   IconUserExclamation,
   IconUserPlus,
 } from '../../../html/components/icons'
@@ -86,6 +87,11 @@ const adminPages = {
   'bypass-registration-restrictions': {
     title: 'Bypass restrictions',
     icon: IconUserPlus,
+    section: 'Actions',
+  },
+  'skill-import-export': {
+    title: 'Skill import/export',
+    icon: IconTable,
     section: 'Actions',
   },
   rules: {
