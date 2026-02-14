@@ -95,7 +95,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.2",
+    "@eslint/js": "10.0.1",
     "@playwright/test": "1.58.2",
     "@release-it/conventional-changelog": "10.0.5",
     "@tsconfig/strictest": "2.0.8",
@@ -110,7 +110,7 @@
     "@types/ws": "8.5.13",
     "cpy-cli": "7.0.0",
     "cssnano": "7.1.2",
-    "eslint": "9.39.2",
+    "eslint": "10.0.0",
     "globals": "17.3.0",
     "lorem-ipsum": "2.0.8",
     "pino-princess": "1.6.0",
@@ -122,7 +122,7 @@
     "tsc-alias": "1.8.16",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.55.0",
+    "typescript-eslint": "8.55.1-alpha.4",
     "vitest": "4.0.18"
   },
   "pnpm": {

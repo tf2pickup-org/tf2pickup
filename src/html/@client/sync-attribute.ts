@@ -49,7 +49,7 @@ htmx.defineExtension('sync-attribute', {
     const result = expression.evaluate(document)
     const elements: Element[] = []
 
-    let node: Node | null = null
+    let node: Node | null
     while ((node = result.iterateNext())) {
       if (node instanceof Element) {
         elements.push(node)

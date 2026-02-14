@@ -38,7 +38,7 @@ async function UserConnectString(props: {
   actor: SteamId64 | undefined
 }) {
   let connectString: string | undefined
-  let content = <></>
+  let content: string | JSX.Element
 
   switch (props.game.state) {
     case GameState.created:

@@ -247,7 +247,7 @@ export async function BanDetails(props: {
   player: Pick<PlayerModel, 'name' | 'steamId'>
   ban: PlayerBan
 }) {
-  let actorDesc = <></>
+  let actorDesc: JSX.Element
   if (isBot(props.ban.actor)) {
     actorDesc = <>bot</>
   } else {
