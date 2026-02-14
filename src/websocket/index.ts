@@ -73,6 +73,33 @@ export default fp(
     const gateway = new Gateway(app)
     app.decorate('gateway', gateway)
 
+    // Update socket currentUrl based on HTTP requests with x-ws-id header
+    app.addHook('onResponse', async (req, reply) => {
+      const wsId = req.headers['x-ws-id']
+      if (typeof wsId !== 'string') {
+        return
+      }
+      // Only track successful HTML page responses (not API calls, assets, etc.)
+      if (reply.statusCode < 200 || reply.statusCode >= 300) {
+        return
+      }
+
+      const url = req.url.split('?')[0]!
+      const client = [...app.websocketServer.clients].find(c => c.id === wsId)
+      if (!client) {
+        return
+      }
+
+      const previousUrl = client.currentUrl
+      client.currentUrl = url
+
+      if (!previousUrl) {
+        gateway.emit('ready', client)
+      } else if (previousUrl !== url) {
+        gateway.emit('navigated', client, url)
+      }
+    })
+
     app.get('/ws', { config: { otel: false }, websocket: true }, (socket, req) => {
       socket.id = nanoid()
 
@@ -100,6 +127,9 @@ export default fp(
       const ipAddress = extractClientIp(req.headers) ?? req.socket.remoteAddress
       const userAgent = req.headers['user-agent']
       gateway.emit('connected', socket, ipAddress, userAgent)
+
+      // Send socket ID to client for HTTP header correlation
+      socket.send(JSON.stringify({ socketId: socket.id }))
     })
   },
   { name: 'websockets' },

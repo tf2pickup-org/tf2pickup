@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { GameState } from '../../database/models/game.model'
+import { GameState, type GameNumber } from '../../database/models/game.model'
 import { events } from '../../events'
 import { ConnectInfo } from '../views/html/connect-info'
 import { DemoLink } from '../views/html/demo-link'
@@ -19,9 +19,32 @@ import { errors } from '../../errors'
 import { AdminToolbox } from '../views/html/admin-toolbox'
 import { players } from '../../players'
 import { PlayerRole } from '../../database/models/player.model'
+import { findOne } from '../find-one'
+import type { WebSocket } from 'ws'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
+  // Sync game page state when user navigates to a game page
+  app.gateway.on('navigated', async (socket: WebSocket, url: string) => {
+    const match = /^\/games\/(\d+)$/.exec(url)
+    if (!match) {
+      return
+    }
+
+    const gameNumber = parseInt(match[1]!, 10) as GameNumber
+    try {
+      const game = await findOne({ number: gameNumber })
+      const actor = socket.player?.steamId
+
+      // Send critical dynamic components that may have changed during navigation
+      socket.send(await ConnectInfo({ game, actor }))
+      socket.send(await GameStateIndicator({ game }))
+      socket.send(await GameSlotList.refreshAll({ game, actor }))
+    } catch {
+      // Game not found, ignore
+    }
+  })
+
   events.on('game:updated', ({ before, after }) => {
     if (before.state !== after.state) {
       app.gateway
