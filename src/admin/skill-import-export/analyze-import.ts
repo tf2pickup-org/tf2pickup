@@ -6,14 +6,12 @@ import type { PlayerModel, PlayerSkill } from '../../database/models/player.mode
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 function skillsEqual(a: PlayerSkill | undefined, b: PlayerSkill): boolean {
-  if (!a) return Object.keys(b).length === 0
-
-  const aKeys = Object.keys(a).filter(k => a[k as keyof PlayerSkill] !== undefined)
+  const aKeys = Object.keys(a ?? {}).filter(k => a?.[k as keyof PlayerSkill] !== undefined)
   const bKeys = Object.keys(b).filter(k => b[k as keyof PlayerSkill] !== undefined)
 
   if (aKeys.length !== bKeys.length) return false
 
-  return aKeys.every(k => a[k as keyof PlayerSkill] === b[k as keyof PlayerSkill])
+  return aKeys.every(k => a![k as keyof PlayerSkill] === b[k as keyof PlayerSkill])
 }
 
 function makeProfileUrl(steamId: SteamId64): string {

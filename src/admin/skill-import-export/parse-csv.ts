@@ -1,4 +1,4 @@
-import { parse } from 'csv-parse'
+import { parse } from 'csv-parse/sync'
 import { z } from 'zod'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
@@ -21,25 +21,16 @@ export interface ParseCsvError {
   error: string
 }
 
-export async function parseCsv(content: string): Promise<ParseCsvResult | ParseCsvError> {
+export function parseCsv(content: string): ParseCsvResult | ParseCsvError {
   const classNames = config.classes.map(c => c.name)
 
   try {
-    const records = await new Promise<Record<string, string>[]>((resolve, reject) => {
-      parse(
-        content,
-        {
-          columns: true,
-          skipEmptyLines: true,
-          relaxColumnCount: true,
-          trim: true,
-        },
-        (err, output: Record<string, string>[]) => {
-          if (err) reject(err)
-          else resolve(output)
-        },
-      )
-    })
+    const records = parse(content, {
+      columns: true,
+      skipEmptyLines: true,
+      relaxColumnCount: true,
+      trim: true,
+    }) as Record<string, string>[]
 
     const players: ParsedPlayerSkill[] = []
 

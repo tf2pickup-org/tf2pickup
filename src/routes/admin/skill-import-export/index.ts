@@ -59,7 +59,7 @@ export default routes(async app => {
         const content = await data.toBuffer()
         const csvContent = content.toString('utf-8')
 
-        const parseResult = await parseCsv(csvContent)
+        const parseResult = parseCsv(csvContent)
         if (!parseResult.success) {
           requestContext.set('messages', { error: [parseResult.error] })
           reply.status(400).html(await SkillImportExportPage())

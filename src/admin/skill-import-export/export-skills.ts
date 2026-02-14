@@ -12,7 +12,7 @@ export async function exportSkills(): Promise<string> {
   const classNames = config.classes.map(c => c.name)
 
   const players = await collections.players
-    .find({ skill: { $exists: true } }, { projection: { steamId: 1, name: 1, skill: 1 } })
+    .find({ skill: { $exists: true, $ne: {} } }, { projection: { steamId: 1, name: 1, skill: 1 } })
     .toArray()
 
   const rows = players.map(player => {
