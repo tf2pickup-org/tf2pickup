@@ -3,19 +3,11 @@ import { SkillImportExportPage } from '../../../admin/skill-import-export/views/
 import { PreviewPage } from '../../../admin/skill-import-export/views/html/preview.page'
 import { exportSkills } from '../../../admin/skill-import-export/export-skills'
 import { parseCsv } from '../../../admin/skill-import-export/parse-csv'
-import {
-  analyzeImport,
-  type ImportAnalysis,
-} from '../../../admin/skill-import-export/analyze-import'
+import { analyzeImport } from '../../../admin/skill-import-export/analyze-import'
 import { applyImport } from '../../../admin/skill-import-export/apply-import'
 import { requestContext } from '@fastify/request-context'
+import { collections } from '../../../database/collections'
 import { routes } from '../../../utils/routes'
-
-declare module '@fastify/secure-session' {
-  interface SessionData {
-    pendingImportAnalysis?: ImportAnalysis
-  }
-}
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -76,8 +68,16 @@ export default routes(async app => {
 
         const analysis = await analyzeImport(parseResult.players)
 
-        // Store analysis in session for apply step
-        request.session.set('pendingImportAnalysis', analysis)
+        const user = requestContext.get('user')
+        if (!user) {
+          return reply.redirect('/admin/skill-import-export')
+        }
+
+        await collections.pendingImports.updateOne(
+          { actor: user.player.steamId },
+          { $set: { analysis, createdAt: new Date() } },
+          { upsert: true },
+        )
 
         await reply.status(200).html(PreviewPage({ analysis }))
       },
@@ -89,32 +89,31 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
       },
-      async (request, reply) => {
-        const analysis = request.session.get('pendingImportAnalysis')
-        if (!analysis) {
+      async (_request, reply) => {
+        const user = requestContext.get('user')
+        if (!user) {
+          return reply.redirect('/admin/skill-import-export')
+        }
+
+        const pending = await collections.pendingImports.findOneAndDelete({
+          actor: user.player.steamId,
+        })
+        if (!pending) {
           requestContext.set('messages', {
             error: ['No pending import. Please upload a file first.'],
           })
           return reply.redirect('/admin/skill-import-export')
         }
 
-        const user = requestContext.get('user')
-        if (!user) {
-          return reply.redirect('/admin/skill-import-export')
-        }
-
         await applyImport({
-          analysis,
+          analysis: pending.analysis,
           actor: user.player.steamId,
         })
 
-        // Clear pending analysis
-        request.session.set('pendingImportAnalysis', undefined)
-
         const totalChanges =
-          analysis.changedPlayers.length +
-          analysis.initializedPlayers.length +
-          analysis.futurePlayers.length
+          pending.analysis.changedPlayers.length +
+          pending.analysis.initializedPlayers.length +
+          pending.analysis.futurePlayers.length
 
         requestContext.set('messages', {
           success: [
