@@ -82,12 +82,22 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
   gameNumber: async ({ users, players, gameServer, killGame, desiredSlots, waitForStage }, use) => {
     await gameServer.sendHeartbeat()
 
+    const batchSize = 6
+    for (let i = 0; i < players.length; i += batchSize) {
+      const batch = players.slice(i, i + batchSize)
+      await Promise.all(
+        batch.map(async user => {
+          const page = await user.queuePage()
+          await page.goto()
+          const slot = desiredSlots.get(user.playerName)!
+          await page.slot(slot).join()
+        }),
+      )
+    }
+
     await Promise.all(
       players.map(async user => {
         const page = await user.queuePage()
-        await page.goto()
-        const slot = desiredSlots.get(user.playerName)!
-        await page.slot(slot).join()
         await page.readyUpDialog().readyUp()
         await (await user.page()).waitForURL(/games\/(\d+)/)
       }),

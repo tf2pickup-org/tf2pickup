@@ -13,10 +13,12 @@ export type UserName = (typeof users)[number]['name']
 export class UserContext {
   readonly playerName: UserName
   private _page?: Page
+  private _browserContext?: BrowserContext
+  private readonly _contextFactory: () => Promise<BrowserContext>
 
   constructor(
     public readonly steamId: UserSteamId,
-    public readonly browserContext: BrowserContext,
+    contextFactory: () => Promise<BrowserContext>,
   ) {
     const playerName = users.find(u => u.steamId === steamId)?.name
     if (!playerName) {
@@ -24,10 +26,19 @@ export class UserContext {
     }
 
     this.playerName = playerName
+    this._contextFactory = contextFactory
+  }
+
+  get browserContext(): BrowserContext {
+    if (!this._browserContext) {
+      throw new Error('Browser context not initialized yet - call page() first')
+    }
+    return this._browserContext
   }
 
   async page() {
-    this._page ??= await this.browserContext.newPage()
+    this._browserContext ??= await this._contextFactory()
+    this._page ??= await this._browserContext.newPage()
     return this._page
   }
 
@@ -52,7 +63,9 @@ export class UserContext {
     if (this._page) {
       await this._page.close()
     }
-    await this.browserContext.close()
+    if (this._browserContext) {
+      await this._browserContext.close()
+    }
   }
 }
 
