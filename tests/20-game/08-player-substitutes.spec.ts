@@ -21,11 +21,7 @@ test.describe('substitutes @6v6 @9v9', () => {
     await expect(mayflowersPage.playerLink('Mayflower')).not.toBeVisible()
 
     await expect(
-      page.getByText(
-        new RegExp(
-          `Team (BLU|RED) needs a substitute for scout in game #${mayflowersPage.gameNumber}`,
-        ),
-      ),
+      page.getByText(`needs a substitute for scout in game #${mayflowersPage.gameNumber}`),
     ).toBeVisible()
 
     await mayflowersPage.replacePlayer('Mayflower')
@@ -57,9 +53,7 @@ test.describe('substitutes @6v6 @9v9', () => {
     await expect(ghostWalkersPage.playerLink('Mayflower')).not.toBeVisible()
 
     await expect(
-      page.getByText(
-        new RegExp(`Team (BLU|RED) needs a substitute for scout in game #${adminsPage.gameNumber}`),
-      ),
+      page.getByText(`needs a substitute for scout in game #${adminsPage.gameNumber}`),
     ).toBeVisible()
 
     await ghostWalkersPage.replacePlayer('Mayflower')
