@@ -12,7 +12,7 @@ test.beforeEach(async ({ users }) => {
   await adminsPage.setPlayerCooldown(users.byName('SlitherTuft').steamId, 0)
 })
 
-test.describe('when a player gets auto-subbed', () => {
+test.describe('when a player gets auto-subbed @6v6 @9v9', () => {
   test.beforeEach(async ({ page, gameNumber, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()
@@ -27,14 +27,14 @@ test.describe('when a player gets auto-subbed', () => {
     await expect(gamePage.playerLink('SlitherTuft')).not.toBeVisible()
   })
 
-  test.describe('and they get replaced by other player', () => {
+  test.describe('and they get replaced by other player @6v6 @9v9', () => {
     test.beforeEach(async ({ users, gameNumber }) => {
-      const tommyGun = await users.byName('TommyGun').gamePage(gameNumber)
-      await tommyGun.goto()
-      await tommyGun.replacePlayer('SlitherTuft')
+      const ghostWalker = await users.byName('GhostWalker').gamePage(gameNumber)
+      await ghostWalker.goto()
+      await ghostWalker.replacePlayer('SlitherTuft')
     })
 
-    test('the cooldown is increased', async ({ users }) => {
+    test('the cooldown is increased @6v6 @9v9', async ({ users }) => {
       const admin = await users.getAdmin().adminPage()
       const cooldown = await admin.playerCooldown(users.byName('SlitherTuft').steamId)
       await expect(cooldown).toHaveValue('1')
@@ -47,14 +47,14 @@ test.describe('when a player gets auto-subbed', () => {
     })
   })
 
-  test.describe('and they replace themselves', () => {
+  test.describe('and they replace themselves @6v6 @9v9', () => {
     test.beforeEach(async ({ users, gameNumber }) => {
-      const tommyGun = await users.byName('SlitherTuft').gamePage(gameNumber)
-      await tommyGun.goto()
-      await tommyGun.replacePlayer('SlitherTuft')
+      const slitherTuft = await users.byName('SlitherTuft').gamePage(gameNumber)
+      await slitherTuft.goto()
+      await slitherTuft.replacePlayer('SlitherTuft')
     })
 
-    test('the cooldown is not increased', async ({ users }) => {
+    test('the cooldown is not increased @6v6 @9v9', async ({ users }) => {
       const admin = await users.getAdmin().adminPage()
       const cooldown = await admin.playerCooldown(users.byName('SlitherTuft').steamId)
       await expect(cooldown).toHaveValue('0')

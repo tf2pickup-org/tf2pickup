@@ -80,16 +80,22 @@
   &:hover {
     background-color: color-mix(in hsl, var(--color-abru-light-3), white 2%);
   }
+
+  &.compact {
+    min-width: 48px;
+    padding: 12px;
+
+    span {
+      display: none;
+    }
+  }
 }
 
 .player-admin-toolbox {
   display: grid;
   grid-template-areas:
     'captionSkill     captionSkill'
-    'skillScout       skillScout'
-    'skillSoldier     skillSoldier'
-    'skillDemoman     skillDemoman'
-    'skillMedic       skillMedic'
+    'skill            skill'
     'buttonSave       buttonReset'
     'captionWinLoss   captionWinLoss'
     'winLoss          winLoss'
@@ -106,9 +112,37 @@
   @media (width >= theme(--breakpoint-xl)) {
     grid-template-areas:
       'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
-      'skillScout    skillSoldier skillDemoman skillMedic   buttonSave   buttonReset  . winLoss         winLoss         winLoss . linkEdit';
-    grid-template-columns: repeat(6, minmax(0, 2fr)) 1fr repeat(3, 2fr) 1fr 2fr;
+      'skill         skill        skill        skill        skill        skill        . winLoss         winLoss         winLoss . linkEdit';
+    grid-template-columns: repeat(6, minmax(0, 2fr)) 4px repeat(3, 2fr) 4px 1fr;
     align-items: flex-end;
+  }
+
+  .skill-inputs {
+    grid-area: skill;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: flex-end;
+    min-width: 0;
+
+    @media (width >= theme(--breakpoint-xl)) {
+      flex-wrap: nowrap;
+    }
+
+    .game-class-skill-input {
+      flex-shrink: 1;
+      min-width: 0;
+    }
+  }
+
+  .skill-buttons {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+
+    &.compact span {
+      display: none;
+    }
   }
 
   .caption {

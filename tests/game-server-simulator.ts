@@ -303,21 +303,23 @@ export class GameServerSimulator {
   }
 
   async matchEnds() {
+    const playersPerTeam = this.addedPlayers.length / 2
     await delay(this.eventDelay / 2)
     this.log('World triggered "Game_Over" reason "Reached Win Limit"')
-    this.log(`Team "Red" final score "${this.score.red}" with "6" players`)
-    this.log(`Team "Blue" final score "${this.score.blu}" with "6" players`)
+    this.log(`Team "Red" final score "${this.score.red}" with "${playersPerTeam}" players`)
+    this.log(`Team "Blue" final score "${this.score.blu}" with "${playersPerTeam}" players`)
     await delay(this.eventDelay / 2)
   }
 
   async roundEnds(winner: 'blu' | 'red') {
+    const playersPerTeam = this.addedPlayers.length / 2
     await delay(this.eventDelay / 2)
     const lengthMs = Date.now() - this.roundStartTimestamp
     this.score[winner] += 1
     this.log(`World triggered "Round_Win" (winner "${winner === 'blu' ? 'Blue' : 'Red'}")`)
     this.log(`World triggered "Round_Length" (seconds "${millisecondsToSeconds(lengthMs)}")`)
-    this.log(`Team "Red" current score "${this.score.red}" with "6" players`)
-    this.log(`Team "Blue" current score "${this.score.blu}" with "6" players`)
+    this.log(`Team "Red" current score "${this.score.red}" with "${playersPerTeam}" players`)
+    this.log(`Team "Blue" current score "${this.score.blu}" with "${playersPerTeam}" players`)
     this.roundStartTimestamp = Date.now()
     await delay(this.eventDelay / 2)
   }
