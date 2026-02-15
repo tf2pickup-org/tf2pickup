@@ -79,7 +79,7 @@ jobs:
           path: /tmp/image.tar
 
   e2e-tests:
-    name: end to end (6v6)
+    name: end to end (${{ matrix.queue-config }})
     needs: [build]
     runs-on: ubuntu-latest
     env:
@@ -87,7 +87,7 @@ jobs:
       WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-      QUEUE_CONFIG: '6v6'
+      QUEUE_CONFIG: ${{ matrix.queue-config }}
       THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
       LOG_RELAY_ADDRESS: '127.0.0.1'
       LOG_RELAY_PORT: '9871'
@@ -100,6 +100,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        queue-config: ['6v6', '9v9']
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
 
     services:
@@ -198,7 +199,7 @@ jobs:
         run: docker ps
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @6v6
+        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
         env:
           API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
@@ -221,160 +222,13 @@ jobs:
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: blob-report-6v6-${{ matrix.shard }}
-          path: blob-report
-          retention-days: 1
-
-  e2e-tests-9v9:
-    name: end to end (9v9)
-    needs: [build]
-    runs-on: ubuntu-latest
-    env:
-      shardTotal: 8
-      WEBSITE_URL: 'https://www.localhost'
-      MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
-      STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-      QUEUE_CONFIG: '9v9'
-      THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
-      LOG_RELAY_ADDRESS: '127.0.0.1'
-      LOG_RELAY_PORT: '9871'
-      GAME_SERVER_SECRET: 'xxxxxx'
-      KEY_STORE_PASSPHRASE: 'a_password'
-      MUMBLE_SUPERUSER_PASSWORD: '123456'
-      ENABLE_TEST_AUTH: 'true'
-      LOG_LEVEL: 'trace'
-
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8]
-
-    services:
-      mongo:
-        image: mongo:latest
-        ports:
-          - 27017:27017
-
-      mumble:
-        image: mumblevoip/mumble-server:latest
-        ports:
-          - 64738:64738/tcp
-          - 64738:64738/udp
-        env:
-          MUMBLE_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
-        options: >-
-          --user root
-
-    steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 10.27.0
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24.12.0
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-
-      - name: Download artifact
-        uses: actions/download-artifact@v7
-        with:
-          name: image
-          path: /tmp
-
-      - name: Load image
-        run: |
-          docker load --input /tmp/image.tar
-          docker image ls -a
-
-      - name: Start app
-        run: |
-          docker run \
-            --name=tf2pickup-app \
-            --detach \
-            --network=${{ job.services.mongo.network }} \
-            -e CI \
-            -e WEBSITE_URL \
-            -e MONGODB_URI \
-            -e STEAM_API_KEY \
-            -e QUEUE_CONFIG \
-            -e KEY_STORE_PASSPHRASE \
-            -e LOG_RELAY_ADDRESS \
-            -e LOG_RELAY_PORT \
-            -e GAME_SERVER_SECRET \
-            -e THUMBNAIL_SERVICE_URL \
-            -e ENABLE_TEST_AUTH \
-            -e LOG_LEVEL \
-            -p 3000:3000/tcp \
-            -p 9871:9871/udp \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.tag }}
-          docker inspect tf2pickup-app
-          while ! curl -s http://127.0.0.1:3000 > /dev/null; do
-            echo "Waiting for server..."
-            sleep 5
-          done
-        env:
-          MONGODB_URI: 'mongodb://mongo:27017/tf2pickup'
-        timeout-minutes: 1
-
-      - name: Configure access via proxy
-        run: |
-          sudo cp ${{ github.workspace }}/tests/nginx/certs/localhost.crt /usr/local/share/ca-certificates
-          sudo update-ca-certificates
-          sudo echo "127.0.0.1 www.localhost" | sudo tee -a /etc/hosts
-
-      - name: Start nginx
-        run: |
-          docker run \
-            --detach \
-            --name nginx \
-            --network=${{ job.services.mongo.network }} \
-            -p 80:80/tcp \
-            -p 443:443/tcp \
-            -v ${{ github.workspace }}/tests/nginx/nginx.conf:/etc/nginx/nginx.conf \
-            -v ${{ github.workspace }}/tests/nginx/certs:/etc/nginx/certs \
-            nginx
-
-      - name: Docker ps
-        run: docker ps
-
-      - name: Run Playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @9v9
-        env:
-          API_URL: 'http://127.0.0.1:3000'
-          STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
-          STEAM_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-          TEST_MUMBLE_SERVER_HOST: 'mumble'
-          TEST_MUMBLE_SERVER_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
-
-      - name: Stop app
-        if: ${{ always() }}
-        run: docker container stop tf2pickup-app
-
-      - name: Show app logs
-        if: ${{ always() }}
-        run: docker container logs tf2pickup-app
-
-      - name: Show nginx logs
-        if: ${{ always() }}
-        run: docker container logs nginx
-
-      - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: blob-report-9v9-${{ matrix.shard }}
+          name: blob-report-${{ matrix.queue-config }}-${{ matrix.shard }}
           path: blob-report
           retention-days: 1
 
   merge-reports:
     if: ${{ !cancelled() }}
-    needs: [e2e-tests, e2e-tests-9v9]
+    needs: [e2e-tests]
 
     runs-on: ubuntu-latest
     steps:
