@@ -33,17 +33,7 @@ export default defineConfig({
     },
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        ...(process.env.CI
-          ? {
-              ignoreHTTPSErrors: true,
-              launchOptions: {
-                args: ['--renderer-process-limit=6', '--disable-gpu'],
-              },
-            }
-          : {}),
-      },
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
       dependencies: ['setup'],
     },
     // {
