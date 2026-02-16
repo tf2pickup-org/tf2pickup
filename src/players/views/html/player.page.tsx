@@ -10,6 +10,7 @@ import {
   IconAlignBoxBottomRight,
   IconBrandSteam,
   IconBrandTwitch,
+  IconClover,
   IconStars,
   IconSum,
 } from '../../../html/components/icons'
@@ -58,6 +59,7 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
             player={player}
             gameCount={player.stats.totalGames}
             gameCountOnClasses={player.stats.gamesByClass}
+            isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 
           {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
@@ -129,10 +131,18 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
 function PlayerPresentation(props: {
   player: PickDeep<
     PlayerModel,
-    'avatar.large' | 'name' | 'roles' | 'joinedAt' | 'etf2lProfile' | 'twitchTvProfile' | 'steamId'
+    | 'avatar.large'
+    | 'name'
+    | 'roles'
+    | 'joinedAt'
+    | 'etf2lProfile'
+    | 'twitchTvProfile'
+    | 'steamId'
+    | 'skill'
   >
   gameCount: number
   gameCountOnClasses: Partial<Record<Tf2ClassName, number>>
+  isAdmin: boolean
 }) {
   return (
     <div class="player-presentation">
@@ -154,6 +164,12 @@ function PlayerPresentation(props: {
           </span>
         ) : (
           <></>
+        )}
+        {props.isAdmin && props.player.skill === undefined && (
+          <span class="flex items-center gap-1 rounded-[3px] bg-green-700 px-[8px] py-[6px] leading-none font-bold text-white">
+            <IconClover size={14} />
+            fresh
+          </span>
         )}
       </div>
 

@@ -1,6 +1,6 @@
 import { configuration } from '../../../configuration'
 import type { PlayerModel } from '../../../database/models/player.model'
-import { IconDeviceFloppy, IconEdit, IconInputX } from '../../../html/components/icons'
+import { IconClover, IconDeviceFloppy, IconEdit, IconInputX } from '../../../html/components/icons'
 import { queue } from '../../../queue'
 import { WinLossChart } from './win-loss-chart'
 import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
@@ -21,6 +21,13 @@ export async function AdminToolbox(props: {
       action={`/players/${player.steamId}/edit/skill`}
       class="player-admin-toolbox"
     >
+      {player.skill === undefined && (
+        <div class="col-span-full flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
+          <IconClover size={16} />
+          <span>This player has no skill assigned</span>
+        </div>
+      )}
+
       <h4 class="caption" style="grid-area: captionSkill">
         Skill
       </h4>
