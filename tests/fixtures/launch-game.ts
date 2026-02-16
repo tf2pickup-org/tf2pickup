@@ -125,6 +125,13 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
       }
     }
 
+    // Close player pages to free memory before running the test.
+    // Tests that need specific players will get fresh pages via user.gamePage().
+    for (const user of players) {
+      const p = await user.page()
+      await p.close()
+    }
+
     await use(gameNumber)
 
     if (!killGame) {

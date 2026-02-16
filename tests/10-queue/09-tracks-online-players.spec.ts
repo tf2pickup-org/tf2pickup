@@ -4,16 +4,17 @@ import { delay } from 'es-toolkit'
 
 test('tracks online players @6v6 @9v9', async ({ page, users }) => {
   await page.goto('/')
-  await expect(page.getByRole('link', { name: 'Blacklight' })).not.toBeVisible()
+  const onlinePlayerList = page.locator('#online-player-list')
+  await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).not.toBeVisible()
 
   const blacklight = users.byName('Blacklight')
   const queuePage = await blacklight.queuePage()
   await queuePage.goto()
-  await expect(page.getByRole('link', { name: 'Blacklight' })).toBeVisible()
+  await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).toBeVisible()
 
   // players disconnects
   await queuePage.page.close()
-  await expect(page.getByRole('link', { name: 'Blacklight' })).not.toBeVisible({
+  await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).not.toBeVisible({
     timeout: secondsToMilliseconds(14),
   })
 })
@@ -21,6 +22,7 @@ test('tracks online players @6v6 @9v9', async ({ page, users }) => {
 test.describe('when user opens a new tab and then closes it @6v6 @9v9', () => {
   test('should keep them online @6v6 @9v9', async ({ page, users }) => {
     await page.goto('/')
+    const onlinePlayerList = page.locator('#online-player-list')
     const blacklight = users.byName('Blacklight')
 
     const queuePage = await blacklight.queuePage()
@@ -32,13 +34,13 @@ test.describe('when user opens a new tab and then closes it @6v6 @9v9', () => {
     const anotherPage = blacklight.browserContext.pages()[1]
     expect(anotherPage).toBeTruthy()
     await anotherPage!.close()
-    await expect(page.getByRole('link', { name: 'Blacklight' })).toBeVisible()
+    await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).toBeVisible()
     await delay(secondsToMilliseconds(15))
-    await expect(page.getByRole('link', { name: 'Blacklight' })).toBeVisible()
+    await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).toBeVisible()
 
     // players closes the first tab - should go offline after 10 seconds
     await queuePage.page.close()
-    await expect(page.getByRole('link', { name: 'Blacklight' })).not.toBeVisible({
+    await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).not.toBeVisible({
       timeout: secondsToMilliseconds(14),
     })
   })

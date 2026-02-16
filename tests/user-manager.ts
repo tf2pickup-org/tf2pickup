@@ -38,7 +38,9 @@ export class UserContext {
 
   async page() {
     this._browserContext ??= await this._contextFactory()
-    this._page ??= await this._browserContext.newPage()
+    if (!this._page || this._page.isClosed()) {
+      this._page = await this._browserContext.newPage()
+    }
     return this._page
   }
 
@@ -52,7 +54,12 @@ export class UserContext {
   }
 
   async gamePage(gameNumber: number) {
-    return new GamePage(await this.page(), gameNumber)
+    const page = await this.page()
+    const gamePage = new GamePage(page, gameNumber)
+    if (!page.url().includes(`/games/${gameNumber}`)) {
+      await gamePage.goto()
+    }
+    return gamePage
   }
 
   async queuePage() {
