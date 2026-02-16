@@ -3,7 +3,7 @@ import { authUsers, expect } from '../fixtures/auth-users'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
-test('banned player gets kicked from the queue', async ({ users }) => {
+test('banned player gets kicked from the queue @6v6 @9v9', async ({ users }) => {
   const playerPage = await users.byName('AstraGirl').queuePage()
   await playerPage.goto()
   await playerPage.joinQueue('scout-1')

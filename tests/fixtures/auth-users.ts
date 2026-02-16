@@ -15,18 +15,14 @@ export const authUsers = test.extend<AuthUsersFixture>({
   },
   users: async ({ steamIds, browser }, use) => {
     const authDir = resolve(import.meta.dirname, '../.auth')
-    const users = await Promise.all(
-      steamIds.map(async steamId => {
-        const path = resolve(authDir, `${steamId}.json`)
-        const context = await browser.newContext({ storageState: path })
-        return new UserContext(steamId, context)
-      }),
-    )
+    const users = steamIds.map(steamId => {
+      const path = resolve(authDir, `${steamId}.json`)
+      return new UserContext(steamId, () => browser.newContext({ storageState: path }))
+    })
     await use(new UserManager(users))
     for (const user of users) {
       await user.close()
     }
-    users.length = 0
   },
 })
 

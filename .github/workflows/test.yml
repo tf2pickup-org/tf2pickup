@@ -79,7 +79,7 @@ jobs:
           path: /tmp/image.tar
 
   e2e-tests:
-    name: end to end
+    name: end to end (${{ matrix.queue-config }})
     needs: [build]
     runs-on: ubuntu-latest
     env:
@@ -87,7 +87,7 @@ jobs:
       WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-      QUEUE_CONFIG: '6v6'
+      QUEUE_CONFIG: ${{ matrix.queue-config }}
       THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
       LOG_RELAY_ADDRESS: '127.0.0.1'
       LOG_RELAY_PORT: '9871'
@@ -100,6 +100,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        queue-config: ['6v6', '9v9']
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
 
     services:
@@ -198,7 +199,7 @@ jobs:
         run: docker ps
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }}
+        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
         env:
           API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
@@ -221,7 +222,7 @@ jobs:
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
-          name: blob-report-${{ matrix.shard }}
+          name: blob-report-${{ matrix.queue-config }}-${{ matrix.shard }}
           path: blob-report
           retention-days: 1
 

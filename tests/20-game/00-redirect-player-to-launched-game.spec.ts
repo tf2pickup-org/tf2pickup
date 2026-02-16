@@ -1,20 +1,24 @@
 import { launchGame as test } from '../fixtures/launch-game'
 
-test('redirect player to launched game', async ({ users, players, desiredSlots }) => {
-  await Promise.all(
-    players.map(async player => {
-      const queuePage = await player.queuePage()
-      await queuePage.goto()
-      const slot = desiredSlots.get(player.playerName)!
-      await queuePage.slot(slot).join()
-      await queuePage.readyUpDialog().readyUp()
-    }),
-  )
+test('redirect player to launched game @6v6 @9v9', async ({ users, players, desiredSlots }) => {
+  const batchSize = 6
+  for (let i = 0; i < players.length; i += batchSize) {
+    const batch = players.slice(i, i + batchSize)
+    await Promise.all(
+      batch.map(async player => {
+        const queuePage = await player.queuePage()
+        await queuePage.goto()
+        const slot = desiredSlots.get(player.playerName)!
+        await queuePage.slot(slot).join()
+      }),
+    )
+  }
 
   await Promise.all(
     players.map(async player => {
-      const page = await player.page()
-      await page.waitForURL(/games\/(\d+)/)
+      const queuePage = await player.queuePage()
+      await queuePage.readyUpDialog().readyUp()
+      await (await player.page()).waitForURL(/games\/(\d+)/)
     }),
   )
 

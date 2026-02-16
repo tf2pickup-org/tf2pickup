@@ -5,7 +5,7 @@ import type { UserContext, UserName } from '../user-manager'
 import { waitForEmptyQueue } from './wait-for-empty-queue'
 import { GamePage } from '../pages/game.page'
 import { secondsToMilliseconds } from 'date-fns'
-import type { SlotId } from '../queue-slots'
+import { getPlayerCount, getQueueConfig, type SlotId } from '../queue-slots'
 
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
@@ -20,6 +20,42 @@ export interface LaunchGameOptions {
     | 'started' // all players are connected and the match has started
 }
 
+const desiredSlots6v6: [UserName, SlotId][] = [
+  ['Promenader', 'scout-1'],
+  ['Mayflower', 'scout-2'],
+  ['Polemic', 'scout-3'],
+  ['Shadowhunter', 'scout-4'],
+  ['MoonMan', 'soldier-1'],
+  ['Underfire', 'soldier-2'],
+  ['Astropower', 'soldier-3'],
+  ['LlamaDrama', 'soldier-4'],
+  ['SlitherTuft', 'demoman-1'],
+  ['Blacklight', 'demoman-2'],
+  ['AstraGirl', 'medic-1'],
+  ['BellBoy', 'medic-2'],
+]
+
+const desiredSlots9v9: [UserName, SlotId][] = [
+  ['Promenader', 'scout-1'],
+  ['Mayflower', 'scout-2'],
+  ['Polemic', 'soldier-1'],
+  ['Shadowhunter', 'soldier-2'],
+  ['MoonMan', 'pyro-1'],
+  ['Underfire', 'pyro-2'],
+  ['Astropower', 'demoman-1'],
+  ['LlamaDrama', 'demoman-2'],
+  ['SlitherTuft', 'heavy-1'],
+  ['Blacklight', 'heavy-2'],
+  ['AstraGirl', 'engineer-1'],
+  ['BellBoy', 'engineer-2'],
+  ['TommyGun', 'medic-1'],
+  ['NeonBlitz', 'medic-2'],
+  ['CrazyComet', 'sniper-1'],
+  ['FrostByte', 'sniper-2'],
+  ['IronViper', 'spy-1'],
+  ['ShadowPulse', 'spy-2'],
+]
+
 export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmptyQueue).extend<
   LaunchGameOptions & {
     gameNumber: number
@@ -31,26 +67,13 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
   waitForStage: ['created', { option: true }],
 
   desiredSlots: async ({}, use) => {
-    await use(
-      new Map<UserName, SlotId>([
-        ['Promenader', 'scout-1'],
-        ['Mayflower', 'scout-2'],
-        ['Polemic', 'scout-3'],
-        ['Shadowhunter', 'scout-4'],
-        ['MoonMan', 'soldier-1'],
-        ['Underfire', 'soldier-2'],
-        ['Astropower', 'soldier-3'],
-        ['LlamaDrama', 'soldier-4'],
-        ['SlitherTuft', 'demoman-1'],
-        ['Blacklight', 'demoman-2'],
-        ['AstraGirl', 'medic-1'],
-        ['BellBoy', 'medic-2'],
-      ]),
-    )
+    const slots = getQueueConfig() === '9v9' ? desiredSlots9v9 : desiredSlots6v6
+    await use(new Map<UserName, SlotId>(slots))
   },
   players: async ({ users, desiredSlots }, use) => {
-    if (users.count < 12) {
-      throw new Error(`at least 12 users are required to launch a game`)
+    const requiredCount = getPlayerCount()
+    if (users.count < requiredCount) {
+      throw new Error(`at least ${requiredCount} users are required to launch a game`)
     }
 
     const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
@@ -59,12 +82,22 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
   gameNumber: async ({ users, players, gameServer, killGame, desiredSlots, waitForStage }, use) => {
     await gameServer.sendHeartbeat()
 
+    const batchSize = 6
+    for (let i = 0; i < players.length; i += batchSize) {
+      const batch = players.slice(i, i + batchSize)
+      await Promise.all(
+        batch.map(async user => {
+          const page = await user.queuePage()
+          await page.goto()
+          const slot = desiredSlots.get(user.playerName)!
+          await page.slot(slot).join()
+        }),
+      )
+    }
+
     await Promise.all(
       players.map(async user => {
         const page = await user.queuePage()
-        await page.goto()
-        const slot = desiredSlots.get(user.playerName)!
-        await page.slot(slot).join()
         await page.readyUpDialog().readyUp()
         await (await user.page()).waitForURL(/games\/(\d+)/)
       }),
@@ -90,6 +123,10 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
         await gameServer.connectAllPlayers()
         await gameServer.matchStarts()
       }
+    }
+
+    for (const user of players) {
+      await user.dispose()
     }
 
     await use(gameNumber)

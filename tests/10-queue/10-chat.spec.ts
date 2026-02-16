@@ -1,7 +1,7 @@
 import { expect, authUsers as test } from '../fixtures/auth-users'
 import { loremIpsum } from 'lorem-ipsum'
 
-test('chat is not visible for unauthenticated users', async ({ page }) => {
+test('chat is not visible for unauthenticated users @6v6 @9v9', async ({ page }) => {
   await page.goto('/')
   await page.getByRole('button', { name: 'Chat' }).click()
   await expect(page.getByText('You need to sign in to see the chat.')).toBeVisible()
@@ -9,7 +9,7 @@ test('chat is not visible for unauthenticated users', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Send message' })).not.toBeVisible()
 })
 
-test('chat is visible for authenticated users', async ({ users }) => {
+test('chat is visible for authenticated users @6v6 @9v9', async ({ users }) => {
   const page = await users.getNext().page()
   await page.goto('/')
   await page.getByRole('button', { name: 'Chat' }).click()
@@ -17,7 +17,7 @@ test('chat is visible for authenticated users', async ({ users }) => {
   await expect(page.getByRole('button', { name: 'Send message' })).toBeVisible()
 })
 
-test('users are able to send messages to chat', async ({ users }) => {
+test('users are able to send messages to chat @6v6 @9v9', async ({ users }) => {
   for (const user of users) {
     const page = await user.page()
     await page.goto('/')
@@ -41,7 +41,7 @@ test('users are able to send messages to chat', async ({ users }) => {
   }
 })
 
-test('links inside chat messages are clickable', async ({ users }) => {
+test('links inside chat messages are clickable @6v6 @9v9', async ({ users }) => {
   const [sender, receiver] = users.getMany(2)
 
   for (const user of [sender, receiver]) {

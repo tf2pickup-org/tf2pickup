@@ -1,6 +1,9 @@
 import { expect, launchGame as test } from '../fixtures/launch-game'
 
-test('auto-closes games with too many substitute requests', async ({ gameNumber, users }) => {
+test('auto-closes games with too many substitute requests @6v6 @9v9', async ({
+  gameNumber,
+  users,
+}) => {
   const page = await users.getAdmin().gamePage(gameNumber)
   await page.requestSubstitute('Mayflower')
   await page.requestSubstitute('Polemic')

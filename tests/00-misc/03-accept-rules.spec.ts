@@ -12,7 +12,7 @@ test.describe('when user has not accepted the rules yet', () => {
     await players.updateOne({ steamId }, { $set: { hasAcceptedRules: false } })
   })
 
-  test('accept rules', async ({ users }) => {
+  test('accept rules @6v6 @9v9', async ({ users }) => {
     const page = await users.getFirst().page()
     await page.goto('/')
     await expect(page.getByTitle('Accept rules dialog')).toBeVisible()

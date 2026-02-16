@@ -5,7 +5,7 @@ import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-test('update player count', async ({ page, users }) => {
+test('update player count @6v6', async ({ page, users }) => {
   const queuePage = new QueuePage(page)
   const p1 = await users.getNext().queuePage()
   const p2 = await users.getNext().queuePage()

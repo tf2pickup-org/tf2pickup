@@ -10,8 +10,13 @@ test.beforeEach(async ({ users }) => {
   await page.configureGames({ joinGameServerTimeout: 10, rejoinGameServerTimeout: 5 })
 })
 
-test.describe('when a player does not connect to the gameserver on time', () => {
-  test('should request substitute for them', async ({ gameNumber, page, gameServer, players }) => {
+test.describe('when a player does not connect to the gameserver on time @6v6 @9v9', () => {
+  test('should request substitute for them @6v6 @9v9', async ({
+    gameNumber,
+    page,
+    gameServer,
+    players,
+  }) => {
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()
     const connectingPlayers = players.filter(user => user.playerName !== 'BellBoy')
@@ -34,8 +39,13 @@ test.describe('when a player does not connect to the gameserver on time', () => 
   })
 })
 
-test.describe('when a player connects to the gameserver, but then leaves', () => {
-  test('should request substitute for them', async ({ gameNumber, page, gameServer, players }) => {
+test.describe('when a player connects to the gameserver, but then leaves @6v6 @9v9', () => {
+  test('should request substitute for them @6v6 @9v9', async ({
+    gameNumber,
+    page,
+    gameServer,
+    players,
+  }) => {
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()
     const connectingPlayers = players.filter(user => user.playerName !== 'BellBoy')
@@ -61,8 +71,8 @@ test.describe('when a player connects to the gameserver, but then leaves', () =>
   })
 })
 
-test.describe('when the match starts, but then a player leaves', () => {
-  test('should request substitute for them', async ({ gameNumber, page, gameServer }) => {
+test.describe('when the match starts, but then a player leaves @6v6 @9v9', () => {
+  test('should request substitute for them @6v6 @9v9', async ({ gameNumber, page, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()
 
@@ -80,56 +90,60 @@ test.describe('when the match starts, but then a player leaves', () => {
   })
 })
 
-test.describe('when a player replaces another player and does not join the gameserver', () => {
+test.describe('when a player replaces another player and does not join the gameserver @6v6 @9v9', () => {
   let adminsPage: GamePage
-  let tommyGunsPage: GamePage
+  let ghostWalkersPage: GamePage
   let gamePage: GamePage
 
   test.beforeEach(async ({ gameNumber, page, users, gameServer }) => {
-    const tommyGun = users.byName('TommyGun')
+    const ghostWalker = users.byName('GhostWalker')
 
     gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()
     adminsPage = await users.getAdmin().gamePage(gameNumber)
     await adminsPage.goto()
-    tommyGunsPage = await tommyGun.gamePage(gameNumber)
-    await tommyGunsPage.goto()
+    ghostWalkersPage = await ghostWalker.gamePage(gameNumber)
+    await ghostWalkersPage.goto()
 
     await gameServer.connectAllPlayers()
   })
 
-  test.describe('before the match starts', () => {
+  test.describe('before the match starts @6v6 @9v9', () => {
     test.beforeEach(async ({ gameServer }) => {
       await adminsPage.requestSubstitute('Mayflower')
-      await tommyGunsPage.replacePlayer('Mayflower')
+      await ghostWalkersPage.replacePlayer('Mayflower')
       await gameServer.playerDisconnects('Mayflower')
     })
 
-    test('should request substitute for them', async () => {
+    test('should request substitute for them @6v6 @9v9', async () => {
       await expect
-        .poll(() => gamePage.slot('TommyGun').status(), { timeout: secondsToMilliseconds(15) })
+        .poll(() => gamePage.slot('GhostWalker').status(), { timeout: secondsToMilliseconds(15) })
         .toBe('waiting for substitute')
       await expect(
-        gamePage.gameEvent(/bot requested substitute for.+TommyGun \(reason: Player is offline\)/),
+        gamePage.gameEvent(
+          /bot requested substitute for.+GhostWalker \(reason: Player is offline\)/,
+        ),
       ).toBeVisible()
     })
   })
 
-  test.describe('after the match starts', () => {
+  test.describe('after the match starts @6v6 @9v9', () => {
     test.beforeEach(async ({ gameServer }) => {
       await gameServer.matchStarts()
 
       await adminsPage.requestSubstitute('Mayflower')
-      await tommyGunsPage.replacePlayer('Mayflower')
+      await ghostWalkersPage.replacePlayer('Mayflower')
       await gameServer.playerDisconnects('Mayflower')
     })
 
-    test('should request substitute for them', async () => {
+    test('should request substitute for them @6v6 @9v9', async () => {
       await expect
-        .poll(() => gamePage.slot('TommyGun').status(), { timeout: secondsToMilliseconds(15) })
+        .poll(() => gamePage.slot('GhostWalker').status(), { timeout: secondsToMilliseconds(15) })
         .toBe('waiting for substitute')
       await expect(
-        gamePage.gameEvent(/bot requested substitute for.+TommyGun \(reason: Player is offline\)/),
+        gamePage.gameEvent(
+          /bot requested substitute for.+GhostWalker \(reason: Player is offline\)/,
+        ),
       ).toBeVisible()
     })
   })

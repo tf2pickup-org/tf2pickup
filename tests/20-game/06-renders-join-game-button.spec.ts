@@ -6,7 +6,7 @@ test.beforeEach(async ({ users }) => {
   await page.configureGames({ joinGameServerTimeout: 30, rejoinGameServerTimeout: 20 })
 })
 
-test('renders join game button', async ({ gameNumber, users, gameServer }) => {
+test('renders join game button @6v6 @9v9', async ({ gameNumber, users, gameServer }) => {
   const page = await users.byName('LlamaDrama').gamePage(gameNumber)
   await expect(page.waitingForGameServer()).toBeVisible()
 

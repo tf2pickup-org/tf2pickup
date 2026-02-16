@@ -92,7 +92,7 @@
     border-radius: 0 0 8px 8px;
     background-color: rgb(0 0 0 / 0.4);
 
-    &.team-blu {
+    &.config-6v6.team-blu {
       grid-area: slotsBlu;
       grid-template-areas:
         'bluScout1'
@@ -117,7 +117,7 @@
       }
     }
 
-    &.team-red {
+    &.config-6v6.team-red {
       grid-area: slotsRed;
       grid-template-areas:
         'redScout1'
@@ -126,6 +126,50 @@
         'redSoldier2'
         'redDemoman1'
         'redMedic1';
+
+      @media (width >= theme(--breakpoint-lg)) {
+        border-radius: 0 0 8px 0;
+      }
+    }
+
+    &.config-9v9.team-blu {
+      grid-area: slotsBlu;
+      grid-template-areas:
+        'bluScout1'
+        'bluSoldier1'
+        'bluPyro1'
+        'bluDemoman1'
+        'bluHeavy1'
+        'bluEngineer1'
+        'bluMedic1'
+        'bluSniper1'
+        'bluSpy1';
+
+      @media (width >= theme(--breakpoint-lg)) {
+        border-radius: 0 0 0 8px;
+
+        .slot {
+          flex-flow: row-reverse nowrap;
+
+          .player-link {
+            justify-content: flex-end;
+          }
+        }
+      }
+    }
+
+    &.config-9v9.team-red {
+      grid-area: slotsRed;
+      grid-template-areas:
+        'redScout1'
+        'redSoldier1'
+        'redPyro1'
+        'redDemoman1'
+        'redHeavy1'
+        'redEngineer1'
+        'redMedic1'
+        'redSniper1'
+        'redSpy1';
 
       @media (width >= theme(--breakpoint-lg)) {
         border-radius: 0 0 8px 0;

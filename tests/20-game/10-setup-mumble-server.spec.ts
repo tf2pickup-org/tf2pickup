@@ -4,7 +4,7 @@ import { configureMumbleServer } from '../fixtures/configure-mumble-server'
 
 const test = mergeTests(launchGame, configureMumbleServer)
 
-test('renders join voice button', async ({
+test('renders join voice button @6v6 @9v9', async ({
   gameNumber,
   users,
   mumbleConfiguration,
@@ -16,7 +16,7 @@ test('renders join voice button', async ({
   await expect(joinVoiceButton).toBeVisible()
   await expect(joinVoiceButton).toHaveAttribute(
     'href',
-    `mumble://Astropower@${mumbleConfiguration.host}:${mumbleConfiguration.port}/${mumbleConfiguration.channelName}/${gameNumber}/RED`,
+    new RegExp(`mumble://Astropower@.+/${mumbleConfiguration.channelName}/${gameNumber}/(RED|BLU)`),
   )
 
   expect(
