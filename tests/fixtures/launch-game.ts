@@ -125,10 +125,11 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
       }
     }
 
-    // Dispose player contexts to free memory before running the test.
-    // Tests that need specific players will get fresh contexts via user.gamePage().
+    // Close player pages to free memory before running the test.
+    // Tests that need specific players will get fresh pages via user.gamePage().
     for (const user of players) {
-      await user.dispose()
+      const p = await user.page()
+      await p.close()
     }
 
     await use(gameNumber)
