@@ -66,6 +66,17 @@ export class UserContext {
     return new QueuePage(await this.page())
   }
 
+  async dispose() {
+    if (this._page && !this._page.isClosed()) {
+      await this._page.close()
+    }
+    this._page = undefined
+    if (this._browserContext) {
+      await this._browserContext.close()
+      this._browserContext = undefined
+    }
+  }
+
   async close() {
     if (this._page) {
       await this._page.close()
