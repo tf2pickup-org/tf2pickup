@@ -1,9 +1,7 @@
 const queueConfig = process.env['QUEUE_CONFIG'] ?? '6v6'
 
-// 6v6 slot configuration
 type SlotId6v6 = `${'scout' | 'soldier'}-${1 | 2 | 3 | 4}` | `${'demoman' | 'medic'}-${1 | 2}`
 
-// 9v9 slot configuration
 type SlotId9v9 =
   `${'scout' | 'soldier' | 'pyro' | 'demoman' | 'heavy' | 'engineer' | 'medic' | 'sniper' | 'spy'}-${1 | 2}`
 
@@ -28,7 +26,6 @@ const classes9v9 = [
   { name: 'spy', count: 2 },
 ]
 
-// Generate all slots based on queue config
 export function* queueSlots(): Generator<SlotId> {
   const classes = queueConfig === '9v9' ? classes9v9 : classes6v6
   for (const gc of classes) {
@@ -38,12 +35,10 @@ export function* queueSlots(): Generator<SlotId> {
   }
 }
 
-// Get total player count for current config
 export function getPlayerCount(): number {
   return queueConfig === '9v9' ? 18 : 12
 }
 
-// Get current queue config
 export function getQueueConfig(): '6v6' | '9v9' {
   return queueConfig as '6v6' | '9v9'
 }

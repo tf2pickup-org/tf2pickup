@@ -152,8 +152,6 @@
           flex-flow: row-reverse nowrap;
 
           .player-link {
-            /* text-align: right; */
-            /* flex-flow: row-reverse nowrap; */
             justify-content: flex-end;
           }
         }
