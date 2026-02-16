@@ -128,6 +128,9 @@ export interface Events {
   'mumble/connectionStatusChanged': {
     status: MumbleClientStatus
   }
+  'mumble/error': {
+    error: unknown
+  }
 
   'player:connected': {
     steamId: SteamId64

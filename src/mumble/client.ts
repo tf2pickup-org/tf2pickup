@@ -7,6 +7,7 @@ import { moveToTargetChannel } from './move-to-target-channel'
 import { assertClientIsConnected } from './assert-client-is-connected'
 import { version } from '../version'
 import { MumbleClientStatus, setStatus } from './status'
+import { events } from '../events'
 import { errors } from '../errors'
 
 export let client: Client | undefined
@@ -68,6 +69,12 @@ export async function tryConnect() {
       logger.warn(`bot ${client.user.name} does not have permissions to create new channels`)
     }
     setStatus(MumbleClientStatus.connected)
+
+    client.on('error', (error: unknown) => {
+      logger.error(error, 'mumble client error')
+      setStatus(MumbleClientStatus.error)
+      events.emit('mumble/error', { error })
+    })
   } catch (error) {
     setStatus(MumbleClientStatus.error)
     throw error
