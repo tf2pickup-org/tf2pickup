@@ -1,8 +1,9 @@
 import { collections } from '../../../database/collections'
-import type { PlayerModel } from '../../../database/models/player.model'
+import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import { errors } from '../../../errors'
 import {
+  IconClover,
   IconHeart,
   IconHeartFilled,
   IconLock,
@@ -82,6 +83,21 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
     return <></>
   }
 
+  let isFresh = false
+  if (props.actor) {
+    const actorPlayer = await collections.players.findOne<Pick<PlayerModel, 'roles'>>(
+      { steamId: props.actor },
+      { projection: { roles: 1 } },
+    )
+    if (actorPlayer?.roles.includes(PlayerRole.admin)) {
+      const slotPlayer = await collections.players.findOne<Pick<PlayerModel, 'skill'>>(
+        { steamId: props.slot.player.steamId },
+        { projection: { skill: 1 } },
+      )
+      isFresh = slotPlayer?.skill === undefined
+    }
+  }
+
   let slotActionButton: JSX.Element
   if (props.actor === props.slot.player.steamId && !props.slot.ready) {
     slotActionButton = (
@@ -103,8 +119,20 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         height="64"
         alt={`${props.slot.player.name}'s name`}
       />
-      <a href={`/players/${props.slot.player.steamId}`} preload="mousedown" safe>
-        {props.slot.player.name}
+      <a
+        href={`/players/${props.slot.player.steamId}`}
+        class="player-name-link"
+        preload="mousedown"
+      >
+        <span class="player-name-text" safe>
+          {props.slot.player.name}
+        </span>
+        {isFresh && (
+          <span class="fresh-player-icon">
+            <IconClover size={18} />
+            <span class="tooltip">No skill assigned</span>
+          </span>
+        )}
       </a>
       {slotActionButton}
     </div>
