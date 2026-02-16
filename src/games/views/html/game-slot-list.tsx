@@ -16,7 +16,10 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
         <GameScore game={props.game} team={Tf2Team.blu} />
       </div>
 
-      <div class={`slot-list ${configClassNames} team-blu`} id={`game-${props.game.number}-slots-blu`}>
+      <div
+        class={`slot-list ${configClassNames} team-blu`}
+        id={`game-${props.game.number}-slots-blu`}
+      >
         {props.game.slots
           .filter(slot => slot.team === Tf2Team.blu)
           .map(slot => (
@@ -39,7 +42,10 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
         <GameScore game={props.game} team={Tf2Team.red} />
       </div>
 
-      <div class={`slot-list ${configClassNames} team-red`} id={`game-${props.game.number}-slots-red`}>
+      <div
+        class={`slot-list ${configClassNames} team-red`}
+        id={`game-${props.game.number}-slots-red`}
+      >
         {props.game.slots
           .filter(slot => slot.team === Tf2Team.red)
           .map(slot => (
