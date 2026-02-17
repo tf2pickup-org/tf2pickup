@@ -19,7 +19,7 @@ const environmentSchema = z.object({
   MONGODB_URI: z.url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),
-  QUEUE_CONFIG: z.enum(['test', '6v6', '9v9', 'bball', 'ultiduo']).default('6v6'),
+  QUEUE_CONFIG: z.enum(['6v6', '9v9']).default('6v6'),
   KEY_STORE_PASSPHRASE: z.string(),
   LOG_RELAY_ADDRESS: z.string(),
   LOG_RELAY_PORT: z.coerce.number(),
