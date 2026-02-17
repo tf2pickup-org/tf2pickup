@@ -1,5 +1,21 @@
 # Changelog
 
+# [4.0.0-beta.32](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.31...4.0.0-beta.32) (2026-02-17)
+
+
+### Bug Fixes
+
+* adapt 9v9 format ([#465](https://github.com/tf2pickup-org/tf2pickup/issues/465)) ([8ee6f9b](https://github.com/tf2pickup-org/tf2pickup/commit/8ee6f9bd90198b8422cfe3042cf927d89666cbd2))
+* **deps:** update dependency motion to v12.34.1 ([b77ef0f](https://github.com/tf2pickup-org/tf2pickup/commit/b77ef0f02d47dc6ff9810051d1deb32f9e341907))
+* **deps:** update opentelemetry-js-contrib monorepo ([3581f1c](https://github.com/tf2pickup-org/tf2pickup/commit/3581f1c473883bc49b222fddd3883bf6ab705b76))
+
+
+### Features
+
+* handle mumble client errors and notify admins via Discord ([#474](https://github.com/tf2pickup-org/tf2pickup/issues/474)) ([8e3266a](https://github.com/tf2pickup-org/tf2pickup/commit/8e3266a81f58d84696214063235dab01fb4c3db3))
+* highlight fresh players with no skill assigned for admins ([#475](https://github.com/tf2pickup-org/tf2pickup/issues/475)) ([8f380c7](https://github.com/tf2pickup-org/tf2pickup/commit/8f380c70b1fb38248abca00b79e1e7e3c05e6254))
+* improve player action logs with pagination, sorting, and filtering ([#476](https://github.com/tf2pickup-org/tf2pickup/issues/476)) ([b095f77](https://github.com/tf2pickup-org/tf2pickup/commit/b095f777a97d4e2469163ae9fbd4cee237c99a7e))
+
 # [4.0.0-beta.31](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.30...4.0.0-beta.31) (2026-02-16)
 
 
