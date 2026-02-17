@@ -2,6 +2,7 @@ import type { Filter } from 'mongodb'
 import { collections } from '../../database/collections'
 import type { PlayerActionEntryModel } from '../../database/models/player-action-entry.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { escapeRegex } from '../../utils/escape-regex'
 
 interface GetLogsParams {
   page: number
@@ -17,10 +18,6 @@ interface GetLogsResult {
 }
 
 export const logsPerPage = 20
-
-function escapeRegex(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
 
 export async function getLogs(params: GetLogsParams): Promise<GetLogsResult> {
   const conditions: Filter<PlayerActionEntryModel>[] = []

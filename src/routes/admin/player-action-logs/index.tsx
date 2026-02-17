@@ -18,8 +18,8 @@ export default routes(async app => {
       },
       schema: {
         querystring: z.object({
-          page: z.coerce.number().optional(),
-          sort: z.enum(['asc', 'desc']).optional(),
+          page: z.coerce.number().default(1),
+          sort: z.enum(['asc', 'desc']).default('desc'),
           action: z.string().optional(),
           player: z.string().optional(),
           ip: z.string().optional(),
@@ -27,8 +27,7 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      const page = Number(request.query.page) || 1
-      const sort = request.query.sort ?? 'desc'
+      const { page, sort } = request.query
       const action = request.query.action ?? undefined
       const player = request.query.player ?? undefined
       const ip = request.query.ip ?? undefined

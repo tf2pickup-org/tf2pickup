@@ -21,6 +21,7 @@ export function LogEntryList(props: LogEntryListProps) {
 
   return (
     <>
+      <input type="hidden" name="sort" value={props.sort} />
       <table class="w-full table-fixed text-left text-sm rtl:text-right">
         <thead>
           <tr>
@@ -77,7 +78,13 @@ export function LogEntryList(props: LogEntryListProps) {
             currentPage={props.page}
             around={around}
             hrefFn={page =>
-              buildUrl({ page, sort: props.sort, action: props.action, player: props.player, ip: props.ip })
+              buildUrl({
+                page,
+                sort: props.sort,
+                action: props.action,
+                player: props.player,
+                ip: props.ip,
+              })
             }
             hxTarget="#log-results"
           />
@@ -121,17 +128,17 @@ function buildUrl(params: {
   player?: string | undefined
   ip?: string | undefined
 }): string {
-  const url = new URL('/admin/player-action-logs', 'http://localhost')
-  url.searchParams.set('page', String(params.page))
-  url.searchParams.set('sort', params.sort)
+  const qs = new URLSearchParams()
+  qs.set('page', String(params.page))
+  qs.set('sort', params.sort)
   if (params.action) {
-    url.searchParams.set('action', params.action)
+    qs.set('action', params.action)
   }
   if (params.player) {
-    url.searchParams.set('player', params.player)
+    qs.set('player', params.player)
   }
   if (params.ip) {
-    url.searchParams.set('ip', params.ip)
+    qs.set('ip', params.ip)
   }
-  return `${url.pathname}${url.search}`
+  return `/admin/player-action-logs?${qs.toString()}`
 }

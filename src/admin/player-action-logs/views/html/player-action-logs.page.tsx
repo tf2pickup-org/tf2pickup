@@ -19,12 +19,13 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
     <Admin activePage="player-action-logs">
       <div class="admin-panel-set">
         <div class="flex items-center gap-4 p-4">
+          <input type="hidden" name="page" value="1" />
+
           <select
             name="action"
             hx-get="/admin/player-action-logs"
             hx-target="#log-results"
-            hx-include="[name='player'],[name='ip']"
-            hx-vals={JSON.stringify({ page: '1', sort: props.sort })}
+            hx-include="[name='player'],[name='ip'],[name='sort'],[name='page']"
             class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
           >
             <option value="">All actions</option>
@@ -50,8 +51,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
             hx-get="/admin/player-action-logs"
             hx-target="#log-results"
             hx-trigger="keyup changed delay:300ms"
-            hx-include="[name='action'],[name='ip']"
-            hx-vals={JSON.stringify({ page: '1', sort: props.sort })}
+            hx-include="[name='action'],[name='ip'],[name='sort'],[name='page']"
             class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
           />
 
@@ -63,8 +63,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
             hx-get="/admin/player-action-logs"
             hx-target="#log-results"
             hx-trigger="keyup changed delay:300ms"
-            hx-include="[name='action'],[name='player']"
-            hx-vals={JSON.stringify({ page: '1', sort: props.sort })}
+            hx-include="[name='action'],[name='player'],[name='sort'],[name='page']"
             class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
           />
         </div>
