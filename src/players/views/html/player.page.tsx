@@ -8,6 +8,7 @@ import { queue } from '../../../queue'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
+  IconAwardFilled,
   IconBrandSteam,
   IconBrandTwitch,
   IconClover,
@@ -64,8 +65,14 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
 
           {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
 
-          <div id="gameList" class="contents">
-            <PlayerGameList steamId={player.steamId} page={props.page} />
+          <div class="player-content-columns">
+            <div class="player-content-left">
+              <PlayerAchievements />
+            </div>
+
+            <div class="player-content-right" id="gameList">
+              <PlayerGameList steamId={player.steamId} page={props.page} />
+            </div>
           </div>
         </div>
       </Page>
@@ -106,7 +113,7 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
       <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
         Game history
       </div>
-      <div class="game-list col-span-2">
+      <div class="game-list">
         {games.map(game => (
           <GameListItem
             game={game}
@@ -251,5 +258,112 @@ function PlayerPresentation(props: {
         )}
       </div>
     </div>
+  )
+}
+
+// ── MOCKUP: Achievement data & component (fake data for visual preview) ──
+
+type AchievementTier = 'bronze' | 'silver' | 'gold' | 'australium'
+
+interface MockAchievement {
+  name: string
+  description: string
+  tier: AchievementTier
+  unlocked: boolean
+  unlockedAt?: string
+  progress?: { current: number; target: number }
+}
+
+const tierColors: Record<AchievementTier, string> = {
+  bronze: '#cd7f32',
+  silver: '#bbbbbb',
+  gold: '#e3c392',
+  australium: '#e3b63a',
+}
+
+const mockAchievements: MockAchievement[] = [
+  { name: 'First Blood', description: 'Play your first game', tier: 'bronze', unlocked: true, unlockedAt: 'Jan 15, 2025' },
+  { name: 'Mercenary', description: 'Play 100 games', tier: 'bronze', unlocked: true, unlockedAt: 'Mar 22, 2025' },
+  { name: 'Ze Healing Is Not As Rewarding As Ze Hurting', description: 'Play 100 games as medic', tier: 'bronze', unlocked: true, unlockedAt: 'May 10, 2025' },
+  { name: 'Reinforcements Have Arrived', description: 'Join a game as a substitute', tier: 'bronze', unlocked: true, unlockedAt: 'Feb 3, 2025' },
+  { name: 'Top Damage Dealer', description: 'Have the highest DPM in a game 10 times', tier: 'bronze', unlocked: true, unlockedAt: 'Apr 8, 2025' },
+  { name: 'Quick-Fix', description: 'Heal more than 1200 HPM in a game', tier: 'bronze', unlocked: true, unlockedAt: 'Jun 1, 2025' },
+  { name: 'Grizzled Veteran', description: 'Play 250 games', tier: 'silver', unlocked: true, unlockedAt: 'Jul 14, 2025' },
+  { name: 'Übermensch', description: 'Play 500 games as medic', tier: 'silver', unlocked: true, unlockedAt: 'Nov 2, 2025' },
+  { name: 'Iron Mann', description: 'Complete 10 games without disconnecting', tier: 'silver', unlocked: true, unlockedAt: 'Feb 28, 2025' },
+  { name: 'Need A Dispenser Here', description: 'Join the server within 1 min 50 times', tier: 'silver', unlocked: true, unlockedAt: 'Sep 5, 2025' },
+  { name: 'F2P No More', description: 'Play 1000 games', tier: 'gold', unlocked: true, unlockedAt: 'Dec 20, 2025' },
+  { name: 'Mann of Steel', description: 'Complete 50 games without disconnecting', tier: 'gold', unlocked: false, progress: { current: 30, target: 50 } },
+  { name: 'Pain Train', description: 'Have the highest DPM in a game 100 times', tier: 'silver', unlocked: false, progress: { current: 42, target: 100 } },
+  { name: 'Miracle Worker', description: 'Heal more than 1200 HPM in 10 games', tier: 'silver', unlocked: false, progress: { current: 7, target: 10 } },
+  { name: 'Australium Legend', description: 'Play 5000 games', tier: 'australium', unlocked: false, progress: { current: 1100, target: 5000 } },
+  { name: 'Australium Rocket Launcher', description: 'Have the highest DPM 1000 times', tier: 'australium', unlocked: false, progress: { current: 42, target: 1000 } },
+  { name: 'Mannpower Medic', description: 'Heal more than 1200 HPM in 100 games', tier: 'australium', unlocked: false, progress: { current: 7, target: 100 } },
+]
+
+function AchievementBadge(props: { achievement: MockAchievement }) {
+  const { achievement: a } = props
+  const color = tierColors[a.tier]
+  const progressPct = a.progress ? Math.round((a.progress.current / a.progress.target) * 100) : 0
+
+  return (
+    <div class={['achievement-badge', `tier-${a.tier}`, !a.unlocked && 'locked']}>
+      <div class="achievement-icon">
+        <IconAwardFilled size={28} />
+      </div>
+      <div class="achievement-name" safe>{a.name}</div>
+      <div class="achievement-tier" style={`color: ${color}`}>
+        {a.tier}
+      </div>
+      {!a.unlocked && a.progress && (
+        <div class="achievement-progress">
+          <div
+            class="achievement-progress-bar"
+            style={`width: ${String(progressPct)}%; background-color: ${color}`}
+          ></div>
+        </div>
+      )}
+      <div class="tooltip">
+        <div class="tooltip-desc" safe>{a.description}</div>
+        <div class="tooltip-date" safe>
+          {a.unlocked ? `Unlocked ${a.unlockedAt}` : `${String(a.progress?.current ?? 0)} / ${String(a.progress?.target ?? '?')}`}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function PlayerAchievements() {
+  const unlocked = mockAchievements.filter(a => a.unlocked)
+  const locked = mockAchievements.filter(a => !a.unlocked)
+
+  return (
+    <>
+      <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
+        Achievements
+        <span class="text-abru-light-50 text-base font-normal ml-2">
+          {unlocked.length}/{mockAchievements.length}
+        </span>
+      </div>
+      <div class="achievements-scroll" data-fade-scroll>
+        <div class="achievements-grid">
+          {unlocked.map(a => (
+            <AchievementBadge achievement={a} />
+          ))}
+        </div>
+      </div>
+      {locked.length > 0 && (
+        <details class="achievements-locked-group">
+          <summary class="achievements-locked-toggle">
+            <span>{locked.length} locked achievement{locked.length !== 1 ? 's' : ''}</span>
+          </summary>
+          <div class="achievements-grid mt-3">
+            {locked.map(a => (
+              <AchievementBadge achievement={a} />
+            ))}
+          </div>
+        </details>
+      )}
+    </>
   )
 }

@@ -212,3 +212,189 @@
     }
   }
 }
+
+/* ── Two-column layout ── */
+
+.player-content-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  @media (width >= theme(--breakpoint-lg)) {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+
+  @media (width >= theme(--breakpoint-xl)) {
+    grid-template-columns: 380px 1fr;
+  }
+}
+
+.player-content-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.player-content-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* ── Achievements ── */
+
+.achievements-scroll {
+  @apply fade-scroll;
+  max-height: 520px;
+  overflow-y: auto;
+  --scrollbar-width: 8px;
+}
+
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+
+  @media (width >= theme(--breakpoint-lg)) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+.achievement-badge {
+  @apply transition-colors;
+  @apply duration-75;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  border-radius: 8px;
+  background: var(--color-abru-dark-29);
+  border: 1px solid transparent;
+  cursor: default;
+
+  &:hover {
+    background: var(--color-abru-light-5);
+  }
+
+  &.tier-bronze  { border-color: color-mix(in srgb, #cd7f32 30%, transparent); }
+  &.tier-silver  { border-color: color-mix(in srgb, #bbbbbb 25%, transparent); }
+  &.tier-gold    { border-color: color-mix(in srgb, #e3c392 35%, transparent); }
+  &.tier-australium { border-color: color-mix(in srgb, #e3b63a 40%, transparent); }
+
+  &.locked {
+    opacity: 0.35;
+    border-color: transparent;
+
+    &:hover { opacity: 0.5; }
+
+    .achievement-name { color: var(--color-abru-light-50); }
+    .achievement-tier { color: var(--color-abru-light-35); }
+  }
+}
+
+.achievement-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .tier-bronze &  { background: rgba(205, 127, 50, 0.10);  color: #cd7f32; }
+  .tier-silver &  { background: rgba(187, 187, 187, 0.10);  color: #bbbbbb; }
+  .tier-gold &    { background: rgba(227, 195, 146, 0.10);  color: #e3c392; }
+  .tier-australium & { background: rgba(227, 182, 58, 0.12); color: #e3b63a; }
+  .locked & { background: var(--color-abru-light-5); color: var(--color-abru-light-35); }
+}
+
+.achievement-name {
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  color: var(--color-abru-light-85);
+}
+
+.achievement-tier {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.achievement-progress {
+  width: 100%;
+  height: 3px;
+  background: var(--color-abru-light-10);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: -2px;
+}
+
+.achievement-progress-bar {
+  height: 100%;
+  border-radius: 2px;
+}
+
+.achievements-locked-group {
+  margin-top: 4px;
+}
+
+.achievements-locked-toggle {
+  @apply transition-colors;
+  @apply duration-75;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: var(--color-abru-dark-29);
+  color: var(--color-abru-light-50);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+
+  &:hover {
+    background: var(--color-abru-light-5);
+    color: var(--color-abru-light-70);
+  }
+
+  &::before {
+    content: '▸';
+    font-size: 11px;
+    transition: transform 0.15s;
+  }
+
+  [open] > &::before {
+    transform: rotate(90deg);
+  }
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+}
+
+.tooltip-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--color-abru-light-70);
+  margin-bottom: 4px;
+}
+
+.tooltip-date {
+  font-size: 11px;
+  color: var(--color-abru-light-50);
+}
