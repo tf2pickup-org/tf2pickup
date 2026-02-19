@@ -1,26 +1,29 @@
+@reference '../../../html/styles/main.css';
 @import '../../../admin/views/html/style.css';
 
-.player-skill {
-  appearance: textfield;
-  text-align: center;
-  width: 42px;
-  height: 42px;
-}
+@layer components {
+  .player-skill {
+    appearance: textfield;
+    text-align: center;
+    width: 42px;
+    height: 42px;
+  }
 
-.edit-player-ban-list {
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
-  gap: 8px;
-
-  .ban-item {
-    @apply col-span-4;
-    @apply row-span-2;
+  .edit-player-ban-list {
     display: grid;
-    grid-template-columns: subgrid;
-    grid-template-rows: subgrid;
+    grid-template-columns: auto auto 1fr auto;
+    gap: 8px;
 
-    &:not(:has(button)) {
-      color: var(--color-abru-light-50);
+    .ban-item {
+      @apply col-span-4;
+      @apply row-span-2;
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+
+      &:not(:has(button)) {
+        color: var(--color-abru-light-50);
+      }
     }
   }
 }

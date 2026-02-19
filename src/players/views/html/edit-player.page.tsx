@@ -58,7 +58,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
         <div class="admin-panel-set">
           <div class="grid grid-cols-[1fr_184px] gap-y-4">
             <div class="input-group">
-              <label class="label" for="player-nickname">
+              <label class="form-label" for="player-nickname">
                 Nickname
               </label>
               <input type="text" name="name" value={player.name} id="player-nickname" />
@@ -75,7 +75,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
             </div>
 
             <div class="input-group">
-              <label class="label" for="cooldown-level">
+              <label class="form-label" for="cooldown-level">
                 Cooldown level
               </label>
               <input

@@ -1,487 +1,492 @@
 @reference '../../../html/styles/main.css';
 
-.game-page {
-  display: grid;
-  grid-template-areas:
-    'gameSummary'
-    'scoreBlu'
-    'slotsBlu'
-    'scoreRed'
-    'slotsRed'
-    'gameEvents'
-    'adminToolbox';
-
-  @media (width >= theme(--breakpoint-lg)) {
-    grid-template-areas:
-      'gameSummary  gameSummary     gameSummary     gameSummary'
-      'scoreBlu     scoreBlu        scoreRed        scoreRed'
-      'slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
-      'gameEvents   gameEvents      gameEvents      gameEvents'
-      'adminToolbox adminToolbox    adminToolbox    adminToolbox';
-    grid-template-columns: 1fr auto auto 1fr;
-  }
-
-  @media (width >= theme(--breakpoint-xl)) {
-    grid-template-areas:
-      'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
-      'gameSummary slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
-      'gameEvents  adminToolbox adminToolbox    adminToolbox    adminToolbox'
-      'gameEvents  .            .               .               .';
-    grid-template-columns: 2fr 3fr auto auto 3fr;
-  }
-
-  .score-header {
+@layer components {
+  .game-page {
     display: grid;
-    grid-column: 2 / span 2;
-    grid-template-columns: 1fr auto;
-    grid-template-areas: 'teamName score';
-
-    padding: 7px 24px 8px 24px;
-    font-size: 48px;
-    line-height: normal;
-    font-weight: 700;
-    border-radius: 8px 8px 0 0;
-    margin-top: 16px;
-
-    color: var(--color-ash);
-
-    @media (width >= theme(--breakpoint-xl)) {
-      margin-top: 0;
-    }
-
-    &.team-blu {
-      grid-area: scoreBlu;
-      background-color: var(--color-team-blu);
-
-      @media (width >= theme(--breakpoint-lg)) {
-        border-radius: 8px 0 0 0;
-        margin-right: 2px;
-      }
-    }
-
-    &.team-red {
-      grid-area: scoreRed;
-      background-color: var(--color-team-red);
-
-      @media (width >= theme(--breakpoint-lg)) {
-        grid-template-areas: 'score teamName';
-        border-radius: 0 8px 0 0;
-        margin-left: 2px;
-      }
-    }
-  }
-
-  .game-class-icons {
-    display: none;
-    grid-area: gameClassIcons;
-    background-color: rgb(0 0 0 / 0.4);
-    align-items: center;
-    padding: 4px 0;
+    grid-template-areas:
+      'gameSummary'
+      'scoreBlu'
+      'slotsBlu'
+      'scoreRed'
+      'slotsRed'
+      'gameEvents'
+      'adminToolbox';
 
     @media (width >= theme(--breakpoint-lg)) {
+      grid-template-areas:
+        'gameSummary  gameSummary     gameSummary     gameSummary'
+        'scoreBlu     scoreBlu        scoreRed        scoreRed'
+        'slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
+        'gameEvents   gameEvents      gameEvents      gameEvents'
+        'adminToolbox adminToolbox    adminToolbox    adminToolbox';
+      grid-template-columns: 1fr auto auto 1fr;
+    }
+
+    @media (width >= theme(--breakpoint-xl)) {
+      grid-template-areas:
+        'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
+        'gameSummary slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
+        'gameEvents  adminToolbox adminToolbox    adminToolbox    adminToolbox'
+        'gameEvents  .            .               .               .';
+      grid-template-columns: 2fr 3fr auto auto 3fr;
+    }
+
+    .score-header {
       display: grid;
-    }
-  }
+      grid-column: 2 / span 2;
+      grid-template-columns: 1fr auto;
+      grid-template-areas: 'teamName score';
 
-  .slot-list {
-    display: grid;
+      padding: 7px 24px 8px 24px;
+      font-size: 48px;
+      line-height: normal;
+      font-weight: 700;
+      border-radius: 8px 8px 0 0;
+      margin-top: 16px;
 
-    align-items: center;
-    padding: 10px 0;
-    gap: 10px;
-    border-radius: 0 0 8px 8px;
-    background-color: rgb(0 0 0 / 0.4);
+      color: var(--color-ash);
 
-    &.config-6v6.team-blu {
-      grid-area: slotsBlu;
-      grid-template-areas:
-        'bluScout1'
-        'bluScout2'
-        'bluSoldier1'
-        'bluSoldier2'
-        'bluDemoman1'
-        'bluMedic1';
+      @media (width >= theme(--breakpoint-xl)) {
+        margin-top: 0;
+      }
 
-      @media (width >= theme(--breakpoint-lg)) {
-        border-radius: 0 0 0 8px;
+      &.team-blu {
+        grid-area: scoreBlu;
+        background-color: var(--color-team-blu);
 
-        .slot {
-          flex-flow: row-reverse nowrap;
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 8px 0 0 0;
+          margin-right: 2px;
+        }
+      }
 
-          .player-link {
-            /* text-align: right; */
-            /* flex-flow: row-reverse nowrap; */
-            justify-content: flex-end;
-          }
+      &.team-red {
+        grid-area: scoreRed;
+        background-color: var(--color-team-red);
+
+        @media (width >= theme(--breakpoint-lg)) {
+          grid-template-areas: 'score teamName';
+          border-radius: 0 8px 0 0;
+          margin-left: 2px;
         }
       }
     }
 
-    &.config-6v6.team-red {
-      grid-area: slotsRed;
-      grid-template-areas:
-        'redScout1'
-        'redScout2'
-        'redSoldier1'
-        'redSoldier2'
-        'redDemoman1'
-        'redMedic1';
+    .game-class-icons {
+      display: none;
+      grid-area: gameClassIcons;
+      background-color: rgb(0 0 0 / 0.4);
+      align-items: center;
+      padding: 4px 0;
 
       @media (width >= theme(--breakpoint-lg)) {
-        border-radius: 0 0 8px 0;
+        display: grid;
       }
     }
 
-    &.config-9v9.team-blu {
-      grid-area: slotsBlu;
-      grid-template-areas:
-        'bluScout1'
-        'bluSoldier1'
-        'bluPyro1'
-        'bluDemoman1'
-        'bluHeavy1'
-        'bluEngineer1'
-        'bluMedic1'
-        'bluSniper1'
-        'bluSpy1';
-
-      @media (width >= theme(--breakpoint-lg)) {
-        border-radius: 0 0 0 8px;
-
-        .slot {
-          flex-flow: row-reverse nowrap;
-
-          .player-link {
-            justify-content: flex-end;
-          }
-        }
-      }
-    }
-
-    &.config-9v9.team-red {
-      grid-area: slotsRed;
-      grid-template-areas:
-        'redScout1'
-        'redSoldier1'
-        'redPyro1'
-        'redDemoman1'
-        'redHeavy1'
-        'redEngineer1'
-        'redMedic1'
-        'redSniper1'
-        'redSpy1';
-
-      @media (width >= theme(--breakpoint-lg)) {
-        border-radius: 0 0 8px 0;
-      }
-    }
-
-    .slot {
-      @apply transition-colors;
-      @apply duration-75;
-
-      display: flex;
-      flex-flow: row nowrap;
-      gap: 8px;
-
-      margin: 0 10px 0 10px;
-      height: 60px;
+    .slot-list {
+      display: grid;
 
       align-items: center;
-      border-radius: 4px;
-      padding: 10px;
+      padding: 10px 0;
+      gap: 10px;
+      border-radius: 0 0 8px 8px;
+      background-color: rgb(0 0 0 / 0.4);
 
-      &.active {
-        background-color: var(--color-abru-light-60);
+      &.config-6v6.team-blu {
+        grid-area: slotsBlu;
+        grid-template-areas:
+          'bluScout1'
+          'bluScout2'
+          'bluSoldier1'
+          'bluSoldier2'
+          'bluDemoman1'
+          'bluMedic1';
 
-        .class-icon {
-          @media (width >= theme(--breakpoint-lg)) {
-            display: none;
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 0 8px;
+
+          .slot {
+            flex-flow: row-reverse nowrap;
+
+            .player-link {
+              /* text-align: right; */
+              /* flex-flow: row-reverse nowrap; */
+              justify-content: flex-end;
+            }
           }
         }
+      }
 
-        .player-link {
-          flex: 1 1 0;
+      &.config-6v6.team-red {
+        grid-area: slotsRed;
+        grid-template-areas:
+          'redScout1'
+          'redScout2'
+          'redSoldier1'
+          'redSoldier2'
+          'redDemoman1'
+          'redMedic1';
 
-          display: flex;
-          flex-flow: row nowrap;
-          align-items: baseline;
-          gap: 4px;
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 8px 0;
+        }
+      }
 
-          &:hover {
-            .player-name {
-              text-decoration: underline;
+      &.config-9v9.team-blu {
+        grid-area: slotsBlu;
+        grid-template-areas:
+          'bluScout1'
+          'bluSoldier1'
+          'bluPyro1'
+          'bluDemoman1'
+          'bluHeavy1'
+          'bluEngineer1'
+          'bluMedic1'
+          'bluSniper1'
+          'bluSpy1';
+
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 0 8px;
+
+          .slot {
+            flex-flow: row-reverse nowrap;
+
+            .player-link {
+              justify-content: flex-end;
+            }
+          }
+        }
+      }
+
+      &.config-9v9.team-red {
+        grid-area: slotsRed;
+        grid-template-areas:
+          'redScout1'
+          'redSoldier1'
+          'redPyro1'
+          'redDemoman1'
+          'redHeavy1'
+          'redEngineer1'
+          'redMedic1'
+          'redSniper1'
+          'redSpy1';
+
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 8px 0;
+        }
+      }
+
+      .slot {
+        @apply transition-colors;
+        @apply duration-75;
+
+        display: flex;
+        flex-flow: row nowrap;
+        gap: 8px;
+
+        margin: 0 10px 0 10px;
+        height: 60px;
+
+        align-items: center;
+        border-radius: 4px;
+        padding: 10px;
+
+        &.active {
+          background-color: var(--color-abru-light-60);
+
+          .class-icon {
+            @media (width >= theme(--breakpoint-lg)) {
+              display: none;
             }
           }
 
-          .player-name {
-            font-size: 20px;
-            font-weight: 500;
-            overflow: hidden;
-            text-overflow: ellipsis;
+          .player-link {
+            flex: 1 1 0;
+
+            display: flex;
+            flex-flow: row nowrap;
+            align-items: baseline;
+            gap: 4px;
+
+            &:hover {
+              .player-name {
+                text-decoration: underline;
+              }
+            }
+
+            .player-name {
+              font-size: 20px;
+              font-weight: 500;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .player-assigned-skill {
+              display: none;
+              font-size: 14px;
+              font-weight: 400;
+              margin: 0 4px;
+            }
           }
 
-          .player-assigned-skill {
-            display: none;
-            font-size: 14px;
-            font-weight: 400;
-            margin: 0 4px;
+          .player-connection-status {
+            width: 6px;
+            align-self: stretch;
+            border-radius: 4px;
+
+            &.connected {
+              background-color: #0a955b;
+            }
+
+            &.joining {
+              background-color: #d9861a;
+            }
+
+            &.offline {
+              background-color: #b80c4d;
+            }
           }
         }
 
-        .player-connection-status {
-          width: 6px;
-          align-self: stretch;
-          border-radius: 4px;
-
-          &.connected {
-            background-color: #0a955b;
-          }
-
-          &.joining {
-            background-color: #d9861a;
-          }
-
-          &.offline {
-            background-color: #b80c4d;
-          }
+        &.waiting-for-substitute {
+          background-color: var(--color-abru-light-30);
+          color: var(--color-abru-light-60);
         }
       }
+    }
 
-      &.waiting-for-substitute {
-        background-color: var(--color-abru-light-30);
-        color: var(--color-abru-light-60);
+    .game-events {
+      grid-area: gameEvents;
+      display: flex;
+      flex-flow: column nowrap;
+      gap: 8px;
+
+      margin-top: 16px;
+    }
+  }
+
+  .game-summary-caption {
+    background: linear-gradient(180deg, transparent 35%, var(--color-abru-dark-29) 90%);
+
+    .game-floating-label,
+    .floating-label {
+      background: color-mix(in srgb, var(--color-abru) 90%, transparent);
+      position: absolute;
+      height: 28px;
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      gap: 3px;
+      border-radius: 4px;
+      padding: 6px 8px;
+      font-size: 16px;
+      line-height: 16px;
+      font-weight: 700;
+
+      @apply shadow-sm;
+
+      &:empty {
+        display: none;
       }
     }
   }
 
-  .game-events {
-    grid-area: gameEvents;
+  .game-info {
     display: flex;
     flex-flow: column nowrap;
-    gap: 8px;
 
-    margin-top: 16px;
-  }
-}
+    color: var(--color-abru-light-75);
 
-.game-summary-caption {
-  background: linear-gradient(180deg, transparent 35%, var(--color-abru-dark-29) 90%);
+    .game-info-label,
+    .label {
+      font-weight: 300;
+    }
 
-  .floating-label {
-    background: color-mix(in srgb, var(--color-abru) 90%, transparent);
-    position: absolute;
-    height: 28px;
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 3px;
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-size: 16px;
-    line-height: 16px;
-    font-weight: 700;
-
-    @apply shadow-sm;
-
-    &:empty {
-      display: none;
+    .game-info-value,
+    .value {
+      font-weight: 500;
     }
   }
-}
 
-.game-info {
-  display: flex;
-  flex-flow: column nowrap;
-
-  color: var(--color-abru-light-75);
-
-  .label {
-    font-weight: 300;
-  }
-
-  .value {
-    font-weight: 500;
-  }
-}
-
-.connect-string {
-  flex: 1 1 0%;
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-  border-radius: 4px;
-  border-width: 1px;
-  border-color: var(--color-abru-light-25);
-  background-color: var(--color-abru-light-5);
-  padding: 10px 12px;
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--color-abru-light-75);
-  min-width: 0px;
-
-  .content {
-    display: block;
+  .connect-string {
     flex: 1 1 0%;
-    mask-image: linear-gradient(90deg, #000 80%, transparent);
-
-    cursor: text;
-    user-select: all;
-    overflow: hidden;
-    white-space: nowrap;
-    background-color: var(--color-abru-light-5);
-    color: var(--color-abru-light-75);
-  }
-}
-
-.game-summary-link {
-  @apply transition-colors;
-  @apply duration-75;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-
-  border-radius: 4px;
-  padding: 8px;
-  font-size: 18px;
-  font-weight: 700;
-  text-transform: uppercase;
-
-  background-color: var(--color-abru-light-3);
-
-  &:hover {
-    background-color: var(--color-abru-light-5);
-  }
-}
-
-.join-game-button {
-  font-size: 18px;
-}
-
-.game-event-list {
-  display: flex;
-  flex-flow: column nowrap;
-  gap: 10px;
-
-  .game-event {
     display: flex;
-    flex-flow: column nowrap;
-    gap: 12px;
-
-    border-radius: 8px;
-    background-color: var(--color-abru-dark-15);
-
-    padding: 10px;
-
+    flex-direction: row;
+    gap: 16px;
+    border-radius: 4px;
+    border-width: 1px;
+    border-color: var(--color-abru-light-25);
+    background-color: var(--color-abru-light-5);
+    padding: 10px 12px;
     font-size: 16px;
     font-weight: 500;
     color: var(--color-abru-light-75);
-    line-height: normal;
+    min-width: 0px;
 
-    border: 1px solid var(--color-abru-light-25);
+    .content {
+      display: block;
+      flex: 1 1 0%;
+      mask-image: linear-gradient(90deg, #000 80%, transparent);
 
-    .at {
-      font-size: 12px;
-      font-weight: 400;
-    }
-
-    &--success {
-      border-color: #0a955b;
-    }
-
-    &--info {
-      border-color: #17a6ff;
-    }
-
-    &--warning {
-      border-color: #ff9e1f;
-    }
-
-    &--error {
-      border-color: #dc3545;
-      background-color: rgb(220 53 69 / 0.1);
+      cursor: text;
+      user-select: all;
+      overflow: hidden;
+      white-space: nowrap;
+      background-color: var(--color-abru-light-5);
+      color: var(--color-abru-light-75);
     }
   }
-}
 
-.game-admin-toolbox {
-  grid-area: adminToolbox;
-  background-color: var(--color-abru-dark-29);
-  border-radius: 8px;
-  padding: 10px;
+  .game-summary-link {
+    @apply transition-colors;
+    @apply duration-75;
 
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  @media (width >= theme(--breakpoint-lg)) {
-    flex-direction: row;
-    margin-top: 16px;
-  }
-}
-
-.show-assigned-skills-checkbox {
-  display: block;
-  position: relative;
-  cursor: pointer;
-  user-select: none;
-
-  width: 72px;
-
-  input[type='checkbox'] {
-    appearance: none;
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-  }
-
-  .icon {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-
-    color: var(--color-ash);
-    background-color: var(--color-accent);
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 8px;
+    gap: 8px;
 
     border-radius: 4px;
+    padding: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+
+    background-color: var(--color-abru-light-3);
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-accent), black 10%);
+      background-color: var(--color-abru-light-5);
     }
   }
 
-  input:checked ~ .icon {
-    > .on {
-      display: block;
-    }
+  .join-game-button {
+    font-size: 18px;
+  }
 
-    > .off {
-      display: none;
+  .game-event-list {
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 10px;
+
+    .game-event {
+      display: flex;
+      flex-flow: column nowrap;
+      gap: 12px;
+
+      border-radius: 8px;
+      background-color: var(--color-abru-dark-15);
+
+      padding: 10px;
+
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-abru-light-75);
+      line-height: normal;
+
+      border: 1px solid var(--color-abru-light-25);
+
+      .at {
+        font-size: 12px;
+        font-weight: 400;
+      }
+
+      &--success {
+        border-color: #0a955b;
+      }
+
+      &--info {
+        border-color: #17a6ff;
+      }
+
+      &--warning {
+        border-color: #ff9e1f;
+      }
+
+      &--error {
+        border-color: #dc3545;
+        background-color: rgb(220 53 69 / 0.1);
+      }
     }
   }
 
-  input:not(:checked) ~ .icon {
-    > .on {
-      display: none;
-    }
+  .game-admin-toolbox {
+    grid-area: adminToolbox;
+    background-color: var(--color-abru-dark-29);
+    border-radius: 8px;
+    padding: 10px;
 
-    > .off {
-      display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    @media (width >= theme(--breakpoint-lg)) {
+      flex-direction: row;
+      margin-top: 16px;
     }
   }
-}
 
-body:has(#show-assigned-skills:checked) {
-  .player-assigned-skill {
+  .show-assigned-skills-checkbox {
     display: block;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+
+    width: 72px;
+
+    input[type='checkbox'] {
+      appearance: none;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .icon {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+
+      color: var(--color-ash);
+      background-color: var(--color-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+
+      border-radius: 4px;
+
+      &:hover {
+        background-color: color-mix(in hsl, var(--color-accent), black 10%);
+      }
+    }
+
+    input:checked ~ .icon {
+      > .on {
+        display: block;
+      }
+
+      > .off {
+        display: none;
+      }
+    }
+
+    input:not(:checked) ~ .icon {
+      > .on {
+        display: none;
+      }
+
+      > .off {
+        display: block;
+      }
+    }
+  }
+
+  body:has(#show-assigned-skills:checked) {
+    .player-assigned-skill {
+      display: block;
+    }
   }
 }

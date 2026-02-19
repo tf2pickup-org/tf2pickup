@@ -1,16 +1,20 @@
-.accept-rules-dialog {
-  background-color: var(--color-abru-dark-29);
-  max-width: 1018px;
-  border-radius: 8px;
-  padding: 24px 32px;
-  box-shadow: 0px 29px 37px 3px rgba(0, 0, 0, 0.4);
+@reference '../../../html/styles/main.css';
 
-  .rules-wrapper {
-    height: auto;
-    max-height: calc(100vh - 64px);
+@layer components {
+  .accept-rules-dialog {
+    background-color: var(--color-abru-dark-29);
+    max-width: 1018px;
+    border-radius: 8px;
+    padding: 24px 32px;
+    box-shadow: 0px 29px 37px 3px rgba(0, 0, 0, 0.4);
 
-    @media (width >= theme(--breakpoint-lg)) {
-      max-height: calc(100vh - 300px);
+    .rules-wrapper {
+      height: auto;
+      max-height: calc(100vh - 64px);
+
+      @media (width >= theme(--breakpoint-lg)) {
+        max-height: calc(100vh - 300px);
+      }
     }
   }
 }
