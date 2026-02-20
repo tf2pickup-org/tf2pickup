@@ -52,13 +52,13 @@ importers:
         version: 11.2.0
       '@kitajs/fastify-html-plugin':
         specifier: 4.2.1
-        version: 4.2.1(@kitajs/html@4.2.12)(@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.12)(typescript@5.9.3))
+        version: 4.2.1(@kitajs/html@4.2.13)(@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.13)(typescript@5.9.3))
       '@kitajs/html':
-        specifier: 4.2.12
-        version: 4.2.12
+        specifier: 4.2.13
+        version: 4.2.13
       '@kitajs/ts-html-plugin':
         specifier: 4.1.4
-        version: 4.1.4(@kitajs/html@4.2.12)(typescript@5.9.3)
+        version: 4.1.4(@kitajs/html@4.2.13)(typescript@5.9.3)
       '@opentelemetry/api':
         specifier: 1.9.0
         version: 1.9.0
@@ -1035,8 +1035,8 @@ packages:
       '@kitajs/ts-html-plugin':
         optional: true
 
-  '@kitajs/html@4.2.12':
-    resolution: {integrity: sha512-6OWZlEdiuhdJdLlem5gP3EARKKdiYlIdO2Gjwf4412oKKhB3fPthGO/UPBkRW5heZ6x4IS4EPaFnXZgQL8cb4A==}
+  '@kitajs/html@4.2.13':
+    resolution: {integrity: sha512-o+8e61EsoLDPTP7rsPkYolca1YFybHuxU2Lr5fWDZCUkYT/6uBlVkvnZUdCXMQKentJL9dxwpR8/xK2Q+U4LhA==}
     engines: {node: '>=12'}
 
   '@kitajs/ts-html-plugin@4.1.4':
@@ -5732,20 +5732,20 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2': {}
 
-  '@kitajs/fastify-html-plugin@4.2.1(@kitajs/html@4.2.12)(@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.12)(typescript@5.9.3))':
+  '@kitajs/fastify-html-plugin@4.2.1(@kitajs/html@4.2.13)(@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.13)(typescript@5.9.3))':
     dependencies:
-      '@kitajs/html': 4.2.12
+      '@kitajs/html': 4.2.13
       fastify-plugin: 5.1.0
     optionalDependencies:
-      '@kitajs/ts-html-plugin': 4.1.4(@kitajs/html@4.2.12)(typescript@5.9.3)
+      '@kitajs/ts-html-plugin': 4.1.4(@kitajs/html@4.2.13)(typescript@5.9.3)
 
-  '@kitajs/html@4.2.12':
+  '@kitajs/html@4.2.13':
     dependencies:
       csstype: 3.2.3
 
-  '@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.12)(typescript@5.9.3)':
+  '@kitajs/ts-html-plugin@4.1.4(@kitajs/html@4.2.13)(typescript@5.9.3)':
     dependencies:
-      '@kitajs/html': 4.2.12
+      '@kitajs/html': 4.2.13
       chalk: 5.6.2
       tslib: 2.8.1
       typescript: 5.9.3
