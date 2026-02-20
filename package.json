@@ -113,7 +113,7 @@
     "@types/ws": "8.5.13",
     "cpy-cli": "7.0.0",
     "cssnano": "7.1.2",
-    "eslint": "10.0.0",
+    "eslint": "10.0.1",
     "globals": "17.3.0",
     "lorem-ipsum": "2.0.8",
     "pino-princess": "1.6.1",
