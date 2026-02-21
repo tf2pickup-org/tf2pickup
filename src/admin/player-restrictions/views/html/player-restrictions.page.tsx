@@ -12,7 +12,7 @@ export async function PlayerRestrictionsPage() {
         <div class="admin-panel-set flex flex-col gap-4">
           <RequireEtf2lAccount />
           <MinimumTf2InGameHours />
-          <DenyPlayersWithNoSkillAssigned />
+          <RequirePlayerVerification />
           <PlayerSkillThreshold />
           <DefaultPlayerSkill />
 
@@ -71,33 +71,28 @@ async function MinimumTf2InGameHours() {
   )
 }
 
-async function DenyPlayersWithNoSkillAssigned() {
-  const denyPlayersWithNoSkillAssigned = await configuration.get(
-    'queue.deny_players_with_no_skill_assigned',
-  )
+async function RequirePlayerVerification() {
+  const requirePlayerVerification = await configuration.get('queue.require_player_verification')
   return (
     <div class="group flex flex-row items-center justify-between">
       <dl>
         <dt>
-          <label class="text-abru-light-75" for="denyPlayersWithNoSkillAssigned">
-            Deny players with no skill assigned
+          <label class="text-abru-light-75" for="requirePlayerVerification">
+            Require player verification
           </label>
         </dt>
         <dd class="text-abru-light-75">
           <span class="hidden group-has-checked:inline-block">
-            Players with no skill assigned won't be allowed to join the queue
+            Players must be manually verified by an admin before they can join the queue
           </span>
-          <span class="group-has-checked:hidden">
-            Players that have no skill assigned will be able to join the queue and the default skill
-            will be used for them when launching a game
-          </span>
+          <span class="group-has-checked:hidden">All players can join the queue freely</span>
         </dd>
       </dl>
 
       <Switch
-        id="denyPlayersWithNoSkillAssigned"
-        checked={denyPlayersWithNoSkillAssigned}
-        name="denyPlayersWithNoSkillAssigned"
+        id="requirePlayerVerification"
+        checked={requirePlayerVerification}
+        name="requirePlayerVerification"
       />
     </div>
   )
