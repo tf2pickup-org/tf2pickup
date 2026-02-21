@@ -216,7 +216,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
     })
     .describe('How many times the last played map cannot be an option to vote for'),
   z.object({
-    key: z.literal('queue.deny_players_with_no_skill_assigned'),
+    key: z.literal('queue.require_player_verification'),
     value: z.boolean().default(false),
   }),
   z.object({
