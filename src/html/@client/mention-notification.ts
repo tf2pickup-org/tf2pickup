@@ -1,6 +1,9 @@
+import { Howl } from 'howler'
+
 const MENTION_PREFIX = '★ '
 
 let hasMention = false
+let currentSound: Howl | null = null
 
 function chatTabButton(): Element | null {
   return document.querySelector('[data-tabs-select="tab-chat"]')
@@ -8,6 +11,10 @@ function chatTabButton(): Element | null {
 
 function isChatVisible(): boolean {
   return chatTabButton()?.classList.contains('active') ?? false
+}
+
+function isUserReadingChat(): boolean {
+  return document.visibilityState === 'visible' && isChatVisible()
 }
 
 function applyMentionTitle() {
@@ -22,20 +29,32 @@ function clearMentionTitle() {
   }
 }
 
-function setMention() {
+function setMention(event: CustomEvent<{ volume: number }>) {
+  if (isUserReadingChat()) {
+    return
+  }
+
   hasMention = true
+
+  currentSound = new Howl({ src: ['/sounds/mention.webm'], volume: event.detail.volume })
+  currentSound.play()
+
   chatTabButton()?.classList.add('has-mention')
   applyMentionTitle()
 }
 
 function clearMention() {
   hasMention = false
+
+  currentSound?.stop()
+  currentSound = null
+
   chatTabButton()?.classList.remove('has-mention')
   clearMentionTitle()
 }
 
 function maybeClear() {
-  if (hasMention && document.visibilityState === 'visible' && isChatVisible()) {
+  if (hasMention && isUserReadingChat()) {
     clearMention()
   }
 }
@@ -52,7 +71,9 @@ if (titleEl) {
   titleObserver.observe(titleEl, { childList: true, characterData: true, subtree: true })
 }
 
-document.addEventListener('chat:mentioned', setMention)
+document.addEventListener('chat:mentioned', (event: Event) => {
+  setMention(event as CustomEvent<{ volume: number }>)
+})
 document.addEventListener('visibilitychange', maybeClear)
 
 // Also clear when user explicitly clicks the chat tab
