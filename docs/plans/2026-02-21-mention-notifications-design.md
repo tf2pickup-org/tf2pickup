@@ -6,6 +6,7 @@
 ## Overview
 
 When a player is mentioned in chat and is currently online, they receive:
+
 - A sound notification (new `mention.webm` sound asset)
 - A title change: `[★ mention] 6/12 tf2pickup.org` (static, until dismissed)
 - A star/badge indicator on the chat tab button
@@ -25,6 +26,7 @@ The server sends a dedicated WebSocket fragment only to the mentioned player(s) 
 New Fastify plugin. Listens to the existing `chat:messageSent` event.
 
 For each `steamId` in `message.mentions`:
+
 - Query `onlinePlayers` collection to check if the player is currently online
 - If online, retrieve the player's sound volume preference
 - Send a targeted WebSocket fragment via `app.gateway.to({ player: steamId })`
@@ -34,6 +36,7 @@ For each `steamId` in `message.mentions`:
 New JSX fragment injected into `#queue-notify-container` via `hx-swap-oob="beforeend"`.
 
 Contains two self-cleaning elements (both use `remove-me="0s"`):
+
 1. A `<div play-sound-src="/sounds/mention.webm" play-sound-volume={volume}>` — handled by the existing `play-sound` HTMX extension
 2. A `<script type="module">` that dispatches `new CustomEvent('chat:mentioned')` on `document`
 
@@ -42,14 +45,17 @@ Contains two self-cleaning elements (both use `remove-me="0s"`):
 New module, imported in `main.ts` alongside other feature modules.
 
 **On `chat:mentioned` event:**
+
 - Set `hasMention = true`
 - Add `has-mention` CSS class to `[data-tabs-select="tab-chat"]` (shows star badge via CSS)
 - Prefix `document.title` with `[★ mention] `
 
 **Title coordination:**
+
 - A `MutationObserver` on `<title>` re-applies the `[★ mention] ` prefix whenever `SetTitle` overwrites the title while `hasMention` is `true`
 
 **Dismissal — clears state when window is focused AND chat tab is active:**
+
 - Listens to `document.visibilitychange`
 - Listens to `click` on the chat tab button
 - Condition: `document.visibilityState === 'visible'` AND `[data-tabs-select="tab-chat"]` has class `active`
@@ -92,15 +98,15 @@ mention-notification.ts: clear all notification state
 
 ## Files Changed / Created
 
-| File | Action |
-|------|--------|
-| `src/chat/plugins/notify-mentioned-players.ts` | Create |
-| `src/chat/views/html/chat-mention-notification.tsx` | Create |
-| `src/html/@client/mention-notification.ts` | Create |
-| `src/html/@client/main.ts` | Edit — import mention-notification |
-| `src/queue/views/html/sidebar.tsx` | Edit — no structural changes needed; CSS handles badge |
-| CSS (chat or sidebar styles) | Edit — add `has-mention` badge styles |
-| `public/sounds/mention.webm` | Add (already done) |
+| File                                                | Action                                                 |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| `src/chat/plugins/notify-mentioned-players.ts`      | Create                                                 |
+| `src/chat/views/html/chat-mention-notification.tsx` | Create                                                 |
+| `src/html/@client/mention-notification.ts`          | Create                                                 |
+| `src/html/@client/main.ts`                          | Edit — import mention-notification                     |
+| `src/queue/views/html/sidebar.tsx`                  | Edit — no structural changes needed; CSS handles badge |
+| CSS (chat or sidebar styles)                        | Edit — add `has-mention` badge styles                  |
+| `public/sounds/mention.webm`                        | Add (already done)                                     |
 
 ## Non-Goals
 

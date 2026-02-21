@@ -13,6 +13,7 @@
 ### Task 1: Create the JSX notification fragment
 
 **Files:**
+
 - Create: `src/chat/views/html/chat-mention-notification.tsx`
 
 **Step 1: Create the file**
@@ -29,7 +30,10 @@ export async function ChatMentionNotification(actor: SteamId64) {
         play-sound-src="/sounds/mention.webm"
         play-sound-volume={player.preferences.soundVolume ?? '1.0'}
       ></div>
-      <script type="module" remove-me="0s">{`document.dispatchEvent(new CustomEvent('chat:mentioned'));`}</script>
+      <script
+        type="module"
+        remove-me="0s"
+      >{`document.dispatchEvent(new CustomEvent('chat:mentioned'));`}</script>
     </div>
   )
 }
@@ -57,6 +61,7 @@ git commit -m "feat(chat): add mention notification fragment"
 ### Task 2: Create the server-side plugin
 
 **Files:**
+
 - Create: `src/chat/plugins/notify-mentioned-players.ts`
 
 The plugin listens to `chat:messageSent`. For each `steamId` in `message.mentions`, it queries `collections.onlinePlayers` to check if they are online. If yes, sends the `ChatMentionNotification` fragment via the gateway targeted to that player.
@@ -192,6 +197,7 @@ git commit -m "feat(chat): notify online players when mentioned"
 ### Task 3: Add CSS badge for mention state
 
 **Files:**
+
 - Modify: `src/queue/views/html/sidebar.css`
 
 The chat tab button is `[data-tabs-select="tab-chat"]` inside `.tab-link`. When the client-side module adds a `has-mention` class to that button, a small gold star should appear to the right of the "Chat" label.
@@ -266,9 +272,11 @@ git commit -m "feat(chat): add mention badge style to chat tab"
 ### Task 4: Create the client-side mention-notification module
 
 **Files:**
+
 - Create: `src/html/@client/mention-notification.ts`
 
 This module:
+
 1. Listens for the `chat:mentioned` DOM event dispatched by the server fragment
 2. Prefixes `document.title` with `★ ` and sets `hasMention = true`
 3. Uses a `MutationObserver` on `<title>` to re-apply the prefix when `SetTitle` overwrites it (which happens on every queue slot change)
@@ -364,6 +372,7 @@ git commit -m "feat(chat): add client-side mention notification module"
 ### Task 5: Wire up the client module in main.ts
 
 **Files:**
+
 - Modify: `src/html/@client/main.ts`
 
 **Step 1: Add the import**
