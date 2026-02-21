@@ -112,7 +112,7 @@ export async function AddBanPage(props: { steamId: SteamId64 }) {
               </p>
 
               <div class="input-group my-4">
-                <label class="label" for="banReason">
+                <label class="form-label" for="banReason">
                   Reason
                 </label>
                 <input type="text" name="reason" id="banReason" required />

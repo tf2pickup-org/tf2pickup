@@ -1,20 +1,24 @@
-.admin-panel-set {
-  background: var(--color-abru-dark-25);
-  border-radius: 16px;
-  padding: 24px;
-  color: var(--color-abru-light-50);
+@reference '../../../html/styles/main.css';
 
-  .form-checkbox {
-    margin-bottom: 16px;
+@layer components {
+  .admin-panel-set {
+    background: var(--color-abru-dark-25);
+    border-radius: 16px;
+    padding: 24px;
+    color: var(--color-abru-light-50);
 
-    label {
-      margin-left: 8px;
-    }
+    .form-checkbox {
+      margin-bottom: 16px;
 
-    .description {
-      color: var(--color-abru-light-75);
-      font-size: 12px;
-      margin-left: 22px;
+      label {
+        margin-left: 8px;
+      }
+
+      .description {
+        color: var(--color-abru-light-75);
+        font-size: 12px;
+        margin-left: 22px;
+      }
     }
   }
 }

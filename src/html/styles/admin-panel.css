@@ -29,6 +29,7 @@
     align-items: flex-start;
     gap: 4px;
 
+    .form-label,
     .label {
       font-size: 16px;
       font-weight: 500;
@@ -48,7 +49,7 @@
     position: relative;
 
     &:hover {
-      background-color: --theme(--color-abru-dark-25 / 20%);
+      background-color: color-mix(in hsl, var(--color-abru-dark-25), transparent 80%);
     }
 
     &.active {
@@ -98,6 +99,7 @@
         flex-direction: column;
         gap: 4px;
 
+        .form-label,
         .label {
           color: var(--color-abru-light-50);
           font-size: 16px;

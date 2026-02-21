@@ -1,4 +1,5 @@
 @layer components {
+  .nav-menu-item,
   .menu-item {
     @apply transition-colors;
     @apply duration-75;
@@ -18,7 +19,7 @@
     padding: 7px 34px;
 
     &:hover {
-      background-color: --theme(--color-abru-dark-20 / 40%);
+      background-color: color-mix(in hsl, var(--color-abru-dark-20), transparent 60%);
     }
 
     @media (width >= theme(--breakpoint-lg)) {
@@ -34,6 +35,7 @@
       background-color: var(--color-abru-dark-20);
     }
 
+    &.nav-menu-item--accent,
     &.accent {
       color: var(--color-accent);
     }
@@ -64,6 +66,7 @@
 }
 
 @layer components {
+  .nav-steam-button,
   .steam-button {
     background-color: var(--color-steam);
     color: #ffffff;
@@ -96,6 +99,7 @@
 }
 
 @layer components {
+  .nav-profile-button,
   .profile-button {
     @apply transition-colors;
     @apply duration-75;
@@ -130,6 +134,7 @@
 }
 
 @layer components {
+  .profile-menu-divider,
   .divider {
     width: 236px;
     height: 1px;

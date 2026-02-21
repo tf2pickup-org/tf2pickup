@@ -1,10 +1,14 @@
-.stream-link {
-  @apply transition-colors;
-  @apply duration-75;
+@reference '../../../html/styles/main.css';
 
-  background-color: var(--color-abru-light-15);
+@layer components {
+  .stream-link {
+    @apply transition-colors;
+    @apply duration-75;
 
-  &:hover {
-    background-color: color-mix(in hsl, var(--color-abru-light-15), white 4%);
+    background-color: var(--color-abru-light-15);
+
+    &:hover {
+      background-color: color-mix(in hsl, var(--color-abru-light-15), white 4%);
+    }
   }
 }

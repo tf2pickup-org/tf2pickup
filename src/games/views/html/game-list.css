@@ -1,176 +1,179 @@
 @reference '../../../html/styles/main.css';
 
-.game-list {
-  display: grid;
-  column-gap: 8px;
-  row-gap: 10px;
-
-  grid-template-columns: 22px auto 1fr 1fr auto;
-
-  @media (width >= theme(--breakpoint-sm)) {
-    grid-template-columns: 22px repeat(4, auto) 1fr 1fr;
-  }
-
-  @media (width >= theme(--breakpoint-xl)) {
-    grid-template-columns: 22px repeat(5, auto) 1fr;
-  }
-
-  .game-list-item {
-    @apply transition-colors;
-    @apply duration-75;
-
+@layer components {
+  .game-list {
     display: grid;
-    grid-template-columns: subgrid;
-    grid-template-rows: subgrid;
-    position: relative;
-    @apply col-span-5;
-    @apply row-span-3;
-    place-items: center;
+    column-gap: 8px;
+    row-gap: 10px;
 
-    padding: 8px;
-
-    color: var(--color-abru-light-75);
-    font-weight: 500;
-
-    background: --alpha(var(--color-abru-light-15) / 50%);
-
-    overflow: hidden;
-    border-radius: 8px;
+    grid-template-columns: 22px auto 1fr 1fr auto;
 
     @media (width >= theme(--breakpoint-sm)) {
-      @apply col-span-7;
-      @apply row-span-1;
-
-      grid-template-rows: initial;
-      height: 60px;
+      grid-template-columns: 22px repeat(4, auto) 1fr 1fr;
     }
 
     @media (width >= theme(--breakpoint-xl)) {
-      height: 80px;
-
-      background: var(--color-abru-light-15);
-      background: linear-gradient(90deg, var(--color-abru-light-15) 35%, transparent 90%);
+      grid-template-columns: 22px repeat(5, auto) 1fr;
     }
 
-    &:hover {
-      background: --alpha(var(--color-abru-light-15) / 90%);
+    .game-list-item {
+      @apply transition-colors;
+      @apply duration-75;
 
-      @media (width >= theme(--breakpoint-xl)) {
-        background: linear-gradient(
-          90deg,
-          color-mix(in hsl, var(--color-abru-light-15), white 3%) 35%,
-          transparent 90%
-        );
-      }
-    }
-
-    .live-indicator {
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+      position: relative;
+      @apply col-span-5;
       @apply row-span-3;
-      order: 0;
+      place-items: center;
 
-      @media (width >= theme(--breakpoint-sm)) {
-        @apply row-span-1;
-      }
-    }
+      padding: 8px;
 
-    .game-number {
-      @apply row-span-3;
-      order: 1;
-
-      font-size: 24px;
-      font-style: normal;
+      color: var(--color-abru-light-75);
       font-weight: 500;
-      line-height: normal;
+
+      background: --alpha(var(--color-abru-light-15) / 50%);
+
+      overflow: hidden;
+      border-radius: 8px;
 
       @media (width >= theme(--breakpoint-sm)) {
+        @apply col-span-7;
         @apply row-span-1;
-      }
-    }
 
-    .game-class-icon {
-      @apply row-span-3;
-      order: 3;
-      margin: 0 8px;
-
-      @media (width >= theme(--breakpoint-sm)) {
-        @apply row-span-1;
-        order: 2;
-      }
-    }
-
-    .map-name {
-      @apply col-span-2;
-      order: 2;
-      white-space: nowrap;
-
-      @media (width >= theme(--breakpoint-sm)) {
-        @apply col-span-1;
-        order: 5;
+        grid-template-rows: initial;
+        height: 60px;
       }
 
       @media (width >= theme(--breakpoint-xl)) {
-        justify-self: start;
-        margin: 0 16px;
-      }
-    }
+        height: 80px;
 
-    .launched-at {
-      @apply col-span-2;
-      order: 4;
-      white-space: nowrap;
-
-      @media (width >= theme(--breakpoint-sm)) {
-        @apply col-span-1;
-        order: 6;
+        background: var(--color-abru-light-15);
+        background: linear-gradient(90deg, var(--color-abru-light-15) 35%, transparent 90%);
       }
 
-      @media (width >= theme(--breakpoint-xl)) {
-        justify-self: start;
+      &:hover {
+        background: --alpha(var(--color-abru-light-15) / 90%);
+
+        @media (width >= theme(--breakpoint-xl)) {
+          background: linear-gradient(
+            90deg,
+            color-mix(in hsl, var(--color-abru-light-15), white 3%) 35%,
+            transparent 90%
+          );
+        }
       }
-    }
 
-    .label {
-      border-radius: 3px;
-      padding: 0 13px;
-      text-align: center;
-      white-space: nowrap;
-      order: 5;
+      .live-indicator {
+        @apply row-span-3;
+        order: 0;
 
-      @media (width >= theme(--breakpoint-sm)) {
+        @media (width >= theme(--breakpoint-sm)) {
+          @apply row-span-1;
+        }
+      }
+
+      .game-number {
+        @apply row-span-3;
+        order: 1;
+
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+
+        @media (width >= theme(--breakpoint-sm)) {
+          @apply row-span-1;
+        }
+      }
+
+      .game-class-icon {
+        @apply row-span-3;
         order: 3;
+        margin: 0 8px;
+
+        @media (width >= theme(--breakpoint-sm)) {
+          @apply row-span-1;
+          order: 2;
+        }
       }
 
-      &--blu {
-        background-color: var(--color-team-blu);
-        text-transform: uppercase;
+      .map-name {
+        @apply col-span-2;
+        order: 2;
+        white-space: nowrap;
+
+        @media (width >= theme(--breakpoint-sm)) {
+          @apply col-span-1;
+          order: 5;
+        }
+
+        @media (width >= theme(--breakpoint-xl)) {
+          justify-self: start;
+          margin: 0 16px;
+        }
+      }
+
+      .launched-at {
+        @apply col-span-2;
+        order: 4;
+        white-space: nowrap;
+
+        @media (width >= theme(--breakpoint-sm)) {
+          @apply col-span-1;
+          order: 6;
+        }
+
+        @media (width >= theme(--breakpoint-xl)) {
+          justify-self: start;
+        }
+      }
+
+      .game-list-label,
+      .label {
+        border-radius: 3px;
+        padding: 0 13px;
+        text-align: center;
+        white-space: nowrap;
         order: 5;
 
         @media (width >= theme(--breakpoint-sm)) {
           order: 3;
         }
-      }
 
-      &--red {
-        background-color: var(--color-team-red);
-        text-transform: uppercase;
-        order: 6;
+        &--blu {
+          background-color: var(--color-team-blu);
+          text-transform: uppercase;
+          order: 5;
 
-        @media (width >= theme(--breakpoint-sm)) {
-          order: 4;
+          @media (width >= theme(--breakpoint-sm)) {
+            order: 3;
+          }
         }
-      }
 
-      &--interrupted {
-        @apply col-span-2;
-        background-color: var(--color-abru-light-25);
-        justify-self: stretch;
-      }
+        &--red {
+          background-color: var(--color-team-red);
+          text-transform: uppercase;
+          order: 6;
 
-      &--launching {
-        @apply col-span-2;
-        background-color: var(--color-alert);
-        color: var(--color-abru-light-3);
-        justify-self: stretch;
+          @media (width >= theme(--breakpoint-sm)) {
+            order: 4;
+          }
+        }
+
+        &--interrupted {
+          @apply col-span-2;
+          background-color: var(--color-abru-light-25);
+          justify-self: stretch;
+        }
+
+        &--launching {
+          @apply col-span-2;
+          background-color: var(--color-alert);
+          color: var(--color-abru-light-3);
+          justify-self: stretch;
+        }
       }
     }
   }

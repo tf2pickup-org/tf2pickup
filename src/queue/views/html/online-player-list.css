@@ -1,34 +1,36 @@
 @reference '../../../html/styles/main.css';
 
-.online-player-list {
-  flex: 1 1 0;
-  list-style-type: none;
+@layer components {
+  .online-player-list {
+    flex: 1 1 0;
+    list-style-type: none;
 
-  li {
-    &:nth-child(odd) {
-      background-color: var(--color-abru-dark-6);
+    li {
+      &:nth-child(odd) {
+        background-color: var(--color-abru-dark-6);
+      }
+
+      &:nth-child(even) {
+        background-color: var(--color-abru-light-5);
+      }
     }
 
-    &:nth-child(even) {
-      background-color: var(--color-abru-light-5);
-    }
-  }
+    a {
+      color: var(--color-abru-light-75);
+      border-radius: 2px;
+      padding: 4px 8px;
+      font-weight: 300;
+      text-align: center;
+      display: inline-block;
+      width: 100%;
 
-  a {
-    color: var(--color-abru-light-75);
-    border-radius: 2px;
-    padding: 4px 8px;
-    font-weight: 300;
-    text-align: center;
-    display: inline-block;
-    width: 100%;
+      @media (width >= theme(--breakpoint-lg)) {
+        text-align: start;
+      }
 
-    @media (width >= theme(--breakpoint-lg)) {
-      text-align: start;
-    }
-
-    &:hover {
-      text-decoration: underline;
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 @layer components {
+  .flash-message-list,
   .flash-messages {
     position: fixed;
     bottom: 48px;

@@ -1,6 +1,6 @@
 @layer base {
   dialog::backdrop {
-    background: --theme(--color-abru-dark-3 / 50%);
+    background: color-mix(in srgb, var(--color-abru-dark-3) 50%, transparent);
     backdrop-filter: blur(1px);
   }
 }

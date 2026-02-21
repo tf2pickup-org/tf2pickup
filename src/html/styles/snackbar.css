@@ -1,4 +1,5 @@
 @layer components {
+  .app-snackbar,
   .snackbar {
     position: fixed;
     bottom: 48px;

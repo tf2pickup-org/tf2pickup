@@ -11,7 +11,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
   return (
     <>
       <div class="relative grow lg:grow-0">
-        <button class="profile-button" id="open-profile-menu-button">
+        <button class="nav-profile-button" id="open-profile-menu-button">
           <img
             src={player.avatar.medium}
             width="64"
@@ -47,12 +47,12 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
               <IconUserCircle />
               <span>My profile</span>
             </a>
-            <div class="divider" />
+            <div class="profile-menu-divider" />
             <a href="/settings" class="profile-menu-item" preload="mousedown">
               <IconSettings />
               <span>Settings</span>
             </a>
-            <div class="divider" />
+            <div class="profile-menu-divider" />
             <a
               href="/auth/sign-out"
               class="profile-menu-item profile-menu-item--accent"

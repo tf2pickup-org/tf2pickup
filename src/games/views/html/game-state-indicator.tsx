@@ -30,7 +30,7 @@ export function GameStateIndicator(props: { game: Pick<GameModel, 'state' | 'num
   return (
     <div
       id={`game-${props.game.number}-state`}
-      class="floating-label text-accent-600 top-[10px] right-[10px]"
+      class="game-floating-label text-accent-600 top-[10px] right-[10px]"
       aria-label="Game status"
     >
       {indicator}

@@ -13,7 +13,7 @@ export async function FlashMessageList() {
       )
     : []
   return (
-    <div class="flash-messages" id="flash-messages">
+    <div class="flash-message-list" id="flash-messages">
       {safeMessageList}
     </div>
   )

@@ -26,15 +26,15 @@ export function GameSummary(props: {
           <MapThumbnail map={props.game.map} />
         </div>
 
-        <div class="floating-label text-abru-light-75 top-[10px] left-[10px]">
+        <div class="game-floating-label text-abru-light-75 top-[10px] left-[10px]">
           <span safe>#{props.game.number}</span>
         </div>
 
         <GameStateIndicator game={props.game} />
 
         <div class="game-info">
-          <span class="label">map</span>
-          <span class="value" safe>
+          <span class="game-info-label">map</span>
+          <span class="game-info-value" safe>
             {props.game.map}
           </span>
         </div>
@@ -42,8 +42,8 @@ export function GameSummary(props: {
 
       <div class="bg-abru-dark-29 flex flex-col gap-[8px] p-[10px]">
         <div class="game-info">
-          <span class="label">launched</span>
-          <span class="value" safe>
+          <span class="game-info-label">launched</span>
+          <span class="game-info-value" safe>
             {format(launchedAt, 'dd.MM.yyyy HH:mm')}
           </span>
         </div>

@@ -8,22 +8,22 @@ export function Sidebar(props: { user?: User | undefined }) {
   return (
     <div class="queue-sidebar">
       <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
-        <button class="tablink" data-tabs-select="tab-online-player-list">
+        <button class="tab-link" data-tabs-select="tab-online-player-list">
           <IconUserCircle size={18} />
           <OnlinePlayerCount />
         </button>
 
-        <button class="tablink" data-tabs-select="tab-chat">
+        <button class="tab-link" data-tabs-select="tab-chat">
           <IconMessageCircle size={18} />
           <span>Chat</span>
         </button>
       </div>
 
-      <div class="tabcontent" id="tab-online-player-list">
+      <div class="tab-content" id="tab-online-player-list">
         <OnlinePlayerList />
       </div>
 
-      <div class="tabcontent" id="tab-chat">
+      <div class="tab-content" id="tab-chat">
         <Chat user={props.user} />
       </div>
     </div>

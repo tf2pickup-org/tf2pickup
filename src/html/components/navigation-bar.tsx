@@ -84,7 +84,7 @@ function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) 
   return (
     <a
       href={href}
-      class="menu-item"
+      class="nav-menu-item"
       aria-current={url === href ? 'page' : undefined}
       preload="mousedown"
     >
@@ -95,7 +95,7 @@ function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) 
 
 function SteamButton() {
   return (
-    <a href="/auth/steam" class="steam-button" hx-boost="false" data-umami-event="login-steam">
+    <a href="/auth/steam" class="nav-steam-button" hx-boost="false" data-umami-event="login-steam">
       <span>Sign in through Steam</span>
       <div class="icon">
         <IconBrandSteam />

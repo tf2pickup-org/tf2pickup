@@ -1,4 +1,5 @@
 @layer components {
+  .tab-content,
   .tabcontent {
     display: contents;
   }
