@@ -21,7 +21,9 @@ export default fp(
               return
             }
 
-            app.gateway.to({ player: steamId }).send(async actor => await ChatMentionNotification(actor!))
+            app.gateway
+              .to({ player: steamId })
+              .send(async actor => await ChatMentionNotification(actor!))
           }),
         )
       }),

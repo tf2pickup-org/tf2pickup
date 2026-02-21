@@ -9,7 +9,10 @@ export async function ChatMentionNotification(actor: SteamId64) {
         play-sound-src="/sounds/mention.webm"
         play-sound-volume={player.preferences.soundVolume ?? '1.0'}
       ></div>
-      <script type="module" remove-me="0s">{`document.dispatchEvent(new CustomEvent('chat:mentioned'));`}</script>
+      <script
+        type="module"
+        remove-me="0s"
+      >{`document.dispatchEvent(new CustomEvent('chat:mentioned'));`}</script>
     </div>
   )
 }

@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach, type MockedFunction } from 'vitest'
+import type { FastifyInstance } from 'fastify'
+import type { Events } from '../../events'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+
+type ChatMessageSentPayload = Events['chat:messageSent']
+type ChatMessageSentHandler = (payload: ChatMessageSentPayload) => Promise<void>
 
 // Must mock before importing the module under test
 const mockFindOne = vi.fn()
@@ -18,10 +23,9 @@ vi.mock('../../players', () => ({
 }))
 
 // Capture the event handler registered by the plugin
-let capturedHandler: ((payload: any) => Promise<void>) | undefined
-const mockEventsOn = vi.fn((event: string, handler: any) => {
+let capturedHandler: ChatMessageSentHandler | undefined
+const mockEventsOn = vi.fn((event: string, handler: ChatMessageSentHandler) => {
   if (event === 'chat:messageSent') {
-    // `safe()` wraps the handler — unwrap it by calling through
     capturedHandler = handler
   }
 })
@@ -31,7 +35,7 @@ vi.mock('../../events', () => ({
 
 // Mock safe() to pass the handler through unchanged so we can test it directly
 vi.mock('../../utils/safe', () => ({
-  safe: (fn: any) => fn,
+  safe: <T>(fn: T): T => fn,
 }))
 
 // Mock the notification fragment
@@ -60,7 +64,7 @@ describe('notify-mentioned-players plugin', () => {
     const pluginModule = await import('./notify-mentioned-players')
     const plugin = pluginModule.default
     // Execute the plugin function directly with the mock app
-    await plugin(mockApp as any, {}, () => {})
+    await plugin(mockApp as unknown as FastifyInstance, {}, vi.fn())
   })
 
   it('sends notification to online mentioned players', async () => {
