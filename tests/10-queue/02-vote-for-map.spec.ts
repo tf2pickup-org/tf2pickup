@@ -27,6 +27,10 @@ test('vote for map @6v6 @9v9', async ({ users }) => {
   await expect(secondMapBtn).toContainText(/^100%/)
   await expect(mapBtn).toContainText(/^0%/)
 
+  await secondMapBtn.click()
+  await expect(secondMapBtn).toContainText(/^0%/)
+  expect(await secondMapBtn.getAttribute('aria-checked')).toBe(null)
+
   await page.leaveQueue()
   await expect(mapBtn).toBeDisabled()
   await expect(mapBtn).toContainText(/^0%/)
