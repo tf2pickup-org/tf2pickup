@@ -19,8 +19,8 @@ export async function voteMap(steamId: SteamId64, map: string): Promise<Record<s
       throw errors.badRequest('player not in the queue')
     }
 
-    const unvoted = await collections.queueMapVotes.deleteOne({ player: steamId, map })
-    if (unvoted.deletedCount === 0) {
+    const { deletedCount } = await collections.queueMapVotes.deleteOne({ player: steamId, map })
+    if (deletedCount === 0) {
       await collections.queueMapVotes.findOneAndUpdate(
         { player: steamId },
         { $set: { map } },
