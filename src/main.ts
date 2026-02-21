@@ -124,14 +124,14 @@ await app.register((await import('./websocket')).default)
 await app.register(autoload, {
   dir: resolve(import.meta.dirname, '.'),
   matchFilter: path => {
-    return path.includes('/plugins/')
+    return path.includes('/plugins/') && !path.includes('.test.')
   },
 })
 
 await app.register(autoload, {
   dir: resolve(import.meta.dirname, '.'),
   matchFilter: path => {
-    return path.includes('/middleware/')
+    return path.includes('/middleware/') && !path.includes('.test.')
   },
 })
 

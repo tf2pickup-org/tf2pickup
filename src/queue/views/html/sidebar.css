@@ -46,6 +46,16 @@
           left: calc(50% - 33px);
           border-bottom: 2px solid var(--color-accent);
         }
+
+        &.has-mention::before {
+          content: '★';
+          position: absolute;
+          top: -4px;
+          right: 4px;
+          font-size: 10px;
+          color: var(--color-accent);
+          line-height: 1;
+        }
       }
     }
   }
