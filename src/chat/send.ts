@@ -4,6 +4,8 @@ import { errors } from '../errors'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { formatBody } from './format-body'
+import { getMentionNames } from './get-mention-names'
+import { resolveMentions } from './resolve-mentions'
 import { Mutex } from 'async-mutex'
 import { escape } from 'es-toolkit'
 
@@ -16,13 +18,16 @@ const mutex = new Mutex()
 
 export async function send(params: SendParams): Promise<ChatMessageModel> {
   return await mutex.runExclusive(async () => {
-    const originalBody = escape(params.body)
-    const formattedBody = formatBody(originalBody)
+    const escaped = escape(params.body)
+    const { body: originalBody, mentions } = await resolveMentions(escaped)
+    const mentionNames = await getMentionNames(mentions)
+    const formattedBody = formatBody(originalBody, mentionNames)
 
     await collections.chatMessages.insertOne({
       author: params.author,
       originalBody,
       body: formattedBody,
+      mentions,
       at: new Date(),
     })
     const message = await collections.chatMessages.findOne({}, { sort: { at: -1 } })
