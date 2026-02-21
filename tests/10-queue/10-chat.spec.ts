@@ -41,6 +41,35 @@ test('users are able to send messages to chat @6v6 @9v9', async ({ users }) => {
   }
 })
 
+test('player mentions are rendered as profile links @6v6 @9v9', async ({ users }) => {
+  const [sender, receiver] = users.getMany(2)
+
+  for (const user of [sender, receiver]) {
+    const page = await user.page()
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Chat' }).click()
+  }
+
+  const uniqueSuffix = `dodawaj sie ${Date.now()}`
+
+  const senderPage = await sender.page()
+  await senderPage
+    .getByPlaceholder('Send message...')
+    .fill(`@${receiver.playerName} ${uniqueSuffix}`)
+  await senderPage.getByRole('button', { name: 'Send message' }).click()
+  await expect(senderPage.getByPlaceholder('Send message...')).toBeEmpty()
+
+  for (const user of [sender, receiver]) {
+    const page = await user.page()
+    const message = page.getByText(uniqueSuffix)
+    await expect(message).toBeVisible()
+    const mention = message.getByRole('link', { name: `@${receiver.playerName}` })
+    await expect(mention).toBeVisible()
+    await expect(mention).toHaveAttribute('href', `/players/${receiver.steamId}`)
+    await expect(mention).toHaveClass(/mention/)
+  }
+})
+
 test('links inside chat messages are clickable @6v6 @9v9', async ({ users }) => {
   const [sender, receiver] = users.getMany(2)
 

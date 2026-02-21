@@ -62,6 +62,18 @@
               text-decoration: underline solid 1px;
             }
           }
+
+          a.mention {
+            background-color: color-mix(in srgb, var(--color-abru-light-75) 25%, transparent);
+            border-radius: 4px;
+            padding: 1px 4px;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: none;
+              background-color: color-mix(in srgb, var(--color-abru-light-75) 40%, transparent);
+            }
+          }
         }
       }
     }

@@ -4,5 +4,6 @@ export interface ChatMessageModel {
   at: Date
   author: SteamId64
   body: string
+  mentions: SteamId64[]
   originalBody: string
 }
