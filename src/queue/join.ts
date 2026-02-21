@@ -1,4 +1,5 @@
 import { collections } from '../database/collections'
+import { configuration } from '../configuration'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
@@ -22,6 +23,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       'steamId',
       'name',
       'avatar.medium',
+      'verified',
     ])
 
     if (!player.hasAcceptedRules) {
@@ -48,6 +50,12 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
 
     if (!(await meetsSkillThreshold(player, targetSlot))) {
       throw errors.badRequest(`player does not meet skill threshold`)
+    }
+
+    if (await configuration.get('queue.require_player_verification')) {
+      if (!player.verified) {
+        throw errors.badRequest(`player is not verified`)
+      }
     }
 
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
