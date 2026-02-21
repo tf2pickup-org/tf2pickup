@@ -48,6 +48,7 @@ export default fp(
           {
             $set: {
               name: player.name,
+              avatar: player.avatar.small,
             },
           },
           {

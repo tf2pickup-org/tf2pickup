@@ -126,29 +126,32 @@ ChatMessages.append = function (props: {
 
 export function ChatPrompt() {
   return (
-    <form
-      class="m-2 flex flex-row gap-2"
-      id="chat-prompt"
-      hx-post="/chat"
-      hx-swap="none"
-      hx-disabled-elt="find input[type='text'], find button"
-      hx-on--after-request="if(event.detail.successful) this.reset()"
-      data-disable-when-offline
-    >
-      <input
-        type="text"
-        class="flex-1"
-        placeholder="Send message..."
-        name="message"
-        autocomplete="off"
-        autofocus
-        required
-      />
-      <button class="text-abru-light-75" type="submit">
-        <IconSend2 />
-        <span class="sr-only">Send message</span>
-      </button>
-    </form>
+    <div class="chat-prompt-container" id="chat-prompt-container">
+      <div class="mention-completion" id="mention-completion" style="display: none;"></div>
+      <form
+        class="m-2 flex flex-row gap-2"
+        id="chat-prompt"
+        hx-post="/chat"
+        hx-swap="none"
+        hx-disabled-elt="find input[type='text'], find button"
+        hx-on--after-request="if(event.detail.successful) this.reset()"
+        data-disable-when-offline
+      >
+        <input
+          type="text"
+          class="flex-1"
+          placeholder="Send message..."
+          name="message"
+          autocomplete="off"
+          autofocus
+          required
+        />
+        <button class="text-abru-light-75" type="submit">
+          <IconSend2 />
+          <span class="sr-only">Send message</span>
+        </button>
+      </form>
+    </div>
   )
 }
 
