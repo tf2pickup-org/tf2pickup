@@ -1,5 +1,25 @@
 # Changelog
 
+# [4.0.0-beta.33](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.32...4.0.0-beta.33) (2026-02-22)
+
+
+### Bug Fixes
+
+* allow toggling off map votes ([#480](https://github.com/tf2pickup-org/tf2pickup/issues/480)) ([855bd52](https://github.com/tf2pickup-org/tf2pickup/commit/855bd528ac2e0bda441328eeac9f9d7b86e1fb87))
+* **deps:** update dependency @kitajs/html to v4.2.13 ([ac4600d](https://github.com/tf2pickup-org/tf2pickup/commit/ac4600d68915133227b025c8b8705097bbafc6aa))
+* **deps:** update dependency marked to v17.0.3 ([b3d88d6](https://github.com/tf2pickup-org/tf2pickup/commit/b3d88d6cecaaefc8b3a636b7fbe8b25be8aecaaf))
+* **deps:** update dependency motion to v12.34.2 ([243eaab](https://github.com/tf2pickup-org/tf2pickup/commit/243eaaba29174499d7118942ad155d28862a4e60))
+* **deps:** update dependency motion to v12.34.3 ([591442c](https://github.com/tf2pickup-org/tf2pickup/commit/591442c3ee132b46cf0564a71b61a49ad1f39a25))
+* **deps:** update tailwindcss monorepo to v4.2.0 ([5cbd0b8](https://github.com/tf2pickup-org/tf2pickup/commit/5cbd0b8d145d731bb22aa3aeffad2d32a7cf1c49))
+
+
+### Features
+
+* **chat:** add mention completion for online players ([#482](https://github.com/tf2pickup-org/tf2pickup/issues/482)) ([c5138b9](https://github.com/tf2pickup-org/tf2pickup/commit/c5138b9c89cfd1a2d0949a883fc98a0c26ed1930))
+* **chat:** add player mention support ([#481](https://github.com/tf2pickup-org/tf2pickup/issues/481)) ([70a20d5](https://github.com/tf2pickup-org/tf2pickup/commit/70a20d5741dda4d0d051679f9b48a99ec1718859))
+* **chat:** mention notifications ([#483](https://github.com/tf2pickup-org/tf2pickup/issues/483)) ([7b66414](https://github.com/tf2pickup-org/tf2pickup/commit/7b664141f933b5b9b0b111f7db6ebf32a223011f))
+* manual player verification ([#484](https://github.com/tf2pickup-org/tf2pickup/issues/484)) ([15337a5](https://github.com/tf2pickup-org/tf2pickup/commit/15337a52924e7380ba254b3a85b6b6001c297249))
+
 # [4.0.0-beta.32](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.31...4.0.0-beta.32) (2026-02-17)
 
 
