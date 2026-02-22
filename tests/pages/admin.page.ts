@@ -78,7 +78,7 @@ export class AdminPage {
 
   async configureRequirePlayerVerification(enabled: boolean) {
     await this.page.goto('/admin/player-restrictions')
-    await this.page.getByLabel('Require player verification').setChecked(enabled)
+    await this.page.getByLabel('Require player verification').setChecked(enabled, { force: true })
     await this.page.getByRole('button', { name: 'Save' }).click()
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
