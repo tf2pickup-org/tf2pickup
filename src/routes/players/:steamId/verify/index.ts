@@ -18,6 +18,8 @@ export default routes(async app => {
           steamId: steamId64,
         }),
         body: z.object({
+          // When the checkbox is unchecked, browsers omit it from the request body entirely.
+          // The default(false) here handles that case, making unchecking equivalent to verified=false.
           verified: z.coerce.boolean().default(false),
         }),
       },
