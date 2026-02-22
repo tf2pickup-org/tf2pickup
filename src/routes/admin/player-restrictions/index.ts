@@ -43,7 +43,7 @@ export default routes(async app => {
             z.object({
               etf2lAccountRequired: z.coerce.boolean().default(false),
               minimumInGameHours: z.coerce.number(),
-              denyPlayersWithNoSkillAssigned: z.coerce.boolean().default(false),
+              requirePlayerVerification: z.coerce.boolean().default(false),
               ...queue.config.classes
                 .map(({ name }) => name)
                 .reduce<
@@ -57,7 +57,7 @@ export default routes(async app => {
         const {
           etf2lAccountRequired,
           minimumInGameHours,
-          denyPlayersWithNoSkillAssigned,
+          requirePlayerVerification,
           playerSkillThresholdEnabled,
         } = request.body
         const defaultPlayerSkill = Object.entries(request.body)
@@ -70,10 +70,7 @@ export default routes(async app => {
         await Promise.all([
           configuration.set('players.etf2l_account_required', etf2lAccountRequired),
           configuration.set('players.minimum_in_game_hours', minimumInGameHours),
-          configuration.set(
-            'queue.deny_players_with_no_skill_assigned',
-            denyPlayersWithNoSkillAssigned,
-          ),
+          configuration.set('queue.require_player_verification', requirePlayerVerification),
           configuration.set(
             'queue.player_skill_threshold',
             playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,

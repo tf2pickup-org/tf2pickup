@@ -1,4 +1,5 @@
 import { collections } from '../../../database/collections'
+import { configuration } from '../../../configuration'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import { errors } from '../../../errors'
@@ -27,8 +28,8 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
     const actor = await collections.players.findOne<
-      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill'>
-    >({ steamId: props.actor }, { projection: { bans: 1, activeGame: 1, skill: 1 } })
+      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
+    >({ steamId: props.actor }, { projection: { bans: 1, activeGame: 1, skill: 1, verified: 1 } })
     if (!actor) {
       throw errors.internalServerError(`actor invalid: ${props.actor}`)
     }
@@ -41,6 +42,8 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       disabled = 'You are already in a game'
     } else if (!(await meetsSkillThreshold(actor, props.slot))) {
       disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
+    } else if ((await configuration.get('queue.require_player_verification')) && !actor.verified) {
+      disabled = 'You are not verified to join the queue'
     }
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }

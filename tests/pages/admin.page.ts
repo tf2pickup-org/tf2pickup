@@ -76,6 +76,30 @@ export class AdminPage {
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
 
+  async configureRequirePlayerVerification(enabled: boolean) {
+    await this.page.goto('/admin/player-restrictions')
+    await this.page.getByLabel('Require player verification').setChecked(enabled, { force: true })
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
+  async setPlayerVerified(steamId: string, verified: boolean) {
+    await this.page.goto(`/players/${steamId}`)
+    const checkbox = this.page.getByLabel('Player verified')
+    if (!(await checkbox.isVisible())) {
+      return
+    }
+    if ((await checkbox.isChecked()) === verified) {
+      return // already in the desired state; no change event will fire
+    }
+    await Promise.all([
+      this.page.waitForResponse(
+        resp => resp.url().includes(`/players/${steamId}/verify`) && resp.status() === 200,
+      ),
+      checkbox.setChecked(verified),
+    ])
+  }
+
   async configureVoiceServer(props: { host: string; password: string; channelName: string }) {
     await this.page.goto('/admin/voice-server')
     await this.page.getByLabel('Mumble').click()
