@@ -89,6 +89,9 @@ export class AdminPage {
     if (!(await checkbox.isVisible())) {
       return
     }
+    if ((await checkbox.isChecked()) === verified) {
+      return // already in the desired state; no change event will fire
+    }
     await Promise.all([
       this.page.waitForResponse(
         resp => resp.url().includes(`/players/${steamId}/verify`) && resp.status() === 200,
