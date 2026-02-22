@@ -42,7 +42,7 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       disabled = 'You are already in a game'
     } else if (!(await meetsSkillThreshold(actor, props.slot))) {
       disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
-    } else if (await configuration.get('queue.require_player_verification') && !actor.verified) {
+    } else if ((await configuration.get('queue.require_player_verification')) && !actor.verified) {
       disabled = 'You are not verified to join the queue'
     }
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />

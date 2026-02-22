@@ -19,8 +19,8 @@ export async function AdminToolbox(props: {
   return (
     <div id="player-admin-toolbox">
       {requireVerification && (
-        <div class="flex items-center gap-3 rounded-md bg-abru-light-5 px-3 py-2">
-          <label for="playerVerified" class="cursor-pointer select-none text-sm">
+        <div class="bg-abru-light-5 flex items-center gap-3 rounded-md px-3 py-2">
+          <label for="playerVerified" class="cursor-pointer text-sm select-none">
             Player verified
           </label>
           <input
