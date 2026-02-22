@@ -14,6 +14,8 @@ test.describe('when player verification is required @6v6 @9v9', () => {
 
   test.afterAll(async ({ users }) => {
     const admin = await users.getAdmin().adminPage()
+    // Un-verify before disabling the feature: setPlayerVerified is a no-op when the
+    // feature is off (checkbox not rendered), so order matters here.
     await admin.setPlayerVerified(moonManSteamId, false)
     await admin.configureRequirePlayerVerification(false)
   })

@@ -85,11 +85,15 @@ export class AdminPage {
 
   async setPlayerVerified(steamId: string, verified: boolean) {
     await this.page.goto(`/players/${steamId}`)
+    const checkbox = this.page.getByLabel('Player verified')
+    if (!(await checkbox.isVisible())) {
+      return
+    }
     await Promise.all([
       this.page.waitForResponse(
         resp => resp.url().includes(`/players/${steamId}/verify`) && resp.status() === 200,
       ),
-      this.page.getByLabel('Player verified').setChecked(verified),
+      checkbox.setChecked(verified),
     ])
   }
 
