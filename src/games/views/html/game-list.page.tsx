@@ -59,7 +59,7 @@ export async function GameList(props: { page: number }) {
 
   return games.length > 0 ? (
     <>
-      <div class="game-list">
+      <div class="game-list" style="view-transition-name: game-list">
         {games.map(game => (
           <GameListItem game={game} />
         ))}

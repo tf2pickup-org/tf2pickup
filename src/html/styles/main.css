@@ -110,6 +110,11 @@
   }
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 100ms;
+}
+
 @layer base {
   body {
     background-color: #221d24;

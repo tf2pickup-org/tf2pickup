@@ -107,7 +107,7 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
       <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
         Game history
       </div>
-      <div class="game-list col-span-2">
+      <div class="game-list col-span-2" style="view-transition-name: player-game-list">
         {games.map(game => (
           <GameListItem
             game={game}
@@ -153,6 +153,7 @@ function PlayerPresentation(props: {
         height="184"
         class="player-avatar"
         alt={`${props.player.name}'s avatar`}
+        style={`view-transition-name: player-avatar-${props.player.steamId}`}
       />
 
       <div class="flex flex-row items-center gap-[10px]">
