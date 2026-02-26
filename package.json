@@ -43,7 +43,7 @@
     "@opentelemetry/sdk-metrics": "2.5.1",
     "@opentelemetry/sdk-node": "0.212.0",
     "@opentelemetry/sdk-trace-node": "2.5.1",
-    "@opentelemetry/semantic-conventions": "1.39.0",
+    "@opentelemetry/semantic-conventions": "1.40.0",
     "@tailwindcss/postcss": "4.2.1",
     "@tailwindcss/typography": "0.5.19",
     "@tf2pickup-org/mumble-client": "0.12.6",
