@@ -12,7 +12,12 @@ export function NavigationBar() {
     <nav class="flex min-h-[95px] flex-row justify-center">
       <div class="container flex flex-row items-center justify-between">
         <a href="/" class="mx-4 self-center md:mx-1">
-          <img alt={`${environment.WEBSITE_NAME} logo`} src="/logo.png" height="120" class="h-[44px]" />
+          <img
+            alt={`${environment.WEBSITE_NAME} logo`}
+            src="/logo.png"
+            height="120"
+            class="h-[44px]"
+          />
         </a>
 
         <div class="hidden flex-row items-center gap-5 font-medium lg:flex">
