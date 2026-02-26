@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-rc.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.0...4.0.0-rc.1) (2026-02-26)
+
+
+### Features
+
+* add 6v6.poland.tf branding ([#488](https://github.com/tf2pickup-org/tf2pickup/issues/488)) ([dc4a4ca](https://github.com/tf2pickup-org/tf2pickup/commit/dc4a4caf5419d0ee87e32452344d38312ca3d6d8))
+
 # [4.0.0-rc.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.33...4.0.0-rc.0) (2026-02-26)
 
 
