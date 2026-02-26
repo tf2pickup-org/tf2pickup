@@ -1,5 +1,29 @@
 @reference '../../../html/styles/main.css';
 
+@keyframes game-list-in {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+@keyframes game-list-out {
+  to {
+    opacity: 0;
+    translate: 0 -12px;
+  }
+}
+
+::view-transition-old(game-list),
+::view-transition-old(player-game-list) {
+  animation: 100ms ease-in forwards game-list-out;
+}
+
+::view-transition-new(game-list),
+::view-transition-new(player-game-list) {
+  animation: 100ms ease-out backwards game-list-in;
+}
+
 @layer components {
   .game-list {
     display: grid;

@@ -51,7 +51,7 @@ export async function Layout(
       <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="htmx-config" content='{"historyCacheSize":"0"}' />
+        <meta name="htmx-config" content='{"historyCacheSize":"0","globalViewTransitions":true}' />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <script src={bundleUrl} type="module"></script>
         <style type="text/css">{safeCss}</style>

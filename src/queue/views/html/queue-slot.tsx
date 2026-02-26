@@ -121,6 +121,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         width="64"
         height="64"
         alt={`${props.slot.player.name}'s name`}
+        style={`view-transition-name: player-avatar-${props.slot.player.steamId}`}
       />
       <a
         href={`/players/${props.slot.player.steamId}`}

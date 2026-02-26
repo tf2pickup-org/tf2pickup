@@ -79,6 +79,7 @@ async function GameSlotContent(props: {
             width="38"
             height="38"
             alt={`${props.player.name}'s avatar`}
+            style={`view-transition-name: player-avatar-${props.player.steamId}`}
           />
           <a href={`/players/${props.player.steamId}`} class="player-link">
             <span class="player-name" safe>

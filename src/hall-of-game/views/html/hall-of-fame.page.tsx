@@ -56,6 +56,7 @@ function Board(props: { title: string; entries: HallOfFameEntry[] }) {
             height="64"
             class="h-[38px] w-[38px]"
             alt="{name}'s avatar"
+            style={`view-transition-name: player-avatar-${record.player.steamId}`}
           />
           <span safe>{record.player.name}</span>
           <span class="justify-self-end">{record.count}</span>
