@@ -1,5 +1,20 @@
 # Changelog
 
+# [4.0.0-rc.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.33...4.0.0-rc.0) (2026-02-26)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @opentelemetry/auto-instrumentations-node to v0.70.1 ([e55c694](https://github.com/tf2pickup-org/tf2pickup/commit/e55c6941edd5873fab7b657c15db18f9b3a9e072))
+* **deps:** update dependency country-flag-icons to v1.6.14 ([1d2f989](https://github.com/tf2pickup-org/tf2pickup/commit/1d2f989eba62a93d4bd9f36fd8fed98628e711b8))
+* **deps:** update tailwindcss monorepo to v4.2.1 ([9c4ae2c](https://github.com/tf2pickup-org/tf2pickup/commit/9c4ae2c6da69c3458b77f67ad5636d9ee773c916))
+* reduce queue cooldown for replacement players ([#486](https://github.com/tf2pickup-org/tf2pickup/issues/486)) ([3b20795](https://github.com/tf2pickup-org/tf2pickup/commit/3b20795f9915000d3842dc6e983d60f87afc2130))
+
+
+### Features
+
+* view transitions initial ([#487](https://github.com/tf2pickup-org/tf2pickup/issues/487)) ([8c4c0f2](https://github.com/tf2pickup-org/tf2pickup/commit/8c4c0f22f93b59399eddcbfaa06cb2ffb0200bd0))
+
 # [4.0.0-beta.33](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-beta.32...4.0.0-beta.33) (2026-02-22)
 
 
