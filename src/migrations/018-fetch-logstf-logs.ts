@@ -12,11 +12,15 @@ export async function up() {
 
   let scheduled = 0
   for (const game of games) {
-    const logId = extractLogId(game.logsUrl as string)
+    const logId = extractLogId(game.logsUrl!)
     if (!logId || existingLogIdSet.has(logId)) continue
 
     const at = new Date(Date.now() + scheduled * 2000)
-    await collections.tasks.insertOne({ name: 'logsTf:fetchLog', args: { gameNumber: game.number, logId }, at })
+    await collections.tasks.insertOne({
+      name: 'logsTf:fetchLog',
+      args: { gameNumber: game.number, logId },
+      at,
+    })
     scheduled++
   }
 

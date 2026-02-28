@@ -2,7 +2,13 @@ import { z } from 'zod'
 
 const weaponStatsSchema = z.record(
   z.string(),
-  z.object({ kills: z.number(), dmg: z.number(), avg_dmg: z.number(), shots: z.number(), hits: z.number() }),
+  z.object({
+    kills: z.number(),
+    dmg: z.number(),
+    avg_dmg: z.number(),
+    shots: z.number(),
+    hits: z.number(),
+  }),
 )
 
 const classStatsSchema = z.object({
