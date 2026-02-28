@@ -43,6 +43,7 @@ export const collections = {
   games: database.collection<GameModel>('games'),
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
+  logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
@@ -57,7 +58,6 @@ export const collections = {
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
-  logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
 }
 
 await ensureIndexes()
