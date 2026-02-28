@@ -17,11 +17,16 @@ import type { Configuration } from './database/models/configuration-entry.model'
 import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
+import type { WithId } from 'mongodb'
 
 export interface Events {
+  'chat:messageDeleted': {
+    messageId: string
+  }
+
   'chat:messageSent': {
-    message: ChatMessageModel
-    previousMessage?: ChatMessageModel | undefined
+    message: WithId<ChatMessageModel>
+    previousMessage?: WithId<ChatMessageModel> | undefined
   }
 
   'configuration:updated': {

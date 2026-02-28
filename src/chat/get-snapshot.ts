@@ -1,4 +1,4 @@
-import type { Filter } from 'mongodb'
+import type { Filter, WithId } from 'mongodb'
 import { startOfDay } from 'date-fns'
 import { collections } from '../database/collections'
 import type { ChatMessageModel } from '../database/models/chat-message.model'
@@ -7,17 +7,17 @@ import { logger } from '../logger'
 export async function getSnapshot(params?: {
   limit?: number
   before?: Date
-}): Promise<ChatMessageModel[]> {
+}): Promise<WithId<ChatMessageModel>[]> {
   logger.debug({ params }, `chat.getSnapshot()`)
   const limit = params?.limit ?? 20
 
-  let filter: Filter<ChatMessageModel> = {}
+  const baseFilter: Filter<ChatMessageModel> = { deletedAt: { $exists: false } }
   if (params?.before) {
-    filter = { at: { $lt: params.before } }
+    baseFilter.at = { $lt: params.before }
   }
 
   const messages = await collections.chatMessages
-    .find(filter, { sort: { at: -1 }, limit })
+    .find(baseFilter, { sort: { at: -1 }, limit })
     .toArray()
 
   if (messages.length === 0) {
@@ -30,6 +30,7 @@ export async function getSnapshot(params?: {
   const extraSameDayMessages = await collections.chatMessages
     .find(
       {
+        deletedAt: { $exists: false },
         at: {
           $lt: oldest.at,
           $gte: oldestDayStart,

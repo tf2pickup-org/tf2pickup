@@ -6,4 +6,5 @@ export interface ChatMessageModel {
   body: string
   mentions: SteamId64[]
   originalBody: string
+  deletedAt?: Date
 }

@@ -1,14 +1,16 @@
 import { format, isSameDay, isToday, isYesterday } from 'date-fns'
+import type { WithId } from 'mongodb'
 import { chat } from '../../../chat'
 import type { ChatMessageModel } from '../../../database/models/chat-message.model'
-import { IconLoader3, IconSend2 } from '../../../html/components/icons'
+import { IconLoader3, IconSend2, IconX } from '../../../html/components/icons'
 import { players } from '../../../players'
 import type { User } from '../../../auth/types/user'
 import { PlayerRole } from '../../../database/models/player.model'
 
 export async function Chat(props: { user?: User | undefined }) {
+  const isAdmin = props.user?.player.roles.includes(PlayerRole.admin) ?? false
   return (
-    <div class="chat" id="chat">
+    <div class="chat" id="chat" data-is-admin={isAdmin ? '' : undefined}>
       {props.user ? (
         <>
           <ChatMessages />
@@ -65,7 +67,7 @@ function ChatDateSeparator(props: { at: Date }) {
   )
 }
 
-export function ChatMessageList(props: { messages: ChatMessageModel[] }) {
+export function ChatMessageList(props: { messages: WithId<ChatMessageModel>[] }) {
   let trigger = <></>
   if (props.messages.length > 0) {
     trigger = (
@@ -107,8 +109,12 @@ export function ChatMessageList(props: { messages: ChatMessageModel[] }) {
   )
 }
 
+ChatMessages.remove = function (messageId: string) {
+  return <p id={`msg-${messageId}`} hx-swap-oob="delete"></p>
+}
+
 ChatMessages.append = function (props: {
-  message: ChatMessageModel
+  message: WithId<ChatMessageModel>
   previousMessageAt?: Date | undefined
 }) {
   return (
@@ -155,13 +161,14 @@ export function ChatPrompt() {
   )
 }
 
-async function ChatMessage(props: { message: ChatMessageModel }) {
+async function ChatMessage(props: { message: WithId<ChatMessageModel> }) {
   const author = await players.bySteamId(props.message.author, ['name', 'roles', 'steamId'])
   const safeAt = format(props.message.at, 'HH:mm')
   const safeBody = props.message.body
   const isAdmin = author.roles.includes(PlayerRole.admin)
+  const messageId = props.message._id.toString()
   return (
-    <p>
+    <p class="chat-message" id={`msg-${messageId}`}>
       <span class="at">{safeAt}</span>{' '}
       <a
         href={`/players/${author.steamId}`}
@@ -172,6 +179,17 @@ async function ChatMessage(props: { message: ChatMessageModel }) {
         {author.name}
       </a>
       : <span class="body">{safeBody}</span>
+      <button
+        class="delete-btn"
+        hx-delete={`/chat/${messageId}`}
+        hx-target="closest p"
+        hx-swap="delete"
+        hx-confirm="Delete this message?"
+        title="Delete message"
+      >
+        <IconX />
+        <span class="sr-only">Delete message</span>
+      </button>
     </p>
   )
 }

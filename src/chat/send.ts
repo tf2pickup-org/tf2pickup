@@ -1,3 +1,4 @@
+import type { WithId } from 'mongodb'
 import { collections } from '../database/collections'
 import type { ChatMessageModel } from '../database/models/chat-message.model'
 import { errors } from '../errors'
@@ -16,7 +17,7 @@ interface SendParams {
 
 const mutex = new Mutex()
 
-export async function send(params: SendParams): Promise<ChatMessageModel> {
+export async function send(params: SendParams): Promise<WithId<ChatMessageModel>> {
   return await mutex.runExclusive(async () => {
     const escaped = escape(params.body)
     const { body: originalBody, mentions } = await resolveMentions(escaped)
