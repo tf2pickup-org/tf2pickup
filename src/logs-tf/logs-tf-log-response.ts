@@ -79,9 +79,9 @@ const roundSchema = z.object({
   events: z.array(roundEventSchema),
   players: z.record(
     z.string(),
-    z.object({ team: z.string().optional(), kills: z.number(), dmg: z.number() }),
+    z.object({ team: z.string().nullish(), kills: z.number(), dmg: z.number() }),
   ),
-  firstcap: z.string(),
+  firstcap: z.string().nullable(),
   length: z.number(),
 })
 
