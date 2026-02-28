@@ -25,6 +25,7 @@ import type { DiscordSubstituteNotificationModel } from './models/discord-substi
 import type { SubstituteRequestModel } from './models/substitute-request.model'
 import type { FuturePlayerSkillModel } from './models/future-player-skill.model'
 import type { PendingImportModel } from './models/pending-import.model'
+import type { LogsTfLogModel } from './models/logs-tf-log.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -56,6 +57,7 @@ export const collections = {
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
+  logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
 }
 
 await ensureIndexes()
