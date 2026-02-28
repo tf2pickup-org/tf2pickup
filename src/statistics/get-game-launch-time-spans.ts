@@ -13,7 +13,7 @@ export interface GameLaunchTimeSpan {
 }
 
 export async function getGameLaunchTimeSpans(): Promise<GameLaunchTimeSpan[]> {
-  const timezone = process.env.TZ ?? 'GMT'
+  const timezone = process.env['TZ'] ?? 'GMT'
   return await collections.games
     .aggregate<GameLaunchTimeSpan>([
       {
