@@ -147,7 +147,6 @@
           }
         }
       }
-
     }
 
     &[data-is-admin] .message-list p.chat-message:hover .delete-btn {
