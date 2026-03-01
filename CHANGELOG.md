@@ -1,5 +1,20 @@
 # Changelog
 
+# [4.0.0-rc.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.1...4.0.0-rc.2) (2026-03-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @opentelemetry/semantic-conventions to v1.40.0 ([3c54844](https://github.com/tf2pickup-org/tf2pickup/commit/3c54844fd947d7a0459957a11b0bbe6367fe0d4c))
+* **deps:** update dependency country-flag-icons to v1.6.15 ([dd69da6](https://github.com/tf2pickup-org/tf2pickup/commit/dd69da629d4aaea843d23f2e063bc1b97082a46d))
+* **deps:** update dependency openid to v2.0.15 ([6be19bb](https://github.com/tf2pickup-org/tf2pickup/commit/6be19bba7b939e9cce0fd703af9ad39fbc8c3d03))
+
+
+### Features
+
+* delete chat messages ([#492](https://github.com/tf2pickup-org/tf2pickup/issues/492)) ([23bd7c5](https://github.com/tf2pickup-org/tf2pickup/commit/23bd7c506f2f36f53f46e5d5ac33a45374d5ba94))
+* fetch and store logs.tf parsed log data after upload ([#491](https://github.com/tf2pickup-org/tf2pickup/issues/491)) ([ec48e6e](https://github.com/tf2pickup-org/tf2pickup/commit/ec48e6ed965de6e7c24a24fb30c3e54dcd27a42d))
+
 # [4.0.0-rc.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.0...4.0.0-rc.1) (2026-02-26)
 
 
