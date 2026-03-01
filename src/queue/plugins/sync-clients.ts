@@ -254,6 +254,13 @@ export default fp(
           }),
         )
     })
+
+    events.on('chat:messageDeleted', ({ messageId }) => {
+      app.gateway
+        .to({ authenticated: true })
+        .to({ url: '/' })
+        .send(() => ChatMessages.remove(messageId))
+    })
   },
   { name: 'update clients' },
 )

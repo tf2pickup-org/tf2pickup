@@ -237,6 +237,76 @@ test('mention completion round-trip: complete and send @6v6 @9v9', async ({ user
   }
 })
 
+test('delete button is not visible for non-admin users @6v6 @9v9', async ({ users }) => {
+  const [admin, nonAdmin] = [users.getAdmin(), users.getNext(u => !u.isAdmin)]
+
+  for (const user of [admin, nonAdmin]) {
+    const page = await user.page()
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Chat' }).click()
+  }
+
+  const sentence = `delete-btn-test ${Date.now()}`
+  const adminPage = await admin.page()
+  await adminPage.getByPlaceholder('Send message...').fill(sentence)
+  await adminPage.getByRole('button', { name: 'Send message' }).click()
+  await expect(adminPage.getByPlaceholder('Send message...')).toBeEmpty()
+
+  const nonAdminPage = await nonAdmin.page()
+  await expect(nonAdminPage.getByText(sentence)).toBeVisible()
+  const message = nonAdminPage.locator('p.chat-message', { hasText: sentence })
+  await message.hover()
+  await expect(message.getByTitle('Delete message')).not.toBeVisible()
+})
+
+test('delete button is visible on hover for admin users @6v6 @9v9', async ({ users }) => {
+  const [admin, nonAdmin] = [users.getAdmin(), users.getNext(u => !u.isAdmin)]
+
+  for (const user of [admin, nonAdmin]) {
+    const page = await user.page()
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Chat' }).click()
+  }
+
+  const sentence = `delete-btn-admin-test ${Date.now()}`
+  const nonAdminPage = await nonAdmin.page()
+  await nonAdminPage.getByPlaceholder('Send message...').fill(sentence)
+  await nonAdminPage.getByRole('button', { name: 'Send message' }).click()
+  await expect(nonAdminPage.getByPlaceholder('Send message...')).toBeEmpty()
+
+  const adminPage = await admin.page()
+  await expect(adminPage.getByText(sentence)).toBeVisible()
+  const message = adminPage.locator('p.chat-message', { hasText: sentence })
+  await message.hover()
+  await expect(message.getByTitle('Delete message')).toBeVisible()
+})
+
+test('admin can delete a chat message @6v6 @9v9', async ({ users }) => {
+  const [admin, nonAdmin] = [users.getAdmin(), users.getNext(u => !u.isAdmin)]
+
+  for (const user of [admin, nonAdmin]) {
+    const page = await user.page()
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Chat' }).click()
+  }
+
+  const sentence = `delete-me ${Date.now()}`
+  const nonAdminPage = await nonAdmin.page()
+  await nonAdminPage.getByPlaceholder('Send message...').fill(sentence)
+  await nonAdminPage.getByRole('button', { name: 'Send message' }).click()
+  await expect(nonAdminPage.getByPlaceholder('Send message...')).toBeEmpty()
+
+  const adminPage = await admin.page()
+  await expect(adminPage.getByText(sentence)).toBeVisible()
+  const message = adminPage.locator('p.chat-message', { hasText: sentence })
+  await message.hover()
+  adminPage.once('dialog', dialog => dialog.accept())
+  await message.getByTitle('Delete message').click()
+
+  await expect(adminPage.getByText(sentence)).not.toBeVisible()
+  await expect(nonAdminPage.getByText(sentence)).not.toBeVisible()
+})
+
 test('links inside chat messages are clickable @6v6 @9v9', async ({ users }) => {
   const [sender, receiver] = users.getMany(2)
 

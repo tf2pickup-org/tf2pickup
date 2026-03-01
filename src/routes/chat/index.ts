@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { chat } from '../../chat'
 import { MentionList } from '../../chat/views/html/mention-list'
 import { collections } from '../../database/collections'
+import { PlayerRole } from '../../database/models/player.model'
 import { ChatMessageList } from '../../queue/views/html/chat'
 import { routes } from '../../utils/routes'
 
@@ -72,6 +73,21 @@ export default routes(async app => {
           .toArray()
 
         return reply.status(200).send(MentionList({ players: candidates }))
+      },
+    )
+    .delete(
+      '/:id',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+        schema: {
+          params: z.object({ id: z.string() }),
+        },
+      },
+      async (request, reply) => {
+        await chat.deleteMessage(request.params.id)
+        return reply.status(204).send()
       },
     )
 })
