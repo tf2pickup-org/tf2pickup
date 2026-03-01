@@ -25,6 +25,7 @@ import type { DiscordSubstituteNotificationModel } from './models/discord-substi
 import type { SubstituteRequestModel } from './models/substitute-request.model'
 import type { FuturePlayerSkillModel } from './models/future-player-skill.model'
 import type { PendingImportModel } from './models/pending-import.model'
+import type { LogsTfLogModel } from './models/logs-tf-log.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -42,6 +43,7 @@ export const collections = {
   games: database.collection<GameModel>('games'),
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
+  logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
   maps: database.collection<MapPoolEntry>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
   pendingImports: database.collection<PendingImportModel>('pendingimports'),

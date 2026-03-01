@@ -1,11 +1,13 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { secondsToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { configuration } from '../../configuration'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { logger } from '../../logger'
 import { collections } from '../../database/collections'
 import { uploadLogs } from '../upload-logs'
+import { extractLogId } from '../extract-log-id'
+import { fetchLog, LogsTfRateLimitError } from '../fetch-log'
 import type { GameNumber } from '../../database/models/game.model'
 import { environment } from '../../environment'
 import { tasks } from '../../tasks'
@@ -29,11 +31,31 @@ export default fp(
 
       await tasks.schedule('logsTf:uploadLogs', secondsToMilliseconds(5), { gameNumber })
     })
+
+    events.on('match/logs:uploaded', async ({ gameNumber, logsUrl }) => {
+      const logId = extractLogId(logsUrl)
+      if (!logId) return
+      await tasks.schedule('logsTf:fetchLog', secondsToMilliseconds(30), { gameNumber, logId })
+    })
   },
   {
     name: 'logs.tf integration',
   },
 )
+
+tasks.register('logsTf:fetchLog', async ({ gameNumber, logId }) => {
+  try {
+    const data = await fetchLog(logId)
+    await collections.logsTfLogs.insertOne({ logId, gameNumber, fetchedAt: new Date(), data })
+  } catch (error) {
+    if (error instanceof LogsTfRateLimitError) {
+      logger.warn({ gameNumber, logId }, 'logs.tf rate limited, retrying in 5 minutes')
+      await tasks.schedule('logsTf:fetchLog', minutesToMilliseconds(5), { gameNumber, logId })
+      return
+    }
+    throw error
+  }
+})
 
 tasks.register('logsTf:uploadLogs', async ({ gameNumber }) => {
   const { logFile, map } = await getGameLogs(gameNumber)
