@@ -169,16 +169,18 @@ async function ChatMessage(props: { message: WithId<ChatMessageModel> }) {
   const messageId = props.message._id.toString()
   return (
     <p class="chat-message" id={`msg-${messageId}`}>
-      <span class="at">{safeAt}</span>{' '}
-      <a
-        href={`/players/${author.steamId}`}
-        class={`author ${isAdmin ? 'admin' : ''}`}
-        preload="mousedown"
-        safe
-      >
-        {author.name}
-      </a>
-      : <span class="body">{safeBody}</span>
+      <span class="message-text">
+        <span class="at">{safeAt}</span>{' '}
+        <a
+          href={`/players/${author.steamId}`}
+          class={`author ${isAdmin ? 'admin' : ''}`}
+          preload="mousedown"
+          safe
+        >
+          {author.name}
+        </a>
+        : <span class="body">{safeBody}</span>
+      </span>
       <button
         class="delete-btn"
         hx-delete={`/chat/${messageId}`}

@@ -89,6 +89,21 @@
 
       p {
         color: var(--color-white);
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+        border-radius: 4px;
+        padding: 0 4px;
+        margin: 0 -4px;
+
+        &:hover {
+          background-color: color-mix(in srgb, var(--color-abru-light-25) 10%, transparent);
+        }
+
+        .message-text {
+          flex: 1;
+          min-width: 0;
+        }
 
         .at {
           white-space: nowrap;
@@ -127,15 +142,17 @@
         }
 
         .delete-btn {
-          display: none;
+          visibility: hidden;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          height: calc(1em * 1.5);
+          height: 1lh;
           background: none;
           border: none;
           padding: 0 2px;
-          margin-left: 4px;
           cursor: pointer;
           color: var(--color-abru-light-50);
-          vertical-align: middle;
-          line-height: 1;
 
           &:hover {
             color: var(--color-alert);
@@ -150,8 +167,7 @@
     }
 
     &[data-is-admin] .message-list p.chat-message:hover .delete-btn {
-      display: inline-flex;
-      align-items: center;
+      visibility: visible;
     }
   }
 }
