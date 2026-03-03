@@ -44,6 +44,8 @@
       }
 
       .player-name-link {
+        min-width: 0;
+        overflow: hidden;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -56,6 +58,7 @@
         }
 
         .player-name-text {
+          min-width: 0;
           overflow: hidden;
           text-overflow: ellipsis;
           white-space: nowrap;
