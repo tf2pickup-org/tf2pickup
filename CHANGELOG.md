@@ -1,5 +1,14 @@
 # Changelog
 
+# [4.0.0-rc.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.2...4.0.0-rc.3) (2026-03-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency motion to v12.34.4 ([5e1dfb3](https://github.com/tf2pickup-org/tf2pickup/commit/5e1dfb351e695d362735298bd689f3e3be8eb64b))
+* **deps:** update dependency postcss to v8.5.8 ([0266856](https://github.com/tf2pickup-org/tf2pickup/commit/0266856e03b42a7158b4dfbabc589cdefebc8b88))
+* fix delete chat message button positioning ([#494](https://github.com/tf2pickup-org/tf2pickup/issues/494)) ([83bcbe0](https://github.com/tf2pickup-org/tf2pickup/commit/83bcbe0f302cae4bf64ef9f12bcba84a82970f0b))
+
 # [4.0.0-rc.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.1...4.0.0-rc.2) (2026-03-01)
 
 
