@@ -49,7 +49,7 @@ export function LogEntryList(props: LogEntryListProps) {
             </th>
             <th class="w-[120px] px-4 py-2">Name</th>
             <th class="w-[160px] px-4 py-2">SteamId</th>
-            <th class="w-[100px] px-4 py-2">IP</th>
+            <th class="w-[140px] px-4 py-2">IP</th>
             <th class="px-4 py-2">User agent</th>
             <th class="w-[30%] px-4 py-2">Action</th>
           </tr>
