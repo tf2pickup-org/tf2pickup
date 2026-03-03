@@ -14,6 +14,9 @@ vi.mock('../database/collections', () => ({
         if (name.$regex.test('big boss')) {
           return Promise.resolve({ steamId: '76561198011111111' })
         }
+        if (name.$regex.test('player:name')) {
+          return Promise.resolve({ steamId: '76561198099999999' })
+        }
         return Promise.resolve(null)
       }),
     },
@@ -66,5 +69,11 @@ describe('resolveMentions', () => {
     const result = await resolveMentions('hello @&quot;unknown player&quot;')
     expect(result.body).toBe('hello @&quot;unknown player&quot;')
     expect(result.mentions).toEqual([])
+  })
+
+  it('should resolve unquoted mention with colon in name', async () => {
+    const result = await resolveMentions('hello @player:name')
+    expect(result.body).toBe('hello @<76561198099999999>')
+    expect(result.mentions).toEqual(['76561198099999999'])
   })
 })

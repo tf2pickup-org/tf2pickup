@@ -7,7 +7,7 @@ interface ResolveMentionsResult {
 }
 
 // Matches @name or @&quot;name with spaces&quot; (after HTML escaping of quotes)
-const mentionPattern = /@&quot;([^&]+)&quot;|@(\w+)/g
+const mentionPattern = /@&quot;([^&]+)&quot;|@([^\s&]+)/g
 
 export async function resolveMentions(escapedBody: string): Promise<ResolveMentionsResult> {
   const matches = [...escapedBody.matchAll(mentionPattern)]
