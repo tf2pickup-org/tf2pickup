@@ -49,7 +49,7 @@ function acceptCompletion(input: HTMLInputElement, container: HTMLElement) {
     return
   }
 
-  const formatted = name.includes(' ') ? `@"${name}"` : `@${name}`
+  const formatted = /^\w+$/.test(name) ? `@${name}` : `@"${name}"`
   const value = input.value
   const before = value.substring(0, atIndex)
   const after = value.substring(input.selectionStart ?? value.length)
