@@ -5,9 +5,35 @@ import type { Tf2ClassName } from '../../../../../shared/types/tf2-class-name'
 import { players } from '../../../../../players'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { routes } from '../../../../../utils/routes'
+import { AdminToolbox } from '../../../../../players/views/html/admin-toolbox'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
+  app.delete(
+    '/',
+    {
+      config: {
+        authorize: [PlayerRole.admin],
+      },
+      schema: {
+        params: z.object({
+          steamId: steamId64,
+        }),
+      },
+    },
+    async (request, reply) => {
+      const { steamId } = request.params
+      await players.update(steamId, { $unset: { skill: '' } }, {}, request.user!.player.steamId)
+      const player = await players.bySteamId(steamId, [
+        'steamId',
+        'skill',
+        'skillHistory',
+        'verified',
+      ])
+      reply.html(await AdminToolbox({ player }))
+    },
+  )
+
   app.post(
     '/',
     {

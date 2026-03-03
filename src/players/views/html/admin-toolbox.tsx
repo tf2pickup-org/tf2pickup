@@ -78,10 +78,12 @@ export async function AdminToolbox(props: {
               type="button"
               class="button"
               title="Reset"
-              hx-get={`/players/${player.steamId}/edit/skill/default`}
+              hx-delete={`/players/${player.steamId}/edit/skill`}
+              hx-confirm="Are you sure you want to reset this player's skill?"
               hx-trigger="click"
               hx-disabled-elt="this"
-              hx-swap="none"
+              hx-target="#player-admin-toolbox"
+              hx-swap="outerHTML"
             >
               <IconInputX size={20} />
               <span>Reset</span>
@@ -107,28 +109,6 @@ export async function AdminToolbox(props: {
         </a>
       </form>
     </div>
-  )
-}
-
-AdminToolbox.replaceSkillValues = async (props: { skill?: PlayerModel['skill'] }) => {
-  const defaultSkill = await configuration.get('games.default_player_skill')
-  return (
-    <>
-      {queue.config.classes.map(gameClass => {
-        const s = props.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0
-        return (
-          <input
-            type="number"
-            id={`playerSkill${gameClass.name}`}
-            hx-swap-oob="true"
-            name={`skill.${gameClass.name}`}
-            value={s.toString()}
-            required
-            step="1"
-          />
-        )
-      })}
-    </>
   )
 }
 
