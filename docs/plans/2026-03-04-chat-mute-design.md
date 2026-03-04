@@ -40,12 +40,12 @@ New events in `src/events.ts`:
 
 New **"Chat mutes"** tab on the player edit page sidebar. Routes under `src/routes/players/:steamId/edit/`:
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/edit/chat-mutes` | List all mutes (sorted by start DESC), revoke button per active mute |
-| GET | `/edit/chat-mutes/add` | Add mute form (Duration / End Date / Forever — same as ban form) |
-| POST | `/edit/chat-mutes/add` | Create mute, redirect to list |
-| PUT | `/edit/chat-mutes/:muteStart/revoke` | HTMX inline revoke |
+| Method | Path                                 | Description                                                          |
+| ------ | ------------------------------------ | -------------------------------------------------------------------- |
+| GET    | `/edit/chat-mutes`                   | List all mutes (sorted by start DESC), revoke button per active mute |
+| GET    | `/edit/chat-mutes/add`               | Add mute form (Duration / End Date / Forever — same as ban form)     |
+| POST   | `/edit/chat-mutes/add`               | Create mute, redirect to list                                        |
+| PUT    | `/edit/chat-mutes/:muteStart/revoke` | HTMX inline revoke                                                   |
 
 ## Chat Input UI
 
