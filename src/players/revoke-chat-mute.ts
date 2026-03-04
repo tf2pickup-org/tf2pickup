@@ -21,9 +21,7 @@ export async function revokeChatMute(props: {
     },
   )
 
-  const chatMute = after.chatMutes?.find(
-    m => m.start.getTime() === props.muteStart.getTime(),
-  )
+  const chatMute = after.chatMutes?.find(m => m.start.getTime() === props.muteStart.getTime())
   if (!chatMute) {
     throw errors.notFound(`chat mute not found`)
   }

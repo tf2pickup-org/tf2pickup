@@ -20,7 +20,7 @@ const mutex = new Mutex()
 
 export async function send(params: SendParams): Promise<WithId<ChatMessageModel>> {
   return await mutex.runExclusive(async () => {
-    const player = await players.bySteamId(params.author, ['chatMutes', 'steamId'])
+    const player = await players.bySteamId(params.author, ['chatMutes'])
     if (players.hasActiveChatMute(player)) {
       throw errors.forbidden('you are muted')
     }
