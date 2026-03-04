@@ -137,7 +137,9 @@ test.describe('GET /api/v1/players', () => {
   })
 
   test('omits prev link on first page', async ({ request }) => {
-    const body = await json<PlayerListResponse>(await request.get('/api/v1/players?offset=0&limit=20'))
+    const body = await json<PlayerListResponse>(
+      await request.get('/api/v1/players?offset=0&limit=20'),
+    )
     expect(body._links).not.toHaveProperty('prev')
   })
 
