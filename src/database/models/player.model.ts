@@ -66,6 +66,7 @@ export interface PlayerModel {
   preReadyUntil?: Date
   preferences: PlayerPreferences
   bans?: PlayerBan[]
+  chatMutes?: PlayerBan[]
   verified?: boolean
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
