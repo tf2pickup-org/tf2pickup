@@ -1,5 +1,16 @@
 # Changelog
 
+# [4.0.0-rc.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.3...4.0.0-rc.4) (2026-03-04)
+
+
+### Bug Fixes
+
+* allow pinging players with special characters in their names ([#496](https://github.com/tf2pickup-org/tf2pickup/issues/496)) ([99d5ba6](https://github.com/tf2pickup-org/tf2pickup/commit/99d5ba6b2ef169d7d299c35d4ee232d5ee366add))
+* **deps:** update dependency es-toolkit to v1.45.0 ([#493](https://github.com/tf2pickup-org/tf2pickup/issues/493)) ([60f63e2](https://github.com/tf2pickup-org/tf2pickup/commit/60f63e29031493601d86256e73429ee13e2fca96))
+* fix player action log ip address rendering ([#498](https://github.com/tf2pickup-org/tf2pickup/issues/498)) ([571626f](https://github.com/tf2pickup-org/tf2pickup/commit/571626fc44b67dff9afcf68555110270ad74595b))
+* make skill reset button actually remove the skill subdocument ([#497](https://github.com/tf2pickup-org/tf2pickup/issues/497)) ([784324e](https://github.com/tf2pickup-org/tf2pickup/commit/784324e4c1b52df53be7b33772cb9e9c2db4fbd5))
+* truncate too long player names in queue slots ([#495](https://github.com/tf2pickup-org/tf2pickup/issues/495)) ([5b9d42f](https://github.com/tf2pickup-org/tf2pickup/commit/5b9d42ffdbe755e326690bca8139138676a3aa99))
+
 # [4.0.0-rc.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.2...4.0.0-rc.3) (2026-03-03)
 
 

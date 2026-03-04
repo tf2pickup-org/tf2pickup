@@ -1,6 +1,6 @@
 {
   "name": "tf2pickup",
-  "version": "4.0.0-rc.3",
+  "version": "4.0.0-rc.4",
   "author": "Michał Garapich <garrappachc@gmail.com>",
   "license": "MIT",
   "type": "module",
