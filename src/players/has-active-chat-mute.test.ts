@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { hasActiveChatMute } from './has-active-chat-mute'
 import type { PlayerModel } from '../database/models/player.model'
+import type { SteamId64 } from '../shared/types/steam-id-64'
 
 const now = new Date('2026-01-15T12:00:00Z')
 
@@ -32,7 +33,7 @@ describe('hasActiveChatMute()', () => {
         ...basePlayer,
         chatMutes: [
           {
-            actor: '76561198074409148',
+            actor: '76561198074409148' as SteamId64,
             start: new Date('2026-01-10T00:00:00Z'),
             end: new Date('2026-01-14T00:00:00Z'), // before now
             reason: 'spam',
@@ -48,7 +49,7 @@ describe('hasActiveChatMute()', () => {
         ...basePlayer,
         chatMutes: [
           {
-            actor: '76561198074409148',
+            actor: '76561198074409148' as SteamId64,
             start: new Date('2026-01-14T00:00:00Z'),
             end: new Date('2026-01-16T00:00:00Z'), // after now
             reason: 'spam',
@@ -64,13 +65,13 @@ describe('hasActiveChatMute()', () => {
         ...basePlayer,
         chatMutes: [
           {
-            actor: '76561198074409148',
+            actor: '76561198074409148' as SteamId64,
             start: new Date('2026-01-01T00:00:00Z'),
             end: new Date('2026-01-10T00:00:00Z'), // expired
             reason: 'spam',
           },
           {
-            actor: '76561198074409148',
+            actor: '76561198074409148' as SteamId64,
             start: new Date('2026-01-14T00:00:00Z'),
             end: new Date('2026-01-20T00:00:00Z'), // active
             reason: 'spam again',
