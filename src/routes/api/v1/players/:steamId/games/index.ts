@@ -1,0 +1,69 @@
+import z from 'zod'
+import { routes } from '../../../../../../utils/routes'
+import { steamId64 } from '../../../../../../shared/schemas/steam-id-64'
+import { collections } from '../../../../../../database/collections'
+import { errors } from '../../../../../../errors'
+import { gameToDto } from '../../../dto/game-to-dto'
+
+const querySchema = z.object({
+  offset: z.coerce.number().int().min(0).default(0),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+})
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export default routes(async app => {
+  app.get(
+    '/',
+    {
+      schema: {
+        params: z.object({ steamId: steamId64 }),
+        querystring: querySchema,
+      },
+    },
+    async (request, reply) => {
+      const { steamId } = request.params
+      const { offset, limit } = request.query
+
+      const playerExists = await collections.players.findOne(
+        { steamId },
+        { projection: { _id: 1 } },
+      )
+      if (!playerExists) {
+        throw errors.notFound('Player not found')
+      }
+
+      const filter = { 'slots.player': steamId }
+      const total = await collections.games.countDocuments(filter)
+      const gamesList = await collections.games
+        .find(filter)
+        .sort({ number: -1 })
+        .skip(offset)
+        .limit(limit)
+        .toArray()
+
+      const self = `/api/v1/players/${steamId}/games?offset=${offset}&limit=${limit}`
+      const links: Record<string, { href: string }> = { self: { href: self } }
+      if (offset + limit < total) {
+        links['next'] = {
+          href: `/api/v1/players/${steamId}/games?offset=${offset + limit}&limit=${limit}`,
+        }
+      }
+      if (offset > 0) {
+        links['prev'] = {
+          href: `/api/v1/players/${steamId}/games?offset=${Math.max(0, offset - limit)}&limit=${limit}`,
+        }
+      }
+
+      return reply
+        .type('application/hal+json')
+        .status(200)
+        .send({
+          total,
+          offset,
+          limit,
+          _links: links,
+          _embedded: { games: gamesList.map(gameToDto) },
+        })
+    },
+  )
+})
