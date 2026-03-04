@@ -82,6 +82,12 @@ await app.register(await import('@fastify/request-context'))
 await app.register(await import('@fastify/accepts'))
 await app.register((await import('@kitajs/fastify-html-plugin')).default)
 
+app.addHook('onSend', async (request, reply) => {
+  if (request.url.startsWith('/api/')) {
+    reply.header('Access-Control-Allow-Origin', '*')
+  }
+})
+
 app.setErrorHandler((error, request, reply) => {
   logger.error(error)
 
