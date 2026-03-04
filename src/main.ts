@@ -145,6 +145,7 @@ await app.register(autoload, {
   dir: resolve(import.meta.dirname, 'routes'),
   dirNameRoutePrefix: true,
   scriptPattern: /(?:(?:^.?|\.[^d]|[^.]d|[^.][^d])\.ts|\.js|\.cjs|\.mjs|\.cts|\.mts|\.tsx?)$/,
+  matchFilter: path => !path.includes('/dto/'),
 })
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })
