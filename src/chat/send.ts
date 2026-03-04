@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import type { ChatMessageModel } from '../database/models/chat-message.model'
 import { errors } from '../errors'
 import { events } from '../events'
+import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { formatBody } from './format-body'
 import { getMentionNames } from './get-mention-names'
@@ -19,6 +20,11 @@ const mutex = new Mutex()
 
 export async function send(params: SendParams): Promise<WithId<ChatMessageModel>> {
   return await mutex.runExclusive(async () => {
+    const player = await players.bySteamId(params.author, ['chatMutes', 'steamId'])
+    if (players.hasActiveChatMute(player)) {
+      throw errors.forbidden('you are muted')
+    }
+
     const escaped = escape(params.body)
     const { body: originalBody, mentions } = await resolveMentions(escaped)
     const mentionNames = await getMentionNames(mentions)
