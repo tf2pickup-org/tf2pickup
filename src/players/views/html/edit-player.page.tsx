@@ -17,7 +17,7 @@ import {
   IconArrowBackUp,
   IconBan,
   IconDeviceFloppy,
-  IconMessageCircle,
+  IconMessageCircleOff,
   IconPlus,
   IconUserScan,
   IconX,
@@ -250,7 +250,7 @@ function EditPlayer(props: {
               href={`/players/${props.player.steamId}/edit/chat-mutes`}
               active={props.activePage === '/chat-mutes'}
             >
-              <IconMessageCircle />
+              <IconMessageCircleOff />
               Chat mutes
             </AdminPanelLink>
 
