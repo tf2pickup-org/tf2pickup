@@ -10,9 +10,7 @@ import { PlayerRole } from '../../../database/models/player.model'
 export async function Chat(props: { user?: User | undefined }) {
   const isAdmin = props.user?.player.roles.includes(PlayerRole.admin) ?? false
   const isMuted = props.user
-    ? players.hasActiveChatMute(
-        await players.bySteamId(props.user.player.steamId, ['chatMutes']),
-      )
+    ? players.hasActiveChatMute(await players.bySteamId(props.user.player.steamId, ['chatMutes']))
     : false
   return (
     <div class="chat" id="chat" data-is-admin={isAdmin ? '' : undefined}>
@@ -140,12 +138,7 @@ export function ChatPrompt(props: { isMuted: boolean }) {
     return (
       <div class="chat-prompt-container" id="chat-prompt-container">
         <div class="m-2 flex flex-row gap-2">
-          <input
-            type="text"
-            class="flex-1"
-            placeholder="you are currently muted"
-            disabled
-          />
+          <input type="text" class="flex-1" placeholder="you are currently muted" disabled />
         </div>
       </div>
     )
