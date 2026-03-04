@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { resolve } from 'node:path'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
@@ -63,12 +63,7 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
               </fieldset>
 
               <div class="form-checkbox">
-                <input
-                  type="radio"
-                  name="lengthSelector"
-                  id="lengthSelectorEndDate"
-                  value="date"
-                />
+                <input type="radio" name="lengthSelector" id="lengthSelectorEndDate" value="date" />
                 <label for="lengthSelectorEndDate">End date</label>
               </div>
 

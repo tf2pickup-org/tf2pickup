@@ -340,12 +340,17 @@ export async function ChatMuteDetails(props: {
   player: Pick<PlayerModel, 'name' | 'steamId'>
   chatMute: PlayerBan
 }) {
-  const actor = await players.bySteamId(props.chatMute.actor as SteamId64, ['name', 'steamId'])
-  const actorDesc = (
-    <a href={`/players/${actor.steamId}`} safe>
-      {actor.name}
-    </a>
-  )
+  let actorDesc: JSX.Element
+  if (isBot(props.chatMute.actor)) {
+    actorDesc = <>bot</>
+  } else {
+    const actor = await players.bySteamId(props.chatMute.actor, ['name', 'steamId'])
+    actorDesc = (
+      <a href={`/players/${actor.steamId}`} safe>
+        {actor.name}
+      </a>
+    )
+  }
 
   return (
     <div
