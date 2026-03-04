@@ -24,6 +24,26 @@ export class AdminPage {
     }
   }
 
+  async muteChatPlayer(steamId: string, { reason }: { reason: string }) {
+    await this.page.goto(`/players/${steamId}`)
+    await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.getByRole('link', { name: 'Chat mutes' }).click()
+    await this.page.getByRole('link', { name: 'Add mute' }).click()
+    await this.page.getByLabel('Reason').fill(reason)
+    await this.page.getByRole('button', { name: 'Save' }).click()
+  }
+
+  async revokeAllChatMutes(steamId: string) {
+    await this.page.goto(`/players/${steamId}`)
+    await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.getByRole('link', { name: 'Chat mutes' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
+
+    for (const revokeButton of await this.page.getByRole('button', { name: 'Revoke mute' }).all()) {
+      await revokeButton.click()
+    }
+  }
+
   async updateSkill(
     steamId: string,
     skill: { scout: number; soldier: number; demoman: number; medic: number },
