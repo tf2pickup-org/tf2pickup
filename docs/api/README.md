@@ -30,7 +30,7 @@ Example:
     "next": { "href": "/api/v1/players?offset=20&limit=20" }
   },
   "_embedded": {
-    "players": [ ]
+    "players": []
   }
 }
 ```
@@ -41,9 +41,9 @@ Example:
 
 List endpoints support offset-based pagination via query parameters.
 
-| Parameter | Type    | Default | Max | Description                        |
-|-----------|---------|---------|-----|------------------------------------|
-| `offset`  | integer | `0`     | —   | Number of items to skip            |
+| Parameter | Type    | Default | Max   | Description                       |
+| --------- | ------- | ------- | ----- | --------------------------------- |
+| `offset`  | integer | `0`     | —     | Number of items to skip           |
 | `limit`   | integer | `20`    | `100` | Maximum number of items to return |
 
 Paginated responses include:
@@ -115,7 +115,7 @@ Returns a paginated list of registered players, sorted by join date descending (
 **Query parameters:**
 
 | Parameter | Type    | Default | Max   | Description             |
-|-----------|---------|---------|-------|-------------------------|
+| --------- | ------- | ------- | ----- | ----------------------- |
 | `offset`  | integer | `0`     | —     | Number of items to skip |
 | `limit`   | integer | `20`    | `100` | Items per page          |
 
@@ -173,8 +173,8 @@ Returns a single player by their Steam ID 64.
 
 **Path parameters:**
 
-| Parameter | Description       |
-|-----------|-------------------|
+| Parameter | Description                   |
+| --------- | ----------------------------- |
 | `steamId` | Steam ID 64 (17-digit number) |
 
 **Example request:**
@@ -223,14 +223,14 @@ Returns a paginated list of games that the given player participated in, sorted 
 
 **Path parameters:**
 
-| Parameter | Description       |
-|-----------|-------------------|
+| Parameter | Description                   |
+| --------- | ----------------------------- |
 | `steamId` | Steam ID 64 (17-digit number) |
 
 **Query parameters:**
 
 | Parameter | Type    | Default | Max   | Description             |
-|-----------|---------|---------|-------|-------------------------|
+| --------- | ------- | ------- | ----- | ----------------------- |
 | `offset`  | integer | `0`     | —     | Number of items to skip |
 | `limit`   | integer | `10`    | `100` | Items per page          |
 
@@ -283,10 +283,10 @@ Returns a paginated list of games, sorted by game number descending (most recent
 
 **Query parameters:**
 
-| Parameter | Type    | Default | Max   | Description                                                                               |
-|-----------|---------|---------|-------|-------------------------------------------------------------------------------------------|
-| `offset`  | integer | `0`     | —     | Number of items to skip                                                                   |
-| `limit`   | integer | `20`    | `100` | Items per page                                                                            |
+| Parameter | Type    | Default | Max   | Description                                                                                            |
+| --------- | ------- | ------- | ----- | ------------------------------------------------------------------------------------------------------ |
+| `offset`  | integer | `0`     | —     | Number of items to skip                                                                                |
+| `limit`   | integer | `20`    | `100` | Items per page                                                                                         |
 | `state`   | string  | —       | —     | Filter by game state. One of: `created`, `configuring`, `launching`, `started`, `ended`, `interrupted` |
 
 **Example request:**
@@ -338,8 +338,8 @@ Returns a single game by its game number.
 
 **Path parameters:**
 
-| Parameter | Description       |
-|-----------|-------------------|
+| Parameter | Description           |
+| --------- | --------------------- |
 | `id`      | Game number (integer) |
 
 **Example request:**
@@ -385,8 +385,8 @@ Returns all player slot assignments for a game.
 
 **Path parameters:**
 
-| Parameter | Description       |
-|-----------|-------------------|
+| Parameter | Description           |
+| --------- | --------------------- |
 | `id`      | Game number (integer) |
 
 **Example request:**
@@ -437,8 +437,8 @@ Returns the ordered event log for a game in chronological order. Internal and ad
 
 **Path parameters:**
 
-| Parameter | Description       |
-|-----------|-------------------|
+| Parameter | Description           |
+| --------- | --------------------- |
 | `id`      | Game number (integer) |
 
 **Example request:**
@@ -482,20 +482,20 @@ curl https://tf2pickup.example.com/api/v1/games/1234/events
 
 **Included event types:**
 
-| Event type                  | Description                                          |
-|-----------------------------|------------------------------------------------------|
-| `gameCreated`               | Game was created                                     |
-| `gameServerAssigned`        | A game server was assigned; includes `gameServerName` |
-| `gameServerInitialized`     | Game server finished configuration                   |
-| `gameStarted`               | Game became live                                     |
-| `gameRestarted`             | Game server was restarted                            |
-| `roundEnded`                | A round finished; includes `winner`, `lengthMs`, `score` |
-| `substituteRequested`       | A substitute was requested; includes `gameClass`, `team` |
-| `playerReplaced`            | A player was substituted; includes `gameClass`       |
-| `playerJoinedGameServer`    | A player connected to the game server                |
-| `playerJoinedGameServerTeam`| A player joined their assigned team on the server    |
-| `playerLeftGameServer`      | A player disconnected from the game server           |
-| `gameEnded`                 | Game ended; includes `reason`                        |
+| Event type                   | Description                                              |
+| ---------------------------- | -------------------------------------------------------- |
+| `gameCreated`                | Game was created                                         |
+| `gameServerAssigned`         | A game server was assigned; includes `gameServerName`    |
+| `gameServerInitialized`      | Game server finished configuration                       |
+| `gameStarted`                | Game became live                                         |
+| `gameRestarted`              | Game server was restarted                                |
+| `roundEnded`                 | A round finished; includes `winner`, `lengthMs`, `score` |
+| `substituteRequested`        | A substitute was requested; includes `gameClass`, `team` |
+| `playerReplaced`             | A player was substituted; includes `gameClass`           |
+| `playerJoinedGameServer`     | A player connected to the game server                    |
+| `playerJoinedGameServerTeam` | A player joined their assigned team on the server        |
+| `playerLeftGameServer`       | A player disconnected from the game server               |
+| `gameEnded`                  | Game ended; includes `reason`                            |
 
 ---
 
@@ -528,7 +528,11 @@ curl https://tf2pickup.example.com/api/v1/queue
     {
       "id": "1",
       "gameClass": "scout",
-      "player": { "steamId": "76561198012345678", "name": "PlayerName", "avatarUrl": "https://avatars.steamstatic.com/abc_64.jpg" },
+      "player": {
+        "steamId": "76561198012345678",
+        "name": "PlayerName",
+        "avatarUrl": "https://avatars.steamstatic.com/abc_64.jpg"
+      },
       "ready": true
     }
     // ...
@@ -601,8 +605,8 @@ All errors return a standard JSON body with an HTTP status code.
 }
 ```
 
-| Status | Error            | Scenario                                               |
-|--------|------------------|--------------------------------------------------------|
-| `400`  | Bad Request      | Invalid query parameters (e.g. non-numeric `offset`)  |
-| `404`  | Not Found        | The requested player or game does not exist            |
-| `500`  | Internal Server Error | Unexpected server error                           |
+| Status | Error                 | Scenario                                             |
+| ------ | --------------------- | ---------------------------------------------------- |
+| `400`  | Bad Request           | Invalid query parameters (e.g. non-numeric `offset`) |
+| `404`  | Not Found             | The requested player or game does not exist          |
+| `500`  | Internal Server Error | Unexpected server error                              |
