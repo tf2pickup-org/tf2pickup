@@ -5,6 +5,7 @@ import { safe } from '../../utils/safe'
 import { blacklistPlayer } from '../rcon/blacklist-player'
 import { collections } from '../../database/collections'
 import { sayChat } from '../rcon/say-chat'
+import { errors } from '../../errors'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -40,7 +41,7 @@ export default fp(
 
         const game = await collections.games.findOne({ number: gameNumber })
         if (!game) {
-          throw new Error(`game not found: ${gameNumber}`)
+          throw errors.internalServerError(`game not found: ${gameNumber}`)
         }
 
         for (const deferredKick of deferredKicks) {
