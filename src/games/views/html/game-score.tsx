@@ -6,6 +6,7 @@ export async function GameScore(props: { game: GameModel; team: Tf2Team }) {
     <span
       aria-label={`${props.team} team score`}
       id={`game-${props.game.number}-score-${props.team}`}
+      class="tabular-nums"
       style="grid-area: score"
     >
       {props.game.score?.[props.team] ?? ''}

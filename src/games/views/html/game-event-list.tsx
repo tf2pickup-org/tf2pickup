@@ -273,8 +273,12 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       return (
         <div class="flex flex-row items-center gap-2">
           <span class="flex-1">Round ended</span>
-          <span class="bg-team-blu rounded-sm px-2 py-1">BLU: {props.event.score.blu}</span>
-          <span class="bg-team-red rounded-sm px-2 py-1">RED: {props.event.score.red}</span>
+          <span class="bg-team-blu rounded-sm px-2 py-1 tabular-nums">
+            BLU: {props.event.score.blu}
+          </span>
+          <span class="bg-team-red rounded-sm px-2 py-1 tabular-nums">
+            RED: {props.event.score.red}
+          </span>
         </div>
       )
     }

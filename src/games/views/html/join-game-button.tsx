@@ -69,7 +69,7 @@ async function JoinAsPlayer(props: { slot: GameSlotModel }) {
       <>
         <IconPlayerPlayFilled size={16} />
         join in{' '}
-        <span data-countdown={timeLeftMs}>
+        <span class="tabular-nums" data-countdown={timeLeftMs}>
           {minutes}:{safeSeconds.length === 1 ? '0' : ''}
           {safeSeconds}
         </span>

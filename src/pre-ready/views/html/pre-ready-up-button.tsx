@@ -27,7 +27,7 @@ export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined })
       <div class="flex-1">
         {timeLeft > 0 ? (
           <>
-            <span data-countdown={timeLeft} safe>
+            <span class="tabular-nums" data-countdown={timeLeft} safe>
               {formatTimeout(timeLeft)}
             </span>
             <span class="sr-only">Pre-ready up</span>
