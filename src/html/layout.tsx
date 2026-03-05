@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import { environment } from '../environment'
 import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
+import { MapVoteDialog } from '../queue/views/html/map-vote-dialog'
 import Html from '@kitajs/html'
 import { resolve } from 'path'
 import { requestContext } from '@fastify/request-context'
@@ -25,6 +26,7 @@ export async function Layout(
       <div class="flex h-full flex-col">{props?.children}</div>
       <div id="notify-container"></div>
       <ReadyUpDialog />
+      <MapVoteDialog />
       <FlashMessageList />
     </>
   )
