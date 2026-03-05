@@ -67,8 +67,7 @@ export default fp(
         const playerSteamIds = new Set(
           slots.filter(s => s.player !== null).map(s => s.player!.steamId),
         )
-        const isInQueue =
-          socket.player !== undefined && playerSteamIds.has(socket.player.steamId)
+        const isInQueue = socket.player !== undefined && playerSteamIds.has(socket.player.steamId)
         socket.send(await MapVoteDialog.show(socket.player?.steamId, isInQueue))
       }
     }
@@ -168,12 +167,15 @@ export default fp(
       }),
     )
 
-    events.on('queue/mapOptions:reset', safe(async () => {
-      const mapVoteTiming = await configuration.get('queue.map_vote_timing')
-      if (mapVoteTiming === MapVoteTiming.preReady) {
-        app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
-      }
-    }))
+    events.on(
+      'queue/mapOptions:reset',
+      safe(async () => {
+        const mapVoteTiming = await configuration.get('queue.map_vote_timing')
+        if (mapVoteTiming === MapVoteTiming.preReady) {
+          app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
+        }
+      }),
+    )
 
     events.on(
       'queue/mapVoteResults:updated',
