@@ -63,9 +63,7 @@ export default fp(
       const queueState = await getState()
       if (queueState === QueueState.map_vote) {
         const playerSteamIds = new Set(
-          (await collections.queueSlots.find({ player: { $ne: null } }).toArray()).map(
-            s => s.player!.steamId,
-          ),
+          slots.filter(s => s.player !== null).map(s => s.player!.steamId),
         )
         const isInQueue =
           socket.player !== undefined && playerSteamIds.has(socket.player.steamId)
