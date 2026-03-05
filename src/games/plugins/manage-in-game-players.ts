@@ -22,8 +22,37 @@ export default fp(
     )
 
     events.on(
+      'game:ended',
+      safe(async ({ game }) => {
+        await collections.gamesDeferredKicks.deleteMany({ gameNumber: game.number })
+      }),
+    )
+
+    events.on(
+      'match/player:connected',
+      safe(async ({ gameNumber, steamId }) => {
+        const deferredKicks = await collections.gamesDeferredKicks
+          .find({ gameNumber, replacement: steamId })
+          .toArray()
+        if (deferredKicks.length === 0) {
+          return
+        }
+
+        const game = await collections.games.findOne({ number: gameNumber })
+        if (!game) {
+          throw new Error(`game not found: ${gameNumber}`)
+        }
+
+        for (const deferredKick of deferredKicks) {
+          await blacklistPlayer(game, deferredKick.replacee)
+          await collections.gamesDeferredKicks.deleteOne({ _id: deferredKick._id })
+        }
+      }),
+    )
+
+    events.on(
       'game:playerReplaced',
-      safe(async ({ game, replacee, replacement }) => {
+      safe(async ({ game, replacee, replacement, slotId }) => {
         if (replacee === replacement) {
           return
         }
@@ -39,7 +68,11 @@ export default fp(
         }
 
         await whitelistPlayer(game, replacement)
-        await blacklistPlayer(game, replacee)
+        await collections.gamesDeferredKicks.updateOne(
+          { gameNumber: game.number, slotId },
+          { $set: { gameNumber: game.number, slotId, replacee, replacement } },
+          { upsert: true },
+        )
         await sayChat(game, `${re.name} has been replaced by ${rm.name}`)
       }),
     )
