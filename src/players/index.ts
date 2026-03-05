@@ -5,6 +5,7 @@ import { revokeBan } from './revoke-ban'
 import { setSkill } from './set-skill'
 import { setVerified } from './set-verified'
 import { update } from './update'
+import { updateProfile } from './update-profile'
 import { upsert } from './upsert'
 
 export const players = {
@@ -15,5 +16,6 @@ export const players = {
   setSkill,
   setVerified,
   update,
+  updateProfile,
   upsert,
 } as const

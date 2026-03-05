@@ -4,7 +4,6 @@ import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { players } from '../../../../../players'
 import { EditPlayerProfilePage } from '../../../../../players/views/html/edit-player.page'
 import { routes } from '../../../../../utils/routes'
-import { buildProfileUpdate } from './build-profile-update'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -46,13 +45,12 @@ export default routes(async app => {
         const { steamId } = req.params
         const { name, cooldownLevel } = req.body
 
-        const before = await players.bySteamId(steamId, ['name'])
-        await players.update(
+        await players.updateProfile({
           steamId,
-          buildProfileUpdate(before.name, { name, cooldownLevel }),
-          {},
-          req.user!.player.steamId,
-        )
+          name,
+          cooldownLevel,
+          adminId: req.user!.player.steamId,
+        })
         req.flash('success', `Player updated`)
         await reply.redirect(`/players/${steamId}`)
       },
