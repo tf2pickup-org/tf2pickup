@@ -25,8 +25,12 @@ export function GameListItem(props: {
   } else if (props.game.score?.blu !== undefined) {
     gameLabel = (
       <>
-        <div class="game-list-label game-list-label--blu">blu: {props.game.score.blu}</div>
-        <div class="game-list-label game-list-label--red">red: {props.game.score.red}</div>
+        <div class="game-list-label game-list-label--blu tabular-nums">
+          blu: {props.game.score.blu}
+        </div>
+        <div class="game-list-label game-list-label--red tabular-nums">
+          red: {props.game.score.red}
+        </div>
       </>
     )
   } else if (
@@ -38,7 +42,7 @@ export function GameListItem(props: {
   return (
     <a class="game-list-item" href={`/games/${props.game.number}`} preload="mousedown">
       <div class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</div>
-      <span class={['game-number', isRunning && 'text-accent']} safe>
+      <span class={['game-number', isRunning && 'text-accent', 'tabular-nums']} safe>
         #{props.game.number}
       </span>
       <span class="map-name" safe>

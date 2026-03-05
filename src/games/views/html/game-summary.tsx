@@ -26,7 +26,7 @@ export function GameSummary(props: {
           <MapThumbnail map={props.game.map} />
         </div>
 
-        <div class="game-floating-label text-abru-light-75 top-[10px] left-[10px]">
+        <div class="game-floating-label text-abru-light-75 top-[10px] left-[10px] tabular-nums">
           <span safe>#{props.game.number}</span>
         </div>
 
