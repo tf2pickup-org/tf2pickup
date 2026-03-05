@@ -63,6 +63,10 @@ export interface PlayerModel {
     actor: SteamId64
     lastGame?: GameNumber | undefined
   }[]
+  nameHistory?: {
+    name: string
+    changedAt: Date
+  }[]
   preReadyUntil?: Date
   preferences: PlayerPreferences
   bans?: PlayerBan[]
