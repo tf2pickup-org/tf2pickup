@@ -168,12 +168,12 @@ export default fp(
       }),
     )
 
-    events.on('queue/mapOptions:reset', async () => {
+    events.on('queue/mapOptions:reset', safe(async () => {
       const mapVoteTiming = await configuration.get('queue.map_vote_timing')
       if (mapVoteTiming === MapVoteTiming.preReady) {
         app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
       }
-    })
+    }))
 
     events.on(
       'queue/mapVoteResults:updated',
