@@ -2,6 +2,7 @@ import { milliseconds, minutesToMilliseconds, secondsToMilliseconds } from 'date
 import { z } from 'zod'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
+import { MapVoteTiming } from '../../shared/types/map-vote-timing'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 
@@ -226,7 +227,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z
     .object({
       key: z.literal('queue.map_vote_timing'),
-      value: z.enum(['pre-ready', 'post-ready']).default('pre-ready'),
+      value: z.enum(MapVoteTiming).default(MapVoteTiming.preReady),
     })
     .describe('When map voting takes place: before players ready up, or after'),
   z
