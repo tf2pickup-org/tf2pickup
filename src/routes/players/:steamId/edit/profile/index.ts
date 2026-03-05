@@ -1,11 +1,10 @@
 import z from 'zod'
-import type { StrictUpdateFilter } from 'mongodb'
 import { PlayerRole } from '../../../../../database/models/player.model'
-import type { PlayerModel } from '../../../../../database/models/player.model'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { players } from '../../../../../players'
 import { EditPlayerProfilePage } from '../../../../../players/views/html/edit-player.page'
 import { routes } from '../../../../../utils/routes'
+import { buildProfileUpdate } from './build-profile-update'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -48,11 +47,12 @@ export default routes(async app => {
         const { name, cooldownLevel } = req.body
 
         const before = await players.bySteamId(steamId, ['name'])
-        const playerUpdate: StrictUpdateFilter<PlayerModel> = { $set: { name, cooldownLevel } }
-        if (before.name !== name) {
-          playerUpdate.$push = { nameHistory: { name: before.name, changedAt: new Date() } }
-        }
-        await players.update(steamId, playerUpdate, {}, req.user!.player.steamId)
+        await players.update(
+          steamId,
+          buildProfileUpdate(before.name, { name, cooldownLevel }),
+          {},
+          req.user!.player.steamId,
+        )
         req.flash('success', `Player updated`)
         await reply.redirect(`/players/${steamId}`)
       },
