@@ -13,6 +13,7 @@
 ### Task 1: Register `queue:mapVoteTimeout` task
 
 **Files:**
+
 - Modify: `src/tasks/tasks.ts`
 
 The task schema is a Zod discriminated union. All tasks must be registered there before use.
@@ -48,6 +49,7 @@ git commit -m "feat: register queue:mapVoteTimeout task"
 ### Task 2: Add configuration keys
 
 **Files:**
+
 - Modify: `src/database/models/configuration-entry.model.ts`
 
 Two new keys: `queue.map_vote_timing` (the feature toggle) and `queue.map_vote_timeout` (duration in ms).
@@ -95,6 +97,7 @@ git commit -m "feat: add queue.map_vote_timing and queue.map_vote_timeout config
 ### Task 3: Add `mapVote` queue state
 
 **Files:**
+
 - Modify: `src/database/models/queue-state.model.ts`
 
 **Step 1: Add the new enum value**
@@ -144,10 +147,12 @@ git commit -m "feat: add mapVote queue state"
 ### Task 4: Create the `MapVoteDialog` component
 
 **Files:**
+
 - Create: `src/queue/views/html/map-vote-dialog.tsx`
 - Modify: `src/html/layout.tsx`
 
 The dialog follows the same pattern as `ReadyUpDialog` in `src/queue/views/html/ready-up-dialog.tsx`:
+
 - A static shell always rendered in the DOM (via `Layout`)
 - A `.show()` static method that returns OOB fragments to populate content and trigger the dialog open
 - A `.close()` static method that returns a fragment to trigger close
@@ -263,6 +268,7 @@ git commit -m "feat: add MapVoteDialog component"
 ### Task 5: Update queue state transition logic
 
 **Files:**
+
 - Modify: `src/queue/plugins/auto-update-queue-state.ts`
 
 This plugin listens to `queue/slots:updated` events and manages state transitions. Currently when all players ready up in `ready` state, it goes straight to `launching`. We need to:
@@ -345,9 +351,9 @@ async function unreadyQueue() {
   logger.info('unready queue')
   await setState(QueueState.waiting)
   await tasks.cancelAll('queue:mapVoteTimeout')
-  const allPlayers = (
-    await collections.queueSlots.find({ player: { $ne: null } }).toArray()
-  ).map(slot => slot.player!.steamId)
+  const allPlayers = (await collections.queueSlots.find({ player: { $ne: null } }).toArray()).map(
+    slot => slot.player!.steamId,
+  )
   await unready(...allPlayers)
 }
 ```
@@ -372,9 +378,11 @@ git commit -m "feat: transition to mapVote state when all players ready in post-
 ### Task 6: Update client sync for `mapVote` state
 
 **Files:**
+
 - Modify: `src/queue/plugins/sync-clients.ts`
 
 Three changes needed:
+
 1. When queue enters `mapVote` state → broadcast the map vote dialog to all players on `/`
 2. When queue enters `launching` state → close the map vote dialog for all on `/`
 3. In `syncQueuePage()` → show the dialog immediately if queue is already in `mapVote` state when a client connects
@@ -485,6 +493,7 @@ git commit -m "feat: broadcast MapVoteDialog on mapVote state transition"
 ### Task 7: Hide map vote widget in `post-ready` mode
 
 **Files:**
+
 - Modify: `src/queue/views/html/queue.page.tsx`
 - Modify: `src/queue/plugins/sync-clients.ts`
 
@@ -495,16 +504,19 @@ In `post-ready` mode, the `MapVote` component on the queue page must not be rend
 In `src/queue/views/html/queue.page.tsx`, the function is already `async`. Add a config check:
 
 Add import at top:
+
 ```ts
 import { configuration } from '../../../configuration'
 ```
 
 In the `QueuePage` function body, before the return, add:
+
 ```ts
 const mapVoteTiming = await configuration.get('queue.map_vote_timing')
 ```
 
 Then change the map vote div from:
+
 ```tsx
 <div class="order-4 lg:col-span-3">
   <MapVote actor={user?.player.steamId} />
@@ -512,6 +524,7 @@ Then change the map vote div from:
 ```
 
 To:
+
 ```tsx
 <div class="order-4 lg:col-span-3">
   {mapVoteTiming === 'pre-ready' && <MapVote actor={user?.player.steamId} />}
@@ -540,6 +553,7 @@ events.on('queue/mapOptions:reset', async () => {
 ```
 
 Add the `configuration` import to `sync-clients.ts` if not already present:
+
 ```ts
 import { configuration } from '../../configuration'
 ```
@@ -564,6 +578,7 @@ git commit -m "feat: hide map vote widget when map_vote_timing is post-ready"
 ### Task 8: Admin panel settings
 
 **Files:**
+
 - Modify: `src/admin/scramble-maps/views/html/scramble-maps.page.tsx`
 - Modify: `src/routes/admin/scramble-maps/index.tsx`
 
@@ -711,6 +726,7 @@ git commit -m "feat: add map vote timing settings to scramble-maps admin page"
 ### Task 9: E2E test for post-ready map vote
 
 **Files:**
+
 - Create: `tests/10-queue/12-post-ready-map-vote.spec.ts`
 
 **Step 1: Understand what the test needs to do**
@@ -781,6 +797,7 @@ test.describe('post-ready map vote @6v6', () => {
 ```
 
 > **Note:** The test is intentionally left as a scaffold. Once the dialog has a testable element (e.g., `role="dialog"` with the title "Vote for a map!"), wire it up against the full `launchGame` fixture. The key assertions are:
+>
 > - Before ready-up: `voteForMapButton` not visible on queue page
 > - After ready-up: dialog visible for all players
 > - After timeout: URL changes to `/games/<number>`
@@ -804,16 +821,16 @@ git commit -m "test: scaffold e2e test for post-ready map vote"
 
 ## Summary of changes
 
-| File | Action |
-|------|--------|
-| `src/tasks/tasks.ts` | Add `queue:mapVoteTimeout` to schema |
-| `src/database/models/configuration-entry.model.ts` | Add `queue.map_vote_timing` and `queue.map_vote_timeout` |
-| `src/database/models/queue-state.model.ts` | Add `mapVote` to `QueueState` enum |
-| `src/queue/views/html/map-vote-dialog.tsx` | New: dialog shell + `.show()` + `.close()` |
-| `src/html/layout.tsx` | Render `MapVoteDialog` in global layout |
-| `src/queue/plugins/auto-update-queue-state.ts` | Handle `mapVote` transitions and `mapVoteTimeout` task |
-| `src/queue/plugins/sync-clients.ts` | Broadcast dialog on `mapVote`, close on `launching`, show on page load |
-| `src/queue/views/html/queue.page.tsx` | Hide `MapVote` widget in `post-ready` mode |
-| `src/admin/scramble-maps/views/html/scramble-maps.page.tsx` | Add timing settings form |
-| `src/routes/admin/scramble-maps/index.tsx` | Add POST handler for timing settings |
-| `tests/10-queue/12-post-ready-map-vote.spec.ts` | New: E2E test scaffold |
+| File                                                        | Action                                                                 |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `src/tasks/tasks.ts`                                        | Add `queue:mapVoteTimeout` to schema                                   |
+| `src/database/models/configuration-entry.model.ts`          | Add `queue.map_vote_timing` and `queue.map_vote_timeout`               |
+| `src/database/models/queue-state.model.ts`                  | Add `mapVote` to `QueueState` enum                                     |
+| `src/queue/views/html/map-vote-dialog.tsx`                  | New: dialog shell + `.show()` + `.close()`                             |
+| `src/html/layout.tsx`                                       | Render `MapVoteDialog` in global layout                                |
+| `src/queue/plugins/auto-update-queue-state.ts`              | Handle `mapVote` transitions and `mapVoteTimeout` task                 |
+| `src/queue/plugins/sync-clients.ts`                         | Broadcast dialog on `mapVote`, close on `launching`, show on page load |
+| `src/queue/views/html/queue.page.tsx`                       | Hide `MapVote` widget in `post-ready` mode                             |
+| `src/admin/scramble-maps/views/html/scramble-maps.page.tsx` | Add timing settings form                                               |
+| `src/routes/admin/scramble-maps/index.tsx`                  | Add POST handler for timing settings                                   |
+| `tests/10-queue/12-post-ready-map-vote.spec.ts`             | New: E2E test scaffold                                                 |

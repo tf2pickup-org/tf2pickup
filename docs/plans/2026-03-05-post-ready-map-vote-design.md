@@ -10,10 +10,10 @@ An alternative map voting mode where players vote for a map **after** all 12 pla
 
 Two new keys added to `configuration-entry.model.ts`:
 
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| `queue.map_vote_timing` | `'pre-ready' \| 'post-ready'` | `'pre-ready'` | Selects the map voting mode |
-| `queue.map_vote_timeout` | `number` (ms) | `secondsToMilliseconds(10)` | Duration of the map vote phase |
+| Key                      | Type                          | Default                     | Description                    |
+| ------------------------ | ----------------------------- | --------------------------- | ------------------------------ |
+| `queue.map_vote_timing`  | `'pre-ready' \| 'post-ready'` | `'pre-ready'`               | Selects the map voting mode    |
+| `queue.map_vote_timeout` | `number` (ms)                 | `secondsToMilliseconds(10)` | Duration of the map vote phase |
 
 Both keys are configurable from the admin panel.
 
@@ -39,9 +39,9 @@ waiting → ready → mapVote → launching
 
 ### Queue page — map vote widget
 
-| Mode | Behaviour |
-|------|-----------|
-| `pre-ready` | Shown as today: always visible, live vote percentages |
+| Mode         | Behaviour                                                                                        |
+| ------------ | ------------------------------------------------------------------------------------------------ |
+| `pre-ready`  | Shown as today: always visible, live vote percentages                                            |
 | `post-ready` | Completely hidden — no map names, thumbnails, or vote counts while in `waiting` or `ready` state |
 
 ### Map vote dialog (new component)
@@ -68,8 +68,8 @@ waiting → ready → mapVote → launching
 
 ## Edge Cases
 
-| Scenario | Behaviour |
-|----------|-----------|
+| Scenario                            | Behaviour                                                                             |
+| ----------------------------------- | ------------------------------------------------------------------------------------- |
 | Player disconnects during `mapVote` | Vote proceeds; disconnected player remains in their slot and will be part of the game |
-| No votes cast by timeout | `getMapWinner()` picks randomly from all options |
-| All votes cast before timeout | Timer still runs to completion |
+| No votes cast by timeout            | `getMapWinner()` picks randomly from all options                                      |
+| All votes cast before timeout       | Timer still runs to completion                                                        |
