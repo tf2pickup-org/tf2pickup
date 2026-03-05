@@ -69,8 +69,8 @@ export default fp(
 
     async function unreadyQueue() {
       logger.info('unready queue')
-      await setState(QueueState.waiting)
       await tasks.cancelAll('queue:mapVoteTimeout')
+      await setState(QueueState.waiting)
       const allPlayers = (
         await collections.queueSlots.find({ player: { $ne: null } }).toArray()
       ).map(slot => slot.player!.steamId)
@@ -94,7 +94,7 @@ export default fp(
     }
 
     async function mapVoteTimeout() {
-      logger.info('map vote timeout, resolving winner')
+      logger.info('map vote timeout, transitioning to launching')
       await setState(QueueState.launching)
     }
 
