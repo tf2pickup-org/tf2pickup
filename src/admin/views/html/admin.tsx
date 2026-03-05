@@ -13,6 +13,7 @@ import {
   IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
+  IconBrowser,
   IconHeadset,
   IconLogs,
   IconMapPinCog,
@@ -47,6 +48,11 @@ const adminPages = {
   'map-pool': {
     title: 'Map pool',
     icon: IconMapPinCog,
+    section: 'Configuration',
+  },
+  queue: {
+    title: 'Queue',
+    icon: IconBrowser,
     section: 'Configuration',
   },
   'game-servers': {
