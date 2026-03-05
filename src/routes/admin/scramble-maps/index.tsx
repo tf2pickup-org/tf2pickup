@@ -21,7 +21,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        await reply.html(await ScrambleMaps())
+        reply.html(await ScrambleMaps())
       },
     )
     .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (_request, reply) => {
@@ -39,7 +39,7 @@ export default routes(async app => {
         config: { authorize: [PlayerRole.admin] },
         schema: {
           body: z.object({
-            mapVoteTiming: z.nativeEnum(MapVoteTiming),
+            mapVoteTiming: z.enum(MapVoteTiming),
             mapVoteTimeout: z.coerce.number().min(5).max(60),
           }),
         },
@@ -49,7 +49,7 @@ export default routes(async app => {
         await configuration.set('queue.map_vote_timing', mapVoteTiming)
         await configuration.set('queue.map_vote_timeout', secondsToMilliseconds(mapVoteTimeout))
         requestContext.set('messages', { success: ['Configuration saved'] })
-        await reply.html(await ScrambleMaps())
+        reply.html(await ScrambleMaps())
       },
     )
 })

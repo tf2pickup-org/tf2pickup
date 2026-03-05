@@ -31,7 +31,7 @@ test.describe('post-ready map vote @6v6', () => {
     await expect(page.voteForMapButton(0)).not.toBeVisible()
   })
 
-  test('map vote dialog appears after all players ready up', async ({ users }) => {
+  test('map vote dialog appears after all players ready up', () => {
     // This test is a placeholder for the full flow.
     // Implementing a full post-ready map vote flow requires:
     // 1. Filling all 12 queue slots
