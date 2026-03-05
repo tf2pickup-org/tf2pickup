@@ -223,6 +223,18 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('queue.pre_ready_up_timeout'),
     value: z.number().positive().default(minutesToMilliseconds(5)),
   }),
+  z
+    .object({
+      key: z.literal('queue.map_vote_timing'),
+      value: z.enum(['pre-ready', 'post-ready']).default('pre-ready'),
+    })
+    .describe('When map voting takes place: before players ready up, or after'),
+  z
+    .object({
+      key: z.literal('queue.map_vote_timeout'),
+      value: z.number().positive().default(secondsToMilliseconds(10)),
+    })
+    .describe('Duration of the map vote phase after all players ready up (milliseconds)'),
   z.object({
     key: z.literal('serveme_tf.preferred_region'),
     value: z.string().nullable().default(null),
