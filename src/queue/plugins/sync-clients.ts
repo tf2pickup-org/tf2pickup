@@ -22,6 +22,8 @@ import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import { WebSocket } from 'ws'
+import { configuration } from '../../configuration'
+import { MapVoteTiming } from '../../shared/types/map-vote-timing'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -166,8 +168,11 @@ export default fp(
       }),
     )
 
-    events.on('queue/mapOptions:reset', () => {
-      app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
+    events.on('queue/mapOptions:reset', async () => {
+      const mapVoteTiming = await configuration.get('queue.map_vote_timing')
+      if (mapVoteTiming === MapVoteTiming.preReady) {
+        app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
+      }
     })
 
     events.on(
