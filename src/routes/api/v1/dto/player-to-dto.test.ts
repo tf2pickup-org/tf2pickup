@@ -1,4 +1,3 @@
-// src/routes/api/v1/dto/player-to-dto.test.ts
 import { describe, expect, it } from 'vitest'
 import { playerToDto } from './player-to-dto'
 import type { PlayerModel } from '../../../../database/models/player.model'
@@ -28,14 +27,31 @@ describe('playerToDto()', () => {
     expect(result.stats).toEqual({ totalGames: 42, gamesByClass: { soldier: 30, scout: 12 } })
   })
 
-  it('returns null for etf2lProfile when not set', () => {
+  it('returns null for etf2lProfileId when not set', () => {
     const result = playerToDto(basePlayer)
-    expect(result.etf2lProfile).toBeNull()
+    expect(result.etf2lProfileId).toBeNull()
   })
 
-  it('includes etf2lProfile when set', () => {
+  it('includes etf2lProfileId when set', () => {
     const player = { ...basePlayer, etf2lProfile: { id: 1, name: 'p', country: 'PL' } }
-    expect(playerToDto(player).etf2lProfile).toEqual({ id: 1, name: 'p', country: 'PL' })
+    expect(playerToDto(player).etf2lProfileId).toBe(1)
+  })
+
+  it('returns null for twitchTvProfileUrl when not set', () => {
+    expect(playerToDto(basePlayer).twitchTvProfileUrl).toBeNull()
+  })
+
+  it('includes twitchTvProfileUrl when set', () => {
+    const player = {
+      ...basePlayer,
+      twitchTvProfile: {
+        userId: '123',
+        login: 'somestreamer',
+        displayName: 'SomeStreamer',
+        profileImageUrl: 'https://example.com/img.png',
+      },
+    }
+    expect(playerToDto(player).twitchTvProfileUrl).toBe('https://www.twitch.tv/somestreamer')
   })
 
   it('returns null for activeGame when not set', () => {

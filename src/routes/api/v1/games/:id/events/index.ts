@@ -1,3 +1,4 @@
+import { isNotNil } from 'es-toolkit'
 import z from 'zod'
 import { routes } from '../../../../../../utils/routes'
 import { games } from '../../../../../../games'
@@ -16,7 +17,7 @@ export default routes(async app => {
       const game = await games.findOne({ number: request.params.id })
       const events = game.events
         .map(gameEventToPublicDto)
-        .filter((e): e is NonNullable<typeof e> => e !== null)
+        .filter(isNotNil)
 
       return reply
         .type('application/hal+json')

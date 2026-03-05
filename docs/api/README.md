@@ -152,7 +152,8 @@ curl "https://tf2pickup.example.com/api/v1/players?offset=0&limit=20"
           "totalGames": 42,
           "gamesByClass": { "soldier": 30, "scout": 12 }
         },
-        "etf2lProfile": { "id": 12345, "name": "PlayerName", "country": "PL" },
+        "etf2lProfileId": 12345,
+        "twitchTvProfileUrl": "https://www.twitch.tv/somestreamer",
         "activeGame": null,
         "_links": {
           "self": { "href": "/api/v1/players/76561198012345678" },
@@ -200,7 +201,8 @@ curl https://tf2pickup.example.com/api/v1/players/76561198012345678
     "totalGames": 42,
     "gamesByClass": { "soldier": 30, "scout": 12 }
   },
-  "etf2lProfile": { "id": 12345, "name": "PlayerName", "country": "PL" },
+  "etf2lProfileId": 12345,
+  "twitchTvProfileUrl": "https://www.twitch.tv/somestreamer",
   "activeGame": 1234,
   "_links": {
     "self": { "href": "/api/v1/players/76561198012345678" },
@@ -212,7 +214,8 @@ curl https://tf2pickup.example.com/api/v1/players/76561198012345678
 **Field notes:**
 
 - `roles` — `[]` for regular players; possible values are `"admin"` and `"super user"`.
-- `etf2lProfile` — `null` if no ETF2L profile is linked.
+- `etf2lProfileId` — ETF2L profile ID, or `null` if no ETF2L profile is linked.
+- `twitchTvProfileUrl` — Twitch channel URL, or `null` if no Twitch profile is linked.
 - `activeGame` — game number of the player's current active game, or `null` if not in a game.
 
 ---

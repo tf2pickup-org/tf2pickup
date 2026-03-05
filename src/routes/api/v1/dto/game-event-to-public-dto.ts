@@ -1,9 +1,6 @@
 import { GameEventType, type GameEventModel } from '../../../../database/models/game-event.model'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type PublicEvent = Record<string, any>
-
-export function gameEventToPublicDto(event: GameEventModel): PublicEvent | null {
+export function gameEventToPublicDto(event: GameEventModel) {
   const at = event.at.toISOString()
 
   switch (event.event) {

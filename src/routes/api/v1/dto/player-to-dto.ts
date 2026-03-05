@@ -8,7 +8,10 @@ export function playerToDto(player: PlayerModel) {
     avatar: player.avatar,
     roles: player.roles,
     stats: player.stats,
-    etf2lProfile: player.etf2lProfile ?? null,
+    etf2lProfileId: player.etf2lProfile?.id ?? null,
+    twitchTvProfileUrl: player.twitchTvProfile
+      ? `https://www.twitch.tv/${player.twitchTvProfile.login}`
+      : null,
     activeGame: player.activeGame ?? null,
     _links: {
       self: { href: `/api/v1/players/${player.steamId}` },
