@@ -1,0 +1,25 @@
+import { GameEventType } from '../../../../database/models/game-event.model'
+import type { GameModel } from '../../../../database/models/game.model'
+
+export function gameToDto(game: GameModel) {
+  const endedEvent = game.events.find(e => e.event === GameEventType.gameEnded)
+
+  return {
+    id: game.number,
+    map: game.map,
+    state: game.state,
+    score: game.score ?? null,
+    logsUrl: game.logsUrl ?? null,
+    demoUrl: game.demoUrl ?? null,
+    createdAt: game.events[0].at.toISOString(),
+    endedAt: endedEvent ? endedEvent.at.toISOString() : null,
+    gameServer: game.gameServer
+      ? { name: game.gameServer.name, provider: game.gameServer.provider }
+      : null,
+    _links: {
+      self: { href: `/api/v1/games/${game.number}` },
+      slots: { href: `/api/v1/games/${game.number}/slots` },
+      events: { href: `/api/v1/games/${game.number}/events` },
+    },
+  }
+}

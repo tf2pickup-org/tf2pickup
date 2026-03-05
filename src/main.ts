@@ -82,6 +82,12 @@ await app.register(await import('@fastify/request-context'))
 await app.register(await import('@fastify/accepts'))
 await app.register((await import('@kitajs/fastify-html-plugin')).default)
 
+app.addHook('onSend', async (request, reply) => {
+  if (request.url.startsWith('/api/')) {
+    reply.header('Access-Control-Allow-Origin', '*')
+  }
+})
+
 app.setErrorHandler((error, request, reply) => {
   logger.error(error)
 
@@ -139,6 +145,7 @@ await app.register(autoload, {
   dir: resolve(import.meta.dirname, 'routes'),
   dirNameRoutePrefix: true,
   scriptPattern: /(?:(?:^.?|\.[^d]|[^.]d|[^.][^d])\.ts|\.js|\.cjs|\.mjs|\.cts|\.mts|\.tsx?)$/,
+  matchFilter: path => !path.includes('/dto/'),
 })
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })
