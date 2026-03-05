@@ -7,6 +7,7 @@ import { format } from 'date-fns'
 import { makeTitle } from '../../../html/make-title'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
+import { getBanExpiryDate } from '../../get-ban-expiry-date'
 
 export async function AddBanPage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['name'])
@@ -108,7 +109,18 @@ export async function AddBanPage(props: { steamId: SteamId64 }) {
                   hx-include="#addBanForm"
                   hx-params="*"
                   hx-trigger="change from:#addBanForm delay:1s"
-                ></span>
+                >
+                  {
+                    format(
+                      getBanExpiryDate({
+                        lengthSelector: 'duration',
+                        duration: 1,
+                        durationUnits: 'minutes',
+                      }),
+                      'dd.MM.yyyy HH:mm',
+                    ) as 'safe'
+                  }
+                </span>
               </p>
 
               <div class="input-group my-4">
