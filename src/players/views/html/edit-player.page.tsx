@@ -351,7 +351,7 @@ function NicknameHistoryOverview(props: { nameHistory: NonNullable<PlayerModel['
           {sorted.map(entry => (
             <li class="col-span-2 grid grid-cols-subgrid">
               <span safe>{entry.name}</span>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-abru-light-75 text-sm" safe>
                 {format(entry.changedAt, 'yyyy-MM-dd HH:mm')}
               </span>
             </li>
