@@ -23,6 +23,7 @@ export async function QueuePage() {
                   name="mapVoteTiming"
                   value={MapVoteTiming.preReady}
                   checked={mapVoteTiming === MapVoteTiming.preReady}
+                  _={`on change set #map-vote-timeout.disabled to true`}
                 />
                 <span>Pre-ready (players vote while waiting in the queue)</span>
               </label>
@@ -32,25 +33,25 @@ export async function QueuePage() {
                   name="mapVoteTiming"
                   value={MapVoteTiming.postReady}
                   checked={mapVoteTiming === MapVoteTiming.postReady}
+                  _={`on change set #map-vote-timeout.disabled to false`}
                 />
                 <span>Post-ready (players vote after everyone readies up)</span>
               </label>
-            </dd>
-
-            <dt class="mt-4">
-              <label for="map-vote-timeout" class="font-medium">
-                Map vote timeout (seconds)
-              </label>
-            </dt>
-            <dd>
-              <input
-                type="number"
-                id="map-vote-timeout"
-                name="mapVoteTimeout"
-                value={millisecondsToSeconds(mapVoteTimeout).toString()}
-                min="5"
-                max="60"
-              />
+              <div class="pl-6">
+                <label for="map-vote-timeout" class="flex items-center gap-2 text-sm">
+                  <span class="text-nowrap">Map vote timeout (seconds)</span>
+                  <input
+                    type="number"
+                    id="map-vote-timeout"
+                    name="mapVoteTimeout"
+                    value={millisecondsToSeconds(mapVoteTimeout).toString()}
+                    min="5"
+                    max="60"
+                    disabled={mapVoteTiming === MapVoteTiming.preReady}
+                    class="w-20"
+                  />
+                </label>
+              </div>
             </dd>
           </dl>
 

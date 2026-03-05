@@ -40,6 +40,11 @@ const adminPages = {
     icon: IconUserExclamation,
     section: 'Configuration',
   },
+  queue: {
+    title: 'Queue',
+    icon: IconBrowser,
+    section: 'Configuration',
+  },
   games: {
     title: 'Games',
     icon: IconAdjustments,
@@ -48,11 +53,6 @@ const adminPages = {
   'map-pool': {
     title: 'Map pool',
     icon: IconMapPinCog,
-    section: 'Configuration',
-  },
-  queue: {
-    title: 'Queue',
-    icon: IconBrowser,
     section: 'Configuration',
   },
   'game-servers': {

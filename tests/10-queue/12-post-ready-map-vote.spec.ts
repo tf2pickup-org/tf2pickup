@@ -7,7 +7,7 @@ const test = mergeTests(authUsers, waitForEmptyQueue)
 test.describe('post-ready map vote @6v6', () => {
   test.beforeEach(async ({ users }) => {
     const adminPage = await users.getAdmin().page()
-    await adminPage.goto('/admin/scramble-maps')
+    await adminPage.goto('/admin/queue')
     await adminPage.getByLabel('Post-ready (players vote after everyone readies up)').check()
     await adminPage.getByLabel('Map vote timeout (seconds)').fill('5')
     await adminPage.getByRole('button', { name: 'Save' }).click()
@@ -16,7 +16,7 @@ test.describe('post-ready map vote @6v6', () => {
 
   test.afterEach(async ({ users }) => {
     const adminPage = await users.getAdmin().page()
-    await adminPage.goto('/admin/scramble-maps')
+    await adminPage.goto('/admin/queue')
     await adminPage.getByLabel('Pre-ready (players vote while waiting in the queue)').check()
     await adminPage.getByRole('button', { name: 'Save' }).click()
     await expect(adminPage.getByText('Configuration saved')).toBeVisible()
