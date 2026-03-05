@@ -6,9 +6,11 @@ import { collections } from '../database/collections'
 import { events } from '../events'
 import { errors } from '../errors'
 
+type PlayerUpdateFactory = (before: PlayerModel) => StrictUpdateFilter<PlayerModel>
+
 export async function update(
   steamId: SteamId64,
-  update: StrictUpdateFilter<PlayerModel>,
+  updateOrFactory: StrictUpdateFilter<PlayerModel> | PlayerUpdateFactory,
   options?: FindOneAndUpdateOptions,
   adminId?: SteamId64,
 ): Promise<PlayerModel> {
@@ -18,7 +20,10 @@ export async function update(
       throw errors.notFound(`Player with steamId ${steamId} does not exist`)
     }
 
-    const after = (await collections.players.findOneAndUpdate({ steamId }, update, {
+    const updateDoc =
+      typeof updateOrFactory === 'function' ? updateOrFactory(before) : updateOrFactory
+
+    const after = (await collections.players.findOneAndUpdate({ steamId }, updateDoc, {
       returnDocument: 'after',
       ...options,
     }))!
