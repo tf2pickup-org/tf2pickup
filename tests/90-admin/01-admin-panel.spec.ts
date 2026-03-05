@@ -35,6 +35,7 @@ authUsers('admin panel is not visible for anonymous users @6v6 @9v9', async ({ p
   '/admin/voice-server',
   '/admin/discord',
   '/admin/view-for-nerds',
+  '/admin/queue',
   '/admin/scramble-maps',
   '/admin/bypass-registration-restrictions',
   '/admin/rules',

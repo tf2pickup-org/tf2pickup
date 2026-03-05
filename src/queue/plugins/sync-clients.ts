@@ -8,6 +8,8 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../database/models/queue-state.model'
 import { MapResult, MapVote } from '../views/html/map-vote'
+import { MapVoteDialog } from '../views/html/map-vote-dialog'
+import { getState } from '../get-state'
 import { SetTitle } from '../views/html/set-title'
 import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
@@ -20,6 +22,8 @@ import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import { WebSocket } from 'ws'
+import { configuration } from '../../configuration'
+import { MapVoteTiming } from '../../shared/types/map-vote-timing'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -56,6 +60,15 @@ export default fp(
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
+      }
+
+      const queueState = await getState()
+      if (queueState === QueueState.map_vote) {
+        const playerSteamIds = new Set(
+          slots.filter(s => s.player !== null).map(s => s.player!.steamId),
+        )
+        const isInQueue = socket.player !== undefined && playerSteamIds.has(socket.player.steamId)
+        socket.send(await MapVoteDialog.show(socket.player?.steamId, isInQueue))
       }
     }
 
@@ -135,12 +148,34 @@ export default fp(
 
           app.gateway.to({ players }).send(async actor => await ReadyUpDialog.show(actor!))
         }
+
+        if (state === QueueState.map_vote) {
+          const playerSteamIds = new Set(
+            (await collections.queueSlots.find({ player: { $ne: null } }).toArray()).map(
+              s => s.player!.steamId,
+            ),
+          )
+          app.gateway.to({ url: '/' }).send(async actor => {
+            const isInQueue = actor !== undefined && playerSteamIds.has(actor)
+            return await MapVoteDialog.show(actor, isInQueue)
+          })
+        }
+
+        if (state === QueueState.launching) {
+          app.gateway.to({ url: '/' }).send(() => MapVoteDialog.close())
+        }
       }),
     )
 
-    events.on('queue/mapOptions:reset', () => {
-      app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
-    })
+    events.on(
+      'queue/mapOptions:reset',
+      safe(async () => {
+        const mapVoteTiming = await configuration.get('queue.map_vote_timing')
+        if (mapVoteTiming === MapVoteTiming.preReady) {
+          app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
+        }
+      }),
+    )
 
     events.on(
       'queue/mapVoteResults:updated',

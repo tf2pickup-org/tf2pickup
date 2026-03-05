@@ -7,6 +7,9 @@ export enum QueueState {
   // players are expected to ready up
   ready = 'ready',
 
+  // all players have readied up; the map vote dialog is open
+  map_vote = 'map_vote',
+
   // everybody has readied up, the game is being launched
   launching = 'launching',
 }

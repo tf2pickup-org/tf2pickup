@@ -9,6 +9,7 @@ import { setState } from '../set-state'
 import { kick } from '../kick'
 import { unready } from '../unready'
 import { configuration } from '../../configuration'
+import { MapVoteTiming } from '../../shared/types/map-vote-timing'
 import { tasks } from '../../tasks'
 
 export default fp(
@@ -38,10 +39,18 @@ export default fp(
           if (currentPlayerCount === 0) {
             await unreadyQueue()
           } else if (readyPlayerCount === requiredPlayerCount) {
-            logger.info('all players ready, queue ready')
-            await setState(QueueState.launching)
+            logger.info('all players ready')
             await tasks.cancelAll('queue:readyUpTimeout')
             await tasks.cancelAll('queue:unready')
+            const mapVoteTiming = await configuration.get('queue.map_vote_timing')
+            if (mapVoteTiming === MapVoteTiming.postReady) {
+              logger.info('transitioning to map_vote state')
+              await setState(QueueState.map_vote)
+              const timeout = await configuration.get('queue.map_vote_timeout')
+              await tasks.schedule('queue:mapVoteTimeout', timeout)
+            } else {
+              await setState(QueueState.launching)
+            }
           }
 
           break
@@ -60,6 +69,7 @@ export default fp(
 
     async function unreadyQueue() {
       logger.info('unready queue')
+      await tasks.cancelAll('queue:mapVoteTimeout')
       await setState(QueueState.waiting)
       const allPlayers = (
         await collections.queueSlots.find({ player: { $ne: null } }).toArray()
@@ -83,6 +93,11 @@ export default fp(
       }
     }
 
+    async function mapVoteTimeout() {
+      logger.info('map vote timeout, transitioning to launching')
+      await setState(QueueState.launching)
+    }
+
     async function readyUp() {
       await setState(QueueState.ready)
       const timeout = await configuration.get('queue.ready_up_timeout')
@@ -91,6 +106,7 @@ export default fp(
 
     tasks.register('queue:readyUpTimeout', readyUpTimeout)
     tasks.register('queue:unready', unreadyQueue)
+    tasks.register('queue:mapVoteTimeout', mapVoteTimeout)
 
     events.on('queue/slots:updated', safe(maybeUpdateQueueState))
   },

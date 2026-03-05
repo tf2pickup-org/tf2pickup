@@ -8,17 +8,9 @@ import { FlashMessage } from '../../../html/components/flash-message'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.html(ScrambleMaps())
-      },
-    )
+    .get('/', { config: { authorize: [PlayerRole.admin] } }, async (_request, reply) => {
+      return reply.html(ScrambleMaps())
+    })
     .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (_request, reply) => {
       await queue.resetMapOptions()
       await reply.html(

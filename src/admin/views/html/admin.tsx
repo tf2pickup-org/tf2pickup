@@ -13,6 +13,7 @@ import {
   IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
+  IconBrowser,
   IconHeadset,
   IconLogs,
   IconMapPinCog,
@@ -37,6 +38,11 @@ const adminPages = {
   'player-restrictions': {
     title: 'Player restrictions',
     icon: IconUserExclamation,
+    section: 'Configuration',
+  },
+  queue: {
+    title: 'Queue',
+    icon: IconBrowser,
     section: 'Configuration',
   },
   games: {

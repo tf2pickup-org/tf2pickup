@@ -1,7 +1,7 @@
 import { Admin } from '../../../views/html/admin'
 import { MapVoteOptions } from './map-vote-options'
 
-export async function ScrambleMaps() {
+export function ScrambleMaps() {
   return (
     <Admin activePage="scramble-maps">
       <div class="admin-panel-set">
