@@ -21,7 +21,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        await reply.html(ScrambleMaps())
+        await reply.html(await ScrambleMaps())
       },
     )
     .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (_request, reply) => {
