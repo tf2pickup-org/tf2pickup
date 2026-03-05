@@ -51,6 +51,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
     'steamId',
     'avatar.large',
     'cooldownLevel',
+    'nameHistory',
   ])
   return (
     <EditPlayer player={player} activePage="/profile">
@@ -62,6 +63,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
                 Nickname
               </label>
               <input type="text" name="name" value={player.name} id="player-nickname" />
+              <NicknameHistoryOverview nameHistory={player.nameHistory ?? []} />
             </div>
 
             <div class="row-span-3">
@@ -335,6 +337,29 @@ async function CooldownLevelsOverview() {
           )
         })}
       </ul>
+    </details>
+  )
+}
+
+function NicknameHistoryOverview(props: { nameHistory: NonNullable<PlayerModel['nameHistory']> }) {
+  const sorted = props.nameHistory.toSorted((a, b) => b.changedAt.getTime() - a.changedAt.getTime())
+  return (
+    <details>
+      <summary>Nickname history</summary>
+      {sorted.length > 0 ? (
+        <ul class="mt-1 grid grid-cols-[1fr_auto] gap-x-2 gap-y-0.5">
+          {sorted.map(entry => (
+            <li class="col-span-2 grid grid-cols-subgrid">
+              <span safe>{entry.name}</span>
+              <span class="text-abru-light-75 text-sm" safe>
+                {format(entry.changedAt, 'yyyy-MM-dd HH:mm')}
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="text-abru-light-75 italic">No nickname history</p>
+      )}
     </details>
   )
 }
