@@ -66,7 +66,7 @@ interface OnlinePlayersResponse {
 
 const json = async <T>(res: APIResponse): Promise<T> => res.json() as Promise<T>
 
-test.describe('GET /api/v1/', () => {
+test.describe('GET /api/v1/ @6v6 @9v9', () => {
   test('returns 200 with HAL content-type', async ({ request }) => {
     const res = await request.get('/api/v1/')
     expect(res.status()).toBe(200)
@@ -91,7 +91,7 @@ test.describe('GET /api/v1/', () => {
   })
 })
 
-test.describe('GET /api/v1/version', () => {
+test.describe('GET /api/v1/version @6v6 @9v9', () => {
   test('returns version string', async ({ request }) => {
     const body = await json<VersionResponse>(await request.get('/api/v1/version'))
     expect(typeof body.version).toBe('string')
@@ -100,7 +100,7 @@ test.describe('GET /api/v1/version', () => {
   })
 })
 
-test.describe('GET /api/v1/players', () => {
+test.describe('GET /api/v1/players @6v6 @9v9', () => {
   test('returns paginated HAL list', async ({ request }) => {
     const body = await json<PlayerListResponse>(await request.get('/api/v1/players'))
     expect(typeof body.total).toBe('number')
@@ -154,7 +154,7 @@ test.describe('GET /api/v1/players', () => {
   })
 })
 
-test.describe('GET /api/v1/players/:steamId', () => {
+test.describe('GET /api/v1/players/:steamId @6v6 @9v9', () => {
   test('returns a known player', async ({ request }) => {
     const steamId = users[0].steamId
     const res = await request.get(`/api/v1/players/${steamId}`)
@@ -170,7 +170,7 @@ test.describe('GET /api/v1/players/:steamId', () => {
   })
 })
 
-test.describe('GET /api/v1/players/:steamId/games', () => {
+test.describe('GET /api/v1/players/:steamId/games @6v6 @9v9', () => {
   test('returns paginated game list for player', async ({ request }) => {
     const steamId = users[0].steamId
     const body = await json<GameListResponse>(await request.get(`/api/v1/players/${steamId}/games`))
@@ -179,7 +179,7 @@ test.describe('GET /api/v1/players/:steamId/games', () => {
   })
 })
 
-test.describe('GET /api/v1/games', () => {
+test.describe('GET /api/v1/games @6v6 @9v9', () => {
   test('returns paginated HAL list', async ({ request }) => {
     const body = await json<GameListResponse>(await request.get('/api/v1/games'))
     expect(typeof body.total).toBe('number')
@@ -221,14 +221,14 @@ test.describe('GET /api/v1/games', () => {
   })
 })
 
-test.describe('GET /api/v1/games/:id', () => {
+test.describe('GET /api/v1/games/:id @6v6 @9v9', () => {
   test('returns 404 for unknown game id', async ({ request }) => {
     const res = await request.get('/api/v1/games/999999')
     expect(res.status()).toBe(404)
   })
 })
 
-test.describe('GET /api/v1/queue', () => {
+test.describe('GET /api/v1/queue @6v6 @9v9', () => {
   test('returns queue state', async ({ request }) => {
     const body = await json<QueueResponse>(await request.get('/api/v1/queue'))
     expect(['waiting', 'ready', 'launching']).toContain(body.state)
@@ -259,7 +259,7 @@ test.describe('GET /api/v1/queue', () => {
   })
 })
 
-test.describe('GET /api/v1/online-players', () => {
+test.describe('GET /api/v1/online-players @6v6 @9v9', () => {
   test('returns online player count and list', async ({ request }) => {
     const body = await json<OnlinePlayersResponse>(await request.get('/api/v1/online-players'))
     expect(typeof body.count).toBe('number')
