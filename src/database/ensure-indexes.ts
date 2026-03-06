@@ -41,6 +41,10 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { guildId: 1, gameNumber: 1, slotId: 1 }, options: { unique: true } },
   ],
   gamesSubstituteRequests: [{ spec: { gameNumber: 1, slotId: 1 }, options: { unique: true } }],
+  gamesDeferredKicks: [
+    { spec: { gameNumber: 1, slotId: 1 }, options: { unique: true } },
+    { spec: { gameNumber: 1, replacement: 1 } },
+  ],
   futurePlayerSkills: [{ spec: { steamId: 1 }, options: { unique: true } }],
   pendingImports: [{ spec: { actor: 1 }, options: { unique: true } }],
   logsTfLogs: [

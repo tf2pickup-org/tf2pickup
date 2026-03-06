@@ -26,6 +26,7 @@ import type { SubstituteRequestModel } from './models/substitute-request.model'
 import type { FuturePlayerSkillModel } from './models/future-player-skill.model'
 import type { PendingImportModel } from './models/pending-import.model'
 import type { LogsTfLogModel } from './models/logs-tf-log.model'
+import type { DeferredKickModel } from './models/deferred-kick.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -41,6 +42,7 @@ export const collections = {
   futurePlayerSkills: database.collection<FuturePlayerSkillModel>('futureplayerskills'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
+  gamesDeferredKicks: database.collection<DeferredKickModel>('games.deferredkicks'),
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
   logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
