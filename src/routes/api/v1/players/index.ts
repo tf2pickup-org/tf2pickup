@@ -1,7 +1,7 @@
 import z from 'zod'
 import { routes } from '../../../../utils/routes'
 import { collections } from '../../../../database/collections'
-import { playerToDto } from '../dto/player-to-dto'
+import { playerToDto } from '../../../../players/views/json/player-to-dto'
 
 const querySchema = z.object({
   offset: z.coerce.number().int().min(0).default(0),

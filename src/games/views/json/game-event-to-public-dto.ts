@@ -1,4 +1,4 @@
-import { GameEventType, type GameEventModel } from '../../../../database/models/game-event.model'
+import { GameEventType, type GameEventModel } from '../../../database/models/game-event.model'
 
 export function gameEventToPublicDto(event: GameEventModel) {
   const at = event.at.toISOString()

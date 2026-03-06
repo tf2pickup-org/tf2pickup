@@ -3,7 +3,7 @@ import { routes } from '../../../../../utils/routes'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { collections } from '../../../../../database/collections'
 import { errors } from '../../../../../errors'
-import { playerToDto } from '../../dto/player-to-dto'
+import { playerToDto } from '../../../../../players/views/json/player-to-dto'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {

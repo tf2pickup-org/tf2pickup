@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { gameEventToPublicDto } from './game-event-to-public-dto'
-import { GameEventType, GameEndedReason } from '../../../../database/models/game-event.model'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
-import type { Tf2Team } from '../../../../shared/types/tf2-team'
-import type { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
+import { GameEventType, GameEndedReason } from '../../../database/models/game-event.model'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import type { Tf2Team } from '../../../shared/types/tf2-team'
+import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 
 const at = new Date('2024-01-01T12:00:00.000Z')
 const atStr = '2024-01-01T12:00:00.000Z'

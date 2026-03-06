@@ -1,5 +1,5 @@
-import { GameEventType } from '../../../../database/models/game-event.model'
-import type { GameModel } from '../../../../database/models/game.model'
+import { GameEventType } from '../../../database/models/game-event.model'
+import type { GameModel } from '../../../database/models/game.model'
 
 export function gameToDto(game: GameModel) {
   const endedEvent = game.events.find(e => e.event === GameEventType.gameEnded)

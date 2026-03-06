@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { gameToDto } from './game-to-dto'
-import type { GameModel, GameNumber } from '../../../../database/models/game.model'
-import { GameState, GameServerProvider } from '../../../../database/models/game.model'
-import { GameEventType, GameEndedReason } from '../../../../database/models/game-event.model'
-import { Tf2Team } from '../../../../shared/types/tf2-team'
+import type { GameModel, GameNumber } from '../../../database/models/game.model'
+import { GameState, GameServerProvider } from '../../../database/models/game.model'
+import { GameEventType, GameEndedReason } from '../../../database/models/game-event.model'
+import { Tf2Team } from '../../../shared/types/tf2-team'
 
 const createdAt = new Date('2024-01-01T00:00:00.000Z')
 const endedAt = new Date('2024-01-01T01:00:00.000Z')
