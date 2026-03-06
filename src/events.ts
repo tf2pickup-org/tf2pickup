@@ -161,6 +161,15 @@ export interface Events {
     ban: PlayerBan
     admin: SteamId64
   }
+  'player/chatMute:added': {
+    player: SteamId64
+    chatMute: PlayerBan
+  }
+  'player/chatMute:revoked': {
+    player: SteamId64
+    chatMute: PlayerBan
+    admin: SteamId64
+  }
 
   'queue:playerKicked': {
     player: SteamId64

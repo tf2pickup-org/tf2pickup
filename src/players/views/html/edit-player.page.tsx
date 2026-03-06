@@ -17,6 +17,7 @@ import {
   IconArrowBackUp,
   IconBan,
   IconDeviceFloppy,
+  IconMessageCircleOff,
   IconPlus,
   IconUserScan,
   IconX,
@@ -42,6 +43,7 @@ import { requestContext } from '@fastify/request-context'
 const editPlayerPages = {
   '/profile': 'Profile',
   '/bans': 'Bans',
+  '/chat-mutes': 'Chat mutes',
   '/roles': 'Roles',
 } as const
 
@@ -134,6 +136,35 @@ export async function EditPlayerBansPage(props: { steamId: SteamId64 }) {
   )
 }
 
+export async function EditPlayerChatMutesPage(props: { steamId: SteamId64 }) {
+  const player = await players.bySteamId(props.steamId, ['chatMutes', 'name', 'steamId'])
+  const chatMutes = player.chatMutes?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
+  return (
+    <EditPlayer
+      player={player}
+      activePage="/chat-mutes"
+      action={
+        <a href={`/players/${player.steamId}/edit/chat-mutes/add`} class="button button--accent">
+          <IconPlus />
+          Add mute
+        </a>
+      }
+    >
+      <div class="admin-panel-content">
+        {chatMutes?.length ? (
+          <div class="edit-player-ban-list">
+            {chatMutes.map(chatMute => (
+              <ChatMuteDetails player={player} chatMute={chatMute} />
+            ))}
+          </div>
+        ) : (
+          <span class="text-abru-light-75 italic">No chat mutes</span>
+        )}
+      </div>
+    </EditPlayer>
+  )
+}
+
 export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['roles', 'name', 'steamId'])
   const roles = player.roles
@@ -217,6 +248,13 @@ function EditPlayer(props: {
               <IconBan />
               Bans
             </AdminPanelLink>
+            <AdminPanelLink
+              href={`/players/${props.player.steamId}/edit/chat-mutes`}
+              active={props.activePage === '/chat-mutes'}
+            >
+              <IconMessageCircleOff />
+              Chat mutes
+            </AdminPanelLink>
 
             {user.player.roles.includes(PlayerRole.superUser) && (
               <>
@@ -294,6 +332,64 @@ export async function BanDetails(props: {
 
         <span class="text-base">
           Ends: <strong safe>{format(props.ban.end, 'MMMM dd, yyyy, HH:mm')}</strong>
+        </span>
+      </form>
+    </div>
+  )
+}
+
+export async function ChatMuteDetails(props: {
+  player: Pick<PlayerModel, 'name' | 'steamId'>
+  chatMute: PlayerBan
+}) {
+  let actorDesc: JSX.Element
+  if (isBot(props.chatMute.actor)) {
+    actorDesc = <>bot</>
+  } else {
+    const actor = await players.bySteamId(props.chatMute.actor, ['name', 'steamId'])
+    actorDesc = (
+      <a href={`/players/${actor.steamId}`} safe>
+        {actor.name}
+      </a>
+    )
+  }
+
+  return (
+    <div
+      class="ban-item group"
+      id={`player-chat-mute-${props.chatMute.start.getTime().toString()}`}
+    >
+      <form class="contents">
+        <div class="col-span-3">
+          <span class="me-2 text-2xl font-bold" safe>
+            {props.chatMute.reason}
+          </span>
+          <span class="text-sm">by {actorDesc}</span>
+        </div>
+
+        <div class="row-span-2 flex items-center">
+          {props.chatMute.end > new Date() ? (
+            <button
+              class="button button--darker"
+              hx-put={`/players/${props.player.steamId}/edit/chat-mutes/${props.chatMute.start.getTime().toString()}/revoke`}
+              hx-trigger="click"
+              hx-target={`#player-chat-mute-${props.chatMute.start.getTime().toString()}`}
+              hx-swap="outerHTML"
+            >
+              <IconX />
+              <span class="sr-only">Revoke mute</span>
+            </button>
+          ) : (
+            <></>
+          )}
+        </div>
+
+        <span class="text-base">
+          Starts: <strong safe>{format(props.chatMute.start, 'MMMM dd, yyyy, HH:mm')}</strong>
+        </span>
+
+        <span class="text-base">
+          Ends: <strong safe>{format(props.chatMute.end, 'MMMM dd, yyyy, HH:mm')}</strong>
         </span>
       </form>
     </div>
