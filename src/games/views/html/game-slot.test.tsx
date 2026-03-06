@@ -2,11 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { GameSlot } from './game-slot'
 import { GameState } from '../../../database/models/game.model'
-import type { GameNumber } from '../../../database/models/game.model'
-import {
-  PlayerConnectionStatus,
-  SlotStatus,
-} from '../../../database/models/game-slot.model'
+import type { GameModel, GameNumber } from '../../../database/models/game.model'
+import { PlayerConnectionStatus, SlotStatus } from '../../../database/models/game-slot.model'
 import type { GameSlotId } from '../../../shared/types/game-slot-id'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'
@@ -43,7 +40,7 @@ const baseGame = {
   map: 'cp_badlands',
   state: GameState.launching,
   slots: [baseSlot],
-  events: [] as any,
+  events: [] as unknown as GameModel['events'],
 }
 
 describe('GameSlot', () => {
@@ -80,7 +77,11 @@ describe('GameSlot', () => {
     it('shows the substitute button for admins', async () => {
       vi.mocked(collections.players.findOne)
         .mockResolvedValueOnce(slotPlayer)
-        .mockResolvedValueOnce({ roles: [PlayerRole.admin], steamId: actorSteamId, activeGame: undefined })
+        .mockResolvedValueOnce({
+          roles: [PlayerRole.admin],
+          steamId: actorSteamId,
+          activeGame: undefined,
+        })
       const html = await GameSlot({ game: baseGame, slot: baseSlot, actor: actorSteamId })
       const root = parse(html)
       expect(root.querySelector('[aria-label="Request substitute"]')).not.toBeNull()

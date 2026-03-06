@@ -40,7 +40,7 @@ export default ts.config(
     },
   },
   {
-    files: ['**/*.test.ts'],
+    files: ['**/*.test.ts', '**/*.test.tsx'],
     ...ts.configs.disableTypeChecked,
   },
   {

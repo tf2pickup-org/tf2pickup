@@ -16,33 +16,37 @@ vi.mock('../../get-map-vote-results', () => ({
   getMapVoteResults: vi.fn(),
 }))
 
+vi.mock('../../../html/components/map-thumbnail', () => ({
+  MapThumbnail: () => '',
+}))
+
 describe('MapResult', () => {
-  it('renders 0 when there are no votes', () => {
-    const html = MapResult({ results: {}, map: 'cp_badlands' })
+  it('renders 0 when there are no votes', async () => {
+    const html = await MapResult({ results: {}, map: 'cp_badlands' })
     const root = parse(html)
     expect(root.querySelector('#map-result-cp_badlands')?.text).toBe('0')
   })
 
-  it('renders 100 when all votes are for this map', () => {
-    const html = MapResult({ results: { cp_badlands: 3 }, map: 'cp_badlands' })
+  it('renders 100 when all votes are for this map', async () => {
+    const html = await MapResult({ results: { cp_badlands: 3 }, map: 'cp_badlands' })
     const root = parse(html)
     expect(root.querySelector('#map-result-cp_badlands')?.text).toBe('100')
   })
 
-  it('renders 0 when the map is not in the results', () => {
-    const html = MapResult({ results: { cp_granary: 2 }, map: 'cp_badlands' })
+  it('renders 0 when the map is not in the results', async () => {
+    const html = await MapResult({ results: { cp_granary: 2 }, map: 'cp_badlands' })
     const root = parse(html)
     expect(root.querySelector('#map-result-cp_badlands')?.text).toBe('0')
   })
 
-  it('renders 50 for an even split', () => {
-    const html = MapResult({ results: { cp_badlands: 1, cp_granary: 1 }, map: 'cp_badlands' })
+  it('renders 50 for an even split', async () => {
+    const html = await MapResult({ results: { cp_badlands: 1, cp_granary: 1 }, map: 'cp_badlands' })
     const root = parse(html)
     expect(root.querySelector('#map-result-cp_badlands')?.text).toBe('50')
   })
 
-  it('rounds the vote percentage correctly', () => {
-    const html = MapResult({ results: { cp_badlands: 1, cp_granary: 2 }, map: 'cp_badlands' })
+  it('rounds the vote percentage correctly', async () => {
+    const html = await MapResult({ results: { cp_badlands: 1, cp_granary: 2 }, map: 'cp_badlands' })
     const root = parse(html)
     // 1/3 = 33.33... → rounds to 33
     expect(root.querySelector('#map-result-cp_badlands')?.text).toBe('33')
@@ -53,7 +57,7 @@ describe('MapVote', () => {
   beforeEach(() => {
     vi.mocked(collections.queueMapOptions.find).mockReturnValue({
       toArray: vi.fn().mockResolvedValue([{ name: 'cp_badlands' }, { name: 'cp_granary' }]),
-    } as any)
+    } as unknown as ReturnType<typeof collections.queueMapOptions.find>)
     vi.mocked(getMapVoteResults).mockResolvedValue({})
   })
 
