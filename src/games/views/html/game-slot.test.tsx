@@ -120,7 +120,7 @@ describe('GameSlot', () => {
     it('hides the replace button when actor is in a different active game', async () => {
       vi.mocked(collections.players.findOne)
         .mockResolvedValueOnce(slotPlayer)
-        .mockResolvedValueOnce({ roles: [], steamId: actorSteamId, activeGame: 42 })
+        .mockResolvedValueOnce({ roles: [], steamId: actorSteamId, activeGame: 42 as GameNumber })
       const html = await GameSlot({ game: baseGame, slot: waitingSlot, actor: actorSteamId })
       const root = parse(html)
       expect(root.querySelector('[aria-label="Replace player"]')).toBeNull()
