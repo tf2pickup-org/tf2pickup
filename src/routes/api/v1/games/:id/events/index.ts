@@ -2,7 +2,7 @@ import { isNotNil } from 'es-toolkit'
 import z from 'zod'
 import { routes } from '../../../../../../utils/routes'
 import { games } from '../../../../../../games'
-import { gameEventToPublicDto } from '../../../dto/game-event-to-public-dto'
+import { gameEventToPublicDto } from '../../../../../../games/views/json/game-event-to-public-dto'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {

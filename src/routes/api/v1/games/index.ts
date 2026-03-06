@@ -2,7 +2,7 @@ import z from 'zod'
 import { routes } from '../../../../utils/routes'
 import { collections } from '../../../../database/collections'
 import { GameState } from '../../../../database/models/game.model'
-import { gameToDto } from '../dto/game-to-dto'
+import { gameToDto } from '../../../../games/views/json/game-to-dto'
 
 const querySchema = z.object({
   offset: z.coerce.number().int().min(0).default(0),

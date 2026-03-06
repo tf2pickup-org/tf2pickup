@@ -1,4 +1,4 @@
-import type { PlayerModel } from '../../../../database/models/player.model'
+import type { PlayerModel } from '../../../database/models/player.model'
 
 export function playerToDto(player: PlayerModel) {
   return {

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { playerToDto } from './player-to-dto'
-import type { PlayerModel } from '../../../../database/models/player.model'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
-import type { GameNumber } from '../../../../database/models/game.model'
+import type { PlayerModel } from '../../../database/models/player.model'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import type { GameNumber } from '../../../database/models/game.model'
 
 const basePlayer: PlayerModel = {
   steamId: '76561198012345678' as SteamId64,
