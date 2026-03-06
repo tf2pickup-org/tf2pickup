@@ -3,10 +3,7 @@ import { parse } from 'node-html-parser'
 import { JoinGameButton } from './join-game-button'
 import { GameState } from '../../../database/models/game.model'
 import type { GameNumber } from '../../../database/models/game.model'
-import {
-  PlayerConnectionStatus,
-  SlotStatus,
-} from '../../../database/models/game-slot.model'
+import { PlayerConnectionStatus, SlotStatus } from '../../../database/models/game-slot.model'
 import type { GameSlotId } from '../../../shared/types/game-slot-id'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'
@@ -40,7 +37,10 @@ describe('JoinGameButton', () => {
     })
 
     it('shows a waiting loader for configuring state', async () => {
-      const html = await JoinGameButton({ game: { ...baseGame, state: GameState.configuring }, actor })
+      const html = await JoinGameButton({
+        game: { ...baseGame, state: GameState.configuring },
+        actor,
+      })
       const root = parse(html)
       expect(root.querySelector('.sr-only')?.text).toBe('Waiting for server...')
     })
