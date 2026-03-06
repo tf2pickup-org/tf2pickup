@@ -1,5 +1,27 @@
 # Changelog
 
+# [4.0.0-rc.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.4...4.0.0-rc.5) (2026-03-06)
+
+
+### Bug Fixes
+
+* defer replacee kicks until replacement connects ([#506](https://github.com/tf2pickup-org/tf2pickup/issues/506)) ([751a783](https://github.com/tf2pickup-org/tf2pickup/commit/751a783d9a9c436e2df7d79b47fada91af7e10bb))
+* fix initial ban length display ([#502](https://github.com/tf2pickup-org/tf2pickup/issues/502)) ([9da5782](https://github.com/tf2pickup-org/tf2pickup/commit/9da5782ac79d26bd2f4a17bdda90261e67cb8c0f))
+* focus chat input after sending a message ([#501](https://github.com/tf2pickup-org/tf2pickup/issues/501)) ([dfa1f81](https://github.com/tf2pickup-org/tf2pickup/commit/dfa1f81e8b01c99d255d4d773b9af0b76df69f16))
+* use tabular nums where applicable ([#505](https://github.com/tf2pickup-org/tf2pickup/issues/505)) ([708e8e0](https://github.com/tf2pickup-org/tf2pickup/commit/708e8e0143f1401c976bb1d5d1f9a40ee78b34bf))
+
+
+### Features
+
+* add chat mute system ([#499](https://github.com/tf2pickup-org/tf2pickup/issues/499)) ([635faf0](https://github.com/tf2pickup-org/tf2pickup/commit/635faf08ecaaaff30d8f45444894d4d7cddd647c))
+* **api:** add public REST API v1 ([#500](https://github.com/tf2pickup-org/tf2pickup/issues/500)) ([445acc6](https://github.com/tf2pickup-org/tf2pickup/commit/445acc6d6d48b4cbedec790ebe5c1465484973ba))
+* nickname history display on player edit page ([#503](https://github.com/tf2pickup-org/tf2pickup/issues/503)) ([f597ba2](https://github.com/tf2pickup-org/tf2pickup/commit/f597ba2335b670455ce07e240fa582c832e3ff32))
+
+
+### Reverts
+
+* remove component unit test commits from master ([52fe5f6](https://github.com/tf2pickup-org/tf2pickup/commit/52fe5f6220796bcdf183daa0b471ed3299f923ca))
+
 # [4.0.0-rc.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.3...4.0.0-rc.4) (2026-03-04)
 
 
