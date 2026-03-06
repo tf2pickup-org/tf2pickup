@@ -66,7 +66,9 @@ test.describe('substitutes @6v6 @9v9', () => {
     await expect(gameServer).toHaveCommand(
       `sm_game_player_add ${users.byName('GhostWalker').steamId}`,
     )
-    expect(gameServer.commands).not.toContain(`sm_game_player_del ${users.byName('Mayflower').steamId}`)
+    expect(gameServer.commands).not.toContain(
+      `sm_game_player_del ${users.byName('Mayflower').steamId}`,
+    )
 
     await gameServer.playerConnects('GhostWalker')
 
