@@ -150,6 +150,18 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.string().nullable().default(null),
   }),
   z.object({
+    key: z.literal('games.voice_server.discord.guild_id'),
+    value: z.string().nullable().default(null),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.discord.category_id'),
+    value: z.string().nullable().default(null),
+  }),
+  z.object({
+    key: z.literal('games.voice_server.discord.postgame_category_id'),
+    value: z.string().nullable().default(null),
+  }),
+  z.object({
     key: z.literal('games.join_queue_cooldown'),
     value: z
       .record(z.enum(Tf2ClassName), z.number())

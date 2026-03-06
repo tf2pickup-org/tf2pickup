@@ -40,6 +40,9 @@ export default routes(async app => {
             mumblePort: z.coerce.number().gte(0).lte(65535).optional().default(64738),
             mumblePassword: emptyString,
             mumbleChannelName: emptyString,
+            discordGuildId: emptyString,
+            discordCategoryId: emptyString,
+            discordPostgameCategoryId: emptyString,
           }),
         },
       },
@@ -52,6 +55,9 @@ export default routes(async app => {
           mumblePort,
           mumblePassword,
           mumbleChannelName,
+          discordGuildId,
+          discordCategoryId,
+          discordPostgameCategoryId,
         } = request.body
         await configuration.set('games.voice_server_type', type)
         if (type === VoiceServerType.staticLink) {
@@ -63,6 +69,15 @@ export default routes(async app => {
             configuration.set('games.voice_server.mumble.port', mumblePort),
             configuration.set('games.voice_server.mumble.password', mumblePassword),
             configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName),
+          ])
+        } else if (type === VoiceServerType.discord) {
+          await Promise.all([
+            configuration.set('games.voice_server.discord.guild_id', discordGuildId),
+            configuration.set('games.voice_server.discord.category_id', discordCategoryId),
+            configuration.set(
+              'games.voice_server.discord.postgame_category_id',
+              discordPostgameCategoryId,
+            ),
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })

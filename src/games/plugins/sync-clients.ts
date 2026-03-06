@@ -11,7 +11,6 @@ import { GameEventList } from '../views/html/game-event-list'
 import { GameSlot } from '../views/html/game-slot'
 import { GamesLink } from '../../html/components/games-link'
 import { GameScore } from '../views/html/game-score'
-import { JoinVoiceButton } from '../views/html/join-voice-button'
 import { JoinGameButton } from '../views/html/join-game-button'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { ServerReadyNotification } from '../views/html/server-ready-notification'
@@ -118,7 +117,7 @@ export default fp(async app => {
         app.gateway
           .to({ url: `/games/${after.number}` })
           .to({ player: slot.player })
-          .send(async actor => await JoinVoiceButton({ game: after, actor }))
+          .send(async actor => await ConnectInfo({ game: after, actor }))
       }
     }
   })
