@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.0.0-rc.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.5...4.0.0-rc.6) (2026-03-06)
+
+
+### Bug Fixes
+
+* fix goTo htmx history handling ([#510](https://github.com/tf2pickup-org/tf2pickup/issues/510)) ([992760d](https://github.com/tf2pickup-org/tf2pickup/commit/992760de06eb29bf0071c974d32aa43bad71298f))
+
 # [4.0.0-rc.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.4...4.0.0-rc.5) (2026-03-06)
 
 
