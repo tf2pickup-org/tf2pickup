@@ -1,7 +1,6 @@
 import type { PlayerBan } from '../database/models/player.model'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { bySteamId } from './by-steam-id'
 import { update } from './update'
 
 export async function addChatMute(props: {
@@ -10,9 +9,8 @@ export async function addChatMute(props: {
   end: Date
   reason: string
 }): Promise<PlayerBan> {
-  const actor = (await bySteamId(props.admin, ['steamId'])).steamId
   const chatMute: PlayerBan = {
-    actor,
+    actor: props.admin,
     start: new Date(),
     end: props.end,
     reason: props.reason,
