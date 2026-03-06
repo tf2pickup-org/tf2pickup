@@ -35,6 +35,12 @@ export const tasksSchema = z.discriminatedUnion('name', [
     }),
   }),
   z.object({
+    name: z.literal('discord.cleanupVoiceChannels'),
+    args: z.object({
+      gameNumber,
+    }),
+  }),
+  z.object({
     name: z.literal('queue:readyUpTimeout'),
     args: z.object({}),
   }),
