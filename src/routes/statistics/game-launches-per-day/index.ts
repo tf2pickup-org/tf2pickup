@@ -1,7 +1,9 @@
 import { z } from 'zod'
-import { StatisticsPage } from '../../statistics/views/html/statistics.page'
-import { gameLaunchesPerDaySpans } from '../../statistics/views/html/game-launches-per-day'
-import { routes } from '../../utils/routes'
+import {
+  GameLaunchesPerDay,
+  gameLaunchesPerDaySpans,
+} from '../../../statistics/views/html/game-launches-per-day'
+import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -15,7 +17,10 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      await reply.html(StatisticsPage({ span: request.query.span }))
+      const { span } = request.query
+      await reply
+        .header('HX-Push-Url', `/statistics?span=${span}`)
+        .html(GameLaunchesPerDay({ span }))
     },
   )
 })

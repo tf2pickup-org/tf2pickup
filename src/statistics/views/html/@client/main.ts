@@ -29,9 +29,10 @@ export function makeGameLaunchTimeSpansChart(element: HTMLCanvasElement, data: C
     data,
     options: {
       indexAxis: 'y',
+      aspectRatio: 3,
       scales: {
         y: {
-          // stacked: true,
+          stacked: true,
           ticks: {
             color: '#C7C4C7',
           },
@@ -61,6 +62,7 @@ export function makeGameLaunchesPerDayChart(element: HTMLCanvasElement, data: Ch
     data,
     options: {
       spanGaps: true,
+      aspectRatio: 3,
       plugins: {
         legend: {
           display: false,

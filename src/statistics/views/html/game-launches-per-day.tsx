@@ -1,16 +1,39 @@
-import { sub } from 'date-fns'
+import { addDays, format, sub } from 'date-fns'
 import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-launches-per-day'
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
 
-export async function GameLaunchesPerDay() {
-  const gameLaunchesPerDay = await getGameLaunchesPerDay(sub(new Date(), { years: 1 }))
-  const data = toChartData(gameLaunchesPerDay)
+export const gameLaunchesPerDaySpans = ['week', 'month', 'year'] as const
+export type GameLaunchesPerDaySpan = (typeof gameLaunchesPerDaySpans)[number]
+
+export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan }) {
+  const span = props?.span ?? 'month'
+  const start = spanToStart(span)
+  const gameLaunchesPerDay = await getGameLaunchesPerDay(start)
+  const data = toChartData(gameLaunchesPerDay, start)
   const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'main.ts'))
 
   return (
-    <>
-      <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
+    <div id="game-launches-per-day-container">
+      <div class="mb-4 flex items-center gap-4">
+        <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
+        <select
+          hx-get="/statistics/game-launches-per-day"
+          hx-target="#game-launches-per-day-container"
+          hx-swap="outerHTML"
+          name="span"
+        >
+          <option value="week" selected={span === 'week'}>
+            last week
+          </option>
+          <option value="month" selected={span === 'month'}>
+            last month
+          </option>
+          <option value="year" selected={span === 'year'}>
+            last year
+          </option>
+        </select>
+      </div>
       <canvas id="game-launches-per-day"></canvas>
       <script type="module">
         {`
@@ -20,12 +43,23 @@ export async function GameLaunchesPerDay() {
         makeGameLaunchesPerDayChart(document.getElementById('game-launches-per-day'), data);
         `}
       </script>
-    </>
+    </div>
   )
 }
 
-function toChartData(data: GameLaunchesPerDay[]) {
-  const date = sub(Date.now(), { months: 1 })
+function spanToStart(span: GameLaunchesPerDaySpan): Date {
+  switch (span) {
+    case 'week':
+      return sub(new Date(), { weeks: 1 })
+    case 'month':
+      return sub(new Date(), { months: 1 })
+    case 'year':
+      return sub(new Date(), { years: 1 })
+  }
+}
+
+function toChartData(data: GameLaunchesPerDay[], start: Date) {
+  let date = start
   const end = new Date()
   const ordered: GameLaunchesPerDay[] = []
 
@@ -36,16 +70,14 @@ function toChartData(data: GameLaunchesPerDay[]) {
       day: 'numeric',
     })
 
-    const monthNumeric = `0${date.getMonth() + 1}`.slice(-2)
-    const dateNumeric = `0${date.getDate()}`.slice(-2)
-    const lookupDay = `${date.getFullYear()}-${monthNumeric}-${dateNumeric}`
+    const lookupDay = format(date, 'yyyy-MM-dd')
 
     ordered.push({
       day,
       count: data.find(d => d.day === lookupDay)?.count ?? 0,
     })
 
-    date.setDate(date.getDate() + 1)
+    date = addDays(date, 1)
   }
 
   return {

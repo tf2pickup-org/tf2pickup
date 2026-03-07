@@ -18,6 +18,6 @@ export default fp(async app => {
       reply.preventCache()
     }
 
-    reply.header('Content-Type', 'application/javascript; charset=utf-8').send(bundle)
+    await reply.header('Content-Type', 'application/javascript; charset=utf-8').send(bundle)
   })
 })
