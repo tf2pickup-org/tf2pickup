@@ -21,7 +21,6 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
           hx-get="/statistics/game-launches-per-day"
           hx-target="#game-launches-per-day-container"
           hx-swap="outerHTML"
-          hx-push-url="true"
           name="span"
         >
           <option value="week" selected={span === 'week'}>
