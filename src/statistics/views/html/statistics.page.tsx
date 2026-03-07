@@ -5,10 +5,10 @@ import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
 import { makeTitle } from '../../../html/make-title'
 import { GameLaunchTimeSpans } from './game-launch-time-spans'
-import { GameLaunchesPerDay } from './game-launches-per-day'
+import { GameLaunchesPerDay, type GameLaunchesPerDaySpan } from './game-launches-per-day'
 import { PlayedMapsCount } from './played-maps-count'
 
-export async function StatisticsPage() {
+export async function StatisticsPage(props?: { span?: GameLaunchesPerDaySpan }) {
   return (
     <Layout
       title={makeTitle('statistics')}
@@ -31,7 +31,7 @@ export async function StatisticsPage() {
           </div>
 
           <div class="bg-abru-dark-25 rounded-lg px-6 py-8">
-            <GameLaunchesPerDay />
+            <GameLaunchesPerDay {...(props?.span !== undefined ? { span: props.span } : {})} />
           </div>
         </div>
       </Page>
