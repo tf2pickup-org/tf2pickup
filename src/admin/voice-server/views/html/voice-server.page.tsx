@@ -15,6 +15,11 @@ export async function VoiceServerPage() {
       configuration.get('games.voice_server.mumble.password'),
       configuration.get('games.voice_server.mumble.channel_name'),
     ])
+  const [discordGuildId, discordCategoryId, discordPostgameCategoryId] = await Promise.all([
+    configuration.get('games.voice_server.discord.guild_id'),
+    configuration.get('games.voice_server.discord.category_id'),
+    configuration.get('games.voice_server.discord.postgame_category_id'),
+  ])
 
   return (
     <Admin activePage="voice-server">
@@ -79,6 +84,21 @@ export async function VoiceServerPage() {
             <p class="description" id="voice-server-mumble-desc">
               A mumble server will be used for the voice during games. Channels will be managed
               automatically.
+            </p>
+          </div>
+
+          <div class="form-checkbox">
+            <input
+              type="radio"
+              name="type"
+              value={VoiceServerType.discord}
+              id="voice-server-discord"
+              checked={type === VoiceServerType.discord}
+            />
+            <label for="voice-server-discord">Discord</label>
+            <p class="description" id="voice-server-discord-desc">
+              The Discord bot will create private team voice channels for each game and move players
+              into a shared post-game lobby after the match.
             </p>
           </div>
 
@@ -162,6 +182,68 @@ export async function VoiceServerPage() {
             </dl>
 
             <MumbleClientStatus />
+          </fieldset>
+
+          <fieldset
+            class="ml-[22px]"
+            id="discord-server-data"
+            disabled={type !== VoiceServerType.discord}
+            _={`
+                on change from #voiceServerForm
+                  if #voiceServerForm.type.value is '${VoiceServerType.discord}'
+                    remove [@disabled]
+                  else
+                    add [@disabled]
+                  end
+              `}
+          >
+            <dl>
+              <dt>
+                <label for="discord-guild-id" class="font-medium">
+                  Guild ID
+                </label>
+              </dt>
+              <dd>
+                <input
+                  type="text"
+                  id="discord-guild-id"
+                  name="discordGuildId"
+                  value={discordGuildId ?? ''}
+                />
+              </dd>
+            </dl>
+
+            <dl>
+              <dt>
+                <label for="discord-category-id" class="font-medium">
+                  Team channel category ID
+                </label>
+              </dt>
+              <dd>
+                <input
+                  type="text"
+                  id="discord-category-id"
+                  name="discordCategoryId"
+                  value={discordCategoryId ?? ''}
+                />
+              </dd>
+            </dl>
+
+            <dl>
+              <dt>
+                <label for="discord-postgame-category-id" class="font-medium">
+                  Post-game category ID
+                </label>
+              </dt>
+              <dd>
+                <input
+                  type="text"
+                  id="discord-postgame-category-id"
+                  name="discordPostgameCategoryId"
+                  value={discordPostgameCategoryId ?? ''}
+                />
+              </dd>
+            </dl>
           </fieldset>
 
           <p class="mt-8">

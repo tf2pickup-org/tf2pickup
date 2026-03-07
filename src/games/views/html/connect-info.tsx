@@ -2,6 +2,7 @@ import { GameState, type GameModel } from '../../../database/models/game.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { ConnectString } from './connect-string'
 import { JoinGameButton } from './join-game-button'
+import { DiscordVoiceStatus } from './discord-voice-status'
 import { JoinVoiceButton } from './join-voice-button'
 
 export function ConnectInfo(props: {
@@ -22,6 +23,7 @@ export function ConnectInfo(props: {
         <UserConnectString game={props.game} actor={props.actor} />
         <JoinGameButton game={props.game} actor={props.actor} />
         <JoinVoiceButton game={props.game} actor={props.actor} />
+        <DiscordVoiceStatus game={props.game} actor={props.actor} />
       </>
     )
   }

@@ -12,5 +12,6 @@ export interface User {
     | 'hasAcceptedRules'
     | 'activeGame'
     | 'twitchTvProfile'
+    | 'discordProfile'
   >
 }

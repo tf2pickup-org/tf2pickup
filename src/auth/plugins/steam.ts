@@ -107,6 +107,7 @@ export default fp(
             'hasAcceptedRules',
             'activeGame',
             'twitchTvProfile',
+            'discordProfile',
           ])
           request.user = { player }
           request.requestContext.set('user', { player })
