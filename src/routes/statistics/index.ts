@@ -15,7 +15,7 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      reply.status(200).html(await StatisticsPage({ span: request.query.span }))
+      await reply.html(StatisticsPage({ span: request.query.span }))
     },
   )
 })

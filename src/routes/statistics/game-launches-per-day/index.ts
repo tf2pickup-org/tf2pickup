@@ -18,8 +18,9 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const { span } = request.query
-      reply.header('HX-Push-Url', `/statistics?span=${span}`)
-      reply.status(200).html(await GameLaunchesPerDay({ span }))
+      await reply
+        .header('HX-Push-Url', `/statistics?span=${span}`)
+        .html(GameLaunchesPerDay({ span }))
     },
   )
 })
