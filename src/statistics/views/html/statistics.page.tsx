@@ -8,7 +8,7 @@ import { GameLaunchTimeSpans } from './game-launch-time-spans'
 import { GameLaunchesPerDay, type GameLaunchesPerDaySpan } from './game-launches-per-day'
 import { PlayedMapsCount } from './played-maps-count'
 
-export async function StatisticsPage(props?: { span?: GameLaunchesPerDaySpan }) {
+export async function StatisticsPage(props: { span: GameLaunchesPerDaySpan }) {
   return (
     <Layout
       title={makeTitle('statistics')}
@@ -31,7 +31,7 @@ export async function StatisticsPage(props?: { span?: GameLaunchesPerDaySpan }) 
           </div>
 
           <div class="bg-abru-dark-25 rounded-lg px-6 py-8">
-            <GameLaunchesPerDay {...(props?.span !== undefined ? { span: props.span } : {})} />
+            <GameLaunchesPerDay span={props.span} />
           </div>
         </div>
       </Page>
