@@ -14,13 +14,17 @@ function generateChangesText(
   oldSkill: PlayerModel['skill'],
   newSkill: PlayerModel['skill'],
 ): string {
-  return Object.keys(oldSkill ?? ({} as Record<Tf2ClassName, number>))
+  const allClasses = new Set([
+    ...Object.keys(oldSkill ?? {}),
+    ...Object.keys(newSkill ?? {}),
+  ]) as Set<Tf2ClassName>
+  return [...allClasses]
     .filter(
-      gameClass => newSkill?.[gameClass as Tf2ClassName] !== oldSkill?.[gameClass as Tf2ClassName],
+      gameClass => newSkill?.[gameClass] !== oldSkill?.[gameClass],
     )
     .map(
       gameClass =>
-        `${gameClass}: ${oldSkill?.[gameClass as Tf2ClassName] ?? 'not set'} => **${newSkill?.[gameClass as Tf2ClassName]}**`,
+        `${gameClass}: ${oldSkill?.[gameClass] ?? 'not set'} => **${newSkill?.[gameClass] ?? 'not set'}**`,
     )
     .join('\n')
 }
@@ -51,7 +55,7 @@ export default fp(
                 .setTitle('Player skill updated')
                 .setThumbnail(after.avatar.large)
                 .setDescription(
-                  `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${admin.steamId})**\n${changes}`,
+                  `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**\n${changes}`,
                 )
                 .setFooter({
                   text: environment.WEBSITE_NAME,
