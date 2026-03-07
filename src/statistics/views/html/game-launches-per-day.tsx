@@ -3,14 +3,30 @@ import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-l
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
 
-export async function GameLaunchesPerDay() {
-  const gameLaunchesPerDay = await getGameLaunchesPerDay(sub(new Date(), { years: 1 }))
-  const data = toChartData(gameLaunchesPerDay)
+export type GameLaunchesPerDaySpan = 'week' | 'month' | 'year'
+
+export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan }) {
+  const span = props?.span ?? 'month'
+  const gameLaunchesPerDay = await getGameLaunchesPerDay(spanToStart(span))
+  const data = toChartData(gameLaunchesPerDay, span)
   const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'main.ts'))
 
   return (
-    <>
-      <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
+    <div id="game-launches-per-day-container">
+      <div class="mb-4 flex items-center gap-4">
+        <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
+        <select
+          hx-get="/statistics/game-launches-per-day"
+          hx-target="#game-launches-per-day-container"
+          hx-swap="outerHTML"
+          hx-push-url="true"
+          name="span"
+        >
+          <option value="week" selected={span === 'week'}>last week</option>
+          <option value="month" selected={span === 'month'}>last month</option>
+          <option value="year" selected={span === 'year'}>last year</option>
+        </select>
+      </div>
       <canvas id="game-launches-per-day"></canvas>
       <script type="module">
         {`
@@ -20,12 +36,23 @@ export async function GameLaunchesPerDay() {
         makeGameLaunchesPerDayChart(document.getElementById('game-launches-per-day'), data);
         `}
       </script>
-    </>
+    </div>
   )
 }
 
-function toChartData(data: GameLaunchesPerDay[]) {
-  const date = sub(Date.now(), { months: 1 })
+function spanToStart(span: GameLaunchesPerDaySpan): Date {
+  switch (span) {
+    case 'week':
+      return sub(new Date(), { weeks: 1 })
+    case 'month':
+      return sub(new Date(), { months: 1 })
+    case 'year':
+      return sub(new Date(), { years: 1 })
+  }
+}
+
+function toChartData(data: GameLaunchesPerDay[], span: GameLaunchesPerDaySpan) {
+  const date = spanToStart(span)
   const end = new Date()
   const ordered: GameLaunchesPerDay[] = []
 
