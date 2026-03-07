@@ -1,4 +1,4 @@
-import { sub } from 'date-fns'
+import { addDays, format, sub } from 'date-fns'
 import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-launches-per-day'
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
@@ -7,8 +7,9 @@ export type GameLaunchesPerDaySpan = 'week' | 'month' | 'year'
 
 export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan }) {
   const span = props?.span ?? 'month'
-  const gameLaunchesPerDay = await getGameLaunchesPerDay(spanToStart(span))
-  const data = toChartData(gameLaunchesPerDay, span)
+  const start = spanToStart(span)
+  const gameLaunchesPerDay = await getGameLaunchesPerDay(start)
+  const data = toChartData(gameLaunchesPerDay, start)
   const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'main.ts'))
 
   return (
@@ -19,7 +20,6 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
           hx-get="/statistics/game-launches-per-day"
           hx-target="#game-launches-per-day-container"
           hx-swap="outerHTML"
-          hx-push-url="true"
           name="span"
         >
           <option value="week" selected={span === 'week'}>last week</option>
@@ -51,8 +51,8 @@ function spanToStart(span: GameLaunchesPerDaySpan): Date {
   }
 }
 
-function toChartData(data: GameLaunchesPerDay[], span: GameLaunchesPerDaySpan) {
-  const date = spanToStart(span)
+function toChartData(data: GameLaunchesPerDay[], start: Date) {
+  let date = start
   const end = new Date()
   const ordered: GameLaunchesPerDay[] = []
 
@@ -63,16 +63,14 @@ function toChartData(data: GameLaunchesPerDay[], span: GameLaunchesPerDaySpan) {
       day: 'numeric',
     })
 
-    const monthNumeric = `0${date.getMonth() + 1}`.slice(-2)
-    const dateNumeric = `0${date.getDate()}`.slice(-2)
-    const lookupDay = `${date.getFullYear()}-${monthNumeric}-${dateNumeric}`
+    const lookupDay = format(date, 'yyyy-MM-dd')
 
     ordered.push({
       day,
       count: data.find(d => d.day === lookupDay)?.count ?? 0,
     })
 
-    date.setDate(date.getDate() + 1)
+    date = addDays(date, 1)
   }
 
   return {
