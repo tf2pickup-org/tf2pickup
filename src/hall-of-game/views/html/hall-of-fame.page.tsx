@@ -4,7 +4,6 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { collections } from '../../../database/collections'
-import { GameState } from '../../../database/models/game.model'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { IconAwardFilled } from '../../../html/components/icons'
@@ -80,58 +79,21 @@ function MaybeAward(props: { i: number }) {
 }
 
 async function getMostActiveOverall(): Promise<HallOfFameEntry[]> {
-  return await collections.games
-    .aggregate<HallOfFameEntry>([
-      { $match: { state: GameState.ended } },
-      { $unwind: '$slots' },
-      { $group: { _id: '$slots.player', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 },
-      {
-        $lookup: {
-          from: 'players',
-          localField: '_id',
-          foreignField: 'steamId',
-          as: 'player',
-        },
-      },
-      {
-        $project: {
-          count: 1,
-          player: {
-            $arrayElemAt: ['$player', 0],
-          },
-        },
-      },
-    ])
+  const players = await collections.players
+    .find({ 'stats.totalGames': { $gt: 0 } }, { sort: { 'stats.totalGames': -1 }, limit: 10 })
     .toArray()
+  return players.map(player => ({ player, count: player.stats.totalGames }))
 }
 
 async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
-  return await collections.games
-    .aggregate<HallOfFameEntry>([
-      { $match: { state: GameState.ended } },
-      { $unwind: '$slots' },
-      { $match: { 'slots.gameClass': Tf2ClassName.medic } },
-      { $group: { _id: '$slots.player', count: { $sum: 1 } } },
-      { $sort: { count: -1 } },
-      { $limit: 10 },
-      {
-        $lookup: {
-          from: 'players',
-          localField: '_id',
-          foreignField: 'steamId',
-          as: 'player',
-        },
-      },
-      {
-        $project: {
-          count: 1,
-          player: {
-            $arrayElemAt: ['$player', 0],
-          },
-        },
-      },
-    ])
+  const players = await collections.players
+    .find(
+      { 'stats.gamesByClass.medic': { $gt: 0 } },
+      { sort: { 'stats.gamesByClass.medic': -1 }, limit: 10 },
+    )
     .toArray()
+  return players.map(player => ({
+    player,
+    count: player.stats.gamesByClass[Tf2ClassName.medic] ?? 0,
+  }))
 }
