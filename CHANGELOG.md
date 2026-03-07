@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.0.0-rc.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.6...4.0.0-rc.7) (2026-03-07)
+
+
+### Bug Fixes
+
+* fix discord skill change notification on skill reset ([#513](https://github.com/tf2pickup-org/tf2pickup/issues/513)) ([0308de9](https://github.com/tf2pickup-org/tf2pickup/commit/0308de95e1ce252fd5962f2540853b676275c627))
+* replace hall of fame aggregations with player stats queries ([#512](https://github.com/tf2pickup-org/tf2pickup/issues/512)) ([945f3fe](https://github.com/tf2pickup-org/tf2pickup/commit/945f3fe34785f14ba99490b5cdbff2ef198f754e))
+
+
+### Features
+
+* add time span selector to game launches per day chart ([#514](https://github.com/tf2pickup-org/tf2pickup/issues/514)) ([fe05e0f](https://github.com/tf2pickup-org/tf2pickup/commit/fe05e0ff3f13135dc79316f94401526ba188bbef))
+
 # [4.0.0-rc.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.0-rc.5...4.0.0-rc.6) (2026-03-06)
 
 
