@@ -19,9 +19,7 @@ function generateChangesText(
     ...Object.keys(newSkill ?? {}),
   ]) as Set<Tf2ClassName>
   return [...allClasses]
-    .filter(
-      gameClass => newSkill?.[gameClass] !== oldSkill?.[gameClass],
-    )
+    .filter(gameClass => newSkill?.[gameClass] !== oldSkill?.[gameClass])
     .map(
       gameClass =>
         `${gameClass}: ${oldSkill?.[gameClass] ?? 'not set'} => **${newSkill?.[gameClass] ?? 'not set'}**`,
