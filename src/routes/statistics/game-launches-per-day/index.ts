@@ -1,24 +1,18 @@
 import { z } from 'zod'
 import {
   GameLaunchesPerDay,
-  type GameLaunchesPerDaySpan,
+  gameLaunchesPerDaySpans,
 } from '../../../statistics/views/html/game-launches-per-day'
 import { routes } from '../../../utils/routes'
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.get(
     '/',
     {
       schema: {
         querystring: z.object({
-          span: z
-            .enum(['week', 'month', 'year'] satisfies [
-              GameLaunchesPerDaySpan,
-              GameLaunchesPerDaySpan,
-              GameLaunchesPerDaySpan,
-            ])
-            .optional()
-            .default('month'),
+          span: z.enum(gameLaunchesPerDaySpans).optional().default('month'),
         }),
       },
     },

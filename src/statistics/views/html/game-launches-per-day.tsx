@@ -3,7 +3,8 @@ import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-l
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
 
-export type GameLaunchesPerDaySpan = 'week' | 'month' | 'year'
+export const gameLaunchesPerDaySpans = ['week', 'month', 'year'] as const
+export type GameLaunchesPerDaySpan = (typeof gameLaunchesPerDaySpans)[number]
 
 export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan }) {
   const span = props?.span ?? 'month'
@@ -23,9 +24,15 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
           hx-push-url="true"
           name="span"
         >
-          <option value="week" selected={span === 'week'}>last week</option>
-          <option value="month" selected={span === 'month'}>last month</option>
-          <option value="year" selected={span === 'year'}>last year</option>
+          <option value="week" selected={span === 'week'}>
+            last week
+          </option>
+          <option value="month" selected={span === 'month'}>
+            last month
+          </option>
+          <option value="year" selected={span === 'year'}>
+            last year
+          </option>
         </select>
       </div>
       <canvas id="game-launches-per-day"></canvas>
