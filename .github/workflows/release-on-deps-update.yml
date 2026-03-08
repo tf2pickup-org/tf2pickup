@@ -1,0 +1,30 @@
+name: release on dependencies update
+on:
+  schedule:
+    - cron: '0 9 * * 1'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  check-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check for production dependency updates since last release
+        run: |
+          last_tag=$(git describe --tags --abbrev=0)
+          echo "Last release tag: $last_tag"
+          if git log "${last_tag}..HEAD" --oneline | grep -q "fix(deps)"; then
+            echo "Production dependency updates found — triggering release"
+            gh workflow run release.yml
+          else
+            echo "No production dependency updates since $last_tag — skipping release"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
