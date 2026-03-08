@@ -7,6 +7,10 @@ permissions:
   actions: write
   contents: read
 
+concurrency:
+  group: release-on-deps-update
+  cancel-in-progress: true
+
 jobs:
   check-and-release:
     runs-on: ubuntu-latest
@@ -20,9 +24,9 @@ jobs:
         run: |
           last_tag=$(git describe --tags --abbrev=0)
           echo "Last release tag: $last_tag"
-          if git log "${last_tag}..HEAD" --oneline | grep -q "fix(deps)"; then
+          if git log "${last_tag}..HEAD" --oneline | grep -qF "fix(deps)"; then
             echo "Production dependency updates found — triggering release"
-            gh workflow run release.yml
+            gh workflow run release.yml --ref master
           else
             echo "No production dependency updates since $last_tag — skipping release"
           fi
