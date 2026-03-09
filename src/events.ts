@@ -152,6 +152,14 @@ export interface Events {
     after: PlayerModel
     adminId?: SteamId64 | undefined
   }
+  'player/activeGame:updated': {
+    steamId: SteamId64
+    activeGame: GameNumber | undefined
+  }
+  'player/preReady:updated': {
+    steamId: SteamId64
+    preReadyUntil: Date | undefined
+  }
   'player/ban:added': {
     player: SteamId64
     ban: PlayerBan

@@ -12,6 +12,7 @@ export default fp(
         await Promise.all(
           game.slots.map(async ({ player }) => {
             await players.update(player, { $set: { activeGame: game.number } })
+            events.emit('player/activeGame:updated', { steamId: player, activeGame: game.number })
           }),
         )
       }),

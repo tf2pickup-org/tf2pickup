@@ -10,6 +10,7 @@ export default fp(
   async () => {
     tasks.register('games.freePlayer', async ({ player }) => {
       await players.update(player, { $unset: { activeGame: 1 } })
+      events.emit('player/activeGame:updated', { steamId: player, activeGame: undefined })
     })
 
     events.on('game:ended', async ({ game }) => {
@@ -33,7 +34,9 @@ export default fp(
 
     events.on('game:playerReplaced', async ({ game, replacee, replacement }) => {
       await players.update(replacement, { $set: { activeGame: game.number } })
+      events.emit('player/activeGame:updated', { steamId: replacement, activeGame: game.number })
       await players.update(replacee, { $unset: { activeGame: 1 } })
+      events.emit('player/activeGame:updated', { steamId: replacee, activeGame: undefined })
     })
   },
   {

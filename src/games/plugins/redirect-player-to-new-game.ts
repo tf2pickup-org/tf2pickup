@@ -5,11 +5,9 @@ import { GoToGame } from '../views/html/go-to-game'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    events.on('player:updated', ({ before, after }) => {
-      if (before.activeGame === undefined && after.activeGame !== undefined) {
-        app.gateway
-          .to({ player: after.steamId })
-          .send(async () => await GoToGame(after.activeGame!))
+    events.on('player/activeGame:updated', ({ steamId, activeGame }) => {
+      if (activeGame !== undefined) {
+        app.gateway.to({ player: steamId }).send(async () => await GoToGame(activeGame))
       }
     })
   },

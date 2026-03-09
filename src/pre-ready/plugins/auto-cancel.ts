@@ -14,6 +14,7 @@ async function process() {
     .toArray()
   for (const p of toRemove) {
     await update(p.steamId, { $unset: { preReadyUntil: 1 } })
+    events.emit('player/preReady:updated', { steamId: p.steamId, preReadyUntil: undefined })
   }
 }
 
@@ -26,9 +27,10 @@ export default fp(
       'game:created',
       safe(async ({ game }) => {
         await Promise.all(
-          game.slots.map(
-            async ({ player }) => await update(player, { $unset: { preReadyUntil: 1 } }),
-          ),
+          game.slots.map(async ({ player }) => {
+            await update(player, { $unset: { preReadyUntil: 1 } })
+            events.emit('player/preReady:updated', { steamId: player, preReadyUntil: undefined })
+          }),
         )
       }),
     )
