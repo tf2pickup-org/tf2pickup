@@ -20,6 +20,7 @@ import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import { WebSocket } from 'ws'
+import { DiscordVoiceAlert } from '../views/html/discord-voice-alert'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -55,6 +56,7 @@ export default fp(
         socket.send(await ChatMessages())
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
+        socket.send(await DiscordVoiceAlert({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
       }
     }
@@ -102,6 +104,32 @@ export default fp(
             .to({ url: '/' })
             .send(async actor => await PreReadyUpButton({ actor }))
         }
+
+        if (before.discordProfile?.userId !== after.discordProfile?.userId) {
+          const cmp = await DiscordVoiceAlert({ actor: after.steamId })
+          app.gateway
+            .to({ player: after.steamId })
+            .to({ url: '/' })
+            .send(() => cmp)
+          await syncAllSlots(after.steamId)
+        }
+      }),
+    )
+
+    events.on(
+      'configuration:updated',
+      safe(async ({ key }) => {
+        if (key !== 'games.voice_server_type') {
+          return
+        }
+
+        const slots = await collections.queueSlots.find().toArray()
+        app.gateway
+          .to({ url: '/' })
+          .send(async actor => [
+            ...(await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor })))),
+            await DiscordVoiceAlert({ actor }),
+          ])
       }),
     )
 

@@ -26,6 +26,7 @@ import { IsInQueue } from './is-in-queue'
 import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
 import { Announcements } from './announcements'
+import { DiscordVoiceAlert } from './discord-voice-alert'
 
 export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
@@ -49,6 +50,7 @@ export async function QueuePage() {
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />
             {!!user && <RequestNotificationPermissions />}
+            <DiscordVoiceAlert actor={user?.player.steamId} />
             <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
             <Announcements />

@@ -12,6 +12,7 @@ import {
   IconPlus,
 } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { VoiceServerType } from '../../../shared/types/voice-server-type'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../types/queue-slot-id'
 
@@ -28,8 +29,19 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
     const actor = await collections.players.findOne<
-      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
-    >({ steamId: props.actor }, { projection: { bans: 1, activeGame: 1, skill: 1, verified: 1 } })
+      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified' | 'discordProfile'>
+    >(
+      { steamId: props.actor },
+      {
+        projection: {
+          bans: 1,
+          activeGame: 1,
+          skill: 1,
+          verified: 1,
+          discordProfile: 1,
+        },
+      },
+    )
     if (!actor) {
       throw errors.internalServerError(`actor invalid: ${props.actor}`)
     }
@@ -40,6 +52,11 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64
       disabled = 'You have active bans'
     } else if (actor.activeGame) {
       disabled = 'You are already in a game'
+    } else if (
+      (await configuration.get('games.voice_server_type')) === VoiceServerType.discord &&
+      !actor.discordProfile
+    ) {
+      disabled = 'Link your Discord account in settings to join the queue'
     } else if (!(await meetsSkillThreshold(actor, props.slot))) {
       disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
     } else if ((await configuration.get('queue.require_player_verification')) && !actor.verified) {
