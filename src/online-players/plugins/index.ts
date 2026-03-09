@@ -7,6 +7,7 @@ import { secondsToMilliseconds } from 'date-fns'
 import { tasks } from '../../tasks'
 import { meter } from '../../otel'
 import { ValueType } from '@opentelemetry/api'
+import type { AppWebSocket } from '../../websocket/types'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
@@ -15,7 +16,7 @@ export default fp(
   async app => {
     // verify the player is online
     async function verifyPlayer({ player }: { player: SteamId64 }) {
-      const playerSockets = [...app.websocketServer.clients].filter(
+      const playerSockets = [...app.websocketServer.clients].map(socket => socket as AppWebSocket).filter(
         socket => socket.player?.steamId === player,
       )
       logger.debug(`verify online status for ${player} (${playerSockets.length} sockets)`)

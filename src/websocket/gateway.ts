@@ -7,6 +7,7 @@ import { assertIsError } from '../utils/assert-is-error'
 import { logger } from '../logger'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
 import { meter } from '../otel'
+import type { AppWebSocket } from './types'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
@@ -88,7 +89,7 @@ const outgoingWsMessages = meter.createCounter('tf2pickup.websocket.outgoing_mes
   unit: '1',
 })
 
-async function sendSafe(client: WebSocket, msg: string) {
+async function sendSafe(client: AppWebSocket, msg: string) {
   return new Promise<void>((resolve, reject) => {
     if (client.readyState !== WebSocket.OPEN) {
       resolve()
@@ -112,7 +113,7 @@ async function sendSafe(client: WebSocket, msg: string) {
   })
 }
 
-async function send(client: WebSocket, message: MessageFn) {
+async function send(client: AppWebSocket, message: MessageFn) {
   try {
     const m = await message(client.player?.steamId)
     if (!m) {
@@ -183,24 +184,25 @@ class BroadcastOperator {
 
   send(message: MessageFn) {
     this.app.websocketServer.clients.forEach(async client => {
+      const socket = client as AppWebSocket
       if ('authenticated' in this.filters) {
-        if (Boolean(client.player) !== this.filters.authenticated) {
+        if (Boolean(socket.player) !== this.filters.authenticated) {
           return
         }
       }
 
       if (this.filters.players) {
-        if (!client.player || !this.filters.players.has(client.player.steamId)) {
+        if (!socket.player || !this.filters.players.has(socket.player.steamId)) {
           return
         }
       }
 
       if (this.filters.urls) {
-        if (!this.filters.urls.has(client.currentUrl)) {
+        if (!socket.currentUrl || !this.filters.urls.has(socket.currentUrl)) {
           return
         }
       }
-      await send(client, message)
+      await send(socket, message)
     })
   }
 }
@@ -212,7 +214,7 @@ export class Gateway extends EventEmitter implements Broadcaster {
 
   override on<T extends keyof GatewayEvents>(
     eventName: T,
-    listener: (socket: WebSocket, ...args: GatewayEventParams<T>) => void,
+    listener: (socket: AppWebSocket, ...args: GatewayEventParams<T>) => void,
   ): this {
     super.on(eventName, listener)
     return this
@@ -220,7 +222,7 @@ export class Gateway extends EventEmitter implements Broadcaster {
 
   broadcast(message: MessageFn) {
     this.app.websocketServer.clients.forEach(async client => {
-      await send(client, message)
+      await send(client as AppWebSocket, message)
     })
   }
 
@@ -228,7 +230,7 @@ export class Gateway extends EventEmitter implements Broadcaster {
     return new BroadcastOperator(this.app, mergeFilters({}, filter))
   }
 
-  parse(socket: WebSocket, message: string) {
+  parse(socket: AppWebSocket, message: string) {
     try {
       const parsed = clientMessage.parse(JSON.parse(message))
       if ('navigated' in parsed) {
