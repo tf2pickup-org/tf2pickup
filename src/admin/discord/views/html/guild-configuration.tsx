@@ -1,6 +1,7 @@
-import { TextChannel, type Guild } from 'discord.js'
+import { type Guild } from 'discord.js'
 import { SaveButton } from '../../../views/html/save-button'
 import { configuration } from '../../../../configuration'
+import { SelectDiscordChannel } from './select-discord-channel'
 
 export async function GuildConfiguration(props: { guild: Guild; enabled: boolean }) {
   if (!props.enabled) {
@@ -15,8 +16,9 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
         <label for={`${props.guild.id}-admin-notifications-channel`}>
           Admin notifications channel:
         </label>
-        <SelectTextChannel
-          guild={props.guild}
+        <SelectDiscordChannel
+          guildId={props.guild.id}
+          channelType="text"
           id={`${props.guild.id}-admin-notifications-channel`}
           name="adminNotificationsChannel"
           current={config?.adminNotifications?.channel}
@@ -27,8 +29,9 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
         <label for={`${props.guild.id}-substitute-notifications-channel`}>
           Substitute notifications channel:
         </label>
-        <SelectTextChannel
-          guild={props.guild}
+        <SelectDiscordChannel
+          guildId={props.guild.id}
+          channelType="text"
           id={`${props.guild.id}-substitute-notifications-channel`}
           name="substituteNotificationsChannel"
           current={config?.substituteNotifications?.channel}
@@ -44,8 +47,9 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
 
       <div class="flex flex-row gap-2">
         <label for={`${props.guild.id}-queue-prompts-channel`}>Queue prompts channel:</label>
-        <SelectTextChannel
-          guild={props.guild}
+        <SelectDiscordChannel
+          guildId={props.guild.id}
+          channelType="text"
           id={`${props.guild.id}-queue-prompts-channel`}
           name="queuePromptsChannel"
           current={config?.queuePrompts?.channel}
@@ -56,40 +60,6 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
         <SaveButton hx-disabled-elt="this" />
       </p>
     </form>
-  )
-}
-
-function SelectTextChannel(
-  props: { guild: Guild; current: string | undefined } & JSX.HtmlSelectTag,
-) {
-  const { guild, current, ...rest } = props
-  const textChannels = Array.from(
-    guild.channels.cache.filter(channel => channel instanceof TextChannel).values(),
-  ).reduce<Map<string, TextChannel[]>>((prev, curr) => {
-    if (!prev.has(curr.parent!.name)) {
-      prev.set(curr.parent!.name, [])
-    }
-
-    prev.get(curr.parent!.name)!.push(curr)
-    return prev
-  }, new Map<string, TextChannel[]>())
-
-  textChannels.forEach(value => value.sort((a, b) => a.position - b.position))
-
-  return (
-    <select {...rest}>
-      <option value="">disabled</option>
-
-      {Array.from(textChannels, ([parent, channels]) => (
-        <optgroup label={parent}>
-          {channels.map(({ id, name }) => (
-            <option value={id} selected={current === id} safe>
-              {name}
-            </option>
-          ))}
-        </optgroup>
-      ))}
-    </select>
   )
 }
 
