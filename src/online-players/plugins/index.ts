@@ -16,9 +16,9 @@ export default fp(
   async app => {
     // verify the player is online
     async function verifyPlayer({ player }: { player: SteamId64 }) {
-      const playerSockets = [...app.websocketServer.clients].map(socket => socket as AppWebSocket).filter(
-        socket => socket.player?.steamId === player,
-      )
+      const playerSockets = [...app.websocketServer.clients]
+        .map(socket => socket as AppWebSocket)
+        .filter(socket => socket.player?.steamId === player)
       logger.debug(`verify online status for ${player} (${playerSockets.length} sockets)`)
       if (playerSockets.length > 0) {
         return
