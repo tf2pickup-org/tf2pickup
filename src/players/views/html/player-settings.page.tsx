@@ -6,6 +6,8 @@ import { makeTitle } from '../../../html/make-title'
 import { TwitchTvSettingsEntry } from '../../../twitch-tv/views/html/twitch-tv-settings-entry'
 import { Footer } from '../../../html/components/footer'
 import { requestContext } from '@fastify/request-context'
+import { DiscordSettingsEntry } from '../../../discord/views/html/discord-settings-entry'
+import { discord } from '../../../discord'
 
 export async function PlayerSettingsPage() {
   const user = requestContext.get('user')!
@@ -52,6 +54,7 @@ export async function PlayerSettingsPage() {
           <div class="bg-abru-dark-25 text-abru-light-75 flex flex-1 flex-col gap-4 rounded-lg p-[24px] font-normal">
             <h4 class="text-[24px] font-bold">Linked accounts</h4>
 
+            {discord.oauthEnabled && <DiscordSettingsEntry player={user.player} />}
             <TwitchTvSettingsEntry player={user.player} />
           </div>
         </div>

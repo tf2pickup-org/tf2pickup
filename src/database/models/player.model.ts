@@ -32,6 +32,13 @@ export interface TwitchTvProfile {
   profileImageUrl: string
 }
 
+export interface DiscordProfile {
+  userId: string
+  username: string
+  displayName: string
+  avatarUrl: string | null
+}
+
 export interface Etf2lProfile {
   id: number
   name: string
@@ -73,5 +80,6 @@ export interface PlayerModel {
   chatMutes?: PlayerBan[]
   verified?: boolean
   twitchTvProfile?: TwitchTvProfile
+  discordProfile?: DiscordProfile
   stats: PlayerStats
 }

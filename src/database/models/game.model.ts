@@ -47,6 +47,15 @@ export interface GameServer {
   }
 }
 
+export interface DiscordVoiceChannelSet {
+  guildId: string
+  categoryId: string
+  postgameCategoryId: string
+  redChannelId: string
+  bluChannelId: string
+  postgameChannelId?: string
+}
+
 export interface GameModel {
   number: GameNumber
   map: string
@@ -63,4 +72,5 @@ export interface GameModel {
   logSecret?: string
   connectString?: string
   stvConnectString?: string
+  discordVoice?: DiscordVoiceChannelSet
 }
