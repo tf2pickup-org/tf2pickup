@@ -13,6 +13,7 @@
 ### Task 1: Add StatsModel and register the collection
 
 **Files:**
+
 - Create: `src/database/models/stats.model.ts`
 - Modify: `src/database/collections.ts`
 
@@ -34,6 +35,7 @@ import type { StatsModel } from './models/stats.model'
 ```
 
 In the `collections` object:
+
 ```ts
 stats: database.collection<StatsModel>('stats'),
 ```
@@ -60,6 +62,7 @@ git commit -m "feat: add stats collection model and registration"
 This plugin listens to `game:ended` (which fires for both ended and interrupted games) and only processes games with `state === GameState.ended`. It finds the `gameStarted` and `gameEnded` events in `game.events` to compute the duration, then `$inc`s `totalDurationMs`.
 
 **Files:**
+
 - Create: `src/statistics/plugins/update-game-stats.ts`
 - Create: `src/statistics/plugins/update-game-stats.test.ts`
 
@@ -227,6 +230,7 @@ git commit -m "feat: add update-game-stats plugin to track total game duration"
 Backfills `totalDurationMs` from all existing `GameState.ended` games by iterating their events.
 
 **Files:**
+
 - Create: `src/migrations/019-add-stats.ts`
 
 No unit test — migrations run once and are verified by running them against the DB.
@@ -290,6 +294,7 @@ git commit -m "feat: add migration to backfill total game duration stats"
 Async JSX component that fetches all three stats in parallel and renders three cards.
 
 **Files:**
+
 - Create: `src/statistics/views/html/global-stats.tsx`
 
 **Step 1: Write the component**
@@ -309,7 +314,7 @@ export async function GlobalStats() {
   const totalHours = Math.floor((statsDoc?.totalDurationMs ?? 0) / 3_600_000)
 
   return (
-    <div class="lg:col-span-2 grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:col-span-2">
       <StatCard value={totalGames.toLocaleString()} label="games played" />
       <StatCard value={playersWithGames.toLocaleString()} label="players" />
       <StatCard value={`${totalHours.toLocaleString()}h`} label="total game time" />
@@ -319,9 +324,9 @@ export async function GlobalStats() {
 
 function StatCard(props: { value: string; label: string }) {
   return (
-    <div class="bg-abru-dark-25 rounded-lg px-6 py-8 flex flex-col gap-1">
-      <span class="text-abru-light-75 text-[40px] font-bold leading-none">{props.value}</span>
-      <span class="text-abru-light-50 text-sm uppercase tracking-wide">{props.label}</span>
+    <div class="bg-abru-dark-25 flex flex-col gap-1 rounded-lg px-6 py-8">
+      <span class="text-abru-light-75 text-[40px] leading-none font-bold">{props.value}</span>
+      <span class="text-abru-light-50 text-sm tracking-wide uppercase">{props.label}</span>
     </div>
   )
 }
@@ -347,6 +352,7 @@ git commit -m "feat: add GlobalStats component with total games, players and gam
 ### Task 5: Wire GlobalStats into StatisticsPage
 
 **Files:**
+
 - Modify: `src/statistics/views/html/statistics.page.tsx`
 
 **Step 1: Add the import and render the component**
@@ -389,6 +395,7 @@ pnpm dev
 ```
 
 Open `http://localhost:3000/statistics` (or whatever `WEBSITE_URL` is set to) and confirm:
+
 - Three stat cards appear above the charts
 - Numbers are correct (total games should match the games count in the DB)
 

@@ -6,6 +6,7 @@ import { Layout } from '../../../html/layout'
 import { makeTitle } from '../../../html/make-title'
 import { GameLaunchTimeSpans } from './game-launch-time-spans'
 import { GameLaunchesPerDay, type GameLaunchesPerDaySpan } from './game-launches-per-day'
+import { GlobalStats } from './global-stats'
 import { PlayedMapsCount } from './played-maps-count'
 
 export async function StatisticsPage(props: { span: GameLaunchesPerDaySpan }) {
@@ -21,6 +22,8 @@ export async function StatisticsPage(props: { span: GameLaunchesPerDaySpan }) {
           <div class="lg:col-span-2">
             <div class="text-abru-light-75 my-9 text-[48px] font-bold capitalize">Statistics</div>
           </div>
+
+          <GlobalStats />
 
           <div class="bg-abru-dark-25 rounded-lg px-12 py-8 lg:row-span-2">
             <PlayedMapsCount />

@@ -22,6 +22,7 @@ Add three numeric stat cards at the top of the `/statistics` page:
 ### New collection: `stats`
 
 Single document:
+
 ```ts
 { _id: 'total', totalDurationMs: number }
 ```
@@ -42,6 +43,7 @@ Iterates all `GameState.ended` games, sums durations, writes total into the `sta
 ### New component: `src/statistics/views/html/global-stats.tsx`
 
 Async JSX component. Runs in parallel:
+
 1. `games.countDocuments({ state: GameState.ended })` → total games
 2. `players.countDocuments({ 'stats.totalGames': { $gt: 0 } })` → players with ≥1 game
 3. `stats.findOne({ _id: 'total' })` → convert `totalDurationMs` to `Math.floor(ms / 3_600_000)`
