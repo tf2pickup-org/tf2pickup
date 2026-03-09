@@ -15,6 +15,10 @@ vi.mock('../../players/update', () => ({
   update: vi.fn(),
 }))
 
+vi.mock('../../utils/safe', () => ({
+  safe: <T>(fn: T): T => fn,
+}))
+
 vi.mock('../../database/collections', () => ({
   collections: {
     players: {
