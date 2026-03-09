@@ -26,6 +26,8 @@ import { IsInQueue } from './is-in-queue'
 import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
 import { Announcements } from './announcements'
+import { configuration } from '../../../configuration'
+import { MapVoteTiming } from '../../../shared/types/map-vote-timing'
 
 export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
@@ -33,6 +35,7 @@ export async function QueuePage() {
   const required = slots.length
 
   const user = requestContext.get('user')
+  const mapVoteTiming = await configuration.get('queue.map_vote_timing')
 
   return (
     <Layout
@@ -62,7 +65,7 @@ export async function QueuePage() {
           </div>
 
           <div class="order-4 lg:col-span-3">
-            <MapVote actor={user?.player.steamId} />
+            {mapVoteTiming === MapVoteTiming.preReady && <MapVote actor={user?.player.steamId} />}
           </div>
 
           <div class="order-last lg:order-3 lg:row-span-2">
