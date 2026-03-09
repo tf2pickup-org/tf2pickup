@@ -96,11 +96,11 @@ export default fp(
       }),
     )
 
-    events.on('player/preReady:updated', ({ steamId }) => {
+    events.on('player/preReady:updated', ({ steamId, preReadyUntil }) => {
       app.gateway
         .to({ player: steamId })
         .to({ url: '/' })
-        .send(async actor => await PreReadyUpButton({ actor }))
+        .send(async () => await PreReadyUpButton({ actor: steamId, preReadyUntil }))
     })
 
     events.on('queue:playerKicked', async ({ player }) => {
