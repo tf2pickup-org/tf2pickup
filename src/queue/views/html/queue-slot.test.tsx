@@ -93,6 +93,24 @@ describe('QueueSlot', () => {
     })
   })
 
+  describe('when slot is empty and actorPlayer is provided as a prop', () => {
+    beforeEach(() => {
+      vi.resetAllMocks()
+      vi.mocked(meetsSkillThreshold).mockResolvedValue(true)
+      vi.mocked(configuration.get).mockResolvedValue(false)
+    })
+
+    it('does not query the database for actor data', async () => {
+      await QueueSlot({
+        slot: emptySlot,
+        actor,
+        actorPlayer: { bans: [], verified: true },
+      })
+
+      expect(collections.players.findOne).not.toHaveBeenCalled()
+    })
+  })
+
   describe('when slot has a player', () => {
     const occupiedSlot = {
       ...emptySlot,

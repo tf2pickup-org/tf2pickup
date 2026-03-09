@@ -26,12 +26,24 @@ export default fp(
   async app => {
     async function syncAllSlots(...players: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
-      slots.forEach(slot => {
-        app.gateway
-          .to({ players })
-          .to({ url: '/' })
-          .send(async actor => await QueueSlot({ slot, actor }))
-      })
+      app.gateway
+        .to({ players })
+        .to({ url: '/' })
+        .send(async actor => {
+          const actorPlayer = actor
+            ? ((await collections.players.findOne<
+                Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
+              >(
+                { steamId: actor },
+                { projection: { bans: 1, activeGame: 1, skill: 1, verified: 1 } },
+              )) ?? undefined)
+            : undefined
+          return Promise.all(
+            slots.map(slot =>
+              actorPlayer ? QueueSlot({ slot, actor, actorPlayer }) : QueueSlot({ slot, actor }),
+            ),
+          )
+        })
     }
 
     async function syncQueuePage(socket: AppWebSocket) {

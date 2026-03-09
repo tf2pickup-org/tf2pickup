@@ -22,14 +22,24 @@ const enum MarkAsFriendButtonState {
   selected, // marked by me
 }
 
-export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
+export async function QueueSlot(props: {
+  slot: QueueSlotModel
+  actor?: SteamId64 | undefined
+  actorPlayer?: Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
+}) {
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
-    const actor = await collections.players.findOne<
-      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
-    >({ steamId: props.actor }, { projection: { bans: 1, activeGame: 1, skill: 1, verified: 1 } })
+    const actor =
+      'actorPlayer' in props
+        ? props.actorPlayer
+        : await collections.players.findOne<
+            Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
+          >(
+            { steamId: props.actor },
+            { projection: { bans: 1, activeGame: 1, skill: 1, verified: 1 } },
+          )
     if (!actor) {
       throw errors.internalServerError(`actor invalid: ${props.actor}`)
     }
