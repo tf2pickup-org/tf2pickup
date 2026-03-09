@@ -245,15 +245,18 @@ jobs:
 
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v8
+        continue-on-error: true
         with:
           path: all-blob-reports
           pattern: blob-report-*
           merge-multiple: true
 
       - name: Merge reports from shards
+        if: ${{ hashFiles('all-blob-reports/**') != '' }}
         run: PLAYWRIGHT_JSON_OUTPUT_NAME=results.json npx playwright merge-reports --reporter=html,json ./all-blob-reports
 
       - name: Upload HTML report
+        if: ${{ hashFiles('playwright-report/**') != '' }}
         uses: actions/upload-artifact@v7
         with:
           name: html-report-attempt-${{ github.run_attempt }}
@@ -261,5 +264,6 @@ jobs:
           retention-days: 30
 
       - uses: daun/playwright-report-summary@v3
+        if: ${{ hashFiles('results.json') != '' }}
         with:
           report-file: results.json

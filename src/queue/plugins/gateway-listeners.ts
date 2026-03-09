@@ -12,11 +12,11 @@ import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../get-state'
 import { QueueState } from '../../database/models/queue-state.model'
 import { preReady } from '../../pre-ready'
-import { WebSocket } from 'ws'
 import { errors } from '../../errors'
 import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../views/html/map-vote-selection'
 import { FlashMessage } from '../../html/components/flash-message'
+import type { AppWebSocket } from '../../websocket/types'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -28,9 +28,9 @@ export default fp(
     }
 
     function wsSafe<Args extends unknown[]>(
-      fn: (socket: WebSocket, ...args: Args) => Promise<void>,
+      fn: (socket: AppWebSocket, ...args: Args) => Promise<void>,
     ) {
-      return (socket: WebSocket, ...args: Args) => {
+      return (socket: AppWebSocket, ...args: Args) => {
         fn(socket, ...args).catch(async (error: unknown) => {
           logger.error(error)
           if (error instanceof Error) {

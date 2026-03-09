@@ -19,7 +19,7 @@ import { OnlinePlayerCount } from '../views/html/online-player-count'
 import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
-import { WebSocket } from 'ws'
+import type { AppWebSocket } from '../../websocket/types'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -34,7 +34,7 @@ export default fp(
       })
     }
 
-    async function syncQueuePage(socket: WebSocket) {
+    async function syncQueuePage(socket: AppWebSocket) {
       const slots = await collections.queueSlots.find().toArray()
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
