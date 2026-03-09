@@ -18,3 +18,4 @@ export type RconCommand =
   | `tv_password`
   | `tv_password ${string}`
   | `say ${string}`
+  | `status`
