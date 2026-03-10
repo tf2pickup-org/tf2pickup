@@ -15,7 +15,7 @@ import { collections } from '../../database/collections'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { getMessage } from '../get-message'
 import { safe } from '../../utils/safe'
-import { Mutex } from 'async-mutex'
+import { queuePromptMutex } from '../queue-prompt-mutex'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
@@ -28,10 +28,9 @@ export default fp(async () => {
 
 const clientName = new URL(environment.WEBSITE_URL).hostname
 const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
-const mutex = new Mutex()
 
 async function refreshPrompt() {
-  await mutex.runExclusive(async () => {
+  await queuePromptMutex.runExclusive(async () => {
     const slots = await queue.getSlots()
     const playerCount = slots.filter(slot => !!slot.player).length
     const requiredPlayerCount = slots.length

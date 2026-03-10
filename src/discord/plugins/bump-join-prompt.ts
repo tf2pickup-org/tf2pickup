@@ -6,6 +6,7 @@ import { minutesToMilliseconds } from 'date-fns'
 import { queue } from '../../queue'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
+import { queuePromptMutex } from '../queue-prompt-mutex'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -20,42 +21,44 @@ export default fp(async app => {
 })
 
 async function ensurePromptIsVisible() {
-  await forEachEnabledChannel('queuePrompts', async (channel, config) => {
-    const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
-    const message = await getMessage(channel, state?.promptMessageId)
-    if (!message) {
-      return
-    }
+  await queuePromptMutex.runExclusive(async () => {
+    await forEachEnabledChannel('queuePrompts', async (channel, config) => {
+      const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
+      const message = await getMessage(channel, state?.promptMessageId)
+      if (!message) {
+        return
+      }
 
-    const messages = await channel.messages.fetch({ limit: 1 })
-    if (messages.size === 0) {
-      return
-    }
+      const messages = await channel.messages.fetch({ limit: 1 })
+      if (messages.size === 0) {
+        return
+      }
 
-    if (message.id === messages.first()!.id) {
-      return
-    }
+      if (message.id === messages.first()!.id) {
+        return
+      }
 
-    const thresholdRatio = config.bumpPlayerThresholdRatio
-    const slots = await queue.getSlots()
-    const playerCount = slots.filter(slot => !!slot.player).length
-    const requiredPlayerCount = slots.length
+      const thresholdRatio = config.bumpPlayerThresholdRatio
+      const slots = await queue.getSlots()
+      const playerCount = slots.filter(slot => !!slot.player).length
+      const requiredPlayerCount = slots.length
 
-    if (playerCount < requiredPlayerCount * thresholdRatio) {
-      return
-    }
+      if (playerCount < requiredPlayerCount * thresholdRatio) {
+        return
+      }
 
-    const embeds = message.embeds
-    const content = message.content
-    await message.delete()
+      const embeds = message.embeds
+      const content = message.content
+      await message.delete()
 
-    const sentMessage = await channel.send({
-      content,
-      embeds,
+      const sentMessage = await channel.send({
+        content,
+        embeds,
+      })
+      await collections.discordBotState.updateOne(
+        { guildId: channel.guild.id },
+        { $set: { promptMessageId: sentMessage.id } },
+      )
     })
-    await collections.discordBotState.updateOne(
-      { guildId: channel.guild.id },
-      { $set: { promptMessageId: sentMessage.id } },
-    )
   })
 }
