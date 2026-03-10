@@ -89,9 +89,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameServerAssigned: {
       if (!props.event.actor) {
         return (
-          <span>
-            Game server assigned:{' '}
-            <strong class="whitespace-nowrap" safe>
+          <span class="flex flex-col min-w-0">
+            <span>Game server assigned:</span>
+            <strong class="overflow-hidden text-ellipsis whitespace-nowrap" safe>
               {props.event.gameServerName}
             </strong>
           </span>
@@ -100,9 +100,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       if (isBot(props.event.actor)) {
         return (
-          <span>
-            Bot assigned game server:{' '}
-            <strong class="whitespace-nowrap" safe>
+          <span class="flex flex-col min-w-0">
+            <span>Bot assigned game server:</span>
+            <strong class="overflow-hidden text-ellipsis whitespace-nowrap" safe>
               {props.event.gameServerName}
             </strong>
           </span>
@@ -111,12 +111,14 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
       return (
-        <span>
-          <a href={`/players/${actor.steamId}`} safe>
-            {actor.name}
-          </a>{' '}
-          assigned game server:{' '}
-          <strong class="whitespace-nowrap" safe>
+        <span class="flex flex-col min-w-0">
+          <span>
+            <a href={`/players/${actor.steamId}`} safe>
+              {actor.name}
+            </a>{' '}
+            assigned game server:
+          </span>
+          <strong class="overflow-hidden text-ellipsis whitespace-nowrap" safe>
             {props.event.gameServerName}
           </strong>
         </span>
