@@ -1,4 +1,5 @@
 import { marked, type Tokens } from 'marked'
+import sanitizeHtml from 'sanitize-html'
 import { environment } from '../environment'
 
 const renderer = {
@@ -20,5 +21,12 @@ const renderer = {
 marked.use({ renderer })
 
 export async function parseMarkdown(markdown: string): Promise<string> {
-  return await marked.parse(markdown)
+  const html = await marked.parse(markdown)
+  return sanitizeHtml(html, {
+    allowedTags: sanitizeHtml.defaults.allowedTags,
+    allowedAttributes: {
+      ...sanitizeHtml.defaults.allowedAttributes,
+      a: ['href', 'title', 'target', 'rel'],
+    },
+  })
 }
