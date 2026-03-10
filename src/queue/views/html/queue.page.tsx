@@ -37,7 +37,7 @@ export async function QueuePage() {
   return (
     <Layout
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      description="6v6 competitive pick-up games for everyone"
+      description={`${environment.QUEUE_CONFIG} competitive pick-up games for everyone`}
       canonical="/"
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
