@@ -35,7 +35,10 @@ export default fp(
             },
           })
         } catch (updateError) {
-          logger.error({ error: updateError }, `failed to record configure failure for game #${game.number}`)
+          logger.error(
+            { error: updateError },
+            `failed to record configure failure for game #${game.number}`,
+          )
         }
       } finally {
         configurators.delete(game.number)
