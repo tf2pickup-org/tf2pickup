@@ -25,7 +25,7 @@ const environmentSchema = z.object({
   LOG_RELAY_PORT: z.coerce.number(),
   LOGS_TF_API_KEY: z.string().optional(),
   GAME_SERVER_SECRET: z.string(),
-  THUMBNAIL_SERVICE_URL: z.url(),
+  THUMBNAIL_SERVICE_URL: z.url().default('https://mapthumbnails.tf2pickup.org'),
 
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),
