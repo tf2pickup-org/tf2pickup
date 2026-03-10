@@ -2,15 +2,19 @@ import { IconCoffee } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../../../players'
 
-export async function PreReadyUpButton(props: { actor?: SteamId64 | undefined }) {
+export async function PreReadyUpButton(props: {
+  actor?: SteamId64 | undefined
+  preReadyUntil?: Date | undefined
+}) {
   if (!props.actor) {
     return <></>
   }
 
-  const player = await players.bySteamId(props.actor, ['preReadyUntil'])
-  const timeLeft = player.preReadyUntil
-    ? Math.max(player.preReadyUntil.getTime() - Date.now(), 0)
-    : 0
+  const preReadyUntil =
+    'preReadyUntil' in props
+      ? props.preReadyUntil
+      : (await players.bySteamId(props.actor, ['preReadyUntil'])).preReadyUntil
+  const timeLeft = preReadyUntil ? Math.max(preReadyUntil.getTime() - Date.now(), 0) : 0
 
   return (
     <button

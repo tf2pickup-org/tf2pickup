@@ -1,4 +1,5 @@
 import { configuration } from '../configuration'
+import { events } from '../events'
 import { logger } from '../logger'
 import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -11,5 +12,6 @@ export async function start(player: SteamId64) {
 
   if (timeout > 0) {
     await players.update(player, { $set: { preReadyUntil } })
+    events.emit('player/preReady:updated', { steamId: player, preReadyUntil })
   }
 }

@@ -85,25 +85,23 @@ export default fp(
     events.on('player:disconnected', safe(updateOnlinePlayers))
 
     events.on(
-      'player:updated',
-      safe(async ({ before, after }) => {
-        if (before.activeGame !== after.activeGame) {
-          const cmp = await RunningGameSnackbar({ gameNumber: after.activeGame })
-          app.gateway
-            .to({ player: after.steamId })
-            .to({ url: '/' })
-            .send(() => cmp)
-          await syncAllSlots(after.steamId)
-        }
-
-        if (before.preReadyUntil !== after.preReadyUntil) {
-          app.gateway
-            .to({ player: after.steamId })
-            .to({ url: '/' })
-            .send(async actor => await PreReadyUpButton({ actor }))
-        }
+      'player/activeGame:updated',
+      safe(async ({ steamId, activeGame }) => {
+        const cmp = await RunningGameSnackbar({ gameNumber: activeGame })
+        app.gateway
+          .to({ player: steamId })
+          .to({ url: '/' })
+          .send(() => cmp)
+        await syncAllSlots(steamId)
       }),
     )
+
+    events.on('player/preReady:updated', ({ steamId, preReadyUntil }) => {
+      app.gateway
+        .to({ player: steamId })
+        .to({ url: '/' })
+        .send(async () => await PreReadyUpButton({ actor: steamId, preReadyUntil }))
+    })
 
     events.on('queue:playerKicked', async ({ player }) => {
       const close = await ReadyUpDialog.close()
