@@ -14,6 +14,7 @@ import type { QueueMapVoteModel } from './models/queue-map-vote.model'
 import type { QueueSlotModel } from './models/queue-slot.model'
 import type { QueueStateModel } from './models/queue-state.model'
 import type { SecretModel } from './models/secret.model'
+import type { StatsModel } from './models/stats.model'
 import type { StaticGameServerModel } from './models/static-game-server.model'
 import type { TaskModel } from './models/task.model'
 import type { StreamModel } from './models/stream.model'
@@ -57,6 +58,7 @@ export const collections = {
   queueMapOptions: database.collection<QueueMapOptionModel>('queue.mapoptions'),
   queueMapVotes: database.collection<QueueMapVoteModel>('queue.mapvotes'),
   secrets: database.collection<SecretModel>('secrets'),
+  stats: database.collection<StatsModel>('stats'),
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),

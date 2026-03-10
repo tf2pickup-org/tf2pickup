@@ -87,7 +87,7 @@ export async function ensureIndexes() {
             { $match: { count: { $gt: 1 } } },
           ])) {
             doc.dups.shift()
-            await collection.deleteMany({ _id: { $in: doc.dups } })
+            await collections.gameLogs.deleteMany({ _id: { $in: doc.dups } })
           }
           await collection.createIndex(spec, options)
           logger.info('gamelogs index created successfully after removing duplicates')
