@@ -13,11 +13,11 @@ export async function StaticGameServerList() {
     <table class="w-full table-fixed" id="admin-panel-static-game-server-list">
       <thead>
         <tr>
-          <th class="border-ash/50 border-b pb-3 text-left w-[15%]">Name</th>
-          <th class="border-ash/50 border-b pb-3 text-left w-[22%]">IP address</th>
-          <th class="border-ash/50 border-b pb-3 text-left w-[22%]">Internal IP address</th>
-          <th class="border-ash/50 border-b pb-3 text-left w-[18%]">RCON password</th>
-          <th class="border-ash/50 border-b pb-3 text-left w-[8%]">Online</th>
+          <th class="border-ash/50 w-[15%] border-b pb-3 text-left">Name</th>
+          <th class="border-ash/50 w-[22%] border-b pb-3 text-left">IP address</th>
+          <th class="border-ash/50 w-[22%] border-b pb-3 text-left">Internal IP address</th>
+          <th class="border-ash/50 w-[18%] border-b pb-3 text-left">RCON password</th>
+          <th class="border-ash/50 w-[8%] border-b pb-3 text-left">Online</th>
           <th class="border-ash/50 border-b pb-3 text-left">Assigned to game</th>
         </tr>
       </thead>
@@ -34,13 +34,13 @@ export async function StaticGameServerList() {
 function StaticGameServerItem(props: { gameServer: StaticGameServerModel }) {
   return (
     <tr>
-      <td class="border-ash/20 border-b py-4 font-bold truncate overflow-hidden" safe>
+      <td class="border-ash/20 truncate overflow-hidden border-b py-4 font-bold" safe>
         {props.gameServer.name}
       </td>
-      <td class="border-ash/20 border-b py-4 truncate overflow-hidden" safe>
+      <td class="border-ash/20 truncate overflow-hidden border-b py-4" safe>
         {props.gameServer.address}:{props.gameServer.port}
       </td>
-      <td class="border-ash/20 border-b py-4 truncate overflow-hidden" safe>
+      <td class="border-ash/20 truncate overflow-hidden border-b py-4" safe>
         {props.gameServer.internalIpAddress}:{props.gameServer.port}
       </td>
       <td class="border-ash/20 border-b py-4" safe>
