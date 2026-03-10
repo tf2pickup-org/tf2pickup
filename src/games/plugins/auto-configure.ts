@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin'
 import { logger } from '../../logger'
-import { assertIsError } from '../../utils/assert-is-error'
 import { events } from '../../events'
 import { configure } from '../rcon/configure'
 import { GameState, type GameModel, type GameNumber } from '../../database/models/game.model'
@@ -21,8 +20,8 @@ export default fp(
         configurators.set(game.number, controller)
         await configurator
       } catch (error) {
-        assertIsError(error)
-        logger.error(error, `error configuring game #${game.number}`)
+        logger.error({ error }, `error configuring game #${game.number}`)
+        events.emit('game:gameServerConfigureFailed', { game, error })
       } finally {
         configurators.delete(game.number)
       }
