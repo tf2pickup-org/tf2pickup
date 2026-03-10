@@ -34,7 +34,7 @@ export default routes(async app => {
         'skillHistory',
         'verified',
       ])
-      reply.html(await AdminToolbox({ player }))
+      await reply.html(AdminToolbox({ player }))
     },
   )
 })

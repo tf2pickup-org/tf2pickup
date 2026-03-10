@@ -22,7 +22,7 @@ export default routes(async app => {
           twitchTvProfile: 1,
         },
       })
-      reply.html(await TwitchTvSettingsEntry({ player }))
+      await reply.html(TwitchTvSettingsEntry({ player }))
     },
   )
 })

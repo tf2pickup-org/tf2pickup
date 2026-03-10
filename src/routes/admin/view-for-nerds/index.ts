@@ -55,7 +55,7 @@ export default routes(async app => {
         const { key, value } = request.body
         await configuration.set(key, value)
         const defaultValue = configuration.getDefault(key)
-        reply.html(await ConfigurationEntryEdit({ _key: key, value, defaultValue }))
+        await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
       },
     )
     .delete(
@@ -78,7 +78,7 @@ export default routes(async app => {
         const { key } = request.query
         const value = await configuration.reset(key)
         const defaultValue = configuration.getDefault(key)
-        reply.html(await ConfigurationEntryEdit({ _key: key, value, defaultValue }))
+        await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
       },
     )
 })

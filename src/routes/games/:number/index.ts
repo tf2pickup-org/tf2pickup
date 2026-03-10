@@ -20,7 +20,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { number } = request.params
-        reply.status(200).html(await GamePage({ number }))
+        await reply.html(GamePage({ number }))
       },
     )
     .put(
