@@ -13,6 +13,7 @@ export enum GameEventType {
   gameServerAssignmentFailed = 'game server assignment failed',
   gameServerReinitializationOrdered = 'game server reinitialization ordered',
   gameServerInitialized = 'game server initialized',
+  gameServerConfigureFailed = 'game server configure failed',
 
   substituteRequested = 'substitute requested',
   playerReplaced = 'player replaced',
@@ -76,6 +77,12 @@ export interface GameServerInitialized {
   at: Date
 }
 
+export interface GameServerConfigureFailed {
+  event: GameEventType.gameServerConfigureFailed
+  at: Date
+  error: string
+}
+
 export interface PlayerJoinedGameServer {
   event: GameEventType.playerJoinedGameServer
   at: Date
@@ -129,6 +136,7 @@ export type GameEventModel =
   | GameServerAssignmentFailed
   | GameServerReinitializationOrdered
   | GameServerInitialized
+  | GameServerConfigureFailed
   | PlayerJoinedGameServer
   | PlayerJoinedGameServerTeam
   | PlayerLeftGameServer

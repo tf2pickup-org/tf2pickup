@@ -1,9 +1,10 @@
 import fp from 'fastify-plugin'
 import { logger } from '../../logger'
-import { assertIsError } from '../../utils/assert-is-error'
 import { events } from '../../events'
 import { configure } from '../rcon/configure'
 import { GameState, type GameModel, type GameNumber } from '../../database/models/game.model'
+import { GameEventType } from '../../database/models/game-event.model'
+import { update } from '../update'
 import { minutesToMilliseconds } from 'date-fns'
 
 export default fp(
@@ -21,8 +22,24 @@ export default fp(
         configurators.set(game.number, controller)
         await configurator
       } catch (error) {
-        assertIsError(error)
-        logger.error(error, `error configuring game #${game.number}`)
+        logger.error({ error }, `error configuring game #${game.number}`)
+        events.emit('game:gameServerConfigureFailed', { game, error })
+        try {
+          await update(game.number, {
+            $push: {
+              events: {
+                event: GameEventType.gameServerConfigureFailed,
+                at: new Date(),
+                error: error instanceof Error ? error.message : String(error),
+              },
+            },
+          })
+        } catch (updateError) {
+          logger.error(
+            { error: updateError },
+            `failed to record configure failure for game #${game.number}`,
+          )
+        }
       } finally {
         configurators.delete(game.number)
       }

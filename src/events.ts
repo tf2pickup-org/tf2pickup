@@ -49,6 +49,10 @@ export interface Events {
   'game:gameServerInitialized': {
     game: GameModel
   }
+  'game:gameServerConfigureFailed': {
+    game: GameModel
+    error: unknown
+  }
   'game:substituteRequested': {
     game: GameModel
     replacee: SteamId64

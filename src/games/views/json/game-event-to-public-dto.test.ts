@@ -20,6 +20,16 @@ describe('gameEventToPublicDto()', () => {
     ).toBeNull()
   })
 
+  it('maps gameServerConfigureFailed without error details', () => {
+    expect(
+      gameEventToPublicDto({
+        event: GameEventType.gameServerConfigureFailed,
+        at,
+        error: 'connection refused',
+      }),
+    ).toEqual({ type: 'gameServerConfigureFailed', at: atStr })
+  })
+
   it('returns null for gameServerReinitializationOrdered (excluded)', () => {
     expect(
       gameEventToPublicDto({ event: GameEventType.gameServerReinitializationOrdered, at }),

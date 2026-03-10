@@ -49,5 +49,8 @@ export function gameEventToPublicDto(event: GameEventModel) {
     case GameEventType.gameServerAssignmentFailed:
     case GameEventType.gameServerReinitializationOrdered:
       return null
+
+    case GameEventType.gameServerConfigureFailed:
+      return { type: 'gameServerConfigureFailed', at }
   }
 }
