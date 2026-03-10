@@ -68,7 +68,7 @@ const teamStatsSchema = z.object({
 const roundEventSchema = z.object({
   type: z.string(),
   time: z.number(),
-  team: z.string().optional(),
+  team: z.string().nullish(),
   point: z.number().optional(),
   steamid: z.string().optional(),
   killer: z.string().optional(),
@@ -77,7 +77,7 @@ const roundEventSchema = z.object({
 
 const roundSchema = z.object({
   start_time: z.number(),
-  winner: z.enum(['Red', 'Blue']),
+  winner: z.enum(['Red', 'Blue']).nullable(),
   team: z.record(
     z.string(),
     z.object({ score: z.number(), kills: z.number(), dmg: z.number(), ubers: z.number() }),
