@@ -131,11 +131,7 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         </span>
       )
     case GameEventType.gameServerConfigureFailed:
-      return (
-        <span>
-          Error configuring game server: <strong safe>{props.event.error}</strong>
-        </span>
-      )
+      return <span>Error configuring game server</span>
     case GameEventType.gameServerReinitializationOrdered: {
       let actor = <></>
       if (props.event.actor) {
