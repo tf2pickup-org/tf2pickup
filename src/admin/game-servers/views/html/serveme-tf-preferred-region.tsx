@@ -15,7 +15,15 @@ export function ServemeTfPreferredRegion() {
         </dt>
         <dd>
           <div>
-            <RegionList />
+            <div
+              id="serveme-tf-preferred-region"
+              hx-get="/admin/game-servers/serveme-tf/preferred-region"
+              hx-trigger="load"
+              hx-swap="outerHTML"
+              class="flex flex-row items-center gap-2"
+            >
+              <IconLoader3 class="animate-spin" />
+            </div>
           </div>
           <span class="text-abru-light-75 text-sm">
             If a game server from the preferred region is not available, another one will be picked
