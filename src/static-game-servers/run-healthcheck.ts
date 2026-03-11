@@ -7,6 +7,8 @@ import type { LogMessage } from '../log-receiver/parse-log-message'
 import { withRconForServer } from './with-rcon-for-server'
 import { updatePhase, completeCheck, getCheck } from './healthcheck-store'
 import { assertIsError } from '../utils/assert-is-error'
+import { delay } from 'es-toolkit'
+import { generate } from 'generate-password'
 
 export async function runHealthcheck(
   server: StaticGameServerModel,
@@ -32,7 +34,13 @@ export async function runHealthcheck(
       // Phase 3: Log round-trip
       updatePhase(checkId, 'logRoundTrip', { status: 'running' })
 
-      const logSecret = nanoid(16)
+      const logSecret = generate({
+        length: 16,
+        numbers: true,
+        symbols: false,
+        lowercase: false,
+        uppercase: false,
+      })
       const probe = nanoid(16)
 
       let resolveLog!: () => void
@@ -49,10 +57,11 @@ export async function runHealthcheck(
       events.on('gamelog:message', handler)
 
       try {
+        await rcon.send(`sv_logsecret ${logSecret}`)
         await rcon.send(
           `logaddress_add ${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`,
         )
-        await rcon.send(`sv_logsecret ${logSecret}`)
+        await delay(1000)
         const probeTime = Date.now()
         await rcon.send(`say tf2pickup-healthcheck-${probe}`)
 
