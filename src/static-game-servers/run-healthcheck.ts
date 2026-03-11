@@ -7,7 +7,7 @@ import type { LogMessage } from '../log-receiver/parse-log-message'
 import { withRconForServer } from './with-rcon-for-server'
 import { updatePhase, completeCheck, getCheck } from './healthcheck-store'
 import { assertIsError } from '../utils/assert-is-error'
-import { delay } from 'es-toolkit'
+import { delay, withTimeout } from 'es-toolkit'
 import { generate } from 'generate-password'
 
 export async function runHealthcheck(
@@ -61,18 +61,12 @@ export async function runHealthcheck(
         await rcon.send(
           `logaddress_add ${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`,
         )
-        await delay(1000)
+        await delay(100)
         const probeTime = Date.now()
         await rcon.send(`say tf2pickup-healthcheck-${probe}`)
 
-        const timeout = new Promise<never>((_, reject) => {
-          setTimeout(() => {
-            reject(new Error('timeout'))
-          }, secondsToMilliseconds(10))
-        })
-
         try {
-          await Promise.race([logReceived, timeout])
+          await withTimeout(() => logReceived, secondsToMilliseconds(10))
           updatePhase(checkId, 'logRoundTrip', {
             status: 'ok',
             message: `received in ${Date.now() - probeTime}ms`,

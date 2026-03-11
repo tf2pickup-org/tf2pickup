@@ -43,6 +43,11 @@ vi.mock('nanoid', () => ({
   }),
 }))
 
+// Mock generate-password — logSecret must be numeric; return a fixed value for assertions
+vi.mock('generate-password', () => ({
+  generate: vi.fn(() => '1234567890123456'),
+}))
+
 import { runHealthcheck } from './run-healthcheck'
 
 const mockServer = {
@@ -123,8 +128,9 @@ describe('when log round-trip succeeds', () => {
         mockEvents.on.mockImplementation(
           (_event: string, handler: (arg: { message: unknown }) => void) => {
             setImmediate(() => {
-              // fake-id-1 is logSecret (first nanoid call), fake-id-2 is probe (second)
-              handler({ message: { password: 'fake-id-1', payload: 'say "fake-id-2"' } })
+              // logSecret comes from generate-password mock ('1234567890123456')
+              // probe is fake-id-1 (first nanoid call)
+              handler({ message: { password: '1234567890123456', payload: 'say "fake-id-1"' } })
             })
           },
         )
