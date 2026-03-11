@@ -100,8 +100,8 @@ export function HealthcheckModal(props: Props) {
       }
 
   return (
-    <div {...pollingAttrs}>
-      <div class="rounded-xl border border-white/10 bg-white/[0.04] p-5">
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" {...pollingAttrs}>
+      <div class="w-80 rounded-xl border border-white/10 bg-[#1c1b22] p-5 shadow-2xl">
         <div class="mb-1 text-sm font-bold">
           Healthcheck — <span safe>{server.name}</span>
         </div>
