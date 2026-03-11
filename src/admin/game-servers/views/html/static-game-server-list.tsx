@@ -18,7 +18,7 @@ export async function StaticGameServerList() {
           <th class="border-ash/50 w-[22%] border-b pb-3 text-left">Internal IP address</th>
           <th class="border-ash/50 w-[18%] border-b pb-3 text-left">RCON password</th>
           <th class="border-ash/50 w-[8%] border-b pb-3 text-left">Online</th>
-          <th class="border-ash/50 border-b pb-3 text-left">Assigned to game</th>
+          <th class="border-ash/50 border-b pb-3 text-left">Game</th>
           <th class="border-ash/50 border-b pb-3 text-left">Health</th>
         </tr>
       </thead>
