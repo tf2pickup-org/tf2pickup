@@ -89,9 +89,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameServerAssigned: {
       if (!props.event.actor) {
         return (
-          <span class="flex flex-wrap gap-x-1 min-w-0">
+          <span class="flex min-w-0 flex-wrap gap-x-1">
             <span class="shrink-0 whitespace-nowrap">Game server assigned:</span>
-            <strong class="grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" safe>
+            <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
               {props.event.gameServerName}
             </strong>
           </span>
@@ -100,9 +100,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       if (isBot(props.event.actor)) {
         return (
-          <span class="flex flex-wrap gap-x-1 min-w-0">
+          <span class="flex min-w-0 flex-wrap gap-x-1">
             <span class="shrink-0 whitespace-nowrap">Bot assigned game server:</span>
-            <strong class="grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" safe>
+            <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
               {props.event.gameServerName}
             </strong>
           </span>
@@ -111,14 +111,14 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
       return (
-        <span class="flex flex-wrap gap-x-1 min-w-0">
+        <span class="flex min-w-0 flex-wrap gap-x-1">
           <span class="shrink-0 whitespace-nowrap">
             <a href={`/players/${actor.steamId}`} safe>
               {actor.name}
             </a>
             {' assigned game server:'}
           </span>
-          <strong class="grow min-w-0 overflow-hidden text-ellipsis whitespace-nowrap" safe>
+          <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
             {props.event.gameServerName}
           </strong>
         </span>
