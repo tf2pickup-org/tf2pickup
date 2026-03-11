@@ -57,7 +57,7 @@ function PhaseRow(props: { name: string; phase: PhaseStatus }) {
       <span class="flex-1 text-white/80">{props.name}</span>
       {msg !== '' && (
         <span
-          class={`max-w-[160px] overflow-hidden font-mono text-[11px] text-ellipsis whitespace-nowrap ${props.phase.status === 'fail' ? 'text-red-400' : 'text-white/30'}`}
+          class={`max-w-[220px] overflow-hidden font-mono text-[11px] text-ellipsis whitespace-nowrap ${props.phase.status === 'fail' ? 'text-red-400' : 'text-white/30'}`}
           safe
         >
           {msg}
@@ -101,7 +101,7 @@ export function HealthcheckModal(props: Props) {
 
   return (
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60" {...pollingAttrs}>
-      <div class="w-80 rounded-xl border border-white/10 bg-[#1c1b22] p-5 shadow-2xl">
+      <div class="w-[26rem] rounded-xl border border-white/10 bg-[#1c1b22] p-5 shadow-2xl">
         <div class="mb-1 text-sm font-bold">
           Healthcheck — <span safe>{server.name}</span>
         </div>
