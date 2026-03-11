@@ -91,9 +91,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameServerAssigned: {
       if (!props.event.actor) {
         return (
-          <span>
-            Game server assigned:{' '}
-            <strong class="whitespace-nowrap" safe>
+          <span class="flex min-w-0 flex-wrap gap-x-1">
+            <span class="shrink-0 whitespace-nowrap">Game server assigned:</span>
+            <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
               {props.event.gameServerName}
             </strong>
           </span>
@@ -102,9 +102,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       if (isBot(props.event.actor)) {
         return (
-          <span>
-            Bot assigned game server:{' '}
-            <strong class="whitespace-nowrap" safe>
+          <span class="flex min-w-0 flex-wrap gap-x-1">
+            <span class="shrink-0 whitespace-nowrap">Bot assigned game server:</span>
+            <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
               {props.event.gameServerName}
             </strong>
           </span>
@@ -113,12 +113,14 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
       const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
       return (
-        <span>
-          <a href={`/players/${actor.steamId}`} safe>
-            {actor.name}
-          </a>{' '}
-          assigned game server:{' '}
-          <strong class="whitespace-nowrap" safe>
+        <span class="flex min-w-0 flex-wrap gap-x-1">
+          <span class="shrink-0 whitespace-nowrap">
+            <a href={`/players/${actor.steamId}`} safe>
+              {actor.name}
+            </a>
+            {' assigned game server:'}
+          </span>
+          <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
             {props.event.gameServerName}
           </strong>
         </span>
