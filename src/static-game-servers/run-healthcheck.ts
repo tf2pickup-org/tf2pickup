@@ -56,9 +56,11 @@ export async function runHealthcheck(
         const probeTime = Date.now()
         await rcon.send(`say tf2pickup-healthcheck-${probe}`)
 
-        const timeout = new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('timeout')), secondsToMilliseconds(10)),
-        )
+        const timeout = new Promise<never>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error('timeout'))
+          }, secondsToMilliseconds(10))
+        })
 
         try {
           await Promise.race([logReceived, timeout])

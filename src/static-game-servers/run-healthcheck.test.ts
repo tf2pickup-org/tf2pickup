@@ -81,12 +81,16 @@ describe('when RCON connection fails', () => {
 describe('when RCON command fails', () => {
   beforeEach(() => {
     mockWithRconForServer.mockImplementation(
-      async (_server: unknown, callback: (args: { rcon: { send: ReturnType<typeof vi.fn> } }) => Promise<void>) => {
+      async (
+        _server: unknown,
+        callback: (args: { rcon: { send: ReturnType<typeof vi.fn> } }) => Promise<void>,
+      ) => {
         const mockRcon = {
           send: vi.fn().mockRejectedValue(new Error('command failed')),
         }
         await callback({ rcon: mockRcon })
-    })
+      },
+    )
   })
 
   it('sets rconConnect to ok, rconCommand to fail', async () => {
@@ -107,19 +111,26 @@ describe('when RCON command fails', () => {
 
 describe('when log round-trip succeeds', () => {
   beforeEach(() => {
-    mockWithRconForServer.mockImplementation(async (_server: unknown, callback: Function) => {
-      const mockRcon = {
-        send: vi.fn().mockResolvedValue(''),
-      }
-      // Simulate log arriving: fire the handler after events.on is called
-      mockEvents.on.mockImplementation((_event: string, handler: Function) => {
-        setImmediate(() => {
-          // fake-id-1 is logSecret (first nanoid call), fake-id-2 is probe (second)
-          handler({ message: { password: 'fake-id-1', payload: 'say "fake-id-2"' } })
-        })
-      })
-      await callback({ rcon: mockRcon })
-    })
+    mockWithRconForServer.mockImplementation(
+      async (
+        _server: unknown,
+        callback: (args: { rcon: { send: ReturnType<typeof vi.fn> } }) => Promise<void>,
+      ) => {
+        const mockRcon = {
+          send: vi.fn().mockResolvedValue(''),
+        }
+        // Simulate log arriving: fire the handler after events.on is called
+        mockEvents.on.mockImplementation(
+          (_event: string, handler: (arg: { message: unknown }) => void) => {
+            setImmediate(() => {
+              // fake-id-1 is logSecret (first nanoid call), fake-id-2 is probe (second)
+              handler({ message: { password: 'fake-id-1', payload: 'say "fake-id-2"' } })
+            })
+          },
+        )
+        await callback({ rcon: mockRcon })
+      },
+    )
   })
 
   it('sets logRoundTrip to ok with timing message', async () => {
@@ -144,16 +155,21 @@ describe('when log round-trip succeeds', () => {
 describe('when log round-trip times out', () => {
   beforeEach(() => {
     vi.useFakeTimers()
-    mockWithRconForServer.mockImplementation(async (_server: unknown, callback: Function) => {
-      const mockRcon = { send: vi.fn().mockResolvedValue('') }
-      mockEvents.on.mockImplementation(() => {})
-      const callbackPromise = callback({ rcon: mockRcon })
-      // Use advanceTimersByTimeAsync so pending microtasks (the awaited rcon.send
-      // calls inside the callback) flush before the setTimeout fires, ensuring
-      // the timeout Promise is registered before the timer advances.
-      await vi.advanceTimersByTimeAsync(11000)
-      await callbackPromise
-    })
+    mockWithRconForServer.mockImplementation(
+      async (
+        _server: unknown,
+        callback: (args: { rcon: { send: ReturnType<typeof vi.fn> } }) => Promise<void>,
+      ) => {
+        const mockRcon = { send: vi.fn().mockResolvedValue('') }
+        mockEvents.on.mockImplementation(vi.fn())
+        const callbackPromise = callback({ rcon: mockRcon })
+        // Use advanceTimersByTimeAsync so pending microtasks (the awaited rcon.send
+        // calls inside the callback) flush before the setTimeout fires, ensuring
+        // the timeout Promise is registered before the timer advances.
+        await vi.advanceTimersByTimeAsync(11000)
+        await callbackPromise
+      },
+    )
   })
 
   afterEach(() => {
