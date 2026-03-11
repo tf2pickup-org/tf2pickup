@@ -54,7 +54,9 @@ function PhaseRow(props: { name: string; phase: PhaseStatus }) {
   return (
     <div class="flex items-center gap-2.5 rounded-md bg-white/[0.04] px-3 py-2 text-xs">
       <PhaseIcon status={props.phase.status} />
-      <span class="flex-1 text-white/80" safe>{props.name}</span>
+      <span class="flex-1 text-white/80" safe>
+        {props.name}
+      </span>
       {msg !== '' && (
         <span
           class={`max-w-[220px] overflow-hidden font-mono text-[11px] text-ellipsis whitespace-nowrap ${props.phase.status === 'fail' ? 'text-red-400' : 'text-white/30'}`}
