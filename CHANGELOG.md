@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.1.0...4.1.1) (2026-03-11)
+
+
+### Bug Fixes
+
+* add static game server status change discord notifications ([#538](https://github.com/tf2pickup-org/tf2pickup/issues/538)) ([777dfe9](https://github.com/tf2pickup-org/tf2pickup/commit/777dfe910aec8a37deaba8d239a4075fc2ae54e7))
+
 # [4.1.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.0.1...4.1.0) (2026-03-11)
 
 
