@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.1.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.1.1...4.1.2) (2026-03-11)
+
+
+### Bug Fixes
+
+* **static-game-servers:** backfill missing ids ([#539](https://github.com/tf2pickup-org/tf2pickup/issues/539)) ([5378da8](https://github.com/tf2pickup-org/tf2pickup/commit/5378da85c4647df7f4e018113cacea3efc1760e7))
+* **static-game-servers:** use real IP detection via proxy headers ([#541](https://github.com/tf2pickup-org/tf2pickup/issues/541)) ([4c6948c](https://github.com/tf2pickup-org/tf2pickup/commit/4c6948c13aa8566a9afa819aa01adab8c7ab7ac1))
+
 ## [4.1.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.1.0...4.1.1) (2026-03-11)
 
 
