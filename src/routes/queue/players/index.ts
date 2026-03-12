@@ -4,6 +4,7 @@ import { getSlots } from '../../../queue/get-slots'
 import { kick } from '../../../queue/kick'
 import { events } from '../../../events'
 
+// eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.delete(
     '/',
