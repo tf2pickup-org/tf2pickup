@@ -5,6 +5,10 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
 import { gameServers } from '../../../game-servers'
 import { routes } from '../../../utils/routes'
+import { tf2QuickServer } from '../../../tf2-quick-server'
+import { configuration } from '../../../configuration'
+import { Tf2QuickServerList } from '../../../tf2-quick-server/views/html/tf2-quick-server-list'
+import { logger } from '../../../logger'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -129,6 +133,29 @@ export default routes(async app => {
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)
           .send()
+      },
+    )
+    .get(
+      '/tf2-quick-server-list',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+        schema: {
+          params: z.object({ number: games.schemas.gameNumber }),
+        },
+      },
+      async (_request, reply) => {
+        try {
+          const servers = await tf2QuickServer.listFree()
+          const defaultRegion = await configuration.get('tf2_quick_server.region')
+          await reply.html(Tf2QuickServerList({ servers, defaultRegion }))
+        } catch (error) {
+          logger.error(error)
+          await reply.html(
+            <span class="text-red-400">Failed to load TF2 Quick Servers. Please try again.</span>,
+          )
+        }
       },
     )
 })
