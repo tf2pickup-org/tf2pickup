@@ -27,7 +27,7 @@ import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
 import { Announcements } from './announcements'
 import { PlayerRole } from '../../../database/models/player.model'
-import { IconBan } from '../../../html/components/icons'
+import { IconEraser } from '../../../html/components/icons'
 
 export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
@@ -138,11 +138,11 @@ export async function ClearQueueButton(props: { actor?: User | undefined }) {
 
   return (
     <button
-      class="button button--danger"
+      class="button button--accent"
       hx-delete="/queue/players"
       hx-confirm="Are you sure you want to kick everyone from the queue?"
     >
-      <IconBan />
+      <IconEraser />
       <span>Clear queue</span>
     </button>
   )
