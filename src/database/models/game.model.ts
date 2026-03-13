@@ -28,6 +28,8 @@ export enum GameState {
 export enum GameServerProvider {
   static = 'static',
   servemeTf = 'serveme.tf',
+  // https://github.com/sonikro/TF2-QuickServer
+  tf2QuickServer = 'tf2quickserver',
 }
 
 export interface GameServer {
@@ -39,6 +41,9 @@ export interface GameServer {
 
   // if logSecret is undefined, a random one will be assigned automatically
   logSecret?: string
+
+  // set while a tf2QuickServer is still booting (holds the API task ID)
+  pendingTaskId?: string
 
   rcon: {
     address: string

@@ -8,6 +8,8 @@ import { games } from '../../games'
 import { GameEventType } from '../../database/models/game-event.model'
 import { notifyGameServerAssignmentFailed } from '../../discord/notify-game-server-assignment-failed'
 import { secondsToMilliseconds } from 'date-fns'
+import { collections } from '../../database/collections'
+import { GameState } from '../../database/models/game.model'
 
 export default fp(
   async () => {
@@ -77,6 +79,21 @@ export default fp(
           )
         }
       }
+    }
+
+    const pendingGames = await collections.games
+      .find({
+        state: { $in: [GameState.created, GameState.configuring] },
+        'gameServer.pendingTaskId': { $exists: true },
+      })
+      .toArray()
+
+    for (const game of pendingGames) {
+      logger.info(
+        { gameNumber: game.number, pendingTaskId: game.gameServer?.pendingTaskId },
+        'resuming configure for game with pending tf2QuickServer task',
+      )
+      events.emit('game:gameServerAssigned', { game })
     }
   },
   { name: 'auto assign game server' },

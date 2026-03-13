@@ -1,6 +1,8 @@
 import { StaticGameServerList } from '../../../static-game-servers/views/html/static-game-server-list'
 import { servemeTf } from '../../../serveme-tf'
 import { ServemeTfServerList } from '../../../serveme-tf/views/html/serveme-tf-server-list'
+import { tf2QuickServer } from '../../../tf2-quick-server'
+import { Tf2QuickServerList } from '../../../tf2-quick-server/views/html/tf2-quick-server-list'
 import type { GameNumber } from '../../../database/models/game.model'
 
 export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) {
@@ -15,6 +17,7 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
         <header class="font-bold">Choose game server</header>
         <StaticGameServerList name="gameServer" />
         {servemeTf.isEnabled && <ServemeTfServerList />}
+        {tf2QuickServer.isEnabled && <Tf2QuickServerList gameNumber={props.gameNumber} />}
         <button class="button button--accent mt-8 self-center">Select</button>
       </form>
     </dialog>

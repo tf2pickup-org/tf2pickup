@@ -6,6 +6,7 @@ import { GameState, type GameModel, type GameNumber } from '../../database/model
 import { GameEventType } from '../../database/models/game-event.model'
 import { update } from '../update'
 import { minutesToMilliseconds } from 'date-fns'
+import { configuration } from '../../configuration'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -16,7 +17,10 @@ export default fp(
       try {
         configurators.get(game.number)?.abort()
         const controller = new AbortController()
-        const timeout = AbortSignal.timeout(minutesToMilliseconds(1))
+        const timeoutMs = game.gameServer?.pendingTaskId
+          ? (await configuration.get('tf2_quick_server.timeout')) + minutesToMilliseconds(1)
+          : minutesToMilliseconds(1)
+        const timeout = AbortSignal.timeout(timeoutMs)
         const signal = AbortSignal.any([controller.signal, timeout])
         const configurator = configure(game, { signal })
         configurators.set(game.number, controller)

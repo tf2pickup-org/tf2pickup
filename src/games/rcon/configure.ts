@@ -15,6 +15,7 @@ import { generate } from 'generate-password'
 import { events } from '../../events'
 import { withRcon } from './with-rcon'
 import { servemeTf } from '../../serveme-tf'
+import { tf2QuickServer } from '../../tf2-quick-server'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
 import { errors } from '../../errors'
 import { players } from '../../players'
@@ -29,6 +30,21 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
 
   if (game.gameServer.provider === GameServerProvider.servemeTf) {
     await servemeTf.waitForStart(Number(game.gameServer.id) as ReservationId)
+  }
+
+  if (
+    game.gameServer.provider === GameServerProvider.tf2QuickServer &&
+    game.gameServer.pendingTaskId
+  ) {
+    logger.info(
+      { taskId: game.gameServer.pendingTaskId },
+      'waiting for TF2 QuickServer to be ready...',
+    )
+    const server = await tf2QuickServer.waitForReady(game.gameServer.pendingTaskId, signal)
+    game = await update(game.number, {
+      $set: { gameServer: tf2QuickServer.toGameServer(server) },
+    })
+    logger.info({ serverId: game.gameServer!.id }, 'TF2 QuickServer ready')
   }
 
   if (signal?.aborted) {

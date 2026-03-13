@@ -232,6 +232,16 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.array(z.string()).default([]),
   }),
   z.object({
+    key: z.literal('tf2_quick_server.region'),
+    value: z.string().default('sa-saopaulo-1'),
+  }),
+  z
+    .object({
+      key: z.literal('tf2_quick_server.timeout'),
+      value: z.number().default(minutesToMilliseconds(5)),
+    })
+    .describe('TF2 Quick Server creation timeout'),
+  z.object({
     key: z.literal('twitchtv.promoted_streams'),
     value: z
       .array(z.string())
