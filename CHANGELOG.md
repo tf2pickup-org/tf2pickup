@@ -1,5 +1,13 @@
 # Changelog
 
+# [4.2.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.1.2...4.2.0) (2026-03-13)
+
+
+### Features
+
+* add tf2-quick-server integration ([#543](https://github.com/tf2pickup-org/tf2pickup/issues/543)) ([c6a1b37](https://github.com/tf2pickup-org/tf2pickup/commit/c6a1b379d2a9dc2f3ae5084d50f901975cd47edc))
+* **queue:** add admin-only clear queue button ([#542](https://github.com/tf2pickup-org/tf2pickup/issues/542)) ([d3227c1](https://github.com/tf2pickup-org/tf2pickup/commit/d3227c14e412c9aacd7aa5633baec1162aaa1a49))
+
 ## [4.1.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.1.1...4.1.2) (2026-03-11)
 
 
