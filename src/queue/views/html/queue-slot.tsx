@@ -1,6 +1,10 @@
 import { collections } from '../../../database/collections'
 import { configuration } from '../../../configuration'
-import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import {
+  PlayerRole,
+  type PlayerModel,
+  type PlayerSkill,
+} from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import { errors } from '../../../errors'
 import {
@@ -11,7 +15,9 @@ import {
   IconMinus,
   IconPlus,
 } from '../../../html/components/icons'
+import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../types/queue-slot-id'
 
@@ -86,7 +92,8 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
     return <></>
   }
 
-  let isFresh = false
+  let isAdmin = false
+  let skill: PlayerSkill | undefined = undefined
   if (props.actor) {
     const actorPlayer = await collections.players.findOne<Pick<PlayerModel, 'roles'>>(
       { steamId: props.actor },
@@ -97,7 +104,8 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         { steamId: props.slot.player.steamId },
         { projection: { skill: 1 } },
       )
-      isFresh = slotPlayer?.skill === undefined
+      isAdmin = true
+      skill = slotPlayer?.skill
     }
   }
 
@@ -131,15 +139,29 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         <span class="player-name-text" safe>
           {props.slot.player.name}
         </span>
-        {isFresh && (
-          <span class="fresh-player-icon">
-            <IconClover size={18} />
-            <span class="tooltip">No skill assigned</span>
-          </span>
-        )}
+        {isAdmin && <PlayerSkillTooltip skill={skill} />}
       </a>
       {slotActionButton}
     </div>
+  )
+}
+
+function PlayerSkillTooltip(props: { skill: PlayerSkill | undefined }) {
+  const entries = props.skill ? Object.entries(props.skill) : []
+  return (
+    <span class="fresh-player-icon">
+      <IconClover size={18} />
+      <span class="tooltip">
+        {entries.length === 0
+          ? 'No skill assigned'
+          : entries.map(([className, value], index) => (
+              <>
+                <GameClassIcon gameClass={className as Tf2ClassName} size={16} /> {value}
+                {index < entries.length - 1 && <br />}
+              </>
+            ))}
+      </span>
+    </span>
   )
 }
 

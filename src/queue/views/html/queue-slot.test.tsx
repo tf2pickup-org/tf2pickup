@@ -7,6 +7,7 @@ import { collections } from '../../../database/collections'
 import { configuration } from '../../../configuration'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../types/queue-slot-id'
+import { PlayerRole } from '../../../database/models/player.model'
 
 vi.mock('../../../database/collections', () => ({
   collections: {
@@ -128,6 +129,76 @@ describe('QueueSlot', () => {
       const root = parse(html)
       const img = root.querySelector('img')
       expect(img!.getAttribute('src')).toBe('https://example.com/avatar.jpg')
+    })
+
+    it('does not render the skill tooltip for a non-admin actor', async () => {
+      const html = await QueueSlot({ slot: occupiedSlot, actor })
+      const root = parse(html)
+      expect(root.querySelector('.fresh-player-icon')).toBeNull()
+    })
+  })
+
+  describe('when slot has a player and actor is admin', () => {
+    const adminActor = '76561198000000001' as SteamId64
+    const occupiedSlot = {
+      id: 'soldier-0' as QueueSlotId,
+      gameClass: Tf2ClassName.soldier,
+      player: {
+        steamId: '76561198000000002' as SteamId64,
+        name: 'Test Player',
+        avatarUrl: 'https://example.com/avatar.jpg',
+      },
+      ready: false,
+    }
+
+    describe('when player has skills set', () => {
+      beforeEach(() => {
+        vi.mocked(collections.players.findOne)
+          .mockResolvedValueOnce({ roles: [PlayerRole.admin] })
+          .mockResolvedValueOnce({ skill: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 } })
+        vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
+        vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
+      })
+
+      it('renders the clover icon', async () => {
+        const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
+        const root = parse(html)
+        expect(root.querySelector('.fresh-player-icon')).not.toBeNull()
+      })
+
+      it('renders skill values in the tooltip', async () => {
+        const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
+        const root = parse(html)
+        const tooltip = root.querySelector('.fresh-player-icon .tooltip')
+        expect(tooltip).not.toBeNull()
+        expect(tooltip!.text).toContain('4')
+        expect(tooltip!.text).toContain('3')
+        expect(tooltip!.text).not.toContain('No skill assigned')
+      })
+    })
+
+    describe('when player has no skill assigned', () => {
+      beforeEach(() => {
+        vi.mocked(collections.players.findOne)
+          .mockResolvedValueOnce({ roles: [PlayerRole.admin] })
+          .mockResolvedValueOnce({ skill: undefined })
+        vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
+        vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
+      })
+
+      it('renders the clover icon', async () => {
+        const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
+        const root = parse(html)
+        expect(root.querySelector('.fresh-player-icon')).not.toBeNull()
+      })
+
+      it('renders "No skill assigned" in the tooltip', async () => {
+        const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
+        const root = parse(html)
+        const tooltip = root.querySelector('.fresh-player-icon .tooltip')
+        expect(tooltip).not.toBeNull()
+        expect(tooltip!.text).toBe('No skill assigned')
+      })
     })
   })
 })
