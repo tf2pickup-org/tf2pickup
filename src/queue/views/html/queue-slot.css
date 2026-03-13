@@ -88,6 +88,11 @@
         svg {
           display: block;
         }
+
+        .tooltip {
+          text-align: left;
+          min-width: fit-content;
+        }
       }
 
       .leave-queue-button {
