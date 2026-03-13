@@ -8,6 +8,8 @@ export function toGameServer(server: Tf2QuickServer): GameServer {
     name: `tf2quickserver-${server.serverId.substring(0, 8)}`,
     address: server.hostIp,
     port: server.hostPort.toString(),
+    stvAddress: server.tvIp,
+    stvPort: server.tvPort,
     rcon: {
       address: server.rconAddress,
       port: '27015',

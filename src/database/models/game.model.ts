@@ -45,6 +45,10 @@ export interface GameServer {
   // set while a tf2QuickServer is still booting (holds the API task ID)
   pendingTaskId?: string
 
+  // SourceTV address/port override (used when STV is on a different host than the game server)
+  stvAddress?: string
+  stvPort?: number | string
+
   rcon: {
     address: string
     port: string

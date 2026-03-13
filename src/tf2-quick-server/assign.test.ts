@@ -44,7 +44,7 @@ const freeServer = {
   variant: 'tf2pickup',
   hostIp: '1.2.3.4',
   hostPort: 27015,
-  tvIp: '1.2.3.4',
+  tvIp: '5.6.7.8',
   tvPort: 27020,
   rconPassword: 'rcon-pass',
   hostPassword: 'host-pass',
@@ -99,6 +99,8 @@ describe('assign()', () => {
       const server = await assign()
       expect(server.id).toBe('existing-server-uuid')
       expect(server.address).toBe('1.2.3.4')
+      expect(server.stvAddress).toBe('5.6.7.8')
+      expect(server.stvPort).toBe(27020)
     })
 
     it('should not set pendingTaskId', async () => {
@@ -116,6 +118,8 @@ describe('assign()', () => {
       const server = await assign({ serverId: 'existing-server-uuid' })
       expect(server.id).toBe('existing-server-uuid')
       expect(server.address).toBe('1.2.3.4')
+      expect(server.stvAddress).toBe('5.6.7.8')
+      expect(server.stvPort).toBe(27020)
       expect(findFree).not.toHaveBeenCalled()
     })
   })
