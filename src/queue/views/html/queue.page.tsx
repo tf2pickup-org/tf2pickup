@@ -26,6 +26,8 @@ import { IsInQueue } from './is-in-queue'
 import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
 import { Announcements } from './announcements'
+import { PlayerRole } from '../../../database/models/player.model'
+import { IconEraser } from '../../../html/components/icons'
 
 export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
@@ -91,7 +93,10 @@ async function QueueState(props: { actor?: User | undefined; required: number })
           Players: <CurrentPlayerCount />/{props.required}
         </h3>
 
-        <PreReadyUpButton actor={props.actor?.player.steamId} />
+        <div class="flex flex-row gap-2">
+          <ClearQueueButton actor={props.actor} />
+          <PreReadyUpButton actor={props.actor?.player.steamId} />
+        </div>
       </form>
       <div class="bg-abru-light-25 h-[2px] rounded-xs"></div>
     </div>
@@ -123,5 +128,22 @@ function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }
           </div>
         ))}
     </form>
+  )
+}
+
+export async function ClearQueueButton(props: { actor?: User | undefined }) {
+  if (!props.actor?.player.roles.includes(PlayerRole.admin)) {
+    return <></>
+  }
+
+  return (
+    <button
+      class="button button--accent"
+      hx-delete="/queue/players"
+      hx-confirm="Are you sure you want to kick everyone from the queue?"
+    >
+      <IconEraser />
+      <span>Clear queue</span>
+    </button>
   )
 }

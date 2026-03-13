@@ -186,6 +186,10 @@ export interface Events {
   'queue:playerKicked': {
     player: SteamId64
   }
+  'queue:cleared': {
+    admin: SteamId64
+    playerCount: number
+  }
   'queue/mapPool:reset': {
     maps: MapPoolEntry[]
   }
