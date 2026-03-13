@@ -133,22 +133,22 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         alt={`${props.slot.player.name}'s name`}
         style={`view-transition-name: player-avatar-${props.slot.player.steamId}`}
       />
-      {isAdmin ? (
-        <div class="player-name-area">
-          <a
-            href={`/players/${props.slot.player.steamId}`}
-            class="player-name-link"
-            preload="mousedown"
-          >
-            <span class="player-name-text" safe>
-              {props.slot.player.name}
+      <div class="player-name-area">
+        <a
+          href={`/players/${props.slot.player.steamId}`}
+          class="player-name-link"
+          preload="mousedown"
+        >
+          <span class="player-name-text" safe>
+            {props.slot.player.name}
+          </span>
+          {isAdmin && skillEntries.length === 0 && (
+            <span class="fresh-player-icon">
+              <IconClover size={18} />
             </span>
-            {skillEntries.length === 0 && (
-              <span class="fresh-player-icon">
-                <IconClover size={18} />
-              </span>
-            )}
-          </a>
+          )}
+        </a>
+        {isAdmin && (
           <span class="tooltip">
             {skillEntries.length === 0
               ? 'No skill assigned'
@@ -159,18 +159,8 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
                   </>
                 ))}
           </span>
-        </div>
-      ) : (
-        <a
-          href={`/players/${props.slot.player.steamId}`}
-          class="player-name-link"
-          preload="mousedown"
-        >
-          <span class="player-name-text" safe>
-            {props.slot.player.name}
-          </span>
-        </a>
-      )}
+        )}
+      </div>
       {slotActionButton}
     </div>
   )
