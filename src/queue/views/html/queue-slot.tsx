@@ -133,7 +133,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         alt={`${props.slot.player.name}'s name`}
         style={`view-transition-name: player-avatar-${props.slot.player.steamId}`}
       />
-      {skillEntries.length > 0 ? (
+      {isAdmin ? (
         <div class="player-name-area">
           <a
             href={`/players/${props.slot.player.steamId}`}
@@ -143,14 +143,21 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
             <span class="player-name-text" safe>
               {props.slot.player.name}
             </span>
+            {skillEntries.length === 0 && (
+              <span class="fresh-player-icon">
+                <IconClover size={18} />
+              </span>
+            )}
           </a>
           <span class="tooltip">
-            {skillEntries.map(([className, value], index) => (
-              <>
-                <GameClassIcon gameClass={className as Tf2ClassName} size={16} /> {value}
-                {index < skillEntries.length - 1 && <br />}
-              </>
-            ))}
+            {skillEntries.length === 0
+              ? 'No skill assigned'
+              : skillEntries.map(([className, value], index) => (
+                  <>
+                    <GameClassIcon gameClass={className as Tf2ClassName} size={16} /> {value}
+                    {index < skillEntries.length - 1 && <br />}
+                  </>
+                ))}
           </span>
         </div>
       ) : (
@@ -162,12 +169,6 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
           <span class="player-name-text" safe>
             {props.slot.player.name}
           </span>
-          {isAdmin && (
-            <span class="fresh-player-icon">
-              <IconClover size={18} />
-              <span class="tooltip">No skill assigned</span>
-            </span>
-          )}
         </a>
       )}
       {slotActionButton}

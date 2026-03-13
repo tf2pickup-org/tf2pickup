@@ -192,10 +192,10 @@ describe('QueueSlot', () => {
         expect(root.querySelector('.fresh-player-icon')).not.toBeNull()
       })
 
-      it('renders "No skill assigned" in the tooltip', async () => {
+      it('renders "No skill assigned" in the tooltip on the name area', async () => {
         const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
         const root = parse(html)
-        const tooltip = root.querySelector('.fresh-player-icon .tooltip')
+        const tooltip = root.querySelector('.player-name-area .tooltip')
         expect(tooltip).not.toBeNull()
         expect(tooltip!.text).toBe('No skill assigned')
       })
