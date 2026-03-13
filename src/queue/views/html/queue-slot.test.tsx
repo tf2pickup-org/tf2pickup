@@ -160,16 +160,16 @@ describe('QueueSlot', () => {
         vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
       })
 
-      it('renders the clover icon', async () => {
+      it('does not render the clover icon', async () => {
         const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
         const root = parse(html)
-        expect(root.querySelector('.fresh-player-icon')).not.toBeNull()
+        expect(root.querySelector('.fresh-player-icon')).toBeNull()
       })
 
-      it('renders skill values in the tooltip', async () => {
+      it('renders skill values in the tooltip on the name area', async () => {
         const html = await QueueSlot({ slot: occupiedSlot, actor: adminActor })
         const root = parse(html)
-        const tooltip = root.querySelector('.fresh-player-icon .tooltip')
+        const tooltip = root.querySelector('.player-name-area .tooltip')
         expect(tooltip).not.toBeNull()
         expect(tooltip!.text).toContain('4')
         expect(tooltip!.text).toContain('3')

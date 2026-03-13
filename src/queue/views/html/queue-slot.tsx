@@ -122,6 +122,8 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
     slotActionButton = <MarkAsFriendButton {...props} />
   }
 
+  const skillEntries = isAdmin && skill ? Object.entries(skill) : []
+
   return (
     <div class="player-info" data-player-ready={`${props.slot.ready}`}>
       <img
@@ -131,37 +133,45 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
         alt={`${props.slot.player.name}'s name`}
         style={`view-transition-name: player-avatar-${props.slot.player.steamId}`}
       />
-      <a
-        href={`/players/${props.slot.player.steamId}`}
-        class="player-name-link"
-        preload="mousedown"
-      >
-        <span class="player-name-text" safe>
-          {props.slot.player.name}
-        </span>
-        {isAdmin && <PlayerSkillTooltip skill={skill} />}
-      </a>
-      {slotActionButton}
-    </div>
-  )
-}
-
-function PlayerSkillTooltip(props: { skill: PlayerSkill | undefined }) {
-  const entries = props.skill ? Object.entries(props.skill) : []
-  return (
-    <span class="fresh-player-icon">
-      <IconClover size={18} />
-      <span class="tooltip">
-        {entries.length === 0
-          ? 'No skill assigned'
-          : entries.map(([className, value], index) => (
+      {skillEntries.length > 0 ? (
+        <div class="player-name-area">
+          <a
+            href={`/players/${props.slot.player.steamId}`}
+            class="player-name-link"
+            preload="mousedown"
+          >
+            <span class="player-name-text" safe>
+              {props.slot.player.name}
+            </span>
+          </a>
+          <span class="tooltip">
+            {skillEntries.map(([className, value], index) => (
               <>
                 <GameClassIcon gameClass={className as Tf2ClassName} size={16} /> {value}
-                {index < entries.length - 1 && <br />}
+                {index < skillEntries.length - 1 && <br />}
               </>
             ))}
-      </span>
-    </span>
+          </span>
+        </div>
+      ) : (
+        <a
+          href={`/players/${props.slot.player.steamId}`}
+          class="player-name-link"
+          preload="mousedown"
+        >
+          <span class="player-name-text" safe>
+            {props.slot.player.name}
+          </span>
+          {isAdmin && (
+            <span class="fresh-player-icon">
+              <IconClover size={18} />
+              <span class="tooltip">No skill assigned</span>
+            </span>
+          )}
+        </a>
+      )}
+      {slotActionButton}
+    </div>
   )
 }
 
