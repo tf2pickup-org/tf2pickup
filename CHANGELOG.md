@@ -1,5 +1,17 @@
 # Changelog
 
+# [4.3.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.2.0...4.3.0) (2026-03-14)
+
+
+### Bug Fixes
+
+* **static-game-servers:** respect server priority when selecting a free server ([#544](https://github.com/tf2pickup-org/tf2pickup/issues/544)) ([b1ca244](https://github.com/tf2pickup-org/tf2pickup/commit/b1ca24459bec02cbe98ae777a1bfb47c815f62b4))
+
+
+### Features
+
+* add SourceTV address and port to GameServer model and related functions ([#546](https://github.com/tf2pickup-org/tf2pickup/issues/546)) ([12f792d](https://github.com/tf2pickup-org/tf2pickup/commit/12f792d75a57d55f429177b0a22c190877a75014))
+
 # [4.2.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.1.2...4.2.0) (2026-03-13)
 
 
