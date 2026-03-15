@@ -1,41 +1,34 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { QueueState } from '../../database/models/queue-state.model'
-import { logger } from '../../logger'
-import { create } from '../create'
 import { queue } from '../../queue'
 import { debounce } from 'es-toolkit'
-
-const launchGame = debounce(async () => {
-  try {
-    logger.info('launching game')
-    const slots = await queue.getSlots()
-    const map = await queue.getMapWinner()
-    const friends = await queue.getFriends()
-    logger.trace({ slots, map, friends }, 'launchGame()')
-    await create(slots, map, friends)
-  } catch (error) {
-    logger.error(error)
-  }
-}, 100)
+import { safe } from '../../utils/safe'
+import { launchGame } from '../launch-game'
+import { GameState } from '../../database/models/game.model'
+import { configure } from '../rcon/configure'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    const launchGameDebounced = debounce(safe(launchGame), 100)
+
     events.on('queue/state:updated', ({ state }) => {
       if (state === QueueState.launching) {
-        launchGame()
+        launchGameDebounced()
       }
     })
 
     app.addHook('onListen', async () => {
       if ((await queue.getState()) === QueueState.launching) {
-        launchGame()
+        launchGameDebounced()
       }
     })
-  },
-  {
-    name: 'launch new game',
-    encapsulate: true,
+
+    events.on('game:ended', ({ game }) => {
+      if (game.state === GameState.interrupted) {
+        configure.cancel(game.number)
+      }
+    })
   },
 )
