@@ -99,8 +99,8 @@ importers:
         specifier: 0.5.19
         version: 0.5.19(tailwindcss@4.2.1)
       '@tf2pickup-org/mumble-client':
-        specifier: 0.12.6
-        version: 0.12.6
+        specifier: 0.13.0
+        version: 0.13.0
       '@tf2pickup-org/serveme-tf-client':
         specifier: 0.1.2
         version: 0.1.2
@@ -260,7 +260,7 @@ importers:
         version: 1.58.2
       '@release-it/conventional-changelog':
         specifier: 10.0.6
-        version: 10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)(release-it@19.2.4(@types/node@24.11.0))
+        version: 10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@19.2.4(@types/node@24.11.0))
       '@tsconfig/strictest':
         specifier: 2.0.8
         version: 2.0.8
@@ -1932,8 +1932,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20 || >=4.0.0-beta.1'
 
-  '@tf2pickup-org/mumble-client@0.12.6':
-    resolution: {integrity: sha512-TsL+e9mqbCVfKRIDvlF5CSQiS4Sh4LMSOpNq6/NJv3hGt+b36b6oqvTKSJ2IriKNbNMIUn6LsweXVwMQOgbhRg==}
+  '@tf2pickup-org/mumble-client@0.13.0':
+    resolution: {integrity: sha512-7If+QxlQREzTrFN/WgYOX8eX8sknXSII5DwUjrHOHuRBUBPtydefZbWXYUfRdj3d+0pVzm5/1MVtPeAniHbzjA==}
 
   '@tf2pickup-org/mumble-protocol@1.0.12':
     resolution: {integrity: sha512-6Jx2aPcRc8AMDRFheW6GK+JEBVusfFZ3X/5q1Gze4H1tgmBvyTGbAqUYZtCTiYQQSSp8DXCANa/YKpfuAcuKvA==}
@@ -6674,9 +6674,9 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@release-it/conventional-changelog@10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)(release-it@19.2.4(@types/node@24.11.0))':
+  '@release-it/conventional-changelog@10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@19.2.4(@types/node@24.11.0))':
     dependencies:
-      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)
+      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)
       concat-stream: 2.0.0
       conventional-changelog: 7.2.0(conventional-commits-filter@5.0.0)
       conventional-changelog-angular: 8.3.0
@@ -6879,7 +6879,7 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.2.1
 
-  '@tf2pickup-org/mumble-client@0.12.6':
+  '@tf2pickup-org/mumble-client@0.13.0':
     dependencies:
       '@protobuf-ts/runtime': 2.11.1
       '@tf2pickup-org/mumble-protocol': 1.0.12
