@@ -60,7 +60,7 @@
     "dotenv": "17.3.1",
     "es-toolkit": "1.45.0",
     "esbuild": "0.27.3",
-    "fastify": "5.8.1",
+    "fastify": "5.8.2",
     "fastify-disablecache": "5.0.0",
     "fastify-plugin": "5.1.0",
     "fastify-type-provider-zod": "6.1.0",
