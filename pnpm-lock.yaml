@@ -189,8 +189,8 @@ importers:
         specifier: 4.3.2
         version: 4.3.2
       marked:
-        specifier: 17.0.3
-        version: 17.0.3
+        specifier: 17.0.4
+        version: 17.0.4
       mime:
         specifier: 4.1.0
         version: 4.1.0
@@ -260,7 +260,7 @@ importers:
         version: 1.58.2
       '@release-it/conventional-changelog':
         specifier: 10.0.6
-        version: 10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)(release-it@19.2.4(@types/node@24.11.0))
+        version: 10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@19.2.4(@types/node@24.11.0))
       '@tsconfig/strictest':
         specifier: 2.0.8
         version: 2.0.8
@@ -3677,8 +3677,8 @@ packages:
   markdown-it-deflist@2.1.0:
     resolution: {integrity: sha512-3OuqoRUlSxJiuQYu0cWTLHNhhq2xtoSFqsZK8plANg91+RJQU1ziQ6lA2LzmFAEes18uPBsHZpcX6We5l76Nzg==}
 
-  marked@17.0.3:
-    resolution: {integrity: sha512-jt1v2ObpyOKR8p4XaUJVk3YWRJ5n+i4+rjQopxvV32rSndTJXvIzuUdWWIy/1pFQMkQmvTXawzDNqOH/CUmx6A==}
+  marked@17.0.4:
+    resolution: {integrity: sha512-NOmVMM+KAokHMvjWmC5N/ZOvgmSWuqJB8FoYI019j4ogb/PeRMKoKIjReZ2w3376kkA8dSJIP8uD993Kxc0iRQ==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -6674,9 +6674,9 @@ snapshots:
 
   '@protobufjs/utf8@1.1.0': {}
 
-  '@release-it/conventional-changelog@10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)(release-it@19.2.4(@types/node@24.11.0))':
+  '@release-it/conventional-changelog@10.0.6(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)(release-it@19.2.4(@types/node@24.11.0))':
     dependencies:
-      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)
+      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.2.1)
       concat-stream: 2.0.0
       conventional-changelog: 7.2.0(conventional-commits-filter@5.0.0)
       conventional-changelog-angular: 8.3.0
@@ -8752,7 +8752,7 @@ snapshots:
 
   markdown-it-deflist@2.1.0: {}
 
-  marked@17.0.3: {}
+  marked@17.0.4: {}
 
   math-intrinsics@1.1.0: {}
 
