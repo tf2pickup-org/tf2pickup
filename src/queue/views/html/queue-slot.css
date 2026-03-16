@@ -75,6 +75,10 @@
         background-color: #0a955b;
       }
 
+      .player-name-area {
+        min-width: 0;
+      }
+
       .fresh-player-icon {
         display: flex;
         align-items: center;
@@ -87,6 +91,11 @@
 
         svg {
           display: block;
+        }
+
+        .tooltip {
+          text-align: left;
+          min-width: fit-content;
         }
       }
 
