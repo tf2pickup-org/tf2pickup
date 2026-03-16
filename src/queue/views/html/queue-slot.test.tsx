@@ -25,7 +25,14 @@ vi.mock('../../meets-skill-threshold', () => ({
   meetsSkillThreshold: vi.fn(),
 }))
 
-const actor = '76561198000000001' as SteamId64
+const actor = {
+  steamId: '76561198000000001' as SteamId64,
+  bans: [],
+  activeGame: undefined,
+  skill: undefined,
+  verified: true,
+  roles: [],
+}
 
 const emptySlot = {
   id: 'soldier-0' as QueueSlotId,
@@ -55,12 +62,6 @@ describe('QueueSlot', () => {
 
   describe('when slot is empty and there is an actor', () => {
     beforeEach(() => {
-      vi.mocked(collections.players.findOne).mockResolvedValue({
-        bans: [],
-        activeGame: undefined,
-        skill: undefined,
-        verified: true,
-      })
       vi.mocked(meetsSkillThreshold).mockResolvedValue(true)
       vi.mocked(configuration.get).mockResolvedValue(false)
     })
@@ -77,15 +78,9 @@ describe('QueueSlot', () => {
     })
 
     it('renders a disabled join button when actor has active bans', async () => {
-      vi.mocked(collections.players.findOne).mockResolvedValue({
-        bans: [{ end: new Date(Date.now() + 60_000) }],
-        activeGame: undefined,
-        skill: undefined,
-        verified: true,
-      })
       const html = await QueueSlot({
         slot: emptySlot,
-        actor: actor,
+        actor: { ...actor, bans: [{ end: new Date(Date.now() + 60_000) }] as typeof actor.bans },
       })
       const root = parse(html)
       const button = root.querySelector('.join-queue-button')
@@ -98,14 +93,13 @@ describe('QueueSlot', () => {
     const occupiedSlot = {
       ...emptySlot,
       player: {
-        steamId: actor,
+        steamId: actor.steamId,
         name: 'Test Player',
         avatarUrl: 'https://example.com/avatar.jpg',
       },
     }
 
     beforeEach(() => {
-      vi.mocked(collections.players.findOne).mockResolvedValue({ roles: [] })
       vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
       vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
     })
@@ -139,7 +133,7 @@ describe('QueueSlot', () => {
   })
 
   describe('when slot has a player and actor is admin', () => {
-    const adminActor = '76561198000000001' as SteamId64
+    const adminActor = { ...actor, roles: [PlayerRole.admin] }
     const occupiedSlot = {
       id: 'soldier-0' as QueueSlotId,
       gameClass: Tf2ClassName.soldier,
@@ -154,7 +148,6 @@ describe('QueueSlot', () => {
     describe('when player has skills set', () => {
       beforeEach(() => {
         vi.mocked(collections.players.findOne)
-          .mockResolvedValueOnce({ roles: [PlayerRole.admin] })
           .mockResolvedValueOnce({ skill: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 } })
         vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
         vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
@@ -180,7 +173,6 @@ describe('QueueSlot', () => {
     describe('when player has no skill assigned', () => {
       beforeEach(() => {
         vi.mocked(collections.players.findOne)
-          .mockResolvedValueOnce({ roles: [PlayerRole.admin] })
           .mockResolvedValueOnce({ skill: undefined })
         vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
         vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)

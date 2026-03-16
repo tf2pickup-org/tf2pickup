@@ -93,7 +93,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
 
   let isAdmin = false
   let skill: PlayerSkill | undefined = undefined
-  if (props.actor?.roles.includes(PlayerRole.admin)) {
+  if (props.actor?.roles?.includes(PlayerRole.admin)) {
     const slotPlayer = await collections.players.findOne<Pick<PlayerModel, 'skill'>>(
       { steamId: props.slot.player.steamId },
       { projection: { skill: 1 } },
@@ -208,7 +208,7 @@ async function determineMarkAsFriendButtonState(
     return MarkAsFriendButtonState.none
   }
 
-  const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor })
+  const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor.steamId })
   if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
     const friendship = await collections.queueFriends.findOne({
       target: slot.player.steamId,
