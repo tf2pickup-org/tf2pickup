@@ -39,7 +39,7 @@ export async function pickServer(servers: ServerData[], name?: string): Promise<
     throw errors.notFound('could not find any gameservers meeting given criteria')
   }
 
-  return sample(validServers)!.id
+  return sample(validServers).id
 }
 
 async function byFilterRegion(servers: ServerData[]): Promise<ServerData[]> {
