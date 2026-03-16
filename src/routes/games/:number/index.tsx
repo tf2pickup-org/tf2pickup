@@ -128,7 +128,7 @@ export default routes(async app => {
         const { number } = request.params
         const { gameServer } = request.body
         const game = await games.findOne({ number })
-        await gameServers.assign(game, gameServer)
+        await gameServers.assign(game, gameServer, request.user!.player.steamId)
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)

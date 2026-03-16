@@ -8,10 +8,11 @@ import { Mutex } from 'async-mutex'
 import { servemeTf } from '../serveme-tf'
 import { tf2QuickServer } from '../tf2-quick-server'
 import { errors } from '../errors'
+import { type SteamId64 } from '../shared/types/steam-id-64'
 
 const mutex = new Mutex()
 
-export async function assign(game: GameModel, selected?: string) {
+export async function assign(game: GameModel, selected?: string, actor?: SteamId64) {
   await mutex.runExclusive(async () => {
     const gameServer = selected ? await assignSelected(game, selected) : await assignFirstFree(game)
 
@@ -24,6 +25,7 @@ export async function assign(game: GameModel, selected?: string) {
           event: GameEventType.gameServerAssigned,
           at: new Date(),
           gameServerName: gameServer.name,
+          ...(actor && { actor }),
         },
       },
     })
