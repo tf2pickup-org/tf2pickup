@@ -28,8 +28,6 @@ vi.mock('../../meets-skill-threshold', () => ({
 const actor = {
   steamId: '76561198000000001' as SteamId64,
   bans: [] as PlayerBan[],
-  activeGame: undefined,
-  skill: undefined,
   verified: true,
   roles: [] as PlayerRole[],
 }
