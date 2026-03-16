@@ -58,7 +58,7 @@ jobs:
             type=semver,pattern=stable,enable=${{ !contains(github.event.push.ref, 'alpha') && !contains(github.event.push.ref, 'beta') && !contains(github.event.push.ref, 'rc') }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Build
         id: docker_build
