@@ -135,27 +135,22 @@ export default fp(
       'queue/slots:updated',
       safe(async ({ slots }) => {
         const playerCount = await CurrentPlayerCount()
-        app.gateway.broadcast(async player => [
-          ...(await Promise.all(
-            slots.map(
-              async slot =>
-                await QueueSlot({
-                  slot,
-                  actor: player
-                    ? await players.bySteamId(player, [
-                        'steamId',
-                        'bans',
-                        'activeGame',
-                        'skill',
-                        'verified',
-                        'roles',
-                      ])
-                    : undefined,
-                }),
-            ),
-          )),
-          playerCount,
-        ])
+        app.gateway.broadcast(async player => {
+          const actor = player
+            ? await players.bySteamId(player, [
+                'steamId',
+                'bans',
+                'activeGame',
+                'skill',
+                'verified',
+                'roles',
+              ])
+            : undefined
+          return [
+            ...(await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))),
+            playerCount,
+          ]
+        })
 
         app.gateway.broadcast(async () => await SetTitle())
       }),
@@ -225,33 +220,31 @@ export default fp(
     events.on(
       'queue/friendship:updated',
       safe(async ({ target }) => {
-        const slots = await collections.queueSlots
-          .find({ 'player.steamId': { $in: [target.before, target.after] } })
-          .toArray()
-        slots.forEach(async slot => {
-          app.gateway
-            .to({
-              players: (
-                await collections.queueSlots
-                  .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-                  .toArray()
-              ).map(({ player }) => player!.steamId),
-            })
-            .send(
-              async actor =>
-                await QueueSlot({
-                  slot,
-                  actor: await players.bySteamId(actor!, [
-                    'steamId',
-                    'bans',
-                    'activeGame',
-                    'skill',
-                    'verified',
-                    'roles',
-                  ]),
-                }),
-            )
-        })
+        const [slots, friendshipSlots] = await Promise.all([
+          collections.queueSlots
+            .find({ 'player.steamId': { $in: [target.before, target.after] } })
+            .toArray(),
+          collections.queueSlots
+            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .toArray(),
+        ])
+        const recipients = friendshipSlots.map(({ player }) => player!.steamId)
+        for (const slot of slots) {
+          app.gateway.to({ players: recipients }).send(
+            async actor =>
+              await QueueSlot({
+                slot,
+                actor: await players.bySteamId(actor!, [
+                  'steamId',
+                  'bans',
+                  'activeGame',
+                  'skill',
+                  'verified',
+                  'roles',
+                ]),
+              }),
+          )
+        }
       }),
     )
 

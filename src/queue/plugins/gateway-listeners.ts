@@ -22,25 +22,28 @@ import { players } from '../../players'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    async function refreshTakenSlots(actor: SteamId64) {
+    async function refreshTakenSlots(actorId: SteamId64) {
+      const actor = await players.bySteamId(actorId, [
+        'steamId',
+        'bans',
+        'activeGame',
+        'skill',
+        'verified',
+        'roles',
+      ])
       const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
-      const cmps = await Promise.all(
-        slots.map(
-          async slot =>
-            await QueueSlot({
-              slot,
-              actor: await players.bySteamId(actor, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ]),
-            }),
-        ),
+      app.gateway.to({ player: actorId }).send(
+        async () =>
+          await Promise.all(
+            slots.map(
+              async slot =>
+                await QueueSlot({
+                  slot,
+                  actor,
+                }),
+            ),
+          ),
       )
-      app.gateway.to({ player: actor }).send(() => cmps)
     }
 
     function wsSafe<Args extends unknown[]>(
