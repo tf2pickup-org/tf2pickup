@@ -1,5 +1,23 @@
 # Changelog
 
+# [4.4.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.3.0...4.4.0) (2026-03-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cssnano to v7.1.3 ([4f23a87](https://github.com/tf2pickup-org/tf2pickup/commit/4f23a8781277610ace063550ec692e0886f8d77d))
+* **deps:** update dependency es-toolkit to v1.45.1 ([#547](https://github.com/tf2pickup-org/tf2pickup/issues/547)) ([89c96e6](https://github.com/tf2pickup-org/tf2pickup/commit/89c96e69ed5d5e4862f130453a8a24eb41f867fe))
+* **deps:** update dependency esbuild to v0.27.4 ([c362b47](https://github.com/tf2pickup-org/tf2pickup/commit/c362b47ec6fead5e16825d352bf48c373e978df1))
+* **deps:** update dependency fastify to v5.8.2 ([7bf7a34](https://github.com/tf2pickup-org/tf2pickup/commit/7bf7a345cc253b07d97773c106e651da633d528e))
+* **deps:** update dependency marked to v17.0.4 ([ba7a4a7](https://github.com/tf2pickup-org/tf2pickup/commit/ba7a4a7a99832739de743ed22a0c6b6ea2419362))
+* **deps:** update dependency nanoid to v5.1.7 ([a092465](https://github.com/tf2pickup-org/tf2pickup/commit/a0924656e84e706e37299d66f9143833d213569e))
+* record game server reassignment actor ([#552](https://github.com/tf2pickup-org/tf2pickup/issues/552)) ([241df43](https://github.com/tf2pickup-org/tf2pickup/commit/241df4328e24fed87ecb02cef5e88882063871db))
+
+
+### Features
+
+* **queue:** add admin skill tooltip to queue slots ([#545](https://github.com/tf2pickup-org/tf2pickup/issues/545)) ([b01245b](https://github.com/tf2pickup-org/tf2pickup/commit/b01245b8944a6f6e06ad6d5fe1d735cf8e33231d))
+
 # [4.3.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.2.0...4.3.0) (2026-03-14)
 
 
