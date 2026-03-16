@@ -6,7 +6,6 @@ import {
   type PlayerSkill,
 } from '../../../database/models/player.model'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
-import { errors } from '../../../errors'
 import {
   IconClover,
   IconHeart,
@@ -16,7 +15,6 @@ import {
   IconPlus,
 } from '../../../html/components/icons'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../types/queue-slot-id'
@@ -28,27 +26,28 @@ const enum MarkAsFriendButtonState {
   selected, // marked by me
 }
 
-export async function QueueSlot(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
+type Actor =
+  | Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
+  | undefined
+
+export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) {
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
-    const actor = await collections.players.findOne<
-      Pick<PlayerModel, 'bans' | 'activeGame' | 'skill' | 'verified'>
-    >({ steamId: props.actor }, { projection: { bans: 1, activeGame: 1, skill: 1, verified: 1 } })
-    if (!actor) {
-      throw errors.internalServerError(`actor invalid: ${props.actor}`)
-    }
-
-    const activeBans = actor.bans?.filter(b => b.end.getTime() > new Date().getTime()).length ?? 0
+    const activeBans =
+      props.actor.bans?.filter(b => b.end.getTime() > new Date().getTime()).length ?? 0
     let disabled: string | undefined = undefined
     if (activeBans > 0) {
       disabled = 'You have active bans'
-    } else if (actor.activeGame) {
+    } else if (props.actor.activeGame) {
       disabled = 'You are already in a game'
-    } else if (!(await meetsSkillThreshold(actor, props.slot))) {
+    } else if (!(await meetsSkillThreshold(props.actor, props.slot))) {
       disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
-    } else if ((await configuration.get('queue.require_player_verification')) && !actor.verified) {
+    } else if (
+      (await configuration.get('queue.require_player_verification')) &&
+      !props.actor.verified
+    ) {
       disabled = 'You are not verified to join the queue'
     }
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
@@ -87,30 +86,24 @@ function JoinButton(props: { slotId: QueueSlotId; disabled: string | undefined }
   )
 }
 
-async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
+async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
   if (!props.slot.player) {
     return <></>
   }
 
   let isAdmin = false
   let skill: PlayerSkill | undefined = undefined
-  if (props.actor) {
-    const actorPlayer = await collections.players.findOne<Pick<PlayerModel, 'roles'>>(
-      { steamId: props.actor },
-      { projection: { roles: 1 } },
+  if (props.actor?.roles.includes(PlayerRole.admin)) {
+    const slotPlayer = await collections.players.findOne<Pick<PlayerModel, 'skill'>>(
+      { steamId: props.slot.player.steamId },
+      { projection: { skill: 1 } },
     )
-    if (actorPlayer?.roles.includes(PlayerRole.admin)) {
-      const slotPlayer = await collections.players.findOne<Pick<PlayerModel, 'skill'>>(
-        { steamId: props.slot.player.steamId },
-        { projection: { skill: 1 } },
-      )
-      isAdmin = true
-      skill = slotPlayer?.skill
-    }
+    isAdmin = true
+    skill = slotPlayer?.skill
   }
 
   let slotActionButton: JSX.Element
-  if (props.actor === props.slot.player.steamId && !props.slot.ready) {
+  if (props.actor?.steamId === props.slot.player.steamId && !props.slot.ready) {
     slotActionButton = (
       <button class="leave-queue-button" name="leave" value="" data-umami-event="leave-queue">
         <IconMinus />
@@ -166,7 +159,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: SteamId64 | und
   )
 }
 
-async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId64 | undefined }) {
+async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: Actor }) {
   const markAsFriendButtonState = await determineMarkAsFriendButtonState(props.slot, props.actor)
   if (markAsFriendButtonState === MarkAsFriendButtonState.none) {
     return <></>
@@ -205,7 +198,7 @@ async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: SteamId
 
 async function determineMarkAsFriendButtonState(
   slot: QueueSlotModel,
-  actor?: SteamId64,
+  actor?: Actor,
 ): Promise<MarkAsFriendButtonState> {
   if (!slot.player) {
     return MarkAsFriendButtonState.none
@@ -222,7 +215,7 @@ async function determineMarkAsFriendButtonState(
     })
     if (friendship === null) {
       return MarkAsFriendButtonState.enabled
-    } else if (friendship.source === actor) {
+    } else if (friendship.source === actor.steamId) {
       return MarkAsFriendButtonState.selected
     } else {
       return MarkAsFriendButtonState.disabled

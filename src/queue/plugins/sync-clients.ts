@@ -20,24 +20,47 @@ import { ChatMessages } from '../views/html/chat'
 import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
+import { players } from '../../players'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    async function syncAllSlots(...players: SteamId64[]) {
+    async function syncAllSlots(...clients: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
-      slots.forEach(slot => {
-        app.gateway
-          .to({ players })
-          .to({ url: '/' })
-          .send(async actor => await QueueSlot({ slot, actor }))
-      })
+      await Promise.all(
+        clients.map(async client => {
+          const actor = await players.bySteamId(client, [
+            'steamId',
+            'bans',
+            'activeGame',
+            'skill',
+            'verified',
+            'roles',
+          ])
+          app.gateway
+            .to({ players: [actor.steamId] })
+            .to({ url: '/' })
+            .send(async () =>
+              (await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))).join(),
+            )
+        }),
+      )
     }
 
     async function syncQueuePage(socket: AppWebSocket) {
       const slots = await collections.queueSlots.find().toArray()
+      const actor = socket.player
+        ? await players.bySteamId(socket.player.steamId, [
+            'steamId',
+            'bans',
+            'activeGame',
+            'skill',
+            'verified',
+            'roles',
+          ])
+        : undefined
       slots.forEach(async slot => {
-        socket.send(await QueueSlot({ slot, actor: socket.player?.steamId }))
+        socket.send(await QueueSlot({ slot, actor }))
       })
       socket.send(await IsInQueue({ actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
@@ -113,7 +136,24 @@ export default fp(
       safe(async ({ slots }) => {
         const playerCount = await CurrentPlayerCount()
         app.gateway.broadcast(async player => [
-          ...(await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor: player })))),
+          ...(await Promise.all(
+            slots.map(
+              async slot =>
+                await QueueSlot({
+                  slot,
+                  actor: player
+                    ? await players.bySteamId(player, [
+                        'steamId',
+                        'bans',
+                        'activeGame',
+                        'skill',
+                        'verified',
+                        'roles',
+                      ])
+                    : undefined,
+                }),
+            ),
+          )),
           playerCount,
         ])
 
@@ -157,29 +197,60 @@ export default fp(
         if (!slot) {
           return
         }
-        const players = (
-          await collections.queueSlots
-            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-            .toArray()
-        ).map(({ player }) => player!.steamId)
-        app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
+        app.gateway
+          .to({
+            players: (
+              await collections.queueSlots
+                .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+                .toArray()
+            ).map(({ player }) => player!.steamId),
+          })
+          .send(
+            async actor =>
+              await QueueSlot({
+                slot,
+                actor: await players.bySteamId(actor!, [
+                  'steamId',
+                  'bans',
+                  'activeGame',
+                  'skill',
+                  'verified',
+                  'roles',
+                ]),
+              }),
+          )
       }),
     )
 
     events.on(
       'queue/friendship:updated',
       safe(async ({ target }) => {
-        const players = (
-          await collections.queueSlots
-            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-            .toArray()
-        ).map(({ player }) => player!.steamId)
-
         const slots = await collections.queueSlots
           .find({ 'player.steamId': { $in: [target.before, target.after] } })
           .toArray()
-        slots.forEach(slot => {
-          app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
+        slots.forEach(async slot => {
+          app.gateway
+            .to({
+              players: (
+                await collections.queueSlots
+                  .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+                  .toArray()
+              ).map(({ player }) => player!.steamId),
+            })
+            .send(
+              async actor =>
+                await QueueSlot({
+                  slot,
+                  actor: await players.bySteamId(actor!, [
+                    'steamId',
+                    'bans',
+                    'activeGame',
+                    'skill',
+                    'verified',
+                    'roles',
+                  ]),
+                }),
+            )
         })
       }),
     )
@@ -191,12 +262,28 @@ export default fp(
         if (!slot) {
           return
         }
-        const players = (
-          await collections.queueSlots
-            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-            .toArray()
-        ).map(({ player }) => player!.steamId)
-        app.gateway.to({ players }).send(async actor => await QueueSlot({ slot, actor }))
+        app.gateway
+          .to({
+            players: (
+              await collections.queueSlots
+                .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+                .toArray()
+            ).map(({ player }) => player!.steamId),
+          })
+          .send(
+            async actor =>
+              await QueueSlot({
+                slot,
+                actor: await players.bySteamId(actor!, [
+                  'steamId',
+                  'bans',
+                  'activeGame',
+                  'skill',
+                  'verified',
+                  'roles',
+                ]),
+              }),
+          )
       }),
     )
 

@@ -28,12 +28,12 @@ import { requestContext } from '@fastify/request-context'
 import { Announcements } from './announcements'
 import { PlayerRole } from '../../../database/models/player.model'
 import { IconEraser } from '../../../html/components/icons'
+import { players } from '../../../players'
 
 export async function QueuePage() {
   const slots = await collections.queueSlots.find().toArray()
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
-
   const user = requestContext.get('user')
 
   return (
@@ -103,8 +103,18 @@ async function QueueState(props: { actor?: User | undefined; required: number })
   )
 }
 
-function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }) {
+async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }) {
   const gridCols = config.classes.length > 4 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'
+  const actor = props.actor
+    ? await players.bySteamId(props.actor, [
+        'steamId',
+        'bans',
+        'activeGame',
+        'skill',
+        'verified',
+        'roles',
+      ])
+    : undefined
   return (
     <form
       class={['grid grid-cols-1 gap-4 md:grid-cols-2', gridCols]}
@@ -123,7 +133,7 @@ function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }
             {props.slots
               .filter(slot => slot.gameClass === gameClass)
               .map(slot => (
-                <QueueSlot slot={slot} actor={props.actor} />
+                <QueueSlot slot={slot} actor={actor} />
               ))}
           </div>
         ))}
