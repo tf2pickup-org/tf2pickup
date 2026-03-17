@@ -26,7 +26,8 @@ function stubGameServer(taskId: string): GameServer {
 export async function assign({
   serverId,
   region,
-}: { serverId?: string; region?: string } = {}): Promise<GameServer> {
+  map,
+}: { serverId?: string; region?: string; map?: string } = {}): Promise<GameServer> {
   if (!environment.TF2_QUICK_SERVER_CLIENT_ID || !environment.TF2_QUICK_SERVER_CLIENT_SECRET) {
     throw errors.badRequest('TF2 QuickServer is disabled')
   }
@@ -55,7 +56,7 @@ export async function assign({
     region = await configuration.get('tf2_quick_server.region')
   }
 
-  const { taskId } = await createServer(region)
+  const { taskId } = await createServer(region, map)
   logger.info({ taskId, region }, 'TF2 QuickServer creation started')
   return stubGameServer(taskId)
 }

@@ -120,14 +120,15 @@ export async function listServers(): Promise<z.infer<typeof serverSchema>[]> {
   return z.array(serverSchema).parse(await apiFetch('/api/servers'))
 }
 
-export async function createServer(region: string): Promise<{ taskId: string }> {
-  logger.info({ region }, 'creating TF2 QuickServer server')
+export async function createServer(region: string, firstMap?: string): Promise<{ taskId: string }> {
+  logger.info({ region, firstMap }, 'creating TF2 QuickServer server')
   return taskAcceptedSchema.parse(
     await apiFetch('/api/servers', {
       method: 'POST',
       body: JSON.stringify({
         region,
         variantName: 'tf2pickup',
+        firstMap,
         extraEnvs: {
           SERVER_HOSTNAME: environment.WEBSITE_NAME,
         },

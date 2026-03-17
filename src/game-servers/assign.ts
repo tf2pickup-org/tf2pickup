@@ -38,7 +38,7 @@ function assignFirstFree(game: GameModel): Promise<GameServer> {
   return staticGameServers
     .assign(game)
     .catch(() => servemeTf.assign(game))
-    .catch(() => tf2QuickServer.assign())
+    .catch(() => tf2QuickServer.assign({ map: game.map }))
     .catch((error: unknown) => {
       logger.error(error)
       throw errors.internalServerError(`no free servers available for game ${game.number}`)
@@ -60,9 +60,9 @@ function assignSelected(game: GameModel, selected: string): Promise<GameServer> 
     const payload = selected.substring(15)
     if (payload.startsWith('new:')) {
       const region = payload.substring(4)
-      return tf2QuickServer.assign({ region })
+      return tf2QuickServer.assign({ region, map: game.map })
     }
-    return tf2QuickServer.assign({ serverId: payload })
+    return tf2QuickServer.assign({ serverId: payload, map: game.map })
   }
 
   throw errors.badRequest(`unknown game server selection: ${selected}`)
