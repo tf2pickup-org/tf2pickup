@@ -5,7 +5,10 @@ import { JoinGameButton } from './join-game-button'
 import { JoinVoiceButton } from './join-voice-button'
 
 export function ConnectInfo(props: {
-  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  game: Pick<
+    GameModel,
+    'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString' | 'serverStatusPlaceholder'
+  >
   actor: SteamId64 | undefined
 }) {
   const connectInfoVisible = [
@@ -34,7 +37,10 @@ export function ConnectInfo(props: {
 }
 
 async function UserConnectString(props: {
-  game: Pick<GameModel, 'state' | 'number' | 'slots' | 'connectString' | 'stvConnectString'>
+  game: Pick<
+    GameModel,
+    'state' | 'number' | 'slots' | 'connectString' | 'stvConnectString' | 'serverStatusPlaceholder'
+  >
   actor: SteamId64 | undefined
 }) {
   let connectString: string | undefined
@@ -42,10 +48,18 @@ async function UserConnectString(props: {
 
   switch (props.game.state) {
     case GameState.created:
-      content = <i>waiting for server...</i>
+      content = props.game.serverStatusPlaceholder ? (
+        <i safe>{props.game.serverStatusPlaceholder}</i>
+      ) : (
+        <i>waiting for server...</i>
+      )
       break
     case GameState.configuring:
-      content = <i>configuring server...</i>
+      content = props.game.serverStatusPlaceholder ? (
+        <i safe>{props.game.serverStatusPlaceholder}</i>
+      ) : (
+        <i>configuring server...</i>
+      )
       break
     default:
       connectString = actorInGame(props.game, props.actor)

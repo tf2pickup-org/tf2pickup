@@ -64,6 +64,12 @@ export default fp(async app => {
         .send(async () => await GameScore({ game: after, team: Tf2Team.red }))
     }
 
+    if (before.serverStatusPlaceholder !== after.serverStatusPlaceholder) {
+      app.gateway
+        .to({ url: `/games/${after.number}` })
+        .send(async actor => await ConnectInfo({ game: after, actor }))
+    }
+
     if (
       before.connectString !== after.connectString ||
       before.stvConnectString !== after.stvConnectString

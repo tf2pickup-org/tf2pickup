@@ -72,4 +72,5 @@ export interface GameModel {
   logSecret?: string
   connectString?: string
   stvConnectString?: string
+  serverStatusPlaceholder?: string
 }
