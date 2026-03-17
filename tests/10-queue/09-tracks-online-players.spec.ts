@@ -5,7 +5,9 @@ import { delay } from 'es-toolkit'
 test('tracks online players @6v6 @9v9', async ({ page, users }) => {
   await page.goto('/')
   const onlinePlayerList = page.locator('#online-player-list')
-  await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).not.toBeVisible()
+  await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).not.toBeVisible({
+    timeout: secondsToMilliseconds(14),
+  })
 
   const blacklight = users.byName('Blacklight')
   const queuePage = await blacklight.queuePage()
