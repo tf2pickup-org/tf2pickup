@@ -19,7 +19,7 @@ vi.mock('../serveme-tf', () => ({
 }))
 
 vi.mock('../logger', () => ({
-  logger: { info: vi.fn(), error: vi.fn(), trace: vi.fn() },
+  logger: { info: vi.fn(), error: vi.fn(), trace: vi.fn(), warn: vi.fn() },
 }))
 
 vi.mock('../errors', () => ({

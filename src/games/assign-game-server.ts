@@ -27,21 +27,21 @@ async function assignFirstFree(gameNumber: GameNumber) {
     await staticGameServers.assign(gameNumber)
     return
   } catch (error) {
-    logger.info({ error }, 'assignGameServer()')
+    logger.warn({ error }, 'static game server unavailable, trying next provider')
   }
 
   try {
     await servemeTf.assign(gameNumber)
     return
   } catch (error) {
-    logger.info({ error }, 'assignGameServer()')
+    logger.warn({ error }, 'serveme.tf unavailable, trying next provider')
   }
 
   try {
     await tf2QuickServer.assign(gameNumber)
     return
   } catch (error) {
-    logger.info({ error }, 'assignGameServer()')
+    logger.warn({ error }, 'tf2QuickServer unavailable, all providers exhausted')
   }
 
   throw errors.internalServerError('no servers available')
