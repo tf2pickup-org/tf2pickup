@@ -73,7 +73,6 @@ export async function configure(gameNumber: GameNumber) {
   }
 }
 
-
 async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
     throw errors.badRequest('gameServer is undefined')
