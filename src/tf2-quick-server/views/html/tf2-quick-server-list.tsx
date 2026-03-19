@@ -52,11 +52,19 @@ export async function Tf2QuickServerList(props: {
             style="display:none"
             onchange="
               const radio = document.getElementById('tf2qs-create-new-radio');
-              radio.value = JSON.stringify({ provider: 'tf2QuickServer', server: { select: 'new', region: this.value } });
+              radio.value = this.options[this.selectedIndex].dataset.json;
             "
           >
             {tf2QuickServerRegions.map(r => (
-              <option value={r.key} selected={r.key === defaultRegion} safe>
+              <option
+                value={r.key}
+                data-json={JSON.stringify({
+                  provider: 'tf2QuickServer',
+                  server: { select: 'new', region: r.key },
+                })}
+                selected={r.key === defaultRegion}
+                safe
+              >
                 {r.label}
               </option>
             ))}
