@@ -6,10 +6,12 @@ import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { reinitializeGameServer } from './request-game-server-reinitialization'
+import { assignAndConfigure } from './assign-and-configure'
 import { assignGameServer } from './assign-game-server'
 import { configure, cancelConfigure } from './rcon/configure'
 
 export const games = {
+  assignAndConfigure,
   assignGameServer,
   cancelConfigure,
   configure,

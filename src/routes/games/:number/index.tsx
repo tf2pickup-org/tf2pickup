@@ -129,17 +129,9 @@ export default routes(async app => {
       async (request, reply) => {
         const { number } = request.params
         const { gameServer } = request.body
-        await games.assignGameServer(number, {
+        await games.assignAndConfigure(number, {
           selected: gameServer,
           actor: request.user!.player.steamId,
-        })
-        // Fire-and-forget: configure() handles its own errors internally.
-        // This catch only covers errors that escape before configure() starts (e.g. findOne failure).
-        games.configure(number).catch((error: unknown) => {
-          logger.error(
-            { error },
-            'PUT /games/:number/reassign-gameserver: configure() failed to start',
-          )
         })
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
