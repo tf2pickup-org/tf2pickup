@@ -22,8 +22,9 @@ export async function reinitializeGameServer(gameNumber: GameNumber, actor?: Ste
   )
   await tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number })
 
-  // don't wait for configuration to complete
+  // Fire-and-forget: configure() handles its own errors internally.
+  // This catch only covers errors that escape before configure() starts (e.g. findOne failure).
   configure(game.number).catch((error: unknown) => {
-    logger.error({ error }, 'games.reinitializeGameServer()')
+    logger.error({ error }, 'games.reinitializeGameServer(): configure() failed to start')
   })
 }
