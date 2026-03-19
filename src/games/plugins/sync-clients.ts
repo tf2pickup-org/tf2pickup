@@ -19,6 +19,8 @@ import { errors } from '../../errors'
 import { AdminToolbox } from '../views/html/admin-toolbox'
 import { players } from '../../players'
 import { PlayerRole } from '../../database/models/player.model'
+import { findOne } from '../find-one'
+import { safe } from '../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -181,33 +183,37 @@ export default fp(async app => {
     })
   })
 
-  events.on('game:gameServerAssigned', ({ game }) => {
-    const buttons = AdminToolbox.gameControlButtons({ game })
-    app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
-      if (!actor) {
+  events.on(
+    'game:gameServerAssigned',
+    safe(async ({ gameNumber }) => {
+      const game = await findOne({ number: gameNumber })
+      const buttons = AdminToolbox.gameControlButtons({ game })
+      app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
+        if (!actor) {
+          return
+        }
+
+        const player = await players.bySteamId(actor, ['roles'])
+        if (player.roles.includes(PlayerRole.admin)) {
+          return buttons
+        }
+
         return
-      }
+      })
 
-      const player = await players.bySteamId(actor, ['roles'])
-      if (player.roles.includes(PlayerRole.admin)) {
-        return buttons
-      }
+      const rconConnect = AdminToolbox.rconConnect({ game })
+      app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
+        if (!actor) {
+          return
+        }
 
-      return
-    })
+        const player = await players.bySteamId(actor, ['roles'])
+        if (player.roles.includes(PlayerRole.admin)) {
+          return rconConnect
+        }
 
-    const rconConnect = AdminToolbox.rconConnect({ game })
-    app.gateway.to({ url: `/games/${game.number}` }).send(async actor => {
-      if (!actor) {
         return
-      }
-
-      const player = await players.bySteamId(actor, ['roles'])
-      if (player.roles.includes(PlayerRole.admin)) {
-        return rconConnect
-      }
-
-      return
-    })
-  })
+      })
+    }),
+  )
 })

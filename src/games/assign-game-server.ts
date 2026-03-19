@@ -6,6 +6,7 @@ import { staticGameServers } from '../static-game-servers'
 import { tf2QuickServer } from '../tf2-quick-server'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { GameServerSelection } from './schemas/game-server-selection'
+import { events } from '../events'
 
 interface SelectGameServer {
   selected: GameServerSelection
@@ -18,6 +19,7 @@ export async function assignGameServer(gameNumber: GameNumber, select?: SelectGa
   } else {
     await assignFirstFree(gameNumber)
   }
+  events.emit('game:gameServerAssigned', { gameNumber })
 }
 
 async function assignFirstFree(gameNumber: GameNumber) {

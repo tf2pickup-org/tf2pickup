@@ -103,10 +103,7 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await games.requestGameServerReinitialization(
-          request.params.number,
-          request.user!.player.steamId,
-        )
+        await games.reinitializeGameServer(request.params.number, request.user!.player.steamId)
         await reply.status(204).send()
       },
     )
@@ -132,6 +129,10 @@ export default routes(async app => {
         await games.assignGameServer(number, {
           selected: gameServer,
           actor: request.user!.player.steamId,
+        })
+        // don't wait for configuration to complete
+        games.configure(number).catch((error: unknown) => {
+          logger.error({ error }, 'PUT /games/:number/reassign-gameserver')
         })
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })

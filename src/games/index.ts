@@ -5,15 +5,17 @@ import { gameServerSelection } from './schemas/game-server-selection'
 import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
-import { requestGameServerReinitialization } from './request-game-server-reinitialization'
+import { reinitializeGameServer } from './request-game-server-reinitialization'
 import { assignGameServer } from './assign-game-server'
+import { configure } from './rcon/configure'
 
 export const games = {
   assignGameServer,
+  configure,
   findOne,
   forceEnd,
   replacePlayer,
-  requestGameServerReinitialization,
+  reinitializeGameServer,
   requestSubstitute,
   update,
 
