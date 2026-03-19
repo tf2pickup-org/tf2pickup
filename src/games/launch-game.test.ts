@@ -41,7 +41,6 @@ import { notifyGameServerAssignmentFailed } from '../discord/notify-game-server-
 import { update } from './update'
 import type { GameModel } from '../database/models/game.model'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fakeGame = { number: 1 } as GameModel
 
 describe('launchGame()', () => {
