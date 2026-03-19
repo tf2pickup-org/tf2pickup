@@ -116,10 +116,13 @@ export default routes(async app => {
         schema: {
           params: z.object({ number: games.schemas.gameNumber }),
           body: z.object({
-            gameServer: z.preprocess(
-              val => JSON.parse(val as string) as unknown,
-              games.schemas.gameServerSelection,
-            ),
+            gameServer: z.preprocess(val => {
+              try {
+                return JSON.parse(val as string) as unknown
+              } catch {
+                throw new Error('gameServer must be valid JSON')
+              }
+            }, games.schemas.gameServerSelection),
           }),
         },
       },
