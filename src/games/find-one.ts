@@ -4,10 +4,15 @@ import { collections } from '../database/collections'
 import { errors } from '../errors'
 import type { Paths, PickDeep } from 'type-fest'
 
+export async function findOne(filter: StrictFilter<GameModel>): Promise<GameModel>
+export async function findOne<Keys extends Paths<GameModel>>(
+  filter: StrictFilter<GameModel>,
+  pluck: Keys[],
+): Promise<PickDeep<GameModel, Keys>>
 export async function findOne<Keys extends Paths<GameModel>>(
   filter: StrictFilter<GameModel>,
   pluck?: Keys[],
-): Promise<PickDeep<GameModel, Keys>> {
+): Promise<GameModel | PickDeep<GameModel, Keys>> {
   const game = await collections.games.findOne<PickDeep<GameModel, Keys>>(filter, {
     ...(pluck ? { projection: Object.fromEntries(pluck.map(key => [key, 1])) } : {}),
   })
