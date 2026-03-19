@@ -8,7 +8,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { GameServerSelection } from './schemas/game-server-selection'
 import { events } from '../events'
 
-interface SelectGameServer {
+export interface SelectGameServer {
   selected: GameServerSelection
   actor: SteamId64
 }
