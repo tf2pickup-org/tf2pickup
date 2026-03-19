@@ -1,3 +1,4 @@
+import { Mutex } from 'async-mutex'
 import type { GameNumber } from '../database/models/game.model'
 import { errors } from '../errors'
 import { logger } from '../logger'
@@ -13,13 +14,17 @@ export interface SelectGameServer {
   actor: SteamId64
 }
 
+const mutex = new Mutex()
+
 export async function assignGameServer(gameNumber: GameNumber, select?: SelectGameServer) {
-  if (select) {
-    await assignSelected(gameNumber, select)
-  } else {
-    await assignFirstFree(gameNumber)
-  }
-  events.emit('game:gameServerAssigned', { gameNumber })
+  return mutex.runExclusive(async () => {
+    if (select) {
+      await assignSelected(gameNumber, select)
+    } else {
+      await assignFirstFree(gameNumber)
+    }
+    events.emit('game:gameServerAssigned', { gameNumber })
+  })
 }
 
 async function assignFirstFree(gameNumber: GameNumber) {
