@@ -57,9 +57,16 @@ describe('launchGame()', () => {
 
   it('creates a game then assigns a server then configures it in order', async () => {
     const callOrder: string[] = []
-    vi.mocked(create).mockImplementation(async () => { callOrder.push('create'); return fakeGame })
-    vi.mocked(assignGameServer).mockImplementation(async () => { callOrder.push('assign') })
-    vi.mocked(configure).mockImplementation(async () => { callOrder.push('configure') })
+    vi.mocked(create).mockImplementation(async () => {
+      callOrder.push('create')
+      return fakeGame
+    })
+    vi.mocked(assignGameServer).mockImplementation(async () => {
+      callOrder.push('assign')
+    })
+    vi.mocked(configure).mockImplementation(async () => {
+      callOrder.push('configure')
+    })
 
     await launchGame()
 

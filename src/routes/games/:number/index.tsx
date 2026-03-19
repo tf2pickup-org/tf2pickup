@@ -136,7 +136,10 @@ export default routes(async app => {
         // Fire-and-forget: configure() handles its own errors internally.
         // This catch only covers errors that escape before configure() starts (e.g. findOne failure).
         games.configure(number).catch((error: unknown) => {
-          logger.error({ error }, 'PUT /games/:number/reassign-gameserver: configure() failed to start')
+          logger.error(
+            { error },
+            'PUT /games/:number/reassign-gameserver: configure() failed to start',
+          )
         })
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
