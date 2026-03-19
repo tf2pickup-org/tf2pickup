@@ -4,8 +4,8 @@ vi.mock('./create', () => ({
   create: vi.fn(),
 }))
 
-vi.mock('./assign-game-server', () => ({
-  assignGameServer: vi.fn(),
+vi.mock('./assign-game-server-with-retry', () => ({
+  assignGameServerWithRetry: vi.fn(),
 }))
 
 vi.mock('./rcon/configure', () => ({
@@ -24,21 +24,11 @@ vi.mock('../logger', () => ({
   logger: { info: vi.fn(), error: vi.fn(), trace: vi.fn(), warn: vi.fn() },
 }))
 
-vi.mock('../discord/notify-game-server-assignment-failed', () => ({
-  notifyGameServerAssignmentFailed: vi.fn(),
-}))
-
-vi.mock('./update', () => ({
-  update: vi.fn(),
-}))
-
 import { launchGame } from './launch-game'
 import { create } from './create'
-import { assignGameServer } from './assign-game-server'
+import { assignGameServerWithRetry } from './assign-game-server-with-retry'
 import { configure } from './rcon/configure'
 import { queue } from '../queue'
-import { notifyGameServerAssignmentFailed } from '../discord/notify-game-server-assignment-failed'
-import { update } from './update'
 import type { GameModel } from '../database/models/game.model'
 
 const fakeGame = { number: 1 } as GameModel
@@ -50,7 +40,7 @@ describe('launchGame()', () => {
     vi.mocked(queue.getMapWinner).mockResolvedValue('cp_process_final')
     vi.mocked(queue.getFriends).mockResolvedValue([])
     vi.mocked(create).mockResolvedValue(fakeGame)
-    vi.mocked(assignGameServer).mockResolvedValue(undefined)
+    vi.mocked(assignGameServerWithRetry).mockResolvedValue(undefined)
     vi.mocked(configure).mockResolvedValue(undefined)
   })
 
@@ -60,7 +50,7 @@ describe('launchGame()', () => {
       callOrder.push('create')
       return fakeGame
     })
-    vi.mocked(assignGameServer).mockImplementation(async () => {
+    vi.mocked(assignGameServerWithRetry).mockImplementation(async () => {
       callOrder.push('assign')
     })
     vi.mocked(configure).mockImplementation(async () => {
@@ -84,47 +74,8 @@ describe('launchGame()', () => {
     expect(create).toHaveBeenCalledWith(slots, 'cp_badlands', friends)
   })
 
-  it('retries assignGameServer up to 3 times before giving up', async () => {
-    vi.mocked(assignGameServer).mockRejectedValue(new Error('no servers available'))
-    vi.mocked(update).mockResolvedValue(fakeGame)
-    vi.mocked(notifyGameServerAssignmentFailed).mockResolvedValue(undefined)
-
-    await expect(launchGame()).rejects.toThrow('no servers available')
-    // 1 initial attempt + 3 retries = 4 calls
-    expect(assignGameServer).toHaveBeenCalledTimes(4)
-  })
-
-  it('records gameServerAssignmentFailed event when all retries are exhausted', async () => {
-    vi.mocked(assignGameServer).mockRejectedValue(new Error('no servers available'))
-    vi.mocked(update).mockResolvedValue(fakeGame)
-    vi.mocked(notifyGameServerAssignmentFailed).mockResolvedValue(undefined)
-
-    await expect(launchGame()).rejects.toThrow()
-
-    expect(update).toHaveBeenCalledWith(
-      1,
-      expect.objectContaining({
-        $push: expect.objectContaining({
-          events: expect.objectContaining({ event: 'game server assignment failed' }),
-        }),
-      }),
-    )
-  })
-
-  it('notifies Discord when game server assignment fails', async () => {
-    vi.mocked(assignGameServer).mockRejectedValue(new Error('no servers available'))
-    vi.mocked(update).mockResolvedValue(fakeGame)
-    vi.mocked(notifyGameServerAssignmentFailed).mockResolvedValue(undefined)
-
-    await expect(launchGame()).rejects.toThrow()
-
-    expect(notifyGameServerAssignmentFailed).toHaveBeenCalledWith(1, 'no game servers available')
-  })
-
   it('does not call configure() when assignment fails', async () => {
-    vi.mocked(assignGameServer).mockRejectedValue(new Error('no servers available'))
-    vi.mocked(update).mockResolvedValue(fakeGame)
-    vi.mocked(notifyGameServerAssignmentFailed).mockResolvedValue(undefined)
+    vi.mocked(assignGameServerWithRetry).mockRejectedValue(new Error('no servers available'))
 
     await expect(launchGame()).rejects.toThrow()
 
