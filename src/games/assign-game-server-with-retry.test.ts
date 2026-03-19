@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('es-toolkit', () => ({
   retry: vi.fn(async (fn: () => Promise<unknown>, options: { retries: number }) => {
