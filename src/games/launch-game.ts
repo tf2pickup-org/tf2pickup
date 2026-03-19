@@ -21,7 +21,7 @@ export async function launchGame() {
   await configure(number)
 }
 
-async function assignGameServerWithRetry(gameNumber: GameNumber) {
+export async function assignGameServerWithRetry(gameNumber: GameNumber) {
   try {
     await retry(() => assignGameServer(gameNumber), { retries: 3, delay: secondsToMilliseconds(1) })
   } catch (error) {
