@@ -29,13 +29,17 @@ import { findOne } from '../find-one'
 
 const configurators = new Map<GameNumber, AbortController>()
 
+export function cancelConfigure(gameNumber: GameNumber) {
+  configurators.get(gameNumber)?.abort()
+}
+
 /**
  * Only one configuration per game can be running at a time. If a new configuration is requested for a game that is already being configured, the old configuration will be aborted.
  */
 export async function configure(gameNumber: GameNumber) {
   const game = await findOne({ number: gameNumber })
   try {
-    configure.cancel(gameNumber)
+    cancelConfigure(gameNumber)
     const controller = new AbortController()
     const timeoutMs = game.gameServer?.pendingTaskId
       ? (await configuration.get('tf2_quick_server.timeout')) + minutesToMilliseconds(1)
@@ -69,9 +73,6 @@ export async function configure(gameNumber: GameNumber) {
   }
 }
 
-configure.cancel = (gameNumber: GameNumber) => {
-  configurators.get(gameNumber)?.abort()
-}
 
 async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {

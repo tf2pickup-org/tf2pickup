@@ -6,7 +6,7 @@ import { debounce } from 'es-toolkit'
 import { safe } from '../../utils/safe'
 import { launchGame, assignGameServerWithRetry } from '../launch-game'
 import { GameState } from '../../database/models/game.model'
-import { configure } from '../rcon/configure'
+import { configure, cancelConfigure } from '../rcon/configure'
 import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 
@@ -69,7 +69,7 @@ export default fp(
 
     events.on('game:ended', ({ game }) => {
       if (game.state === GameState.interrupted) {
-        configure.cancel(game.number)
+        cancelConfigure(game.number)
       }
     })
   },

@@ -9,7 +9,7 @@ vi.mock('./assign-game-server', () => ({
 }))
 
 vi.mock('./rcon/configure', () => ({
-  configure: Object.assign(vi.fn(), { cancel: vi.fn() }),
+  configure: vi.fn(),
 }))
 
 vi.mock('../queue', () => ({

@@ -7,10 +7,11 @@ import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { reinitializeGameServer } from './request-game-server-reinitialization'
 import { assignGameServer } from './assign-game-server'
-import { configure } from './rcon/configure'
+import { configure, cancelConfigure } from './rcon/configure'
 
 export const games = {
   assignGameServer,
+  cancelConfigure,
   configure,
   findOne,
   forceEnd,
