@@ -7,7 +7,7 @@ import { configure } from './rcon/configure'
 import { update } from './update'
 
 export async function reinitializeGameServer(gameNumber: GameNumber, actor?: SteamId64) {
-  logger.trace({ gameNumber, actor }, 'games.requestGameServerReinitialization()')
+  logger.trace({ gameNumber, actor }, 'games.reinitializeGameServer()')
   const game = await update(
     { number: gameNumber },
     {

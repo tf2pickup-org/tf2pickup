@@ -37,6 +37,8 @@ export function cancelConfigure(gameNumber: GameNumber) {
  * Only one configuration per game can be running at a time. If a new configuration is requested for a game that is already being configured, the old configuration will be aborted.
  */
 export async function configure(gameNumber: GameNumber) {
+  // Note: findOne throws here if the game doesn't exist. That error propagates
+  // out of configure() uncaught — it's caught by fire-and-forget .catch() call sites.
   const game = await findOne({ number: gameNumber })
   try {
     cancelConfigure(gameNumber)
