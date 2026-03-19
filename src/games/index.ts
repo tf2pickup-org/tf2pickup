@@ -1,6 +1,7 @@
 import { update } from './update'
 import { findOne } from './find-one'
 import { gameNumber } from './schemas/game-number'
+import { gameServerSelection } from './schemas/game-server-selection'
 import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
@@ -18,5 +19,6 @@ export const games = {
 
   schemas: {
     gameNumber,
+    gameServerSelection,
   },
 } as const

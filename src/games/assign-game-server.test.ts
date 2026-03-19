@@ -78,21 +78,33 @@ describe('assignGameServer()', () => {
   })
 
   describe('with select (admin-selected)', () => {
-    it('calls staticGameServers.assign for static: selection', async () => {
+    it('calls staticGameServers.assign for static selection', async () => {
       vi.mocked(staticGameServers.assign).mockResolvedValue(undefined)
-      await assignGameServer(gameNumber, { selected: 'static:server-id-123', actor })
+      await assignGameServer(gameNumber, {
+        selected: { provider: 'static', id: 'server-id-123' },
+        actor,
+      })
       expect(staticGameServers.assign).toHaveBeenCalledWith(gameNumber, 'server-id-123', actor)
     })
 
-    it('calls servemeTf.assign for servemeTf: selection', async () => {
+    it('calls servemeTf.assign for servemeTf selection', async () => {
       vi.mocked(servemeTf.assign).mockResolvedValue(undefined)
-      await assignGameServer(gameNumber, { selected: 'servemeTf:my-server', actor })
+      await assignGameServer(gameNumber, {
+        selected: { provider: 'servemeTf', name: 'my-server' },
+        actor,
+      })
       expect(servemeTf.assign).toHaveBeenCalledWith(gameNumber, 'my-server', actor)
     })
 
-    it('calls tf2QuickServer.assign with serverId for tf2QuickServer:{id}', async () => {
+    it('calls tf2QuickServer.assign with serverId for existing server selection', async () => {
       vi.mocked(tf2QuickServer.assign).mockResolvedValue(undefined)
-      await assignGameServer(gameNumber, { selected: 'tf2QuickServer:server-abc123', actor })
+      await assignGameServer(gameNumber, {
+        selected: {
+          provider: 'tf2QuickServer',
+          server: { select: 'existing', serverId: 'server-abc123' },
+        },
+        actor,
+      })
       expect(tf2QuickServer.assign).toHaveBeenCalledWith(
         gameNumber,
         { serverId: 'server-abc123' },
@@ -100,20 +112,20 @@ describe('assignGameServer()', () => {
       )
     })
 
-    it('calls tf2QuickServer.assign with region for tf2QuickServer:new:{region}', async () => {
+    it('calls tf2QuickServer.assign with region for new server selection', async () => {
       vi.mocked(tf2QuickServer.assign).mockResolvedValue(undefined)
-      await assignGameServer(gameNumber, { selected: 'tf2QuickServer:new:eu-frankfurt-1', actor })
+      await assignGameServer(gameNumber, {
+        selected: {
+          provider: 'tf2QuickServer',
+          server: { select: 'new', region: 'eu-frankfurt-1' },
+        },
+        actor,
+      })
       expect(tf2QuickServer.assign).toHaveBeenCalledWith(
         gameNumber,
         { region: 'eu-frankfurt-1' },
         actor,
       )
-    })
-
-    it('throws for unknown game server selection', async () => {
-      await expect(
-        assignGameServer(gameNumber, { selected: 'unknown:foo', actor }),
-      ).rejects.toThrow('unknown game server selection')
     })
   })
 })

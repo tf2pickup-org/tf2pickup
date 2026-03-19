@@ -21,7 +21,11 @@ export async function ServemeTfServerList(props: { servers?: ServerOption[] }) {
         {Object.entries(groupedServers).map(([groupName, servers]) => (
           <li>
             <label class="flex flex-row gap-2">
-              <input type="radio" name="gameServer" value={`servemeTf:anyOf:${groupName}`} />
+              <input
+                type="radio"
+                name="gameServer"
+                value={JSON.stringify({ provider: 'servemeTf', name: `anyOf:${groupName}` })}
+              />
               <span safe>{getUnicodeFlagIcon(servers[0]!.flag)}</span>
               <span safe>{groupName}</span>
             </label>
