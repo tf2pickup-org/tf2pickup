@@ -31,4 +31,4 @@ jobs:
             echo "No production dependency updates since $last_tag — skipping release"
           fi
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
