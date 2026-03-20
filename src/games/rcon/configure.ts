@@ -32,19 +32,20 @@ export async function configure(game: GameModel, options: { signal?: AbortSignal
     await servemeTf.waitForStart(Number(game.gameServer.id) as ReservationId)
   }
 
-  if (
-    game.gameServer.provider === GameServerProvider.tf2QuickServer &&
-    game.gameServer.pendingTaskId
-  ) {
-    logger.info(
-      { taskId: game.gameServer.pendingTaskId },
-      'waiting for TF2 QuickServer to be ready...',
-    )
-    const server = await tf2QuickServer.waitForReady(game.gameServer.pendingTaskId, signal)
-    game = await update(game.number, {
-      $set: { gameServer: tf2QuickServer.toGameServer(server) },
-    })
-    logger.info({ serverId: game.gameServer!.id }, 'TF2 QuickServer ready')
+  if (game.gameServer.provider === GameServerProvider.tf2QuickServer) {
+    if (game.gameServer.pendingTaskId) {
+      logger.info(
+        { taskId: game.gameServer.pendingTaskId },
+        'waiting for TF2 QuickServer to be ready...',
+      )
+      const server = await tf2QuickServer.waitForReady(game.gameServer.pendingTaskId, signal)
+      game = await update(game.number, {
+        $set: { gameServer: tf2QuickServer.toGameServer(server) },
+      })
+      logger.info({ serverId: game.gameServer!.id }, 'TF2 QuickServer ready')
+    } else {
+      await tf2QuickServer.waitForStv(game.gameServer.id)
+    }
   }
 
   if (signal?.aborted) {
