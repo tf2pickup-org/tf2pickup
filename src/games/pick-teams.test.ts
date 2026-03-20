@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { pickTeams, type PlayerSlot, type TeamOverrides } from './pick-teams'
+import {
+  makeAllPossibleLineups,
+  pickTeams,
+  type PlayerSlot,
+  type TeamOverrides,
+} from './pick-teams'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 
@@ -401,9 +406,9 @@ describe('pickTeams', () => {
             id: 'blu-soldier-2',
           },
           {
-            player: cieniu97,
+            player: mejf,
             gameClass: Tf2ClassName.demoman,
-            skill: 2,
+            skill: 3,
             team: 'blu',
             id: 'blu-demoman-1',
           },
@@ -415,9 +420,9 @@ describe('pickTeams', () => {
             id: 'blu-medic-1',
           },
           {
-            player: graba,
+            player: antro15cm,
             gameClass: Tf2ClassName.scout,
-            skill: 4,
+            skill: 2,
             team: 'blu',
             id: 'blu-scout-1',
           },
@@ -444,9 +449,9 @@ describe('pickTeams', () => {
             id: 'red-soldier-2',
           },
           {
-            player: mejf,
+            player: cieniu97,
             gameClass: Tf2ClassName.demoman,
-            skill: 3,
+            skill: 2,
             team: 'red',
             id: 'red-demoman-1',
           },
@@ -465,9 +470,9 @@ describe('pickTeams', () => {
             id: 'red-scout-1',
           },
           {
-            player: antro15cm,
+            player: graba,
             gameClass: Tf2ClassName.scout,
-            skill: 2,
+            skill: 4,
             team: 'red',
             id: 'red-scout-2',
           },
@@ -615,6 +620,41 @@ describe('pickTeams', () => {
     ]
 
     expect(() => pickTeams(players)).toThrow()
+  })
+
+  describe('makeAllPossibleLineups', () => {
+    it('generates all 6 permutations for 4 players of the same class', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [a, b, c, d] = Array.from(Array(4)).map(_ => randomSteamId()) as [
+        SteamId64,
+        SteamId64,
+        SteamId64,
+        SteamId64,
+      ]
+
+      const players: PlayerSlot[] = [
+        { player: a, gameClass: Tf2ClassName.soldier, skill: 1 },
+        { player: b, gameClass: Tf2ClassName.soldier, skill: 2 },
+        { player: c, gameClass: Tf2ClassName.soldier, skill: 3 },
+        { player: d, gameClass: Tf2ClassName.soldier, skill: 4 },
+      ]
+
+      const lineups = makeAllPossibleLineups([Tf2ClassName.soldier], players)
+      // 3 unique splits × 2 team orderings = 6
+      expect(lineups).toHaveLength(6)
+
+      const team0Lineups = lineups.map(l => l[0].lineup.map(p => p.player).sort())
+      expect(team0Lineups).toEqual(
+        expect.arrayContaining([
+          [a, b].sort(),
+          [a, c].sort(),
+          [a, d].sort(),
+          [b, c].sort(),
+          [b, d].sort(),
+          [c, d].sort(),
+        ]),
+      )
+    })
   })
 
   it('should throw an error if player count is not even', () => {
