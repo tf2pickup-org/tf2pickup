@@ -10,7 +10,7 @@ export async function refreshStreams() {
     await collections.players
       .find<
         PickDeep<PlayerModel, 'twitchTvProfile.userId'>
-      >({ twitchTvProfile: { $exists: true } }, { projection: { 'twitchTvProfile.userId': 1 } })
+      >({ twitchTvProfile: { $exists: true }, 'bans.end': { $not: { $gt: new Date() } } }, { projection: { 'twitchTvProfile.userId': 1 } })
       .toArray()
   ).map(player => player.twitchTvProfile!.userId)
   const promotedStreams = await configuration.get('twitchtv.promoted_streams')
