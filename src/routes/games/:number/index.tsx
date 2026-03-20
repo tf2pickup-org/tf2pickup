@@ -3,7 +3,6 @@ import { GamePage } from '../../../games/views/html/game.page'
 import { games } from '../../../games'
 import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import { gameServers } from '../../../game-servers'
 import { routes } from '../../../utils/routes'
 import { tf2QuickServer } from '../../../tf2-quick-server'
 import { configuration } from '../../../configuration'
@@ -104,10 +103,7 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await games.requestGameServerReinitialization(
-          request.params.number,
-          request.user!.player.steamId,
-        )
+        await games.reinitializeGameServer(request.params.number, request.user!.player.steamId)
         await reply.status(204).send()
       },
     )
@@ -120,15 +116,23 @@ export default routes(async app => {
         schema: {
           params: z.object({ number: games.schemas.gameNumber }),
           body: z.object({
-            gameServer: z.string(),
+            gameServer: z.preprocess(val => {
+              try {
+                return JSON.parse(val as string) as unknown
+              } catch {
+                throw new Error('gameServer must be valid JSON')
+              }
+            }, games.schemas.gameServerSelection),
           }),
         },
       },
       async (request, reply) => {
         const { number } = request.params
         const { gameServer } = request.body
-        const game = await games.findOne({ number })
-        await gameServers.assign(game, gameServer, request.user!.player.steamId)
+        await games.assignAndConfigure(number, {
+          selected: gameServer,
+          actor: request.user!.player.steamId,
+        })
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)

@@ -12,7 +12,11 @@ export async function StaticGameServerList(props: { name: string }) {
           {gameServers.map(gameServer => (
             <li>
               <label>
-                <input type="radio" name={props.name} value={`static:${gameServer.id}`} />
+                <input
+                  type="radio"
+                  name={props.name}
+                  value={JSON.stringify({ provider: 'static', id: gameServer.id })}
+                />
                 <span class="ms-2" safe>
                   {gameServer.name}
                 </span>

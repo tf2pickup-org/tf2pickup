@@ -1,20 +1,33 @@
 import { update } from './update'
 import { findOne } from './find-one'
 import { gameNumber } from './schemas/game-number'
+import { gameServerSelection } from './schemas/game-server-selection'
 import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
-import { requestGameServerReinitialization } from './request-game-server-reinitialization'
+import { reinitializeGameServer } from './request-game-server-reinitialization'
+import { assignAndConfigure } from './assign-and-configure'
+import { assignGameServer } from './assign-game-server'
+import { configure, cancelConfigure } from './rcon/configure'
+import { tasks } from '../tasks'
+
+tasks.register('games:configureServer', async ({ gameNumber }) => {
+  await configure(gameNumber)
+})
 
 export const games = {
+  assignAndConfigure,
+  assignGameServer,
+  cancelConfigure,
   findOne,
   forceEnd,
   replacePlayer,
-  requestGameServerReinitialization,
+  reinitializeGameServer,
   requestSubstitute,
   update,
 
   schemas: {
     gameNumber,
+    gameServerSelection,
   },
 } as const

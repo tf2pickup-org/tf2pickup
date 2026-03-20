@@ -8,8 +8,7 @@ import { errors } from '../../errors'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
-  // eslint-disable-next-line @typescript-eslint/require-await
-  app.addHook('onReady', async () => {
+  app.addHook('onReady', () => {
     setInterval(process, secondsToMilliseconds(1))
   })
 })
