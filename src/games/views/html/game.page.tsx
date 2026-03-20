@@ -16,7 +16,20 @@ import { requestContext } from '@fastify/request-context'
 
 export async function GamePage(props: { number: GameNumber }) {
   const user = requestContext.get('user')
-  const game = await findOne({ number: props.number })
+  const game = await findOne({ number: props.number }, [
+    'number',
+    'map',
+    'state',
+    'slots',
+    'events',
+    'gameServer',
+    'logsUrl',
+    'demoUrl',
+    'score',
+    'connectString',
+    'stvConnectString',
+  ])
+  const actor = user?.player.steamId
   return (
     <Layout
       title={makeTitle(`game #${game.number}`)}
@@ -27,8 +40,8 @@ export async function GamePage(props: { number: GameNumber }) {
       <NavigationBar />
       <Page>
         <div class="game-page relative container mx-auto">
-          <GameSummary game={game} actor={user?.player.steamId} />
-          <GameSlotList game={game} actor={user?.player.steamId} />
+          <GameSummary game={game} actor={actor} />
+          <GameSlotList game={game} actor={actor} />
           <GameEventList game={game} />
 
           {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox game={game} />}
