@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.4.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.1...4.4.2) (2026-03-20)
+
+
+### Bug Fixes
+
+* add missing return before reply in route handlers ([#559](https://github.com/tf2pickup-org/tf2pickup/issues/559)) ([a7684e8](https://github.com/tf2pickup-org/tf2pickup/commit/a7684e8bdfa420400822ca93e6e9f81ed3647eac))
+* **ci:** use github.token instead of RELEASE_TOKEN for workflow dispatch ([1274d06](https://github.com/tf2pickup-org/tf2pickup/commit/1274d06b90f80164e8a86756ff9b541424b992ce))
+* **quickserver:** wait for STV to end before reusing server ([#561](https://github.com/tf2pickup-org/tf2pickup/issues/561)) ([5ed86d3](https://github.com/tf2pickup-org/tf2pickup/commit/5ed86d3b804e91deeebc43cd374c584eafbc6b17))
+* **styles:** fix range input slider rendering across browsers ([#563](https://github.com/tf2pickup-org/tf2pickup/issues/563)) ([4eafd80](https://github.com/tf2pickup-org/tf2pickup/commit/4eafd80cc4acf8145515d300321f818349bbdd25))
+* **twitch-tv:** exclude banned players' streams from queue page ([#562](https://github.com/tf2pickup-org/tf2pickup/issues/562)) ([3a036c2](https://github.com/tf2pickup-org/tf2pickup/commit/3a036c23c9071cab47e6eef7c001135a9b66afe9))
+
+
+### Performance Improvements
+
+* optimize QueueSlot to batch DB queries ([#551](https://github.com/tf2pickup-org/tf2pickup/issues/551)) ([5d32c8a](https://github.com/tf2pickup-org/tf2pickup/commit/5d32c8a123cdea9c64cee6a0f6527922b26028c2))
+
 ## [4.4.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.0...4.4.1) (2026-03-20)
 
 
