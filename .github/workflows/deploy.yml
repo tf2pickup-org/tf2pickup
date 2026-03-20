@@ -17,6 +17,8 @@ on:
         required: false
         default: all
 
+permissions: {}
+
 env:
   IMAGE: ghcr.io/tf2pickup-org/tf2pickup
   # For workflow_run: use the git tag that triggered the build (e.g. "4.0.0").
