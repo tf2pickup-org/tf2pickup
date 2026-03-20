@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { makeAllPossibleLineups, pickTeams, type PlayerSlot, type TeamOverrides } from './pick-teams'
+import {
+  makeAllPossibleLineups,
+  pickTeams,
+  type PlayerSlot,
+  type TeamOverrides,
+} from './pick-teams'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 
