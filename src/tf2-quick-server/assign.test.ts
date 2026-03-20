@@ -131,8 +131,8 @@ describe('assign()', () => {
     })
 
     it('should create a server in the given region without calling findFree', async () => {
-      await assign({ region: 'us-chicago-1' })
-      expect(createServer).toHaveBeenCalledWith('us-chicago-1')
+      await assign({ region: 'us-chicago-1', map: 'cp_badlands' })
+      expect(createServer).toHaveBeenCalledWith('us-chicago-1', 'cp_badlands')
       expect(findFree).not.toHaveBeenCalled()
     })
   })
