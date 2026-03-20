@@ -191,7 +191,14 @@ export default fp(
           async id =>
             [
               id,
-              await players.bySteamId(id, ['steamId', 'bans', 'activeGame', 'skill', 'verified', 'roles']),
+              await players.bySteamId(id, [
+                'steamId',
+                'bans',
+                'activeGame',
+                'skill',
+                'verified',
+                'roles',
+              ]),
             ] as const,
         ),
       )
