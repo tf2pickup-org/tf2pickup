@@ -4,6 +4,6 @@ import { routes } from '../../utils/routes'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.get('/', async (_request, reply) => {
-    reply.status(200).html(await HallOfFamePage())
+    await reply.status(200).html(HallOfFamePage())
   })
 })

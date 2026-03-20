@@ -11,6 +11,6 @@ export default routes(async app => {
       throw errors.notFound('privacy policy document not found')
     }
 
-    reply.status(200).html(await DocumentPage(doc))
+    await reply.status(200).html(DocumentPage(doc))
   })
 })
