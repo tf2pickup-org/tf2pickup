@@ -1,5 +1,22 @@
 # Changelog
 
+## [4.4.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.0...4.4.1) (2026-03-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/otel to v0.17.1 ([9b6eb1a](https://github.com/tf2pickup-org/tf2pickup/commit/9b6eb1ac59c38891c33c81f912740cf10c436578))
+* **deps:** update dependency @tf2pickup-org/mumble-client to v0.13.0 ([950243f](https://github.com/tf2pickup-org/tf2pickup/commit/950243f5853fe9be944f72a8af81792a190402ff))
+* **deps:** update dependency csv-parse to v6.2.0 ([c969b49](https://github.com/tf2pickup-org/tf2pickup/commit/c969b49eff2b9bed2e275f25d3345253ce3e0eda))
+* **deps:** update dependency csv-stringify to v6.7.0 ([de18252](https://github.com/tf2pickup-org/tf2pickup/commit/de1825248ca2ff2967fab4c6055c32407358d4d5))
+* **deps:** update dependency motion to v12.38.0 ([8182b0c](https://github.com/tf2pickup-org/tf2pickup/commit/8182b0cb1c727cda16568b22312834e00e138c64))
+* **deps:** update dependency sanitize-html to v2.17.2 ([3703a34](https://github.com/tf2pickup-org/tf2pickup/commit/3703a3473abba4e48b09dcc9c6e5f5773f750d4b))
+* **deps:** update opentelemetry-js monorepo ([e2733bc](https://github.com/tf2pickup-org/tf2pickup/commit/e2733bc94b2c8a7297f219175bddd44a1fe5dea1))
+* **deps:** update opentelemetry-js-contrib monorepo ([36c3863](https://github.com/tf2pickup-org/tf2pickup/commit/36c38636b2592304e8435345109ba65a71981413))
+* **deps:** update tailwindcss monorepo to v4.2.2 ([defce24](https://github.com/tf2pickup-org/tf2pickup/commit/defce2468a87259c86f813c3b5109f1ddf1e12f5))
+* **pick-teams:** add missing team-swap permutations for 4-player classes ([#560](https://github.com/tf2pickup-org/tf2pickup/issues/560)) ([7dd76bc](https://github.com/tf2pickup-org/tf2pickup/commit/7dd76bc604640138d226a7e8264cbdc373c55780))
+* **quickserver:** initializes quickserver server with the map of the first lobby ([#556](https://github.com/tf2pickup-org/tf2pickup/issues/556)) ([79312a1](https://github.com/tf2pickup-org/tf2pickup/commit/79312a12c9225fbc47d1cf2296bf9517307206e8))
+
 # [4.4.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.3.0...4.4.0) (2026-03-16)
 
 
