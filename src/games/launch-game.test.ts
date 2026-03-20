@@ -8,8 +8,8 @@ vi.mock('./assign-game-server-with-retry', () => ({
   assignGameServerWithRetry: vi.fn(),
 }))
 
-vi.mock('./rcon/configure', () => ({
-  configure: vi.fn(),
+vi.mock('../tasks', () => ({
+  tasks: { schedule: vi.fn() },
 }))
 
 vi.mock('../queue', () => ({
@@ -27,7 +27,7 @@ vi.mock('../logger', () => ({
 import { launchGame } from './launch-game'
 import { create } from './create'
 import { assignGameServerWithRetry } from './assign-game-server-with-retry'
-import { configure } from './rcon/configure'
+import { tasks } from '../tasks'
 import { queue } from '../queue'
 import type { GameModel } from '../database/models/game.model'
 
@@ -41,7 +41,7 @@ describe('launchGame()', () => {
     vi.mocked(queue.getFriends).mockResolvedValue([])
     vi.mocked(create).mockResolvedValue(fakeGame)
     vi.mocked(assignGameServerWithRetry).mockResolvedValue(undefined)
-    vi.mocked(configure).mockResolvedValue(undefined)
+    vi.mocked(tasks.schedule).mockResolvedValue(undefined)
   })
 
   it('creates a game then assigns a server then configures it in order', async () => {
@@ -53,7 +53,7 @@ describe('launchGame()', () => {
     vi.mocked(assignGameServerWithRetry).mockImplementation(async () => {
       callOrder.push('assign')
     })
-    vi.mocked(configure).mockImplementation(async () => {
+    vi.mocked(tasks.schedule).mockImplementation(async () => {
       callOrder.push('configure')
     })
 
@@ -74,11 +74,11 @@ describe('launchGame()', () => {
     expect(create).toHaveBeenCalledWith(slots, 'cp_badlands', friends)
   })
 
-  it('does not call configure() when assignment fails', async () => {
+  it('does not schedule configure when assignment fails', async () => {
     vi.mocked(assignGameServerWithRetry).mockRejectedValue(new Error('no servers available'))
 
     await expect(launchGame()).rejects.toThrow()
 
-    expect(configure).not.toHaveBeenCalled()
+    expect(tasks.schedule).not.toHaveBeenCalled()
   })
 })

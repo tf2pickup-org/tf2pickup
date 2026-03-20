@@ -4,8 +4,8 @@ vi.mock('./assign-game-server', () => ({
   assignGameServer: vi.fn(),
 }))
 
-vi.mock('./rcon/configure', () => ({
-  configure: vi.fn(),
+vi.mock('../tasks', () => ({
+  tasks: { schedule: vi.fn() },
 }))
 
 vi.mock('../logger', () => ({
@@ -14,7 +14,7 @@ vi.mock('../logger', () => ({
 
 import { assignAndConfigure } from './assign-and-configure'
 import { assignGameServer } from './assign-game-server'
-import { configure } from './rcon/configure'
+import { tasks } from '../tasks'
 import type { GameNumber } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -26,7 +26,7 @@ describe('assignAndConfigure()', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(assignGameServer).mockResolvedValue(undefined)
-    vi.mocked(configure).mockResolvedValue(undefined)
+    vi.mocked(tasks.schedule).mockResolvedValue(undefined)
   })
 
   it('calls assignGameServer with the provided selection and actor', async () => {
@@ -34,21 +34,14 @@ describe('assignAndConfigure()', () => {
     expect(assignGameServer).toHaveBeenCalledWith(gameNumber, select)
   })
 
-  it('calls configure with the game number after assignment', async () => {
+  it('schedules configureServer task with the game number after assignment', async () => {
     await assignAndConfigure(gameNumber, select)
-    await Promise.resolve() // flush microtask queue for fire-and-forget
-    expect(configure).toHaveBeenCalledWith(gameNumber)
+    expect(tasks.schedule).toHaveBeenCalledWith('games:configureServer', 0, { gameNumber })
   })
 
-  it('does not throw if configure fails', async () => {
-    vi.mocked(configure).mockRejectedValue(new Error('configure failed'))
-    await expect(assignAndConfigure(gameNumber, select)).resolves.toBeUndefined()
-    await Promise.resolve()
-  })
-
-  it('throws and does not call configure if assignGameServer fails', async () => {
+  it('throws and does not schedule configure if assignGameServer fails', async () => {
     vi.mocked(assignGameServer).mockRejectedValue(new Error('server not found'))
     await expect(assignAndConfigure(gameNumber, select)).rejects.toThrow('server not found')
-    expect(configure).not.toHaveBeenCalled()
+    expect(tasks.schedule).not.toHaveBeenCalled()
   })
 })
