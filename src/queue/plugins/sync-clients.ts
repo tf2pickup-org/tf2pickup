@@ -40,9 +40,7 @@ export default fp(
           app.gateway
             .to({ players: [actor.steamId] })
             .to({ url: '/' })
-            .send(async () =>
-              (await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))).join(),
-            )
+            .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()))
         }),
       )
     }
@@ -123,7 +121,7 @@ export default fp(
       app.gateway
         .to({ player: steamId })
         .to({ url: '/' })
-        .send(async () => await PreReadyUpButton({ actor: steamId, preReadyUntil }))
+        .send(() => PreReadyUpButton({ actor: steamId, preReadyUntil }))
     })
 
     events.on('queue:playerKicked', async ({ player }) => {
@@ -152,7 +150,7 @@ export default fp(
           ]
         })
 
-        app.gateway.broadcast(async () => await SetTitle())
+        app.gateway.broadcast(() => SetTitle())
       }),
     )
 
@@ -166,13 +164,13 @@ export default fp(
               .toArray()
           ).map(s => s.player!.steamId)
 
-          app.gateway.to({ players }).send(async actor => await ReadyUpDialog.show(actor!))
+          app.gateway.to({ players }).send(actor => ReadyUpDialog.show(actor!))
         }
       }),
     )
 
     events.on('queue/mapOptions:reset', () => {
-      app.gateway.to({ url: '/' }).send(async actor => await MapVote({ actor }))
+      app.gateway.to({ url: '/' }).send(actor => MapVote({ actor }))
     })
 
     events.on(
@@ -180,7 +178,7 @@ export default fp(
       safe(async ({ results }) => {
         const mapOptions = await collections.queueMapOptions.find().toArray()
         for (const map of mapOptions.map(option => option.name)) {
-          app.gateway.to({ url: '/' }).send(async () => MapResult({ results, map }))
+          app.gateway.to({ url: '/' }).send(() => MapResult({ results, map }))
         }
       }),
     )
@@ -220,7 +218,7 @@ export default fp(
         const actorMap = await fetchActorMap(recipientIds)
         app.gateway
           .to({ players: recipientIds })
-          .send(async actor => await QueueSlot({ slot, actor: actorMap.get(actor!) }))
+          .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
       }),
     )
 
@@ -240,7 +238,7 @@ export default fp(
         for (const slot of slots) {
           app.gateway
             .to({ players: recipients })
-            .send(async actor => await QueueSlot({ slot, actor: actorMap.get(actor!) }))
+            .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
         }
       }),
     )
@@ -260,7 +258,7 @@ export default fp(
         const actorMap = await fetchActorMap(recipientIds)
         app.gateway
           .to({ players: recipientIds })
-          .send(async actor => await QueueSlot({ slot, actor: actorMap.get(actor!) }))
+          .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
       }),
     )
 
@@ -271,7 +269,7 @@ export default fp(
     events.on('game:substituteRequested', async ({ game, replacee }) => {
       await refreshSubstitutionRequests()
       app.gateway.broadcast(
-        async actor => await SubstitutionRequests.notify({ game, replacee, actor }),
+        actor => SubstitutionRequests.notify({ game, replacee, actor }),
       )
     })
     events.on('game:playerReplaced', refreshSubstitutionRequests)

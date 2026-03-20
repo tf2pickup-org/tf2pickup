@@ -33,16 +33,7 @@ export default fp(
       ])
       const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
       app.gateway.to({ player: actorId }).send(
-        async () =>
-          await Promise.all(
-            slots.map(
-              async slot =>
-                await QueueSlot({
-                  slot,
-                  actor,
-                }),
-            ),
-          ),
+        () => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))),
       )
     }
 
