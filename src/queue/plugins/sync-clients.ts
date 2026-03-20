@@ -40,7 +40,9 @@ export default fp(
           app.gateway
             .to({ players: [actor.steamId] })
             .to({ url: '/' })
-            .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()))
+            .send(() =>
+              Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
+            )
         }),
       )
     }
@@ -268,9 +270,7 @@ export default fp(
     }
     events.on('game:substituteRequested', async ({ game, replacee }) => {
       await refreshSubstitutionRequests()
-      app.gateway.broadcast(
-        actor => SubstitutionRequests.notify({ game, replacee, actor }),
-      )
+      app.gateway.broadcast(actor => SubstitutionRequests.notify({ game, replacee, actor }))
     })
     events.on('game:playerReplaced', refreshSubstitutionRequests)
     events.on('game:ended', refreshSubstitutionRequests)

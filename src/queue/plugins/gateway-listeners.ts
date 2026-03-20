@@ -32,9 +32,9 @@ export default fp(
         'roles',
       ])
       const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
-      app.gateway.to({ player: actorId }).send(
-        () => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))),
-      )
+      app.gateway
+        .to({ player: actorId })
+        .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
     }
 
     function wsSafe<Args extends unknown[]>(
