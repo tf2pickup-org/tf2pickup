@@ -17,14 +17,24 @@ import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../views/html/map-vote-selection'
 import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
+import { players } from '../../players'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    async function refreshTakenSlots(actor: SteamId64) {
+    async function refreshTakenSlots(actorId: SteamId64) {
+      const actor = await players.bySteamId(actorId, [
+        'steamId',
+        'bans',
+        'activeGame',
+        'skill',
+        'verified',
+        'roles',
+      ])
       const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
-      const cmps = await Promise.all(slots.map(async slot => await QueueSlot({ slot, actor })))
-      app.gateway.to({ player: actor }).send(() => cmps)
+      app.gateway
+        .to({ player: actorId })
+        .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
     }
 
     function wsSafe<Args extends unknown[]>(
