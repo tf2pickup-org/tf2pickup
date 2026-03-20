@@ -3,7 +3,7 @@ name: Deploy
 on:
   # Auto-deploy: triggered after the build workflow completes
   workflow_run:
-    workflows: ["build"]
+    workflows: ['build']
     types: [completed]
   # Manual deploy: specify a tag and/or a specific environment
   workflow_dispatch:
