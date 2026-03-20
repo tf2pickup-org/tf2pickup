@@ -185,6 +185,19 @@ export default fp(
       }),
     )
 
+    async function fetchActorMap(recipientIds: SteamId64[]) {
+      const entries = await Promise.all(
+        recipientIds.map(
+          async id =>
+            [
+              id,
+              await players.bySteamId(id, ['steamId', 'bans', 'activeGame', 'skill', 'verified', 'roles']),
+            ] as const,
+        ),
+      )
+      return new Map(entries)
+    }
+
     events.on(
       'queue/friendship:created',
       safe(async ({ target }) => {
@@ -192,28 +205,15 @@ export default fp(
         if (!slot) {
           return
         }
+        const recipientIds = (
+          await collections.queueSlots
+            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .toArray()
+        ).map(({ player }) => player!.steamId)
+        const actorMap = await fetchActorMap(recipientIds)
         app.gateway
-          .to({
-            players: (
-              await collections.queueSlots
-                .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-                .toArray()
-            ).map(({ player }) => player!.steamId),
-          })
-          .send(
-            async actor =>
-              await QueueSlot({
-                slot,
-                actor: await players.bySteamId(actor!, [
-                  'steamId',
-                  'bans',
-                  'activeGame',
-                  'skill',
-                  'verified',
-                  'roles',
-                ]),
-              }),
-          )
+          .to({ players: recipientIds })
+          .send(async actor => await QueueSlot({ slot, actor: actorMap.get(actor!) }))
       }),
     )
 
@@ -229,21 +229,11 @@ export default fp(
             .toArray(),
         ])
         const recipients = friendshipSlots.map(({ player }) => player!.steamId)
+        const actorMap = await fetchActorMap(recipients)
         for (const slot of slots) {
-          app.gateway.to({ players: recipients }).send(
-            async actor =>
-              await QueueSlot({
-                slot,
-                actor: await players.bySteamId(actor!, [
-                  'steamId',
-                  'bans',
-                  'activeGame',
-                  'skill',
-                  'verified',
-                  'roles',
-                ]),
-              }),
-          )
+          app.gateway
+            .to({ players: recipients })
+            .send(async actor => await QueueSlot({ slot, actor: actorMap.get(actor!) }))
         }
       }),
     )
@@ -255,28 +245,15 @@ export default fp(
         if (!slot) {
           return
         }
+        const recipientIds = (
+          await collections.queueSlots
+            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .toArray()
+        ).map(({ player }) => player!.steamId)
+        const actorMap = await fetchActorMap(recipientIds)
         app.gateway
-          .to({
-            players: (
-              await collections.queueSlots
-                .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
-                .toArray()
-            ).map(({ player }) => player!.steamId),
-          })
-          .send(
-            async actor =>
-              await QueueSlot({
-                slot,
-                actor: await players.bySteamId(actor!, [
-                  'steamId',
-                  'bans',
-                  'activeGame',
-                  'skill',
-                  'verified',
-                  'roles',
-                ]),
-              }),
-          )
+          .to({ players: recipientIds })
+          .send(async actor => await QueueSlot({ slot, actor: actorMap.get(actor!) }))
       }),
     )
 
