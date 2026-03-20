@@ -11,6 +11,6 @@ export default routes(async app => {
       throw errors.notFound('rules document not found')
     }
 
-    return reply.status(200).html(await DocumentPage(rules))
+    reply.status(200).html(await DocumentPage(rules))
   })
 })
