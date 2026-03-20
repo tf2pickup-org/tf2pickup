@@ -62,5 +62,9 @@ export async function assign(gameNumber: GameNumber, name?: string, actor?: Stea
         ...(actor && { actor }),
       },
     },
+    $unset: {
+      connectString: 1,
+      stvConnectString: 1,
+    },
   })
 }

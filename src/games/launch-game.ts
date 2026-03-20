@@ -1,8 +1,8 @@
 import { logger } from '../logger'
 import { queue } from '../queue'
+import { tasks } from '../tasks'
 import { assignGameServerWithRetry } from './assign-game-server-with-retry'
 import { create } from './create'
-import { configure } from './rcon/configure'
 
 export async function launchGame() {
   logger.info('launching game')
@@ -12,5 +12,5 @@ export async function launchGame() {
   logger.trace({ slots, map, friends }, 'launchGame()')
   const { number } = await create(slots, map, friends)
   await assignGameServerWithRetry(number)
-  await configure(number)
+  await tasks.schedule('games:configureServer', 0, { gameNumber: number })
 }

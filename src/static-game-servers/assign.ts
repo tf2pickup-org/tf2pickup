@@ -47,6 +47,10 @@ export async function assign(gameNumber: GameNumber, id?: string, actor?: SteamI
           ...(actor && { actor }),
         },
       },
+      $unset: {
+        connectString: 1,
+        stvConnectString: 1,
+      },
     })
   })
 }

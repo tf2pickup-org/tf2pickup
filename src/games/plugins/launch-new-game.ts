@@ -7,9 +7,10 @@ import { safe } from '../../utils/safe'
 import { launchGame } from '../launch-game'
 import { assignGameServerWithRetry } from '../assign-game-server-with-retry'
 import { GameState } from '../../database/models/game.model'
-import { configure, cancelConfigure } from '../rcon/configure'
+import { cancelConfigure } from '../rcon/configure'
 import { collections } from '../../database/collections'
 import { logger } from '../../logger'
+import { tasks } from '../../tasks'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -35,9 +36,7 @@ export default fp(
         logger.warn({ gameNumber: game.number }, 'recovering orphaned game — assigning server')
         try {
           await assignGameServerWithRetry(game.number)
-          configure(game.number).catch((error: unknown) => {
-            logger.error({ error, gameNumber: game.number }, 'failed to configure recovered game')
-          })
+          await tasks.schedule('games:configureServer', 0, { gameNumber: game.number })
         } catch (error) {
           logger.error(
             { error, gameNumber: game.number },
@@ -58,12 +57,7 @@ export default fp(
           { gameNumber: game.number, pendingTaskId: game.gameServer?.pendingTaskId },
           'resuming configure for game with pending tf2QuickServer task',
         )
-        configure(game.number).catch((error: unknown) => {
-          logger.error(
-            { error, gameNumber: game.number },
-            'failed to resume configure for pending game',
-          )
-        })
+        await tasks.schedule('games:configureServer', 0, { gameNumber: game.number })
       }
     })
 

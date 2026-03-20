@@ -9,12 +9,16 @@ import { reinitializeGameServer } from './request-game-server-reinitialization'
 import { assignAndConfigure } from './assign-and-configure'
 import { assignGameServer } from './assign-game-server'
 import { configure, cancelConfigure } from './rcon/configure'
+import { tasks } from '../tasks'
+
+tasks.register('games:configureServer', async ({ gameNumber }) => {
+  await configure(gameNumber)
+})
 
 export const games = {
   assignAndConfigure,
   assignGameServer,
   cancelConfigure,
-  configure,
   findOne,
   forceEnd,
   replacePlayer,

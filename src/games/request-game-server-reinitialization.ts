@@ -3,7 +3,6 @@ import type { GameNumber } from '../database/models/game.model'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { tasks } from '../tasks'
-import { configure } from './rcon/configure'
 import { update } from './update'
 
 export async function reinitializeGameServer(gameNumber: GameNumber, actor?: SteamId64) {
@@ -21,10 +20,5 @@ export async function reinitializeGameServer(gameNumber: GameNumber, actor?: Ste
     },
   )
   await tasks.cancel('games:autoSubstitutePlayer', { gameNumber: game.number })
-
-  // Fire-and-forget: configure() handles its own errors internally.
-  // This catch only covers errors that escape before configure() starts (e.g. findOne failure).
-  configure(game.number).catch((error: unknown) => {
-    logger.error({ error }, 'games.reinitializeGameServer(): configure() failed to start')
-  })
+  await tasks.schedule('games:configureServer', 0, { gameNumber: game.number })
 }

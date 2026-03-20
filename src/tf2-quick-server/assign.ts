@@ -36,6 +36,10 @@ export async function assign(gameNumber: GameNumber, options?: AssignOptions, ac
         ...(actor && { actor }),
       },
     },
+    $unset: {
+      connectString: 1,
+      stvConnectString: 1,
+    },
   })
 }
 
