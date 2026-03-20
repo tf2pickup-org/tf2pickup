@@ -29,11 +29,11 @@ type PossibleLineup = Record<TeamId, TeamLineup>
 
 /**
  * Make all possible team setups.
- * For 6v6 format, this outputs maximum of 36 combinations (3 * 3 * 2 * 2).
+ * For 6v6 format, this outputs maximum of 144 combinations (6 * 6 * 2 * 2).
  * For 9v9, it makes 512 teams (2 ^ 9).
  * @return gameClass <=> lineup pairs.
  */
-function makeAllPossibleLineups(
+export function makeAllPossibleLineups(
   gameClasses: Tf2ClassName[],
   players: PlayerSlot[],
 ): PossibleLineup[] {
@@ -75,6 +75,14 @@ function makeAllPossibleLineups(
         {
           0: { lineup: [playersOfGameClass[2]!, playersOfGameClass[3]!] },
           1: { lineup: [playersOfGameClass[0]!, playersOfGameClass[1]!] },
+        },
+        {
+          0: { lineup: [playersOfGameClass[1]!, playersOfGameClass[3]!] },
+          1: { lineup: [playersOfGameClass[0]!, playersOfGameClass[2]!] },
+        },
+        {
+          0: { lineup: [playersOfGameClass[1]!, playersOfGameClass[2]!] },
+          1: { lineup: [playersOfGameClass[0]!, playersOfGameClass[3]!] },
         },
       ])
     } else {
