@@ -39,7 +39,6 @@ export default fp(
             logger.error({ error, gameNumber: game.number }, 'failed to configure recovered game')
           })
         } catch (error) {
-          // assignGameServerWithRetry already recorded the event and notified Discord
           logger.error(
             { error, gameNumber: game.number },
             'failed to assign server to orphaned game',
