@@ -95,7 +95,7 @@
     "tailwindcss": "4.2.2",
     "type-fest": "5.4.4",
     "umzug": "3.8.2",
-    "ws": "8.19.0",
+    "ws": "8.20.0",
     "zod": "4.3.6"
   },
   "devDependencies": {
