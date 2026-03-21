@@ -37,7 +37,17 @@ jobs:
   #      SSH_HOST        – server hostname or IP
   #      SSH_USER        – SSH login user
   #      SSH_PRIVATE_KEY – private key whose public key is in authorized_keys
-  # 3. Ensure the server's docker-compose.yml uses:
+  # 3. On the server, create a deploy script at the path set in deploy_script,
+  #    owned by root and executable. It receives the image tag as $1:
+  #      #!/bin/bash
+  #      set -euo pipefail
+  #      cd /path/to/workdir
+  #      IMAGE_TAG="$1" docker compose pull
+  #      IMAGE_TAG="$1" docker compose up -d --remove-orphans
+  #      docker image prune -f
+  # 4. Grant the SSH user passwordless sudo access to that script only:
+  #      <user> ALL=(root) NOPASSWD: /path/to/deploy.sh
+  # 5. Ensure the server's docker-compose.yml uses:
   #      image: ghcr.io/tf2pickup-org/tf2pickup:${IMAGE_TAG:-stable}
   # ─────────────────────────────────────────────────────────────────────────
   setup:
@@ -61,8 +71,8 @@ jobs:
           TARGET_ENV: ${{ inputs.environment || 'all' }}
         run: |
           ENVIRONMENTS='[
-            {"env":"tf2pickup-pl","url":"https://tf2pickup.pl","work_dir":"/opt/tf2pickup-pl"},
-            {"env":"tf2pickup-fr","url":"https://tf2pickup.fr","work_dir":"/opt/tf2pickup-fr"}
+            {"env":"tf2pickup-pl","url":"https://tf2pickup.pl","deploy_script":"/opt/tf2pickup-pl/deploy.sh"},
+            {"env":"tf2pickup-fr","url":"https://tf2pickup.fr","deploy_script":"/opt/tf2pickup-fr/deploy.sh"}
           ]'
 
           if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$TARGET_ENV" != "all" ]; then
@@ -103,22 +113,16 @@ jobs:
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1
         env:
-          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GHCR_USER: ${{ github.actor }}
           DEPLOY_IMAGE_TAG: ${{ env.IMAGE_TAG }}
-          DEPLOY_WORK_DIR: ${{ matrix.work_dir }}
+          DEPLOY_SCRIPT: ${{ matrix.deploy_script }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          envs: GHCR_TOKEN,GHCR_USER,DEPLOY_IMAGE_TAG,DEPLOY_WORK_DIR
+          envs: DEPLOY_IMAGE_TAG,DEPLOY_SCRIPT
           script: |
             set -euo pipefail
-            cd "$DEPLOY_WORK_DIR"
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-            IMAGE_TAG="$DEPLOY_IMAGE_TAG" docker compose pull
-            IMAGE_TAG="$DEPLOY_IMAGE_TAG" docker compose up -d --remove-orphans
-            docker image prune -f
+            sudo "$DEPLOY_SCRIPT" "$DEPLOY_IMAGE_TAG"
 
       - name: Finish deployment
         uses: bobheadxi/deployments@v1
