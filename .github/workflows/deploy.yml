@@ -1,0 +1,136 @@
+name: Deploy
+
+on:
+  # Auto-deploy: triggered after the build workflow completes
+  workflow_run:
+    workflows: ['build']
+    types: [completed]
+  # Manual deploy: specify a tag and/or a specific environment
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to deploy (e.g. "4.0.0", "stable")'
+        required: false
+        default: stable
+      environment:
+        description: 'Target environment ("all" or a specific name, e.g. "tf2pickup-pl")'
+        required: false
+        default: all
+
+permissions: {}
+
+env:
+  IMAGE: ghcr.io/tf2pickup-org/tf2pickup
+  # For workflow_run: use the git tag that triggered the build (e.g. "4.0.0").
+  # For workflow_dispatch: use the tag input, falling back to "stable".
+  IMAGE_TAG: ${{ github.event.workflow_run.head_branch || inputs.tag || 'stable' }}
+
+jobs:
+  # Resolves the deploy matrix based on the trigger:
+  #   - workflow_run: all environments (if the build succeeded on a release tag)
+  #   - workflow_dispatch: the environment specified in the input (or all)
+  #
+  # ── Adding a new environment ──────────────────────────────────────────────
+  # 1. Add an entry to the ENVIRONMENTS JSON array below.
+  # 2. Create a matching GitHub Environment (repo Settings → Environments)
+  #    and add these three secrets to it:
+  #      SSH_HOST        – server hostname or IP
+  #      SSH_USER        – SSH login user
+  #      SSH_PRIVATE_KEY – private key whose public key is in authorized_keys
+  # 3. On the server, create a deploy script at the path set in deploy_script,
+  #    owned by root and executable. It receives the image tag as $1:
+  #      #!/bin/bash
+  #      set -euo pipefail
+  #      cd /path/to/workdir
+  #      IMAGE_TAG="$1" docker compose pull
+  #      IMAGE_TAG="$1" docker compose up -d --remove-orphans
+  #      docker image prune -f
+  # 4. Grant the SSH user passwordless sudo access to that script only:
+  #      <user> ALL=(root) NOPASSWD: /path/to/deploy.sh
+  # 5. Ensure the server's docker-compose.yml uses:
+  #      image: ghcr.io/tf2pickup-org/tf2pickup:${IMAGE_TAG:-stable}
+  # ─────────────────────────────────────────────────────────────────────────
+  setup:
+    if: >-
+      (
+        github.event_name == 'workflow_run' &&
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch != 'master' &&
+        !startsWith(github.event.workflow_run.head_branch, 'renovate/')
+      ) ||
+      github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      has-environments: ${{ steps.set-matrix.outputs.has-environments }}
+    steps:
+      - name: Build deploy matrix
+        id: set-matrix
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          TARGET_ENV: ${{ inputs.environment || 'all' }}
+        run: |
+          ENVIRONMENTS='[
+            {"env":"tf2pickup-pl","url":"https://tf2pickup.pl","deploy_script":"/opt/tf2pickup-pl/deploy.sh"},
+            {"env":"tf2pickup-fr","url":"https://tf2pickup.fr","deploy_script":"/opt/tf2pickup-fr/deploy.sh"}
+          ]'
+
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$TARGET_ENV" != "all" ]; then
+            MATRIX=$(echo "$ENVIRONMENTS" | jq -c --arg env "$TARGET_ENV" '[.[] | select(.env == $env)]')
+          else
+            MATRIX=$(echo "$ENVIRONMENTS" | jq -c '.')
+          fi
+
+          echo "matrix=$MATRIX" >> "$GITHUB_OUTPUT"
+          echo "has-environments=$([ "$(echo "$MATRIX" | jq 'length')" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: setup
+    if: needs.setup.outputs.has-environments == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      deployments: write
+    # Prevent concurrent deploys to the same environment; never cancel in-progress.
+    concurrency:
+      group: deploy-${{ matrix.env }}
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJson(needs.setup.outputs.matrix) }}
+    environment:
+      name: ${{ matrix.env }}
+      url: ${{ matrix.url }}
+    steps:
+      - name: Start deployment
+        id: deployment
+        uses: bobheadxi/deployments@v1
+        with:
+          step: start
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ matrix.env }}
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        env:
+          DEPLOY_IMAGE_TAG: ${{ env.IMAGE_TAG }}
+          DEPLOY_SCRIPT: ${{ matrix.deploy_script }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: DEPLOY_IMAGE_TAG,DEPLOY_SCRIPT
+          script: |
+            set -euo pipefail
+            sudo "$DEPLOY_SCRIPT" "$DEPLOY_IMAGE_TAG"
+
+      - name: Finish deployment
+        uses: bobheadxi/deployments@v1
+        if: always()
+        with:
+          step: finish
+          token: ${{ secrets.GITHUB_TOKEN }}
+          env: ${{ steps.deployment.outputs.env }}
+          deployment_id: ${{ steps.deployment.outputs.deployment_id }}
+          status: ${{ job.status }}
+          env_url: ${{ matrix.url }}
