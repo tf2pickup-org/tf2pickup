@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.4.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.2...4.4.3) (2026-03-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency csv-parse to v6.2.1 ([3e9d17f](https://github.com/tf2pickup-org/tf2pickup/commit/3e9d17f921e031dafcc135fcacc04bcf3f4d6901))
+* **deps:** update dependency marked to v17.0.5 ([204f62d](https://github.com/tf2pickup-org/tf2pickup/commit/204f62d5fd0912bf149678be1466c7c4241f7e3e))
+* **deps:** update dependency ws to v8.20.0 ([75410dd](https://github.com/tf2pickup-org/tf2pickup/commit/75410ddc5f7c47554023d550a4b7268201ad0e65))
+
 ## [4.4.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.1...4.4.2) (2026-03-20)
 
 
