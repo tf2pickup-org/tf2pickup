@@ -3,7 +3,7 @@ import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-l
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
 
-export const gameLaunchesPerDaySpans = ['week', 'month', 'year'] as const
+export const gameLaunchesPerDaySpans = ['week', 'month', 'year', 'all'] as const
 export type GameLaunchesPerDaySpan = (typeof gameLaunchesPerDaySpans)[number]
 
 export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan }) {
@@ -32,6 +32,9 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
           <option value="year" selected={span === 'year'}>
             last year
           </option>
+          <option value="all" selected={span === 'all'}>
+            all time
+          </option>
         </select>
       </div>
       <canvas id="game-launches-per-day"></canvas>
@@ -47,7 +50,7 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
   )
 }
 
-function spanToStart(span: GameLaunchesPerDaySpan): Date {
+function spanToStart(span: GameLaunchesPerDaySpan): Date | undefined {
   switch (span) {
     case 'week':
       return sub(new Date(), { weeks: 1 })
@@ -55,11 +58,16 @@ function spanToStart(span: GameLaunchesPerDaySpan): Date {
       return sub(new Date(), { months: 1 })
     case 'year':
       return sub(new Date(), { years: 1 })
+    case 'all':
+      return undefined
   }
 }
 
-function toChartData(data: GameLaunchesPerDay[], start: Date) {
-  let date = start
+function toChartData(data: GameLaunchesPerDay[], start: Date | undefined) {
+  if (data.length === 0) {
+    return { labels: [], datasets: [{ data: [], fill: false, borderWidth: 1, borderColor: '#F61059', pointBackgroundColor: '#F61059', spanGaps: true, pointRadius: 2 }] }
+  }
+  let date = start ?? new Date(data.map(d => d.day).sort()[0]!)
   const end = new Date()
   const ordered: GameLaunchesPerDay[] = []
 

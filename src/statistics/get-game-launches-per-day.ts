@@ -5,16 +5,20 @@ export interface GameLaunchesPerDay {
   count: number
 }
 
-export async function getGameLaunchesPerDay(since: Date): Promise<GameLaunchesPerDay[]> {
+export async function getGameLaunchesPerDay(since?: Date): Promise<GameLaunchesPerDay[]> {
   return await collections.games
     .aggregate<GameLaunchesPerDay>([
-      {
-        $match: {
-          'events.0.at': {
-            $gte: since,
-          },
-        },
-      },
+      ...(since !== undefined
+        ? [
+            {
+              $match: {
+                'events.0.at': {
+                  $gte: since,
+                },
+              },
+            },
+          ]
+        : []),
       {
         $group: {
           _id: {
