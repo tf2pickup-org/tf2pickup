@@ -65,7 +65,20 @@ function spanToStart(span: GameLaunchesPerDaySpan): Date | undefined {
 
 function toChartData(data: GameLaunchesPerDay[], start: Date | undefined) {
   if (data.length === 0) {
-    return { labels: [], datasets: [{ data: [], fill: false, borderWidth: 1, borderColor: '#F61059', pointBackgroundColor: '#F61059', spanGaps: true, pointRadius: 2 }] }
+    return {
+      labels: [],
+      datasets: [
+        {
+          data: [],
+          fill: false,
+          borderWidth: 1,
+          borderColor: '#F61059',
+          pointBackgroundColor: '#F61059',
+          spanGaps: true,
+          pointRadius: 2,
+        },
+      ],
+    }
   }
   let date = start ?? new Date(data.map(d => d.day).sort()[0]!)
   const end = new Date()
