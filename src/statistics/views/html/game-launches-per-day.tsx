@@ -1,4 +1,4 @@
-import { addDays, format, sub } from 'date-fns'
+import { addDays, addWeeks, format, startOfISOWeek, sub } from 'date-fns'
 import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-launches-per-day'
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
@@ -63,56 +63,64 @@ function spanToStart(span: GameLaunchesPerDaySpan): Date | undefined {
   }
 }
 
+const dataset = (counts: number[]) => ({
+  data: counts,
+  fill: false,
+  borderWidth: 1,
+  borderColor: '#F61059',
+  pointBackgroundColor: '#F61059',
+  spanGaps: true,
+  pointRadius: 2,
+})
+
 function toChartData(data: GameLaunchesPerDay[], start: Date | undefined) {
   if (data.length === 0) {
-    return {
-      labels: [],
-      datasets: [
-        {
-          data: [],
-          fill: false,
-          borderWidth: 1,
-          borderColor: '#F61059',
-          pointBackgroundColor: '#F61059',
-          spanGaps: true,
-          pointRadius: 2,
-        },
-      ],
-    }
+    return { labels: [], datasets: [dataset([])] }
   }
-  let date = start ?? new Date(data.map(d => d.day).sort()[0]!)
+
+  if (start === undefined) {
+    return toWeeklyChartData(data)
+  }
+
+  let date = start
   const end = new Date()
-  const ordered: GameLaunchesPerDay[] = []
+  const labels: string[] = []
+  const counts: number[] = []
 
   while (date < end) {
-    const day = date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-    })
-
-    const lookupDay = format(date, 'yyyy-MM-dd')
-
-    ordered.push({
-      day,
-      count: data.find(d => d.day === lookupDay)?.count ?? 0,
-    })
-
+    labels.push(
+      date.toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' }),
+    )
+    counts.push(data.find(d => d.day === format(date, 'yyyy-MM-dd'))?.count ?? 0)
     date = addDays(date, 1)
   }
 
-  return {
-    labels: ordered.map(d => d.day),
-    datasets: [
-      {
-        data: ordered.map(d => d.count),
-        fill: false,
-        borderWidth: 1,
-        borderColor: '#F61059',
-        pointBackgroundColor: '#F61059',
-        spanGaps: true,
-        pointRadius: 2,
-      },
-    ],
+  return { labels, datasets: [dataset(counts)] }
+}
+
+function toWeeklyChartData(data: GameLaunchesPerDay[]) {
+  const dataMap = new Map(data.map(d => [d.day, d.count]))
+  const firstDay = new Date(data.map(d => d.day).sort()[0]!)
+  let weekStart = startOfISOWeek(firstDay)
+  const end = new Date()
+  const labels: string[] = []
+  const counts: number[] = []
+
+  while (weekStart < end) {
+    let count = 0
+    for (let i = 0; i < 7; i++) {
+      count += dataMap.get(format(addDays(weekStart, i), 'yyyy-MM-dd')) ?? 0
+    }
+    labels.push(
+      weekStart.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      }),
+    )
+    counts.push(count)
+    weekStart = addWeeks(weekStart, 1)
   }
+
+  return { labels, datasets: [dataset(counts)] }
 }
