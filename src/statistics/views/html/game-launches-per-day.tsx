@@ -1,9 +1,9 @@
-import { addDays, format, sub } from 'date-fns'
+import { addDays, addMonths, format, startOfMonth, sub } from 'date-fns'
 import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-launches-per-day'
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
 
-export const gameLaunchesPerDaySpans = ['week', 'month', 'year'] as const
+export const gameLaunchesPerDaySpans = ['week', 'month', 'year', 'all'] as const
 export type GameLaunchesPerDaySpan = (typeof gameLaunchesPerDaySpans)[number]
 
 export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan }) {
@@ -16,7 +16,9 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
   return (
     <div id="game-launches-per-day-container">
       <div class="mb-4 flex items-center gap-4">
-        <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
+        <span class="text-abru-light-75 text-2xl font-bold">
+          {span === 'all' ? 'Game launches per month' : 'Game launches per day'}
+        </span>
         <select
           hx-get="/statistics/game-launches-per-day"
           hx-target="#game-launches-per-day-container"
@@ -31,6 +33,9 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
           </option>
           <option value="year" selected={span === 'year'}>
             last year
+          </option>
+          <option value="all" selected={span === 'all'}>
+            all time
           </option>
         </select>
       </div>
@@ -47,7 +52,7 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
   )
 }
 
-function spanToStart(span: GameLaunchesPerDaySpan): Date {
+function spanToStart(span: GameLaunchesPerDaySpan): Date | undefined {
   switch (span) {
     case 'week':
       return sub(new Date(), { weeks: 1 })
@@ -55,43 +60,66 @@ function spanToStart(span: GameLaunchesPerDaySpan): Date {
       return sub(new Date(), { months: 1 })
     case 'year':
       return sub(new Date(), { years: 1 })
+    case 'all':
+      return undefined
   }
 }
 
-function toChartData(data: GameLaunchesPerDay[], start: Date) {
+const dataset = (counts: number[]) => ({
+  data: counts,
+  fill: false,
+  borderWidth: 1,
+  borderColor: '#F61059',
+  pointBackgroundColor: '#F61059',
+  spanGaps: true,
+  pointRadius: 2,
+})
+
+function toChartData(data: GameLaunchesPerDay[], start: Date | undefined) {
+  if (data.length === 0) {
+    return { labels: [], datasets: [dataset([])] }
+  }
+
+  if (start === undefined) {
+    return toMonthlyChartData(data)
+  }
+
   let date = start
   const end = new Date()
-  const ordered: GameLaunchesPerDay[] = []
+  const labels: string[] = []
+  const counts: number[] = []
 
   while (date < end) {
-    const day = date.toLocaleDateString(undefined, {
-      year: 'numeric',
-      month: 'numeric',
-      day: 'numeric',
-    })
-
-    const lookupDay = format(date, 'yyyy-MM-dd')
-
-    ordered.push({
-      day,
-      count: data.find(d => d.day === lookupDay)?.count ?? 0,
-    })
-
+    labels.push(
+      date.toLocaleDateString(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' }),
+    )
+    counts.push(data.find(d => d.day === format(date, 'yyyy-MM-dd'))?.count ?? 0)
     date = addDays(date, 1)
   }
 
-  return {
-    labels: ordered.map(d => d.day),
-    datasets: [
-      {
-        data: ordered.map(d => d.count),
-        fill: false,
-        borderWidth: 1,
-        borderColor: '#F61059',
-        pointBackgroundColor: '#F61059',
-        spanGaps: true,
-        pointRadius: 2,
-      },
-    ],
+  return { labels, datasets: [dataset(counts)] }
+}
+
+function toMonthlyChartData(data: GameLaunchesPerDay[]) {
+  const dataMap = new Map(data.map(d => [d.day, d.count]))
+  const firstDay = new Date(data.map(d => d.day).sort()[0]!)
+  let monthStart = startOfMonth(firstDay)
+  const end = new Date()
+  const labels: string[] = []
+  const counts: number[] = []
+
+  while (monthStart < end) {
+    const nextMonth = addMonths(monthStart, 1)
+    let count = 0
+    let d = monthStart
+    while (d < nextMonth) {
+      count += dataMap.get(format(d, 'yyyy-MM-dd')) ?? 0
+      d = addDays(d, 1)
+    }
+    labels.push(monthStart.toLocaleDateString('en-US', { year: 'numeric', month: 'short' }))
+    counts.push(count)
+    monthStart = nextMonth
   }
+
+  return { labels, datasets: [dataset(counts)] }
 }
