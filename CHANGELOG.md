@@ -1,5 +1,22 @@
 # Changelog
 
+# [4.5.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.3...4.5.0) (2026-03-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/otel to v0.18.0 ([086bfbf](https://github.com/tf2pickup-org/tf2pickup/commit/086bfbf259a25128f9970fe00b95efe0a7f4a3e0))
+* **deps:** update dependency fastify to v5.8.4 ([d7e661e](https://github.com/tf2pickup-org/tf2pickup/commit/d7e661e37d0ee5024e1a0371e020808d6e193af4))
+* **deps:** update dependency mongodb to v7.1.1 ([6391130](https://github.com/tf2pickup-org/tf2pickup/commit/63911305c53f89dcbd4c44cbd62ed3f91ccaabb2))
+* **deps:** update dependency type-fest to v5.5.0 ([#558](https://github.com/tf2pickup-org/tf2pickup/issues/558)) ([7c784d7](https://github.com/tf2pickup-org/tf2pickup/commit/7c784d76fb3386b8fe852768a8e4677aab276074))
+* **deps:** update opentelemetry-js monorepo ([ec2d5ad](https://github.com/tf2pickup-org/tf2pickup/commit/ec2d5ade37a4bbf973da41cbff8fcd9c2e1d599a))
+* **deps:** update opentelemetry-js-contrib monorepo ([8d5085e](https://github.com/tf2pickup-org/tf2pickup/commit/8d5085eac32792d11d9f2d0a176555a5d8c63197))
+
+
+### Features
+
+* **statistics:** add all time option to game launches per day chart ([#565](https://github.com/tf2pickup-org/tf2pickup/issues/565)) ([f38bc64](https://github.com/tf2pickup-org/tf2pickup/commit/f38bc646aa0783edc14ceedac2c434bc48c671b6))
+
 ## [4.4.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.2...4.4.3) (2026-03-23)
 
 
