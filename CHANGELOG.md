@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.5.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.0...4.5.1) (2026-03-27)
+
+
+### Bug Fixes
+
+* **ci:** skip deploy for pull request builds ([ec07b16](https://github.com/tf2pickup-org/tf2pickup/commit/ec07b16de28b5bbc8bccaae1b7051bb11cea5351))
+* extend configure timeout for quickserver servers ([#566](https://github.com/tf2pickup-org/tf2pickup/issues/566)) ([ae9109a](https://github.com/tf2pickup-org/tf2pickup/commit/ae9109adc9238dd7f7dc14bf87ed4ad01a155e2e))
+
 # [4.5.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.4.3...4.5.0) (2026-03-27)
 
 
