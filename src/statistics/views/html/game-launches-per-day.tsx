@@ -1,4 +1,4 @@
-import { addDays, addWeeks, format, startOfISOWeek, sub } from 'date-fns'
+import { addDays, addMonths, format, startOfMonth, sub } from 'date-fns'
 import { getGameLaunchesPerDay, type GameLaunchesPerDay } from '../../get-game-launches-per-day'
 import { bundle } from '../../../html/bundle'
 import { resolve } from 'node:path'
@@ -16,7 +16,9 @@ export async function GameLaunchesPerDay(props?: { span?: GameLaunchesPerDaySpan
   return (
     <div id="game-launches-per-day-container">
       <div class="mb-4 flex items-center gap-4">
-        <span class="text-abru-light-75 text-2xl font-bold">Game launches per day</span>
+        <span class="text-abru-light-75 text-2xl font-bold">
+          {span === 'all' ? 'Game launches per month' : 'Game launches per day'}
+        </span>
         <select
           hx-get="/statistics/game-launches-per-day"
           hx-target="#game-launches-per-day-container"
@@ -79,7 +81,7 @@ function toChartData(data: GameLaunchesPerDay[], start: Date | undefined) {
   }
 
   if (start === undefined) {
-    return toWeeklyChartData(data)
+    return toMonthlyChartData(data)
   }
 
   let date = start
@@ -98,28 +100,25 @@ function toChartData(data: GameLaunchesPerDay[], start: Date | undefined) {
   return { labels, datasets: [dataset(counts)] }
 }
 
-function toWeeklyChartData(data: GameLaunchesPerDay[]) {
+function toMonthlyChartData(data: GameLaunchesPerDay[]) {
   const dataMap = new Map(data.map(d => [d.day, d.count]))
   const firstDay = new Date(data.map(d => d.day).sort()[0]!)
-  let weekStart = startOfISOWeek(firstDay)
+  let monthStart = startOfMonth(firstDay)
   const end = new Date()
   const labels: string[] = []
   const counts: number[] = []
 
-  while (weekStart < end) {
+  while (monthStart < end) {
+    const nextMonth = addMonths(monthStart, 1)
     let count = 0
-    for (let i = 0; i < 7; i++) {
-      count += dataMap.get(format(addDays(weekStart, i), 'yyyy-MM-dd')) ?? 0
+    let d = monthStart
+    while (d < nextMonth) {
+      count += dataMap.get(format(d, 'yyyy-MM-dd')) ?? 0
+      d = addDays(d, 1)
     }
-    labels.push(
-      weekStart.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-      }),
-    )
+    labels.push(monthStart.toLocaleDateString(undefined, { year: 'numeric', month: 'short' }))
     counts.push(count)
-    weekStart = addWeeks(weekStart, 1)
+    monthStart = nextMonth
   }
 
   return { labels, datasets: [dataset(counts)] }
