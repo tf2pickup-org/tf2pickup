@@ -13,7 +13,17 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      const game = await games.findOne({ number: request.params.id })
+      const game = await games.findOne({ number: request.params.id }, [
+        'number',
+        'map',
+        'state',
+        'score',
+        'logsUrl',
+        'demoUrl',
+        'events',
+        'gameServer.name',
+        'gameServer.provider',
+      ])
       return reply.type('application/hal+json').status(200).send(gameToDto(game))
     },
   )

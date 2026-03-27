@@ -35,7 +35,19 @@ export default routes(async app => {
       const filter = { 'slots.player': steamId }
       const total = await collections.games.countDocuments(filter)
       const gamesList = await collections.games
-        .find(filter)
+        .find(filter, {
+          projection: {
+            number: 1,
+            map: 1,
+            state: 1,
+            score: 1,
+            logsUrl: 1,
+            demoUrl: 1,
+            events: 1,
+            'gameServer.name': 1,
+            'gameServer.provider': 1,
+          },
+        })
         .sort({ number: -1 })
         .skip(offset)
         .limit(limit)

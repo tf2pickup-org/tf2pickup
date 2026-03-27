@@ -1,7 +1,21 @@
 import { GameEventType } from '../../../database/models/game-event.model'
 import type { GameModel } from '../../../database/models/game.model'
+import type { PickDeep } from 'type-fest'
 
-export function gameToDto(game: GameModel) {
+type Game = PickDeep<
+  GameModel,
+  | 'number'
+  | 'map'
+  | 'state'
+  | 'score'
+  | 'logsUrl'
+  | 'demoUrl'
+  | 'events'
+  | 'gameServer.name'
+  | 'gameServer.provider'
+>
+
+export function gameToDto(game: Game) {
   const endedEvent = game.events.find(e => e.event === GameEventType.gameEnded)
 
   return {

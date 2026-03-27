@@ -14,7 +14,7 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      const game = await games.findOne({ number: request.params.id })
+      const game = await games.findOne({ number: request.params.id }, ['number', 'events'])
       const events = game.events.map(gameEventToPublicDto).filter(isNotNil)
 
       return reply
