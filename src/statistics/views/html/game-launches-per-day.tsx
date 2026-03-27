@@ -116,7 +116,7 @@ function toMonthlyChartData(data: GameLaunchesPerDay[]) {
       count += dataMap.get(format(d, 'yyyy-MM-dd')) ?? 0
       d = addDays(d, 1)
     }
-    labels.push(monthStart.toLocaleDateString(undefined, { year: 'numeric', month: 'short' }))
+    labels.push(monthStart.toLocaleDateString('en-US', { year: 'numeric', month: 'short' }))
     counts.push(count)
     monthStart = nextMonth
   }
