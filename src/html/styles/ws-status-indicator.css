@@ -1,0 +1,33 @@
+@layer components {
+  #ws-status {
+    .ball {
+      display: block;
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 9999px;
+    }
+
+    &[data-ws-status='connecting'] .ball {
+      background-color: var(--color-yellow-400);
+      animation: ws-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    &[data-ws-status='connected'] .ball {
+      background-color: var(--color-green-400);
+    }
+
+    &[data-ws-status='disconnected'] .ball {
+      background-color: var(--color-red-400);
+    }
+  }
+
+  @keyframes ws-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
