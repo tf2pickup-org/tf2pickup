@@ -32,6 +32,10 @@ export function Footer() {
             </a>
 
             {user?.player.roles.includes(PlayerRole.admin) && <a href="/admin">Admin panel</a>}
+            <div id="ws-status" data-ws-status="connecting" role="status" aria-label="Connecting...">
+              <span class="ball" />
+              <span class="tooltip tooltip--bottom whitespace-nowrap">Connecting...</span>
+            </div>
           </div>
         </div>
       </div>
