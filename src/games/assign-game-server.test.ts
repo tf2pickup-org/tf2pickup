@@ -18,11 +18,8 @@ vi.mock('../serveme-tf', () => ({
   },
 }))
 
-vi.mock('../games', () => ({
-  games: {
-    update: vi.fn().mockResolvedValue({ number: 1, gameServer: { name: 'test' } }),
-    findOne: vi.fn(),
-  },
+vi.mock('./update', () => ({
+  update: vi.fn().mockResolvedValue({ number: 1, gameServer: { name: 'test' } }),
 }))
 
 vi.mock('../events', () => ({
@@ -40,7 +37,7 @@ vi.mock('../errors', () => ({
   },
 }))
 
-import { assign } from './assign'
+import { assignGameServer } from './assign-game-server'
 import { tf2QuickServer } from '../tf2-quick-server'
 import { staticGameServers } from '../static-game-servers'
 import { servemeTf } from '../serveme-tf'
@@ -50,14 +47,14 @@ const fakeGame = { number: 1, map: 'cp_badlands' } as any
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fakeServer = { id: 'srv', name: 'test', provider: 'tf2quickserver' } as any
 
-describe('assign() with selected tf2QuickServer', () => {
+describe('assignGameServer() with selected tf2QuickServer', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(tf2QuickServer.assign).mockResolvedValue(fakeServer)
   })
 
   it('calls tf2QuickServer.assign with serverId when value is tf2QuickServer:{id}', async () => {
-    await assign(fakeGame, 'tf2QuickServer:server-abc123')
+    await assignGameServer(fakeGame, 'tf2QuickServer:server-abc123')
     expect(tf2QuickServer.assign).toHaveBeenCalledWith({
       serverId: 'server-abc123',
       map: 'cp_badlands',
@@ -67,7 +64,7 @@ describe('assign() with selected tf2QuickServer', () => {
   })
 
   it('calls tf2QuickServer.assign with region when value is tf2QuickServer:new:{region}', async () => {
-    await assign(fakeGame, 'tf2QuickServer:new:eu-frankfurt-1')
+    await assignGameServer(fakeGame, 'tf2QuickServer:new:eu-frankfurt-1')
     expect(tf2QuickServer.assign).toHaveBeenCalledWith({
       region: 'eu-frankfurt-1',
       map: 'cp_badlands',
@@ -75,6 +72,8 @@ describe('assign() with selected tf2QuickServer', () => {
   })
 
   it('throws for unknown game server selection', async () => {
-    await expect(assign(fakeGame, 'unknown:foo')).rejects.toThrow('unknown game server selection')
+    await expect(assignGameServer(fakeGame, 'unknown:foo')).rejects.toThrow(
+      'unknown game server selection',
+    )
   })
 })

@@ -1,5 +1,5 @@
 import { type GameModel, type GameServer } from '../database/models/game.model'
-import { games } from '../games'
+import { update } from './update'
 import { staticGameServers } from '../static-game-servers'
 import { events } from '../events'
 import { GameEventType } from '../database/models/game-event.model'
@@ -12,11 +12,11 @@ import { type SteamId64 } from '../shared/types/steam-id-64'
 
 const mutex = new Mutex()
 
-export async function assign(game: GameModel, selected?: string, actor?: SteamId64) {
+export async function assignGameServer(game: GameModel, selected?: string, actor?: SteamId64) {
   await mutex.runExclusive(async () => {
     const gameServer = selected ? await assignSelected(game, selected) : await assignFirstFree(game)
 
-    game = await games.update(game.number, {
+    game = await update(game.number, {
       $set: {
         gameServer,
       },

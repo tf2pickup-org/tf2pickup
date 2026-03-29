@@ -3,7 +3,6 @@ import { GamePage } from '../../../games/views/html/game.page'
 import { games } from '../../../games'
 import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import { gameServers } from '../../../game-servers'
 import { routes } from '../../../utils/routes'
 import { tf2QuickServer } from '../../../tf2-quick-server'
 import { configuration } from '../../../configuration'
@@ -141,7 +140,7 @@ export default routes(async app => {
           'connectString',
           'stvConnectString',
         ])
-        await gameServers.assign(game, gameServer, request.user!.player.steamId)
+        await games.assignGameServer(game, gameServer, request.user!.player.steamId)
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)
