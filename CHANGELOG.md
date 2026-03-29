@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.5.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.1...4.5.2) (2026-03-29)
+
+
+### Bug Fixes
+
+* apply queue join cooldown to self-substituting players ([#567](https://github.com/tf2pickup-org/tf2pickup/issues/567)) ([1d302bb](https://github.com/tf2pickup-org/tf2pickup/commit/1d302bb6646febfbbdcd2fa96ad075ebaf079f25))
+* **queue:** prevent FUOC in sidebar tabs ([#568](https://github.com/tf2pickup-org/tf2pickup/issues/568)) ([4e0759b](https://github.com/tf2pickup-org/tf2pickup/commit/4e0759b027461ee86f1fa0d0cdd1f8a1db0d1bc0))
+
 ## [4.5.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.0...4.5.1) (2026-03-27)
 
 
