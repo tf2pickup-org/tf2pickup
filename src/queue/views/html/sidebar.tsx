@@ -23,7 +23,7 @@ export function Sidebar(props: { user?: User | undefined }) {
         <OnlinePlayerList />
       </div>
 
-      <div class="tab-content" id="tab-chat">
+      <div class="tab-content" id="tab-chat" style="display:none">
         <Chat user={props.user} />
       </div>
     </div>
