@@ -5,6 +5,40 @@ import { queueSlots } from '../queue-slots'
 
 test.use({ waitForStage: 'started' })
 
+test('self-substituting players have the same queue cooldown as regular players @6v6 @9v9', async ({
+  users,
+  gameNumber,
+  gameServer,
+}) => {
+  test.setTimeout(minutesToMilliseconds(1))
+
+  const admin = users.getAdmin()
+  const adminsPage = await admin.gamePage(gameNumber)
+  await adminsPage.requestSubstitute('Mayflower')
+
+  const mayflower = users.byName('Mayflower')
+  const mayflowersGamePage = await mayflower.gamePage(gameNumber)
+  await mayflowersGamePage.replacePlayer('Mayflower')
+  await expect(mayflowersGamePage.gameEvent('Mayflower replaced Mayflower')).toBeVisible()
+
+  const mayflowersQueuePage = await mayflower.queuePage()
+  await mayflowersQueuePage.goto()
+
+  await gameServer.matchEnds()
+
+  // the self-substituting player (Mayflower) should be on the same cooldown as a regular player
+  await Promise.all([
+    expect(mayflowersQueuePage.goBackToGameLink()).toBeVisible({
+      timeout: secondsToMilliseconds(1),
+    }),
+    ...Array.from(queueSlots()).map(slot =>
+      expect(mayflowersQueuePage.slot(slot).joinButton()).toBeDisabled({
+        timeout: secondsToMilliseconds(1),
+      }),
+    ),
+  ])
+})
+
 test('substitute players skip the queue cooldown @6v6 @9v9', async ({
   users,
   gameNumber,
