@@ -5,8 +5,10 @@ import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { requestGameServerReinitialization } from './request-game-server-reinitialization'
+import { assignGameServer } from './assign-game-server'
 
 export const games = {
+  assignGameServer,
   findOne,
   forceEnd,
   replacePlayer,
