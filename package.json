@@ -100,7 +100,7 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@playwright/test": "1.59.0",
+    "@playwright/test": "1.59.1",
     "@release-it/conventional-changelog": "10.0.6",
     "@tsconfig/strictest": "2.0.8",
     "@types/howler": "2.2.12",
