@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.5.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.2...4.5.3) (2026-04-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cssnano to v7.1.4 ([1d1de5f](https://github.com/tf2pickup-org/tf2pickup/commit/1d1de5fa560ba8d0a5edab8e3f8f39c35a784ade))
+* **deps:** update dependency discord.js to v14.26.0 ([80ba96f](https://github.com/tf2pickup-org/tf2pickup/commit/80ba96f405853c89ff35c09ad008756a5a045181))
+* **deps:** update dependency discord.js to v14.26.2 ([12770da](https://github.com/tf2pickup-org/tf2pickup/commit/12770da98c7f6dc5e76139a237d6d5ac90192ecb))
+* **deps:** update dependency dotenv to v17.4.0 ([2b60d84](https://github.com/tf2pickup-org/tf2pickup/commit/2b60d8438c91573e735da7c6bb7f7049235e2e0d))
+* **deps:** update dependency dotenv to v17.4.1 ([9e98d1b](https://github.com/tf2pickup-org/tf2pickup/commit/9e98d1bdbe434763cf834e7804a1c7ca4ac83567))
+* **deps:** update dependency esbuild to v0.27.5 ([ab80967](https://github.com/tf2pickup-org/tf2pickup/commit/ab80967b61235bf2469963e375ca6efb7e1540f8))
+* **deps:** update dependency esbuild to v0.28.0 ([fa6c586](https://github.com/tf2pickup-org/tf2pickup/commit/fa6c586c26e06ff56879b89777dbd987369d4296))
+* **deps:** update dependency marked to v17.0.6 ([41c8701](https://github.com/tf2pickup-org/tf2pickup/commit/41c870125ee6bbb2b2b520f1a974c514112b99c7))
+
 ## [4.5.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.1...4.5.2) (2026-03-29)
 
 
