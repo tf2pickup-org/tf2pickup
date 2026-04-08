@@ -9,6 +9,7 @@ import './copy-to-clipboard'
 import './notifications'
 import './play-sound'
 import './sync-attribute'
+import './ws-status-indicator'
 
 import * as hyperscript from 'hyperscript.org'
 hyperscript.browserInit()
