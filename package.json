@@ -116,7 +116,7 @@
     "cpy-cli": "7.0.0",
     "cssnano": "7.1.4",
     "eslint": "10.2.0",
-    "globals": "17.4.0",
+    "globals": "17.5.0",
     "lorem-ipsum": "2.0.8",
     "node-html-parser": "7.1.0",
     "pino-princess": "1.6.1",
