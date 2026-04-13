@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.5.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.3...4.5.4) (2026-04-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/otel to v0.18.1 ([a8491ce](https://github.com/tf2pickup-org/tf2pickup/commit/a8491ce14c3f34860fcef74b52991330691ca90e))
+* **deps:** update dependency @fastify/static to v9.1.0 ([3bcbfaf](https://github.com/tf2pickup-org/tf2pickup/commit/3bcbfafe638678f6e673f5c25849093a0e65d02f))
+* **deps:** update dependency country-flag-icons to v1.6.16 ([a5981ed](https://github.com/tf2pickup-org/tf2pickup/commit/a5981ed9a2751e4687531f128b2f11193ff20acd))
+* **deps:** update dependency dotenv to v17.4.2 ([45acefd](https://github.com/tf2pickup-org/tf2pickup/commit/45acefd9a4dd5658c2bea774f2e0286901363acb))
+* **deps:** update dependency postcss to v8.5.9 ([#573](https://github.com/tf2pickup-org/tf2pickup/issues/573)) ([3e2d98a](https://github.com/tf2pickup-org/tf2pickup/commit/3e2d98affe32b111f9bc9cf5cc11c52bd916487f))
+
 ## [4.5.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.2...4.5.3) (2026-04-06)
 
 
