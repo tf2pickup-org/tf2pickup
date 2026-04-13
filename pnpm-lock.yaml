@@ -27,8 +27,8 @@ importers:
         specifier: 13.0.2
         version: 13.0.2
       '@fastify/multipart':
-        specifier: 9.4.0
-        version: 9.4.0
+        specifier: 10.0.0
+        version: 10.0.0
       '@fastify/otel':
         specifier: 0.18.1
         version: 0.18.1(@opentelemetry/api@1.9.1)
@@ -952,8 +952,8 @@ packages:
   '@fastify/merge-json-schemas@0.2.1':
     resolution: {integrity: sha512-OA3KGBCy6KtIvLf8DINC5880o5iBlDX4SxzLQS8HorJAbqluzLRn80UXU0bxZn7UOFhFgpRJDasfwn9nG4FG4A==}
 
-  '@fastify/multipart@9.4.0':
-    resolution: {integrity: sha512-Z404bzZeLSXTBmp/trCBuoVFX28pM7rhv849Q5TsbTFZHuk1lc4QjQITTPK92DKVpXmNtJXeHSSc7GYvqFpxAQ==}
+  '@fastify/multipart@10.0.0':
+    resolution: {integrity: sha512-pUx3Z1QStY7E7kwvDTIvB6P+rF5lzP+iqPgZyJyG3yBJVPvQaZxzDHYbQD89rbY0ciXrMOyGi8ezHDVexLvJDA==}
 
   '@fastify/otel@0.18.1':
     resolution: {integrity: sha512-7TYQXrOBRwCuTiwQm/2qCPO37af011934clxBj6F7KyF9a2a9MB+aSrWv8vMVp5N8rZC1AQ4pUp8uDs5Z40UPQ==}
@@ -4718,9 +4718,6 @@ packages:
     resolution: {integrity: sha512-21IYA3Q5cQf089Z6tgaUTr7lDAyzoTPx5HRtbhsME8Udispad8dC/+sziTNugOEx54ilvatQ9YCzl4KQLPcRHA==}
     engines: {node: '>=11.0.0'}
 
-  secure-json-parse@4.0.0:
-    resolution: {integrity: sha512-dxtLJO6sc35jWidmLxo7ij+Eg48PM/kleBsxpC8QJE0qJICe+KawkDQmvCMZUr9u7WKVHgMW6vy3fQ7zMiFZMA==}
-
   secure-json-parse@4.1.0:
     resolution: {integrity: sha512-l4KnYfEyqYJxDwlNVyRfO2E4NTHfMKAWdUuA8J0yve2Dz/E/PdBepY03RvyJpssIpRFwJoCD55wA+mEDs6ByWA==}
 
@@ -5735,13 +5732,13 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  '@fastify/multipart@9.4.0':
+  '@fastify/multipart@10.0.0':
     dependencies:
       '@fastify/busboy': 3.2.0
       '@fastify/deepmerge': 3.2.0
       '@fastify/error': 4.2.0
       fastify-plugin: 5.1.0
-      secure-json-parse: 4.0.0
+      secure-json-parse: 4.1.0
 
   '@fastify/otel@0.18.1(@opentelemetry/api@1.9.1)':
     dependencies:
@@ -9772,8 +9769,6 @@ snapshots:
       postcss: 8.5.9
 
   sax@1.5.0: {}
-
-  secure-json-parse@4.0.0: {}
 
   secure-json-parse@4.1.0: {}
 
