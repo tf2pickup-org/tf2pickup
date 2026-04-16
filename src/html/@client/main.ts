@@ -10,7 +10,7 @@ import './notifications'
 import './play-sound'
 import './sync-attribute'
 
-import * as hyperscript from 'hyperscript.org'
+import hyperscript from 'hyperscript.org'
 hyperscript.browserInit()
 
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
