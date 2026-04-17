@@ -1,7 +1,14 @@
 import htmx from './htmx.js'
 
 const attrName = 'data-countdown'
-const runningAttr = 'data-countdown-running'
+
+interface HtmxNodeInternalData {
+  countdownInterval?: ReturnType<typeof setInterval>
+}
+
+let api: {
+  getInternalData: (elt: Element) => HtmxNodeInternalData
+}
 
 function formatTimeout(ms: number) {
   const minutes = Math.floor(ms / 60000)
@@ -11,38 +18,47 @@ function formatTimeout(ms: number) {
     : minutes.toString() + ':' + (seconds < 10 ? '0' : '') + seconds.toString()
 }
 
-function init(element: HTMLElement) {
-  if (element.hasAttribute(runningAttr)) return
-  element.setAttribute(runningAttr, '')
+function maybeInit(element: Element) {
+  if (!(element instanceof HTMLElement)) return
+  if (!element.hasAttribute(attrName)) return
+
+  const internalData = api.getInternalData(element)
+  if (internalData.countdownInterval !== undefined) return
 
   const deadline = Number(element.getAttribute(attrName))
-  const interval = setInterval(() => {
+  internalData.countdownInterval = setInterval(() => {
     const ms = Math.max(deadline - Date.now(), 0)
     element.textContent = formatTimeout(ms)
     if (ms <= 0) {
-      clearInterval(interval)
+      clearInterval(internalData.countdownInterval)
+      delete internalData.countdownInterval
     }
   }, 1000)
-
-  function maybeRemove() {
-    if (document.body.contains(element)) return
-    clearInterval(interval)
-    htmx.off('htmx:afterSwap', maybeRemove)
-  }
-
-  htmx.on('htmx:afterSwap', maybeRemove)
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element.hasAttribute(attrName)) {
-    init(element)
-  }
-
-  element.querySelectorAll(`[${attrName}]`).forEach(element => {
-    if (element instanceof HTMLElement) {
-      init(element)
+htmx.defineExtension('countdown', {
+  init: apiRef => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    api = apiRef
+  },
+  onEvent: (name: string, evt: Event | CustomEvent) => {
+    switch (name) {
+      case 'htmx:afterProcessNode': {
+        const element = (evt as CustomEvent<{ elt: Element }>).detail.elt
+        maybeInit(element)
+        element.querySelectorAll(`[${attrName}]`).forEach(maybeInit)
+        break
+      }
+      case 'htmx:beforeCleanupElement': {
+        const element = (evt as CustomEvent<{ elt: Element }>).detail.elt
+        const internalData = api.getInternalData(element)
+        if (internalData.countdownInterval !== undefined) {
+          clearInterval(internalData.countdownInterval)
+          delete internalData.countdownInterval
+        }
+        break
+      }
     }
-  })
+    return true
+  },
 })
