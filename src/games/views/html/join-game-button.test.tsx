@@ -111,7 +111,7 @@ describe('JoinGameButton', () => {
         const root = parse(html)
         const countdown = root.querySelector('[data-countdown]')
         expect(countdown).not.toBeNull()
-        expect(countdown!.getAttribute('data-countdown')).toBe('90000')
+        expect(countdown!.getAttribute('data-countdown')).toBe(shouldJoinBy.getTime().toString())
       })
 
       it('renders plain join game button (no countdown) when shouldJoinBy is in the past', async () => {

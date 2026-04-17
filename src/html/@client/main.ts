@@ -6,6 +6,7 @@ import 'htmx-ext-remove-me'
 
 // internal htmx extensions
 import './copy-to-clipboard'
+import './countdown'
 import './notifications'
 import './play-sound'
 import './sync-attribute'
@@ -14,7 +15,6 @@ import 'hyperscript.org'
 
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
 
-import './countdown'
 import './disable-when-offline'
 import './fade-scroll'
 import './flash-message'
