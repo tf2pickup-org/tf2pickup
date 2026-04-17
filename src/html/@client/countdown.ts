@@ -1,6 +1,7 @@
 import htmx from './htmx.js'
 
 const attrName = 'data-countdown'
+const runningAttr = 'data-countdown-running'
 
 function formatTimeout(ms: number) {
   const minutes = Math.floor(ms / 60000)
@@ -11,11 +12,12 @@ function formatTimeout(ms: number) {
 }
 
 function init(element: HTMLElement) {
-  let ms = Number(element.getAttribute(attrName))
-  let last = Date.now()
+  if (element.hasAttribute(runningAttr)) return
+  element.setAttribute(runningAttr, '')
+
+  const deadline = Number(element.getAttribute(attrName))
   const interval = setInterval(() => {
-    ms = Math.max(ms - (Date.now() - last), 0)
-    last = Date.now()
+    const ms = Math.max(deadline - Date.now(), 0)
     element.textContent = formatTimeout(ms)
     if (ms <= 0) {
       clearInterval(interval)
