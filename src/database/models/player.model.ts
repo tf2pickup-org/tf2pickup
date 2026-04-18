@@ -45,6 +45,8 @@ export interface PlayerStats {
 
 export type PlayerSkill = Partial<Record<Tf2ClassName, number>>
 
+export type PlayerElo = Partial<Record<Tf2ClassName, number>>
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -74,4 +76,10 @@ export interface PlayerModel {
   verified?: boolean
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
+  elo?: PlayerElo
+  eloHistory?: {
+    at: Date
+    elo: PlayerElo
+    game: GameNumber
+  }[]
 }
