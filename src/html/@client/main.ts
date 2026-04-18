@@ -10,6 +10,7 @@ import './countdown'
 import './notifications'
 import './play-sound'
 import './sync-attribute'
+import './ws-status-indicator'
 
 import 'hyperscript.org'
 
