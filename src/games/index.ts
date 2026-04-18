@@ -5,10 +5,10 @@ import { requestSubstitute } from './request-substitute'
 import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { requestGameServerReinitialization } from './request-game-server-reinitialization'
-import { assignGameServer } from './assign-game-server'
+import { assignAndConfigure } from './assign-and-configure'
 
 export const games = {
-  assignGameServer,
+  assignAndConfigure,
   findOne,
   forceEnd,
   replacePlayer,
@@ -19,4 +19,4 @@ export const games = {
   schemas: {
     gameNumber,
   },
-} as const
+}

@@ -1,6 +1,7 @@
 import z from 'zod'
 import { GamePage } from '../../../games/views/html/game.page'
 import { games } from '../../../games'
+import { gameServerSelection } from '../../../games/schemas/game-server-selection'
 import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
 import { routes } from '../../../utils/routes'
@@ -119,28 +120,20 @@ export default routes(async app => {
         schema: {
           params: z.object({ number: games.schemas.gameNumber }),
           body: z.object({
-            gameServer: z.string(),
+            gameServer: z.preprocess(val => {
+              try {
+                return JSON.parse(val as string) as unknown
+              } catch {
+                throw new Error('gameServer must be valid JSON')
+              }
+            }, gameServerSelection),
           }),
         },
       },
       async (request, reply) => {
         const { number } = request.params
         const { gameServer } = request.body
-        const game = await games.findOne({ number }, [
-          'number',
-          'map',
-          'state',
-          'slots',
-          'events',
-          'gameServer',
-          'logsUrl',
-          'demoUrl',
-          'score',
-          'logSecret',
-          'connectString',
-          'stvConnectString',
-        ])
-        await games.assignGameServer(game, gameServer, request.user!.player.steamId)
+        await games.assignAndConfigure(number, gameServer, request.user!.player.steamId)
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)

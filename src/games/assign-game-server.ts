@@ -1,25 +1,78 @@
-import { type GameModel, type GameServer } from '../database/models/game.model'
-import { update } from './update'
-import { staticGameServers } from '../static-game-servers'
-import { events } from '../events'
-import { GameEventType } from '../database/models/game-event.model'
-import { logger } from '../logger'
 import { Mutex } from 'async-mutex'
-import { servemeTf } from '../serveme-tf'
-import { tf2QuickServer } from '../tf2-quick-server'
+import { secondsToMilliseconds } from 'date-fns'
+import { retry } from 'es-toolkit'
+import { GameEventType } from '../database/models/game-event.model'
+import type { GameNumber } from '../database/models/game.model'
+import { notifyGameServerAssignmentFailed } from '../discord/notify-game-server-assignment-failed'
 import { errors } from '../errors'
-import { type SteamId64 } from '../shared/types/steam-id-64'
+import { events } from '../events'
+import { logger } from '../logger'
+import { servemeTf } from '../serveme-tf'
+import type { SteamId64 } from '../shared/types/steam-id-64'
+import { staticGameServers } from '../static-game-servers'
+import { tf2QuickServer } from '../tf2-quick-server'
+import type { GameServerSelection } from './schemas/game-server-selection'
+import { update } from './update'
+import { collections } from '../database/collections'
+import type { GameModel, GameServer } from '../database/models/game.model'
+
+export interface AssignGameServerOptions {
+  selected?: GameServerSelection
+  actor?: SteamId64
+  retries?: number
+}
 
 const mutex = new Mutex()
 
-export async function assignGameServer(game: GameModel, selected?: string, actor?: SteamId64) {
+export async function assignGameServer(
+  gameNumber: GameNumber,
+  options: AssignGameServerOptions = {},
+): Promise<void> {
+  const { selected, actor, retries = 1 } = options
+  try {
+    await retry(() => doAssign(gameNumber, selected, actor), {
+      retries,
+      delay: secondsToMilliseconds(1),
+    })
+  } catch (error) {
+    logger.error({ error }, `failed to assign game server for game #${gameNumber}`)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    const reason = errorMessage.includes('no free servers available')
+      ? 'no game servers available'
+      : 'cannot assign game server'
+    try {
+      await update(gameNumber, {
+        $push: {
+          events: {
+            event: GameEventType.gameServerAssignmentFailed,
+            at: new Date(),
+            reason,
+          },
+        },
+      })
+      await notifyGameServerAssignmentFailed(gameNumber, reason)
+    } catch (innerError) {
+      logger.error(
+        { error: innerError },
+        `failed to record assignment failure for game #${gameNumber}`,
+      )
+    }
+    throw error
+  }
+}
+
+async function doAssign(
+  gameNumber: GameNumber,
+  selected?: GameServerSelection,
+  actor?: SteamId64,
+): Promise<void> {
+  const game = await collections.games.findOne({ number: gameNumber })
+  if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
   await mutex.runExclusive(async () => {
     const gameServer = selected ? await assignSelected(game, selected) : await assignFirstFree(game)
 
-    game = await update(game.number, {
-      $set: {
-        gameServer,
-      },
+    const updated = await update(gameNumber, {
+      $set: { gameServer },
       $push: {
         events: {
           event: GameEventType.gameServerAssigned,
@@ -29,41 +82,41 @@ export async function assignGameServer(game: GameModel, selected?: string, actor
         },
       },
     })
-    logger.info({ game }, `game ${game.number} assigned to game server ${gameServer.name}`)
-    events.emit('game:gameServerAssigned', { game })
+
+    logger.info({ game: updated }, `game ${gameNumber} assigned to game server ${gameServer.name}`)
+    events.emit('game:gameServerAssigned', { game: updated })
   })
 }
 
-function assignFirstFree(game: GameModel): Promise<GameServer> {
-  return staticGameServers
-    .assign(game)
-    .catch(() => servemeTf.assign(game))
-    .catch(() => tf2QuickServer.assign({ map: game.map }))
-    .catch((error: unknown) => {
-      logger.error(error)
-      throw errors.internalServerError(`no free servers available for game ${game.number}`)
-    })
+async function assignFirstFree(game: GameModel): Promise<GameServer> {
+  try {
+    return await staticGameServers.assign(game)
+  } catch {
+    // static unavailable, try next
+  }
+  try {
+    return await servemeTf.assign(game)
+  } catch {
+    // serveme.tf unavailable, try next
+  }
+  try {
+    return await tf2QuickServer.assign({ map: game.map })
+  } catch (error) {
+    logger.error(error)
+    throw errors.internalServerError(`no free servers available for game ${game.number}`)
+  }
 }
 
-function assignSelected(game: GameModel, selected: string): Promise<GameServer> {
-  if (selected.startsWith('static:')) {
-    const id = selected.substring(7)
-    return staticGameServers.assign(game, id)
+async function assignSelected(game: GameModel, selected: GameServerSelection): Promise<GameServer> {
+  switch (selected.provider) {
+    case 'static':
+      return staticGameServers.assign(game, selected.id)
+    case 'servemeTf':
+      return servemeTf.assign(game, selected.name)
+    case 'tf2QuickServer':
+      if (selected.server.select === 'new') {
+        return tf2QuickServer.assign({ region: selected.server.region, map: game.map })
+      }
+      return tf2QuickServer.assign({ serverId: selected.server.serverId, map: game.map })
   }
-
-  if (selected.startsWith('servemeTf:')) {
-    const name = selected.substring(10)
-    return servemeTf.assign(game, name)
-  }
-
-  if (selected.startsWith('tf2QuickServer:')) {
-    const payload = selected.substring(15)
-    if (payload.startsWith('new:')) {
-      const region = payload.substring(4)
-      return tf2QuickServer.assign({ region, map: game.map })
-    }
-    return tf2QuickServer.assign({ serverId: payload, map: game.map })
-  }
-
-  throw errors.badRequest(`unknown game server selection: ${selected}`)
 }
