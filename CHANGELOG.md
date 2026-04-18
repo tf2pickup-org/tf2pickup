@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.5.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.4...4.5.5) (2026-04-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/multipart to v10 ([#572](https://github.com/tf2pickup-org/tf2pickup/issues/572)) ([ba58c84](https://github.com/tf2pickup-org/tf2pickup/commit/ba58c84623f537ea861b147a9608f44e26be030a))
+* **deps:** update dependency @fastify/static to v9.1.1 ([5a95bab](https://github.com/tf2pickup-org/tf2pickup/commit/5a95bab76be2d042e0cda93b3d8ecb8171c24e87))
+* **deps:** update dependency cssnano to v7.1.5 ([c5d5c14](https://github.com/tf2pickup-org/tf2pickup/commit/c5d5c141fe0322dfa361e86bef8afb6bf5cf43d2))
+* **deps:** update dependency discord.js to v14.26.3 ([ce73624](https://github.com/tf2pickup-org/tf2pickup/commit/ce73624103891c5703eefc62d9e6ebffa42155e6))
+* **deps:** update dependency fastify to v5.8.5 ([#575](https://github.com/tf2pickup-org/tf2pickup/issues/575)) ([eac8f92](https://github.com/tf2pickup-org/tf2pickup/commit/eac8f92fb0542b3bae549b2fc202b827226c3506))
+* **deps:** update dependency hyperscript.org to v0.9.91 ([#574](https://github.com/tf2pickup-org/tf2pickup/issues/574)) ([6ddc8d7](https://github.com/tf2pickup-org/tf2pickup/commit/6ddc8d739506f78c06f90cf39549eb3ded383c96))
+* **deps:** update dependency marked to v18 ([#571](https://github.com/tf2pickup-org/tf2pickup/issues/571)) ([362925a](https://github.com/tf2pickup-org/tf2pickup/commit/362925ab80de4a992a9712a8ef4646f27ddac42b))
+* **deps:** update dependency marked to v18.0.1 ([060b6e6](https://github.com/tf2pickup-org/tf2pickup/commit/060b6e6b71949131124d64f624d55bc2ae2b229c))
+* **deps:** update dependency nanoid to v5.1.9 ([5a891ff](https://github.com/tf2pickup-org/tf2pickup/commit/5a891ff47e422622774324dd772203616d22f2c2))
+* **deps:** update dependency postcss to v8.5.10 ([d3d3a9e](https://github.com/tf2pickup-org/tf2pickup/commit/d3d3a9ebc8eb8a1a211e1f98c60f83b8d0654a91))
+* **deps:** update dependency sanitize-html to v2.17.3 [security] ([185948e](https://github.com/tf2pickup-org/tf2pickup/commit/185948e7f0cfef4e3a7a8fdea365faac6349732e))
+* **deps:** update dependency type-fest to v5.6.0 ([16dea7d](https://github.com/tf2pickup-org/tf2pickup/commit/16dea7d5cb86b1f0581d0ea1c3ee56b2b8866e1e))
+* **deps:** update opentelemetry-js monorepo ([d26c948](https://github.com/tf2pickup-org/tf2pickup/commit/d26c948b9abc2e0e4c7f5dae7a0eb4fdbb68bbfe))
+* **deps:** update opentelemetry-js-contrib monorepo ([535d89f](https://github.com/tf2pickup-org/tf2pickup/commit/535d89f6a2806326b8fd8bbe660839f8c1bec55a))
+* use absolute deadline timestamp to prevent flicker on htmx swap ([#577](https://github.com/tf2pickup-org/tf2pickup/issues/577)) ([d810c63](https://github.com/tf2pickup-org/tf2pickup/commit/d810c63f074660e78ff3aeb88cb96b8fc29faed8))
+
 ## [4.5.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.3...4.5.4) (2026-04-13)
 
 
