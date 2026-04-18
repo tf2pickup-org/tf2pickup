@@ -20,9 +20,16 @@ const startedAt = new Date('2024-01-01T10:00:00Z')
 const endedAt = new Date('2024-01-01T11:00:00Z')
 const gameDurationMs = endedAt.getTime() - startedAt.getTime()
 
-const createdEvent: GameCreated = { event: GameEventType.gameCreated, at: new Date('2024-01-01T09:55:00Z') }
+const createdEvent: GameCreated = {
+  event: GameEventType.gameCreated,
+  at: new Date('2024-01-01T09:55:00Z'),
+}
 const startedEvent: GameStarted = { event: GameEventType.gameStarted, at: startedAt }
-const endedEvent: GameEnded = { event: GameEventType.gameEnded, at: endedAt, reason: GameEndedReason.matchEnded }
+const endedEvent: GameEnded = {
+  event: GameEventType.gameEnded,
+  at: endedAt,
+  reason: GameEndedReason.matchEnded,
+}
 
 const red = '76561198000000001' as SteamId64
 const blu = '76561198000000002' as SteamId64
@@ -45,7 +52,9 @@ function makeSlot(
   }
 }
 
-function makeGame(overrides: Omit<Partial<GameModel>, 'score'> & { score?: Record<Tf2Team, number> }): GameModel {
+function makeGame(
+  overrides: Omit<Partial<GameModel>, 'score'> & { score?: Record<Tf2Team, number> },
+): GameModel {
   return {
     number: 1 as GameNumber,
     map: 'cp_process_final',

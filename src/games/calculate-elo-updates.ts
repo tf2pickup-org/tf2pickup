@@ -49,9 +49,7 @@ export function calculateEloUpdates(
   const startedEvent = game.events.find(
     (e): e is GameStarted => e.event === GameEventType.gameStarted,
   )
-  const endedEvent = game.events.find(
-    (e): e is GameEnded => e.event === GameEventType.gameEnded,
-  )
+  const endedEvent = game.events.find((e): e is GameEnded => e.event === GameEventType.gameEnded)
   if (!startedEvent || !endedEvent) {
     return []
   }
@@ -101,7 +99,13 @@ export function calculateEloUpdates(
     const K = kFactor(getGamesPlayed(slot.player, slot.gameClass))
     const newElo = Math.round(playerElo + K * (S - E))
 
-    updates.push({ steamId: slot.player, gameClass: slot.gameClass, newElo, at: endedAt, game: game.number })
+    updates.push({
+      steamId: slot.player,
+      gameClass: slot.gameClass,
+      newElo,
+      at: endedAt,
+      game: game.number,
+    })
   }
 
   return updates

@@ -24,10 +24,7 @@ export async function up() {
   // In-memory state: updated as each game is processed in order
   const eloState = new Map<SteamId64, Partial<Record<Tf2ClassName, number>>>()
   const gamesPlayedState = new Map<SteamId64, Partial<Record<Tf2ClassName, number>>>()
-  const eloHistoryState = new Map<
-    SteamId64,
-    { at: Date; elo: PlayerElo; game: GameNumber }[]
-  >()
+  const eloHistoryState = new Map<SteamId64, { at: Date; elo: PlayerElo; game: GameNumber }[]>()
 
   for (const game of games) {
     const updates = calculateEloUpdates(
