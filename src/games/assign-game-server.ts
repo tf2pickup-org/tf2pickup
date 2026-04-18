@@ -92,12 +92,12 @@ async function assignFirstFree(game: GameModel): Promise<GameServer> {
   try {
     return await staticGameServers.assign(game)
   } catch {
-    // static unavailable, try next
+    // expected
   }
   try {
     return await servemeTf.assign(game)
   } catch {
-    // serveme.tf unavailable, try next
+    // expected
   }
   try {
     return await tf2QuickServer.assign({ map: game.map })

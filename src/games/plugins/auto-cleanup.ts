@@ -24,10 +24,12 @@ export default fp(
       if (game.state === GameState.interrupted) {
         cancelConfigure(game.number)
         await cleanupSafe(game)
-      } else {
+      } else if (game.state === GameState.ended) {
         delay(async () => {
           await cleanupSafe(game)
         }, secondsToMilliseconds(30))
+      } else {
+        await cleanupSafe(game)
       }
     })
   },

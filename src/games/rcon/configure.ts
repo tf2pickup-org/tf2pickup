@@ -33,18 +33,21 @@ export function cancelConfigure(gameNumber: GameNumber) {
 }
 
 export async function configure(gameNumber: GameNumber): Promise<void> {
-  const game = await collections.games.findOne({ number: gameNumber })
-  if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
   cancelConfigure(gameNumber)
   const controller = new AbortController()
-  const timeout = AbortSignal.timeout(await configureTimeout(game))
-  const signal = AbortSignal.any([controller.signal, timeout])
   configurators.set(gameNumber, controller)
+  let game: GameModel | null = null
   try {
+    game = await collections.games.findOne({ number: gameNumber })
+    if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
+    const timeout = AbortSignal.timeout(await configureTimeout(game))
+    const signal = AbortSignal.any([controller.signal, timeout])
     await doConfigure(game, { signal })
   } catch (error) {
     logger.error({ error }, `error configuring game #${gameNumber}`)
-    events.emit('game:gameServerConfigureFailed', { game, error })
+    if (game) {
+      events.emit('game:gameServerConfigureFailed', { game, error })
+    }
     try {
       await update(gameNumber, {
         $push: {
