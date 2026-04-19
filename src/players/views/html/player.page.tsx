@@ -153,7 +153,6 @@ function PlayerPresentation(props: {
         height="184"
         class="player-avatar"
         alt={`${props.player.name}'s avatar`}
-        style={`view-transition-name: player-avatar-${props.player.steamId}`}
       />
 
       <div class="flex flex-row items-center gap-[10px]">
