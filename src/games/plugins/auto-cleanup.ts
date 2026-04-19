@@ -3,6 +3,7 @@ import { events } from '../../events'
 import { delay } from 'es-toolkit/compat'
 import { secondsToMilliseconds } from 'date-fns'
 import { cleanup } from '../rcon/cleanup'
+import { cancelConfigure } from '../rcon/configure'
 import { assertIsError } from '../../utils/assert-is-error'
 import { logger } from '../../logger'
 import { GameState, type GameModel } from '../../database/models/game.model'
@@ -20,7 +21,10 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     events.on('game:ended', async ({ game }) => {
-      if (game.state === GameState.ended) {
+      if (game.state === GameState.interrupted) {
+        cancelConfigure(game.number)
+        await cleanupSafe(game)
+      } else if (game.state === GameState.ended) {
         delay(async () => {
           await cleanupSafe(game)
         }, secondsToMilliseconds(30))

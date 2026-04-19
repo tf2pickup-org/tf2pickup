@@ -10,7 +10,10 @@ export async function Tf2QuickServerList(props: {
 }) {
   if (props.servers !== undefined) {
     const defaultRegion = props.defaultRegion ?? tf2QuickServerRegions[0]!.key
-    const createNewValue = `tf2QuickServer:new:${defaultRegion}`
+    const createNewValue = JSON.stringify({
+      provider: 'tf2QuickServer',
+      server: { select: 'new', region: defaultRegion },
+    })
 
     return (
       <ul>
@@ -20,7 +23,10 @@ export async function Tf2QuickServerList(props: {
               <input
                 type="radio"
                 name="gameServer"
-                value={`tf2QuickServer:${server.serverId}`}
+                value={JSON.stringify({
+                  provider: 'tf2QuickServer',
+                  server: { select: 'existing', serverId: server.serverId },
+                })}
                 onclick="document.getElementById('tf2qs-region-select').style.display='none'"
               />
               <span safe>{server.serverId.substring(0, 8)}</span>
@@ -46,7 +52,7 @@ export async function Tf2QuickServerList(props: {
             style="display:none"
             onchange="
               const radio = document.getElementById('tf2qs-create-new-radio');
-              radio.value = 'tf2QuickServer:new:' + this.value;
+              radio.value = JSON.stringify({provider:'tf2QuickServer',server:{select:'new',region:this.value}});
             "
           >
             {tf2QuickServerRegions.map(r => (

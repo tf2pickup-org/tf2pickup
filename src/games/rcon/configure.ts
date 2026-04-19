@@ -1,9 +1,14 @@
-import { secondsToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { deburr, delay } from 'es-toolkit'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'
-import { type GameModel, GameServerProvider, GameState } from '../../database/models/game.model'
+import {
+  type GameModel,
+  type GameNumber,
+  GameServerProvider,
+  GameState,
+} from '../../database/models/game.model'
 import { environment } from '../../environment'
 import { logger } from '../../logger'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
@@ -21,7 +26,64 @@ import { errors } from '../../errors'
 import { players } from '../../players'
 import type { RconCommand } from '../../shared/types/rcon-command'
 
-export async function configure(game: GameModel, options: { signal?: AbortSignal } = {}) {
+const configurators = new Map<GameNumber, AbortController>()
+
+export function cancelConfigure(gameNumber: GameNumber) {
+  configurators.get(gameNumber)?.abort()
+}
+
+export async function configure(gameNumber: GameNumber): Promise<void> {
+  cancelConfigure(gameNumber)
+  const controller = new AbortController()
+  configurators.set(gameNumber, controller)
+  let game: GameModel | null = null
+  try {
+    game = await collections.games.findOne({ number: gameNumber })
+    if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
+    const timeout = AbortSignal.timeout(await configureTimeout(game))
+    const signal = AbortSignal.any([controller.signal, timeout])
+    await doConfigure(game, { signal })
+  } catch (error) {
+    logger.error({ error }, `error configuring game #${gameNumber}`)
+    if (game) {
+      events.emit('game:gameServerConfigureFailed', { game, error })
+    }
+    try {
+      await update(gameNumber, {
+        $push: {
+          events: {
+            event: GameEventType.gameServerConfigureFailed,
+            at: new Date(),
+            error: error instanceof Error ? error.message : String(error),
+          },
+        },
+      })
+    } catch (updateError) {
+      logger.error(
+        { error: updateError },
+        `failed to record configure failure for game #${gameNumber}`,
+      )
+    }
+  } finally {
+    configurators.delete(gameNumber)
+  }
+}
+
+async function configureTimeout(game: GameModel): Promise<number> {
+  const configureRconTimeout = minutesToMilliseconds(1)
+
+  if (game.gameServer?.pendingTaskId) {
+    return (await configuration.get('tf2_quick_server.timeout')) + configureRconTimeout
+  }
+
+  if (game.gameServer?.provider === GameServerProvider.tf2QuickServer) {
+    return secondsToMilliseconds(90) + configureRconTimeout
+  }
+
+  return configureRconTimeout
+}
+
+async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = {}) {
   if (game.gameServer === undefined) {
     throw errors.badRequest('gameServer is undefined')
   }
