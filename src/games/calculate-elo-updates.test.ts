@@ -82,6 +82,7 @@ describe('calculateEloUpdates', () => {
     })
 
     it('returns empty array when game has no score', () => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { score: _s, ...game } = makeGame({})
       expect(calculateEloUpdates(game as GameModel, getDefaultElo, provisionalGames)).toEqual([])
     })
