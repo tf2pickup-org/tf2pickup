@@ -28,5 +28,7 @@ htmx.onLoad(element => {
     init(element)
   }
 
-  element.querySelectorAll<HTMLDetailsElement>('[data-details-persist]').forEach(el => init(el))
+  element.querySelectorAll<HTMLDetailsElement>('[data-details-persist]').forEach(el => {
+    init(el)
+  })
 })
