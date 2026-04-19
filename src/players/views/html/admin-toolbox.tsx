@@ -27,12 +27,20 @@ export async function AdminToolbox(props: {
   const compact = queue.config.classes.length > 4
 
   return (
-    <details id="player-admin-toolbox" class="admin-toolbox-details" data-details-persist="admin-toolbox">
+    <details
+      id="player-admin-toolbox"
+      class="admin-toolbox-details"
+      data-details-persist="admin-toolbox"
+    >
       <summary class="admin-toolbox-summary">
         <IconChevronRight size={14} class="admin-toolbox-chevron" />
         <span>Admin toolbox</span>
       </summary>
-      <script>{`try{if(localStorage.getItem('details-persist-admin-toolbox')==='open'){document.currentScript.closest('details').setAttribute('open','');}}catch(e){}` as 'safe'}</script>
+      <script>
+        {
+          `try{if(localStorage.getItem('details-persist-admin-toolbox')==='open'){document.currentScript.closest('details').setAttribute('open','');}}catch(e){}` as 'safe'
+        }
+      </script>
 
       {requireVerification && (
         <div class="bg-abru-light-5 flex items-center gap-3 rounded-md px-3 py-2">
@@ -142,8 +150,7 @@ function BanStatus(props: { bans: PlayerBan[] | undefined; steamId: SteamId64 })
         <IconBan size={16} class="shrink-0" />
         <div class="flex min-w-0 flex-col">
           <span>
-            Banned until{' '}
-            <strong safe>{format(activeBan.end, 'MMM dd, yyyy, HH:mm')}</strong>
+            Banned until <strong safe>{format(activeBan.end, 'MMM dd, yyyy, HH:mm')}</strong>
           </span>
           <span class="truncate text-red-300/70" safe>
             {activeBan.reason}
@@ -160,12 +167,12 @@ function BanStatus(props: { bans: PlayerBan[] | undefined; steamId: SteamId64 })
   }
 
   return (
-    <div class="flex flex-1 items-center gap-3 rounded-md bg-abru-light-5 px-3 py-2 text-sm text-abru-light-50">
+    <div class="bg-abru-light-5 text-abru-light-50 flex flex-1 items-center gap-3 rounded-md px-3 py-2 text-sm">
       <IconCheck size={16} class="shrink-0" />
       <span>No active ban</span>
       <a
         href={`/players/${props.steamId}/edit/bans`}
-        class="ml-auto text-xs text-abru-light-50 underline hover:text-abru-light-75"
+        class="text-abru-light-50 hover:text-abru-light-75 ml-auto text-xs underline"
       >
         Manage bans
       </a>
@@ -195,7 +202,7 @@ async function SkillLastUpdated(props: {
         {formatDistanceToNow(lastEdit.at, { addSuffix: true }) as 'safe'}
       </p>
       <p class="text-nowrap">
-        <strong>{previousValue}</strong> → <strong safe>{lastEdit.skill[props.className]}</strong>
+        <strong>{previousValue}</strong> → <strong>{lastEdit.skill[props.className]}</strong>
       </p>
     </div>
   )
