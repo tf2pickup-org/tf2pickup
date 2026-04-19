@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.6.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.5...4.6.0) (2026-04-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v18.0.2 ([da41ae8](https://github.com/tf2pickup-org/tf2pickup/commit/da41ae805b50e8204afc7238d6906dd0fe67b14e))
+* remove avatar view-transition animation ([#581](https://github.com/tf2pickup-org/tf2pickup/issues/581)) ([44bc83e](https://github.com/tf2pickup-org/tf2pickup/commit/44bc83e19074ac12d8bcf3f6d1f2a71f1f4e4235))
+
+
+### Features
+
+* add per-class ELO rating system ([#579](https://github.com/tf2pickup-org/tf2pickup/issues/579)) ([d34886e](https://github.com/tf2pickup-org/tf2pickup/commit/d34886e122715ada33fad2f3053a2b95425985df))
+
 ## [4.5.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.4...4.5.5) (2026-04-18)
 
 
