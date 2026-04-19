@@ -49,6 +49,10 @@ export class AdminPage {
     skill: { scout: number; soldier: number; demoman: number; medic: number },
   ) {
     await this.page.goto(`/players/${steamId}`)
+    const toolbox = this.page.locator('#player-admin-toolbox')
+    if (!(await toolbox.evaluate((el: HTMLDetailsElement) => el.open))) {
+      await toolbox.locator('summary').click()
+    }
     await this.page.getByLabel("Player's skill on scout").fill(skill.scout.toString())
     await this.page.getByLabel("Player's skill on soldier").fill(skill.soldier.toString())
     await this.page.getByLabel("Player's skill on demoman").fill(skill.demoman.toString())
