@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.4.1
         with:
           version: 10.33.0
       - uses: actions/setup-node@v6
@@ -121,7 +121,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.4.1
         with:
           version: 10.33.0
 
@@ -233,7 +233,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v2.4.1
         with:
           version: 10.33.0
       - uses: actions/setup-node@v6
