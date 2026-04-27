@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.6.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.6.0...4.6.1) (2026-04-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/static to v9.1.2 ([a336f4c](https://github.com/tf2pickup-org/tf2pickup/commit/a336f4cba78dd32a04c618c325e4877e35a1ce5c))
+* **deps:** update dependency @fastify/static to v9.1.3 ([#585](https://github.com/tf2pickup-org/tf2pickup/issues/585)) ([7b66e90](https://github.com/tf2pickup-org/tf2pickup/commit/7b66e90d6a23ed0a99729a81bbf82dd5aefaf190))
+* **deps:** update dependency cssnano to v7.1.7 ([d41ff49](https://github.com/tf2pickup-org/tf2pickup/commit/d41ff49f7c2705e0c02dd76098312a9d47a1d71f))
+* **deps:** update dependency es-toolkit to v1.46.0 ([1aa7c1c](https://github.com/tf2pickup-org/tf2pickup/commit/1aa7c1ce27e59b25f06308799d293e16171638a9))
+* **deps:** update dependency htmx.org to v2.0.10 ([#583](https://github.com/tf2pickup-org/tf2pickup/issues/583)) ([5f5a3e2](https://github.com/tf2pickup-org/tf2pickup/commit/5f5a3e2315b324d9ea8c4e02037812060c9166f2))
+* **deps:** update dependency mongodb to v7.2.0 ([ed54a86](https://github.com/tf2pickup-org/tf2pickup/commit/ed54a86926d0e9bc2402e83475db1feca58a072e))
+* **deps:** update dependency postcss to v8.5.12 ([69db732](https://github.com/tf2pickup-org/tf2pickup/commit/69db732d07f2898917a008fc12a5c458b88c4fb1))
+* **deps:** update tailwindcss monorepo to v4.2.3 ([202cc1e](https://github.com/tf2pickup-org/tf2pickup/commit/202cc1ecd34647e051f4ab404a5250c050439431))
+* **deps:** update tailwindcss monorepo to v4.2.4 ([af04d0a](https://github.com/tf2pickup-org/tf2pickup/commit/af04d0aa3018619a5917b74e3c9ae111f9768963))
+
 # [4.6.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.5.5...4.6.0) (2026-04-19)
 
 
