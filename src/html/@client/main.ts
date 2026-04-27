@@ -21,6 +21,7 @@ import './flash-message'
 import './map-thumbnail'
 import './mention-completion'
 import './mention-notification'
+import './details-persist'
 import './tabs'
 
 export { goTo } from './navigation'
