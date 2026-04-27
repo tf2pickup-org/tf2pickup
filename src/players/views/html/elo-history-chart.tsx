@@ -87,6 +87,7 @@ export async function EloHistoryChart(props: { steamId: SteamId64 }) {
       const points: EloDataPoint[] = history
         .filter(entry => entry.elo[gameClass] !== undefined)
         .sort((a, b) => a.game - b.game)
+        .slice(-100)
         .map(entry => ({
           gameNumber: entry.game,
           date: entry.at instanceof Date ? entry.at.toISOString() : String(entry.at),
