@@ -20,7 +20,7 @@ export default routes(async app => {
     },
     async (req, reply) => {
       const { steamId } = req.params
-      reply.status(200).html(await EditPlayerEloPage({ steamId }))
+      await reply.status(200).html(EditPlayerEloPage({ steamId }))
     },
   )
 })

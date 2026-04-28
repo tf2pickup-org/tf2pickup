@@ -38,6 +38,7 @@ import {
 } from 'date-fns'
 import { isBot } from '../../../shared/types/bot'
 import { makeTitle } from '../../../html/make-title'
+import { EloHistoryChart } from './elo-history-chart'
 import { environment } from '../../../environment'
 import { configuration } from '../../../configuration'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -260,6 +261,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
             })}
           </tbody>
         </table>
+        <EloHistoryChart steamId={props.steamId} />
       </div>
     </EditPlayer>
   )

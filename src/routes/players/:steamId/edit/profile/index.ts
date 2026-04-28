@@ -23,7 +23,7 @@ export default routes(async app => {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        reply.status(200).html(await EditPlayerProfilePage({ steamId }))
+        await reply.status(200).html(EditPlayerProfilePage({ steamId }))
       },
     )
     .post(
