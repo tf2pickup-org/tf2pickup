@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.7.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.6.1...4.7.0) (2026-04-29)
+
+
+### Features
+
+* **players:** add ELO history chart to player edit page ([#586](https://github.com/tf2pickup-org/tf2pickup/issues/586)) ([5cb6804](https://github.com/tf2pickup-org/tf2pickup/commit/5cb680456002bebcb5753efdd2f16457ba87cd3e))
+
 ## [4.6.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.6.0...4.6.1) (2026-04-27)
 
 
