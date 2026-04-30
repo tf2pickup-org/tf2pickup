@@ -5,9 +5,9 @@ export class AdminPage {
   constructor(public readonly page: Page) {}
 
   private async openToolbox() {
-    const toolbox = this.page.locator('#player-admin-toolbox')
-    if (!(await toolbox.evaluate((el: HTMLDetailsElement) => el.open))) {
-      await toolbox.locator('summary').click()
+    const content = this.page.locator('#player-admin-toolbox .player-admin-toolbox')
+    if (!(await content.isVisible())) {
+      await this.page.locator('#player-admin-toolbox summary').click()
     }
   }
 
