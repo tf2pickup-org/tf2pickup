@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.7.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.0...4.7.1) (2026-04-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency es-toolkit to v1.46.1 ([d20b9df](https://github.com/tf2pickup-org/tf2pickup/commit/d20b9df81084c53025296345694257b2427f20fd))
+* **deps:** update dependency zod to v4.4.1 ([056d8f1](https://github.com/tf2pickup-org/tf2pickup/commit/056d8f19f8fcf4bce2e403f1e788f153d6900b12))
+* **deps:** update opentelemetry-js monorepo ([f05cc63](https://github.com/tf2pickup-org/tf2pickup/commit/f05cc6393a1b6963e32f388fa9ecf64b918f4d17))
+* **deps:** update opentelemetry-js-contrib monorepo ([f3090d3](https://github.com/tf2pickup-org/tf2pickup/commit/f3090d37d67610880bb5c33558ebd86a554632af))
+* redesign admin toolbox on player profile page ([#582](https://github.com/tf2pickup-org/tf2pickup/issues/582)) ([bd3d1fd](https://github.com/tf2pickup-org/tf2pickup/commit/bd3d1fd91a2aa61c8bbc2ed5f8ab04f69ad40725))
+
 # [4.7.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.6.1...4.7.0) (2026-04-29)
 
 
