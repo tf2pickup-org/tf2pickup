@@ -23,6 +23,7 @@ export async function AdminToolbox(props: {
 }) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
+  const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
   const compact = queue.config.classes.length > 4
 
@@ -93,6 +94,7 @@ export async function AdminToolbox(props: {
                     gameClass={gameClass.name}
                     name={`skill.${gameClass.name}`}
                     value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
+                    step={skillStep}
                   >
                     <SkillLastUpdated
                       className={gameClass.name}

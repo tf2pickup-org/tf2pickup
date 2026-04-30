@@ -44,6 +44,7 @@ export default routes(async app => {
               etf2lAccountRequired: z.coerce.boolean().default(false),
               minimumInGameHours: z.coerce.number(),
               requirePlayerVerification: z.coerce.boolean().default(false),
+              skillStep: z.coerce.number().positive(),
               ...queue.config.classes
                 .map(({ name }) => name)
                 .reduce<
@@ -59,6 +60,7 @@ export default routes(async app => {
           minimumInGameHours,
           requirePlayerVerification,
           playerSkillThresholdEnabled,
+          skillStep,
         } = request.body
         const defaultPlayerSkill = Object.entries(request.body)
           .filter(([key]) => key.startsWith('defaultPlayerSkill.'))
@@ -76,6 +78,7 @@ export default routes(async app => {
             playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,
           ),
           configuration.set('games.default_player_skill', defaultPlayerSkill),
+          configuration.set('games.skill_step', skillStep),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         reply.status(200).html(await PlayerRestrictionsPage())
