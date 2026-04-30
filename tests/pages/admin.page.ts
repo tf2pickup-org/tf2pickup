@@ -4,8 +4,16 @@ import { secondsToMilliseconds } from 'date-fns'
 export class AdminPage {
   constructor(public readonly page: Page) {}
 
+  private async openToolbox() {
+    const content = this.page.locator('#player-admin-toolbox .player-admin-toolbox')
+    if (!(await content.isVisible())) {
+      await this.page.locator('#player-admin-toolbox summary').click()
+    }
+  }
+
   async banPlayer(steamId: string, { reason }: { reason: string }) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
     await this.page.getByRole('link', { name: 'Bans' }).click()
     await this.page.getByRole('link', { name: 'Add ban' }).click()
@@ -15,6 +23,7 @@ export class AdminPage {
 
   async revokeAllBans(steamId: string) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
     await this.page.getByRole('link', { name: 'Bans' }).click()
     await this.page.waitForURL(/\/players\/[^/]+\/edit\/bans$/)
@@ -26,6 +35,7 @@ export class AdminPage {
 
   async muteChatPlayer(steamId: string, { reason }: { reason: string }) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
     await this.page.getByRole('link', { name: 'Chat mutes' }).click()
     await this.page.getByRole('link', { name: 'Add mute' }).click()
@@ -35,6 +45,7 @@ export class AdminPage {
 
   async revokeAllChatMutes(steamId: string) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
     await this.page.getByRole('link', { name: 'Chat mutes' }).click()
     await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
@@ -49,6 +60,7 @@ export class AdminPage {
     skill: { scout: number; soldier: number; demoman: number; medic: number },
   ) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     await this.page.getByLabel("Player's skill on scout").fill(skill.scout.toString())
     await this.page.getByLabel("Player's skill on soldier").fill(skill.soldier.toString())
     await this.page.getByLabel("Player's skill on demoman").fill(skill.demoman.toString())
@@ -59,6 +71,7 @@ export class AdminPage {
 
   async playerCooldown(steamId: string) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
     return this.page.getByLabel('Cooldown level')
   }
@@ -105,6 +118,7 @@ export class AdminPage {
 
   async setPlayerVerified(steamId: string, verified: boolean) {
     await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
     const checkbox = this.page.getByLabel('Player verified')
     if (!(await checkbox.isVisible())) {
       return

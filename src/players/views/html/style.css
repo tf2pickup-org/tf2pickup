@@ -93,34 +93,107 @@
     }
   }
 
-  .player-admin-toolbox {
-    display: grid;
-    grid-template-areas:
-      'captionSkill     captionSkill'
-      'skill            skill'
-      'buttonSave       buttonReset'
-      'captionWinLoss   captionWinLoss'
-      'winLoss          winLoss'
-      'linkEdit         linkEdit';
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .admin-toolbox-details {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 
+  .admin-toolbox-summary {
+    display: flex;
     align-items: center;
-    column-gap: 8px;
-    row-gap: 8px;
+    gap: 8px;
     border-radius: 8px;
     background: var(--color-abru-dark-29);
-    padding: 24px;
+    padding: 10px 16px;
+    cursor: pointer;
+    user-select: none;
+    color: var(--color-abru-light-50);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
 
-    @media (width >= theme(--breakpoint-xl)) {
-      grid-template-areas:
-        'captionSkill  captionSkill captionSkill captionSkill captionSkill captionSkill . captionWinLoss  captionWinLoss  .       . linkEdit'
-        'skill         skill        skill        skill        skill        skill        . winLoss         winLoss         winLoss . linkEdit';
-      grid-template-columns: repeat(6, minmax(0, 2fr)) 4px repeat(3, 2fr) 4px 1fr;
-      align-items: flex-end;
+    &::marker,
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    .admin-toolbox-chevron {
+      transition: rotate 0.15s ease;
+      flex-shrink: 0;
+    }
+  }
+
+  details[open] .admin-toolbox-summary .admin-toolbox-chevron {
+    rotate: 90deg;
+  }
+
+  .player-admin-toolbox {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border-radius: 8px;
+    background: var(--color-abru-dark-29);
+    padding: 20px 24px;
+
+    .admin-toolbox-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .admin-toolbox-divider {
+      height: 1px;
+      background: var(--color-abru-light-10);
+      margin-inline: -24px;
+    }
+
+    .admin-toolbox-body {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+
+      @media (width >= theme(--breakpoint-xl)) {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+    }
+
+    .admin-toolbox-skill {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+      min-width: 0;
+
+      @media (width >= theme(--breakpoint-xl)) {
+        padding-right: 24px;
+      }
+    }
+
+    .admin-toolbox-sep {
+      display: none;
+
+      @media (width >= theme(--breakpoint-xl)) {
+        display: block;
+        width: 1px;
+        align-self: stretch;
+        background: var(--color-abru-light-10);
+      }
+    }
+
+    .admin-toolbox-winloss {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      @media (width >= theme(--breakpoint-xl)) {
+        padding-left: 24px;
+      }
     }
 
     .skill-inputs {
-      grid-area: skill;
       display: flex;
       flex-wrap: wrap;
       gap: 4px;
@@ -181,7 +254,6 @@
       button {
         cursor: pointer;
         display: inline-block;
-
         padding: 4px 8px;
         border-radius: 4px;
         color: var(--color-ash);
@@ -198,7 +270,6 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-
       font-weight: 500;
 
       .wins {

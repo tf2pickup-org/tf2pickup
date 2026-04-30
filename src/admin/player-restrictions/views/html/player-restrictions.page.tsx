@@ -14,6 +14,7 @@ export async function PlayerRestrictionsPage() {
           <MinimumTf2InGameHours />
           <RequirePlayerVerification />
           <PlayerSkillThreshold />
+          <SkillStep />
           <DefaultPlayerSkill />
 
           <p>
@@ -145,8 +146,35 @@ async function PlayerSkillThreshold() {
   )
 }
 
+async function SkillStep() {
+  const skillStep = await configuration.get('games.skill_step')
+  return (
+    <dl>
+      <dt>
+        <label for="skillStep">Skill step</label>
+      </dt>
+      <dd class="flex flex-col">
+        <div>
+          <input
+            type="number"
+            id="skillStep"
+            name="skillStep"
+            value={skillStep.toString()}
+            step="0.1"
+            min="0.1"
+          />
+        </div>
+        <p class="text-abru-light-75 text-sm">
+          Increment/decrement step when adjusting player skill in the admin panel.
+        </p>
+      </dd>
+    </dl>
+  )
+}
+
 async function DefaultPlayerSkill() {
   const defaultPlayerSkill = await configuration.get('games.default_player_skill')
+  const skillStep = await configuration.get('games.skill_step')
   const classes = queue.config.classes.map(({ name }) => name)
 
   return (
@@ -161,6 +189,7 @@ async function DefaultPlayerSkill() {
               gameClass={gameClass}
               name={`defaultPlayerSkill.${gameClass}`}
               value={defaultPlayerSkill[gameClass] ?? 1}
+              step={skillStep}
             />
           ))}
         </div>

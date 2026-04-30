@@ -175,6 +175,12 @@ export const configurationSchema = z.discriminatedUnion('key', [
         'Number of active substitute requests that make the game be automatically force-ended',
       ),
   }),
+  z
+    .object({
+      key: z.literal('games.skill_step'),
+      value: z.number().positive().default(1.0),
+    })
+    .describe('Increment/decrement step when adjusting player skill in the admin panel'),
   z.object({
     key: z.literal('misc.discord_invite_link'),
     value: z.url().nullable().default(null),
