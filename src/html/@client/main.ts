@@ -22,6 +22,7 @@ import './map-thumbnail'
 import './mention-completion'
 import './mention-notification'
 import './details-persist'
+import './skill-input'
 import './tabs'
 
 export { goTo } from './navigation'

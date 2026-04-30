@@ -11,11 +11,32 @@
       margin-left: 8px;
     }
 
-    input {
-      text-align: center;
-      width: 48px;
+    & .skill-spinner-btn {
       background: transparent;
       border: none;
+      cursor: pointer;
+      padding: 0 6px;
+      font-size: 18px;
+      color: var(--color-abru-light-35);
+      height: 100%;
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        color: var(--color-abru-light-75);
+      }
+
+      &:active {
+        scale: 0.9;
+      }
+    }
+
+    & .skill-spinner-display {
+      min-width: 28px;
+      text-align: center;
+      font-size: 14px;
+      user-select: none;
+      color: var(--color-ash);
     }
   }
 }
