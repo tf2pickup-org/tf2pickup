@@ -358,19 +358,33 @@
     background: var(--color-abru-light-5);
   }
 
-  &.tier-bronze  { border-color: color-mix(in srgb, #cd7f32 30%, transparent); }
-  &.tier-silver  { border-color: color-mix(in srgb, #bbbbbb 25%, transparent); }
-  &.tier-gold    { border-color: color-mix(in srgb, #e3c392 35%, transparent); }
-  &.tier-australium { border-color: color-mix(in srgb, #e3b63a 40%, transparent); }
+  &.tier-bronze {
+    border-color: color-mix(in srgb, #cd7f32 30%, transparent);
+  }
+  &.tier-silver {
+    border-color: color-mix(in srgb, #bbbbbb 25%, transparent);
+  }
+  &.tier-gold {
+    border-color: color-mix(in srgb, #e3c392 35%, transparent);
+  }
+  &.tier-australium {
+    border-color: color-mix(in srgb, #e3b63a 40%, transparent);
+  }
 
   &.locked {
     opacity: 0.35;
     border-color: transparent;
 
-    &:hover { opacity: 0.5; }
+    &:hover {
+      opacity: 0.5;
+    }
 
-    .achievement-name { color: var(--color-abru-light-50); }
-    .achievement-tier { color: var(--color-abru-light-35); }
+    .achievement-name {
+      color: var(--color-abru-light-50);
+    }
+    .achievement-tier {
+      color: var(--color-abru-light-35);
+    }
   }
 }
 
@@ -383,11 +397,26 @@
   justify-content: center;
   flex-shrink: 0;
 
-  .tier-bronze &  { background: rgba(205, 127, 50, 0.10);  color: #cd7f32; }
-  .tier-silver &  { background: rgba(187, 187, 187, 0.10);  color: #bbbbbb; }
-  .tier-gold &    { background: rgba(227, 195, 146, 0.10);  color: #e3c392; }
-  .tier-australium & { background: rgba(227, 182, 58, 0.12); color: #e3b63a; }
-  .locked & { background: var(--color-abru-light-5); color: var(--color-abru-light-35); }
+  .tier-bronze & {
+    background: rgba(205, 127, 50, 0.1);
+    color: #cd7f32;
+  }
+  .tier-silver & {
+    background: rgba(187, 187, 187, 0.1);
+    color: #bbbbbb;
+  }
+  .tier-gold & {
+    background: rgba(227, 195, 146, 0.1);
+    color: #e3c392;
+  }
+  .tier-australium & {
+    background: rgba(227, 182, 58, 0.12);
+    color: #e3b63a;
+  }
+  .locked & {
+    background: var(--color-abru-light-5);
+    color: var(--color-abru-light-35);
+  }
 }
 
 .achievement-name {
