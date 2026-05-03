@@ -117,7 +117,7 @@
     "cssnano": "7.1.8",
     "eslint": "10.3.0",
     "globals": "17.6.0",
-    "lorem-ipsum": "2.0.8",
+    "lorem-ipsum": "2.0.10",
     "node-html-parser": "7.1.0",
     "pino-princess": "1.6.1",
     "postcss-cli": "11.0.1",
