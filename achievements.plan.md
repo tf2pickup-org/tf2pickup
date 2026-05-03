@@ -10,59 +10,59 @@ Static array in code. Each has: `id`, `name`, `description`, `tier` (bronze/silv
 
 ### Games played
 
-| ID                  | Name              | Description        | Tier       |
-| ------------------- | ----------------- | ------------------ | ---------- |
+| ID                  | Name              | Description          | Tier       |
+| ------------------- | ----------------- | -------------------- | ---------- |
 | `first-blood`       | First Blood       | Play your first game | bronze     |
-| `mercenary`         | Mercenary         | Play 100 games     | bronze     |
-| `grizzled-veteran`  | Grizzled Veteran  | Play 250 games     | silver     |
-| `f2p-no-more`       | F2P No More       | Play 1000 games    | gold       |
-| `australium-legend` | Australium Legend  | Play 5000 games    | australium |
+| `mercenary`         | Mercenary         | Play 100 games       | bronze     |
+| `grizzled-veteran`  | Grizzled Veteran  | Play 250 games       | silver     |
+| `f2p-no-more`       | F2P No More       | Play 1000 games      | gold       |
+| `australium-legend` | Australium Legend | Play 5000 games      | australium |
 
 ### Class-specific
 
-| ID             | Name                                          | Description                | Tier   |
-| -------------- | --------------------------------------------- | -------------------------- | ------ |
-| `ze-healing`   | Ze Healing Is Not As Rewarding As Ze Hurting  | Play 100 games as medic    | bronze |
-| `ubermensch`   | Übermensch                                    | Play 500 games as medic    | silver |
-| `grasshopper`  | Grasshopper                                   | Play 500 games as scout    | silver |
-| `maggots`      | Maggots!                                      | Play 500 games as soldier  | silver |
-| `kabooom`      | Kabooom!                                      | Play 500 games as demoman  | silver |
+| ID            | Name                                         | Description               | Tier   |
+| ------------- | -------------------------------------------- | ------------------------- | ------ |
+| `ze-healing`  | Ze Healing Is Not As Rewarding As Ze Hurting | Play 100 games as medic   | bronze |
+| `ubermensch`  | Übermensch                                   | Play 500 games as medic   | silver |
+| `grasshopper` | Grasshopper                                  | Play 500 games as scout   | silver |
+| `maggots`     | Maggots!                                     | Play 500 games as soldier | silver |
+| `kabooom`     | Kabooom!                                     | Play 500 games as demoman | silver |
 
 ### Substitute
 
-| ID                  | Name                        | Description                    | Tier   |
-| ------------------- | --------------------------- | ------------------------------ | ------ |
-| `reinforcements`    | Reinforcements Have Arrived | Join a game as a substitute    | bronze |
-| `mann-co-reserve`   | Mann Co. Reserve            | Join 10 games as a substitute  | silver |
+| ID                | Name                        | Description                   | Tier   |
+| ----------------- | --------------------------- | ----------------------------- | ------ |
+| `reinforcements`  | Reinforcements Have Arrived | Join a game as a substitute   | bronze |
+| `mann-co-reserve` | Mann Co. Reserve            | Join 10 games as a substitute | silver |
 
 ### Server join speed
 
-| ID                       | Name                  | Description                                                  | Tier   |
-| ------------------------ | --------------------- | ------------------------------------------------------------ | ------ |
-| `need-a-dispenser-here`  | Need A Dispenser Here | Join the game server within 1 minute of it being ready 50 times | silver |
+| ID                      | Name                  | Description                                                     | Tier   |
+| ----------------------- | --------------------- | --------------------------------------------------------------- | ------ |
+| `need-a-dispenser-here` | Need A Dispenser Here | Join the game server within 1 minute of it being ready 50 times | silver |
 
 ### No disconnects
 
-| ID             | Name          | Description                                        | Tier   |
-| -------------- | ------------- | -------------------------------------------------- | ------ |
-| `iron-mann`    | Iron Mann     | Complete 10 games without disconnecting from the server | silver |
-| `mann-of-steel`| Mann of Steel | Complete 50 games without disconnecting            | gold   |
+| ID              | Name          | Description                                             | Tier   |
+| --------------- | ------------- | ------------------------------------------------------- | ------ |
+| `iron-mann`     | Iron Mann     | Complete 10 games without disconnecting from the server | silver |
+| `mann-of-steel` | Mann of Steel | Complete 50 games without disconnecting                 | gold   |
 
 ### Top DPM (logs.tf stats)
 
-| ID                   | Name                     | Description                                | Tier       |
-| -------------------- | ------------------------ | ------------------------------------------ | ---------- |
-| `top-damage-dealer`  | Top Damage Dealer        | Have the highest DPM in a game 10 times    | bronze     |
-| `pain-train`         | Pain Train               | Have the highest DPM in a game 100 times   | silver     |
-| `australium-rl`      | Australium Rocket Launcher | Have the highest DPM in a game 1000 times | australium |
+| ID                  | Name                       | Description                               | Tier       |
+| ------------------- | -------------------------- | ----------------------------------------- | ---------- |
+| `top-damage-dealer` | Top Damage Dealer          | Have the highest DPM in a game 10 times   | bronze     |
+| `pain-train`        | Pain Train                 | Have the highest DPM in a game 100 times  | silver     |
+| `australium-rl`     | Australium Rocket Launcher | Have the highest DPM in a game 1000 times | australium |
 
 ### High HPM (logs.tf stats)
 
-| ID                 | Name                  | Description                                          | Tier       |
-| ------------------ | --------------------- | ---------------------------------------------------- | ---------- |
-| `quick-fix`        | Quick-Fix             | Heal more than 1200 HPM in a game                    | bronze     |
-| `miracle-worker`   | Miracle Worker        | Heal more than 1200 HPM in 10 games                  | silver     |
-| `mannpower-medic`  | Mannpower Medic       | Heal more than 1200 HPM in 100 games                 | australium |
+| ID                | Name            | Description                          | Tier       |
+| ----------------- | --------------- | ------------------------------------ | ---------- |
+| `quick-fix`       | Quick-Fix       | Heal more than 1200 HPM in a game    | bronze     |
+| `miracle-worker`  | Miracle Worker  | Heal more than 1200 HPM in 10 games  | silver     |
+| `mannpower-medic` | Mannpower Medic | Heal more than 1200 HPM in 100 games | australium |
 
 ## Database Model
 
@@ -73,7 +73,7 @@ New collection: `playerachievements` (single document per player)
 interface PlayerAchievementModel {
   player: SteamId64
   achievements: PlayerAchievement[] // unlocked achievements
-  progress: AchievementProgress     // counters for multi-game tracking
+  progress: AchievementProgress // counters for multi-game tracking
 }
 
 interface PlayerAchievement {
