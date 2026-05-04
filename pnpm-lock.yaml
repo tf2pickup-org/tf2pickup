@@ -304,8 +304,8 @@ importers:
         specifier: 17.6.0
         version: 17.6.0
       lorem-ipsum:
-        specifier: 2.0.10
-        version: 2.0.10
+        specifier: 3.0.0
+        version: 3.0.0
       node-html-parser:
         specifier: 7.1.0
         version: 7.1.0
@@ -3750,9 +3750,8 @@ packages:
   long@5.3.2:
     resolution: {integrity: sha512-mNAgZ1GmyNhD7AuqnTG3/VQ26o760+ZYBPKjPvugO8+nLbYfX6TVpJPseBvopbdY+qpZ/lKUnmEc1LeZYS3QAA==}
 
-  lorem-ipsum@2.0.10:
-    resolution: {integrity: sha512-+Vju4QAN6l2SX9tQ4Dm+mg1qgxf8IzqFh35h/dtFLofW+QHKunMjANfuhlx3vO9+LFetGRtqzvOlpw+1ysDeTw==}
-    engines: {node: '>= 8.x', npm: '>= 5.x'}
+  lorem-ipsum@3.0.0:
+    resolution: {integrity: sha512-FYUViKFk1p8OJWrDFtpyvCW1l92E7vWA3g/tmpvdrLmyoLti9aqD7/xeSEXu/e2oi/zG/TL8I9eZsrh+t1NWbw==}
     hasBin: true
 
   lru-cache@10.4.3:
@@ -8830,9 +8829,7 @@ snapshots:
 
   long@5.3.2: {}
 
-  lorem-ipsum@2.0.10:
-    dependencies:
-      commander: 9.5.0
+  lorem-ipsum@3.0.0: {}
 
   lru-cache@10.4.3: {}
 
