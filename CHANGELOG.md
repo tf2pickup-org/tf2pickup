@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.2...4.7.3) (2026-05-04)
+
+
+### Bug Fixes
+
+* **countdown:** use server-rendered relative duration to avoid client clock skew ([#588](https://github.com/tf2pickup-org/tf2pickup/issues/588)) ([96b26bc](https://github.com/tf2pickup-org/tf2pickup/commit/96b26bc8c38f1e148e7404cb715a38e8b5dda064)), closes [#577](https://github.com/tf2pickup-org/tf2pickup/issues/577)
+
 ## [4.7.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.1...4.7.2) (2026-05-04)
 
 
