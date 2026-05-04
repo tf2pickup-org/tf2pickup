@@ -12,7 +12,6 @@ export async function SkillImportExportPage() {
           <h2 class="mb-2 text-lg font-bold">Export player skills</h2>
           <p class="text-abru-light-75 mb-4 text-sm">
             Download a CSV file containing all players' skills. The file will include columns for
-            {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
             steamId, name, and skill values for: {classNames.join(', ') as 'safe'}.
           </p>
           <a

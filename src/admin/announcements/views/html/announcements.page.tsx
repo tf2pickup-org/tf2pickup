@@ -97,7 +97,6 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
         </div>
       </div>
       <div class="bg-abru-dark-15 rounded-sm p-2 text-sm whitespace-pre-wrap">
-        {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
         {announcement.body as 'safe'}
       </div>
     </div>

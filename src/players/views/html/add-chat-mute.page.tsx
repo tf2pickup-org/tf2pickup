@@ -111,7 +111,6 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
                   hx-trigger="change from:#addChatMuteForm delay:1s"
                 >
                   {
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                     format(
                       getBanExpiryDate({
                         lengthSelector: 'duration',

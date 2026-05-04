@@ -39,7 +39,6 @@ export async function AdminToolbox(props: {
       </summary>
       <script>
         {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
           `try{if(localStorage.getItem('details-persist-admin-toolbox')==='open'){document.currentScript.closest('details').setAttribute('open','');}}catch(e){}` as 'safe'
         }
       </script>
@@ -202,7 +201,6 @@ async function SkillLastUpdated(props: {
     <div class="tooltip">
       <p class="text-nowrap">
         Last updated by <strong safe>{admin.name}</strong>{' '}
-        {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
         {formatDistanceToNow(lastEdit.at, { addSuffix: true }) as 'safe'}
       </p>
       <p class="text-nowrap">

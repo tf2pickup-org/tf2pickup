@@ -15,7 +15,6 @@ export async function Announcements() {
       {announcements.map(announcement => {
         return (
           <div class="banner banner--info">
-            {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
             <div class="prose max-w-none">{announcement.body as 'safe'}</div>
           </div>
         )
