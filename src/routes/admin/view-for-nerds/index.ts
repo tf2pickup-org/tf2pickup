@@ -38,7 +38,8 @@ export default routes(async app => {
             .transform(({ key, value }, ctx) => {
               try {
                 const parsed = JSON.parse(value) as unknown
-                return { key, value: parsed } as unknown
+                const result: unknown = { key, value: parsed }
+                return result
               } catch (e) {
                 ctx.issues.push({
                   code: 'custom',
