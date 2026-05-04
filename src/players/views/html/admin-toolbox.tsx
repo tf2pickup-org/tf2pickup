@@ -24,7 +24,10 @@ const skillSuggestionThresholdLow = 1450
 const skillSuggestionCooldownGames = 3
 
 export async function AdminToolbox(props: {
-  player: Pick<PlayerModel, 'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans' | 'elo' | 'stats'>
+  player: Pick<
+    PlayerModel,
+    'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans' | 'elo' | 'stats'
+  >
 }) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
@@ -150,7 +153,6 @@ export async function AdminToolbox(props: {
                 </div>
               </div>
             </form>
-
           </div>
 
           <div class="admin-toolbox-sep" />
