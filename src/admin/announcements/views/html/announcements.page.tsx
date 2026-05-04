@@ -97,7 +97,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
         </div>
       </div>
       <div class="bg-abru-dark-15 rounded-sm p-2 text-sm whitespace-pre-wrap">
-        {announcement.body as 'safe'}
+        {announcement.body}
       </div>
     </div>
   )

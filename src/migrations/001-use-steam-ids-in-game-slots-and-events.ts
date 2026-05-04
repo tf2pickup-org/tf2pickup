@@ -119,7 +119,7 @@ export async function up() {
 
           let actor: SteamId64 | Bot
           if (!event.actor || isBot(event.actor)) {
-            actor = 'bot' as Bot
+            actor = 'bot'
           } else {
             const a = await collections.players.findOne({ _id: new ObjectId(event.actor) })
             if (a === null) {
@@ -127,7 +127,7 @@ export async function up() {
             }
 
             if (a.roles.includes('bot' as PlayerRole)) {
-              actor = 'bot' as Bot
+              actor = 'bot'
             } else {
               actor = a.steamId
             }

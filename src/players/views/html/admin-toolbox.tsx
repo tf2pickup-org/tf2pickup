@@ -39,7 +39,7 @@ export async function AdminToolbox(props: {
       </summary>
       <script>
         {
-          `try{if(localStorage.getItem('details-persist-admin-toolbox')==='open'){document.currentScript.closest('details').setAttribute('open','');}}catch(e){}` as 'safe'
+          `try{if(localStorage.getItem('details-persist-admin-toolbox')==='open'){document.currentScript.closest('details').setAttribute('open','');}}catch(e){}`
         }
       </script>
 
@@ -201,7 +201,7 @@ async function SkillLastUpdated(props: {
     <div class="tooltip">
       <p class="text-nowrap">
         Last updated by <strong safe>{admin.name}</strong>{' '}
-        {formatDistanceToNow(lastEdit.at, { addSuffix: true }) as 'safe'}
+        {formatDistanceToNow(lastEdit.at, { addSuffix: true })}
       </p>
       <p class="text-nowrap">
         <strong>{previousValue}</strong> → <strong>{lastEdit.skill[props.className]}</strong>

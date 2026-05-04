@@ -118,7 +118,7 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
                         durationUnits: 'minutes',
                       }),
                       'dd.MM.yyyy HH:mm',
-                    ) as 'safe'
+                    )
                   }
                 </span>
               </p>

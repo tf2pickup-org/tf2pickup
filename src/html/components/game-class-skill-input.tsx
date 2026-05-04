@@ -23,7 +23,7 @@ export function GameClassSkillInput(props: {
         {'‹'}
       </button>
       <span class="skill-spinner-display" aria-live="polite">
-        {props.value.toString() as 'safe'}
+        {props.value.toString()}
       </span>
       <input
         type="number"
