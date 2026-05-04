@@ -111,6 +111,7 @@ export async function AddBanPage(props: { steamId: SteamId64 }) {
                   hx-trigger="change from:#addBanForm delay:1s"
                 >
                   {
+                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
                     format(
                       getBanExpiryDate({
                         lengthSelector: 'duration',
@@ -118,7 +119,7 @@ export async function AddBanPage(props: { steamId: SteamId64 }) {
                         durationUnits: 'minutes',
                       }),
                       'dd.MM.yyyy HH:mm',
-                    )
+                    ) as 'safe'
                   }
                 </span>
               </p>

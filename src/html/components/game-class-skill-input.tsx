@@ -23,7 +23,8 @@ export function GameClassSkillInput(props: {
         {'‹'}
       </button>
       <span class="skill-spinner-display" aria-live="polite">
-        {props.value.toString()}
+        {/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion */}
+        {props.value.toString() as 'safe'}
       </span>
       <input
         type="number"
