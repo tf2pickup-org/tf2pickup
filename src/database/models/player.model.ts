@@ -64,6 +64,7 @@ export interface PlayerModel {
     skill: PlayerSkill
     actor: SteamId64
     lastGame?: GameNumber | undefined
+    gamesByClass?: Partial<Record<Tf2ClassName, number>>
   }[]
   nameHistory?: {
     name: string

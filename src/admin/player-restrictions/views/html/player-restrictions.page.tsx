@@ -15,6 +15,7 @@ export async function PlayerRestrictionsPage() {
           <RequirePlayerVerification />
           <PlayerSkillThreshold />
           <SkillStep />
+          <SkillSuggestions />
           <DefaultPlayerSkill />
 
           <p>
@@ -164,6 +165,29 @@ async function SkillStep() {
         </p>
       </dd>
     </dl>
+  )
+}
+
+async function SkillSuggestions() {
+  const skillSuggestions = await configuration.get('games.skill_suggestions')
+  return (
+    <div class="group flex flex-row items-center justify-between">
+      <dl>
+        <dt>
+          <label class="text-abru-light-75" for="skillSuggestions">
+            Skill suggestions{' '}
+            <span class="text-abru-light-35 text-xs font-normal">experimental</span>
+          </label>
+        </dt>
+        <dd class="text-abru-light-75">
+          <span class="hidden group-has-checked:inline-block">
+            Skill adjustment suggestions are shown in the admin toolbox
+          </span>
+          <span class="group-has-checked:hidden">No skill suggestions are shown</span>
+        </dd>
+      </dl>
+      <Switch id="skillSuggestions" checked={skillSuggestions} name="skillSuggestions" />
+    </div>
   )
 }
 

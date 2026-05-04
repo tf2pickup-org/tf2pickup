@@ -181,6 +181,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.number().positive().default(1.0),
     })
     .describe('Increment/decrement step when adjusting player skill in the admin panel'),
+  z
+    .object({
+      key: z.literal('games.skill_suggestions'),
+      value: z.boolean().default(false),
+    })
+    .describe(
+      'Experimental: show skill adjustment suggestions in the admin toolbox based on player performance',
+    ),
   z.object({
     key: z.literal('misc.discord_invite_link'),
     value: z.url().nullable().default(null),

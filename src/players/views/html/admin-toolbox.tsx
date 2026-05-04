@@ -17,15 +17,37 @@ import { format, formatDistanceToNow } from 'date-fns'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { provisionalThreshold } from '../../../games/calculate-elo-updates'
+
+const skillSuggestionThresholdHigh = 1550
+const skillSuggestionThresholdLow = 1450
+const skillSuggestionCooldownGames = 3
 
 export async function AdminToolbox(props: {
-  player: Pick<PlayerModel, 'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans'>
+  player: Pick<PlayerModel, 'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans' | 'elo' | 'stats'>
 }) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
+  const skillSuggestions = await configuration.get('games.skill_suggestions')
   const compact = queue.config.classes.length > 4
+
+  const lastSkillChange = player.skillHistory?.at(-1)
+  const suggestionMap = new Map<Tf2ClassName, 'up' | 'down'>()
+  if (skillSuggestions) {
+    for (const { name: gameClass } of queue.config.classes) {
+      const elo = player.elo?.[gameClass]
+      const gamesOnClass = player.stats.gamesByClass[gameClass] ?? 0
+      if (elo === undefined || gamesOnClass < provisionalThreshold) continue
+      if (lastSkillChange?.gamesByClass !== undefined) {
+        const gamesAtChange = lastSkillChange.gamesByClass[gameClass] ?? 0
+        if (gamesOnClass - gamesAtChange < skillSuggestionCooldownGames) continue
+      }
+      if (elo > skillSuggestionThresholdHigh) suggestionMap.set(gameClass, 'up')
+      else if (elo < skillSuggestionThresholdLow) suggestionMap.set(gameClass, 'down')
+    }
+  }
 
   return (
     <details
@@ -101,6 +123,7 @@ export async function AdminToolbox(props: {
                       className={gameClass.name}
                       skillHistory={player.skillHistory}
                     />
+                    <SkillSuggestionIndicator direction={suggestionMap.get(gameClass.name)} />
                   </GameClassSkillInput>
                 ))}
 
@@ -127,6 +150,7 @@ export async function AdminToolbox(props: {
                 </div>
               </div>
             </form>
+
           </div>
 
           <div class="admin-toolbox-sep" />
@@ -208,5 +232,18 @@ async function SkillLastUpdated(props: {
         <strong>{previousValue}</strong> → <strong>{lastEdit.skill[props.className]}</strong>
       </p>
     </div>
+  )
+}
+
+function SkillSuggestionIndicator(props: { direction: 'up' | 'down' | undefined }) {
+  if (props.direction === undefined) return <></>
+  const isUp = props.direction === 'up'
+  return (
+    <span
+      class={['pr-2 text-sm', isUp ? 'text-yellow-500/60' : 'text-orange-500/60']}
+      title={isUp ? 'Skill too low' : 'Skill too high'}
+    >
+      {(isUp ? '↑' : '↓') as 'safe'}
+    </span>
   )
 }
