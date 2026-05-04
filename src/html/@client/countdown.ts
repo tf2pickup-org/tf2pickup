@@ -25,9 +25,10 @@ function maybeInit(element: Element) {
   const internalData = api.getInternalData(element)
   if (internalData.countdownInterval !== undefined) return
 
-  const deadline = Number(element.getAttribute(attrName))
+  const initialMs = Number(element.getAttribute(attrName))
+  const startedAt = Date.now()
   internalData.countdownInterval = setInterval(() => {
-    const ms = Math.max(deadline - Date.now(), 0)
+    const ms = Math.max(initialMs - (Date.now() - startedAt), 0)
     element.textContent = formatTimeout(ms)
     if (ms <= 0) {
       clearInterval(internalData.countdownInterval)
