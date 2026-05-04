@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.7.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.1...4.7.2) (2026-05-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency country-flag-icons to v1.6.17 ([0c3a0a3](https://github.com/tf2pickup-org/tf2pickup/commit/0c3a0a3c7731a2e2358bd07a4091d47b8877526f))
+* **deps:** update dependency cssnano to v7.1.8 ([95d5c53](https://github.com/tf2pickup-org/tf2pickup/commit/95d5c53860bcee6342ccdc3910ee95896a28d878))
+* **deps:** update dependency discord.js to v14.26.4 ([d1d00df](https://github.com/tf2pickup-org/tf2pickup/commit/d1d00df84827bd77a3c8a11701ae26210997f768))
+* **deps:** update dependency marked to v18.0.3 ([6c66533](https://github.com/tf2pickup-org/tf2pickup/commit/6c6653305f6c34ead6fb32418a3a63d8ce77a7f3))
+* **deps:** update dependency nanoid to v5.1.11 ([8270431](https://github.com/tf2pickup-org/tf2pickup/commit/8270431cb12f9fc3a68bcf33fef0b97e0aa686bf))
+* **deps:** update dependency postcss to v8.5.13 ([9882402](https://github.com/tf2pickup-org/tf2pickup/commit/988240290340dfeceaba1e4951b13520d4878ac4))
+* **deps:** update dependency umzug to v3.8.3 ([3c677d4](https://github.com/tf2pickup-org/tf2pickup/commit/3c677d41d6458ad30b0f9e2a0a245c6d3a79f2cd))
+* **deps:** update dependency zod to v4.4.2 ([b554e59](https://github.com/tf2pickup-org/tf2pickup/commit/b554e59711fb6fcc415ba05e152bfefda39133e6))
+* **lint:** remove unnecessary type assertions flagged by typescript-eslint v8.59 ([#587](https://github.com/tf2pickup-org/tf2pickup/issues/587)) ([9ea3f40](https://github.com/tf2pickup-org/tf2pickup/commit/9ea3f40a01494d04dca27090881af6a90dac4651))
+
 ## [4.7.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.0...4.7.1) (2026-04-30)
 
 
