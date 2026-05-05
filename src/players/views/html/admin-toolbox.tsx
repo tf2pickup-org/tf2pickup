@@ -17,11 +17,7 @@ import { format, formatDistanceToNow } from 'date-fns'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { provisionalThreshold } from '../../../games/calculate-elo-updates'
-
-const skillSuggestionThresholdHigh = 1550
-const skillSuggestionThresholdLow = 1450
-const skillSuggestionCooldownGames = 3
+import { makeSkillSuggestions } from '../../make-skill-suggestions'
 
 export async function AdminToolbox(props: {
   player: Pick<
@@ -33,24 +29,10 @@ export async function AdminToolbox(props: {
   const defaultSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
-  const skillSuggestions = await configuration.get('games.skill_suggestions')
+  const skillSuggestions = (await configuration.get('games.skill_suggestions'))
+    ? makeSkillSuggestions({ player })
+    : undefined
   const compact = queue.config.classes.length > 4
-
-  const lastSkillChange = player.skillHistory?.at(-1)
-  const suggestionMap = new Map<Tf2ClassName, 'up' | 'down'>()
-  if (skillSuggestions) {
-    for (const { name: gameClass } of queue.config.classes) {
-      const elo = player.elo?.[gameClass]
-      const gamesOnClass = player.stats.gamesByClass[gameClass] ?? 0
-      if (elo === undefined || gamesOnClass < provisionalThreshold) continue
-      if (lastSkillChange?.gamesByClass !== undefined) {
-        const gamesAtChange = lastSkillChange.gamesByClass[gameClass] ?? 0
-        if (gamesOnClass - gamesAtChange < skillSuggestionCooldownGames) continue
-      }
-      if (elo > skillSuggestionThresholdHigh) suggestionMap.set(gameClass, 'up')
-      else if (elo < skillSuggestionThresholdLow) suggestionMap.set(gameClass, 'down')
-    }
-  }
 
   return (
     <details
@@ -126,7 +108,7 @@ export async function AdminToolbox(props: {
                       className={gameClass.name}
                       skillHistory={player.skillHistory}
                     />
-                    <SkillSuggestionIndicator direction={suggestionMap.get(gameClass.name)} />
+                    <SkillSuggestionIndicator direction={skillSuggestions?.get(gameClass.name)} />
                   </GameClassSkillInput>
                 ))}
 
