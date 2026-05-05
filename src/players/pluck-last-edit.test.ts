@@ -28,4 +28,32 @@ describe('pluckLastEdit()', () => {
       })
     })
   })
+
+  describe('when the last entry changed a different class', () => {
+    it('should return the last edit for the queried class, not the most recent entry', () => {
+      const scoutChange = { at: sub(new Date(), { hours: 1 }), skill: { scout: 2, soldier: 5 }, actor: mockActor }
+      const soldierChange = { at: new Date(), skill: { scout: 2, soldier: 6 }, actor: mockActor }
+      const history = [
+        { at: sub(new Date(), { hours: 2 }), skill: { scout: 1, soldier: 5 }, actor: mockActor },
+        scoutChange,
+        soldierChange,
+      ]
+      expect(pluckLastEdit(history, Tf2ClassName.scout)).toEqual({
+        lastEdit: scoutChange,
+        previousValue: 1,
+      })
+    })
+
+    it('should return unknown when the queried class was never changed', () => {
+      const soldierChange = { at: new Date(), skill: { scout: 1, soldier: 6 }, actor: mockActor }
+      const history = [
+        { at: sub(new Date(), { hours: 1 }), skill: { scout: 1, soldier: 5 }, actor: mockActor },
+        soldierChange,
+      ]
+      expect(pluckLastEdit(history, Tf2ClassName.scout)).toEqual({
+        lastEdit: soldierChange,
+        previousValue: 'unknown',
+      })
+    })
+  })
 })
