@@ -39,7 +39,7 @@
       border-color: var(--color-abru-dark-6) transparent transparent transparent;
     }
 
-    &.tooltip--bottom {
+    &[data-placement='bottom'] {
       bottom: auto;
       top: 125%;
 

@@ -21,14 +21,18 @@ export function GameListItem(props: {
 
   let gameLabel = <div class="col-span-2"></div>
   if (props.game.state === GameState.interrupted) {
-    gameLabel = <div class="game-list-label game-list-label--interrupted">force-ended</div>
+    gameLabel = (
+      <div class="game-list-label" data-state="interrupted">
+        force-ended
+      </div>
+    )
   } else if (props.game.score?.blu !== undefined) {
     gameLabel = (
       <>
-        <div class="game-list-label game-list-label--blu tabular-nums">
+        <div class="game-list-label tabular-nums" data-team="blu">
           blu: {props.game.score.blu}
         </div>
-        <div class="game-list-label game-list-label--red tabular-nums">
+        <div class="game-list-label tabular-nums" data-team="red">
           red: {props.game.score.red}
         </div>
       </>
@@ -36,7 +40,11 @@ export function GameListItem(props: {
   } else if (
     [GameState.created, GameState.configuring, GameState.launching].includes(props.game.state)
   ) {
-    gameLabel = <div class="game-list-label game-list-label--launching">{props.game.state}</div>
+    gameLabel = (
+      <div class="game-list-label" data-state="launching">
+        {props.game.state}
+      </div>
+    )
   }
 
   return (

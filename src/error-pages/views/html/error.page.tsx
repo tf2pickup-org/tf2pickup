@@ -16,7 +16,7 @@ export function ErrorPage(props: { statusCode: number; message: string }) {
           <span class="text-abru-light-75 text-[36px] font-bold" safe>
             {props.message}
           </span>
-          <a href="/" class="button button--accent mt-4 px-16">
+          <a href="/" class="button mt-4 px-16" data-variant="accent">
             Go back home
           </a>
         </div>

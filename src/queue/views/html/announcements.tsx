@@ -14,7 +14,7 @@ export async function Announcements() {
     <>
       {announcements.map(announcement => {
         return (
-          <div class="banner banner--info">
+          <div class="banner" data-tone="info">
             <div class="prose max-w-none">{announcement.body as 'safe'}</div>
           </div>
         )

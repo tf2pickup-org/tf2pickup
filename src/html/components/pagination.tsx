@@ -40,7 +40,8 @@ export function Pagination(props: {
     <div class="flex h-12 flex-row flex-nowrap items-center gap-2 text-lg text-white">
       <a
         href={props.hrefFn(props.currentPage - 1)}
-        class={['pagination-page', props.currentPage <= 1 && 'pagination-page--disabled']}
+        class="pagination-page"
+        aria-disabled={props.currentPage <= 1 ? 'true' : undefined}
         preload="mousedown"
         {...(props.hxTarget && { 'hx-target': props.hxTarget })}
       >
@@ -50,7 +51,8 @@ export function Pagination(props: {
       {props.around.map(page => (
         <a
           href={props.hrefFn(page)}
-          class={['pagination-page', props.currentPage === page && 'pagination-page--active']}
+          class="pagination-page"
+          aria-current={props.currentPage === page ? 'page' : undefined}
           preload="mousedown"
           {...(props.hxTarget && { 'hx-target': props.hxTarget })}
         >
@@ -60,10 +62,8 @@ export function Pagination(props: {
 
       <a
         href={props.hrefFn(props.currentPage + 1)}
-        class={[
-          'pagination-page',
-          props.currentPage >= props.lastPage && 'pagination-page--disabled',
-        ]}
+        class="pagination-page"
+        aria-disabled={props.currentPage >= props.lastPage ? 'true' : undefined}
         preload="mousedown"
         {...(props.hxTarget && { 'hx-target': props.hxTarget })}
       >

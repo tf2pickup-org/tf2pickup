@@ -40,7 +40,8 @@ export async function PlayerSettingsPage() {
               <div class="flex">
                 <button
                   type="submit"
-                  class="button button--accent mt-6"
+                  class="button mt-6"
+                  data-variant="accent"
                   data-umami-event="save-settings"
                 >
                   Save

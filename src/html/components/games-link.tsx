@@ -13,7 +13,8 @@ export async function GamesLink() {
   return (
     <a
       href="/games"
-      class={['nav-menu-item', gamesLiveCount > 0 && 'nav-menu-item--accent']}
+      class="nav-menu-item"
+      data-accent={gamesLiveCount > 0 ? 'true' : undefined}
       id="navbar-games-link"
       aria-current={url === '/games' ? 'page' : undefined}
     >

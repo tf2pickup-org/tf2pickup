@@ -17,13 +17,11 @@
     }
   }
 
-  .pagination-page--active,
-  .page--active {
+  .pagination-page[aria-current='page'] {
     background-color: var(--color-abru-light-15);
   }
 
-  .pagination-page--disabled,
-  .page--disabled {
+  .pagination-page[aria-disabled='true'] {
     color: var(--color-abru-light-15);
     cursor: default;
 

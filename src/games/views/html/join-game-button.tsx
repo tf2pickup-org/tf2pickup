@@ -42,7 +42,8 @@ async function JoinGameButtonContent(props: {
   return (
     <a
       href={connectLink}
-      class="button button--accent join-game-button"
+      class="button join-game-button"
+      data-variant="accent"
       data-umami-event="join-game"
       data-umami-event-game-number={props.game.number}
       data-umami-event-game-state={props.game.state}

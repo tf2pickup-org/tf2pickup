@@ -52,7 +52,7 @@ export async function SkillImportExportPage() {
               />
             </div>
             <div>
-              <button type="submit" class="button button--dense inline-flex items-center gap-2">
+              <button type="submit" class="button inline-flex items-center gap-2" data-size="dense">
                 <IconUpload size={20} />
                 Upload and preview
               </button>

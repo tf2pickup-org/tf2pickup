@@ -131,7 +131,7 @@ export async function AddBanPage(props: { steamId: SteamId64 }) {
               </div>
             </div>
 
-            <button type="submit" class="button button--accent mt-6">
+            <button type="submit" class="button mt-6" data-variant="accent">
               Save
             </button>
           </form>

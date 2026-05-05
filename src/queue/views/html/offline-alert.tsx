@@ -8,7 +8,9 @@ export function OfflineAlert() {
       on htmx:wsOpen from <body/> hide me
     "
     >
-      <div class="banner banner--warning">You are disconnected from the server.</div>
+      <div class="banner" data-tone="warning">
+        You are disconnected from the server.
+      </div>
     </div>
   )
 }

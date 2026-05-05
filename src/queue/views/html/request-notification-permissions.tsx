@@ -9,18 +9,23 @@ export async function RequestNotificationPermissions() {
   return (
     <>
       <div id="notifications-permission-default" style="display: none;">
-        <div class="banner banner--alert flex flex-col gap-y-2 md:flex-row">
+        <div class="banner flex flex-col gap-y-2 md:flex-row" data-tone="alert">
           <p class="flex-1 text-center md:text-start">
             To be notified when a game is about to start, we need your permission to show browser
             notifications.
           </p>
-          <button class="button button--dense button--alert" id="request-notifications-permission">
+          <button
+            class="button"
+            data-size="dense"
+            data-variant="alert"
+            id="request-notifications-permission"
+          >
             Allow notifications
           </button>
         </div>
       </div>
       <div id="notifications-permission-denied" style="display: none;">
-        <div class="banner banner--warning flex flex-row items-start gap-x-3">
+        <div class="banner flex flex-row items-start gap-x-3" data-tone="warning">
           <p class="flex-1">
             You have disabled browser notifications. You will not be warned when a game is about to
             start.

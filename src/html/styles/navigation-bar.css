@@ -35,7 +35,7 @@
       background-color: var(--color-abru-dark-20);
     }
 
-    &.nav-menu-item--accent,
+    &[data-accent='true'],
     &.accent {
       color: var(--color-accent);
     }
@@ -55,7 +55,7 @@
     background-color: var(--color-abru-dark-29);
     gap: 0.5rem /* 8px */;
 
-    &--accent {
+    &[data-variant='accent'] {
       color: var(--color-accent-600);
     }
 

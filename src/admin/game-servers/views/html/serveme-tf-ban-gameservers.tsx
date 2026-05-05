@@ -28,7 +28,7 @@ export function ServemeTfBanGameServers() {
               required
               placeholder="Server name pattern"
             />
-            <button type="submit" class="button button--accent button--dense">
+            <button type="submit" class="button" data-variant="accent" data-size="dense">
               <IconPlus size={20} />
               <span>Add pattern</span>
             </button>

@@ -13,17 +13,17 @@
       flex-direction: row;
     }
 
-    &--warning {
+    &[data-tone='warning'] {
       background-color: var(--color-accent-600);
       color: var(--color-abru-dark-3);
     }
 
-    &--alert {
+    &[data-tone='alert'] {
       background-color: var(--color-alert);
       color: var(--color-abru-light-3);
     }
 
-    &--info {
+    &[data-tone='info'] {
       background-color: var(--color-abru-light-70);
       color: var(--color-abru-light-3);
     }
