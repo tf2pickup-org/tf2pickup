@@ -7,6 +7,7 @@ export interface EloDataPoint {
 }
 
 export type EloHistoryData = Record<string, EloDataPoint[]>
+export type SkillData = Record<string, (number | null)[]>
 export type XAxisMode = 'time' | 'game'
 
 const colors: Record<string, string> = {
@@ -25,6 +26,7 @@ function buildChartConfig(
   points: EloDataPoint[],
   gameClass: string,
   xMode: XAxisMode,
+  skillPoints?: (number | null)[],
 ): ChartConfiguration<'line'> {
   const color = colors[gameClass] ?? '#F61059'
   const labels =
@@ -32,31 +34,57 @@ function buildChartConfig(
       ? points.map(p => new Date(p.date).toLocaleDateString())
       : points.map(p => `#${p.gameNumber}`)
 
+  const hasSkill = skillPoints != null && skillPoints.some(v => v !== null)
+
+  const datasets: ChartConfiguration<'line'>['data']['datasets'] = [
+    {
+      label: 'ELO',
+      data: points.map(p => p.elo),
+      fill: false,
+      borderWidth: 2,
+      borderColor: color,
+      pointBackgroundColor: color,
+      pointRadius: 3,
+      tension: 0.1,
+      yAxisID: 'y',
+    },
+  ]
+
+  if (hasSkill) {
+    datasets.push({
+      label: 'Skill',
+      data: skillPoints as number[],
+      fill: false,
+      borderWidth: 2,
+      borderColor: 'rgba(255,255,255,0.65)',
+      pointBackgroundColor: 'rgba(255,255,255,0.65)',
+      pointRadius: 3,
+      tension: 0,
+      stepped: true,
+      borderDash: [5, 4],
+      yAxisID: 'y1',
+      spanGaps: false,
+    })
+  }
+
   return {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          data: points.map(p => p.elo),
-          fill: false,
-          borderWidth: 2,
-          borderColor: color,
-          pointBackgroundColor: color,
-          pointRadius: 3,
-          tension: 0.1,
-        },
-      ],
-    },
+    data: { labels, datasets },
     options: {
       animation: false,
       responsive: true,
       plugins: {
-        legend: { display: false },
+        legend: {
+          display: hasSkill,
+          labels: { color: '#C7C4C7' },
+        },
         tooltip: {
           callbacks: {
             title: items => labels[items[0]!.dataIndex] ?? '',
-            label: item => `ELO: ${item.raw as number}`,
+            label: item =>
+              item.dataset.label === 'Skill'
+                ? `Skill: ${item.raw as number}`
+                : `ELO: ${item.raw as number}`,
           },
         },
       },
@@ -73,13 +101,24 @@ function buildChartConfig(
           border: { color: '#D9D9D9' },
           grid: { color: 'rgba(217,217,217,0.15)' },
           ticks: { color: '#C7C4C7' },
+          position: 'left',
         },
+        ...(hasSkill
+          ? {
+              y1: {
+                border: { color: 'rgba(255,255,255,0.3)' },
+                grid: { drawOnChartArea: false },
+                ticks: { color: 'rgba(255,255,255,0.65)' },
+                position: 'right' as const,
+              },
+            }
+          : {}),
       },
     },
   }
 }
 
-export function initEloHistoryChart(data: EloHistoryData) {
+export function initEloHistoryChart(data: EloHistoryData, skillData?: SkillData) {
   const canvas = document.getElementById('elo-history-canvas') as HTMLCanvasElement | null
   if (!canvas) return
 
@@ -105,7 +144,7 @@ export function initEloHistoryChart(data: EloHistoryData) {
       return
     }
 
-    const config = buildChartConfig(points, activeClass, xMode)
+    const config = buildChartConfig(points, activeClass, xMode, skillData?.[activeClass])
 
     if (chart) {
       chart.data = config.data

@@ -4,14 +4,15 @@ import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { queue } from '../../../queue'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import type { EloDataPoint, EloHistoryData } from './@client/elo-history-chart'
+import type { EloDataPoint, EloHistoryData, SkillData } from './@client/elo-history-chart'
 
 export async function EloHistoryChart(props: { steamId: SteamId64 }) {
-  const player = await players.bySteamId(props.steamId, ['eloHistory'])
+  const player = await players.bySteamId(props.steamId, ['eloHistory', 'skillHistory'])
   const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'elo-history-chart.ts'))
 
   const classes = queue.config.classes.map(c => c.name)
   const data = buildChartData(player.eloHistory ?? [])
+  const skillData = buildSkillData(data, player.skillHistory ?? [])
 
   return (
     <div class="mt-6">
@@ -73,7 +74,8 @@ export async function EloHistoryChart(props: { steamId: SteamId64 }) {
         {`
         import { initEloHistoryChart } from '${mainJs}';
         const data = ${JSON.stringify(data)};
-        initEloHistoryChart(data);
+        const skillData = ${JSON.stringify(skillData)};
+        initEloHistoryChart(data, skillData);
         `}
       </script>
     </div>
@@ -94,6 +96,22 @@ export async function EloHistoryChart(props: { steamId: SteamId64 }) {
           elo: entry.elo[gameClass]!,
         }))
       result[gameClass] = points
+    }
+    return result
+  }
+
+  function buildSkillData(
+    eloData: EloHistoryData,
+    skillHistory: { at: Date; skill: Record<string, number> }[],
+  ): SkillData {
+    const result: SkillData = {}
+    const sorted = [...skillHistory].sort((a, b) => a.at.getTime() - b.at.getTime())
+    for (const gameClass of classes) {
+      result[gameClass] = (eloData[gameClass] ?? []).map(point => {
+        const pointDate = new Date(point.date)
+        const entry = sorted.filter(s => s.at <= pointDate).at(-1)
+        return entry?.skill[gameClass] ?? null
+      })
     }
     return result
   }
