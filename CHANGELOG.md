@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.7.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.3...4.7.4) (2026-05-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cssnano to v7.1.9 ([92d855f](https://github.com/tf2pickup-org/tf2pickup/commit/92d855fc79227f650753fe1fad44b8c5af11e162))
+* **deps:** update dependency postcss to v8.5.14 ([ee4549a](https://github.com/tf2pickup-org/tf2pickup/commit/ee4549a8f81a3456d04dc1d12b10842c5ae1f57e))
+* **deps:** update dependency zod to v4.4.3 ([1e20d0f](https://github.com/tf2pickup-org/tf2pickup/commit/1e20d0ffeff132ece957467fb1a6f38d147c4166))
+* **players:** show skill history per class, not per latest entry ([#590](https://github.com/tf2pickup-org/tf2pickup/issues/590)) ([4f46d54](https://github.com/tf2pickup-org/tf2pickup/commit/4f46d54b4409187a4eaa98bbbbff8fbdc4888e30))
+* replace BEM-style CSS notation with attribute-driven variants ([#591](https://github.com/tf2pickup-org/tf2pickup/issues/591)) ([f685f93](https://github.com/tf2pickup-org/tf2pickup/commit/f685f936e0fba9760ae4551e1f76bed187b83972))
+
 ## [4.7.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.2...4.7.3) (2026-05-04)
 
 
