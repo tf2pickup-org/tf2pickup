@@ -8,11 +8,19 @@ export function pluckLastEdit(
   lastEdit: NonNullable<PlayerModel['skillHistory']>[number]
   previousValue: number | 'unknown'
 } {
-  const lastEdit = skillHistory.at(-1)!
-  const skillsForClass = skillHistory.map(s => s.skill[className]!)
-  const previousValue = skillsForClass.findLast(s => s !== lastEdit.skill[className])
+  for (let i = skillHistory.length - 1; i >= 1; i--) {
+    const current = skillHistory[i]!
+    const previous = skillHistory[i - 1]!
+    if (current.skill[className] !== previous.skill[className]) {
+      return {
+        lastEdit: current,
+        previousValue: previous.skill[className] ?? 'unknown',
+      }
+    }
+  }
+
   return {
-    lastEdit,
-    previousValue: previousValue ?? 'unknown',
+    lastEdit: skillHistory.at(-1)!,
+    previousValue: 'unknown',
   }
 }
