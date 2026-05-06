@@ -34,7 +34,7 @@ function buildChartConfig(
       ? points.map(p => new Date(p.date).toLocaleDateString())
       : points.map(p => `#${p.gameNumber}`)
 
-  const hasSkill = skillPoints != null && skillPoints.some(v => v !== null)
+  const hasSkill = skillPoints?.some(v => v !== null)
 
   const datasets: ChartConfiguration<'line'>['data']['datasets'] = [
     {
