@@ -16,7 +16,7 @@ export function AdminToolbox(props: { game: GameModel }) {
       <AdminToolbox.rconConnect {...props} />
 
       <label class="show-assigned-skills-checkbox">
-        <input type="checkbox" class="button button--accent" id="show-assigned-skills" />
+        <input type="checkbox" class="button" data-variant="accent" id="show-assigned-skills" />
         <div class="icon">
           <div class="on">
             <IconEyeOff />

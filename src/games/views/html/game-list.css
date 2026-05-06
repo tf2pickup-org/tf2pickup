@@ -166,7 +166,7 @@
           order: 3;
         }
 
-        &--blu {
+        &[data-team='blu'] {
           background-color: var(--color-team-blu);
           text-transform: uppercase;
           order: 5;
@@ -176,7 +176,7 @@
           }
         }
 
-        &--red {
+        &[data-team='red'] {
           background-color: var(--color-team-red);
           text-transform: uppercase;
           order: 6;
@@ -186,13 +186,13 @@
           }
         }
 
-        &--interrupted {
+        &[data-state='interrupted'] {
           @apply col-span-2;
           background-color: var(--color-abru-light-25);
           justify-self: stretch;
         }
 
-        &--launching {
+        &[data-state='launching'] {
           @apply col-span-2;
           background-color: var(--color-alert);
           color: var(--color-abru-light-3);

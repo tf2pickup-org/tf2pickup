@@ -15,7 +15,7 @@ export function BypassRegistrationRestrictionsPage() {
 
         <form method="post" action="" class="row flex items-center gap-2">
           <input type="text" name="steamId" />
-          <button type="submit" class="button button--accent button--dense">
+          <button type="submit" class="button" data-variant="accent" data-size="dense">
             <IconPlus size={20} />
             <span>Add user Steam ID</span>
           </button>

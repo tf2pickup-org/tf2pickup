@@ -18,7 +18,8 @@ export async function PreReadyUpButton(props: {
 
   return (
     <button
-      class="button button--lighter min-w-[200px]"
+      class="button min-w-[200px]"
+      data-variant="lighter"
       id="pre-ready-up-button"
       name="prereadytoggle"
       ws-send

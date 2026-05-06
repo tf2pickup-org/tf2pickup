@@ -9,7 +9,9 @@ export async function ScrambleMaps() {
 
         <div class="mt-6 flex w-full items-center justify-center">
           <button
-            class="button button--accent button--dense"
+            class="button"
+            data-variant="accent"
+            data-size="dense"
             hx-put="/admin/scramble-maps/scramble"
             hx-target="#adminPanelMapVoteOptions"
             hx-swap="outerHTML"

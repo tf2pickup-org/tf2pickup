@@ -68,7 +68,8 @@ export async function AdminToolbox(props: {
           <BanStatus bans={player.bans} steamId={player.steamId} />
           <a
             href={`/players/${player.steamId}/edit`}
-            class={['button button--accent shrink-0', compact && 'compact']}
+            class={['button shrink-0', compact && 'compact']}
+            data-variant="accent"
             title="Edit player"
           >
             <IconEdit />
@@ -104,7 +105,7 @@ export async function AdminToolbox(props: {
                 ))}
 
                 <div class={['skill-buttons', compact && 'compact']}>
-                  <button type="submit" class="button button--accent" title="Save">
+                  <button type="submit" class="button" data-variant="accent" title="Save">
                     <IconDeviceFloppy size={20} />
                     <span>Save</span>
                   </button>

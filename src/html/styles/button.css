@@ -36,13 +36,13 @@
       }
     }
 
-    &--dense {
+    &[data-size='dense'] {
       padding: 5px 28px;
       font-size: 16px;
       line-height: 22px;
     }
 
-    &--accent {
+    &[data-variant='accent'] {
       background-color: var(--color-accent);
 
       &:hover {
@@ -61,7 +61,7 @@
       }
     }
 
-    &--alert {
+    &[data-variant='alert'] {
       background-color: var(--color-abru);
       color: var(--color-alert);
 
@@ -70,14 +70,14 @@
       }
     }
 
-    &--darker {
+    &[data-variant='darker'] {
       background-color: var(--color-abru-dark-25);
       &:hover {
         background-color: color-mix(in hsl, var(--color-abru-dark-25), black 5%);
       }
     }
 
-    &--lighter {
+    &[data-variant='lighter'] {
       background-color: var(--color-abru-light-85);
       color: var(--color-abru-light-3);
 

@@ -63,7 +63,9 @@ async function Menu() {
           data-umami-event="social-discord"
         >
           <IconBrandDiscord size={32} />
-          <span class="tooltip tooltip--bottom whitespace-nowrap">Join us on Discord!</span>
+          <span class="tooltip whitespace-nowrap" data-placement="bottom">
+            Join us on Discord!
+          </span>
         </a>
       )}
 
@@ -74,7 +76,9 @@ async function Menu() {
         data-umami-event="social-kofi"
       >
         <IconHeart size={32} />
-        <span class="tooltip tooltip--bottom whitespace-nowrap">Support us on Ko-fi!</span>
+        <span class="tooltip whitespace-nowrap" data-placement="bottom">
+          Support us on Ko-fi!
+        </span>
       </a>
 
       <div class="hidden w-2 lg:block" />

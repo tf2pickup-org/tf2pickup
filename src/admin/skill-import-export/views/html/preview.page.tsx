@@ -19,7 +19,7 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
       <div class="admin-panel-set flex flex-col gap-6">
         <header class="flex flex-row items-center justify-between">
           <h2 class="text-lg font-bold">Import preview</h2>
-          <a href="/admin/skill-import-export" class="button button--dense">
+          <a href="/admin/skill-import-export" class="button" data-size="dense">
             Cancel
           </a>
         </header>
@@ -130,7 +130,7 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
 
         {totalChanges > 0 ? (
           <form action="/admin/skill-import-export/apply" method="post">
-            <button type="submit" class="button button--accent">
+            <button type="submit" class="button" data-variant="accent">
               Apply {totalChanges} change{totalChanges !== 1 ? 's' : ''}
             </button>
           </form>

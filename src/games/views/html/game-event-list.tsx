@@ -64,16 +64,7 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
   }
 
   return (
-    <div
-      class={[
-        'game-event',
-        props.event.event === GameEventType.gameServerInitialized && 'game-event--info',
-        props.event.event === GameEventType.substituteRequested && 'game-event--warning',
-        props.event.event === GameEventType.playerReplaced && 'game-event--success',
-        props.event.event === GameEventType.gameServerAssignmentFailed && 'game-event--error',
-        props.event.event === GameEventType.gameServerConfigureFailed && 'game-event--error',
-      ]}
-    >
+    <div class="game-event" data-tone={getGameEventTone(props.event.event)}>
       <span class="at" safe>
         {format(props.event.at, 'HH:mm:ss')}
       </span>
@@ -82,6 +73,22 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
       </div>
     </div>
   )
+}
+
+function getGameEventTone(event: GameEventType) {
+  switch (event) {
+    case GameEventType.gameServerInitialized:
+      return 'info'
+    case GameEventType.substituteRequested:
+      return 'warning'
+    case GameEventType.playerReplaced:
+      return 'success'
+    case GameEventType.gameServerAssignmentFailed:
+    case GameEventType.gameServerConfigureFailed:
+      return 'error'
+    default:
+      return undefined
+  }
 }
 
 async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) {

@@ -24,7 +24,8 @@ export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitch
           </p>
           <div class="flex-1"></div>
           <button
-            class="button button--dense"
+            class="button"
+            data-size="dense"
             hx-put="/twitch/disconnect"
             data-umami-event="twitch-disconnect"
           >
@@ -36,7 +37,9 @@ export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitch
           <p>Connect your twitch.tv profile to advertise your streams on the main page</p>
           <div class="flex-1"></div>
           <a
-            class="button button--accent button--dense"
+            class="button"
+            data-variant="accent"
+            data-size="dense"
             href="/twitch/auth"
             hx-boost="false"
             data-umami-event="twitch-connect"

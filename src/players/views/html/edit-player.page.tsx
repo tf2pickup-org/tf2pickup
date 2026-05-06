@@ -99,7 +99,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
             </div>
 
             <div class="self-end">
-              <button type="submit" class="button button--accent button--dense">
+              <button type="submit" class="button" data-variant="accent" data-size="dense">
                 <IconDeviceFloppy size={20} />
                 <span>Save</span>
               </button>
@@ -119,7 +119,7 @@ export async function EditPlayerBansPage(props: { steamId: SteamId64 }) {
       player={player}
       activePage="/bans"
       action={
-        <a href={`/players/${player.steamId}/edit/bans/add`} class="button button--accent">
+        <a href={`/players/${player.steamId}/edit/bans/add`} class="button" data-variant="accent">
           <IconPlus />
           Add ban
         </a>
@@ -150,7 +150,11 @@ export async function EditPlayerChatMutesPage(props: { steamId: SteamId64 }) {
       player={player}
       activePage="/chat-mutes"
       action={
-        <a href={`/players/${player.steamId}/edit/chat-mutes/add`} class="button button--accent">
+        <a
+          href={`/players/${player.steamId}/edit/chat-mutes/add`}
+          class="button"
+          data-variant="accent"
+        >
           <IconPlus />
           Add mute
         </a>
@@ -208,7 +212,7 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
             </p>
           </div>
 
-          <button type="submit" class="button button--accent button--dense">
+          <button type="submit" class="button" data-variant="accent" data-size="dense">
             <IconDeviceFloppy size={20} />
             <span>Save</span>
           </button>
@@ -374,7 +378,8 @@ export async function BanDetails(props: {
         <div class="row-span-2 flex items-center">
           {props.ban.end > new Date() ? (
             <button
-              class="button button--darker"
+              class="button"
+              data-variant="darker"
               hx-put={`/players/${props.player.steamId}/edit/bans/${props.ban.start.getTime().toString()}/revoke`}
               hx-trigger="click"
               hx-target={`#player-ban-${props.ban.start.getTime().toString()}`}
@@ -432,7 +437,8 @@ export async function ChatMuteDetails(props: {
         <div class="row-span-2 flex items-center">
           {props.chatMute.end > new Date() ? (
             <button
-              class="button button--darker"
+              class="button"
+              data-variant="darker"
               hx-put={`/players/${props.player.steamId}/edit/chat-mutes/${props.chatMute.start.getTime().toString()}/revoke`}
               hx-trigger="click"
               hx-target={`#player-chat-mute-${props.chatMute.start.getTime().toString()}`}

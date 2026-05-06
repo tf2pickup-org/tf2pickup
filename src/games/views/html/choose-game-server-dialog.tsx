@@ -18,7 +18,9 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
         <StaticGameServerList name="gameServer" />
         {servemeTf.isEnabled && <ServemeTfServerList />}
         {tf2QuickServer.isEnabled && <Tf2QuickServerList gameNumber={props.gameNumber} />}
-        <button class="button button--accent mt-8 self-center">Select</button>
+        <button class="button mt-8 self-center" data-variant="accent">
+          Select
+        </button>
       </form>
     </dialog>
   )

@@ -86,7 +86,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
       <div class="grid min-h-[24px] grid-cols-12 justify-around gap-1">
         {games.map(game => (
           <a class={`game-result ${game.result}`} href={`/games/${game.gameNumber}`}>
-            <div class="tooltip tooltip--bottom flex flex-col whitespace-nowrap">
+            <div class="tooltip flex flex-col whitespace-nowrap" data-placement="bottom">
               <span safe>#{game.gameNumber}</span>
               <div>
                 <span class="text-team-blu">{game.score[Tf2Team.blu]}</span>{' '}
