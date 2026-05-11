@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.7.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.4...4.7.5) (2026-05-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency cssnano to v8 ([#593](https://github.com/tf2pickup-org/tf2pickup/issues/593)) ([a2f77f3](https://github.com/tf2pickup-org/tf2pickup/commit/a2f77f37134b2768c102442abfc47dcec3b102b7))
+* **deps:** update dependency cssnano to v8.0.1 ([9fd0dbf](https://github.com/tf2pickup-org/tf2pickup/commit/9fd0dbfd89c1c82c22ac1c7aae2e90c4f63dd8ff))
+* **deps:** update opentelemetry-js monorepo to v0.217.0 ([8cfdcc1](https://github.com/tf2pickup-org/tf2pickup/commit/8cfdcc1d3fe14e4d8c7d2ee64f2943186f790920))
+* **deps:** update opentelemetry-js-contrib monorepo ([c50f7d4](https://github.com/tf2pickup-org/tf2pickup/commit/c50f7d4333bced9f2b8eaf6502dd3cdfd1101413))
+* **deps:** update tailwindcss monorepo to v4.3.0 ([133cb9f](https://github.com/tf2pickup-org/tf2pickup/commit/133cb9fff723dfc4eac6c59d11af0a1d19a28027))
+
 ## [4.7.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.3...4.7.4) (2026-05-06)
 
 
