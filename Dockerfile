@@ -1,7 +1,7 @@
 FROM node:24.15.0-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@10.0.0 --activate
+RUN corepack enable && corepack prepare pnpm@10.33.4 --activate
 COPY . /app
 WORKDIR /app
 

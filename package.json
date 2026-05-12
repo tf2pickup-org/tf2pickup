@@ -130,10 +130,5 @@
     "typescript": "6.0.3",
     "typescript-eslint": "8.58.2",
     "vitest": "4.1.6"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
   }
 }
