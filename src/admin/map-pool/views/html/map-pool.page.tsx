@@ -58,7 +58,7 @@ export function MapPoolEntry(props: { name: string; execConfig?: string | undefi
         <input type="text" name="execConfig[]" value={props.execConfig} />
       </td>
       <td>
-        <button class="text-white" _="on click remove closest <tr/>">
+        <button class="text-white" data-remove-closest="tr">
           <IconMinus />
         </button>
       </td>

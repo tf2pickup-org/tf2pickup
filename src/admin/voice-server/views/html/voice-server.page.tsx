@@ -53,14 +53,9 @@ export async function VoiceServerPage() {
               placeholder="https://example.com"
               class="ml-4"
               disabled={type !== VoiceServerType.staticLink}
-              _={`
-                on change from #voiceServerForm
-                  if #voiceServerForm.type.value is '${VoiceServerType.staticLink}'
-                    remove [@disabled]
-                  else
-                    add [@disabled]
-                  end
-              `}
+              data-toggle-disabled-form="#voiceServerForm"
+              data-toggle-disabled-control="type"
+              data-toggle-disabled-value={VoiceServerType.staticLink}
             />
             <p class="description" id="voiceServerStaticLinkDesc">
               Players will be handed a static link to connect to the voice server
@@ -86,14 +81,9 @@ export async function VoiceServerPage() {
             class="ml-[22px]"
             id="mumble-server-data"
             disabled={type !== VoiceServerType.mumble}
-            _={`
-                on change from #voiceServerForm
-                  if #voiceServerForm.type.value is '${VoiceServerType.mumble}'
-                    remove [@disabled]
-                  else
-                    add [@disabled]
-                  end
-              `}
+            data-toggle-disabled-form="#voiceServerForm"
+            data-toggle-disabled-control="type"
+            data-toggle-disabled-value={VoiceServerType.mumble}
           >
             <dl>
               <dt>
