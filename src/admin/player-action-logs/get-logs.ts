@@ -37,6 +37,7 @@ export async function getLogs(params: GetLogsParams): Promise<GetLogsResult> {
   const filter: Filter<PlayerActionEntryModel> =
     conditions.length > 1 ? { $and: conditions } : conditions.length === 1 ? conditions[0]! : {}
 
+  const hasFilters = conditions.length > 0
   const skip = (params.page - 1) * logsPerPage
 
   const [logs, totalCount] = await Promise.all([
@@ -47,7 +48,9 @@ export async function getLogs(params: GetLogsParams): Promise<GetLogsResult> {
         limit: logsPerPage,
       })
       .toArray(),
-    collections.playerActions.countDocuments(filter),
+    hasFilters
+      ? collections.playerActions.countDocuments(filter)
+      : collections.playerActions.estimatedDocumentCount(),
   ])
 
   return { logs, totalCount }
