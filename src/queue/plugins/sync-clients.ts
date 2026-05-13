@@ -186,23 +186,24 @@ export default fp(
     )
 
     async function fetchActorMap(recipientIds: SteamId64[]) {
-      const entries = await Promise.all(
-        recipientIds.map(
-          async id =>
-            [
-              id,
-              await players.bySteamId(id, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ]),
-            ] as const,
-        ),
-      )
-      return new Map(entries)
+      const actors = await collections.players
+        .find<
+          Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
+        >(
+          { steamId: { $in: recipientIds } },
+          {
+            projection: {
+              steamId: 1,
+              bans: 1,
+              activeGame: 1,
+              skill: 1,
+              verified: 1,
+              roles: 1,
+            },
+          },
+        )
+        .toArray()
+      return new Map(actors.map(actor => [actor.steamId, actor] as const))
     }
 
     events.on(
