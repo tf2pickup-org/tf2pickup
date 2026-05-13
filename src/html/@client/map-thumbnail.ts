@@ -40,4 +40,6 @@ const resizeObserver = new ResizeObserver(entries => {
   }
 })
 
-onLoadWithAttr(attrName, el => resizeObserver.observe(el))
+onLoadWithAttr(attrName, el => {
+  resizeObserver.observe(el)
+})
