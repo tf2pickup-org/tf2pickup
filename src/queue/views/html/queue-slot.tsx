@@ -18,6 +18,7 @@ import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../types/queue-slot-id'
+import type { QueueSlotRenderContext } from './queue-slot-render-context'
 
 const enum MarkAsFriendButtonState {
   none,
@@ -30,7 +31,11 @@ type Actor =
   | Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
   | undefined
 
-export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) {
+export async function QueueSlot(props: {
+  slot: QueueSlotModel
+  actor?: Actor
+  context?: QueueSlotRenderContext | undefined
+}) {
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
@@ -86,7 +91,11 @@ function JoinButton(props: { slotId: QueueSlotId; disabled: string | undefined }
   )
 }
 
-async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
+async function PlayerInfo(props: {
+  slot: QueueSlotModel
+  actor?: Actor
+  context?: QueueSlotRenderContext | undefined
+}) {
   if (!props.slot.player) {
     return <></>
   }
@@ -158,8 +167,16 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
   )
 }
 
-async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: Actor }) {
-  const markAsFriendButtonState = await determineMarkAsFriendButtonState(props.slot, props.actor)
+function MarkAsFriendButton(props: {
+  slot: QueueSlotModel
+  actor?: Actor
+  context?: QueueSlotRenderContext | undefined
+}) {
+  const markAsFriendButtonState = determineMarkAsFriendButtonState(
+    props.slot,
+    props.actor,
+    props.context,
+  )
   if (markAsFriendButtonState === MarkAsFriendButtonState.none) {
     return <></>
   }
@@ -195,10 +212,11 @@ async function MarkAsFriendButton(props: { slot: QueueSlotModel; actor?: Actor }
   )
 }
 
-async function determineMarkAsFriendButtonState(
+function determineMarkAsFriendButtonState(
   slot: QueueSlotModel,
   actor?: Actor,
-): Promise<MarkAsFriendButtonState> {
+  context?: QueueSlotRenderContext,
+): MarkAsFriendButtonState {
   if (!slot.player) {
     return MarkAsFriendButtonState.none
   }
@@ -207,12 +225,9 @@ async function determineMarkAsFriendButtonState(
     return MarkAsFriendButtonState.none
   }
 
-  const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor.steamId })
-  if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
-    const friendship = await collections.queueFriends.findOne({
-      target: slot.player.steamId,
-    })
-    if (friendship === null) {
+  if (context?.actorSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
+    const friendship = context.friendshipsByTarget.get(slot.player.steamId)
+    if (!friendship) {
       return MarkAsFriendButtonState.enabled
     } else if (friendship.source === actor.steamId) {
       return MarkAsFriendButtonState.selected

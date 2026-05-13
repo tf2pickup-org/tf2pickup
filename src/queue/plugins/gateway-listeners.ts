@@ -1,6 +1,7 @@
 import fp from 'fastify-plugin'
 import { collections } from '../../database/collections'
 import { QueueSlot } from '../views/html/queue-slot'
+import { createQueueSlotRenderContext } from '../views/html/queue-slot-render-context'
 import { join } from '../join'
 import { leave } from '../leave'
 import { readyUp } from '../ready-up'
@@ -32,9 +33,10 @@ export default fp(
         'roles',
       ])
       const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
+      const context = await createQueueSlotRenderContext({ slots, actor })
       app.gateway
         .to({ player: actorId })
-        .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
+        .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor, context }))))
     }
 
     function wsSafe<Args extends unknown[]>(

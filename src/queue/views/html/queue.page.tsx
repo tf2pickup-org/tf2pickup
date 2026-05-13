@@ -2,6 +2,7 @@ import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { QueueSlot } from './queue-slot'
+import { createQueueSlotRenderContext } from './queue-slot-render-context'
 import { resolve } from 'path'
 import { config } from '../../config'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
@@ -115,6 +116,7 @@ async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undef
         'roles',
       ])
     : undefined
+  const context = await createQueueSlotRenderContext({ slots: props.slots, actor })
   return (
     <form
       class={['grid grid-cols-1 gap-4 md:grid-cols-2', gridCols]}
@@ -133,7 +135,7 @@ async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undef
             {props.slots
               .filter(slot => slot.gameClass === gameClass)
               .map(slot => (
-                <QueueSlot slot={slot} actor={actor} />
+                <QueueSlot slot={slot} actor={actor} context={context} />
               ))}
           </div>
         ))}

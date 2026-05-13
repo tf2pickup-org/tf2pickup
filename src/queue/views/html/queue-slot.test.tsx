@@ -13,7 +13,7 @@ vi.mock('../../../database/collections', () => ({
   collections: {
     players: { findOne: vi.fn() },
     queueSlots: { findOne: vi.fn() },
-    queueFriends: { findOne: vi.fn() },
+    queueFriends: { find: vi.fn() },
   },
 }))
 
@@ -109,7 +109,9 @@ describe('QueueSlot', () => {
 
     beforeEach(() => {
       vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
-      vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
+      vi.mocked(collections.queueFriends.find).mockReturnValue({
+        toArray: vi.fn().mockResolvedValue([]),
+      } as never)
     })
 
     it('renders player info', async () => {
@@ -159,7 +161,9 @@ describe('QueueSlot', () => {
           skill: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 },
         })
         vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
-        vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
+        vi.mocked(collections.queueFriends.find).mockReturnValue({
+          toArray: vi.fn().mockResolvedValue([]),
+        } as never)
       })
 
       it('does not render the clover icon', async () => {
@@ -183,7 +187,9 @@ describe('QueueSlot', () => {
       beforeEach(() => {
         vi.mocked(collections.players.findOne).mockResolvedValueOnce({ skill: undefined })
         vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
-        vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
+        vi.mocked(collections.queueFriends.find).mockReturnValue({
+          toArray: vi.fn().mockResolvedValue([]),
+        } as never)
       })
 
       it('renders the clover icon', async () => {

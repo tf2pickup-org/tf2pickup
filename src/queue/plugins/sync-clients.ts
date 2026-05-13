@@ -3,6 +3,7 @@ import { events } from '../../events'
 import { OnlinePlayerList } from '../views/html/online-player-list'
 import { safe } from '../../utils/safe'
 import { QueueSlot } from '../views/html/queue-slot'
+import { createQueueSlotRenderContext } from '../views/html/queue-slot-render-context'
 import { collections } from '../../database/collections'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
@@ -21,10 +22,20 @@ import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
+import type { QueueSlotModel } from '../../database/models/queue-slot.model'
+
+type QueueActor =
+  | Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
+  | undefined
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    async function renderQueueSlots(slots: QueueSlotModel[], actor: QueueActor) {
+      const context = await createQueueSlotRenderContext({ slots, actor })
+      return Promise.all(slots.map(slot => QueueSlot({ slot, actor, context })))
+    }
+
     async function syncAllSlots(...clients: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
       await Promise.all(
@@ -40,9 +51,7 @@ export default fp(
           app.gateway
             .to({ players: [actor.steamId] })
             .to({ url: '/' })
-            .send(() =>
-              Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
-            )
+            .send(() => renderQueueSlots(slots, actor).then(arr => arr.join()))
         }),
       )
     }
@@ -59,8 +68,9 @@ export default fp(
             'roles',
           ])
         : undefined
-      slots.forEach(async slot => {
-        socket.send(await QueueSlot({ slot, actor }))
+      const queueSlots = await renderQueueSlots(slots, actor)
+      queueSlots.forEach(slot => {
+        socket.send(slot)
       })
       socket.send(await IsInQueue({ actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
@@ -146,10 +156,7 @@ export default fp(
                 'roles',
               ])
             : undefined
-          return [
-            ...(await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))),
-            playerCount,
-          ]
+          return [...(await renderQueueSlots(slots, actor)), playerCount]
         })
 
         app.gateway.broadcast(() => SetTitle())
@@ -218,9 +225,11 @@ export default fp(
             .toArray()
         ).map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipientIds)
-        app.gateway
-          .to({ players: recipientIds })
-          .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
+        app.gateway.to({ players: recipientIds }).send(async actor => {
+          const mappedActor = actorMap.get(actor!)
+          const context = await createQueueSlotRenderContext({ slots: [slot], actor: mappedActor })
+          return QueueSlot({ slot, actor: mappedActor, context })
+        })
       }),
     )
 
@@ -237,11 +246,9 @@ export default fp(
         ])
         const recipients = friendshipSlots.map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipients)
-        for (const slot of slots) {
-          app.gateway
-            .to({ players: recipients })
-            .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
-        }
+        app.gateway
+          .to({ players: recipients })
+          .send(actor => renderQueueSlots(slots, actorMap.get(actor!)))
       }),
     )
 
@@ -258,9 +265,11 @@ export default fp(
             .toArray()
         ).map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipientIds)
-        app.gateway
-          .to({ players: recipientIds })
-          .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
+        app.gateway.to({ players: recipientIds }).send(async actor => {
+          const mappedActor = actorMap.get(actor!)
+          const context = await createQueueSlotRenderContext({ slots: [slot], actor: mappedActor })
+          return QueueSlot({ slot, actor: mappedActor, context })
+        })
       }),
     )
 
