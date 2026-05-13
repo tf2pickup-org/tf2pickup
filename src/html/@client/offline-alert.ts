@@ -1,4 +1,5 @@
 import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
 const attrName = 'data-offline-alert'
 
@@ -16,16 +17,4 @@ function init(element: HTMLElement) {
   })
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element.hasAttribute(attrName)) {
-    init(element)
-  }
-
-  element.querySelectorAll(`[${attrName}]`).forEach(element => {
-    if (element instanceof HTMLElement) {
-      init(element)
-    }
-  })
-})
+onLoadWithAttr(attrName, init)

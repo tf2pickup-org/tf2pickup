@@ -1,4 +1,4 @@
-import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
 const dialogSelector = '#ready-up-dialog'
 const triggerAttr = 'data-ready-up-dialog-trigger'
@@ -59,26 +59,7 @@ function handleTrigger(element: HTMLElement) {
   element.remove()
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element.hasAttribute(triggerAttr)) {
-    handleTrigger(element)
-  }
-
-  element.querySelectorAll(`[${triggerAttr}]`).forEach(element => {
-    if (element instanceof HTMLElement) {
-      handleTrigger(element)
-    }
-  })
-
-  if (element instanceof HTMLFormElement && element.hasAttribute(disableOnSubmitAttr)) {
-    initDisableOnSubmit(element)
-  }
-
-  element.querySelectorAll(`form[${disableOnSubmitAttr}]`).forEach(element => {
-    if (element instanceof HTMLFormElement) {
-      initDisableOnSubmit(element)
-    }
-  })
+onLoadWithAttr(triggerAttr, handleTrigger)
+onLoadWithAttr(disableOnSubmitAttr, el => {
+  if (el instanceof HTMLFormElement) initDisableOnSubmit(el)
 })

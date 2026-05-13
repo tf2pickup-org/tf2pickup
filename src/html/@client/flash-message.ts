@@ -1,4 +1,4 @@
-import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
 const timeout = 3.5 * 1000 // 3.5 seconds
 const steps = timeout / 10
@@ -21,16 +21,4 @@ function initFlashMessage(messageBox: HTMLElement) {
   }, timeout / steps)
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element.hasAttribute(attrName)) {
-    initFlashMessage(element)
-  }
-
-  element.querySelectorAll(`[${attrName}]`).forEach(element => {
-    if (element instanceof HTMLElement) {
-      initFlashMessage(element)
-    }
-  })
-})
+onLoadWithAttr(attrName, initFlashMessage)
