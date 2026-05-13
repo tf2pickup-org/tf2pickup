@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.7.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.5...4.7.6) (2026-05-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @opentelemetry/semantic-conventions to v1.41.1 ([fd8b9b7](https://github.com/tf2pickup-org/tf2pickup/commit/fd8b9b7e2aed8c11fd045dc36cefedbc417f37e5))
+* **deps:** update dependency ws to v8.20.1 ([ca63299](https://github.com/tf2pickup-org/tf2pickup/commit/ca6329992d317408d2becae16d52e14166d40b7f))
+* **deps:** update linkifyjs monorepo to v4.3.3 ([a17363e](https://github.com/tf2pickup-org/tf2pickup/commit/a17363ec37f5abdd868edc8748b8dbb7953d9ec6))
+* remove hyperscript dependency and replace usages ([#596](https://github.com/tf2pickup-org/tf2pickup/issues/596)) ([dd4fb3c](https://github.com/tf2pickup-org/tf2pickup/commit/dd4fb3c782c58c458eb9e1a5c163347b39361783))
+
 ## [4.7.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.4...4.7.5) (2026-05-11)
 
 
