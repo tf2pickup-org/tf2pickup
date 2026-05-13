@@ -1,4 +1,6 @@
 import { Client } from '@tf2pickup-org/mumble-client'
+import { secondsToMilliseconds } from 'date-fns'
+import { delay } from 'es-toolkit'
 import { configuration } from '../configuration'
 import { VoiceServerType } from '../shared/types/voice-server-type'
 import { logger } from '../logger'
@@ -11,6 +13,9 @@ import { events } from '../events'
 import { errors } from '../errors'
 
 export let client: Client | undefined
+
+const maxReconnectAttempts = 3
+const reconnectDelay = secondsToMilliseconds(1)
 
 export async function tryConnect() {
   client?.disconnect()
@@ -49,34 +54,86 @@ export async function tryConnect() {
       rejectUnauthorized: false,
     })
 
-    await client.connect()
-    assertClientIsConnected(client)
-    logger.info(
-      {
-        mumbleUser: {
-          name: client.user.name,
-        },
-        welcomeText: client.welcomeText,
-      },
-      `connected to the mumble server`,
-    )
+    let attempt = 0
+    client.on('error', async (error: unknown) => {
+      if (!isSocketError(error)) {
+        logger.error(error, 'mumble client error')
+        setStatus(MumbleClientStatus.error)
+        events.emit('mumble/error', { error })
+        return
+      }
 
-    await client.user.setSelfDeaf(true)
-    await moveToTargetChannel()
+      attempt += 1
+      if (attempt >= maxReconnectAttempts) {
+        logger.error(error, 'mumble socket error')
+        setStatus(MumbleClientStatus.error)
+        events.emit('mumble/error', { error })
+        return
+      }
 
-    const permissions = await client.user.channel.getPermissions()
-    if (!permissions.canCreateChannel) {
-      logger.warn(`bot ${client.user.name} does not have permissions to create new channels`)
-    }
-    setStatus(MumbleClientStatus.connected)
-
-    client.on('error', (error: unknown) => {
-      logger.error(error, 'mumble client error')
-      setStatus(MumbleClientStatus.error)
-      events.emit('mumble/error', { error })
+      logger.warn(
+        error,
+        `mumble socket error, reconnect attempt ${attempt + 1}/${maxReconnectAttempts}...`,
+      )
+      await delay(reconnectDelay)
+      await client?.connect()
+      await afterConnect()
     })
+
+    await client.connect()
+    await afterConnect()
   } catch (error) {
     setStatus(MumbleClientStatus.error)
+    events.emit('mumble/error', { error })
     throw error
   }
+}
+
+async function afterConnect() {
+  assertClientIsConnected(client)
+  logger.info(
+    {
+      mumbleUser: {
+        name: client.user.name,
+      },
+      welcomeText: client.welcomeText,
+    },
+    `connected to the mumble server`,
+  )
+
+  await client.user.setSelfDeaf(true)
+  await moveToTargetChannel()
+
+  const permissions = await client.user.channel.getPermissions()
+  if (!permissions.canCreateChannel) {
+    logger.warn(`bot ${client.user.name} does not have permissions to create new channels`)
+  }
+  setStatus(MumbleClientStatus.connected)
+}
+
+function isSocketError(error: unknown) {
+  if (!(error instanceof Error)) {
+    return false
+  }
+
+  if (error.message === 'socket not writable') {
+    return true
+  }
+
+  return (
+    'code' in error &&
+    typeof error.code === 'string' &&
+    [
+      'ECONNRESET',
+      'ECONNREFUSED',
+      'EHOSTDOWN',
+      'EHOSTUNREACH',
+      'ENETDOWN',
+      'ENETRESET',
+      'ENETUNREACH',
+      'ENOTFOUND',
+      'EPIPE',
+      'ETIMEDOUT',
+    ].includes(error.code)
+  )
 }
