@@ -1,3 +1,14 @@
-onlyBuiltDependencies:
-  - esbuild
-  - protobufjs
+allowBuilds:
+  esbuild: true
+  protobufjs: true
+
+publicHoistPattern:
+  - 'playwright*'
+  - 'bson'
+  - 'framer-motion*'
+  - '@tf2pickup-org/*'
+  - '@discordjs/*'
+  - 'discord-api-types'
+  - 'helmet'
+  - '@fastify/*'
+  - '@opentelemetry/*'
