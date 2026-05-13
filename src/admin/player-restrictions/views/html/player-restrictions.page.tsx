@@ -128,14 +128,9 @@ async function PlayerSkillThreshold() {
             name="playerSkillThreshold"
             value={playerSkillThreshold?.toString()}
             disabled={!playerSkillThresholdEnabled}
-            _={`
-                    on change from #playerRestrictionsForm
-                      if #playerRestrictionsForm.playerSkillThresholdEnabled.checked
-                        remove [@disabled]
-                      else
-                        add [@disabled]
-                      end
-                  `}
+            data-toggle-disabled-form="#playerRestrictionsForm"
+            data-toggle-disabled-control="playerSkillThresholdEnabled"
+            data-toggle-disabled-checked="true"
           />
         </div>
         <p class="text-abru-light-75 text-sm">

@@ -1,4 +1,4 @@
-import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
 function locateTabContentHolder(tab: Element): HTMLElement | null {
   if (!(tab instanceof HTMLElement)) {
@@ -86,16 +86,4 @@ function init(container: HTMLElement) {
   selectTab(initialTab ?? tabs.item(0))
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element.hasAttribute('data-tabs')) {
-    init(element)
-  }
-
-  element.querySelectorAll('[data-tabs]').forEach(element => {
-    if (element instanceof HTMLElement) {
-      init(element)
-    }
-  })
-})
+onLoadWithAttr('data-tabs', init)

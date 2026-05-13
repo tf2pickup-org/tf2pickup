@@ -11,8 +11,6 @@ import './notifications'
 import './play-sound'
 import './sync-attribute'
 
-import 'hyperscript.org'
-
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
 
 import './disable-when-offline'
@@ -21,8 +19,12 @@ import './flash-message'
 import './map-thumbnail'
 import './mention-completion'
 import './mention-notification'
+import './offline-alert'
 import './details-persist'
+import './ready-up-dialog'
+import './remove-closest'
 import './skill-input'
 import './tabs'
+import './toggle-disabled'
 
 export { goTo } from './navigation'

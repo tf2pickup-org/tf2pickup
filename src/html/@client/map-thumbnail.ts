@@ -1,4 +1,4 @@
-import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
 const thumbnailServiceUrl = 'https://mapthumbnails.tf2pickup.org'
 const thumbnailUrlTemplate = `${thumbnailServiceUrl}/unsafe/{width}x{height}/{map}.jpg`
@@ -40,16 +40,6 @@ const resizeObserver = new ResizeObserver(entries => {
   }
 })
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) {
-    return
-  }
-
-  if (element.hasAttribute(attrName)) {
-    resizeObserver.observe(element)
-  }
-
-  element.querySelectorAll(`[${attrName}]`).forEach(element => {
-    resizeObserver.observe(element)
-  })
+onLoadWithAttr(attrName, el => {
+  resizeObserver.observe(el)
 })

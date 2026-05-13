@@ -43,14 +43,9 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
 
               <fieldset
                 class="mb-2 ml-[22px] flex flex-row gap-2"
-                _={`
-                on change from #addChatMuteForm
-                  if #addChatMuteForm.lengthSelector.value is 'duration'
-                    remove [@disabled]
-                  else
-                    add [@disabled]
-                  end
-              `}
+                data-toggle-disabled-form="#addChatMuteForm"
+                data-toggle-disabled-control="lengthSelector"
+                data-toggle-disabled-value="duration"
               >
                 <input type="number" name="duration" id="duration-value" value="1" />
                 <select name="durationUnits">
@@ -71,14 +66,9 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
               <fieldset
                 class="mb-2 ml-[22px]"
                 disabled
-                _={`
-                on change from #addChatMuteForm
-                  if #addChatMuteForm.lengthSelector.value is 'date'
-                    remove [@disabled]
-                  else
-                    add [@disabled]
-                  end
-              `}
+                data-toggle-disabled-form="#addChatMuteForm"
+                data-toggle-disabled-control="lengthSelector"
+                data-toggle-disabled-value="date"
               >
                 <input
                   type="datetime-local"

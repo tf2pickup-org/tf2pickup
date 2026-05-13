@@ -176,9 +176,6 @@ importers:
       htmx.org:
         specifier: 2.0.10
         version: 2.0.10
-      hyperscript.org:
-        specifier: 0.9.91
-        version: 0.9.91
       jsonwebtoken:
         specifier: 9.0.3
         version: 9.0.3
@@ -3364,10 +3361,6 @@ packages:
   https-proxy-agent@8.0.0:
     resolution: {integrity: sha512-YYeW+iCnAS3xhvj2dvVoWgsbca3RfQy/IlaNHHOtDmU0jMqPI9euIq3Y9BJETdxk16h9NHHCKqp/KB9nIMStCQ==}
     engines: {node: '>= 14'}
-
-  hyperscript.org@0.9.91:
-    resolution: {integrity: sha512-T9mi1yiGcMu5okkVxju8S330TUc+J4eAVBlosfSGPyexCD9BjR2RoDKi6l8NnP9YRA5ya1w5IMOvxj82HeNMXQ==}
-    hasBin: true
 
   iconv-lite@0.7.2:
     resolution: {integrity: sha512-im9DjEDQ55s9fL4EYzOAv0yMqmMBSZp6G0VvFyTMPKWxiSBHUj9NW/qqLmXUwXrrM7AvqSlTCfvqRb0cM8yYqw==}
@@ -8515,8 +8508,6 @@ snapshots:
       debug: 4.4.3
     transitivePeerDependencies:
       - supports-color
-
-  hyperscript.org@0.9.91: {}
 
   iconv-lite@0.7.2:
     dependencies:

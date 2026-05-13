@@ -1,6 +1,7 @@
-import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
-function init(details: HTMLDetailsElement) {
+function init(element: HTMLElement) {
+  const details = element as HTMLDetailsElement
   const key = `details-persist-${details.getAttribute('data-details-persist')}`
 
   details.addEventListener('toggle', () => {
@@ -21,14 +22,4 @@ function init(details: HTMLDetailsElement) {
   }
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element instanceof HTMLDetailsElement && element.hasAttribute('data-details-persist')) {
-    init(element)
-  }
-
-  element.querySelectorAll<HTMLDetailsElement>('[data-details-persist]').forEach(el => {
-    init(el)
-  })
-})
+onLoadWithAttr('data-details-persist', init)

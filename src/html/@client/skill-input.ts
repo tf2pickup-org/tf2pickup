@@ -1,4 +1,4 @@
-import htmx from './htmx.js'
+import { onLoadWithAttr } from './on-load-with-attr.js'
 
 function initSkillSpinner(spinner: HTMLElement) {
   const input = spinner.querySelector<HTMLInputElement>('input[type="number"]')
@@ -29,12 +29,4 @@ function initSkillSpinner(spinner: HTMLElement) {
     })
 }
 
-htmx.onLoad(element => {
-  if (!(element instanceof HTMLElement)) return
-
-  if (element.hasAttribute('data-skill-spinner')) {
-    initSkillSpinner(element)
-  }
-
-  element.querySelectorAll<HTMLElement>('[data-skill-spinner]').forEach(initSkillSpinner)
-})
+onLoadWithAttr('data-skill-spinner', initSkillSpinner)
