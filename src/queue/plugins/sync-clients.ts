@@ -62,17 +62,6 @@ export default fp(
       return new Map<SteamId64, QueueSlotActor>(entries)
     }
 
-    function getCachedActor(actorMap: Map<SteamId64, Promise<QueueSlotActor>>, id: SteamId64) {
-      const existing = actorMap.get(id)
-      if (existing) {
-        return existing
-      }
-
-      const actor = fetchQueueSlotActor(id)
-      actorMap.set(id, actor)
-      return actor
-    }
-
     async function syncAllSlots(...clients: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
       await Promise.all(
@@ -171,23 +160,19 @@ export default fp(
           return
         }
 
-        const [playerCount, title, anonymousSlots] = await Promise.all([
+        const [playerCount, title, anonymousSlots, actorMap] = await Promise.all([
           CurrentPlayerCount(),
           SetTitle(),
           Promise.all(slots.map(slot => QueueSlot({ slot }))),
+          fetchActorMap(recipients.playerIds),
         ])
-        const actorMap = new Map(
-          [...(await fetchActorMap(recipients.playerIds))].map(
-            ([steamId, actor]) => [steamId, Promise.resolve(actor)] as const,
-          ),
-        )
 
         app.gateway.to({ url: '/' }).send(async player => {
           if (!player) {
             return [...anonymousSlots, playerCount, title]
           }
 
-          const actor = await getCachedActor(actorMap, player)
+          const actor = actorMap.get(player) ?? (await fetchQueueSlotActor(player))
           return [
             ...(await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))),
             playerCount,
