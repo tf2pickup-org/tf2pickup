@@ -22,21 +22,62 @@ import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 
+type QueueSlotActor = NonNullable<Parameters<typeof QueueSlot>[0]['actor']>
+
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    async function fetchQueueSlotActor(steamId: SteamId64) {
+      return await players.bySteamId(steamId, [
+        'steamId',
+        'bans',
+        'activeGame',
+        'skill',
+        'verified',
+        'roles',
+      ])
+    }
+
+    function queuePageRecipients() {
+      const playerIds = new Set<SteamId64>()
+      let hasClients = false
+      app.websocketServer.clients.forEach(client => {
+        const socket = client as AppWebSocket
+        if (socket.currentUrl !== '/') {
+          return
+        }
+
+        hasClients = true
+        if (socket.player) {
+          playerIds.add(socket.player.steamId)
+        }
+      })
+      return { hasClients, playerIds: [...playerIds] }
+    }
+
+    async function fetchActorMap(recipientIds: SteamId64[]) {
+      const entries = await Promise.all(
+        recipientIds.map(async id => [id, await fetchQueueSlotActor(id)] as const),
+      )
+      return new Map<SteamId64, QueueSlotActor>(entries)
+    }
+
+    function getCachedActor(actorMap: Map<SteamId64, Promise<QueueSlotActor>>, id: SteamId64) {
+      const existing = actorMap.get(id)
+      if (existing) {
+        return existing
+      }
+
+      const actor = fetchQueueSlotActor(id)
+      actorMap.set(id, actor)
+      return actor
+    }
+
     async function syncAllSlots(...clients: SteamId64[]) {
       const slots = await collections.queueSlots.find().toArray()
       await Promise.all(
         clients.map(async client => {
-          const actor = await players.bySteamId(client, [
-            'steamId',
-            'bans',
-            'activeGame',
-            'skill',
-            'verified',
-            'roles',
-          ])
+          const actor = await fetchQueueSlotActor(client)
           app.gateway
             .to({ players: [actor.steamId] })
             .to({ url: '/' })
@@ -49,16 +90,7 @@ export default fp(
 
     async function syncQueuePage(socket: AppWebSocket) {
       const slots = await collections.queueSlots.find().toArray()
-      const actor = socket.player
-        ? await players.bySteamId(socket.player.steamId, [
-            'steamId',
-            'bans',
-            'activeGame',
-            'skill',
-            'verified',
-            'roles',
-          ])
-        : undefined
+      const actor = socket.player ? await fetchQueueSlotActor(socket.player.steamId) : undefined
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor }))
       })
@@ -134,25 +166,34 @@ export default fp(
     events.on(
       'queue/slots:updated',
       safe(async ({ slots }) => {
-        const playerCount = await CurrentPlayerCount()
-        app.gateway.broadcast(async player => {
-          const actor = player
-            ? await players.bySteamId(player, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ])
-            : undefined
+        const recipients = queuePageRecipients()
+        if (!recipients.hasClients) {
+          return
+        }
+
+        const [playerCount, title, anonymousSlots] = await Promise.all([
+          CurrentPlayerCount(),
+          SetTitle(),
+          Promise.all(slots.map(slot => QueueSlot({ slot }))),
+        ])
+        const actorMap = new Map(
+          [...(await fetchActorMap(recipients.playerIds))].map(
+            ([steamId, actor]) => [steamId, Promise.resolve(actor)] as const,
+          ),
+        )
+
+        app.gateway.to({ url: '/' }).send(async player => {
+          if (!player) {
+            return [...anonymousSlots, playerCount, title]
+          }
+
+          const actor = await getCachedActor(actorMap, player)
           return [
             ...(await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))),
             playerCount,
+            title,
           ]
         })
-
-        app.gateway.broadcast(() => SetTitle())
       }),
     )
 
@@ -184,26 +225,6 @@ export default fp(
         }
       }),
     )
-
-    async function fetchActorMap(recipientIds: SteamId64[]) {
-      const entries = await Promise.all(
-        recipientIds.map(
-          async id =>
-            [
-              id,
-              await players.bySteamId(id, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ]),
-            ] as const,
-        ),
-      )
-      return new Map(entries)
-    }
 
     events.on(
       'queue/friendship:created',
