@@ -18,6 +18,8 @@ import { MapVoteSelection } from '../views/html/map-vote-selection'
 import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
+import { queueOperationDuration } from '../metrics'
+import { performance } from 'perf_hooks'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -38,25 +40,38 @@ export default fp(
     }
 
     function wsSafe<Args extends unknown[]>(
+      operation: string,
       fn: (socket: AppWebSocket, ...args: Args) => Promise<void>,
     ) {
       return (socket: AppWebSocket, ...args: Args) => {
-        fn(socket, ...args).catch(async (error: unknown) => {
-          logger.error(error)
-          if (error instanceof Error) {
-            const msg = await FlashMessage({
-              message: `Error: ${error.message}`,
-              type: 'error',
+        const start = performance.now()
+        fn(socket, ...args)
+          .then(() => {
+            queueOperationDuration.record((performance.now() - start) / 1000, {
+              operation,
+              result: 'success',
             })
-            socket.send(msg)
-          }
-        })
+          })
+          .catch(async (error: unknown) => {
+            queueOperationDuration.record((performance.now() - start) / 1000, {
+              operation,
+              result: 'error',
+            })
+            logger.error(error)
+            if (error instanceof Error) {
+              const msg = await FlashMessage({
+                message: `Error: ${error.message}`,
+                type: 'error',
+              })
+              socket.send(msg)
+            }
+          })
       }
     }
 
     app.gateway.on(
       'queue:join',
-      wsSafe(async (socket, slotId) => {
+      wsSafe('join', async (socket, slotId) => {
         if (!socket.player) {
           throw errors.unauthorized('unauthorized')
         }
@@ -74,7 +89,7 @@ export default fp(
 
     app.gateway.on(
       'queue:leave',
-      wsSafe(async socket => {
+      wsSafe('leave', async socket => {
         if (!socket.player) {
           throw errors.unauthorized('unauthorized')
         }
@@ -101,7 +116,7 @@ export default fp(
 
     app.gateway.on(
       'queue:readyup',
-      wsSafe(async socket => {
+      wsSafe('readyup', async socket => {
         if (!socket.player) {
           throw errors.unauthorized('unauthorized')
         }
@@ -113,7 +128,7 @@ export default fp(
 
     app.gateway.on(
       'queue:votemap',
-      wsSafe(async (socket, map) => {
+      wsSafe('votemap', async (socket, map) => {
         if (!socket.player) {
           throw errors.unauthorized('unauthorized')
         }
@@ -127,7 +142,7 @@ export default fp(
 
     app.gateway.on(
       'queue:markasfriend',
-      wsSafe(async (socket, steamId) => {
+      wsSafe('markasfriend', async (socket, steamId) => {
         if (!socket.player) {
           throw errors.unauthorized('unauthorized')
         }
@@ -138,7 +153,7 @@ export default fp(
 
     app.gateway.on(
       'queue:togglepreready',
-      wsSafe(async socket => {
+      wsSafe('togglepreready', async socket => {
         if (!socket.player) {
           throw errors.unauthorized('unauthorized')
         }

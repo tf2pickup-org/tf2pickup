@@ -9,9 +9,13 @@ import { getState } from './get-state'
 import { mutex } from './mutex'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
+import { queueMutexWaitDuration } from './metrics'
+import { performance } from 'perf_hooks'
 
 export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
+  const waitStart = performance.now()
   return await mutex.runExclusive(async () => {
+    queueMutexWaitDuration.record((performance.now() - waitStart) / 1000, { operation: 'leave' })
     logger.trace({ steamId }, 'queue.leave()')
     const state = await getState()
     if (state === QueueState.launching) {
