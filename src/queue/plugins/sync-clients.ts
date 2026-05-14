@@ -21,22 +21,23 @@ import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
+import { errors } from '../../errors'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     async function syncAllSlots(...clients: SteamId64[]) {
-      const slots = await collections.queueSlots.find().toArray()
+      const [slots, actorMap] = await Promise.all([
+        collections.queueSlots.find().toArray(),
+        fetchActorMap(clients),
+      ])
       await Promise.all(
         clients.map(async client => {
-          const actor = await players.bySteamId(client, [
-            'steamId',
-            'bans',
-            'activeGame',
-            'skill',
-            'verified',
-            'roles',
-          ])
+          const actor = actorMap.get(client)
+          if (!actor) {
+            throw errors.notFound(`Player with steamId ${client} does not exist`)
+          }
+
           app.gateway
             .to({ players: [actor.steamId] })
             .to({ url: '/' })
