@@ -10,15 +10,11 @@ import { preReady } from '../pre-ready'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
 import { meetsSkillThreshold } from './meets-skill-threshold'
-import { mutex } from './mutex'
+import { withQueueLock } from './mutex'
 import type { QueueSlotId } from './types/queue-slot-id'
-import { queueMutexWaitDuration } from './metrics'
-import { performance } from 'perf_hooks'
 
 export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
-  const waitStart = performance.now()
-  return await mutex.runExclusive(async () => {
-    queueMutexWaitDuration.record((performance.now() - waitStart) / 1000, { operation: 'join' })
+  return await withQueueLock('join', async () => {
     logger.trace({ steamId, slotId }, `queue.join()`)
     const player = await players.bySteamId(steamId, [
       'hasAcceptedRules',

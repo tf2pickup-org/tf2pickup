@@ -6,12 +6,12 @@ import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { getState } from './get-state'
-import { mutex } from './mutex'
+import { withQueueLock } from './mutex'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
 
 export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
-  return await mutex.runExclusive(async () => {
+  return await withQueueLock('kick', async () => {
     logger.trace({ steamIds }, 'queue.kick()')
     const state = await getState()
     if (state === QueueState.launching) {

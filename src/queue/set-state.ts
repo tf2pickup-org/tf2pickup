@@ -4,10 +4,10 @@ import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
 import { preReady } from '../pre-ready'
-import { mutex } from './mutex'
+import { withQueueLock } from './mutex'
 
 export async function setState(state: QueueState) {
-  await mutex.runExclusive(async () => {
+  await withQueueLock('setstate', async () => {
     logger.trace({ state }, 'queue.setState()')
     await collections.queueState.updateOne({}, { $set: { state } })
 

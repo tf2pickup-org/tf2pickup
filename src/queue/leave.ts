@@ -6,16 +6,12 @@ import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { getState } from './get-state'
-import { mutex } from './mutex'
+import { withQueueLock } from './mutex'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
-import { queueMutexWaitDuration } from './metrics'
-import { performance } from 'perf_hooks'
 
 export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
-  const waitStart = performance.now()
-  return await mutex.runExclusive(async () => {
-    queueMutexWaitDuration.record((performance.now() - waitStart) / 1000, { operation: 'leave' })
+  return await withQueueLock('leave', async () => {
     logger.trace({ steamId }, 'queue.leave()')
     const state = await getState()
     if (state === QueueState.launching) {
