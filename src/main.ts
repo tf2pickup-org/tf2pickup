@@ -8,7 +8,7 @@ import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
 import { ErrorPage } from './error-pages/views/html/error.page'
-import { secondsInWeek } from 'date-fns/constants'
+import { secondsInWeek, secondsInYear } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 
 const app = fastify({ loggerInstance })
@@ -69,7 +69,7 @@ await app.register(await import('@fastify/static'), {
       environment.NODE_ENV === 'production' &&
       /[/\\](fonts|game-class-icons|sounds)[/\\]/.test(pathName)
     ) {
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
+      res.setHeader('Cache-Control', `public, max-age=${secondsInYear}, immutable`)
     }
   },
 })
