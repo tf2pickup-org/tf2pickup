@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.7.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.6...4.7.7) (2026-05-16)
+
+
+### Bug Fixes
+
+* add OTEL metrics for queue hot path latency ([#609](https://github.com/tf2pickup-org/tf2pickup/issues/609)) ([92c6fe3](https://github.com/tf2pickup-org/tf2pickup/commit/92c6fe3804a8650bde18bb01b6127867ee7ed72d))
+* **deps:** update dependency sanitize-html to v2.17.4 ([#603](https://github.com/tf2pickup-org/tf2pickup/issues/603)) ([9294ffd](https://github.com/tf2pickup-org/tf2pickup/commit/9294ffd6f0672143d5e378beca6a9f23c65cc878))
+* **deps:** update opentelemetry-js monorepo to v0.218.0 ([a27e8e7](https://github.com/tf2pickup-org/tf2pickup/commit/a27e8e796d6bddd9eff5c296bb62d7dec1fb69c7))
+* **deps:** update opentelemetry-js-contrib monorepo ([4c01eb2](https://github.com/tf2pickup-org/tf2pickup/commit/4c01eb2ad613932724e58a4f21891716cc1d482e))
+
+
+### Performance Improvements
+
+* trim Satoshi fonts to variable WOFF2 faces ([#607](https://github.com/tf2pickup-org/tf2pickup/issues/607)) ([a84cd38](https://github.com/tf2pickup-org/tf2pickup/commit/a84cd38de9d1278efda3327d0f93b8059cb5db4b))
+
 ## [4.7.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.5...4.7.6) (2026-05-13)
 
 
