@@ -5,12 +5,12 @@ import { events } from '../events'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
-import { mutex } from './mutex'
+import { withQueueLock } from './with-queue-lock'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
 
 export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
-  return await mutex.runExclusive(async () => {
+  return await withQueueLock('ready-up', async () => {
     logger.trace({ steamId }, 'queue.readyUp()')
     const state = await getState()
     if (state !== QueueState.ready) {

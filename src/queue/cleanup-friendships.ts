@@ -1,9 +1,9 @@
 import { collections } from '../database/collections'
 import { events } from '../events'
-import { mutex } from './mutex'
+import { withQueueLock } from './with-queue-lock'
 
 export async function cleanupFriendships() {
-  await mutex.runExclusive(async () => {
+  await withQueueLock('cleanup-friendships', async () => {
     const medics = (
       await collections.queueSlots
         .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })

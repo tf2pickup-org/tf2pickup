@@ -7,6 +7,7 @@ import { assertIsError } from '../utils/assert-is-error'
 import { logger } from '../logger'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
 import { meter } from '../otel'
+import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from './types'
 
 export interface ClientToServerEvents {
@@ -87,6 +88,12 @@ interface Broadcaster {
 const outgoingWsMessages = meter.createCounter('tf2pickup.websocket.outgoing_message.count', {
   description: 'Messages sent via websockets',
   unit: '1',
+})
+
+const broadcastRecipients = meter.createHistogram('tf2pickup.websocket.broadcast.recipients', {
+  description: 'Number of clients receiving each broadcast call',
+  unit: '{clients}',
+  valueType: ValueType.INT,
 })
 
 async function sendSafe(client: AppWebSocket, msg: string) {
@@ -183,6 +190,7 @@ class BroadcastOperator {
   }
 
   send(message: MessageFn) {
+    let recipients = 0
     this.app.websocketServer.clients.forEach(async client => {
       const socket = client as AppWebSocket
       if ('authenticated' in this.filters) {
@@ -202,8 +210,10 @@ class BroadcastOperator {
           return
         }
       }
+      recipients++
       await send(socket, message)
     })
+    broadcastRecipients.record(recipients)
   }
 }
 
@@ -221,9 +231,12 @@ export class Gateway extends EventEmitter implements Broadcaster {
   }
 
   broadcast(message: MessageFn) {
+    let recipients = 0
     this.app.websocketServer.clients.forEach(async client => {
+      recipients++
       await send(client as AppWebSocket, message)
     })
+    broadcastRecipients.record(recipients)
   }
 
   to(filter: UserFilters): BroadcastOperator {

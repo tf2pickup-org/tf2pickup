@@ -6,13 +6,13 @@ import { events } from '../events'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from './get-state'
-import { mutex } from './mutex'
+import { withQueueLock } from './with-queue-lock'
 
 export async function markAsFriend(
   source: SteamId64,
   target: SteamId64 | null,
 ): Promise<QueueSlotModel | null> {
-  return await mutex.runExclusive(async () => {
+  return await withQueueLock('mark-as-friend', async () => {
     logger.trace({ source, target }, `queue.markAsFriend()`)
 
     const queueState = await getState()
