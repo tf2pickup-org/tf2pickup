@@ -10,13 +10,12 @@ export async function measureTime<T>(
   record: (props: MeasureTimeRecordProps) => void,
 ): Promise<T> {
   const start = performance.now()
-  return fn()
-    .then(ret => {
-      record({ ms: performance.now() - start, result: 'success' })
-      return ret
-    })
-    .catch((error: unknown) => {
-      record({ ms: performance.now() - start, result: 'error' })
-      throw error
-    })
+  try {
+    const ret = await fn()
+    record({ ms: performance.now() - start, result: 'success' })
+    return ret
+  } catch (error: unknown) {
+    record({ ms: performance.now() - start, result: 'error' })
+    throw error
+  }
 }

@@ -1,5 +1,5 @@
 import { Mutex } from 'async-mutex'
-import { performance } from 'perf_hooks'
+import { performance } from 'node:perf_hooks'
 import { queueMutexWaitDuration } from './metrics'
 
 const mutex = new Mutex()

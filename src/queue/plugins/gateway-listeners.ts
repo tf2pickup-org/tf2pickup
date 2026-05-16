@@ -19,7 +19,7 @@ import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 import { queueWsCallDuration } from '../metrics'
-import { measureTime } from '../measure-time'
+import { measureTime } from '../../utils/measure-time'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
