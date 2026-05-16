@@ -4,7 +4,7 @@ import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
 import { preReady } from '../pre-ready'
-import { withQueueLock } from './mutex'
+import { withQueueLock } from './with-queue-lock'
 
 export async function setState(state: QueueState) {
   await withQueueLock('setstate', async () => {

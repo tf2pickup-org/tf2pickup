@@ -7,7 +7,7 @@ const mutex = new Mutex()
 export async function withQueueLock<T>(operation: string, fn: () => Promise<T>): Promise<T> {
   const waitStart = performance.now()
   return mutex.runExclusive(async () => {
-    queueMutexWaitDuration.record((performance.now() - waitStart) / 1000, { operation })
+    queueMutexWaitDuration.record(performance.now() - waitStart, { operation })
     return fn()
   })
 }

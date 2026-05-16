@@ -18,8 +18,8 @@ import { MapVoteSelection } from '../views/html/map-vote-selection'
 import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
-import { queueOperationDuration } from '../metrics'
-import { performance } from 'perf_hooks'
+import { queueWsCallDuration } from '../metrics'
+import { measureTime } from '../measure-time'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -44,28 +44,26 @@ export default fp(
       fn: (socket: AppWebSocket, ...args: Args) => Promise<void>,
     ) {
       return (socket: AppWebSocket, ...args: Args) => {
-        const start = performance.now()
-        fn(socket, ...args)
-          .then(() => {
-            queueOperationDuration.record((performance.now() - start) / 1000, {
+        measureTime(
+          async () => {
+            await fn(socket, ...args)
+          },
+          ({ ms, result }) => {
+            queueWsCallDuration.record(ms, {
               operation,
-              result: 'success',
+              result,
             })
-          })
-          .catch(async (error: unknown) => {
-            queueOperationDuration.record((performance.now() - start) / 1000, {
-              operation,
-              result: 'error',
+          },
+        ).catch(async (error: unknown) => {
+          logger.error(error)
+          if (error instanceof Error) {
+            const msg = await FlashMessage({
+              message: `Error: ${error.message}`,
+              type: 'error',
             })
-            logger.error(error)
-            if (error instanceof Error) {
-              const msg = await FlashMessage({
-                message: `Error: ${error.message}`,
-                type: 'error',
-              })
-              socket.send(msg)
-            }
-          })
+            socket.send(msg)
+          }
+        })
       }
     }
 

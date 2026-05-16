@@ -1,6 +1,6 @@
 import { collections } from '../database/collections'
 import { events } from '../events'
-import { withQueueLock } from './mutex'
+import { withQueueLock } from './with-queue-lock'
 
 export async function cleanupFriendships() {
   await withQueueLock('cleanupfriendships', async () => {

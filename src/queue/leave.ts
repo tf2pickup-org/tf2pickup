@@ -6,7 +6,7 @@ import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { getState } from './get-state'
-import { withQueueLock } from './mutex'
+import { withQueueLock } from './with-queue-lock'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
 
