@@ -12,8 +12,6 @@ import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 
 const app = fastify({ loggerInstance })
-const staticAssetCacheControl = 'public, max-age=31536000, immutable'
-const longLivedStaticAssetPathPattern = /[/\\](fonts|game-class-icons|sounds)[/\\]/
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
@@ -67,8 +65,11 @@ await app.register(await import('@fastify/static'), {
   ],
   prefix: '/',
   setHeaders: (res, pathName) => {
-    if (environment.NODE_ENV === 'production' && longLivedStaticAssetPathPattern.test(pathName)) {
-      res.setHeader('Cache-Control', staticAssetCacheControl)
+    if (
+      environment.NODE_ENV === 'production' &&
+      /[/\\](fonts|game-class-icons|sounds)[/\\]/.test(pathName)
+    ) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable')
     }
   },
 })
