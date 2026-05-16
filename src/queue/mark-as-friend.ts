@@ -12,7 +12,7 @@ export async function markAsFriend(
   source: SteamId64,
   target: SteamId64 | null,
 ): Promise<QueueSlotModel | null> {
-  return await withQueueLock('markasfriend', async () => {
+  return await withQueueLock('mark-as-friend', async () => {
     logger.trace({ source, target }, `queue.markAsFriend()`)
 
     const queueState = await getState()

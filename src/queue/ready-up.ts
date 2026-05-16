@@ -10,7 +10,7 @@ import { preReady } from '../pre-ready'
 import { errors } from '../errors'
 
 export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
-  return await withQueueLock('readyup', async () => {
+  return await withQueueLock('ready-up', async () => {
     logger.trace({ steamId }, 'queue.readyUp()')
     const state = await getState()
     if (state !== QueueState.ready) {

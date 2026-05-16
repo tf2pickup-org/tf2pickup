@@ -7,7 +7,7 @@ import { getMapVoteResults } from './get-map-vote-results'
 import { withQueueLock } from './with-queue-lock'
 
 export async function voteMap(steamId: SteamId64, map: string): Promise<Record<string, number>> {
-  return await withQueueLock('votemap', async () => {
+  return await withQueueLock('vote-map', async () => {
     logger.trace({ steamId, map }, 'queue.voteMap()')
     const mapCount = await collections.queueMapOptions.countDocuments({ name: map })
     if (mapCount === 0) {

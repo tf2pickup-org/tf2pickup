@@ -3,7 +3,7 @@ import { events } from '../events'
 import { withQueueLock } from './with-queue-lock'
 
 export async function cleanupFriendships() {
-  await withQueueLock('cleanupfriendships', async () => {
+  await withQueueLock('cleanup-friendships', async () => {
     const medics = (
       await collections.queueSlots
         .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })

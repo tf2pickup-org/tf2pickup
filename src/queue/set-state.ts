@@ -7,7 +7,7 @@ import { preReady } from '../pre-ready'
 import { withQueueLock } from './with-queue-lock'
 
 export async function setState(state: QueueState) {
-  await withQueueLock('setstate', async () => {
+  await withQueueLock('set-state', async () => {
     logger.trace({ state }, 'queue.setState()')
     await collections.queueState.updateOne({}, { $set: { state } })
 
