@@ -12,3 +12,4 @@ publicHoistPattern:
   - 'helmet'
   - '@fastify/*'
   - '@opentelemetry/*'
+  - 'thread-stream'

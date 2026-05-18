@@ -6,7 +6,6 @@ import { env } from 'process'
 import { version } from './version'
 import FastifyOtel from '@fastify/otel'
 import { MongoDBInstrumentation } from '@opentelemetry/instrumentation-mongodb'
-import { PinoInstrumentation } from '@opentelemetry/instrumentation-pino'
 import { RuntimeNodeInstrumentation } from '@opentelemetry/instrumentation-runtime-node'
 import { metrics } from '@opentelemetry/api'
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http'
@@ -36,13 +35,6 @@ const sdk = new NodeSDK({
       },
     }),
     new MongoDBInstrumentation(),
-    new PinoInstrumentation({
-      logKeys: {
-        traceId: 'trace_id',
-        spanId: 'span_id',
-        traceFlags: 'trace_flags',
-      },
-    }),
     new UndiciInstrumentation(),
   ],
 })
