@@ -32,23 +32,15 @@ const otelLogger = logs.getLogger('pino')
 const otelStream = {
   write(line: string) {
     try {
-      const {
-        level,
-        msg,
-        time,
-        pid: _pid,
-        hostname: _hostname,
-        ...rest
-      } = JSON.parse(line) as {
+      const { level, msg, time, ...rest } = JSON.parse(line) as {
         level: number
         msg: string
         time: number
-        pid: number
-        hostname: string
       } & Record<string, unknown>
       const attributes: Attributes = Object.fromEntries(
-        Object.entries(rest).filter((entry): entry is [string, AttributeValue] =>
-          isAttributeValue(entry[1]),
+        Object.entries(rest).filter(
+          (entry): entry is [string, AttributeValue] =>
+            entry[0] !== 'pid' && entry[0] !== 'hostname' && isAttributeValue(entry[1]),
         ),
       )
       const spanContext = trace.getActiveSpan()?.spanContext()
