@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.9](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.8...4.7.9) (2026-05-18)
+
+
+### Bug Fixes
+
+* bridge pino logs to OTLP via multistream ([#613](https://github.com/tf2pickup-org/tf2pickup/issues/613)) ([b1b7920](https://github.com/tf2pickup-org/tf2pickup/commit/b1b7920c208ae88957955ff46a1448710e58f607))
+
 ## [4.7.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.7...4.7.8) (2026-05-18)
 
 
