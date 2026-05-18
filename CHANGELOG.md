@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.7...4.7.8) (2026-05-18)
+
+
+### Bug Fixes
+
+* export logs via OTLP ([#611](https://github.com/tf2pickup-org/tf2pickup/issues/611)) ([8b8be0f](https://github.com/tf2pickup-org/tf2pickup/commit/8b8be0f8f890c08097068e3770d6e57d17220662))
+
 ## [4.7.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.6...4.7.7) (2026-05-16)
 
 
