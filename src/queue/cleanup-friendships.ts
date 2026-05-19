@@ -9,7 +9,9 @@ export async function cleanupFriendships() {
   ).map(({ player }) => player!.steamId)
   const friendships = await collections.queueFriends.find({ source: { $nin: medics } }).toArray()
   if (friendships.length === 0) return
-  await collections.queueFriends.deleteMany({ source: { $in: friendships.map(({ source }) => source) } })
+  await collections.queueFriends.deleteMany({
+    source: { $in: friendships.map(({ source }) => source) },
+  })
   for (const { source, target } of friendships) {
     events.emit('queue/friendship:removed', { source, target })
   }
