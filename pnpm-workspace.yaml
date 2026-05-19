@@ -2,6 +2,9 @@ allowBuilds:
   esbuild: true
   protobufjs: true
 
+minimumReleaseAgeExclude:
+  - tsx@4.22.2
+
 publicHoistPattern:
   - 'playwright*'
   - 'bson'
