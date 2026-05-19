@@ -12,5 +12,6 @@
     }
   ],
   "automergeType": "branch",
+  "minimumReleaseAge": "3 days",
   "labels": ["renovate"]
 }
