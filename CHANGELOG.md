@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.7.11](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.10...4.7.11) (2026-05-19)
+
+
+### Bug Fixes
+
+* cleanupFriendships() performance improvements ([#620](https://github.com/tf2pickup-org/tf2pickup/issues/620)) ([f315175](https://github.com/tf2pickup-org/tf2pickup/commit/f315175bb25d4f562c17a84c2d1c2c66112eedcf))
+* exclude tsx@4.22.2 from minimumReleaseAge policy ([#624](https://github.com/tf2pickup-org/tf2pickup/issues/624)) ([7d822f0](https://github.com/tf2pickup-org/tf2pickup/commit/7d822f0467cf6d628f3c952fdc2953348aba61f4))
+* play mention notification sound in background tabs ([#623](https://github.com/tf2pickup-org/tf2pickup/issues/623)) ([14537d1](https://github.com/tf2pickup-org/tf2pickup/commit/14537d140cb7b3a6bd0f5227457c0a468bddb260))
+* speed up player action logs with fast counts and indexes ([#601](https://github.com/tf2pickup-org/tf2pickup/issues/601)) ([7e83943](https://github.com/tf2pickup-org/tf2pickup/commit/7e83943a8327e662d932f36054b035e89631a082))
+
 ## [4.7.10](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.9...4.7.10) (2026-05-19)
 
 
