@@ -28,7 +28,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await PlayerRestrictionsPage())
+        await reply.status(200).html(PlayerRestrictionsPage())
       },
     )
     .post(
@@ -81,7 +81,7 @@ export default routes(async app => {
           configuration.set('games.skill_step', skillStep),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await PlayerRestrictionsPage())
+        await reply.status(200).html(PlayerRestrictionsPage())
       },
     )
 })
