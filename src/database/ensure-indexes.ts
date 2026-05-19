@@ -55,6 +55,12 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { logId: 1 }, options: { unique: true } },
     { spec: { gameNumber: 1 }, options: { unique: true } },
   ],
+  playerActions: [
+    { spec: { timestamp: -1 } },
+    { spec: { player: 1, timestamp: -1 } },
+    { spec: { action: 1, timestamp: -1 } },
+    { spec: { ipAddress: 1, timestamp: -1 } },
+  ],
 }
 
 export async function ensureIndexes() {
