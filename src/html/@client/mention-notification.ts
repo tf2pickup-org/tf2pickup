@@ -36,7 +36,11 @@ function setMention(event: CustomEvent<{ volume: number }>) {
 
   hasMention = true
 
-  currentSound = new Howl({ src: ['/sounds/mention.webm'], volume: event.detail.volume, html5: true })
+  currentSound = new Howl({
+    src: ['/sounds/mention.webm'],
+    volume: event.detail.volume,
+    html5: true,
+  })
   currentSound.play()
 
   chatTabButton()?.classList.add('has-mention')
