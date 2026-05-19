@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.7.10](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.9...4.7.10) (2026-05-19)
+
+
+### Bug Fixes
+
+* add missing OTEL log attributes ([#619](https://github.com/tf2pickup-org/tf2pickup/issues/619)) ([6491eaa](https://github.com/tf2pickup-org/tf2pickup/commit/6491eaab8070890e26cd1b31e3792e9bae2f44e1))
+
 ## [4.7.9](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.8...4.7.9) (2026-05-18)
 
 
