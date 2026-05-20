@@ -31,21 +31,19 @@ export default fp(
         collections.queueSlots.find().toArray(),
         fetchActorMap(clients),
       ])
-      await Promise.all(
-        clients.map(async client => {
-          const actor = actorMap.get(client)
-          if (!actor) {
-            throw errors.notFound(`Player with steamId ${client} does not exist`)
-          }
+      for (const client of clients) {
+        const actor = actorMap.get(client)
+        if (!actor) {
+          throw errors.notFound(`Player with steamId ${client} does not exist`)
+        }
 
-          app.gateway
-            .to({ players: [actor.steamId] })
-            .to({ url: '/' })
-            .send(() =>
-              Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
-            )
-        }),
-      )
+        app.gateway
+          .to({ players: [actor.steamId] })
+          .to({ url: '/' })
+          .send(() =>
+            Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
+          )
+      }
     }
 
     async function syncQueuePage(socket: AppWebSocket) {
