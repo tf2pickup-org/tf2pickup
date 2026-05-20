@@ -135,22 +135,21 @@ export default fp(
     events.on(
       'queue/slots:updated',
       safe(async ({ slots }) => {
-        const playerCount = await CurrentPlayerCount()
-        app.gateway.broadcast(async player => {
-          const actor = player
-            ? await players.bySteamId(player, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ])
-            : undefined
-          return [
-            ...(await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))),
+        const connectedPlayers = [...(app.websocketServer.clients as Set<AppWebSocket>)]
+          .map(c => c.player?.steamId)
+          .filter((id): id is SteamId64 => id !== undefined)
+
+        const [playerCount, actorMap] = await Promise.all([
+          CurrentPlayerCount(),
+          fetchActorMap(connectedPlayers),
+        ])
+
+        app.gateway.broadcast(player => {
+          const actor = player ? actorMap.get(player) : undefined
+          return Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(items => [
+            ...items,
             playerCount,
-          ]
+          ])
         })
 
         app.gateway.broadcast(() => SetTitle())
