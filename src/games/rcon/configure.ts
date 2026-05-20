@@ -27,6 +27,7 @@ import { players } from '../../players'
 import type { RconCommand } from '../../shared/types/rcon-command'
 
 const configurators = new Map<GameNumber, AbortController>()
+const configureRetries = 2
 
 export function cancelConfigure(gameNumber: GameNumber) {
   configurators.get(gameNumber)?.abort()
@@ -52,15 +53,21 @@ export async function configure(gameNumber: GameNumber): Promise<void> {
         await doConfigure(game!, { signal })
       },
       {
-        retries: 2,
+        retries: configureRetries,
         delay: secondsToMilliseconds(5),
         signal,
         shouldRetry: (error, attempt) => {
+          if (error instanceof Error && 'statusCode' in error) {
+            return false
+          }
+          const willRetry = attempt < configureRetries
           logger.warn(
             { error, attempt: attempt + 1 },
-            `configure attempt ${attempt + 1} failed for game #${gameNumber}, retrying...`,
+            willRetry
+              ? `configure attempt ${attempt + 1} failed for game #${gameNumber}, retrying...`
+              : `configure attempt ${attempt + 1} failed for game #${gameNumber}`,
           )
-          return true
+          return willRetry
         },
       },
     )
