@@ -21,30 +21,29 @@ import { IsInQueue } from '../views/html/is-in-queue'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
+import { errors } from '../../errors'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     async function syncAllSlots(...clients: SteamId64[]) {
-      const slots = await collections.queueSlots.find().toArray()
-      await Promise.all(
-        clients.map(async client => {
-          const actor = await players.bySteamId(client, [
-            'steamId',
-            'bans',
-            'activeGame',
-            'skill',
-            'verified',
-            'roles',
-          ])
-          app.gateway
-            .to({ players: [actor.steamId] })
-            .to({ url: '/' })
-            .send(() =>
-              Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
-            )
-        }),
-      )
+      const [slots, actorMap] = await Promise.all([
+        collections.queueSlots.find().toArray(),
+        fetchActorMap(clients),
+      ])
+      for (const client of clients) {
+        const actor = actorMap.get(client)
+        if (!actor) {
+          throw errors.notFound(`Player with steamId ${client} does not exist`)
+        }
+
+        app.gateway
+          .to({ players: [actor.steamId] })
+          .to({ url: '/' })
+          .send(() =>
+            Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
+          )
+      }
     }
 
     async function syncQueuePage(socket: AppWebSocket) {
@@ -134,22 +133,21 @@ export default fp(
     events.on(
       'queue/slots:updated',
       safe(async ({ slots }) => {
-        const playerCount = await CurrentPlayerCount()
-        app.gateway.broadcast(async player => {
-          const actor = player
-            ? await players.bySteamId(player, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ])
-            : undefined
-          return [
-            ...(await Promise.all(slots.map(slot => QueueSlot({ slot, actor })))),
+        const connectedPlayers = [...(app.websocketServer.clients as Set<AppWebSocket>)]
+          .map(c => c.player?.steamId)
+          .filter((id): id is SteamId64 => id !== undefined)
+
+        const [playerCount, actorMap] = await Promise.all([
+          CurrentPlayerCount(),
+          fetchActorMap(connectedPlayers),
+        ])
+
+        app.gateway.broadcast(player => {
+          const actor = player ? actorMap.get(player) : undefined
+          return Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(items => [
+            ...items,
             playerCount,
-          ]
+          ])
         })
 
         app.gateway.broadcast(() => SetTitle())
@@ -186,23 +184,24 @@ export default fp(
     )
 
     async function fetchActorMap(recipientIds: SteamId64[]) {
-      const entries = await Promise.all(
-        recipientIds.map(
-          async id =>
-            [
-              id,
-              await players.bySteamId(id, [
-                'steamId',
-                'bans',
-                'activeGame',
-                'skill',
-                'verified',
-                'roles',
-              ]),
-            ] as const,
-        ),
-      )
-      return new Map(entries)
+      const actors = await collections.players
+        .find<
+          Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
+        >(
+          { steamId: { $in: recipientIds } },
+          {
+            projection: {
+              steamId: 1,
+              bans: 1,
+              activeGame: 1,
+              skill: 1,
+              verified: 1,
+              roles: 1,
+            },
+          },
+        )
+        .toArray()
+      return new Map(actors.map(actor => [actor.steamId, actor] as const))
     }
 
     events.on(
