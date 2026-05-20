@@ -1,5 +1,5 @@
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { deburr, delay } from 'es-toolkit'
+import { deburr, delay, retry } from 'es-toolkit'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'
@@ -42,7 +42,28 @@ export async function configure(gameNumber: GameNumber): Promise<void> {
     if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
     const timeout = AbortSignal.timeout(await configureTimeout(game))
     const signal = AbortSignal.any([controller.signal, timeout])
-    await doConfigure(game, { signal })
+    let configureAttempt = 0
+    await retry(
+      async () => {
+        if (configureAttempt++ > 0) {
+          game = await collections.games.findOne({ number: gameNumber })
+          if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
+        }
+        await doConfigure(game!, { signal })
+      },
+      {
+        retries: 2,
+        delay: secondsToMilliseconds(5),
+        signal,
+        shouldRetry: (error, attempt) => {
+          logger.warn(
+            { error, attempt: attempt + 1 },
+            `configure attempt ${attempt + 1} failed for game #${gameNumber}, retrying...`,
+          )
+          return true
+        },
+      },
+    )
   } catch (error) {
     logger.error({ error }, `error configuring game #${gameNumber}`)
     if (game) {
