@@ -14,6 +14,7 @@ function maybePlaySound(element: Element) {
   const sound = new Howl({
     src: [src],
     volume,
+    html5: true,
   })
   sound.play()
 }
