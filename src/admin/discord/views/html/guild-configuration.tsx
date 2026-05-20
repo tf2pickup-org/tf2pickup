@@ -7,7 +7,16 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
     return <></>
   }
 
-  const config = (await configuration.get('discord.guilds')).find(({ id }) => id === props.guild.id)
+  const [guildConfig, agentChannels] = await Promise.all([
+    configuration
+      .get('discord.guilds')
+      .then(guilds => guilds.find(({ id }) => id === props.guild.id)),
+    configuration.get('agent.channels'),
+  ])
+
+  const enabledAgentChannelIds = new Set(
+    agentChannels.filter(c => c.guildId === props.guild.id).map(c => c.channelId),
+  )
 
   return (
     <form action={`/admin/discord/${props.guild.id}`} method="post" class="flex flex-col gap-2">
@@ -19,7 +28,7 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
           guild={props.guild}
           id={`${props.guild.id}-admin-notifications-channel`}
           name="adminNotificationsChannel"
-          current={config?.adminNotifications?.channel}
+          current={guildConfig?.adminNotifications?.channel}
         />
       </div>
 
@@ -31,14 +40,14 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
           guild={props.guild}
           id={`${props.guild.id}-substitute-notifications-channel`}
           name="substituteNotificationsChannel"
-          current={config?.substituteNotifications?.channel}
+          current={guildConfig?.substituteNotifications?.channel}
         />
         <label for={`${props.guild.id}-substitute-notifications-mention-role`}>mention role:</label>
         <SelectRole
           guild={props.guild}
           id={`${props.guild.id}-substitute-notifications-mention-role`}
           name="substituteNotificationsMentionRole"
-          current={config?.substituteNotifications?.role}
+          current={guildConfig?.substituteNotifications?.role}
         />
       </div>
 
@@ -48,8 +57,19 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
           guild={props.guild}
           id={`${props.guild.id}-queue-prompts-channel`}
           name="queuePromptsChannel"
-          current={config?.queuePrompts?.channel}
+          current={guildConfig?.queuePrompts?.channel}
         />
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <label for={`${props.guild.id}-agent-channels`}>Agent channels:</label>
+        <SelectAgentChannels
+          guild={props.guild}
+          id={`${props.guild.id}-agent-channels`}
+          name="agentChannels"
+          current={enabledAgentChannelIds}
+        />
+        <span class="text-abru-light-75 text-xs">Hold Ctrl / Cmd to select multiple channels.</span>
       </div>
 
       <p>
@@ -85,6 +105,34 @@ function SelectTextChannel(
           {channels.map(({ id, name }) => (
             <option value={id} selected={current === id} safe>
               {name}
+            </option>
+          ))}
+        </optgroup>
+      ))}
+    </select>
+  )
+}
+
+function SelectAgentChannels(props: { guild: Guild; current: Set<string> } & JSX.HtmlSelectTag) {
+  const { guild, current, ...rest } = props
+  const byCategory = Array.from(
+    guild.channels.cache.filter(channel => channel instanceof TextChannel).values(),
+  ).reduce<Map<string, TextChannel[]>>((acc, channel) => {
+    const category = channel.parent?.name ?? 'Uncategorized'
+    if (!acc.has(category)) acc.set(category, [])
+    acc.get(category)!.push(channel)
+    return acc
+  }, new Map())
+
+  byCategory.forEach(channels => channels.sort((a, b) => a.position - b.position))
+
+  return (
+    <select multiple="" size="8" {...rest}>
+      {Array.from(byCategory, ([category, channels]) => (
+        <optgroup label={category}>
+          {channels.map(({ id, name }) => (
+            <option value={id} selected={current.has(id)} safe>
+              #{name}
             </option>
           ))}
         </optgroup>

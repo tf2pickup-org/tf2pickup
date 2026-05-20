@@ -16,6 +16,7 @@ export default routes(async app => {
             substituteNotificationsChannel: z.string().optional(),
             substituteNotificationsMentionRole: z.string().optional(),
             queuePromptsChannel: z.string().optional(),
+            agentChannels: z.union([z.string(), z.array(z.string())]).optional(),
           }),
           params: z.object({
             guildId: z.string(),
@@ -59,11 +60,23 @@ export default routes(async app => {
               }
             : {}),
         }
-        const config = await configuration.get('discord.guilds')
-        await configuration.set('discord.guilds', [
-          ...config.filter(({ id }) => id !== guildId),
-          guildConfig,
+        const submittedChannels = request.body.agentChannels
+          ? [request.body.agentChannels].flat()
+          : []
+        const [discordGuilds, currentAgentChannels] = await Promise.all([
+          configuration.get('discord.guilds'),
+          configuration.get('agent.channels'),
         ])
+        await configuration.setMulti(
+          ['discord.guilds', [...discordGuilds.filter(({ id }) => id !== guildId), guildConfig]],
+          [
+            'agent.channels',
+            [
+              ...currentAgentChannels.filter(c => c.guildId !== guildId),
+              ...submittedChannels.map(channelId => ({ guildId, channelId })),
+            ],
+          ],
+        )
         return reply.html(GuildConfiguration({ guild, enabled: true }))
       },
     )

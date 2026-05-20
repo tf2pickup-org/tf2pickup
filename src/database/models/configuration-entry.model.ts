@@ -182,6 +182,17 @@ export const configurationSchema = z.discriminatedUnion('key', [
     })
     .describe('Increment/decrement step when adjusting player skill in the admin panel'),
   z.object({
+    key: z.literal('agent.channels'),
+    value: z
+      .array(
+        z.object({
+          guildId: z.string(),
+          channelId: z.string(),
+        }),
+      )
+      .default([]),
+  }),
+  z.object({
     key: z.literal('misc.discord_invite_link'),
     value: z.url().nullable().default(null),
   }),

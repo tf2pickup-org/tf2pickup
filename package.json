@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
+    "agent": "tsx agent/index.ts",
+    "agent:cli": "tsx agent/cli.ts",
     "xss-scan": "xss-scan",
     "lint": "prettier --check . && eslint .",
     "format": "prettier --write .",
@@ -16,6 +18,7 @@
     "postbuild": "cpy public dist && cpy src/**/*.md src/**/*.css dist/src && find src -wholename \"*/@client/*.ts\" -exec cp --parents '{}' dist ';'"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "0.97.1",
     "@fastify/accepts": "5.0.4",
     "@fastify/autoload": "6.3.1",
     "@fastify/etag": "6.1.0",

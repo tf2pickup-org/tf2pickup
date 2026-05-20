@@ -34,6 +34,7 @@ const environmentSchema = z.object({
   TF2_QUICK_SERVER_CLIENT_SECRET: z.string().optional(),
 
   DISCORD_BOT_TOKEN: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string().optional(),
 
   TWITCH_CLIENT_ID: z.string().optional(),
   TWITCH_CLIENT_SECRET: z.string().optional(),
