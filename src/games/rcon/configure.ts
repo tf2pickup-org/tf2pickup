@@ -1,5 +1,5 @@
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { deburr, delay } from 'es-toolkit'
+import { deburr, delay, retry } from 'es-toolkit'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { GameEventType } from '../../database/models/game-event.model'
@@ -27,6 +27,7 @@ import { players } from '../../players'
 import type { RconCommand } from '../../shared/types/rcon-command'
 
 const configurators = new Map<GameNumber, AbortController>()
+const configureRetries = 2
 
 export function cancelConfigure(gameNumber: GameNumber) {
   configurators.get(gameNumber)?.abort()
@@ -42,7 +43,34 @@ export async function configure(gameNumber: GameNumber): Promise<void> {
     if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
     const timeout = AbortSignal.timeout(await configureTimeout(game))
     const signal = AbortSignal.any([controller.signal, timeout])
-    await doConfigure(game, { signal })
+    let configureAttempt = 0
+    await retry(
+      async () => {
+        if (configureAttempt++ > 0) {
+          game = await collections.games.findOne({ number: gameNumber })
+          if (!game) throw errors.notFound(`Game #${gameNumber} not found`)
+        }
+        await doConfigure(game!, { signal })
+      },
+      {
+        retries: configureRetries,
+        delay: secondsToMilliseconds(5),
+        signal,
+        shouldRetry: (error, attempt) => {
+          if (error instanceof Error && 'statusCode' in error) {
+            return false
+          }
+          const willRetry = attempt < configureRetries
+          logger.warn(
+            { error, attempt: attempt + 1 },
+            willRetry
+              ? `configure attempt ${attempt + 1} failed for game #${gameNumber}, retrying...`
+              : `configure attempt ${attempt + 1} failed for game #${gameNumber}`,
+          )
+          return willRetry
+        },
+      },
+    )
   } catch (error) {
     logger.error({ error }, `error configuring game #${gameNumber}`)
     if (game) {
