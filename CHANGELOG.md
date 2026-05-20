@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.7.12](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.11...4.7.12) (2026-05-20)
+
+
+### Bug Fixes
+
+* get rid of reply was already sent error ([#625](https://github.com/tf2pickup-org/tf2pickup/issues/625)) ([6a32284](https://github.com/tf2pickup-org/tf2pickup/commit/6a322843de723e8dec6c42f3329d75da62aa2d9d))
+* play ready-up sound in background tabs ([#627](https://github.com/tf2pickup-org/tf2pickup/issues/627)) ([c0d3332](https://github.com/tf2pickup-org/tf2pickup/commit/c0d333221dd4dd259d9e8496d66fc1202ca30026)), closes [#623](https://github.com/tf2pickup-org/tf2pickup/issues/623)
+
 ## [4.7.11](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.10...4.7.11) (2026-05-19)
 
 
