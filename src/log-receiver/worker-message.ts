@@ -22,4 +22,6 @@ export type WorkerMessage =
   | { type: 'match/score:final'; gameNumber: GameNumber; team: Tf2Team; score: number }
   | { type: 'match/demo:uploaded'; gameNumber: GameNumber; demoUrl: string }
 
-export type ControlMessage = { type: 'shutdown' }
+export interface ControlMessage {
+  type: 'shutdown'
+}

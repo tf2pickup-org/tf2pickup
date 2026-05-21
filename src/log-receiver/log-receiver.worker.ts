@@ -13,7 +13,7 @@ import { version } from '../version'
 import { parseLogMessage } from './parse-log-message'
 import { LogMessageQueue } from '../games/log-message-queue'
 import { hideIpAddresses } from '../utils/hide-ip-addresses'
-import type { WorkerMessage, ControlMessage } from './worker-message'
+import type { WorkerMessage } from './worker-message'
 import type { GameNumber } from '../database/models/game.model'
 import type { GameLogsModel } from '../database/models/game-logs.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -293,11 +293,9 @@ socket.on('listening', () => {
 
 socket.bind(environment.LOG_RELAY_PORT, '0.0.0.0')
 
-parentPort.on('message', async (msg: ControlMessage) => {
-  if (msg.type === 'shutdown') {
-    socket.close()
-    await mongoClient.close()
-    await sdk.shutdown()
-    process.exit(0)
-  }
+parentPort.on('message', async () => {
+  socket.close()
+  await mongoClient.close()
+  await sdk.shutdown()
+  process.exit(0)
 })

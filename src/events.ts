@@ -16,9 +16,14 @@ import type { Configuration } from './database/models/configuration-entry.model'
 import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
+import type { LogMessage } from './log-receiver/parse-log-message'
 import type { WithId } from 'mongodb'
 
 export interface Events {
+  'gamelog:message': {
+    message: LogMessage
+  }
+
   'chat:messageDeleted': {
     messageId: string
   }
