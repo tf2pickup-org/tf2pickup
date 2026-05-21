@@ -9,7 +9,12 @@ export type WorkerMessage =
   | { type: 'match:roundWon'; gameNumber: GameNumber; winner: Tf2Team }
   | { type: 'match:roundLength'; gameNumber: GameNumber; lengthMs: number }
   | { type: 'match/logs:uploaded'; gameNumber: GameNumber; logsUrl: string }
-  | { type: 'match/player:connected'; gameNumber: GameNumber; steamId: SteamId64; ipAddress: string }
+  | {
+      type: 'match/player:connected'
+      gameNumber: GameNumber
+      steamId: SteamId64
+      ipAddress: string
+    }
   | { type: 'match/player:joinedTeam'; gameNumber: GameNumber; steamId: SteamId64; team: Tf2Team }
   | { type: 'match/player:disconnected'; gameNumber: GameNumber; steamId: SteamId64 }
   | { type: 'match/player:said'; gameNumber: GameNumber; steamId: SteamId64; message: string }

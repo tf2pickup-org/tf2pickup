@@ -78,7 +78,8 @@ const gameEvents: WorkerGameEvent[] = [
   {
     name: 'round win',
     keyword: 'Round_Win',
-    regex: /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Win" \(winner "(.+)"\)$/,
+    regex:
+      /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Win" \(winner "(.+)"\)$/,
     buildMessage: (gameNumber, matches) => {
       if (!matches[1]) return null
       return { type: 'match:roundWon', gameNumber, winner: fixTeamName(matches[1]) }
@@ -166,7 +167,12 @@ const gameEvents: WorkerGameEvent[] = [
     buildMessage: (gameNumber, matches) => {
       const [, teamName, score] = matches
       if (!teamName || !score) return null
-      return { type: 'match/score:reported', gameNumber, teamName: fixTeamName(teamName), score: Number(score) }
+      return {
+        type: 'match/score:reported',
+        gameNumber,
+        teamName: fixTeamName(teamName),
+        score: Number(score),
+      }
     },
   },
   {
@@ -176,7 +182,12 @@ const gameEvents: WorkerGameEvent[] = [
     buildMessage: (gameNumber, matches) => {
       const [, teamName, score] = matches
       if (!teamName || !score) return null
-      return { type: 'match/score:final', gameNumber, team: fixTeamName(teamName), score: Number(score) }
+      return {
+        type: 'match/score:final',
+        gameNumber,
+        team: fixTeamName(teamName),
+        score: Number(score),
+      }
     },
   },
   {
@@ -250,7 +261,9 @@ socket.on('message', (message, rinfo) => {
     messageCount.add(1, { source_ip: rinfo.address })
     const logMessage = parseLogMessage(message)
 
-    logQueue.enqueue(logMessage.password, () => pushLogMessage(logMessage.payload, logMessage.password))
+    logQueue.enqueue(logMessage.password, () =>
+      pushLogMessage(logMessage.payload, logMessage.password),
+    )
 
     matchGameEvent(logMessage.payload, logMessage.password).then(
       workerMessage => {
