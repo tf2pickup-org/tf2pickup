@@ -1,15 +1,18 @@
-import { MongoError } from 'mongodb'
-import { collections } from '../database/collections'
+import { Collection, MongoError } from 'mongodb'
 import { hideIpAddresses } from '../utils/hide-ip-addresses'
 import type { LogMessage } from '../log-receiver/parse-log-message'
 import { noop } from 'es-toolkit'
+import type { GameLogsModel } from '../database/models/game-logs.model'
+import { collections } from '../database/collections'
 
 class GameLogSink {
   private readonly queues = new Map<string, Promise<void>>()
 
+  constructor(private readonly collection: Collection<GameLogsModel>) {}
+
   push(message: LogMessage): void {
     this.enqueue(message.password, async () => {
-      await safePushLogMessage(message)
+      await this.safePushLogMessage(message)
     })
   }
 
@@ -30,33 +33,33 @@ class GameLogSink {
 
   async clear(logSecret: string): Promise<void> {
     this.queues.delete(logSecret)
-    await collections.gameLogs.deleteOne({ logSecret })
+    await this.collection.deleteOne({ logSecret })
   }
-}
 
-async function safePushLogMessage(message: LogMessage) {
-  const logLine = redact(message.payload)
+  private async safePushLogMessage(message: LogMessage) {
+    const logLine = redact(message.payload)
 
-  try {
-    await collections.gameLogs.findOneAndUpdate(
-      { logSecret: message.password },
-      { $push: { logs: logLine } },
-      { upsert: true },
-    )
-  } catch (error) {
-    if (!(error instanceof MongoError)) {
-      throw error
-    }
-
-    if (error.code === 11000) {
-      // Another upsert occurred during the upsert, try again.
-      await collections.gameLogs.findOneAndUpdate(
+    try {
+      await this.collection.findOneAndUpdate(
         { logSecret: message.password },
         { $push: { logs: logLine } },
         { upsert: true },
       )
-    } else {
-      throw error
+    } catch (error) {
+      if (!(error instanceof MongoError)) {
+        throw error
+      }
+
+      if (error.code === 11000) {
+        // Another upsert occurred during the upsert, try again.
+        await this.collection.findOneAndUpdate(
+          { logSecret: message.password },
+          { $push: { logs: logLine } },
+          { upsert: true },
+        )
+      } else {
+        throw error
+      }
     }
   }
 }
@@ -65,4 +68,4 @@ function redact(message: string): string {
   return hideIpAddresses(message)
 }
 
-export const gameLogSink = new GameLogSink()
+export const gameLogSink = new GameLogSink(collections.gameLogs)
