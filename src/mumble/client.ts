@@ -55,6 +55,7 @@ export async function tryConnect() {
     })
 
     let attempt = 0
+    let isReconnecting = false
     client.on('error', async (error: unknown) => {
       if (!isSocketError(error)) {
         logger.error(error, 'mumble client error')
@@ -63,21 +64,32 @@ export async function tryConnect() {
         return
       }
 
-      attempt += 1
-      if (attempt >= maxReconnectAttempts) {
-        logger.error(error, 'mumble socket error')
-        setStatus(MumbleClientStatus.error)
-        events.emit('mumble/error', { error })
-        return
-      }
+      if (isReconnecting) return
+      isReconnecting = true
 
-      logger.warn(
-        error,
-        `mumble socket error, reconnect attempt ${attempt + 1}/${maxReconnectAttempts}...`,
-      )
-      await delay(reconnectDelay)
-      await client?.connect()
-      await afterConnect()
+      try {
+        attempt += 1
+        if (attempt >= maxReconnectAttempts) {
+          logger.error(error, 'mumble socket error')
+          setStatus(MumbleClientStatus.error)
+          events.emit('mumble/error', { error })
+          return
+        }
+
+        logger.warn(
+          error,
+          `mumble socket error, reconnect attempt ${attempt}/${maxReconnectAttempts}...`,
+        )
+        await delay(reconnectDelay)
+        await client?.connect()
+        await afterConnect()
+        attempt = 0
+      } catch (reconnectError) {
+        setStatus(MumbleClientStatus.error)
+        events.emit('mumble/error', { error: reconnectError })
+      } finally {
+        isReconnecting = false
+      }
     })
 
     await client.connect()
