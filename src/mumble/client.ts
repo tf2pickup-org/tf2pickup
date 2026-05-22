@@ -1,6 +1,6 @@
 import { Client } from '@tf2pickup-org/mumble-client'
 import { secondsToMilliseconds } from 'date-fns'
-import { retry } from 'es-toolkit'
+import { delay } from 'es-toolkit'
 import { configuration } from '../configuration'
 import { VoiceServerType } from '../shared/types/voice-server-type'
 import { logger } from '../logger'
@@ -16,11 +16,6 @@ export let client: Client | undefined
 
 const maxReconnectAttempts = 3
 const reconnectDelay = secondsToMilliseconds(1)
-
-function reportError(error: unknown) {
-  setStatus(MumbleClientStatus.error)
-  events.emit('mumble/error', { error })
-}
 
 export async function tryConnect() {
   client?.disconnect()
@@ -59,6 +54,7 @@ export async function tryConnect() {
       rejectUnauthorized: false,
     })
 
+    let attempt = 0
     let reconnecting = false
     const localClient = client
     client.on('error', async (error: unknown) => {
@@ -71,18 +67,28 @@ export async function tryConnect() {
       if (reconnecting) return
       reconnecting = true
 
-      logger.warn(error, 'mumble socket error, attempting to reconnect...')
+      attempt += 1
+      if (attempt > maxReconnectAttempts) {
+        logger.error(error, 'mumble socket error')
+        reportError(error)
+        return // reconnecting stays true — suppresses further events after exhaustion
+      }
+
+      logger.warn(
+        error,
+        `mumble socket error, reconnect attempt ${attempt}/${maxReconnectAttempts}...`,
+      )
+      await delay(reconnectDelay)
+      reconnecting = false // release before connecting so the next error event can trigger a new retry
+
       try {
-        await retry(
-          async () => {
-            await localClient.connect()
-            await afterConnect()
-          },
-          { retries: maxReconnectAttempts - 1, delay: reconnectDelay, shouldRetry: isSocketError },
-        )
-        reconnecting = false
+        await localClient.connect()
+        await afterConnect()
+        attempt = 0
       } catch (reconnectError) {
+        logger.error(reconnectError, 'mumble reconnect error')
         reportError(reconnectError)
+        reconnecting = true // suppress further events on non-socket error
       }
     })
 
@@ -92,6 +98,11 @@ export async function tryConnect() {
     reportError(error)
     throw error
   }
+}
+
+function reportError(error: unknown) {
+  setStatus(MumbleClientStatus.error)
+  events.emit('mumble/error', { error })
 }
 
 async function afterConnect() {
