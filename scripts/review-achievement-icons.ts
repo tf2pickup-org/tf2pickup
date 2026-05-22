@@ -1,46 +1,45 @@
 #!/usr/bin/env tsx
 /**
- * One-off script that generates icon components for every achievement via the Recraft API.
+ * Interactive achievement icon review CLI.
+ *
+ * Opens a browser preview for each icon and lets you approve or regenerate
+ * it until you're happy.
  *
  * Usage:
- *   RECRAFT_API_TOKEN=<token> pnpm tsx scripts/generate-achievement-icons.ts
+ *   RECRAFT_API_TOKEN=<token> pnpm tsx scripts/review-achievement-icons.ts [icon-id ...]
  *
- * Output: src/achievements/views/html/icons/<id>.tsx  (one file per achievement)
- *
- * Each file exports a single JSX function component named in PascalCase, e.g.
- *   first-blood.tsx  →  export function FirstBloodIcon(...)
- *
- * Style note: recraftv3_vector + "Bold stroke" was chosen for clean single-colour
- * scalable icons that read well at small sizes (28 px default). Re-run with a
- * different style value if you want a different look.
+ * If no icon IDs are given, goes through all icons in definition order.
+ * Keys: [y/Enter] approve and next  [r] regenerate  [s] skip  [q] quit
  */
 
 import { NodeType, parse as parseHtml } from 'node-html-parser'
 import type { HTMLElement as ParsedElement, Node as ParsedNode } from 'node-html-parser'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
+import { existsSync } from 'node:fs'
 import { join } from 'node:path'
+import { createInterface } from 'node:readline'
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
+import { tmpdir } from 'node:os'
+
+const execAsync = promisify(exec)
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const TOKEN = process.env['RECRAFT_API_TOKEN']
-if (!TOKEN) {
-  console.error('Error: RECRAFT_API_TOKEN environment variable is required')
-  process.exit(1)
-}
-
 const RECRAFT_URL = 'https://external.api.recraft.ai/v1/images/generations'
-const MODEL = 'recraftv4_1_vector'
+const MODEL = 'recraftv3_vector'
 const STYLE = 'Bold stroke'
 const DEFAULT_ICON_SIZE = 28
-const DELAY_MS = 600 // stay well within 100 req/min
 
 const OUTPUT_DIR = join(import.meta.dirname, '..', 'src', 'achievements', 'views', 'html', 'icons')
+const PREVIEW_PATH = join(tmpdir(), 'achievement-icon-preview.html')
 
 // ── Achievement definitions ───────────────────────────────────────────────────
 
 interface IconDef {
-  id: string // kebab-case, becomes filename and CSS class
-  name: string // PascalCase component name (without "Icon" suffix)
+  id: string
+  name: string
   prompt: string
 }
 
@@ -190,9 +189,7 @@ async function generateSvg(prompt: string): Promise<string> {
     body: JSON.stringify({ prompt, model: MODEL, style: STYLE, n: 1, size: '1:1' }),
   })
 
-  if (!res.ok) {
-    throw new Error(`Recraft API ${res.status}: ${await res.text()}`)
-  }
+  if (!res.ok) throw new Error(`Recraft API ${res.status}: ${await res.text()}`)
 
   const json = (await res.json()) as { data: { url: string }[] }
   const url = json.data[0]?.url
@@ -203,10 +200,8 @@ async function generateSvg(prompt: string): Promise<string> {
   return svgRes.text()
 }
 
-// ── SVG → JSX serialization ───────────────────────────────────────────────────
+// ── SVG → JSX serialization (identical to generate-achievement-icons.ts) ─────
 
-// Matches any explicit color value (hex, rgb(), named colours).
-// Preserves "none" and "currentColor" — those are not stripped.
 const COLOR_VALUE_RE =
   /^(#[0-9a-fA-F]{3,8}|rgb\(|rgba\(|hsl\(|hsla\(|black|white|red|green|blue|gray|grey|yellow|orange|purple|pink|brown|transparent)/i
 
@@ -214,9 +209,6 @@ function isColorValue(v: string): boolean {
   return COLOR_VALUE_RE.test(v)
 }
 
-// Detects white/near-white fills that should map to transparent rather than currentColor.
-// Recraft v4+ splits the canvas into foreground (dark fill) and background (white fill) segments;
-// stripping both equally leaves everything as currentColor and paints the whole canvas.
 const LIGHT_COLOR_RE = /^(white|#fff\b|#fff{3}\b|rgb\(\s*255\s*,\s*255\s*,\s*255\s*\))/i
 
 function isLightColor(v: string): boolean {
@@ -225,7 +217,6 @@ function isLightColor(v: string): boolean {
 
 function serializeNode(node: ParsedNode, indent: string): string {
   if (node.nodeType === NodeType.TEXT_NODE) {
-    // Escape JSX expression delimiters in raw text (e.g. JSON content in <metadata>)
     return node.rawText.trim().replace(/\{/g, "{'{'}").replace(/\}/g, "{'}'}")
   }
   if (node.nodeType !== NodeType.ELEMENT_NODE) return ''
@@ -233,13 +224,10 @@ function serializeNode(node: ParsedNode, indent: string): string {
   const el = node as ParsedElement
   const tag = el.rawTagName
 
-  // Drop non-visual elements — <defs> (gradients), <metadata> (Recraft signature)
   if (tag === 'defs' || tag === 'metadata') return ''
 
   const attrs: Record<string, string> = {}
 
-  // The API places a full-canvas background path as the first element (M 0 0 … 2048 … z).
-  // After color stripping it would inherit currentColor and paint a solid square, so force it transparent.
   const isBackgroundPath =
     tag === 'path' &&
     (el.attrs['d'] ?? '').startsWith('M 0 0') &&
@@ -251,25 +239,17 @@ function serializeNode(node: ParsedNode, indent: string): string {
         attrs['fill'] = 'none'
         continue
       }
-      // Map colored fills: light (white) → none (transparent background segments),
-      // dark/other → drop so children inherit "currentColor" from the SVG parent.
-      // Recraft v4+ tiles the canvas with foreground+background path segments; treating
-      // both the same way paints the whole canvas. url() gradient refs are also dropped
-      // (their defs are stripped above).
       if (v !== 'none' && v !== 'currentColor' && (isColorValue(v) || v.startsWith('url('))) {
         if (isLightColor(v)) attrs['fill'] = 'none'
         continue
       }
     }
     if (k === 'stroke') {
-      // Replace colored strokes with "currentColor" so they stay visible.
-      // Preserve stroke="none" and stroke="currentColor" as-is.
       if (v !== 'none' && v !== 'currentColor' && (isColorValue(v) || v.startsWith('url('))) {
         attrs['stroke'] = 'currentColor'
         continue
       }
     }
-    // Drop stop-color / stop-opacity (only meaningful inside gradient defs)
     if (k === 'stop-color' || k === 'stop-opacity') continue
     attrs[k] = v
   }
@@ -323,45 +303,198 @@ ${innerLines}
 `
 }
 
-// ── Main ──────────────────────────────────────────────────────────────────────
+// ── Preview helpers ───────────────────────────────────────────────────────────
 
-async function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+function tsxToSvgHtml(tsxContent: string): string {
+  const svgMatch = tsxContent.match(/<svg[\s\S]*?<\/svg>/)
+  if (!svgMatch) throw new Error('Could not extract SVG from TSX')
+  // Replace JSX dynamic expressions with concrete values for browser rendering
+  return svgMatch[0]
+    .replace(/width=\{[^}]+\}/g, 'width="256"')
+    .replace(/height=\{[^}]+\}/g, 'height="256"')
 }
 
+function resizeSvg(svgHtml: string, size: number): string {
+  return svgHtml
+    .replace(/width="\d+"/, `width="${size}"`)
+    .replace(/height="\d+"/, `height="${size}"`)
+}
+
+async function writePreview(icon: IconDef, tsxContent: string): Promise<void> {
+  const svgHtml = tsxToSvgHtml(tsxContent)
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${icon.id}</title>
+  <script>setTimeout(() => location.reload(), 1500)</script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      font-family: monospace;
+      padding: 2rem;
+    }
+    h1 { color: #e0e0e0; font-size: 1.4rem; }
+    p.prompt { color: #888; font-size: 0.8rem; max-width: 480px; text-align: center; }
+    .sizes {
+      display: flex;
+      align-items: flex-end;
+      gap: 3rem;
+    }
+    .size-slot {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .size-label { color: #666; font-size: 0.75rem; }
+    .on-dark  { color: #ffffff; }
+    .on-light { color: #1a1a1a; background: #f0f0f0; border-radius: 8px; padding: 6px; }
+    .pair { display: flex; gap: 1rem; align-items: center; }
+  </style>
+</head>
+<body>
+  <h1>${icon.id}</h1>
+  <p class="prompt">${icon.prompt}</p>
+  <div class="sizes">
+    <div class="size-slot">
+      <div class="pair">
+        <span class="on-dark">${resizeSvg(svgHtml, 256)}</span>
+      </div>
+      <span class="size-label">256 px</span>
+    </div>
+    <div class="size-slot">
+      <div class="pair">
+        <span class="on-dark">${resizeSvg(svgHtml, 64)}</span>
+        <span class="on-light">${resizeSvg(svgHtml, 64)}</span>
+      </div>
+      <span class="size-label">64 px</span>
+    </div>
+    <div class="size-slot">
+      <div class="pair">
+        <span class="on-dark">${resizeSvg(svgHtml, 28)}</span>
+        <span class="on-light">${resizeSvg(svgHtml, 28)}</span>
+      </div>
+      <span class="size-label">28 px (default)</span>
+    </div>
+  </div>
+</body>
+</html>`
+  await writeFile(PREVIEW_PATH, html, 'utf8')
+}
+
+async function openBrowser(): Promise<void> {
+  await execAsync(`xdg-open "${PREVIEW_PATH}"`).catch(() => {
+    console.log(`  Open manually: file://${PREVIEW_PATH}`)
+  })
+}
+
+// ── CLI helpers ───────────────────────────────────────────────────────────────
+
+function ask(rl: ReturnType<typeof createInterface>, question: string): Promise<string> {
+  return new Promise(resolve => rl.question(question, answer => resolve(answer.trim().toLowerCase())))
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+
 async function main() {
-  // Optional: pass icon IDs as CLI args to regenerate only specific icons.
-  // e.g.  pnpm tsx scripts/generate-achievement-icons.ts first-blood mercenary
+  if (!TOKEN) {
+    console.error('Error: RECRAFT_API_TOKEN environment variable is required')
+    process.exit(1)
+  }
+
   const filter = new Set(process.argv.slice(2))
   const queue = filter.size > 0 ? icons.filter(i => filter.has(i.id)) : icons
 
-  await mkdir(OUTPUT_DIR, { recursive: true })
-  console.log(`Output directory: ${OUTPUT_DIR}`)
-  console.log(`Model: ${MODEL}  Style: ${STYLE}`)
-  console.log(`Generating ${queue.length} icons...\n`)
-
-  let ok = 0
-  let failed = 0
-
-  for (const icon of queue) {
-    process.stdout.write(`  ${icon.id} ... `)
-    try {
-      const svgText = await generateSvg(icon.prompt)
-      const tsx = svgToTsx(icon, svgText)
-      const outPath = join(OUTPUT_DIR, `${icon.id}.tsx`)
-      await writeFile(outPath, tsx, 'utf8')
-      console.log('✓')
-      ok++
-    } catch (err) {
-      console.log(`✗  ${(err as Error).message}`)
-      failed++
-    }
-
-    if (ok + failed < queue.length) await sleep(DELAY_MS)
+  if (queue.length === 0) {
+    console.error('No matching icons found.')
+    process.exit(1)
   }
 
-  console.log(`\nDone: ${ok} generated, ${failed} failed`)
-  if (failed > 0) process.exit(1)
+  console.log(`Reviewing ${queue.length} icon(s). Keys: [y/Enter] approve  [r] regenerate  [s] skip  [q] quit\n`)
+
+  const rl = createInterface({ input: process.stdin, output: process.stdout })
+  let browserOpened = false
+
+  for (let i = 0; i < queue.length; i++) {
+    const icon = queue[i]!
+    const filePath = join(OUTPUT_DIR, `${icon.id}.tsx`)
+
+    console.log(`[${i + 1}/${queue.length}] ${icon.id}`)
+
+    let tsxContent: string | null = existsSync(filePath) ? await readFile(filePath, 'utf8') : null
+
+    if (!tsxContent) {
+      process.stdout.write('  No file found — generating ... ')
+      try {
+        const svgText = await generateSvg(icon.prompt)
+        tsxContent = svgToTsx(icon, svgText)
+        await writeFile(filePath, tsxContent, 'utf8')
+        console.log('done')
+      } catch (e) {
+        console.log(`failed: ${(e as Error).message}`)
+        console.log('  Skipping.')
+        continue
+      }
+    }
+
+    while (true) {
+      try {
+        await writePreview(icon, tsxContent)
+        if (!browserOpened) {
+          await openBrowser()
+          browserOpened = true
+          await new Promise(r => setTimeout(r, 800))
+        }
+      } catch (e) {
+        console.log(`  Warning: preview failed: ${(e as Error).message}`)
+        console.log(`  Open manually: file://${PREVIEW_PATH}`)
+      }
+
+      const answer = await ask(rl, '  > ')
+
+      if (answer === 'q') {
+        console.log('Quit.')
+        rl.close()
+        return
+      }
+
+      if (answer === 's') {
+        console.log('  Skipped.')
+        break
+      }
+
+      if (answer === 'y' || answer === '') {
+        console.log('  Approved ✓')
+        break
+      }
+
+      if (answer === 'r') {
+        process.stdout.write('  Regenerating ... ')
+        try {
+          const svgText = await generateSvg(icon.prompt)
+          tsxContent = svgToTsx(icon, svgText)
+          await writeFile(filePath, tsxContent, 'utf8')
+          console.log('done')
+        } catch (e) {
+          console.log(`failed: ${(e as Error).message}`)
+        }
+        continue
+      }
+
+      console.log('  Unknown key. Use y/Enter, r, s, or q.')
+    }
+  }
+
+  rl.close()
+  console.log('\nAll done!')
 }
 
 void main()
