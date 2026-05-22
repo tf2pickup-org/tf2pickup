@@ -54,24 +54,27 @@ export async function tryConnect() {
       rejectUnauthorized: false,
     })
 
+    const localClient = client
     let attempt = 0
     let reconnecting = false
-    const localClient = client
-    client.on('error', async (error: unknown) => {
+    localClient.on('error', async (error: unknown) => {
       if (!isSocketError(error)) {
         logger.error(error, 'mumble client error')
         reportError(error)
         return
       }
 
-      if (reconnecting) return
-      reconnecting = true
+      if (reconnecting) {
+        return
+      }
 
+      reconnecting = true
       attempt += 1
+
       if (attempt > maxReconnectAttempts) {
         logger.error(error, 'mumble socket error')
         reportError(error)
-        return // reconnecting stays true — suppresses further events after exhaustion
+        return
       }
 
       logger.warn(
@@ -84,15 +87,14 @@ export async function tryConnect() {
         await localClient.connect()
         await afterConnect(localClient)
         attempt = 0
-        reconnecting = false
       } catch (reconnectError) {
         logger.error(reconnectError, 'mumble reconnect error')
         reportError(reconnectError)
-        reconnecting = false
       }
+      reconnecting = false
     })
 
-    await client.connect()
+    await localClient.connect()
     await afterConnect(localClient)
   } catch (error) {
     reportError(error)
