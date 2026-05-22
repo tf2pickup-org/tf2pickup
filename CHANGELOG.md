@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.7.13](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.12...4.7.13) (2026-05-22)
+
+
+### Bug Fixes
+
+* add migration to fix players with missing avatar fields ([#630](https://github.com/tf2pickup-org/tf2pickup/issues/630)) ([cae01ab](https://github.com/tf2pickup-org/tf2pickup/commit/cae01abde5e26de4e98cbc9da37f4c899c2dd357))
+* batch actor lookup in sync-clients ([#606](https://github.com/tf2pickup-org/tf2pickup/issues/606)) ([3e713b2](https://github.com/tf2pickup-org/tf2pickup/commit/3e713b2cb25a71d9ce7209019e9519a80d89ea42))
+* **deps:** update dependency date-fns to v4.2.1 ([#615](https://github.com/tf2pickup-org/tf2pickup/issues/615)) ([64c9e66](https://github.com/tf2pickup-org/tf2pickup/commit/64c9e66cfd4ef0baa34ca22829d9edd6616f598d))
+* **deps:** update dependency motion to v12.39.0 ([#616](https://github.com/tf2pickup-org/tf2pickup/issues/616)) ([1e1012f](https://github.com/tf2pickup-org/tf2pickup/commit/1e1012f041e7a27f69d1920f3b7d080070f75f05))
+* retry server configuration up to 3 times on error ([#628](https://github.com/tf2pickup-org/tf2pickup/issues/628)) ([053afed](https://github.com/tf2pickup-org/tf2pickup/commit/053afed1f9743af93462e2a66f5cb75ec0332ea4))
+
 ## [4.7.12](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.11...4.7.12) (2026-05-20)
 
 
