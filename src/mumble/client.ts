@@ -79,21 +79,21 @@ export async function tryConnect() {
         `mumble socket error, reconnect attempt ${attempt}/${maxReconnectAttempts}...`,
       )
       await delay(reconnectDelay)
-      reconnecting = false // release before connecting so the next error event can trigger a new retry
 
       try {
         await localClient.connect()
-        await afterConnect()
+        await afterConnect(localClient)
         attempt = 0
+        reconnecting = false
       } catch (reconnectError) {
         logger.error(reconnectError, 'mumble reconnect error')
         reportError(reconnectError)
-        reconnecting = true // suppress further events on non-socket error
+        reconnecting = false
       }
     })
 
     await client.connect()
-    await afterConnect()
+    await afterConnect(localClient)
   } catch (error) {
     reportError(error)
     throw error
@@ -105,24 +105,24 @@ function reportError(error: unknown) {
   events.emit('mumble/error', { error })
 }
 
-async function afterConnect() {
-  assertClientIsConnected(client)
+async function afterConnect(c: Client) {
+  assertClientIsConnected(c)
   logger.info(
     {
       mumbleUser: {
-        name: client.user.name,
+        name: c.user.name,
       },
-      welcomeText: client.welcomeText,
+      welcomeText: c.welcomeText,
     },
     `connected to the mumble server`,
   )
 
-  await client.user.setSelfDeaf(true)
-  await moveToTargetChannel()
+  await c.user.setSelfDeaf(true)
+  await moveToTargetChannel(c)
 
-  const permissions = await client.user.channel.getPermissions()
+  const permissions = await c.user.channel.getPermissions()
   if (!permissions.canCreateChannel) {
-    logger.warn(`bot ${client.user.name} does not have permissions to create new channels`)
+    logger.warn(`bot ${c.user.name} does not have permissions to create new channels`)
   }
   setStatus(MumbleClientStatus.connected)
 }
