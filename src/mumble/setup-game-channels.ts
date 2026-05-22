@@ -12,7 +12,7 @@ const subChannelNames = [Tf2Team.blu.toUpperCase(), Tf2Team.red.toUpperCase()]
 
 export async function setupGameChannels(game: GameModel) {
   assertClientIsConnected(client)
-  await moveToTargetChannel()
+  await moveToTargetChannel(client)
   const channelName = `${game.number}`
   const channel = await client.user.channel.createSubChannel(channelName)
   await Promise.all(

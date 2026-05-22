@@ -16,7 +16,7 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('mumble.cleanupChannel', async ({ gameNumber }) => {
-      await moveToTargetChannel()
+      await moveToTargetChannel(client)
       assertClientIsConnected(client)
 
       const channel = client.user.channel.subChannels.find(({ name }) => name === `${gameNumber}`)
