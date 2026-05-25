@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.7.14](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.13...4.7.14) (2026-05-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v18.0.4 ([#622](https://github.com/tf2pickup-org/tf2pickup/issues/622)) ([0126db6](https://github.com/tf2pickup-org/tf2pickup/commit/0126db66eaf0d8e19bd987ac4b9badbfa393b98a))
+* **deps:** update dependency motion to v12.40.0 ([08a5aaf](https://github.com/tf2pickup-org/tf2pickup/commit/08a5aaf8d327f5c47d8debd3e02110f7664e4753))
+* **deps:** update dependency postcss to v8.5.15 ([5772529](https://github.com/tf2pickup-org/tf2pickup/commit/57725292bbbd81e57fa5a95afdfb83e9e7a29923))
+* retry mumble client on socket errors ([#600](https://github.com/tf2pickup-org/tf2pickup/issues/600)) ([effd4f0](https://github.com/tf2pickup-org/tf2pickup/commit/effd4f07dfa554bab19d4e2cea5034867681deb2))
+
 ## [4.7.13](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.12...4.7.13) (2026-05-22)
 
 
