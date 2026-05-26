@@ -1,4 +1,4 @@
-import { Howl } from 'howler'
+import { Howl, Howler } from 'howler'
 
 const MENTION_PREFIX = '★ '
 
@@ -39,9 +39,16 @@ function setMention(event: CustomEvent<{ volume: number }>) {
   currentSound = new Howl({
     src: ['/sounds/mention.webm'],
     volume: event.detail.volume,
-    html5: true,
   })
-  currentSound.play()
+
+  const ctx = Howler.ctx
+  if (ctx.state === 'suspended') {
+    void ctx.resume().then(() => {
+      currentSound?.play()
+    })
+  } else {
+    currentSound.play()
+  }
 
   chatTabButton()?.classList.add('has-mention')
   applyMentionTitle()

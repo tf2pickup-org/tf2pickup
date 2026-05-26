@@ -1,5 +1,5 @@
 import htmx from './htmx'
-import { Howl } from 'howler'
+import { Howl, Howler } from 'howler'
 
 function maybePlaySound(element: Element) {
   const src = element.getAttribute('data-play-sound-src') ?? element.getAttribute('play-sound-src')
@@ -14,9 +14,16 @@ function maybePlaySound(element: Element) {
   const sound = new Howl({
     src: [src],
     volume,
-    html5: true,
   })
-  sound.play()
+
+  const ctx = Howler.ctx
+  if (ctx.state === 'suspended') {
+    void ctx.resume().then(() => {
+      sound.play()
+    })
+  } else {
+    sound.play()
+  }
 }
 
 htmx.defineExtension('play-sound', {
