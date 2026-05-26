@@ -129,8 +129,8 @@ importers:
         specifier: 6.7.0
         version: 6.7.0
       date-fns:
-        specifier: 4.2.1
-        version: 4.2.1
+        specifier: 4.3.0
+        version: 4.3.0
       discord.js:
         specifier: 14.26.4
         version: 14.26.4
@@ -2602,11 +2602,11 @@ packages:
     resolution: {integrity: sha512-CuRUx0TXGSbbWdEci3VK/XOZGP3n0P4pIKpsqpVtBqaIIuj3GKK8H45oAqA4Rg8FHipc+CzRdUzmD4YQXxv66Q==}
     engines: {node: '>= 14'}
 
-  date-fns@4.1.0:
-    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
-
   date-fns@4.2.1:
     resolution: {integrity: sha512-37RhSdxaG1suen6VDCza6rNrQfooyQh57HFVPwQGEq2QWliVLzPQZ8Oa017weOu+HZCnzI7N3Pf/wyoBKfEqrA==}
+
+  date-fns@4.3.0:
+    resolution: {integrity: sha512-OYcL+3N/jyWbYdFGqoMAhytDgxP9pbYPUUiRCOgn4Fewaadk9l/Wam4Avciiyp2BgkpfQyBV9B+ehnVJych+eQ==}
 
   dayjs@1.11.20:
     resolution: {integrity: sha512-YbwwqR/uYpeoP4pu043q+LTDLFBLApUP6VxRihdfNTqu4ubqMlGDLd6ErXhEgsyvY0K6nCs7nggYumAN+9uEuQ==}
@@ -6824,7 +6824,7 @@ snapshots:
 
   '@tf2pickup-org/serveme-tf-client@0.1.2':
     dependencies:
-      date-fns: 4.1.0
+      date-fns: 4.2.1
       generate-password: 1.7.1
 
   '@tsconfig/strictest@2.0.8': {}
@@ -7548,9 +7548,9 @@ snapshots:
 
   data-uri-to-buffer@7.0.0: {}
 
-  date-fns@4.1.0: {}
-
   date-fns@4.2.1: {}
+
+  date-fns@4.3.0: {}
 
   dayjs@1.11.20: {}
 
@@ -8970,7 +8970,7 @@ snapshots:
       chalk: 5.6.2
       cli-highlight: 2.1.11
       cosmiconfig: 9.0.0(typescript@6.0.3)
-      date-fns: 4.1.0
+      date-fns: 4.2.1
       get-value: 4.0.1
       is-unicode-supported: 2.1.0
       json-log-line: 1.1.3
