@@ -17,6 +17,7 @@ import {
   IconLogs,
   IconMapPinCog,
   IconMoodNerd,
+  IconRobot,
   IconSectionSign,
   IconServer,
   IconSpy,
@@ -62,6 +63,11 @@ const adminPages = {
   discord: {
     title: 'Discord',
     icon: IconBrandDiscord,
+    section: 'Configuration',
+  },
+  agent: {
+    title: 'Agent',
+    icon: IconRobot,
     section: 'Configuration',
   },
   announcements: {

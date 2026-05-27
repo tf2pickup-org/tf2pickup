@@ -1,13 +1,12 @@
 import { Admin } from '../../../views/html/admin'
 import { DiscordConfiguration } from './discord-configuration'
-import { AgentStatus } from './agent-status'
 import { IconX } from '../../../../html/components/icons'
 import { discord } from '../../../../discord'
 
 export function DiscordPage() {
   return (
     <Admin activePage="discord">
-      <div class="admin-panel-set mb-4">
+      <div class="admin-panel-set">
         {discord.client?.isReady() ? (
           <DiscordConfiguration client={discord.client} />
         ) : (
@@ -25,7 +24,6 @@ export function DiscordPage() {
           </>
         )}
       </div>
-      <AgentStatus />
     </Admin>
   )
 }
