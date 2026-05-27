@@ -7,12 +7,14 @@ function loadSound(element: Element) {
   const src = element.getAttribute('data-sound-src')
   const { id } = element
   if (!src || !id || sounds.has(id)) return
+  // html5: true is intentionally omitted — HTML5 Audio fetches on every play() call,
+  // which causes autoplay rejection in background tabs before the fetch completes (#633).
   sounds.set(id, new Howl({ src: [src] }))
 }
 
 async function resumeAndPlay(sound: Howl) {
   if (Howler.ctx.state === 'suspended') {
-    await Howler.ctx.resume()
+    await Howler.ctx.resume().catch(console.warn)
   }
   sound.play()
 }
