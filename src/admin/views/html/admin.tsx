@@ -149,7 +149,7 @@ export function Admin(props: {
                       {value.icon({})}
                       {value.title}
                       {'badge' in value && (
-                        <span class="ml-auto rounded px-1.5 py-0.5 text-xs font-medium uppercase text-amber-400">
+                        <span class="ml-auto rounded px-1.5 py-0.5 text-xs font-medium text-amber-400 uppercase">
                           {value.badge as string}
                         </span>
                       )}

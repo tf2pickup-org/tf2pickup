@@ -1,6 +1,7 @@
 import { TextChannel, type Guild } from 'discord.js'
 import { SaveButton } from '../../../views/html/save-button'
 import { configuration } from '../../../../configuration'
+import { environment } from '../../../../environment'
 
 export async function GuildConfiguration(props: { guild: Guild; enabled: boolean }) {
   if (!props.enabled) {
@@ -17,6 +18,7 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
   const enabledAgentChannelIds = new Set(
     agentChannels.filter(c => c.guildId === props.guild.id).map(c => c.channelId),
   )
+  const agentEnabled = !!environment.ANTHROPIC_API_KEY
 
   return (
     <form action={`/admin/discord/${props.guild.id}`} method="post" class="flex flex-col gap-2">
@@ -61,7 +63,10 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
         />
       </div>
 
-      <div class="flex flex-col gap-1">
+      <fieldset
+        disabled={!agentEnabled || undefined}
+        class={['flex flex-col gap-1', !agentEnabled && 'opacity-50']}
+      >
         <label for={`${props.guild.id}-agent-channels`}>Agent channels:</label>
         <SelectAgentChannels
           guild={props.guild}
@@ -69,8 +74,12 @@ export async function GuildConfiguration(props: { guild: Guild; enabled: boolean
           name="agentChannels"
           current={enabledAgentChannelIds}
         />
-        <span class="text-abru-light-75 text-xs">Hold Ctrl / Cmd to select multiple channels.</span>
-      </div>
+        <span class="text-abru-light-75 text-xs">
+          {agentEnabled
+            ? 'Hold Ctrl / Cmd to select multiple channels.'
+            : 'Set ANTHROPIC_API_KEY to enable the agent.'}
+        </span>
+      </fieldset>
 
       <p>
         <SaveButton hx-disabled-elt="this" />
