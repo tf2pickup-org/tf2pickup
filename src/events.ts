@@ -72,6 +72,19 @@ export interface Events {
     game: GameModel
   }
 
+  'agent/skillReview:completed': {
+    gameNumber: GameNumber
+    changes: {
+      steamId: SteamId64
+      playerName: string
+      gameClass: string
+      previousSkill: number
+      newSkill: number
+      reasoning: string
+    }[]
+    summary: string
+  }
+
   'gamelog:message': {
     message: LogMessage
   }

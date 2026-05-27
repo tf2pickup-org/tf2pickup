@@ -198,6 +198,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.number().int().positive().nullable().default(null),
     })
     .describe('Maximum total tokens (input + output) the agent may use per day. null = unlimited'),
+  z
+    .object({
+      key: z.literal('agent.skill_supervisor'),
+      value: z.boolean().default(false),
+    })
+    .describe(
+      'Enable the AI agent to automatically review and adjust player skills after each game',
+    ),
   z.object({
     key: z.literal('misc.discord_invite_link'),
     value: z.url().nullable().default(null),

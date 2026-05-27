@@ -58,6 +58,10 @@ export const tasksSchema = z.discriminatedUnion('name', [
     name: z.literal('logsTf:fetchLog'),
     args: z.object({ gameNumber, logId: z.number() }),
   }),
+  z.object({
+    name: z.literal('agentSkillSupervisor:review'),
+    args: z.object({ gameNumber }),
+  }),
 ])
 
 type TasksT = z.infer<typeof tasksSchema>

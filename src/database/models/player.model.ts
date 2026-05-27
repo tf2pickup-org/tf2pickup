@@ -62,7 +62,7 @@ export interface PlayerModel {
   skillHistory?: {
     at: Date
     skill: PlayerSkill
-    actor: SteamId64
+    actor: SteamId64 | Bot
     lastGame?: GameNumber | undefined
   }[]
   nameHistory?: {
