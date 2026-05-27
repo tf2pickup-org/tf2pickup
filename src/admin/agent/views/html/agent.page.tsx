@@ -74,8 +74,22 @@ export async function AgentPage() {
               />
             </dd>
             <dd class="text-abru-light-75 text-sm">
-              Maximum total tokens (input + output) the agent may use per day. Leave empty for
-              unlimited.
+              <p>
+                Maximum combined input + output tokens the agent may use per day. Leave empty for
+                unlimited.
+              </p>
+              <p class="mt-1">
+                Using{' '}
+                <a
+                  href="https://platform.claude.com/docs/en/about-claude/pricing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Claude Opus 4.7
+                </a>
+                : $5/MTok input · $25/MTok output. 10k tokens ≈ $0.05–$0.25 · 1M tokens ≈ $5–$25
+                (varies by input/output ratio).
+              </p>
             </dd>
           </dl>
 
