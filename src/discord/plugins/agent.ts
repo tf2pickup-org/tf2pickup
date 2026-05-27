@@ -6,6 +6,7 @@ import { logger } from '../../logger'
 import { configuration } from '../../configuration'
 import { createSession, type AgentSession } from '../../agent/create-session'
 import { isOverBudget, recordUsage, getUsage } from '../../agent/daily-budget'
+import { collections } from '../../database/collections'
 
 function splitMessage(text: string, limit = 2000): string[] {
   if (text.length <= limit) return [text]
@@ -71,15 +72,26 @@ export default fp(
         }
 
         const channelId = message.channelId
-        const session = sessions.get(channelId) ?? createSession(anthropic, isAdmin)
-        sessions.set(channelId, session)
+        let session = sessions.get(channelId)
+        if (!session) {
+          const saved = await collections.agentSessions.findOne({ channelId })
+          session = createSession(anthropic, isAdmin, saved?.history ?? [])
+          sessions.set(channelId, session)
+        }
 
         void message.channel.sendTyping().catch(() => {
           /* ignore */
         })
 
         const { answer, inputTokens, outputTokens } = await session.ask(question)
-        await recordUsage(inputTokens, outputTokens)
+        await Promise.all([
+          recordUsage(inputTokens, outputTokens),
+          collections.agentSessions.updateOne(
+            { channelId },
+            { $set: { history: session.getHistory(), updatedAt: new Date() } },
+            { upsert: true },
+          ),
+        ])
         logger.info(
           { inputTokens, outputTokens, totalToday: await getUsage() },
           'agent token usage',

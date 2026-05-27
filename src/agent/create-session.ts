@@ -47,10 +47,15 @@ const tools: Anthropic.Tool[] = [
 
 export interface AgentSession {
   ask(question: string): Promise<{ answer: string; inputTokens: number; outputTokens: number }>
+  getHistory(): Anthropic.MessageParam[]
 }
 
-export function createSession(anthropic: Anthropic, isAdmin: boolean): AgentSession {
-  const history: Anthropic.MessageParam[] = []
+export function createSession(
+  anthropic: Anthropic,
+  isAdmin: boolean,
+  initialHistory: Anthropic.MessageParam[] = [],
+): AgentSession {
+  const history: Anthropic.MessageParam[] = [...initialHistory]
 
   async function ask(
     question: string,
@@ -118,5 +123,5 @@ export function createSession(anthropic: Anthropic, isAdmin: boolean): AgentSess
     return { answer, inputTokens, outputTokens }
   }
 
-  return { ask }
+  return { ask, getHistory: () => history }
 }

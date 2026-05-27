@@ -1,4 +1,5 @@
 import { database } from './database'
+import type { AgentSessionModel } from './models/agent-session.model'
 import type { AgentTokenUsageModel } from './models/agent-token-usage.model'
 import type { AnnouncementModel } from './models/announcement.model'
 import type { ConfigurationEntryModel } from './models/configuration-entry.model'
@@ -32,6 +33,7 @@ import type { DeferredKickModel } from './models/deferred-kick.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
+  agentSessions: database.collection<AgentSessionModel>('agent.sessions'),
   agentTokenUsage: database.collection<AgentTokenUsageModel>('agent.tokenusage'),
   announcements: database.collection<AnnouncementModel>('announcements'),
   certificates: database.collection<CertificateModel>('certificates'),
