@@ -4,4 +4,9 @@ export interface AgentSessionModel {
   sessionKey: string // thread channelId for threads, root message ID for reply chains
   history: Anthropic.MessageParam[]
   updatedAt: Date
+  tokenUsage?: {
+    at: Date
+    inputTokens: number
+    outputTokens: number
+  }[]
 }

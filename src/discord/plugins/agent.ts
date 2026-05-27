@@ -113,7 +113,10 @@ export default fp(
         recordUsage(inputTokens, outputTokens),
         collections.agentSessions.updateOne(
           { sessionKey },
-          { $set: { history: session.getHistory(), updatedAt: new Date() } },
+          {
+            $set: { history: session.getHistory(), updatedAt: new Date() },
+            $push: { tokenUsage: { at: new Date(), inputTokens, outputTokens } },
+          },
           { upsert: true },
         ),
       ])
