@@ -6,8 +6,8 @@ export async function ServerReadyNotification(actor: SteamId64) {
   return (
     <div id="notify-container" hx-swap-oob="beforeend">
       <div
-        play-sound-src="/sounds/fight.webm"
-        play-sound-volume={player.preferences.soundVolume ?? '1.0'}
+        data-sound-play="sound-fight"
+        data-sound-volume={player.preferences.soundVolume ?? 1.0}
       ></div>
     </div>
   )

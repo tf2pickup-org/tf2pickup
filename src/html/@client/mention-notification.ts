@@ -1,9 +1,8 @@
-import { Howl } from 'howler'
+import { playSound, stopSound } from './play-sound'
 
 const MENTION_PREFIX = '★ '
 
 let hasMention = false
-let currentSound: Howl | null = null
 
 function chatTabButton(): Element | null {
   return document.querySelector('[data-tabs-select="tab-chat"]')
@@ -35,13 +34,7 @@ function setMention(event: CustomEvent<{ volume: number }>) {
   }
 
   hasMention = true
-
-  currentSound = new Howl({
-    src: ['/sounds/mention.webm'],
-    volume: event.detail.volume,
-    html5: true,
-  })
-  currentSound.play()
+  playSound(document.getElementById('sound-mention'), event.detail.volume)
 
   chatTabButton()?.classList.add('has-mention')
   applyMentionTitle()
@@ -49,10 +42,7 @@ function setMention(event: CustomEvent<{ volume: number }>) {
 
 function clearMention() {
   hasMention = false
-
-  currentSound?.stop()
-  currentSound = null
-
+  stopSound(document.getElementById('sound-mention'))
   chatTabButton()?.classList.remove('has-mention')
   clearMentionTitle()
 }

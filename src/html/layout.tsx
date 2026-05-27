@@ -24,6 +24,14 @@ export async function Layout(
       {safeStyle ? <style type="text/css">{safeStyle}</style> : <></>}
       <div class="flex h-full flex-col">{props?.children}</div>
       <div id="notify-container"></div>
+      <div id="sound-ready-up" data-sound-src="/sounds/ready_up.webm" class="hidden"></div>
+      <div id="sound-fight" data-sound-src="/sounds/fight.webm" class="hidden"></div>
+      <div
+        id="sound-substitution"
+        data-sound-src="/sounds/cmon_tough_guy.webm"
+        class="hidden"
+      ></div>
+      <div id="sound-mention" data-sound-src="/sounds/mention.webm" class="hidden"></div>
       <ReadyUpDialog />
       <FlashMessageList />
     </>
