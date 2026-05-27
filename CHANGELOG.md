@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.7.15](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.14...4.7.15) (2026-05-27)
+
+
+### Bug Fixes
+
+* **deps:** update dependency date-fns to v4.3.0 ([5186f2c](https://github.com/tf2pickup-org/tf2pickup/commit/5186f2c56ef66401c0ea4e2482cdb230dd037e7f))
+* **deps:** update dependency ws to v8.21.0 ([42fbf69](https://github.com/tf2pickup-org/tf2pickup/commit/42fbf69718e709a9ab75f4e3584d706656df2ac7))
+* pre-load sounds via data-sound-src, play via data-sound-play ([#634](https://github.com/tf2pickup-org/tf2pickup/issues/634)) ([59fb72f](https://github.com/tf2pickup-org/tf2pickup/commit/59fb72f36ccfb7ed304c820714bd91855e166bd6))
+
 ## [4.7.14](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.13...4.7.14) (2026-05-25)
 
 
