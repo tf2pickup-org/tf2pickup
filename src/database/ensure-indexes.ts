@@ -14,7 +14,7 @@ interface IndexDefinition {
 
 const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> = {
   agentSessions: [
-    { spec: { channelId: 1 }, options: { unique: true } },
+    { spec: { sessionKey: 1 }, options: { unique: true } },
     { spec: { updatedAt: 1 }, options: { expireAfterSeconds: 60 * 60 * 24 * 30 } },
   ],
   agentTokenUsage: [{ spec: { date: 1 }, options: { unique: true } }],

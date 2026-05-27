@@ -33,6 +33,8 @@ export default fp(
 
     const anthropic = new Anthropic({ apiKey: environment.ANTHROPIC_API_KEY })
     const sessions = new Map<string, AgentSession>()
+    // Maps bot reply message ID → session key, to continue reply chains
+    const botMessageToSession = new Map<string, string>()
     const bot = client
 
     bot.on('messageCreate', message => {
@@ -47,10 +49,15 @@ export default fp(
       if (!question) return
 
       void (async () => {
+        // For threads, check the parent channel against the enabled list
+        const effectiveChannelId = message.channel.isThread()
+          ? (message.channel.parentId ?? message.channelId)
+          : message.channelId
+
         const enabledChannels = await configuration.get('agent.channels')
         if (
           !enabledChannels.some(
-            c => c.guildId === message.guildId && c.channelId === message.channelId,
+            c => c.guildId === message.guildId && c.channelId === effectiveChannelId,
           )
         ) {
           return
@@ -71,12 +78,24 @@ export default fp(
           return
         }
 
-        const channelId = message.channelId
-        let session = sessions.get(channelId)
+        // Determine session key:
+        //   - thread      → thread channel ID (one session per thread)
+        //   - reply chain → follow the in-memory map back to the root session key
+        //   - new mention → this message's ID starts a fresh session
+        let sessionKey: string
+        if (message.channel.isThread()) {
+          sessionKey = message.channelId
+        } else if (message.reference?.messageId) {
+          sessionKey = botMessageToSession.get(message.reference.messageId) ?? message.id
+        } else {
+          sessionKey = message.id
+        }
+
+        let session = sessions.get(sessionKey)
         if (!session) {
-          const saved = await collections.agentSessions.findOne({ channelId })
+          const saved = await collections.agentSessions.findOne({ sessionKey })
           session = createSession(anthropic, isAdmin, saved?.history ?? [])
-          sessions.set(channelId, session)
+          sessions.set(sessionKey, session)
         }
 
         void message.channel.sendTyping().catch(() => {
@@ -87,7 +106,7 @@ export default fp(
         await Promise.all([
           recordUsage(inputTokens, outputTokens),
           collections.agentSessions.updateOne(
-            { channelId },
+            { sessionKey },
             { $set: { history: session.getHistory(), updatedAt: new Date() } },
             { upsert: true },
           ),
@@ -96,8 +115,10 @@ export default fp(
           { inputTokens, outputTokens, totalToday: await getUsage() },
           'agent token usage',
         )
+
         for (const chunk of splitMessage(answer)) {
-          await message.reply(chunk)
+          const sent = await message.reply(chunk)
+          botMessageToSession.set(sent.id, sessionKey)
         }
       })().catch((err: unknown) => {
         logger.error(err, 'agent error')
