@@ -8,6 +8,8 @@ import { meter } from '../../otel'
 import { parseLogMessage } from '../parse-log-message'
 import { configuration } from '../../configuration'
 import type { WorkerMessage, ControlMessage } from '../worker-message'
+import { withTimeout } from 'es-toolkit'
+import { secondsToMilliseconds } from 'date-fns'
 
 export default fp(
   async app => {
@@ -96,11 +98,13 @@ export default fp(
       })
 
       app.addHook('onClose', async () => {
-        await new Promise<void>((resolve, reject) => {
-          worker.postMessage({ type: 'shutdown' } satisfies ControlMessage)
-          worker.once('exit', resolve)
-          worker.once('error', reject)
-        })
+        await withTimeout(async () => {
+          await new Promise<void>((resolve, reject) => {
+            worker.postMessage({ type: 'shutdown' } satisfies ControlMessage)
+            worker.once('exit', resolve)
+            worker.once('error', reject)
+          })
+        }, secondsToMilliseconds(60))
       })
     } else {
       const messageCount = meter.createCounter('tf2pickup.log_receiver.message.count', {

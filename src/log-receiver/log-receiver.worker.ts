@@ -294,8 +294,12 @@ socket.on('listening', () => {
 socket.bind(environment.LOG_RELAY_PORT, '0.0.0.0')
 
 parentPort.on('message', async () => {
-  socket.close()
-  await mongoClient.close()
-  await sdk.shutdown()
-  process.exit(0)
+  try {
+    socket.close()
+    await logQueue.drain()
+    await mongoClient.close()
+    await sdk.shutdown()
+  } finally {
+    process.exit(0)
+  }
 })

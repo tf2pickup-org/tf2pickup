@@ -22,6 +22,10 @@ export class LogMessageQueue {
     }
   }
 
+  async drain(): Promise<void> {
+    await Promise.all([...this.queues.keys()].map(key => this.waitForCompletion(key)))
+  }
+
   clear(key: string): void {
     this.queues.delete(key)
   }

@@ -252,7 +252,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
       key: z.literal('log_receiver.use_worker_thread'),
       value: z.boolean().default(false),
     })
-    .describe('Process game server logs in a dedicated worker thread'),
+    .describe('Experimental: process game server logs in a dedicated worker thread'),
   z.object({
     key: z.literal('twitchtv.promoted_streams'),
     value: z
