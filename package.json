@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
-    "agent": "tsx agent/index.ts",
     "agent:cli": "tsx agent/cli.ts",
     "xss-scan": "xss-scan",
     "lint": "prettier --check . && eslint .",

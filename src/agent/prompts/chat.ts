@@ -1,6 +1,6 @@
-import { environment } from '../environment'
+import { environment } from '../../environment'
 
-export function systemPrompt(isAdmin: boolean): string {
+export function chatSystemPrompt(isAdmin: boolean): string {
   const websiteUrl = environment.WEBSITE_URL
   return `You are a helpful assistant for the tf2pickup.org platform — a Team Fortress 2 competitive pick-up game site.
 
@@ -131,5 +131,5 @@ This user has admin privileges. You may additionally discuss:
 `
     : ''
 }
-Today's date: ${new Date().toISOString().split('T')[0]}`
+Today's date: ${new Date().toISOString().split('T')[0]!}`
 }
