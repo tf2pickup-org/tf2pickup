@@ -1,15 +1,22 @@
 import htmx from './htmx'
 import { Howl, Howler } from 'howler'
 
-const sounds = new Map<string, Howl>()
+interface HtmxNodeInternalData {
+  sound?: Howl
+}
+
+let api: {
+  getInternalData: (elt: Element) => HtmxNodeInternalData
+}
 
 function loadSound(element: Element) {
   const src = element.getAttribute('data-sound-src')
-  const { id } = element
-  if (!src || !id || sounds.has(id)) return
+  if (!src) return
+  const internalData = api.getInternalData(element)
+  if (internalData.sound) return
   // html5: true is intentionally omitted — HTML5 Audio fetches on every play() call,
   // which causes autoplay rejection in background tabs before the fetch completes (#633).
-  sounds.set(id, new Howl({ src: [src] }))
+  internalData.sound = new Howl({ src: [src] })
 }
 
 async function resumeAndPlay(sound: Howl) {
@@ -20,16 +27,16 @@ async function resumeAndPlay(sound: Howl) {
 }
 
 export function playSound(element: Element | null, volume?: number) {
-  if (!element?.id) return
-  const sound = sounds.get(element.id)
+  if (!element) return
+  const sound = api.getInternalData(element).sound
   if (!sound) return
   if (volume !== undefined) sound.volume(volume)
   void resumeAndPlay(sound)
 }
 
 export function stopSound(element: Element | null) {
-  if (!element?.id) return
-  sounds.get(element.id)?.stop()
+  if (!element) return
+  api.getInternalData(element).sound?.stop()
 }
 
 function maybePlaySound(element: Element) {
@@ -40,11 +47,14 @@ function maybePlaySound(element: Element) {
   playSound(document.getElementById(targetId), volume)
 }
 
-for (const el of document.querySelectorAll('[data-sound-src]')) {
-  loadSound(el)
-}
-
 htmx.defineExtension('play-sound', {
+  init: apiRef => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    api = apiRef
+    for (const el of document.querySelectorAll('[data-sound-src]')) {
+      loadSound(el)
+    }
+  },
   onEvent: (name: string, evt: Event | CustomEvent) => {
     if (name !== 'htmx:afterProcessNode') return true
 
