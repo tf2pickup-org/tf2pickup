@@ -5,6 +5,7 @@ import { environment } from '../../environment'
 import { logger } from '../../logger'
 import { configuration } from '../../configuration'
 import { createSession, type AgentSession } from '../../agent/create-session'
+import { isOverBudget, recordUsage, getUsage } from '../../agent/daily-budget'
 
 function splitMessage(text: string, limit = 2000): string[] {
   if (text.length <= limit) return [text]
@@ -58,6 +59,17 @@ export default fp(
           (message.member?.permissions.has('Administrator') ??
             message.member?.permissions.has('ManageGuild')) === true
 
+        const dailyTokenBudget = await configuration.get('agent.daily_token_budget')
+        if (dailyTokenBudget !== null && (await isOverBudget(dailyTokenBudget))) {
+          const { inputTokens, outputTokens } = await getUsage()
+          logger.warn(
+            { inputTokens, outputTokens, limit: dailyTokenBudget },
+            'agent daily token budget exceeded',
+          )
+          await message.reply("I've reached my daily usage limit. Try again tomorrow.")
+          return
+        }
+
         const channelId = message.channelId
         const session = sessions.get(channelId) ?? createSession(anthropic, isAdmin)
         sessions.set(channelId, session)
@@ -66,7 +78,12 @@ export default fp(
           /* ignore */
         })
 
-        const answer = await session.ask(question)
+        const { answer, inputTokens, outputTokens } = await session.ask(question)
+        await recordUsage(inputTokens, outputTokens)
+        logger.info(
+          { inputTokens, outputTokens, totalToday: await getUsage() },
+          'agent token usage',
+        )
         for (const chunk of splitMessage(answer)) {
           await message.reply(chunk)
         }

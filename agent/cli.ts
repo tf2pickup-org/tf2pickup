@@ -23,7 +23,7 @@ const prompt = (): void => {
 
     session
       .ask(question)
-      .then(answer => {
+      .then(({ answer }) => {
         console.log(`\nAgent: ${answer}\n`)
         prompt()
       })

@@ -192,6 +192,12 @@ export const configurationSchema = z.discriminatedUnion('key', [
       )
       .default([]),
   }),
+  z
+    .object({
+      key: z.literal('agent.daily_token_budget'),
+      value: z.number().int().positive().nullable().default(null),
+    })
+    .describe('Maximum total tokens (input + output) the agent may use per day. null = unlimited'),
   z.object({
     key: z.literal('misc.discord_invite_link'),
     value: z.url().nullable().default(null),

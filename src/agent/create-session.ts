@@ -46,17 +46,21 @@ const tools: Anthropic.Tool[] = [
 ]
 
 export interface AgentSession {
-  ask(question: string): Promise<string>
+  ask(question: string): Promise<{ answer: string; inputTokens: number; outputTokens: number }>
 }
 
 export function createSession(anthropic: Anthropic, isAdmin: boolean): AgentSession {
   const history: Anthropic.MessageParam[] = []
 
-  async function ask(question: string): Promise<string> {
+  async function ask(
+    question: string,
+  ): Promise<{ answer: string; inputTokens: number; outputTokens: number }> {
     const messages: Anthropic.MessageParam[] = [...history, { role: 'user', content: question }]
 
     let answer = 'Reached tool iteration limit without a final answer.'
     let iterations = 0
+    let inputTokens = 0
+    let outputTokens = 0
 
     while (iterations < MAX_TOOL_ITERATIONS) {
       iterations++
@@ -68,6 +72,9 @@ export function createSession(anthropic: Anthropic, isAdmin: boolean): AgentSess
         messages,
         tools,
       })
+
+      inputTokens += response.usage.input_tokens
+      outputTokens += response.usage.output_tokens
 
       if (response.stop_reason === 'end_turn') {
         answer = response.content
@@ -108,7 +115,7 @@ export function createSession(anthropic: Anthropic, isAdmin: boolean): AgentSess
     history.push({ role: 'user', content: question }, { role: 'assistant', content: answer })
     if (history.length > MAX_HISTORY) history.splice(0, history.length - MAX_HISTORY)
 
-    return answer
+    return { answer, inputTokens, outputTokens }
   }
 
   return { ask }
