@@ -58,8 +58,8 @@ ReadyUpDialog.show = async (actor: SteamId64) => {
           notification-title="Ready up!"
           notification-body="A game is starting"
           notification-icon="/favicon.png"
-          play-sound-src="/sounds/ready_up.webm"
-          play-sound-volume={player.preferences.soundVolume ?? '1.0'}
+          data-sound-play="sound-ready-up"
+          data-sound-volume={player.preferences.soundVolume ?? 1.0}
         ></div>
       </div>
     </>

@@ -58,8 +58,8 @@ SubstitutionRequests.notify = async ({
         notification-title="A substitute is needed!"
         notification-body={`Team ${slot.team} needs a substitute for ${slot.gameClass} in game #${game.number}`}
         notification-icon="/favicon.png"
-        play-sound-src="/sounds/cmon_tough_guy.webm"
-        play-sound-volume={volume}
+        data-sound-play="sound-substitution"
+        data-sound-volume={volume}
       ></div>
     </div>
   )
