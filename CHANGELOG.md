@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.8.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.15...4.8.0) (2026-05-28)
+
+
+### Bug Fixes
+
+* **deps:** update dependency openid to v2.0.16 ([6e8ae83](https://github.com/tf2pickup-org/tf2pickup/commit/6e8ae83b14491b00c26a677f951ca1d035d0b40a))
+
+
+### Features
+
+* **admin:** add experimental skill suggestions to admin toolbox ([#589](https://github.com/tf2pickup-org/tf2pickup/issues/589)) ([922805e](https://github.com/tf2pickup-org/tf2pickup/commit/922805e8ba4092895d82a107db3693f647d6b0f2))
+* **players:** overlay skill history on ELO chart ([#592](https://github.com/tf2pickup-org/tf2pickup/issues/592)) ([de3d44b](https://github.com/tf2pickup-org/tf2pickup/commit/de3d44b24556bcc789f090521ba35191eec6c93a))
+
 ## [4.7.15](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.14...4.7.15) (2026-05-27)
 
 
