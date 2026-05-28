@@ -184,7 +184,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z
     .object({
       key: z.literal('games.skill_suggestions'),
-      value: z.boolean().default(false),
+      value: z.boolean().default(true),
     })
     .describe(
       'Experimental: show skill adjustment suggestions in the admin toolbox based on player performance',
