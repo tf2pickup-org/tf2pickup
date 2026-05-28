@@ -16,6 +16,7 @@
 @import './switch.css';
 @import './tabs.css';
 @import './tooltip.css';
+@import './ws-status-indicator.css';
 
 @theme {
   --font-sans:

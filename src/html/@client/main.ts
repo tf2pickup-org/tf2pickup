@@ -10,6 +10,7 @@ import './countdown'
 import './notifications'
 import './play-sound'
 import './sync-attribute'
+import './ws-status-indicator'
 
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
 
