@@ -29,6 +29,8 @@ export default routes(async app => {
         'skill',
         'skillHistory',
         'verified',
+        'elo',
+        'stats',
       ])
       await reply.html(AdminToolbox({ player }))
     },

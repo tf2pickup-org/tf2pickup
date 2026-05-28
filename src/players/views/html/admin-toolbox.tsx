@@ -17,14 +17,21 @@ import { format, formatDistanceToNow } from 'date-fns'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { makeSkillSuggestions } from '../../make-skill-suggestions'
 
 export async function AdminToolbox(props: {
-  player: Pick<PlayerModel, 'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans'>
+  player: Pick<
+    PlayerModel,
+    'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans' | 'elo' | 'stats'
+  >
 }) {
   const { player } = props
   const defaultSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
+  const skillSuggestions = (await configuration.get('games.skill_suggestions'))
+    ? makeSkillSuggestions({ player })
+    : undefined
   const compact = queue.config.classes.length > 4
 
   return (
@@ -101,6 +108,7 @@ export async function AdminToolbox(props: {
                       className={gameClass.name}
                       skillHistory={player.skillHistory}
                     />
+                    <SkillSuggestionIndicator direction={skillSuggestions?.get(gameClass.name)} />
                   </GameClassSkillInput>
                 ))}
 
@@ -208,5 +216,18 @@ async function SkillLastUpdated(props: {
         <strong>{previousValue}</strong> → <strong>{lastEdit.skill[props.className]}</strong>
       </p>
     </div>
+  )
+}
+
+function SkillSuggestionIndicator(props: { direction: 'up' | 'down' | undefined }) {
+  if (props.direction === undefined) return <></>
+  const isUp = props.direction === 'up'
+  return (
+    <span
+      class={['pr-2 text-sm', isUp ? 'text-yellow-500/60' : 'text-orange-500/60']}
+      title={isUp ? 'Skill too low' : 'Skill too high'}
+    >
+      {(isUp ? '↑' : '↓') as 'safe'}
+    </span>
   )
 }

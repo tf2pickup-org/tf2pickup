@@ -64,6 +64,10 @@ export interface PlayerModel {
     skill: PlayerSkill
     actor: SteamId64
     lastGame?: GameNumber | undefined
+    // Snapshot of stats.gamesByClass at the time of the skill change.
+    // Used by skill suggestion cooldown: compare against current counts to know
+    // how many games have been played since the last edit, without an extra query.
+    gamesByClass?: Partial<Record<Tf2ClassName, number>>
   }[]
   nameHistory?: {
     name: string
