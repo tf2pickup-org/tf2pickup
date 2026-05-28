@@ -58,7 +58,7 @@ function buildChartConfig(
       borderWidth: 2,
       borderColor: 'rgba(255,255,255,0.65)',
       pointBackgroundColor: 'rgba(255,255,255,0.65)',
-      pointRadius: 3,
+      pointRadius: 1,
       tension: 0,
       stepped: true,
       borderDash: [5, 4],
@@ -110,6 +110,10 @@ function buildChartConfig(
                 grid: { drawOnChartArea: false },
                 ticks: { color: 'rgba(255,255,255,0.65)' },
                 position: 'right' as const,
+                afterDataLimits: (axis: { min: number; max: number }) => {
+                  axis.min -= 0.5
+                  axis.max += 0.5
+                },
               },
             }
           : {}),
