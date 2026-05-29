@@ -34,7 +34,7 @@ export async function QueueCaptainPage() {
       title={`[${count}] ${environment.WEBSITE_NAME}`}
       description={`${environment.QUEUE_CONFIG} competitive pick-up games for everyone`}
       canonical="/"
-      embedStyle={resolve(import.meta.dirname, '../../../queue-auto/views/html/style.css')}
+      embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar />
       <Page>
