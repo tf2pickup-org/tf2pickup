@@ -18,11 +18,10 @@ export async function WantsCaptainToggle(props: { actor?: SteamId64 | undefined 
     <label id="wants-captain-toggle" class="wants-captain-toggle" ws-send>
       <input
         type="checkbox"
-        name="wantsCaptain"
-        value={player.wantsCaptain ? 'false' : 'true'}
         checked={player.wantsCaptain}
         ws-send
         hx-trigger="change"
+        hx-vals={JSON.stringify({ wantsCaptain: player.wantsCaptain ? 'false' : 'true' })}
         data-umami-event="captain-toggle"
       />
       <IconCrown size={18} />
