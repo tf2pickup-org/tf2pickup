@@ -33,7 +33,8 @@ export async function setWantsCaptain(
       { returnDocument: 'after' },
     ))!
 
-    events.emit('queue/players:updated')
+    const allPlayers = await collections.queuePlayers.find({}).toArray()
+    events.emit('queue/players:updated', { players: allPlayers })
     return updated
   })
 }
