@@ -17,7 +17,7 @@ import {
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
-import type { QueueSlotId } from '../../types/queue-slot-id'
+import type { QueueSlotId } from '../../../queue/types/queue-slot-id'
 
 const enum MarkAsFriendButtonState {
   none,

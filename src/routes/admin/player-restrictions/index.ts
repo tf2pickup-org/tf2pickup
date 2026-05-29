@@ -4,7 +4,7 @@ import { z } from 'zod'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
-import { queue } from '../../../queue'
+import { queue } from '../../../queue-auto'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 
 const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEnabled', [

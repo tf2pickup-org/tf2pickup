@@ -2,7 +2,7 @@ import { resolve } from 'node:path'
 import { bundle } from '../../../html/bundle'
 import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { queue } from '../../../queue'
+import { queue } from '../../../queue-auto'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import type { EloDataPoint, EloHistoryData, SkillData } from './@client/elo-history-chart'
 

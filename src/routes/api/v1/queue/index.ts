@@ -1,8 +1,8 @@
 import { routes } from '../../../../utils/routes'
 import { getState } from '../../../../queue/get-state'
-import { getSlots } from '../../../../queue/get-slots'
-import { getMapVoteResults } from '../../../../queue/get-map-vote-results'
-import { queueConfigs } from '../../../../queue/configs'
+import { getSlots } from '../../../../queue-auto/get-slots'
+import { getMapVoteResults } from '../../../../queue-auto/get-map-vote-results'
+import { queueConfigs } from '../../../../queue-auto/configs'
 import { environment } from '../../../../environment'
 
 // eslint-disable-next-line @typescript-eslint/require-await

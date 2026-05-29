@@ -4,7 +4,7 @@ import { chat } from '../../chat'
 import { MentionList } from '../../chat/views/html/mention-list'
 import { collections } from '../../database/collections'
 import { PlayerRole } from '../../database/models/player.model'
-import { ChatMessageList } from '../../queue/views/html/chat'
+import { ChatMessageList } from '../../queue-auto/views/html/chat'
 import { routes } from '../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await

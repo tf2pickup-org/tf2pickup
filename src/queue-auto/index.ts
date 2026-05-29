@@ -1,6 +1,6 @@
 import { config } from './config'
 import { getSlots } from './get-slots'
-import { getState } from './get-state'
+import { getState } from '../queue/get-state'
 import { getMapWinner } from './get-map-winner'
 import { collections } from '../database/collections'
 import { logger } from '../logger'

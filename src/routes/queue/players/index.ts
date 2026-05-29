@@ -1,7 +1,7 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { routes } from '../../../utils/routes'
-import { getSlots } from '../../../queue/get-slots'
-import { kick } from '../../../queue/kick'
+import { getSlots } from '../../../queue-auto/get-slots'
+import { kick } from '../../../queue-auto/kick'
 import { events } from '../../../events'
 
 // eslint-disable-next-line @typescript-eslint/require-await

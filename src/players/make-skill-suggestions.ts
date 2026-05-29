@@ -1,6 +1,6 @@
 import type { PlayerModel } from '../database/models/player.model'
 import { provisionalThreshold } from '../games/calculate-elo-updates'
-import { queue } from '../queue'
+import { queue } from '../queue-auto'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 
 interface MakeSkillSuggestionsParams {

@@ -3,7 +3,7 @@ import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { withQueueLock } from './with-queue-lock'
+import { withQueueLock } from '../queue/with-queue-lock'
 
 export async function unready(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
   return await withQueueLock('unready', async () => {

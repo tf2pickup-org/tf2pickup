@@ -1,6 +1,6 @@
 import { stringify } from 'csv-stringify/sync'
 import { collections } from '../../database/collections'
-import { config } from '../../queue/config'
+import { config } from '../../queue-auto/config'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
 interface ExportedPlayerSkill extends Partial<Record<Tf2ClassName, string | number>> {

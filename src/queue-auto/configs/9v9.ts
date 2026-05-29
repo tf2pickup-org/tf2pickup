@@ -1,5 +1,5 @@
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
-import type { QueueConfig } from '../types/queue-config'
+import type { QueueConfig } from '../../queue/types/queue-config'
 
 export const _9v9: QueueConfig = {
   teamCount: 2,

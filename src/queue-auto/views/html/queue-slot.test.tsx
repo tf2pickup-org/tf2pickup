@@ -6,7 +6,7 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { collections } from '../../../database/collections'
 import { configuration } from '../../../configuration'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
-import type { QueueSlotId } from '../../types/queue-slot-id'
+import type { QueueSlotId } from '../../../queue/types/queue-slot-id'
 import { PlayerRole, type PlayerBan } from '../../../database/models/player.model'
 
 vi.mock('../../../database/collections', () => ({

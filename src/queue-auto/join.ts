@@ -8,10 +8,10 @@ import { logger } from '../logger'
 import { players } from '../players'
 import { preReady } from '../pre-ready'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { getState } from './get-state'
+import { getState } from '../queue/get-state'
 import { meetsSkillThreshold } from './meets-skill-threshold'
-import { withQueueLock } from './with-queue-lock'
-import type { QueueSlotId } from './types/queue-slot-id'
+import { withQueueLock } from '../queue/with-queue-lock'
+import type { QueueSlotId } from '../queue/types/queue-slot-id'
 
 export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
   return await withQueueLock('join', async () => {

@@ -9,7 +9,7 @@ import {
   IconEdit,
   IconInputX,
 } from '../../../html/components/icons'
-import { queue } from '../../../queue'
+import { queue } from '../../../queue-auto'
 import { WinLossChart } from './win-loss-chart'
 import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
 import { players } from '../..'
