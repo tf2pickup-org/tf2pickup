@@ -21,7 +21,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await MiscellaneousPage())
+        await reply.status(200).html(MiscellaneousPage())
       },
     )
     .post(
@@ -40,7 +40,7 @@ export default routes(async app => {
         const { discordInviteLink } = request.body
         await configuration.set('misc.discord_invite_link', discordInviteLink)
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await MiscellaneousPage())
+        await reply.status(200).html(MiscellaneousPage())
       },
     )
 })

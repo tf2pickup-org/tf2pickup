@@ -12,7 +12,7 @@ export default routes(async app => {
       },
     },
     async (_request, reply) => {
-      reply.status(200).html(await DiscordPage())
+      await reply.status(200).html(DiscordPage())
     },
   )
 })
