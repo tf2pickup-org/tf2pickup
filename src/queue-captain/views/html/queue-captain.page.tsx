@@ -49,11 +49,8 @@ export async function QueueCaptainPage() {
           <div class="order-2 lg:col-span-3">
             <div class="flex flex-col gap-8">
               <QueueCaptainHeader user={user} playerCount={count} />
-              {state === QueueState.draft ? (
-                <DraftBoard actor={user?.player.steamId} />
-              ) : (
-                <CaptainQueue user={user} state={state} />
-              )}
+              <DraftBoard actor={user?.player.steamId} />
+              {state !== QueueState.draft && <CaptainQueue user={user} state={state} />}
             </div>
           </div>
 

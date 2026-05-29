@@ -93,7 +93,9 @@ export default fp(
         if (!isActive) return
 
         if (state === QueueState.draft) {
-          app.gateway.to({ url: '/' }).send(actor => DraftBoard({ actor }))
+          app.gateway
+            .to({ url: '/' })
+            .send(async actor => [await DraftBoard({ actor }), '<form id="captain-queue"></form>'])
         }
       }),
     )

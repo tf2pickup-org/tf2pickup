@@ -1,6 +1,7 @@
 import { collections } from '../database/collections'
 import type { QueuePlayerModel } from '../database/models/queue-player.model'
 import { errors } from '../errors'
+import { events } from '../events'
 import { logger } from '../logger'
 import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -26,10 +27,13 @@ export async function setWantsCaptain(
       }
     }
 
-    return (await collections.queuePlayers.findOneAndUpdate(
+    const updated = (await collections.queuePlayers.findOneAndUpdate(
       { steamId },
       { $set: { wantsCaptain } },
       { returnDocument: 'after' },
     ))!
+
+    events.emit('queue/players:updated')
+    return updated
   })
 }
