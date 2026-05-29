@@ -10,7 +10,20 @@ import { setState } from '../set-state'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
-  async () => {
+  async app => {
+    events.on(
+      'queue/mode:changed',
+      // eslint-disable-next-line @typescript-eslint/require-await
+      safe(async () => {
+        app.gateway
+          .to({ url: '/' })
+          .send(
+            () =>
+              '<div id="queue-notify-container" hx-swap-oob="beforeend"><div data-queue-mode-changed="true"></div></div>',
+          )
+      }),
+    )
+
     events.on(
       'configuration:updated',
       safe(async ({ key }) => {

@@ -22,6 +22,9 @@ export interface ClientToServerEvents {
   'queue:togglepreready': () => void
   'queue:pick': (playerSteamId: SteamId64, gameClass: string) => void
   'queue:banMap': (map: string) => void
+  'captain:joinClass': (gameClass: string) => void
+  'captain:leaveClass': (gameClass: string) => void
+  'captain:toggleCaptain': (wantsCaptain: boolean) => void
 }
 
 type GatewayEvents = ClientToServerEvents
@@ -70,6 +73,32 @@ const navigated = z.object({
   HEADERS: htmxHeaders.optional(),
 })
 
+const captainJoinClass = z.object({
+  captainJoin: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const captainLeaveClass = z.object({
+  captainLeave: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const captainToggle = z.object({
+  wantsCaptain: z.enum(['true', 'false']),
+  HEADERS: htmxHeaders,
+})
+
+const captainPick = z.object({
+  captainPick: z.string(),
+  gameClass: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const captainBanMap = z.object({
+  captainBanMap: z.string(),
+  HEADERS: htmxHeaders,
+})
+
 const clientMessage = z.union([
   joinQueue,
   leaveQueue,
@@ -78,6 +107,11 @@ const clientMessage = z.union([
   markAsFriend,
   preReadyToggle,
   navigated,
+  captainJoinClass,
+  captainLeaveClass,
+  captainToggle,
+  captainPick,
+  captainBanMap,
 ])
 
 type MessageFn = (
@@ -276,6 +310,16 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:markasfriend', socket, parsed.markasfriend)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
+      } else if ('captainJoin' in parsed) {
+        this.emit('captain:joinClass', socket, parsed.captainJoin)
+      } else if ('captainLeave' in parsed) {
+        this.emit('captain:leaveClass', socket, parsed.captainLeave)
+      } else if ('wantsCaptain' in parsed) {
+        this.emit('captain:toggleCaptain', socket, parsed.wantsCaptain === 'true')
+      } else if ('captainPick' in parsed) {
+        this.emit('queue:pick', socket, parsed.captainPick, parsed.gameClass)
+      } else if ('captainBanMap' in parsed) {
+        this.emit('queue:banMap', socket, parsed.captainBanMap)
       }
     } catch (error) {
       logger.error({ error }, `failed to parse message: ${message}`)

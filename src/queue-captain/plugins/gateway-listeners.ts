@@ -5,11 +5,13 @@ import { events } from '../../events'
 import { logger } from '../../logger'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { addOfferedClass } from '../add-offered-class'
 import { banMap } from '../ban-map'
-import { join } from '../join'
 import { leave } from '../leave'
 import { pick } from '../pick'
 import { readyUp } from '../ready-up'
+import { removeOfferedClass } from '../remove-offered-class'
+import { setWantsCaptain } from '../set-wants-captain'
 
 export default fp(
   async app => {
@@ -34,10 +36,26 @@ export default fp(
     }
 
     app.gateway.on(
-      'queue:join',
-      wsSafe(async (socket, offeredClasses, wantsCaptain) => {
+      'captain:joinClass',
+      wsSafe(async (socket, gameClass) => {
         if (!socket.player) throw errors.unauthorized('unauthorized')
-        await join(socket.player.steamId, offeredClasses as Tf2ClassName[], Boolean(wantsCaptain))
+        await addOfferedClass(socket.player.steamId, gameClass as Tf2ClassName)
+      }),
+    )
+
+    app.gateway.on(
+      'captain:leaveClass',
+      wsSafe(async (socket, gameClass) => {
+        if (!socket.player) throw errors.unauthorized('unauthorized')
+        await removeOfferedClass(socket.player.steamId, gameClass as Tf2ClassName)
+      }),
+    )
+
+    app.gateway.on(
+      'captain:toggleCaptain',
+      wsSafe(async (socket, wantsCaptain) => {
+        if (!socket.player) throw errors.unauthorized('unauthorized')
+        await setWantsCaptain(socket.player.steamId, Boolean(wantsCaptain))
       }),
     )
 
