@@ -3,7 +3,7 @@ import { makeSkillSuggestions } from './make-skill-suggestions'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
-vi.mock('../queue', () => ({
+vi.mock('../queue-auto', () => ({
   queue: {
     config: {
       classes: [{ name: 'scout' }, { name: 'soldier' }],
