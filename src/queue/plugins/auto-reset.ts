@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { reset } from '../reset'
-import { applyMapCooldown } from '../apply-map-cooldown'
+import { applyMapCooldown } from '../../maps/apply-cooldown'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
