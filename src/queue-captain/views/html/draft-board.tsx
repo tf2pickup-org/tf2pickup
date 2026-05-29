@@ -66,7 +66,7 @@ export async function DraftBoard(props: { actor?: SteamId64 | undefined }) {
         />
       )}
 
-      {draft.selectedMap && <SelectedMap map={draft.selectedMap} />}
+      {(draft.selectedMap ? await SelectedMap({ map: draft.selectedMap }) : '') as 'safe'}
     </div>
   )
 }
@@ -92,8 +92,8 @@ async function TeamColumn(props: {
   return (
     <div class={['draft-team-column', teamClass]}>
       <div class="draft-team-header">
-        <span class="team-label">{teamLabel}</span>
-        {captain && (
+        <span class="team-label">{teamLabel as 'safe'}</span>
+        {!!captain && (
           <div class="captain-info">
             <IconCrown size={14} />
             <img src={captain.avatar.medium} width="24" height="24" alt={captain.name} />
@@ -177,16 +177,20 @@ async function PlayerPool(props: {
     <div class="player-pool">
       <h4 class="player-pool-header">Available players</h4>
       <div class="player-pool-list">
-        {await Promise.all(
-          available.map(p =>
-            PoolPlayer({
-              player: p,
-              config: props.config,
-              isMyCaptainTurn,
-              currentTurn: props.currentTurn,
-            }),
-          ),
-        )}
+        {
+          (
+            await Promise.all(
+              available.map(p =>
+                PoolPlayer({
+                  player: p,
+                  config: props.config,
+                  isMyCaptainTurn,
+                  currentTurn: props.currentTurn,
+                }),
+              ),
+            )
+          ).join('') as 'safe'
+        }
       </div>
     </div>
   )
@@ -250,7 +254,7 @@ function MapBanPanel(props: {
     <div class="map-ban-panel">
       <h4 class="map-ban-header">
         <IconFlag size={18} />
-        <span>{isMyTurn ? 'Ban a map' : `${teamLabel} is banning a map…`}</span>
+        <span safe>{isMyTurn ? 'Ban a map' : `${teamLabel} is banning a map…`}</span>
       </h4>
       <div class="map-ban-options">
         {props.mapOptions.map(map => {
@@ -264,8 +268,10 @@ function MapBanPanel(props: {
               <span class="map-name" safe>
                 {map}
               </span>
-              {banned && banInfo && (
-                <span class="ban-label">{banInfo.team === Tf2Team.blu ? 'BLU' : 'RED'} banned</span>
+              {banned && !!banInfo && (
+                <span class="ban-label">
+                  {(banInfo.team === Tf2Team.blu ? 'BLU' : 'RED') as 'safe'} banned
+                </span>
               )}
               {!banned && isMyTurn && (
                 <button

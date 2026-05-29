@@ -17,7 +17,11 @@ export async function CaptainClassColumn(props: {
 
   return (
     <div class="captain-class-column" id={`captain-class-column-${gameClass}`}>
-      {await Promise.all(inClass.map(p => CaptainPlayerSlot({ player: p, actor, gameClass })))}
+      {
+        (
+          await Promise.all(inClass.map(p => CaptainPlayerSlot({ player: p, actor, gameClass })))
+        ).join('') as 'safe'
+      }
       <CaptainJoinButton gameClass={gameClass} actor={actor} alreadyIn={actorInClass} />
     </div>
   )
@@ -66,7 +70,7 @@ async function CaptainPlayerSlot(props: {
           }
         >
           {player.offeredClasses.length === 1 ? <IconMinus /> : <IconX size={16} />}
-          <span class="sr-only">
+          <span class="sr-only" safe>
             {player.offeredClasses.length === 1 ? 'Leave queue' : `Remove ${gameClass}`}
           </span>
         </button>
