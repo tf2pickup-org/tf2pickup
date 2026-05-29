@@ -7,6 +7,9 @@ export enum QueueState {
   // players are expected to ready up
   ready = 'ready',
 
+  // captain mode: captains are picking players and banning maps
+  draft = 'draft',
+
   // everybody has readied up, the game is being launched
   launching = 'launching',
 }

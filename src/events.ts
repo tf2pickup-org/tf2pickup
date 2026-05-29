@@ -3,7 +3,9 @@ import type { SteamId64 } from './shared/types/steam-id-64'
 import type { UserMetadata } from './shared/types/user-metadata'
 import { logger } from './logger'
 import type { QueueSlotModel } from './database/models/queue-slot.model'
+import type { QueuePlayerModel } from './database/models/queue-player.model'
 import { QueueState } from './database/models/queue-state.model'
+import type { Tf2ClassName } from './shared/types/tf2-class-name'
 import type { GameModel, GameNumber } from './database/models/game.model'
 import type { PlayerBan, PlayerModel } from './database/models/player.model'
 import type { MapPoolEntry } from './database/models/map-pool-entry.model'
@@ -216,6 +218,34 @@ export interface Events {
   'queue/friendship:removed': {
     source: SteamId64
     target: SteamId64
+  }
+
+  'queue/players:updated': {
+    players: QueuePlayerModel[]
+  }
+  'queue/captain:selected': {
+    captains: [SteamId64, SteamId64]
+  }
+  'queue/draft:pickMade': {
+    captain: SteamId64
+    player: SteamId64
+    gameClass: Tf2ClassName
+    team: Tf2Team
+  }
+  'queue/draft:pickExpired': {
+    team: Tf2Team
+    captain: SteamId64
+  }
+  'queue/draft:mapBanMade': {
+    captain: SteamId64
+    map: string
+    remaining: string[]
+  }
+  'queue/draft:completed': {
+    selectedMap: string
+  }
+  'queue/mode:changed': {
+    mode: 'auto' | 'captain'
   }
 
   'staticGameServer:added': {

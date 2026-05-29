@@ -237,6 +237,24 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('queue.pre_ready_up_timeout'),
     value: z.number().positive().default(minutesToMilliseconds(5)),
   }),
+  z
+    .object({
+      key: z.literal('queue.mode'),
+      value: z.enum(['auto', 'captain']).default('auto'),
+    })
+    .describe('Active queue mode'),
+  z
+    .object({
+      key: z.literal('queue.captain_min_games'),
+      value: z.number().int().nonnegative().default(10),
+    })
+    .describe('Minimum number of games played to be eligible as captain'),
+  z
+    .object({
+      key: z.literal('queue.captain_pick_timeout'),
+      value: z.number().positive().default(minutesToMilliseconds(1)),
+    })
+    .describe('Time a captain has per pick turn before being auto-kicked (milliseconds)'),
   z.object({
     key: z.literal('serveme_tf.preferred_region'),
     value: z.string().nullable().default(null),

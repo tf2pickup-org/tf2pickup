@@ -20,6 +20,8 @@ export interface ClientToServerEvents {
   'queue:readyup': () => void
   'queue:markasfriend': (steamId: SteamId64 | null) => void
   'queue:togglepreready': () => void
+  'queue:pick': (playerSteamId: SteamId64, gameClass: string) => void
+  'queue:banMap': (map: string) => void
 }
 
 type GatewayEvents = ClientToServerEvents
