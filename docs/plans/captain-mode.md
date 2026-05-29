@@ -326,6 +326,22 @@ auto-mode collections, unchanged.
 
 ---
 
+## Game model changes
+
+`GameModel` gains an optional `captains` field populated only for captain-mode games:
+
+```ts
+export interface GameModel {
+  // ...existing fields...
+  captains?: Record<Tf2Team, SteamId64>   // e.g. { blu: '...', red: '...' }
+}
+```
+
+`undefined` means the game was created in auto mode. This is intentionally sparse — no
+migration needed for existing games, and auto-mode game creation leaves the field unset.
+
+---
+
 ## Game creation changes
 
 `src/games/create.ts` currently calls `pickTeams()` for auto-balancing. For captain mode the
@@ -340,9 +356,10 @@ create(
 )
 ```
 
-When `captainDraft` is provided, `pickTeams()` is bypassed and the draft's assignments are
-translated directly into `GameSlotModel[]`. The rest of the game creation pipeline
-(server assignment, RCON configuration, etc.) is unchanged.
+When `captainDraft` is provided, `pickTeams()` is bypassed, the draft's assignments are
+translated directly into `GameSlotModel[]`, and `captains` is populated from the draft.
+The rest of the game creation pipeline (server assignment, RCON configuration, etc.) is
+unchanged.
 
 ---
 
