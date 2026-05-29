@@ -5,7 +5,7 @@ import { getMapWinner } from './get-map-winner'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { reset } from './reset'
-import { resetMapOptions } from './reset-map-options'
+import { resetMapOptions } from '../maps/reset-options'
 import { getFriends } from './get-friends'
 import { getMapVoteResults } from './get-map-vote-results'
 

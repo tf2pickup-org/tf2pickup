@@ -5,7 +5,7 @@ import {
 } from '../../../admin/map-pool/views/html/map-pool.page'
 import { z } from 'zod'
 import type { MapPoolEntry } from '../../../database/models/map-pool-entry.model'
-import { mapPool } from '../../../queue/map-pool'
+import { mapPool } from '../../../maps/pool'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
 

@@ -1,5 +1,5 @@
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
-import { mapPool } from '../../../../queue/map-pool'
+import { mapPool } from '../../../../maps/pool'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 

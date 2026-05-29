@@ -1,7 +1,7 @@
 import { collections } from '../database/collections'
 import type { MapPoolEntry } from '../database/models/map-pool-entry.model'
 import { events } from '../events'
-import { mapPool } from './map-pool'
+import { mapPool } from './pool'
 
 export async function resetMapOptions() {
   if ((await collections.maps.countDocuments()) === 0) {

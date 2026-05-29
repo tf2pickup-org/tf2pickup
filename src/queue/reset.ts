@@ -7,7 +7,7 @@ import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { config } from './config'
 import { getSlots } from './get-slots'
 import { getState } from './get-state'
-import { resetMapOptions } from './reset-map-options'
+import { resetMapOptions } from '../maps/reset-options'
 
 export async function reset() {
   logger.trace('queue.reset()')
