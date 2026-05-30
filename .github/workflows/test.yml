@@ -263,7 +263,7 @@ jobs:
           path: playwright-report
           retention-days: 30
 
-      - uses: daun/playwright-report-summary@v3
+      - uses: daun/playwright-report-summary@v4
         if: ${{ hashFiles('results.json') != '' }}
         with:
           report-file: results.json
