@@ -66,6 +66,11 @@ export async function banMap(captainSteamId: SteamId64, map: string): Promise<Dr
       {
         $set: {
           mapBans: updatedBans,
+          currentTurn: isLastBan
+            ? draft.currentTurn
+            : banTeam === Tf2Team.blu
+              ? Tf2Team.red
+              : Tf2Team.blu,
           ...(selectedMap ? { selectedMap } : {}),
           expiresAt: new Date(Date.now() + timeout),
         },

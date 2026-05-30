@@ -11,6 +11,7 @@ import { getState } from '../queue/get-state'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { Tf2Team } from '../shared/types/tf2-team'
 import { canFillSlots } from './can-form-teams'
 import { getPickOrder } from './get-pick-order'
 
@@ -95,7 +96,7 @@ export async function pick(
 
     const pickOrder = getPickOrder(config)
     const isPickingDone = updatedPicks.length >= pickOrder.length
-    const nextTurn = isPickingDone ? draft.currentTurn : pickOrder[updatedPicks.length]!
+    const nextTurn = isPickingDone ? Tf2Team.blu : pickOrder[updatedPicks.length]!
 
     const timeout = await configuration.get('queue.captain_pick_timeout')
     const updated = (await collections.captainDraft.findOneAndUpdate(
