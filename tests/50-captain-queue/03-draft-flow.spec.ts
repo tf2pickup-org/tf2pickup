@@ -30,23 +30,25 @@ test('full captain draft: picks, map bans, game launch @6v6', async ({ users, ga
 
   await gameServer.sendHeartbeat()
 
-  // All 12 players join their assigned class
-  await Promise.all(
-    playerAssignments.map(async ([name, gameClass]) => {
-      const queuePage = new CaptainQueuePage(await users.byName(name).page())
-      await queuePage.goto()
-      await queuePage.classColumn(gameClass).join()
-    }),
-  )
-
-  // First two players opt in as captain candidates
-  for (const [name] of playerAssignments.slice(0, 2)) {
+  // First two players join and immediately opt in as captain candidates (before queue fills)
+  for (const [name, gameClass] of playerAssignments.slice(0, 2)) {
     const queuePage = new CaptainQueuePage(await users.byName(name).page())
+    await queuePage.goto()
+    await queuePage.classColumn(gameClass).join()
     await expect(queuePage.wantsCaptainLabel()).toContainText('I want to be captain', {
       timeout: 5000,
     })
     await queuePage.wantsCaptainToggle().check()
   }
+
+  // Remaining 10 players join — this fills the queue and triggers the ready-up phase
+  await Promise.all(
+    playerAssignments.slice(2).map(async ([name, gameClass]) => {
+      const queuePage = new CaptainQueuePage(await users.byName(name).page())
+      await queuePage.goto()
+      await queuePage.classColumn(gameClass).join()
+    }),
+  )
 
   // All players ready up
   await Promise.all(
