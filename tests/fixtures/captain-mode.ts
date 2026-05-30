@@ -14,12 +14,13 @@ export const captainMode = authUsers.extend<CaptainModeFixture>({
       await page.goto('/')
       const isCaptainMode = await page.locator('#captain-player-count').isVisible()
 
-      if (!isCaptainMode) {
-        // Switch to captain mode; set captainMinGames=0 so all test players are eligible captains
-        const admin = users.getAdmin()
-        const adminPage = await admin.adminPage()
-        await adminPage.setQueueMode('captain', { captainMinGames: 0 })
+      // Always set captainMinGames=0 so all test players are eligible captains,
+      // even if captain mode was already active from a previous run.
+      const admin = users.getAdmin()
+      const adminPage = await admin.adminPage()
+      await adminPage.setQueueMode('captain', { captainMinGames: 0 })
 
+      if (!isCaptainMode) {
         // Navigate the observer page to the new mode's queue page
         await page.goto('/')
         await expect(page.locator('#captain-player-count')).toBeVisible({
