@@ -8,6 +8,7 @@ import { safe } from '../../utils/safe'
 import type { AppWebSocket } from '../../websocket/types'
 import { CaptainClassColumn } from '../views/html/captain-player-slot'
 import { CaptainPlayerCount } from '../views/html/captain-player-count'
+import { CaptainQueueSection } from '../views/html/captain-queue-section'
 import { DraftBoard } from '../views/html/draft-board'
 import { WantsCaptainToggle } from '../views/html/wants-captain-toggle'
 import { queueConfigs } from '../../queue-auto/configs'
@@ -103,6 +104,12 @@ export default fp(
           app.gateway
             .to({ url: '/' })
             .send(async actor => [await DraftBoard({ actor }), '<form id="captain-queue"></form>'])
+        }
+
+        if (state === QueueState.waiting) {
+          app.gateway
+            .to({ url: '/' })
+            .send(async actor => ['<div id="draft-board" />', await CaptainQueueSection({ actor })])
         }
       }),
     )
