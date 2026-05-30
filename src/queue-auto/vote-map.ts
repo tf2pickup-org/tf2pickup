@@ -4,7 +4,7 @@ import { events } from '../events'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
-import { withQueueLock } from './with-queue-lock'
+import { withQueueLock } from '../queue/with-queue-lock'
 
 export async function voteMap(steamId: SteamId64, map: string): Promise<Record<string, number>> {
   return await withQueueLock('vote-map', async () => {

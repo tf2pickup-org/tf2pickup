@@ -1,5 +1,5 @@
 import { logger } from '../logger'
-import { queue } from '../queue'
+import { queue } from '../queue-auto'
 import { assignGameServer } from './assign-game-server'
 import { create } from './create'
 import { configure } from './rcon/configure'

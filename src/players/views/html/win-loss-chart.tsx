@@ -1,7 +1,7 @@
 import { collections } from '../../../database/collections'
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { queue } from '../../../queue'
+import { queue } from '../../../queue-auto'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import { environment } from '../environment'
-import { ReadyUpDialog } from '../queue/views/html/ready-up-dialog'
+import { ReadyUpDialog } from '../queue-auto/views/html/ready-up-dialog'
 import Html from '@kitajs/html'
 import { resolve } from 'path'
 import { requestContext } from '@fastify/request-context'

@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import type { PlayerSkill } from '../../database/models/player.model'
-import { config } from '../../queue/config'
+import { config } from '../../queue-auto/config'
 
 export interface ParsedPlayerSkill {
   steamId: SteamId64

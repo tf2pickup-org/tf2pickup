@@ -4,7 +4,7 @@ import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import { queue } from '../../../queue'
+import { queue } from '../../../queue-auto'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,

@@ -1,4 +1,4 @@
-import { QueuePage } from '../queue/views/html/queue.page'
+import { QueuePage } from '../queue-auto/views/html/queue.page'
 import { routes } from '../utils/routes'
 import disableCache from 'fastify-disablecache'
 

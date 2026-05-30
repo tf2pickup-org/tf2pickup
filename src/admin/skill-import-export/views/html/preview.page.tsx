@@ -1,7 +1,7 @@
 import type { ImportAnalysis } from '../../types'
 import { Admin } from '../../../views/html/admin'
 import type { PlayerSkill } from '../../../../database/models/player.model'
-import { config } from '../../../../queue/config'
+import { config } from '../../../../queue-auto/config'
 
 interface PreviewPageProps {
   analysis: ImportAnalysis

@@ -24,7 +24,7 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { queue } from '../../../queue'
+import { queue } from '../../../queue-auto'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
 import type { Children } from '@kitajs/html'
 import {
