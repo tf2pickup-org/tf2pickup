@@ -93,12 +93,16 @@ test('full captain draft: picks, map bans, game launch @6v6', async ({ users, ga
       await cap2.draftBoard().firstBanButton().click()
     }
 
-    // Wait for the ban to register
-    await expect
-      .poll(() => cap1.draftBoard().locator().locator('.map-ban-card.banned').count(), {
-        timeout: 10000,
-      })
-      .toBe(bannedBefore + 1)
+    // After the final ban the view transitions to the selected-map panel, so
+    // .map-ban-card.banned may disappear. Only poll the count for non-final bans;
+    // the selectedMap assertion below covers the last ban.
+    if (i < 1) {
+      await expect
+        .poll(() => cap1.draftBoard().locator().locator('.map-ban-card.banned').count(), {
+          timeout: 10000,
+        })
+        .toBe(bannedBefore + 1)
+    }
   }
 
   // Selected map is shown after all bans
