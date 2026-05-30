@@ -19,6 +19,7 @@ import { StreamList } from '../../queue-auto/views/html/stream-list'
 import { ChatMessages } from '../../queue-auto/views/html/chat'
 import { OnlinePlayerCount } from '../../queue-auto/views/html/online-player-count'
 import { OnlinePlayerList } from '../../queue-auto/views/html/online-player-list'
+import { ReadyUpDialog } from '../../queue-auto/views/html/ready-up-dialog'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export default fp(
@@ -88,9 +89,15 @@ export default fp(
 
     events.on(
       'queue/state:updated',
-      // eslint-disable-next-line @typescript-eslint/require-await
       safe(async ({ state }) => {
         if (!isActive) return
+
+        if (state === QueueState.ready) {
+          const unreadyPlayers = (
+            await collections.queuePlayers.find({ ready: false }).toArray()
+          ).map(p => p.steamId)
+          app.gateway.to({ players: unreadyPlayers }).send(actor => ReadyUpDialog.show(actor!))
+        }
 
         if (state === QueueState.draft) {
           app.gateway

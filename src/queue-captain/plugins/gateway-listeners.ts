@@ -12,6 +12,7 @@ import { pick } from '../pick'
 import { readyUp } from '../ready-up'
 import { removeOfferedClass } from '../remove-offered-class'
 import { setWantsCaptain } from '../set-wants-captain'
+import { ReadyUpDialog } from '../../queue-auto/views/html/ready-up-dialog'
 
 export default fp(
   async app => {
@@ -72,6 +73,8 @@ export default fp(
       wsSafe(async socket => {
         if (!socket.player) throw errors.unauthorized('unauthorized')
         await readyUp(socket.player.steamId)
+        const close = ReadyUpDialog.close()
+        app.gateway.to({ player: socket.player.steamId }).send(() => close)
       }),
     )
 
