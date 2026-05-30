@@ -11,7 +11,7 @@ import { getState } from '../queue/get-state'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { buildSlotList, canFillSlots } from './can-form-teams'
+import { canFillSlots } from './can-form-teams'
 import { getPickOrder } from './get-pick-order'
 
 export async function pick(
@@ -58,7 +58,6 @@ export async function pick(
     }
 
     const config = queueConfigs[environment.QUEUE_CONFIG]
-    const allSlots = buildSlotList(config)
 
     const classPickCount: Partial<Record<Tf2ClassName, number>> = {}
     for (const p of draft.picks) {
@@ -67,16 +66,22 @@ export async function pick(
     classPickCount[gameClass] = (classPickCount[gameClass] ?? 0) + 1
 
     const remainingSlots: Tf2ClassName[] = []
-    for (const cls of allSlots) {
-      const total = config.classes.find(c => c.name === cls)!.count * config.teamCount
-      const picked = classPickCount[cls] ?? 0
-      if (picked < total) remainingSlots.push(cls)
+    for (const cls of config.classes) {
+      const total = cls.count * config.teamCount
+      const picked = classPickCount[cls.name] ?? 0
+      for (let i = 0; i < total - picked; i++) {
+        remainingSlots.push(cls.name)
+      }
     }
-    const captainSlotsCount = config.teamCount
-    const pickableSlots = remainingSlots.slice(0, remainingSlots.length - captainSlotsCount)
 
     const afterPickPool = remainingPool.filter(p => p.steamId !== playerSteamId)
-    if (!canFillSlots(afterPickPool, pickableSlots)) {
+    // Captains fill any class (create.ts assigns them to the first unfilled class),
+    // so treat them as wildcards when checking feasibility.
+    const captainWildcards = Object.values(draft.captains).map(steamId => ({
+      steamId,
+      offeredClasses: config.classes.map(c => c.name),
+    }))
+    if (!canFillSlots([...afterPickPool, ...captainWildcards], remainingSlots)) {
       throw errors.badRequest('pick would make it impossible to complete the draft')
     }
 
