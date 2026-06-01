@@ -173,6 +173,11 @@ async function PlayerPool(props: {
 
   const isMyCaptainTurn = props.actor === props.draft.captains[props.currentTurn]
 
+  const teamClassUsage: Partial<Record<Tf2ClassName, number>> = {}
+  for (const pick of props.draft.picks.filter(p => p.team === props.currentTurn)) {
+    teamClassUsage[pick.gameClass] = (teamClassUsage[pick.gameClass] ?? 0) + 1
+  }
+
   return (
     <div class="player-pool">
       <h4 class="player-pool-header">Available players</h4>
@@ -186,6 +191,7 @@ async function PlayerPool(props: {
                   config: props.config,
                   isMyCaptainTurn,
                   currentTurn: props.currentTurn,
+                  teamClassUsage,
                 }),
               ),
             )
@@ -201,12 +207,18 @@ async function PoolPlayer(props: {
   config: QueueConfig
   isMyCaptainTurn: boolean
   currentTurn: Tf2Team
+  teamClassUsage: Partial<Record<Tf2ClassName, number>>
 }) {
   const profile = await collections.players.findOne<Pick<PlayerModel, 'name' | 'avatar'>>(
     { steamId: props.player.steamId },
     { projection: { name: 1, avatar: 1 } },
   )
   if (!profile) return <></>
+
+  const pickableClasses = props.player.offeredClasses.filter(cls => {
+    const clsConfig = props.config.classes.find(c => c.name === cls)
+    return clsConfig ? (props.teamClassUsage[cls] ?? 0) < clsConfig.count : true
+  })
 
   return (
     <div class="pool-player">
@@ -219,9 +231,9 @@ async function PoolPlayer(props: {
           <GameClassIcon gameClass={cls} size={18} />
         ))}
       </div>
-      {props.isMyCaptainTurn && (
+      {props.isMyCaptainTurn && pickableClasses.length > 0 && (
         <div class="pick-buttons">
-          {props.player.offeredClasses.map(cls => (
+          {pickableClasses.map(cls => (
             <button
               class="pick-button"
               name="captainPick"

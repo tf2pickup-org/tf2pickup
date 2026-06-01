@@ -60,6 +60,14 @@ export async function pick(
 
     const config = queueConfigs[environment.QUEUE_CONFIG]
 
+    const teamPicksForClass = draft.picks.filter(
+      p => p.team === draft.currentTurn && p.gameClass === gameClass,
+    ).length
+    const classConfig = config.classes.find(c => c.name === gameClass)
+    if (classConfig && teamPicksForClass >= classConfig.count) {
+      throw errors.badRequest('team already has enough players for this class')
+    }
+
     const classPickCount: Partial<Record<Tf2ClassName, number>> = {}
     for (const p of draft.picks) {
       classPickCount[p.gameClass] = (classPickCount[p.gameClass] ?? 0) + 1
