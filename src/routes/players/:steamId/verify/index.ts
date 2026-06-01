@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { players } from '../../../../players'
 import { steamId64 } from '../../../../shared/schemas/steam-id-64'
 import { routes } from '../../../../utils/routes'
-import { AdminToolbox } from '../../../../players/views/html/admin-toolbox'
+import { PlayerVerifiedCheckbox } from '../../../../players/views/html/player-verified-checkbox'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -28,15 +28,8 @@ export default routes(async app => {
       const { steamId } = request.params
       const { verified } = request.body
       await players.setVerified(steamId, verified, request.user!.player.steamId)
-      const player = await players.bySteamId(steamId, [
-        'steamId',
-        'skill',
-        'skillHistory',
-        'verified',
-        'elo',
-        'stats',
-      ])
-      await reply.html(AdminToolbox({ player }))
+      const player = await players.bySteamId(steamId, ['steamId', 'verified'])
+      await reply.html(PlayerVerifiedCheckbox({ player }))
     },
   )
 })

@@ -18,6 +18,7 @@ import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { makeSkillSuggestions } from '../../make-skill-suggestions'
+import { PlayerVerifiedCheckbox } from './player-verified-checkbox'
 
 export async function AdminToolbox(props: {
   player: Pick<
@@ -50,28 +51,9 @@ export async function AdminToolbox(props: {
         }
       </script>
 
-      {requireVerification && (
-        <div class="bg-abru-light-5 flex items-center gap-3 rounded-md px-3 py-2">
-          <label for="playerVerified" class="cursor-pointer text-sm select-none">
-            Player verified
-          </label>
-          <input
-            type="checkbox"
-            id="playerVerified"
-            name="verified"
-            value="true"
-            checked={props.player.verified}
-            hx-put={`/players/${player.steamId}/verify`}
-            hx-trigger="change"
-            hx-target="#player-admin-toolbox"
-            hx-swap="outerHTML"
-            hx-include="this"
-          />
-        </div>
-      )}
-
       <div class="player-admin-toolbox">
         <div class="admin-toolbox-header">
+          {requireVerification && <PlayerVerifiedCheckbox player={player} />}
           <BanStatus bans={player.bans} steamId={player.steamId} />
           <a
             href={`/players/${player.steamId}/edit`}
