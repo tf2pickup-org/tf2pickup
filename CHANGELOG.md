@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.8.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.0...4.8.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency es-toolkit to v1.47.0 ([8fd8393](https://github.com/tf2pickup-org/tf2pickup/commit/8fd83939083c0648c57c374f8109608144d9010d))
+* fix headers sent after reply warning ([#635](https://github.com/tf2pickup-org/tf2pickup/issues/635)) ([e55f9f2](https://github.com/tf2pickup-org/tf2pickup/commit/e55f9f2590abab4b1739a3da87165da758484d00))
+
 # [4.8.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.15...4.8.0) (2026-05-28)
 
 
