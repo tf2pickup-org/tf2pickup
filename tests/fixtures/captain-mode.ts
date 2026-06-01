@@ -18,7 +18,7 @@ export const captainMode = authUsers.extend<CaptainModeFixture>({
       // even if captain mode was already active from a previous run.
       const admin = users.getAdmin()
       const adminPage = await admin.adminPage()
-      await adminPage.setQueueMode('captain', { captainMinGames: 0 })
+      await adminPage.setQueueMode('captain', { captainMinGames: 0, captainPickTimeout: 60 })
 
       if (!isCaptainMode) {
         // Navigate the observer page to the new mode's queue page
