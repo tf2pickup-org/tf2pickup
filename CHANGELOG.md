@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.8.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.1...4.8.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* address dependabot alerts ([#644](https://github.com/tf2pickup-org/tf2pickup/issues/644)) ([4cb2d28](https://github.com/tf2pickup-org/tf2pickup/commit/4cb2d287a7fcf15fd7f0241f2100a4bc9188e88c))
+* **deps:** update dependency date-fns to v4.4.0 ([fba1b4e](https://github.com/tf2pickup-org/tf2pickup/commit/fba1b4eb9ea95c2d44fd1710d2f69790b6566c85))
+* **players:** move player verified checkbox into admin toolbox header ([#641](https://github.com/tf2pickup-org/tf2pickup/issues/641)) ([92a4f46](https://github.com/tf2pickup-org/tf2pickup/commit/92a4f46c0cd18ce58f2f1bf42b6a53fb5c384caa))
+
 ## [4.8.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.0...4.8.1) (2026-06-01)
 
 
