@@ -219,7 +219,10 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     return (
       <span>
         <span safe>{log.reason}</span>
-        <span class="text-abru-light-50" safe> · expires {log.end.toLocaleDateString()}</span>
+        <span class="text-abru-light-50" safe>
+          {' '}
+          · expires {log.end.toLocaleDateString()}
+        </span>
       </span>
     )
   }
@@ -274,10 +277,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
         <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
           Game #{log.gameNumber}
         </a>
-        <span class="text-abru-light-50">
-          {' '}
-          · {log.gameClass}
-        </span>
+        <span class="text-abru-light-50"> · {log.gameClass}</span>
         {log.reason !== undefined && (
           <span class="text-abru-light-50">
             {' '}
