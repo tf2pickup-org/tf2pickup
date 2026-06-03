@@ -29,6 +29,7 @@ const typeOptions: { value: ActivityLogEntryType; label: string }[] = [
   { value: 'game server reassigned', label: 'Game server reassigned' },
   { value: 'game force-ended', label: 'Game force-ended' },
   { value: 'substitute requested', label: 'Substitute requested' },
+  { value: 'queue cleared', label: 'Queue cleared' },
 ]
 
 export function ActivityLogPage(props: ActivityLogPageProps) {

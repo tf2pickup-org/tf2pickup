@@ -30,6 +30,7 @@ const typeLabels: Record<ActivityLogEntryType, string> = {
   'game server reassigned': 'Server reassigned',
   'game force-ended': 'Game force-ended',
   'substitute requested': 'Sub requested',
+  'queue cleared': 'Queue cleared',
 }
 
 const typeColors: Record<ActivityLogEntryType, string> = {
@@ -44,6 +45,7 @@ const typeColors: Record<ActivityLogEntryType, string> = {
   'game server reassigned': 'text-cyan-400',
   'game force-ended': 'text-rose-400',
   'substitute requested': 'text-amber-400',
+  'queue cleared': 'text-fuchsia-400',
 }
 
 export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
@@ -179,6 +181,7 @@ function getActor(log: ActivityLogEntryModel): SteamId64 | 'bot' | undefined {
   if (log.type === 'ban revoked') return log.admin
   if (log.type === 'configuration change') return log.actor
   if (log.type === 'substitute requested') return log.actor
+  if (log.type === 'queue cleared') return log.actor
   if (
     log.type === 'game reconfigured' ||
     log.type === 'game server reassigned' ||
@@ -280,6 +283,14 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
             · <span safe>{log.reason}</span>
           </span>
         )}
+      </span>
+    )
+  }
+
+  if (log.type === 'queue cleared') {
+    return (
+      <span class="text-abru-light-50">
+        {log.playerCount} player{log.playerCount !== 1 ? 's' : ''} removed
       </span>
     )
   }

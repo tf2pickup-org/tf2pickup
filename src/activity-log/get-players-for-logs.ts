@@ -39,6 +39,9 @@ export async function getPlayersForActivityLogs(
     if (log.type === 'game force-ended' && log.actor && log.actor !== 'bot') {
       ids.add(log.actor)
     }
+    if (log.type === 'queue cleared') {
+      ids.add(log.actor)
+    }
   }
 
   if (ids.size === 0) return new Map()

@@ -90,6 +90,13 @@ export interface SubstituteRequestedEntry {
   reason?: string
 }
 
+export interface QueueClearedEntry {
+  type: 'queue cleared'
+  timestamp: Date
+  actor: SteamId64
+  playerCount: number
+}
+
 export type ActivityLogEntryModel =
   | PlayerNameChangeEntry
   | PlayerSkillChangeEntry
@@ -102,6 +109,7 @@ export type ActivityLogEntryModel =
   | GameServerReassignedEntry
   | GameForceEndedEntry
   | SubstituteRequestedEntry
+  | QueueClearedEntry
 
 export type ActivityLogEntryType = ActivityLogEntryModel['type']
 
@@ -117,3 +125,4 @@ export type ActivityLogInput =
   | Omit<GameServerReassignedEntry, 'timestamp'>
   | Omit<GameForceEndedEntry, 'timestamp'>
   | Omit<SubstituteRequestedEntry, 'timestamp'>
+  | Omit<QueueClearedEntry, 'timestamp'>
