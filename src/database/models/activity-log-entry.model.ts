@@ -1,4 +1,6 @@
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import type { GameNumber } from './game.model'
 import type { PlayerSkill } from './player.model'
 
 export interface PlayerNameChangeEntry {
@@ -56,6 +58,38 @@ export interface MapScrambleEntry {
   maps: string[]
 }
 
+export interface GameReconfiguredEntry {
+  type: 'game reconfigured'
+  timestamp: Date
+  gameNumber: GameNumber
+  actor?: SteamId64
+}
+
+export interface GameServerReassignedEntry {
+  type: 'game server reassigned'
+  timestamp: Date
+  gameNumber: GameNumber
+  gameServer: string
+  actor?: SteamId64
+}
+
+export interface GameForceEndedEntry {
+  type: 'game force-ended'
+  timestamp: Date
+  gameNumber: GameNumber
+  actor?: SteamId64 | 'bot'
+}
+
+export interface SubstituteRequestedEntry {
+  type: 'substitute requested'
+  timestamp: Date
+  gameNumber: GameNumber
+  player: SteamId64
+  actor: SteamId64 | 'bot'
+  gameClass: Tf2ClassName
+  reason?: string
+}
+
 export type ActivityLogEntryModel =
   | PlayerNameChangeEntry
   | PlayerSkillChangeEntry
@@ -64,6 +98,10 @@ export type ActivityLogEntryModel =
   | BanRevokedEntry
   | MapPoolChangeEntry
   | MapScrambleEntry
+  | GameReconfiguredEntry
+  | GameServerReassignedEntry
+  | GameForceEndedEntry
+  | SubstituteRequestedEntry
 
 export type ActivityLogEntryType = ActivityLogEntryModel['type']
 
@@ -75,3 +113,7 @@ export type ActivityLogInput =
   | Omit<BanRevokedEntry, 'timestamp'>
   | Omit<MapPoolChangeEntry, 'timestamp'>
   | Omit<MapScrambleEntry, 'timestamp'>
+  | Omit<GameReconfiguredEntry, 'timestamp'>
+  | Omit<GameServerReassignedEntry, 'timestamp'>
+  | Omit<GameForceEndedEntry, 'timestamp'>
+  | Omit<SubstituteRequestedEntry, 'timestamp'>

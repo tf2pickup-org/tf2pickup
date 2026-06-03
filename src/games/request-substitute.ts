@@ -7,6 +7,7 @@ import { events } from '../events'
 import { logger } from '../logger'
 import { type Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { recordActivity } from '../activity-log/record-activity'
 import { findOne } from './find-one'
 import { update } from './update'
 
@@ -73,6 +74,14 @@ export async function requestSubstitute({
     replacee,
     slotId: slot.id,
     actor,
+    ...(reason && { reason }),
+  })
+  await recordActivity({
+    type: 'substitute requested',
+    gameNumber: newGame.number,
+    player: replacee,
+    actor,
+    gameClass: slot.gameClass,
     ...(reason && { reason }),
   })
   return newGame

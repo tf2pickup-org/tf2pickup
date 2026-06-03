@@ -26,6 +26,10 @@ const typeLabels: Record<ActivityLogEntryType, string> = {
   'ban revoked': 'Ban revoked',
   'map pool change': 'Map pool change',
   'map scramble': 'Map scramble',
+  'game reconfigured': 'Game reconfigured',
+  'game server reassigned': 'Server reassigned',
+  'game force-ended': 'Game force-ended',
+  'substitute requested': 'Sub requested',
 }
 
 const typeColors: Record<ActivityLogEntryType, string> = {
@@ -36,6 +40,10 @@ const typeColors: Record<ActivityLogEntryType, string> = {
   'ban revoked': 'text-orange-400',
   'map pool change': 'text-teal-400',
   'map scramble': 'text-yellow-400',
+  'game reconfigured': 'text-sky-400',
+  'game server reassigned': 'text-cyan-400',
+  'game force-ended': 'text-rose-400',
+  'substitute requested': 'text-amber-400',
 }
 
 export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
@@ -157,7 +165,8 @@ function getPlayer(log: ActivityLogEntryModel): SteamId64 | undefined {
     log.type === 'player name change' ||
     log.type === 'player skill change' ||
     log.type === 'ban added' ||
-    log.type === 'ban revoked'
+    log.type === 'ban revoked' ||
+    log.type === 'substitute requested'
   ) {
     return log.player
   }
@@ -169,6 +178,13 @@ function getActor(log: ActivityLogEntryModel): SteamId64 | 'bot' | undefined {
   if (log.type === 'ban added') return log.actor
   if (log.type === 'ban revoked') return log.admin
   if (log.type === 'configuration change') return log.actor
+  if (log.type === 'substitute requested') return log.actor
+  if (
+    log.type === 'game reconfigured' ||
+    log.type === 'game server reassigned' ||
+    log.type === 'game force-ended'
+  )
+    return log.actor
   return undefined
 }
 
@@ -222,6 +238,46 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
         {extra && (
           <span class="text-abru-light-50" safe>
             {extra}
+          </span>
+        )}
+      </span>
+    )
+  }
+
+  if (log.type === 'game reconfigured' || log.type === 'game force-ended') {
+    return (
+      <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75">
+        Game #{log.gameNumber}
+      </a>
+    )
+  }
+
+  if (log.type === 'game server reassigned') {
+    return (
+      <span>
+        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75">
+          Game #{log.gameNumber}
+        </a>
+        <span class="text-abru-light-50"> → </span>
+        <span safe>{log.gameServer}</span>
+      </span>
+    )
+  }
+
+  if (log.type === 'substitute requested') {
+    return (
+      <span>
+        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75">
+          Game #{log.gameNumber}
+        </a>
+        <span class="text-abru-light-50" safe>
+          {' '}
+          · {log.gameClass}
+        </span>
+        {log.reason && (
+          <span class="text-abru-light-50">
+            {' '}
+            · <span safe>{log.reason}</span>
           </span>
         )}
       </span>

@@ -25,6 +25,10 @@ const typeOptions: { value: ActivityLogEntryType; label: string }[] = [
   { value: 'ban revoked', label: 'Ban revoked' },
   { value: 'map pool change', label: 'Map pool change' },
   { value: 'map scramble', label: 'Map scramble' },
+  { value: 'game reconfigured', label: 'Game reconfigured' },
+  { value: 'game server reassigned', label: 'Game server reassigned' },
+  { value: 'game force-ended', label: 'Game force-ended' },
+  { value: 'substitute requested', label: 'Substitute requested' },
 ]
 
 export function ActivityLogPage(props: ActivityLogPageProps) {

@@ -5,6 +5,7 @@ import { GameState, type GameNumber } from '../database/models/game.model'
 import { events } from '../events'
 import type { Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { recordActivity } from '../activity-log/record-activity'
 import { update } from './update'
 
 export async function forceEnd(
@@ -40,4 +41,9 @@ export async function forceEnd(
     },
   )
   events.emit('game:ended', { game })
+  await recordActivity({
+    type: 'game force-ended',
+    gameNumber,
+    ...(actor && { actor }),
+  })
 }

@@ -29,6 +29,16 @@ export async function getPlayersForActivityLogs(
     if (log.type === 'configuration change') {
       ids.add(log.actor)
     }
+    if (log.type === 'substitute requested') {
+      ids.add(log.player)
+      if (log.actor !== 'bot') ids.add(log.actor)
+    }
+    if ((log.type === 'game reconfigured' || log.type === 'game server reassigned') && log.actor) {
+      ids.add(log.actor)
+    }
+    if (log.type === 'game force-ended' && log.actor && log.actor !== 'bot') {
+      ids.add(log.actor)
+    }
   }
 
   if (ids.size === 0) return new Map()
