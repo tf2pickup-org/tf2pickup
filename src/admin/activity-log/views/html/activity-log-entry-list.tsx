@@ -176,6 +176,7 @@ function getPlayer(log: ActivityLogEntryModel): SteamId64 | undefined {
 }
 
 function getActor(log: ActivityLogEntryModel): SteamId64 | 'bot' | undefined {
+  if (log.type === 'player name change') return log.actor
   if (log.type === 'player skill change' || log.type === 'map scramble') return log.actor
   if (log.type === 'ban added') return log.actor
   if (log.type === 'ban revoked') return log.admin

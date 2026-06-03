@@ -17,6 +17,9 @@ export async function getPlayersForActivityLogs(
     ) {
       ids.add(log.player)
     }
+    if (log.type === 'player name change' && log.actor) {
+      ids.add(log.actor)
+    }
     if (log.type === 'player skill change' || log.type === 'map scramble') {
       ids.add(log.actor)
     }

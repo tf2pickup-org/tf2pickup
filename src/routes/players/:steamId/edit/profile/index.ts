@@ -61,6 +61,7 @@ export default routes(async app => {
             player: steamId,
             oldName,
             newName: name,
+            actor: req.user!.player.steamId,
           })
         }
         req.flash('success', `Player updated`)

@@ -9,6 +9,7 @@ export interface PlayerNameChangeEntry {
   player: SteamId64
   oldName: string
   newName: string
+  actor?: SteamId64
 }
 
 export interface PlayerSkillChangeEntry {
