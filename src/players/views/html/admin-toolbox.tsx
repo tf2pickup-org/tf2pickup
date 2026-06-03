@@ -56,6 +56,12 @@ export async function AdminToolbox(props: {
           {requireVerification && <PlayerVerifiedCheckbox player={player} />}
           <BanStatus bans={player.bans} steamId={player.steamId} />
           <a
+            href={`/admin/activity-log?player=${player.steamId}`}
+            class="text-abru-light-50 hover:text-abru-light-75 shrink-0 text-sm"
+          >
+            Activity log
+          </a>
+          <a
             href={`/players/${player.steamId}/edit`}
             class={['button shrink-0', compact && 'compact']}
             data-variant="accent"

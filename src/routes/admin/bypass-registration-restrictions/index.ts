@@ -7,6 +7,7 @@ import { requestContext } from '@fastify/request-context'
 import { configuration } from '../../../configuration'
 import { BypassedSteamIds } from '../../../admin/bypass-registration-restrictions/views/html/bypassed-steam-ids'
 import { routes } from '../../../utils/routes'
+import { recordActivity } from '../../../activity-log/record-activity'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -48,6 +49,11 @@ export default routes(async app => {
         }
 
         await configuration.set('players.bypass_registration_restrictions', [...config, steamId])
+        await recordActivity({
+          type: 'configuration change',
+          key: 'players.bypass_registration_restrictions',
+          actor: request.user!.player.steamId,
+        })
         requestContext.set('messages', { success: ['Steam ID added'] })
         return reply.html(BypassRegistrationRestrictionsPage())
       },
@@ -71,6 +77,11 @@ export default routes(async app => {
           'players.bypass_registration_restrictions',
           config.filter(c => c !== steamId),
         )
+        await recordActivity({
+          type: 'configuration change',
+          key: 'players.bypass_registration_restrictions',
+          actor: request.user!.player.steamId,
+        })
         return reply.html(BypassedSteamIds())
       },
     )

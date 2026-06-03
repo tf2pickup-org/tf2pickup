@@ -2,8 +2,8 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { GamesPage } from '../../../admin/games/views/html/games.page'
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../../shared/types/logs-tf-upload-method'
-import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
+import { recordConfigurationChange } from '../../../activity-log/record-configuration-change'
 import { secondsToMilliseconds } from 'date-fns'
 import { routes } from '../../../utils/routes'
 
@@ -38,18 +38,29 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
+        const actor = request.user!.player.steamId
         await Promise.all([
-          configuration.set('games.whitelist_id', request.body.whitelistId),
-          configuration.set(
+          recordConfigurationChange('games.whitelist_id', request.body.whitelistId, actor),
+          recordConfigurationChange(
             'games.join_gameserver_timeout',
             secondsToMilliseconds(request.body.joinGameserverTimeout),
+            actor,
           ),
-          configuration.set(
+          recordConfigurationChange(
             'games.rejoin_gameserver_timeout',
             secondsToMilliseconds(request.body.rejoinGameserverTimeout),
+            actor,
           ),
-          configuration.set('games.execute_extra_commands', request.body.executeExtraCommands),
-          configuration.set('games.logs_tf_upload_method', request.body.logsTfUploadMethod),
+          recordConfigurationChange(
+            'games.execute_extra_commands',
+            request.body.executeExtraCommands,
+            actor,
+          ),
+          recordConfigurationChange(
+            'games.logs_tf_upload_method',
+            request.body.logsTfUploadMethod,
+            actor,
+          ),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         reply.status(200).html(await GamesPage())

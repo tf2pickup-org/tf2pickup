@@ -1,10 +1,10 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { z } from 'zod'
 import { VoiceServerType } from '../../../shared/types/voice-server-type'
-import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { VoiceServerPage } from '../../../admin/voice-server/views/html/voice-server.page'
 import { routes } from '../../../utils/routes'
+import { recordConfigurationChange } from '../../../activity-log/record-configuration-change'
 
 const emptyString = z
   .union([z.literal('').transform(() => null), z.string()])
@@ -53,16 +53,25 @@ export default routes(async app => {
           mumblePassword,
           mumbleChannelName,
         } = request.body
-        await configuration.set('games.voice_server_type', type)
+        const actor = request.user!.player.steamId
+        await recordConfigurationChange('games.voice_server_type', type, actor)
         if (type === VoiceServerType.staticLink) {
-          await configuration.set('games.voice_server.static_link', staticLink)
+          await recordConfigurationChange('games.voice_server.static_link', staticLink, actor)
         } else if (type === VoiceServerType.mumble) {
           await Promise.all([
-            configuration.set('games.voice_server.mumble.url', mumbleUrl),
-            configuration.set('games.voice_server.mumble.internal_url', mumbleInternalUrl),
-            configuration.set('games.voice_server.mumble.port', mumblePort),
-            configuration.set('games.voice_server.mumble.password', mumblePassword),
-            configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName),
+            recordConfigurationChange('games.voice_server.mumble.url', mumbleUrl, actor),
+            recordConfigurationChange(
+              'games.voice_server.mumble.internal_url',
+              mumbleInternalUrl,
+              actor,
+            ),
+            recordConfigurationChange('games.voice_server.mumble.port', mumblePort, actor),
+            recordConfigurationChange('games.voice_server.mumble.password', mumblePassword, actor),
+            recordConfigurationChange(
+              'games.voice_server.mumble.channel_name',
+              mumbleChannelName,
+              actor,
+            ),
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })

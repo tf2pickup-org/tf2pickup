@@ -3,6 +3,7 @@ import { discord } from '../../../../discord'
 import { configuration } from '../../../../configuration'
 import { GuildConfiguration } from '../../../../admin/discord/views/html/guild-configuration'
 import { routes } from '../../../../utils/routes'
+import { recordActivity } from '../../../../activity-log/record-activity'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -64,6 +65,11 @@ export default routes(async app => {
           ...config.filter(({ id }) => id !== guildId),
           guildConfig,
         ])
+        await recordActivity({
+          type: 'configuration change',
+          key: 'discord.guilds',
+          actor: request.user!.player.steamId,
+        })
         return reply.html(GuildConfiguration({ guild, enabled: true }))
       },
     )
@@ -99,6 +105,11 @@ export default routes(async app => {
             config.filter(({ id }) => id !== guildId),
           )
         }
+        await recordActivity({
+          type: 'configuration change',
+          key: 'discord.guilds',
+          actor: request.user!.player.steamId,
+        })
 
         return reply.html(GuildConfiguration({ guild, enabled }))
       },

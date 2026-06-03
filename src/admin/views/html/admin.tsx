@@ -14,6 +14,7 @@ import {
   IconArrowsShuffle,
   IconBrandDiscord,
   IconHeadset,
+  IconHistory,
   IconLogs,
   IconMapPinCog,
   IconMoodNerd,
@@ -77,6 +78,11 @@ const adminPages = {
   'view-for-nerds': {
     title: 'View for nerds',
     icon: IconMoodNerd,
+    section: 'Configuration',
+  },
+  'activity-log': {
+    title: 'Activity log',
+    icon: IconHistory,
     section: 'Configuration',
   },
   'scramble-maps': {

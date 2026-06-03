@@ -4,6 +4,7 @@ import { isBot, type Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { bySteamId } from './by-steam-id'
 import { update } from './update'
+import { recordActivity } from '../activity-log/record-activity'
 
 export async function addBan(props: {
   player: SteamId64
@@ -21,5 +22,13 @@ export async function addBan(props: {
 
   await update(props.player, { $push: { bans: ban } })
   events.emit('player/ban:added', { player: props.player, ban })
+  await recordActivity({
+    type: 'ban added',
+    player: props.player,
+    actor: ban.actor,
+    reason: ban.reason,
+    start: ban.start,
+    end: ban.end,
+  })
   return ban
 }

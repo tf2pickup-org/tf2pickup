@@ -1,7 +1,7 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { z } from 'zod'
-import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
+import { recordConfigurationChange } from '../../../activity-log/record-configuration-change'
 import { MiscellaneousPage } from '../../../admin/miscellaneous/views/html/miscellaneous.page'
 import { routes } from '../../../utils/routes'
 
@@ -38,7 +38,11 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { discordInviteLink } = request.body
-        await configuration.set('misc.discord_invite_link', discordInviteLink)
+        await recordConfigurationChange(
+          'misc.discord_invite_link',
+          discordInviteLink,
+          request.user!.player.steamId,
+        )
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(MiscellaneousPage())
       },

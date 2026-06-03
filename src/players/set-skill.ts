@@ -3,6 +3,7 @@ import { GameState, type GameNumber } from '../database/models/game.model'
 import type { PlayerSkill, PlayerStats } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { update } from './update'
+import { recordActivity } from '../activity-log/record-activity'
 
 interface SetSkillParams {
   steamId: SteamId64
@@ -11,10 +12,12 @@ interface SetSkillParams {
 }
 
 export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
-  const [lastGame, gamesByClass] = await Promise.all([
+  const [lastGame, gamesByClass, player] = await Promise.all([
     getLastGameNumber(),
     getGamesByClass(steamId),
+    collections.players.findOne({ steamId }, { projection: { skill: 1 } }),
   ])
+  const oldSkill = player?.skill ?? {}
   await update(
     steamId,
     {
@@ -32,6 +35,15 @@ export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
     {},
     actor,
   )
+  if (!isSkillEqual(oldSkill, skill)) {
+    await recordActivity({
+      type: 'player skill change',
+      player: steamId,
+      oldSkill,
+      newSkill: skill,
+      actor,
+    })
+  }
 }
 
 async function getLastGameNumber(): Promise<GameNumber | undefined> {
@@ -48,4 +60,11 @@ async function getGamesByClass(steamId: SteamId64): Promise<PlayerStats['gamesBy
     { projection: { 'stats.gamesByClass': 1 } },
   )
   return player?.stats.gamesByClass ?? {}
+}
+
+function isSkillEqual(a: PlayerSkill, b: PlayerSkill): boolean {
+  const aEntries = Object.entries(a)
+  const bEntries = Object.entries(b)
+  if (aEntries.length !== bEntries.length) return false
+  return aEntries.every(([k, v]) => b[k as keyof PlayerSkill] === v)
 }

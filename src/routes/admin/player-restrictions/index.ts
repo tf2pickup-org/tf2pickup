@@ -1,9 +1,9 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
 import { z } from 'zod'
-import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
+import { recordConfigurationChange } from '../../../activity-log/record-configuration-change'
 import { queue } from '../../../queue-auto'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 
@@ -71,17 +71,23 @@ export default routes(async app => {
             {},
           )
 
+        const actor = request.user!.player.steamId
         await Promise.all([
-          configuration.set('players.etf2l_account_required', etf2lAccountRequired),
-          configuration.set('players.minimum_in_game_hours', minimumInGameHours),
-          configuration.set('queue.require_player_verification', requirePlayerVerification),
-          configuration.set(
+          recordConfigurationChange('players.etf2l_account_required', etf2lAccountRequired, actor),
+          recordConfigurationChange('players.minimum_in_game_hours', minimumInGameHours, actor),
+          recordConfigurationChange(
+            'queue.require_player_verification',
+            requirePlayerVerification,
+            actor,
+          ),
+          recordConfigurationChange(
             'queue.player_skill_threshold',
             playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,
+            actor,
           ),
-          configuration.set('games.default_player_skill', defaultPlayerSkill),
-          configuration.set('games.skill_step', skillStep),
-          configuration.set('games.skill_suggestions', skillSuggestions),
+          recordConfigurationChange('games.default_player_skill', defaultPlayerSkill, actor),
+          recordConfigurationChange('games.skill_step', skillStep, actor),
+          recordConfigurationChange('games.skill_suggestions', skillSuggestions, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(PlayerRestrictionsPage())

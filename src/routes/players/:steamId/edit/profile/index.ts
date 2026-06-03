@@ -5,6 +5,7 @@ import { players } from '../../../../../players'
 import { EditPlayerProfilePage } from '../../../../../players/views/html/edit-player.page'
 import { routes } from '../../../../../utils/routes'
 import { buildProfileUpdate } from './build-profile-update'
+import { recordActivity } from '../../../../../activity-log/record-activity'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -46,12 +47,22 @@ export default routes(async app => {
         const { steamId } = req.params
         const { name, cooldownLevel } = req.body
 
+        const player = await players.bySteamId(steamId, ['steamId', 'name'])
+        const oldName = player.name
         await players.update(
           steamId,
           before => buildProfileUpdate(before.name, { name, cooldownLevel }),
           {},
           req.user!.player.steamId,
         )
+        if (oldName !== name) {
+          await recordActivity({
+            type: 'player name change',
+            player: steamId,
+            oldName,
+            newName: name,
+          })
+        }
         req.flash('success', `Player updated`)
         await reply.redirect(`/players/${steamId}`)
       },

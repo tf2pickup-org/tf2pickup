@@ -13,6 +13,11 @@ interface IndexDefinition {
 }
 
 const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> = {
+  activityLog: [
+    { spec: { timestamp: -1 } },
+    { spec: { type: 1, timestamp: -1 } },
+    { spec: { player: 1, timestamp: -1 } },
+  ],
   players: [
     { spec: { steamId: 1 }, options: { unique: true } },
     { spec: { 'stats.totalGames': -1 } },
