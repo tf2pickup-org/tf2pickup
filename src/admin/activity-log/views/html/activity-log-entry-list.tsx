@@ -295,7 +295,12 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     )
   }
 
-  return <span safe>{log.maps.join(', ')}</span>
+  return (
+    <span>
+      <span safe>{log.maps.join(', ')}</span>
+      {log.count > 1 && <span class="text-abru-light-50"> ×{log.count}</span>}
+    </span>
+  )
 }
 
 function computeSkillDiff(oldSkill: PlayerSkill, newSkill: PlayerSkill): string {

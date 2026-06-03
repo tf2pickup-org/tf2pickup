@@ -56,6 +56,7 @@ export interface MapScrambleEntry {
   timestamp: Date
   actor: SteamId64
   maps: string[]
+  count: number
 }
 
 export interface GameReconfiguredEntry {
@@ -120,7 +121,6 @@ export type ActivityLogInput =
   | Omit<BanAddedEntry, 'timestamp'>
   | Omit<BanRevokedEntry, 'timestamp'>
   | Omit<MapPoolChangeEntry, 'timestamp'>
-  | Omit<MapScrambleEntry, 'timestamp'>
   | Omit<GameReconfiguredEntry, 'timestamp'>
   | Omit<GameServerReassignedEntry, 'timestamp'>
   | Omit<GameForceEndedEntry, 'timestamp'>
