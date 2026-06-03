@@ -49,7 +49,7 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
           >
             <option value="">All types</option>
             {typeOptions.map(opt => (
-              <option value={opt.value} selected={props.type === opt.value}>
+              <option value={opt.value} selected={props.type === opt.value} safe>
                 {opt.label}
               </option>
             ))}

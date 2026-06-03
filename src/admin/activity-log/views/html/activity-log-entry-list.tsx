@@ -219,7 +219,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     return (
       <span>
         <span safe>{log.reason}</span>
-        <span class="text-abru-light-50"> · expires {log.end.toLocaleDateString()}</span>
+        <span class="text-abru-light-50" safe> · expires {log.end.toLocaleDateString()}</span>
       </span>
     )
   }
@@ -239,7 +239,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     return (
       <span>
         <span safe>{preview}</span>
-        {extra && (
+        {log.maps.length > 5 && (
           <span class="text-abru-light-50" safe>
             {extra}
           </span>
@@ -250,7 +250,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
 
   if (log.type === 'game reconfigured' || log.type === 'game force-ended') {
     return (
-      <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75">
+      <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
         Game #{log.gameNumber}
       </a>
     )
@@ -259,7 +259,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'game server reassigned') {
     return (
       <span>
-        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75">
+        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
           Game #{log.gameNumber}
         </a>
         <span class="text-abru-light-50"> → </span>
@@ -271,14 +271,14 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'substitute requested') {
     return (
       <span>
-        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75">
+        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
           Game #{log.gameNumber}
         </a>
-        <span class="text-abru-light-50" safe>
+        <span class="text-abru-light-50">
           {' '}
           · {log.gameClass}
         </span>
-        {log.reason && (
+        {log.reason !== undefined && (
           <span class="text-abru-light-50">
             {' '}
             · <span safe>{log.reason}</span>
