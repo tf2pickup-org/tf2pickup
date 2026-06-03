@@ -219,9 +219,9 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     return (
       <span>
         <span safe>{log.reason}</span>
-        <span class="text-abru-light-50" safe>
-          {' '}
-          · expires {log.end.toLocaleDateString()}
+        <span class="text-abru-light-50">
+          {' · expires '}
+          <span safe>{log.end.toLocaleDateString()}</span>
         </span>
       </span>
     )
