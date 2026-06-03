@@ -1,5 +1,17 @@
 # Changelog
 
+# [4.9.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.2...4.9.0) (2026-06-03)
+
+
+### Bug Fixes
+
+* show informative page when Steam profile is private ([#648](https://github.com/tf2pickup-org/tf2pickup/issues/648)) ([358132d](https://github.com/tf2pickup-org/tf2pickup/commit/358132daed378956995534073336bd15c82604e1))
+
+
+### Features
+
+* add branding for hl.tf2pickup.eu ([#649](https://github.com/tf2pickup-org/tf2pickup/issues/649)) ([f4bad2a](https://github.com/tf2pickup-org/tf2pickup/commit/f4bad2a587e82a2581c36764c64f752f3f400427))
+
 ## [4.8.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.1...4.8.2) (2026-06-02)
 
 
