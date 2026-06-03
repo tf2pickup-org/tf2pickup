@@ -6,6 +6,8 @@ import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { players } from '../../players'
 import type { User } from '../types/user'
+import { SteamApiError } from '../../steam/errors/steam-api.error'
+import { PrivateSteamProfilePage } from '../views/html/private-steam-profile.page'
 
 declare module '@fastify/secure-session' {
   interface SessionData {
@@ -84,7 +86,17 @@ export default fp(
       const user = await steamApi.getUserSummary(steamId)
 
       logger.debug({ user }, 'user logged in')
-      const player = await players.upsert(user)
+
+      let player
+      try {
+        player = await players.upsert(user)
+      } catch (error) {
+        if (error instanceof SteamApiError) {
+          return reply.code(403).html(PrivateSteamProfilePage())
+        }
+        throw error
+      }
+
       request.session.set('steamId', player.steamId)
 
       const returnUrl = environment.WEBSITE_URL
