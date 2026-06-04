@@ -23,6 +23,7 @@ export default routes(async app => {
           sort: z.enum(['asc', 'desc']).default('desc'),
           type: z.string().optional(),
           player: z.string().optional(),
+          actor: z.string().optional(),
         }),
       },
     },
@@ -30,6 +31,7 @@ export default routes(async app => {
       const { page, sort } = request.query
       const type = (request.query.type ?? undefined) as ActivityLogEntryType | undefined
       const player = request.query.player ?? undefined
+      const actor = request.query.actor ?? undefined
 
       let playerSteamIds: SteamId64[] | undefined
       if (player) {
@@ -46,6 +48,35 @@ export default routes(async app => {
               sort,
               type,
               player,
+              actor,
+            }
+            return reply.html(
+              request.isPartialFor('activity-log-results') ? (
+                <ActivityLogEntryList {...emptyProps} />
+              ) : (
+                <ActivityLogPage {...emptyProps} />
+              ),
+            )
+          }
+        }
+      }
+
+      let actorSteamIds: SteamId64[] | undefined
+      if (actor) {
+        if (/^\d{17}$/.test(actor)) {
+          actorSteamIds = [actor as SteamId64]
+        } else {
+          actorSteamIds = await getPlayersByNameForActivityLog(actor)
+          if (actorSteamIds.length === 0) {
+            const emptyProps = {
+              logs: [],
+              playerNames: new Map() as Map<SteamId64, string>,
+              page: 1,
+              totalCount: 0,
+              sort,
+              type,
+              player,
+              actor,
             }
             return reply.html(
               request.isPartialFor('activity-log-results') ? (
@@ -63,10 +94,11 @@ export default routes(async app => {
         sortOrder: sort,
         ...(type !== undefined && { typeFilter: type }),
         ...(playerSteamIds !== undefined && { playerSteamIds }),
+        ...(actorSteamIds !== undefined && { actorSteamIds }),
       })
 
       const playerNames = await getPlayersForActivityLogs(logs)
-      const props = { logs, playerNames, page, totalCount, sort, type, player }
+      const props = { logs, playerNames, page, totalCount, sort, type, player, actor }
 
       return reply.html(
         request.isPartialFor('activity-log-results') ? (

@@ -15,6 +15,7 @@ interface ActivityLogPageProps {
   sort: 'asc' | 'desc'
   type?: ActivityLogEntryType | undefined
   player?: string | undefined
+  actor?: string | undefined
 }
 
 const typeOptions: { value: ActivityLogEntryType; label: string }[] = [
@@ -43,7 +44,7 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
             name="type"
             hx-get="/admin/activity-log"
             hx-target="#activity-log-results"
-            hx-include="[name='player'],[name='sort'],[name='page']"
+            hx-include="[name='player'],[name='actor'],[name='sort'],[name='page']"
             hx-push-url="true"
             class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
           >
@@ -63,7 +64,20 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
             hx-get="/admin/activity-log"
             hx-target="#activity-log-results"
             hx-trigger="keyup changed delay:300ms"
-            hx-include="[name='type'],[name='sort'],[name='page']"
+            hx-include="[name='type'],[name='actor'],[name='sort'],[name='page']"
+            hx-push-url="true"
+            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+          />
+
+          <input
+            type="text"
+            name="actor"
+            value={props.actor ?? ''}
+            placeholder="Search actor..."
+            hx-get="/admin/activity-log"
+            hx-target="#activity-log-results"
+            hx-trigger="keyup changed delay:300ms"
+            hx-include="[name='type'],[name='player'],[name='sort'],[name='page']"
             hx-push-url="true"
             class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
           />

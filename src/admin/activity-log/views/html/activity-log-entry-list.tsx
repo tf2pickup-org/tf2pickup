@@ -16,6 +16,7 @@ interface ActivityLogEntryListProps {
   sort: 'asc' | 'desc'
   type?: ActivityLogEntryType | undefined
   player?: string | undefined
+  actor?: string | undefined
 }
 
 const typeLabels: Record<ActivityLogEntryType, string> = {
@@ -66,12 +67,14 @@ export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
                   sort: oppositeSort,
                   type: props.type,
                   player: props.player,
+                  actor: props.actor,
                 })}
                 hx-get={buildUrl({
                   page: 1,
                   sort: oppositeSort,
                   type: props.type,
                   player: props.player,
+                  actor: props.actor,
                 })}
                 hx-target="#activity-log-results"
                 hx-push-url="true"
@@ -107,7 +110,13 @@ export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
             currentPage={props.page}
             around={around}
             hrefFn={page =>
-              buildUrl({ page, sort: props.sort, type: props.type, player: props.player })
+              buildUrl({
+                page,
+                sort: props.sort,
+                type: props.type,
+                player: props.player,
+                actor: props.actor,
+              })
             }
             hxTarget="#activity-log-results"
           />
@@ -322,11 +331,13 @@ function buildUrl(params: {
   sort: string
   type?: ActivityLogEntryType | undefined
   player?: string | undefined
+  actor?: string | undefined
 }): string {
   const qs = new URLSearchParams()
   qs.set('page', String(params.page))
   qs.set('sort', params.sort)
   if (params.type) qs.set('type', params.type)
   if (params.player) qs.set('player', params.player)
+  if (params.actor) qs.set('actor', params.actor)
   return `/admin/activity-log?${qs.toString()}`
 }
