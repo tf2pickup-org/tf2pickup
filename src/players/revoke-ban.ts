@@ -3,7 +3,7 @@ import { events } from '../events'
 import { update } from './update'
 import type { PlayerBan } from '../database/models/player.model'
 import { errors } from '../errors'
-import { recordActivity } from '../activity-log/record-activity'
+import { activityLog } from '../activity-log'
 
 export async function revokeBan(props: {
   player: SteamId64
@@ -28,7 +28,7 @@ export async function revokeBan(props: {
   }
 
   events.emit('player/ban:revoked', { player: after.steamId, ban, admin: props.admin })
-  await recordActivity({
+  await activityLog.record({
     type: 'ban revoked',
     player: after.steamId,
     admin: props.admin,

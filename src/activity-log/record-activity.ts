@@ -8,5 +8,5 @@ export async function recordActivity(entry: ActivityLogInput): Promise<void> {
   await collections.activityLog.insertOne({
     ...entry,
     timestamp: new Date(),
-  } as ActivityLogEntryModel)
+  } satisfies ActivityLogEntryModel)
 }

@@ -5,7 +5,7 @@ import { players } from '../../../../../players'
 import { EditPlayerProfilePage } from '../../../../../players/views/html/edit-player.page'
 import { routes } from '../../../../../utils/routes'
 import { buildProfileUpdate } from './build-profile-update'
-import { recordActivity } from '../../../../../activity-log/record-activity'
+import { activityLog } from '../../../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -56,7 +56,7 @@ export default routes(async app => {
           req.user!.player.steamId,
         )
         if (oldName !== name) {
-          await recordActivity({
+          await activityLog.record({
             type: 'player name change',
             player: steamId,
             oldName,

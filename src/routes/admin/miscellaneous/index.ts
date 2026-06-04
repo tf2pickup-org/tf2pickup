@@ -1,7 +1,7 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { z } from 'zod'
 import { requestContext } from '@fastify/request-context'
-import { recordConfigurationChange } from '../../../activity-log/record-configuration-change'
+import { activityLog } from '../../../activity-log'
 import { MiscellaneousPage } from '../../../admin/miscellaneous/views/html/miscellaneous.page'
 import { routes } from '../../../utils/routes'
 
@@ -38,7 +38,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { discordInviteLink } = request.body
-        await recordConfigurationChange(
+        await activityLog.recordConfigurationChange(
           'misc.discord_invite_link',
           discordInviteLink,
           request.user!.player.steamId,

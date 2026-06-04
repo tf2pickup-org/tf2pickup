@@ -1,8 +1,6 @@
 import z from 'zod'
 import { PlayerRole } from '../../../database/models/player.model'
-import { getActivityLogs } from '../../../activity-log/get-logs'
-import { getPlayersForActivityLogs } from '../../../activity-log/get-players-for-logs'
-import { getPlayersByNameForActivityLog } from '../../../activity-log/get-players-by-name'
+import { activityLog } from '../../../activity-log'
 import { ActivityLogPage } from '../../../admin/activity-log/views/html/activity-log.page'
 import { ActivityLogEntryList } from '../../../admin/activity-log/views/html/activity-log-entry-list'
 import { routes } from '../../../utils/routes'
@@ -38,11 +36,11 @@ export default routes(async app => {
         if (/^\d{17}$/.test(player)) {
           playerSteamIds = [player as SteamId64]
         } else {
-          playerSteamIds = await getPlayersByNameForActivityLog(player)
+          playerSteamIds = await activityLog.getPlayersByName(player)
           if (playerSteamIds.length === 0) {
             const emptyProps = {
               logs: [],
-              playerNames: new Map() as Map<SteamId64, string>,
+              playerNames: new Map<SteamId64, string>(),
               page: 1,
               totalCount: 0,
               sort,
@@ -66,11 +64,11 @@ export default routes(async app => {
         if (/^\d{17}$/.test(actor)) {
           actorSteamIds = [actor as SteamId64]
         } else {
-          actorSteamIds = await getPlayersByNameForActivityLog(actor)
+          actorSteamIds = await activityLog.getPlayersByName(actor)
           if (actorSteamIds.length === 0) {
             const emptyProps = {
               logs: [],
-              playerNames: new Map() as Map<SteamId64, string>,
+              playerNames: new Map<SteamId64, string>(),
               page: 1,
               totalCount: 0,
               sort,
@@ -89,7 +87,7 @@ export default routes(async app => {
         }
       }
 
-      const { logs, totalCount } = await getActivityLogs({
+      const { logs, totalCount } = await activityLog.getLogs({
         page,
         sortOrder: sort,
         ...(type !== undefined && { typeFilter: type }),
@@ -97,7 +95,7 @@ export default routes(async app => {
         ...(actorSteamIds !== undefined && { actorSteamIds }),
       })
 
-      const playerNames = await getPlayersForActivityLogs(logs)
+      const playerNames = await activityLog.getPlayersFor(logs)
       const props = { logs, playerNames, page, totalCount, sort, type, player, actor }
 
       return reply.html(

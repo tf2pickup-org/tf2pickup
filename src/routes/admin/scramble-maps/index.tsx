@@ -5,7 +5,7 @@ import { MapVoteOptions } from '../../../admin/scramble-maps/views/html/map-vote
 import { routes } from '../../../utils/routes'
 import { FlashMessage } from '../../../html/components/flash-message'
 import { collections } from '../../../database/collections'
-import { recordMapScramble } from '../../../activity-log/record-map-scramble'
+import { activityLog } from '../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -26,7 +26,7 @@ export default routes(async app => {
       const newMaps = await collections.queueMapOptions
         .find({}, { projection: { name: 1 } })
         .toArray()
-      await recordMapScramble(
+      await activityLog.recordMapScramble(
         request.user!.player.steamId,
         newMaps.map(m => m.name),
       )

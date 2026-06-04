@@ -9,7 +9,7 @@ import { events } from '../events'
 import { logger } from '../logger'
 import { servemeTf } from '../serveme-tf'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { recordActivity } from '../activity-log/record-activity'
+import { activityLog } from '../activity-log'
 import { staticGameServers } from '../static-game-servers'
 import { tf2QuickServer } from '../tf2-quick-server'
 import type { GameServerSelection } from './schemas/game-server-selection'
@@ -87,7 +87,7 @@ async function doAssign(
     logger.info({ game: updated }, `game ${gameNumber} assigned to game server ${gameServer.name}`)
     events.emit('game:gameServerAssigned', { game: updated })
     if (actor) {
-      await recordActivity({
+      await activityLog.record({
         type: 'game server reassigned',
         gameNumber,
         gameServer: gameServer.name,

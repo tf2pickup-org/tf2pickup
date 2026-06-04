@@ -6,7 +6,7 @@ import type {
 import type { PlayerSkill } from '../../../../database/models/player.model'
 import { Pagination, paginate } from '../../../../html/components/pagination'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
-import { logsPerPage } from '../../../../activity-log/get-logs'
+import { activityLog } from '../../../../activity-log'
 
 interface ActivityLogEntryListProps {
   logs: WithId<ActivityLogEntryModel>[]
@@ -50,7 +50,7 @@ const typeColors: Record<ActivityLogEntryType, string> = {
 }
 
 export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
-  const { last, around } = paginate(props.page, logsPerPage, props.totalCount)
+  const { last, around } = paginate(props.page, activityLog.logsPerPage, props.totalCount)
   const oppositeSort = props.sort === 'asc' ? 'desc' : 'asc'
   const sortIndicator = props.sort === 'asc' ? ' ↑' : ' ↓'
 

@@ -3,7 +3,7 @@ import { GameState, type GameNumber } from '../database/models/game.model'
 import type { PlayerSkill, PlayerStats } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { update } from './update'
-import { recordActivity } from '../activity-log/record-activity'
+import { activityLog } from '../activity-log'
 
 interface SetSkillParams {
   steamId: SteamId64
@@ -36,7 +36,7 @@ export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
     actor,
   )
   if (!isSkillEqual(oldSkill, skill)) {
-    await recordActivity({
+    await activityLog.record({
       type: 'player skill change',
       player: steamId,
       oldSkill,

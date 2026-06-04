@@ -31,13 +31,15 @@ export async function getActivityLogs(
   }
 
   if (params.playerSteamIds && params.playerSteamIds.length > 0) {
-    conditions.push({ player: { $in: params.playerSteamIds } } as Filter<ActivityLogEntryModel>)
+    conditions.push({
+      player: { $in: params.playerSteamIds },
+    } satisfies Filter<ActivityLogEntryModel>)
   }
 
   if (params.actorSteamIds && params.actorSteamIds.length > 0) {
     conditions.push({
       $or: [{ actor: { $in: params.actorSteamIds } }, { admin: { $in: params.actorSteamIds } }],
-    } as Filter<ActivityLogEntryModel>)
+    } satisfies Filter<ActivityLogEntryModel>)
   }
 
   const filter: Filter<ActivityLogEntryModel> =

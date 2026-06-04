@@ -2,7 +2,7 @@ import { PlayerRole } from '../../../../database/models/player.model'
 import { z } from 'zod'
 import { RegionSelect } from '../../../../admin/game-servers/views/html/tf2-quick-server-region'
 import { routes } from '../../../../utils/routes'
-import { recordConfigurationChange } from '../../../../activity-log/record-configuration-change'
+import { activityLog } from '../../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -31,7 +31,7 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await recordConfigurationChange(
+        await activityLog.recordConfigurationChange(
           'tf2_quick_server.region',
           request.body.tf2QuickServerRegion,
           request.user!.player.steamId,

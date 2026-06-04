@@ -4,8 +4,8 @@ import { BannedGameServersList } from '../../../../admin/game-servers/views/html
 import { RegionList } from '../../../../admin/game-servers/views/html/serveme-tf-preferred-region'
 import { configuration } from '../../../../configuration'
 import { routes } from '../../../../utils/routes'
-import { recordActivity } from '../../../../activity-log/record-activity'
-import { recordConfigurationChange } from '../../../../activity-log/record-configuration-change'
+
+import { activityLog } from '../../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -34,7 +34,7 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await recordConfigurationChange(
+        await activityLog.recordConfigurationChange(
           'serveme_tf.preferred_region',
           request.body.servemeTfPreferredRegion,
           request.user!.player.steamId,
@@ -63,7 +63,7 @@ export default routes(async app => {
         }
 
         await configuration.set('serveme_tf.ban_gameservers', [...config, pattern])
-        await recordActivity({
+        await activityLog.record({
           type: 'configuration change',
           key: 'serveme_tf.ban_gameservers',
           actor: request.user!.player.steamId,
@@ -90,7 +90,7 @@ export default routes(async app => {
           'serveme_tf.ban_gameservers',
           config.filter(c => c !== pattern),
         )
-        await recordActivity({
+        await activityLog.record({
           type: 'configuration change',
           key: 'serveme_tf.ban_gameservers',
           actor: request.user!.player.steamId,
