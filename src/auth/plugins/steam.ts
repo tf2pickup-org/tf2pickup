@@ -85,7 +85,7 @@ export default fp(
       const steamId = await verifySteamCallback(request.url)
       const user = await steamApi.getUserSummary(steamId)
 
-      logger.debug({ user }, 'user logged in')
+      logger.debug({ user }, 'user authenticated')
 
       let player
       try {

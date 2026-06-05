@@ -70,8 +70,9 @@ async function verifyInGameHours(steamId: SteamId64) {
   const reportedHours = await getTf2InGameHours(steamId)
   logger.debug({ steamId, reportedHours, requiredHours }, 'in-game hours verification')
   if (reportedHours < requiredHours) {
+    logger.warn({ steamId, reportedHours, requiredHours }, 'insufficient TF2 in-game hours')
     throw errors.forbidden(
-      `insufficient TF2 in-game hours (steamId: ${steamId}, reported: ${reportedHours}, required: ${requiredHours})`,
+      `insufficient TF2 in-game hours (reported: ${reportedHours}, required: ${requiredHours})`,
     )
   }
 }
@@ -88,6 +89,7 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
       etf2lProfile.bans &&
       etf2lProfile.bans.filter(ban => ban.end > Date.now() / 1000).length > 0
     ) {
+      logger.warn({ etf2lProfile, player }, 'banned on ETF2L.org')
       throw errors.forbidden(`you are banned on ETF2L.org`)
     }
 
@@ -97,6 +99,7 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
     }
   } catch (error) {
     if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
+      logger.warn({ player }, 'ETF2L.org account not found')
       throw errors.forbidden(`ETF2L.org account is required`)
     } else {
       throw error
@@ -132,6 +135,7 @@ export async function create({
     },
   })
   const player = (await collections.players.findOne({ _id: insertedId }))!
+  logger.info({ player }, 'player created')
   events.emit('player:created', { steamId: player.steamId })
   return player
 }
