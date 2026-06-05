@@ -3,7 +3,7 @@ import { collections } from '../database/collections'
 import type { ActivityLogEntryModel } from '../database/models/activity-log-entry.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
-export async function getPlayersForActivityLogs(
+export async function fetchPlayers(
   logs: WithId<ActivityLogEntryModel>[],
 ): Promise<Map<SteamId64, string>> {
   const ids = new Set<SteamId64>()
