@@ -47,15 +47,17 @@ export default routes(async app => {
         const { steamId } = req.params
         const { name, cooldownLevel } = req.body
 
-        const player = await players.bySteamId(steamId, ['steamId', 'name'])
-        const oldName = player.name
+        let oldName: string | undefined
         await players.update(
           steamId,
-          before => buildProfileUpdate(before.name, { name, cooldownLevel }),
+          before => {
+            oldName = before.name
+            return buildProfileUpdate(before.name, { name, cooldownLevel })
+          },
           {},
           req.user!.player.steamId,
         )
-        if (oldName !== name) {
+        if (oldName !== undefined && oldName !== name) {
           await activityLog.record({
             type: 'player name change',
             player: steamId,

@@ -45,7 +45,6 @@ export async function getActivityLogs(
   const filter: Filter<ActivityLogEntryModel> =
     conditions.length > 1 ? { $and: conditions } : conditions.length === 1 ? conditions[0]! : {}
 
-  const hasFilters = conditions.length > 0
   const skip = (params.page - 1) * logsPerPage
 
   const [logs, totalCount] = await Promise.all([
@@ -56,9 +55,7 @@ export async function getActivityLogs(
         limit: logsPerPage,
       })
       .toArray(),
-    hasFilters
-      ? collections.activityLog.countDocuments(filter)
-      : collections.activityLog.estimatedDocumentCount(),
+    collections.activityLog.countDocuments(filter),
   ])
 
   return { logs, totalCount }

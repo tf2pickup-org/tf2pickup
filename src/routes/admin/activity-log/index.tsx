@@ -5,8 +5,6 @@ import { ActivityLogPage } from '../../../admin/activity-log/views/html/activity
 import { ActivityLogEntryList } from '../../../admin/activity-log/views/html/activity-log-entry-list'
 import { routes } from '../../../utils/routes'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import type { ActivityLogEntryType } from '../../../database/models/activity-log-entry.model'
-
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.get(
@@ -17,9 +15,24 @@ export default routes(async app => {
       },
       schema: {
         querystring: z.object({
-          page: z.coerce.number().default(1),
+          page: z.coerce.number().int().min(1).default(1),
           sort: z.enum(['asc', 'desc']).default('desc'),
-          type: z.string().optional(),
+          type: z
+            .enum([
+              'player name change',
+              'player skill change',
+              'configuration change',
+              'ban added',
+              'ban revoked',
+              'map pool change',
+              'map scramble',
+              'game reconfigured',
+              'game server reassigned',
+              'game force-ended',
+              'substitute requested',
+              'queue cleared',
+            ])
+            .optional(),
           player: z.string().optional(),
           actor: z.string().optional(),
         }),
@@ -27,9 +40,9 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const { page, sort } = request.query
-      const type = (request.query.type ?? undefined) as ActivityLogEntryType | undefined
-      const player = request.query.player ?? undefined
-      const actor = request.query.actor ?? undefined
+      const type = request.query.type
+      const player = request.query.player
+      const actor = request.query.actor
 
       let playerSteamIds: SteamId64[] | undefined
       if (player) {

@@ -6,16 +6,17 @@ export async function recordMapScramble(actor: SteamId64, maps: string[]): Promi
 
   if (lastEntry?.type === 'map scramble' && lastEntry.actor === actor) {
     await collections.activityLog.updateOne(
-      { _id: lastEntry._id },
+      { _id: lastEntry._id, type: 'map scramble', actor },
       { $set: { maps, timestamp: new Date() }, $inc: { count: 1 } },
     )
-  } else {
-    await collections.activityLog.insertOne({
-      type: 'map scramble',
-      actor,
-      maps,
-      count: 1,
-      timestamp: new Date(),
-    })
+    return
   }
+
+  await collections.activityLog.insertOne({
+    type: 'map scramble',
+    actor,
+    maps,
+    count: 1,
+    timestamp: new Date(),
+  })
 }
