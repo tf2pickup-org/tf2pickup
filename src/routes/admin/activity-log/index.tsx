@@ -49,7 +49,7 @@ export default routes(async app => {
         if (/^\d{17}$/.test(player)) {
           playerSteamIds = [player as SteamId64]
         } else {
-          playerSteamIds = await activityLog.getPlayersByName(player)
+          playerSteamIds = await activityLog.findPlayersByName(player)
           if (playerSteamIds.length === 0) {
             const emptyProps = {
               logs: [],
@@ -77,7 +77,7 @@ export default routes(async app => {
         if (/^\d{17}$/.test(actor)) {
           actorSteamIds = [actor as SteamId64]
         } else {
-          actorSteamIds = await activityLog.getPlayersByName(actor)
+          actorSteamIds = await activityLog.findPlayersByName(actor)
           if (actorSteamIds.length === 0) {
             const emptyProps = {
               logs: [],
@@ -100,7 +100,7 @@ export default routes(async app => {
         }
       }
 
-      const { logs, totalCount } = await activityLog.getLogs({
+      const { logs, totalCount } = await activityLog.getActivityLogs({
         page,
         sortOrder: sort,
         ...(type !== undefined && { typeFilter: type }),
@@ -108,7 +108,7 @@ export default routes(async app => {
         ...(actorSteamIds !== undefined && { actorSteamIds }),
       })
 
-      const playerNames = await activityLog.getPlayersFor(logs)
+      const playerNames = await activityLog.fetchPlayers(logs)
       const props = { logs, playerNames, page, totalCount, sort, type, player, actor }
 
       return reply.html(

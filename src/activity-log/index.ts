@@ -6,10 +6,10 @@ import { recordConfigurationChange } from './record-configuration-change'
 import { recordMapScramble } from './record-map-scramble'
 
 export const activityLog = {
-  getLogs: getActivityLogs,
+  getActivityLogs,
   logsPerPage,
-  getPlayersFor: fetchPlayers,
-  getPlayersByName: findPlayersByName,
+  fetchPlayers,
+  findPlayersByName,
   record,
   recordConfigurationChange,
   recordMapScramble,
