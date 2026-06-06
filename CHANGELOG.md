@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.9.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.0...4.9.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* add registration issue log context ([#652](https://github.com/tf2pickup-org/tf2pickup/issues/652)) ([a6b5064](https://github.com/tf2pickup-org/tf2pickup/commit/a6b5064eb2b0978c7a8d6bc49b4a885e330ffcd9))
+* **deps:** update dependency type-fest to v5.7.0 ([d69669b](https://github.com/tf2pickup-org/tf2pickup/commit/d69669bcd68be09b8e03e3c599e64bddfcd809b6))
+
 # [4.9.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.2...4.9.0) (2026-06-03)
 
 
