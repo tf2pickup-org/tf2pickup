@@ -40,10 +40,10 @@ export async function forceEnd(
       ],
     },
   )
-  events.emit('game:ended', { game })
   await activityLog.record({
     type: 'game force-ended',
     gameNumber,
     ...(actor && { actor }),
   })
+  events.emit('game:ended', { game })
 }

@@ -21,9 +21,7 @@ interface GetActivityLogsResult {
 
 export const logsPerPage = 20
 
-export async function getActivityLogs(
-  params: GetActivityLogsParams,
-): Promise<GetActivityLogsResult> {
+export async function fetchLogs(params: GetActivityLogsParams): Promise<GetActivityLogsResult> {
   const conditions: Filter<ActivityLogEntryModel>[] = []
 
   if (params.typeFilter) {

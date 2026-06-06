@@ -5,6 +5,7 @@ import { ActivityLogPage } from '../../../admin/activity-log/views/html/activity
 import { ActivityLogEntryList } from '../../../admin/activity-log/views/html/activity-log-entry-list'
 import { routes } from '../../../utils/routes'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../../../players'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.get(
@@ -49,7 +50,7 @@ export default routes(async app => {
         if (/^\d{17}$/.test(player)) {
           playerSteamIds = [player as SteamId64]
         } else {
-          playerSteamIds = await activityLog.findPlayersByName(player)
+          playerSteamIds = await players.findByName(player)
           if (playerSteamIds.length === 0) {
             const emptyProps = {
               logs: [],
@@ -77,7 +78,7 @@ export default routes(async app => {
         if (/^\d{17}$/.test(actor)) {
           actorSteamIds = [actor as SteamId64]
         } else {
-          actorSteamIds = await activityLog.findPlayersByName(actor)
+          actorSteamIds = await players.findByName(actor)
           if (actorSteamIds.length === 0) {
             const emptyProps = {
               logs: [],
@@ -100,7 +101,7 @@ export default routes(async app => {
         }
       }
 
-      const { logs, totalCount } = await activityLog.getActivityLogs({
+      const { logs, totalCount } = await activityLog.fetchLogs({
         page,
         sortOrder: sort,
         ...(type !== undefined && { typeFilter: type }),

@@ -10,7 +10,6 @@ import {
 } from '../../../database/models/configuration-entry.model'
 import { configuration } from '../../../configuration'
 import { routes } from '../../../utils/routes'
-import { activityLog } from '../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -55,7 +54,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { key, value } = request.body
-        await activityLog.recordConfigurationChange(key, value, request.user!.player.steamId)
+        await configuration.set(key, value, request.user!.player.steamId)
         const defaultValue = configuration.getDefault(key)
         await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
       },
@@ -78,7 +77,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { key } = request.query
-        const value = await configuration.reset(key)
+        const value = await configuration.reset(key, request.user!.player.steamId)
         const defaultValue = configuration.getDefault(key)
         await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
       },

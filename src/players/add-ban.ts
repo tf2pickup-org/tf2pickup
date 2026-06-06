@@ -21,7 +21,6 @@ export async function addBan(props: {
   }
 
   await update(props.player, { $push: { bans: ban } })
-  events.emit('player/ban:added', { player: props.player, ban })
   await activityLog.record({
     type: 'ban added',
     player: props.player,
@@ -30,5 +29,6 @@ export async function addBan(props: {
     start: ban.start,
     end: ban.end,
   })
+  events.emit('player/ban:added', { player: props.player, ban })
   return ban
 }

@@ -3,7 +3,6 @@ import { discord } from '../../../../discord'
 import { configuration } from '../../../../configuration'
 import { GuildConfiguration } from '../../../../admin/discord/views/html/guild-configuration'
 import { routes } from '../../../../utils/routes'
-import { activityLog } from '../../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -61,15 +60,11 @@ export default routes(async app => {
             : {}),
         }
         const config = await configuration.get('discord.guilds')
-        await configuration.set('discord.guilds', [
-          ...config.filter(({ id }) => id !== guildId),
-          guildConfig,
-        ])
-        await activityLog.record({
-          type: 'configuration change',
-          key: 'discord.guilds',
-          actor: request.user!.player.steamId,
-        })
+        await configuration.set(
+          'discord.guilds',
+          [...config.filter(({ id }) => id !== guildId), guildConfig],
+          request.user!.player.steamId,
+        )
         return reply.html(GuildConfiguration({ guild, enabled: true }))
       },
     )
@@ -98,18 +93,14 @@ export default routes(async app => {
         const config = await configuration.get('discord.guilds')
         if (enabled) {
           config.push({ id: guildId })
-          await configuration.set('discord.guilds', config)
+          await configuration.set('discord.guilds', config, request.user!.player.steamId)
         } else {
           await configuration.set(
             'discord.guilds',
             config.filter(({ id }) => id !== guildId),
+            request.user!.player.steamId,
           )
         }
-        await activityLog.record({
-          type: 'configuration change',
-          key: 'discord.guilds',
-          actor: request.user!.player.steamId,
-        })
 
         return reply.html(GuildConfiguration({ guild, enabled }))
       },

@@ -25,7 +25,7 @@ export interface ConfigurationChangeEntry {
   type: 'configuration change'
   timestamp: Date
   key: string
-  actor: SteamId64
+  actor: SteamId64 | 'bot'
 }
 
 export interface BanAddedEntry {

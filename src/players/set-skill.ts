@@ -4,6 +4,7 @@ import type { PlayerSkill, PlayerStats } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { update } from './update'
 import { activityLog } from '../activity-log'
+import { isEqual } from 'es-toolkit'
 
 interface SetSkillParams {
   steamId: SteamId64
@@ -35,7 +36,7 @@ export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
     {},
     actor,
   )
-  if (!isSkillEqual(oldSkill, skill)) {
+  if (!isEqual(oldSkill, skill)) {
     await activityLog.record({
       type: 'player skill change',
       player: steamId,
@@ -60,11 +61,4 @@ async function getGamesByClass(steamId: SteamId64): Promise<PlayerStats['gamesBy
     { projection: { 'stats.gamesByClass': 1 } },
   )
   return player?.stats.gamesByClass ?? {}
-}
-
-function isSkillEqual(a: PlayerSkill, b: PlayerSkill): boolean {
-  const aEntries = Object.entries(a)
-  const bEntries = Object.entries(b)
-  if (aEntries.length !== bEntries.length) return false
-  return aEntries.every(([k, v]) => b[k as keyof PlayerSkill] === v)
 }

@@ -69,19 +69,19 @@ export async function requestSubstitute({
     team: slot.team,
     gameClass: slot.gameClass,
   })
-  events.emit('game:substituteRequested', {
-    game: newGame,
-    replacee,
-    slotId: slot.id,
-    actor,
-    ...(reason && { reason }),
-  })
   await activityLog.record({
     type: 'substitute requested',
     gameNumber: newGame.number,
     player: replacee,
     actor,
     gameClass: slot.gameClass,
+    ...(reason && { reason }),
+  })
+  events.emit('game:substituteRequested', {
+    game: newGame,
+    replacee,
+    slotId: slot.id,
+    actor,
     ...(reason && { reason }),
   })
   return newGame

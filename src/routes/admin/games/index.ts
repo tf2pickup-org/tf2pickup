@@ -3,9 +3,9 @@ import { GamesPage } from '../../../admin/games/views/html/games.page'
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../../shared/types/logs-tf-upload-method'
 import { requestContext } from '@fastify/request-context'
-import { activityLog } from '../../../activity-log'
 import { secondsToMilliseconds } from 'date-fns'
 import { routes } from '../../../utils/routes'
+import { configuration } from '../../../configuration'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -40,31 +40,23 @@ export default routes(async app => {
       async (request, reply) => {
         const actor = request.user!.player.steamId
         await Promise.all([
-          activityLog.recordConfigurationChange(
-            'games.whitelist_id',
-            request.body.whitelistId,
-            actor,
-          ),
-          activityLog.recordConfigurationChange(
+          configuration.set('games.whitelist_id', request.body.whitelistId, actor),
+          configuration.set(
             'games.join_gameserver_timeout',
             secondsToMilliseconds(request.body.joinGameserverTimeout),
             actor,
           ),
-          activityLog.recordConfigurationChange(
+          configuration.set(
             'games.rejoin_gameserver_timeout',
             secondsToMilliseconds(request.body.rejoinGameserverTimeout),
             actor,
           ),
-          activityLog.recordConfigurationChange(
+          configuration.set(
             'games.execute_extra_commands',
             request.body.executeExtraCommands,
             actor,
           ),
-          activityLog.recordConfigurationChange(
-            'games.logs_tf_upload_method',
-            request.body.logsTfUploadMethod,
-            actor,
-          ),
+          configuration.set('games.logs_tf_upload_method', request.body.logsTfUploadMethod, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         reply.status(200).html(await GamesPage())

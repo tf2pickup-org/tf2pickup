@@ -85,7 +85,6 @@ async function doAssign(
     })
 
     logger.info({ game: updated }, `game ${gameNumber} assigned to game server ${gameServer.name}`)
-    events.emit('game:gameServerAssigned', { game: updated })
     if (actor) {
       await activityLog.record({
         type: 'game server reassigned',
@@ -94,6 +93,8 @@ async function doAssign(
         actor,
       })
     }
+
+    events.emit('game:gameServerAssigned', { game: updated })
   })
 }
 

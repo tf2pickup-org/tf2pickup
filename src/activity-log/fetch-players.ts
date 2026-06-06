@@ -1,11 +1,8 @@
-import type { WithId } from 'mongodb'
 import { collections } from '../database/collections'
 import type { ActivityLogEntryModel } from '../database/models/activity-log-entry.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
-export async function fetchPlayers(
-  logs: WithId<ActivityLogEntryModel>[],
-): Promise<Map<SteamId64, string>> {
+export async function fetchPlayers(logs: ActivityLogEntryModel[]): Promise<Map<SteamId64, string>> {
   const ids = new Set<SteamId64>()
 
   for (const log of logs) {
@@ -29,7 +26,7 @@ export async function fetchPlayers(
     if (log.type === 'ban revoked') {
       ids.add(log.admin)
     }
-    if (log.type === 'configuration change') {
+    if (log.type === 'configuration change' && log.actor !== 'bot') {
       ids.add(log.actor)
     }
     if (log.type === 'substitute requested') {
