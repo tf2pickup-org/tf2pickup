@@ -42,7 +42,7 @@ export interface BanRevokedEntry {
   type: 'ban revoked'
   timestamp: Date
   player: SteamId64
-  admin: SteamId64
+  actor: SteamId64
   reason: string
 }
 

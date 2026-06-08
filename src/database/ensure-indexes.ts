@@ -18,7 +18,6 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { type: 1, timestamp: -1 } },
     { spec: { player: 1, timestamp: -1 } },
     { spec: { actor: 1, timestamp: -1 } },
-    { spec: { admin: 1, timestamp: -1 } },
   ],
   players: [
     { spec: { steamId: 1 }, options: { unique: true } },

@@ -24,7 +24,7 @@ export async function fetchPlayers(logs: ActivityLogEntryModel[]): Promise<Map<S
       ids.add(log.actor)
     }
     if (log.type === 'ban revoked') {
-      ids.add(log.admin)
+      ids.add(log.actor)
     }
     if (log.type === 'configuration change' && log.actor !== 'bot') {
       ids.add(log.actor)

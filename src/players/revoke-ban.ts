@@ -8,7 +8,7 @@ import { activityLog } from '../activity-log'
 export async function revokeBan(props: {
   player: SteamId64
   banStart: Date
-  admin: SteamId64
+  actor: SteamId64
 }): Promise<PlayerBan> {
   const after = await update(
     props.player,
@@ -27,11 +27,11 @@ export async function revokeBan(props: {
     throw errors.notFound(`ban not found`)
   }
 
-  events.emit('player/ban:revoked', { player: after.steamId, ban, admin: props.admin })
+  events.emit('player/ban:revoked', { player: after.steamId, ban, admin: props.actor })
   await activityLog.record({
     type: 'ban revoked',
     player: after.steamId,
-    admin: props.admin,
+    actor: props.actor,
     reason: ban.reason,
   })
   return ban

@@ -188,7 +188,7 @@ function getActor(log: ActivityLogEntryModel): SteamId64 | 'bot' | undefined {
   if (log.type === 'player name change') return log.actor
   if (log.type === 'player skill change' || log.type === 'map scramble') return log.actor
   if (log.type === 'ban added') return log.actor
-  if (log.type === 'ban revoked') return log.admin
+  if (log.type === 'ban revoked') return log.actor
   if (log.type === 'configuration change') return log.actor
   if (log.type === 'substitute requested') return log.actor
   if (log.type === 'queue cleared') return log.actor
