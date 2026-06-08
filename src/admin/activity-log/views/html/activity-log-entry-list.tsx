@@ -139,7 +139,7 @@ function ActivityLogEntry(props: {
       <th scope="row" class="px-4 py-2 whitespace-nowrap" safe>
         {log.timestamp.toLocaleString()}
       </th>
-      <td class="px-4 py-2">
+      <td class="truncate px-4 py-2">
         <span class={typeColors[log.type]} safe>
           {typeLabels[log.type]}
         </span>

@@ -18,22 +18,30 @@ export default routes(async app => {
         querystring: z.object({
           page: z.coerce.number().int().min(1).default(1),
           sort: z.enum(['asc', 'desc']).default('desc'),
-          type: z
-            .enum([
-              'player name change',
-              'player skill change',
-              'configuration change',
-              'ban added',
-              'ban revoked',
-              'map pool change',
-              'map scramble',
-              'game reconfigured',
-              'game server reassigned',
-              'game force-ended',
-              'substitute requested',
-              'queue cleared',
-            ])
-            .optional(),
+          type: z.preprocess(
+            val => {
+              if (typeof val === 'string' && val === '') {
+                return undefined
+              }
+              return val
+            },
+            z
+              .enum([
+                'player name change',
+                'player skill change',
+                'configuration change',
+                'ban added',
+                'ban revoked',
+                'map pool change',
+                'map scramble',
+                'game reconfigured',
+                'game server reassigned',
+                'game force-ended',
+                'substitute requested',
+                'queue cleared',
+              ])
+              .optional(),
+          ),
           player: z.string().optional(),
           actor: z.string().optional(),
         }),

@@ -19,13 +19,13 @@ interface ActivityLogPageProps {
 }
 
 const typeOptions: { value: ActivityLogEntryType; label: string }[] = [
-  { value: 'player name change', label: 'Player name change' },
-  { value: 'player skill change', label: 'Player skill change' },
+  { value: 'player name change', label: 'Player name changed' },
+  { value: 'player skill change', label: 'Player skill changed' },
   { value: 'configuration change', label: 'Configuration change' },
   { value: 'ban added', label: 'Ban added' },
   { value: 'ban revoked', label: 'Ban revoked' },
-  { value: 'map pool change', label: 'Map pool change' },
-  { value: 'map scramble', label: 'Map scramble' },
+  { value: 'map pool change', label: 'Map pool changed' },
+  { value: 'map scramble', label: 'Maps scrambled' },
   { value: 'game reconfigured', label: 'Game reconfigured' },
   { value: 'game server reassigned', label: 'Game server reassigned' },
   { value: 'game force-ended', label: 'Game force-ended' },
