@@ -74,7 +74,7 @@ export async function AdminToolbox(props: {
 
         <div class="admin-toolbox-divider" />
 
-        <div class="admin-toolbox-body">
+        <div class={['admin-toolbox-body', compact && 'compact']}>
           <div class="admin-toolbox-skill">
             {player.skill === undefined && (
               <div class="flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
@@ -100,7 +100,7 @@ export async function AdminToolbox(props: {
                   </GameClassSkillInput>
                 ))}
 
-                <div class={['skill-buttons', compact && 'compact']}>
+                <div class="skill-buttons">
                   <button type="submit" class="button" data-variant="accent" title="Save">
                     <IconDeviceFloppy size={20} />
                     <span>Save</span>

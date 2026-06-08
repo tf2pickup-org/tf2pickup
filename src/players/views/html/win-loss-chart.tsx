@@ -6,6 +6,10 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'
 
+const config6v6Threshold = 4
+const defaultLimit = 12
+const config9v9Limit = 21
+
 interface GameResult {
   result: 'win' | 'loss' | 'tie'
   score: NonNullable<GameModel['score']>
@@ -16,6 +20,7 @@ export type ChartSelection = Tf2ClassName | 'all'
 
 export async function WinLossChart(props: { steamId: SteamId64; selection?: ChartSelection }) {
   const selection = props.selection ?? 'all'
+  const limit = queue.config.classes.length > config6v6Threshold ? config9v9Limit : defaultLimit
   const games: GameResult[] = (
     await collections.games
       .find(
@@ -29,7 +34,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
           },
           score: { $exists: true },
         },
-        { limit: 12, sort: { 'events.0.at': -1 } },
+        { limit, sort: { 'events.0.at': -1 } },
       )
       .toArray()
   ).map(game => {
@@ -45,7 +50,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
 
   return (
     <div class="flex flex-col gap-2" id="win-loss-chart">
-      <div class="flex flex-row justify-between">
+      <div class="flex flex-row gap-4">
         <div class="game-count-selection">
           <button
             type="button"
@@ -83,7 +88,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
           <span class="losses">L: {games.filter(({ result }) => result === 'loss').length}</span>
         </div>
       </div>
-      <div class="grid min-h-[24px] grid-cols-12 justify-around gap-1">
+      <div class="flex min-h-[24px] flex-row flex-wrap gap-1">
         {games.map(game => (
           <a class={`game-result ${game.result}`} href={`/games/${game.gameNumber}`}>
             <div class="tooltip flex flex-col whitespace-nowrap" data-placement="bottom">
