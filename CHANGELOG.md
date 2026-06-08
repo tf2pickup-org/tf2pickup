@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.10.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.0...4.10.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **players:** fix admin toolbox layout for 9v9 config ([#654](https://github.com/tf2pickup-org/tf2pickup/issues/654)) ([48f6f65](https://github.com/tf2pickup-org/tf2pickup/commit/48f6f65f21deda00d1e957a92d1062f4466d37b0))
+
 # [4.10.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.2...4.10.0) (2026-06-08)
 
 
