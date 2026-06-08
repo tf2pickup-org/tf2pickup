@@ -31,13 +31,13 @@ export async function fetchLogs(params: GetActivityLogsParams): Promise<GetActiv
   if (params.playerSteamIds && params.playerSteamIds.length > 0) {
     conditions.push({
       player: { $in: params.playerSteamIds },
-    } satisfies Filter<ActivityLogEntryModel>)
+    })
   }
 
   if (params.actorSteamIds && params.actorSteamIds.length > 0) {
     conditions.push({
-      $or: [{ actor: { $in: params.actorSteamIds } }, { admin: { $in: params.actorSteamIds } }],
-    } satisfies Filter<ActivityLogEntryModel>)
+      actor: { $in: params.actorSteamIds },
+    })
   }
 
   const filter: Filter<ActivityLogEntryModel> =
