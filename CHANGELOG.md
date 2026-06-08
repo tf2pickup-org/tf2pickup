@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.10.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.2...4.10.0) (2026-06-08)
+
+
+### Features
+
+* add admin activity log ([#650](https://github.com/tf2pickup-org/tf2pickup/issues/650)) ([fb0dea7](https://github.com/tf2pickup-org/tf2pickup/commit/fb0dea72bc75dd991db401ae10d46f435c1f2c03))
+
 ## [4.9.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.1...4.9.2) (2026-06-08)
 
 
