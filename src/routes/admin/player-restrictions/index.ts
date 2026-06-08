@@ -71,17 +71,19 @@ export default routes(async app => {
             {},
           )
 
+        const actor = request.user!.player.steamId
         await Promise.all([
-          configuration.set('players.etf2l_account_required', etf2lAccountRequired),
-          configuration.set('players.minimum_in_game_hours', minimumInGameHours),
-          configuration.set('queue.require_player_verification', requirePlayerVerification),
+          configuration.set('players.etf2l_account_required', etf2lAccountRequired, actor),
+          configuration.set('players.minimum_in_game_hours', minimumInGameHours, actor),
+          configuration.set('queue.require_player_verification', requirePlayerVerification, actor),
           configuration.set(
             'queue.player_skill_threshold',
             playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,
+            actor,
           ),
-          configuration.set('games.default_player_skill', defaultPlayerSkill),
-          configuration.set('games.skill_step', skillStep),
-          configuration.set('games.skill_suggestions', skillSuggestions),
+          configuration.set('games.default_player_skill', defaultPlayerSkill, actor),
+          configuration.set('games.skill_step', skillStep, actor),
+          configuration.set('games.skill_suggestions', skillSuggestions, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(PlayerRestrictionsPage())

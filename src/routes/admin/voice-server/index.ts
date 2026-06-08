@@ -53,16 +53,17 @@ export default routes(async app => {
           mumblePassword,
           mumbleChannelName,
         } = request.body
-        await configuration.set('games.voice_server_type', type)
+        const actor = request.user!.player.steamId
+        await configuration.set('games.voice_server_type', type, actor)
         if (type === VoiceServerType.staticLink) {
-          await configuration.set('games.voice_server.static_link', staticLink)
+          await configuration.set('games.voice_server.static_link', staticLink, actor)
         } else if (type === VoiceServerType.mumble) {
           await Promise.all([
-            configuration.set('games.voice_server.mumble.url', mumbleUrl),
-            configuration.set('games.voice_server.mumble.internal_url', mumbleInternalUrl),
-            configuration.set('games.voice_server.mumble.port', mumblePort),
-            configuration.set('games.voice_server.mumble.password', mumblePassword),
-            configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName),
+            configuration.set('games.voice_server.mumble.url', mumbleUrl, actor),
+            configuration.set('games.voice_server.mumble.internal_url', mumbleInternalUrl, actor),
+            configuration.set('games.voice_server.mumble.port', mumblePort, actor),
+            configuration.set('games.voice_server.mumble.password', mumblePassword, actor),
+            configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName, actor),
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })

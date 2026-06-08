@@ -44,7 +44,7 @@ export default routes(async app => {
         const ban = await players.revokeBan({
           player: steamId,
           banStart,
-          admin: request.user!.player.steamId,
+          actor: request.user!.player.steamId,
         })
         reply.status(200).html(await BanDetails({ player, ban }))
       },

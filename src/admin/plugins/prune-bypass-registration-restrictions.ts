@@ -9,6 +9,7 @@ export default fp(async () => {
     await configuration.set(
       'players.bypass_registration_restrictions',
       config.filter(c => c !== steamId),
+      'bot',
     )
   })
 })

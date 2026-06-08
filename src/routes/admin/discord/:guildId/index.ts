@@ -60,10 +60,11 @@ export default routes(async app => {
             : {}),
         }
         const config = await configuration.get('discord.guilds')
-        await configuration.set('discord.guilds', [
-          ...config.filter(({ id }) => id !== guildId),
-          guildConfig,
-        ])
+        await configuration.set(
+          'discord.guilds',
+          [...config.filter(({ id }) => id !== guildId), guildConfig],
+          request.user!.player.steamId,
+        )
         return reply.html(GuildConfiguration({ guild, enabled: true }))
       },
     )
@@ -92,11 +93,12 @@ export default routes(async app => {
         const config = await configuration.get('discord.guilds')
         if (enabled) {
           config.push({ id: guildId })
-          await configuration.set('discord.guilds', config)
+          await configuration.set('discord.guilds', config, request.user!.player.steamId)
         } else {
           await configuration.set(
             'discord.guilds',
             config.filter(({ id }) => id !== guildId),
+            request.user!.player.steamId,
           )
         }
 

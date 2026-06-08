@@ -3,6 +3,8 @@ import { GameState, type GameNumber } from '../database/models/game.model'
 import type { PlayerSkill, PlayerStats } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { update } from './update'
+import { activityLog } from '../activity-log'
+import { isEqual } from 'es-toolkit'
 
 interface SetSkillParams {
   steamId: SteamId64
@@ -11,10 +13,12 @@ interface SetSkillParams {
 }
 
 export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
-  const [lastGame, gamesByClass] = await Promise.all([
+  const [lastGame, gamesByClass, player] = await Promise.all([
     getLastGameNumber(),
     getGamesByClass(steamId),
+    collections.players.findOne({ steamId }, { projection: { skill: 1 } }),
   ])
+  const oldSkill = player?.skill ?? {}
   await update(
     steamId,
     {
@@ -32,6 +36,15 @@ export async function setSkill({ steamId, skill, actor }: SetSkillParams) {
     {},
     actor,
   )
+  if (!isEqual(oldSkill, skill)) {
+    await activityLog.record({
+      type: 'player skill change',
+      player: steamId,
+      oldSkill,
+      newSkill: skill,
+      actor,
+    })
+  }
 }
 
 async function getLastGameNumber(): Promise<GameNumber | undefined> {

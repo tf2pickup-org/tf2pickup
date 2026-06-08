@@ -2,6 +2,7 @@ import { GameEventType } from '../database/models/game-event.model'
 import type { GameNumber } from '../database/models/game.model'
 import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { activityLog } from '../activity-log'
 import { tasks } from '../tasks'
 import { configure } from './rcon/configure'
 import { update } from './update'
@@ -21,5 +22,10 @@ export async function requestGameServerReinitialization(gameNumber: GameNumber, 
     },
   )
   await tasks.cancel('games:autoSubstitutePlayer', { gameNumber })
+  await activityLog.record({
+    type: 'game reconfigured',
+    gameNumber,
+    ...(actor && { actor }),
+  })
   void configure(gameNumber)
 }

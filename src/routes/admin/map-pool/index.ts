@@ -8,6 +8,7 @@ import type { MapPoolEntry } from '../../../database/models/map-pool-entry.model
 import { mapPool } from '../../../maps/pool'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
+import { activityLog } from '../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -51,7 +52,8 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await mapPool.set(request.body.maps)
+        const newMaps = await mapPool.set(request.body.maps)
+        await activityLog.record({ type: 'map pool change', maps: newMaps.map(m => m.name) })
         requestContext.set('messages', { success: ['Configuration saved'] })
         reply.status(200).html(await MapPoolPage())
       },

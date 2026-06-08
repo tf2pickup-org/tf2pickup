@@ -21,6 +21,7 @@ import type { StreamModel } from './models/stream.model'
 import type { CertificateModel } from './models/certificate.model'
 import type { ChatMessageModel } from './models/chat-message.model'
 import type { DiscordBotStateModel } from './models/discord-bot-state.model'
+import type { ActivityLogEntryModel } from './models/activity-log-entry.model'
 import type { PlayerActionEntryModel } from './models/player-action-entry.model'
 import type { DiscordSubstituteNotificationModel } from './models/discord-substitute-notification.model'
 import type { SubstituteRequestModel } from './models/substitute-request.model'
@@ -31,6 +32,7 @@ import type { DeferredKickModel } from './models/deferred-kick.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
+  activityLog: database.collection<ActivityLogEntryModel>('activitylog'),
   announcements: database.collection<AnnouncementModel>('announcements'),
   certificates: database.collection<CertificateModel>('certificates'),
   chatMessages: database.collection<ChatMessageModel>('chat.messages'),
