@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.9.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.1...4.9.2) (2026-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v18.0.5 ([a24a263](https://github.com/tf2pickup-org/tf2pickup/commit/a24a263c99930e5c03ea398f7a99c5279fcbead3))
+
 ## [4.9.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.0...4.9.1) (2026-06-06)
 
 
