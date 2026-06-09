@@ -149,8 +149,8 @@ export interface Events {
     steamId: SteamId64
   }
   'player:updated': {
-    before: PlayerModel
-    after: PlayerModel
+    before: Omit<PlayerModel, 'eloHistory' | 'skillHistory' | 'nameHistory'>
+    after: Omit<PlayerModel, 'eloHistory' | 'skillHistory' | 'nameHistory'>
     adminId?: SteamId64 | undefined
   }
   'player/activeGame:updated': {
