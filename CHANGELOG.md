@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.10.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.1...4.10.2) (2026-06-09)
+
+
+### Performance Improvements
+
+* **players:** per-player mutex and project out history arrays in update() ([#655](https://github.com/tf2pickup-org/tf2pickup/issues/655)) ([da30387](https://github.com/tf2pickup-org/tf2pickup/commit/da303875a129367a69e885e222d9ea3495e83398))
+
 ## [4.10.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.0...4.10.1) (2026-06-08)
 
 
