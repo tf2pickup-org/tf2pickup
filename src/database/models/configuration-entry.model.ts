@@ -245,6 +245,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('serveme_tf.ban_gameservers'),
     value: z.array(z.string()).default([]),
   }),
+  z
+    .object({
+      key: z.literal('serveme_tf.preferred_gameserver'),
+      value: z.string().nullable().default(null),
+    })
+    .describe(
+      'Name of the gameserver to always pick when reserving a serveme.tf server, if available',
+    ),
   z.object({
     key: z.literal('tf2_quick_server.region'),
     value: z.string().default('sa-saopaulo-1'),

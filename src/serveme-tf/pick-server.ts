@@ -31,9 +31,17 @@ export async function pickServer(servers: ServerData[], name?: string): Promise<
 
   const bannedServers = await configuration.get('serveme_tf.ban_gameservers')
 
-  const validServers = (await byFilterRegion(servers)).filter(s =>
-    bannedServers.every(ban => !s.name.includes(ban)),
-  )
+  const notBanned = servers.filter(s => bannedServers.every(ban => !s.name.includes(ban)))
+
+  const preferredGameServer = await configuration.get('serveme_tf.preferred_gameserver')
+  if (preferredGameServer !== null) {
+    const preferred = notBanned.find(s => s.name === preferredGameServer)
+    if (preferred) {
+      return preferred.id
+    }
+  }
+
+  const validServers = await byFilterRegion(notBanned)
 
   if (validServers.length === 0) {
     throw errors.notFound('could not find any gameservers meeting given criteria')

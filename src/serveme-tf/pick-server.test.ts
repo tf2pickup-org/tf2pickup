@@ -13,6 +13,7 @@ describe('pickServer()', () => {
   beforeEach(() => {
     configuration.set('serveme_tf.preferred_region', null)
     configuration.set('serveme_tf.ban_gameservers', [])
+    configuration.set('serveme_tf.preferred_gameserver', null)
   })
 
   describe('when name is not provided', () => {
@@ -49,6 +50,38 @@ describe('pickServer()', () => {
       it('should pick another gameserver if preferred one is unavailable', async () => {
         expect(
           await pickServer([{ id: 41 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_41' }]),
+        ).toEqual(41)
+      })
+    })
+
+    describe('when a preferred gameserver is set', () => {
+      beforeEach(() => {
+        configuration.set('serveme_tf.preferred_gameserver', 'FAKE_GAMESERVER_42')
+      })
+
+      it('should pick the preferred gameserver', async () => {
+        expect(
+          await pickServer([
+            { id: 41 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_41' },
+            { id: 42 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_42' },
+          ]),
+        ).toEqual(42)
+      })
+
+      it('should pick another gameserver if the preferred one is unavailable', async () => {
+        expect(
+          await pickServer([{ id: 41 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_41' }]),
+        ).toEqual(41)
+      })
+
+      it('should not pick the preferred gameserver if it is banned', async () => {
+        configuration.set('serveme_tf.ban_gameservers', ['FAKE_GAMESERVER_42'])
+
+        expect(
+          await pickServer([
+            { id: 41 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_41' },
+            { id: 42 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_42' },
+          ]),
         ).toEqual(41)
       })
     })
