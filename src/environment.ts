@@ -27,6 +27,9 @@ const environmentSchema = z.object({
   GAME_SERVER_SECRET: z.string(),
   THUMBNAIL_SERVICE_URL: z.url().default('https://mapthumbnails.tf2pickup.org'),
 
+  ATLAS_URL: z.url().default('https://atlas.tf2pickup.org'),
+  ATLAS_SECRET: z.string().optional(),
+
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),
 
