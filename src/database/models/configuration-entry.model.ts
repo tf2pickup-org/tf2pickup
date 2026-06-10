@@ -248,7 +248,7 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z
     .object({
       key: z.literal('serveme_tf.preferred_gameserver'),
-      value: z.string().nullable().default(null),
+      value: z.string().min(1).nullable().default(null),
     })
     .describe(
       'Name of the gameserver to always pick when reserving a serveme.tf server, if available',

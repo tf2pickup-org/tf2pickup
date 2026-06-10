@@ -74,7 +74,7 @@ describe('pickServer()', () => {
         ).toEqual(41)
       })
 
-      it('should not pick the preferred gameserver if it is banned', async () => {
+      it('should pick the preferred gameserver even if it is banned', async () => {
         configuration.set('serveme_tf.ban_gameservers', ['FAKE_GAMESERVER_42'])
 
         expect(
@@ -82,7 +82,7 @@ describe('pickServer()', () => {
             { id: 41 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_41' },
             { id: 42 as ServerId, flag: 'de', name: 'FAKE_GAMESERVER_42' },
           ]),
-        ).toEqual(41)
+        ).toEqual(42)
       })
     })
 
