@@ -1,5 +1,23 @@
 # Changelog
 
+# [4.11.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.2...4.11.0) (2026-06-10)
+
+
+### Bug Fixes
+
+* **players:** auto verify eligible players ([#657](https://github.com/tf2pickup-org/tf2pickup/issues/657)) ([c45f3fa](https://github.com/tf2pickup-org/tf2pickup/commit/c45f3fab65308b9a0cb77990b29c9e3d52e27ce2))
+
+
+### Features
+
+* register instance on the atlas dashboard ([#658](https://github.com/tf2pickup-org/tf2pickup/issues/658)) ([6a338a4](https://github.com/tf2pickup-org/tf2pickup/commit/6a338a41aa22b83f9d633fa9ecaca0152c7621af))
+* **serveme-tf:** add preferred gameserver configuration ([#659](https://github.com/tf2pickup-org/tf2pickup/issues/659)) ([5785fe0](https://github.com/tf2pickup-org/tf2pickup/commit/5785fe08bcaf99eacc4c29de49dade22b35499d1))
+
+
+### Performance Improvements
+
+* **queue:** narrow down join() critical section ([#656](https://github.com/tf2pickup-org/tf2pickup/issues/656)) ([022e462](https://github.com/tf2pickup-org/tf2pickup/commit/022e46294b5a4363f3e43145f6499fd8c6201cbd))
+
 ## [4.10.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.1...4.10.2) (2026-06-09)
 
 
