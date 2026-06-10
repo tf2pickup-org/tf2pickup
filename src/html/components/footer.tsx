@@ -1,5 +1,6 @@
 import { requestContext } from '@fastify/request-context'
 import { PlayerRole } from '../../database/models/player.model'
+import { environment } from '../../environment'
 import { version as safeVersion } from '../../version'
 
 const currentYear = new Date().getFullYear()
@@ -29,6 +30,9 @@ export function Footer() {
               data-umami-event="changelog-link"
             >
               Changelog
+            </a>
+            <a href={environment.ATLAS_URL} target="_blank" data-umami-event="atlas-link">
+              Atlas
             </a>
 
             {user?.player.roles.includes(PlayerRole.admin) && <a href="/admin">Admin panel</a>}
