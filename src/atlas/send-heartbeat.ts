@@ -1,5 +1,6 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../database/collections'
+import { GameState } from '../database/models/game.model'
 import { environment } from '../environment'
 import { logger } from '../logger'
 import { version } from '../version'
@@ -9,10 +10,15 @@ export async function sendHeartbeat() {
     return
   }
 
-  const [occupied, capacity, onlinePlayers] = await Promise.all([
+  const [occupied, capacity, onlinePlayers, liveGames] = await Promise.all([
     collections.queueSlots.countDocuments({ player: { $ne: null } }),
     collections.queueSlots.countDocuments(),
     collections.onlinePlayers.countDocuments(),
+    collections.games.countDocuments({
+      state: {
+        $in: [GameState.created, GameState.configuring, GameState.launching, GameState.started],
+      },
+    }),
   ])
 
   const response = await fetch(new URL('/api/heartbeat', environment.ATLAS_URL), {
@@ -31,6 +37,7 @@ export async function sendHeartbeat() {
         capacity,
       },
       onlinePlayers,
+      liveGames,
     }),
     signal: AbortSignal.timeout(secondsToMilliseconds(10)),
   })
