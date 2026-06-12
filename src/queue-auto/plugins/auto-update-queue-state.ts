@@ -12,9 +12,15 @@ import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
 
 export default fp(
-  // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    let isActive = (await configuration.get('queue.mode')) === 'auto'
+
+    events.on('queue/mode:changed', ({ mode }) => {
+      isActive = mode === 'auto'
+    })
+
     async function maybeUpdateQueueState() {
+      if (!isActive) return
       const state = await getState()
       const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
         collections.queueSlots.countDocuments({ player: { $ne: null } }),

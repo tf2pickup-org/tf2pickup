@@ -134,6 +134,22 @@ export class AdminPage {
     ])
   }
 
+  async setQueueMode(
+    mode: 'auto' | 'captain',
+    options?: { captainMinGames?: number; captainPickTimeout?: number },
+  ) {
+    await this.page.goto('/admin/queue')
+    await this.page.getByRole('radio', { name: mode === 'auto' ? 'Auto' : 'Captain' }).check()
+    if (options?.captainMinGames !== undefined) {
+      await this.page.getByLabel('Captain min games').fill(options.captainMinGames.toString())
+    }
+    if (options?.captainPickTimeout !== undefined) {
+      await this.page.getByLabel('Captain pick timeout').fill(options.captainPickTimeout.toString())
+    }
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
   async configureVoiceServer(props: { host: string; password: string; channelName: string }) {
     await this.page.goto('/admin/voice-server')
     await this.page.getByLabel('Mumble').click()

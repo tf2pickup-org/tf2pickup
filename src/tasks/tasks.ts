@@ -43,6 +43,18 @@ export const tasksSchema = z.discriminatedUnion('name', [
     args: z.object({}),
   }),
   z.object({
+    name: z.literal('captain:readyUpTimeout'),
+    args: z.object({}),
+  }),
+  z.object({
+    name: z.literal('captain:unready'),
+    args: z.object({}),
+  }),
+  z.object({
+    name: z.literal('captain:pickTimeout'),
+    args: z.object({}),
+  }),
+  z.object({
     name: z.literal('staticGameServers:free'),
     args: z.object({ id: z.string() }),
   }),

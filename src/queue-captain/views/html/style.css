@@ -1,0 +1,530 @@
+@import '../../../queue-auto/views/html/style.css';
+@reference '../../../html/styles/main.css';
+
+@layer components {
+  /* ─── Class columns ─────────────────────────────────────────── */
+
+  .captain-class-column {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .captain-class-column-wrapper {
+    .player-info {
+      padding: 8px;
+      display: grid;
+      grid-template-columns: 42px 1fr 34px;
+      align-items: center;
+      gap: 4px;
+      background-color: var(--color-abru-light-60);
+      border-radius: 8px;
+
+      img {
+        border-radius: 4px;
+      }
+
+      &:has(.leave-queue-button) {
+        background-color: var(--color-abru-light-75);
+      }
+
+      .player-name-area {
+        min-width: 0;
+      }
+
+      .player-name-link {
+        min-width: 0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        color: var(--color-abru-dark-3);
+
+        &:hover .player-name-text {
+          text-decoration: underline;
+        }
+
+        .player-name-text {
+          min-width: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          font-size: 18px;
+          font-weight: 700;
+        }
+      }
+
+      .captain-wish-icon {
+        display: inline-flex;
+        align-items: center;
+        color: var(--color-accent);
+        flex-shrink: 0;
+      }
+
+      .leave-queue-button {
+        @apply transition-colors;
+        @apply duration-75;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 34px;
+        width: 34px;
+        border-radius: 4px;
+        background-color: var(--color-abru-light-30);
+        color: var(--color-white);
+
+        &:hover:enabled {
+          background-color: var(--color-abru-light-35);
+        }
+      }
+    }
+
+    .join-queue-button {
+      @apply transition-colors;
+      @apply duration-75;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 42px;
+      border-radius: 8px;
+      background-color: var(--color-abru-light-25);
+      color: var(--color-abru-light-50);
+
+      &:hover:enabled {
+        background-color: var(--color-abru-light-30);
+        color: var(--color-abru-light-75);
+      }
+    }
+  }
+
+  /* ─── Wants-captain toggle ───────────────────────────────────── */
+
+  .wants-captain-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-abru-light-75);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+
+    input[type='checkbox'] {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      border: 2px solid var(--color-abru-light-35);
+      background-color: var(--color-abru-light-20);
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+
+      &:checked {
+        background-color: var(--color-accent);
+        border-color: var(--color-accent);
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 4px;
+          top: 1px;
+          width: 6px;
+          height: 10px;
+          border: 2px solid white;
+          border-top: none;
+          border-left: none;
+          transform: rotate(45deg);
+        }
+      }
+
+      &:hover {
+        border-color: var(--color-abru-light-60);
+      }
+    }
+  }
+
+  /* ─── Draft board ─────────────────────────────────────────────── */
+
+  .draft-board {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .draft-teams {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .draft-team-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: var(--color-abru-light-3);
+    border-radius: 12px;
+    padding: 12px;
+    border-top: 3px solid transparent;
+
+    &.team-blu {
+      border-top-color: var(--color-team-blu);
+    }
+
+    &.team-red {
+      border-top-color: var(--color-team-red);
+    }
+  }
+
+  .draft-team-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+
+    .team-label {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-ash);
+    }
+
+    .captain-info {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-abru-light-75);
+      font-size: 13px;
+      flex: 1;
+
+      img {
+        border-radius: 3px;
+        flex-shrink: 0;
+      }
+
+      svg {
+        flex-shrink: 0;
+        color: var(--color-accent);
+      }
+
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+    .your-turn-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-accent);
+      background-color: color-mix(in hsl, var(--color-accent), transparent 85%);
+      border: 1px solid color-mix(in hsl, var(--color-accent), transparent 60%);
+      border-radius: 4px;
+      padding: 2px 6px;
+      white-space: nowrap;
+    }
+  }
+
+  .draft-team-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .draft-class-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .draft-class-picks {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    flex: 1;
+  }
+
+  .empty-pick-slot {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: var(--color-abru-light-10);
+    border: 1px dashed var(--color-abru-light-20);
+  }
+
+  .picked-player {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    background-color: var(--color-abru-light-10);
+    border-radius: 6px;
+    padding: 4px 8px 4px 4px;
+
+    img {
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    span {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-ash);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  /* ─── Pick order tracker ─────────────────────────────────────── */
+
+  .pick-order-tracker {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 0;
+  }
+
+  .pick-order-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    opacity: 0.3;
+    transition: opacity 0.15s;
+
+    &.team-blu {
+      background-color: var(--color-team-blu);
+    }
+
+    &.team-red {
+      background-color: var(--color-team-red);
+    }
+
+    &.done {
+      opacity: 0.5;
+    }
+
+    &.active {
+      opacity: 1;
+      width: 16px;
+      height: 16px;
+      box-shadow: 0 0 0 3px color-mix(in hsl, currentcolor, transparent 70%);
+    }
+  }
+
+  /* ─── Player pool ─────────────────────────────────────────────── */
+
+  .player-pool {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .player-pool-header {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-abru-light-50);
+  }
+
+  .player-pool-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pool-player {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--color-abru-light-5);
+    border-radius: 8px;
+    padding: 6px 10px 6px 6px;
+
+    img {
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .pool-player-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-ash);
+      white-space: nowrap;
+    }
+
+    .pool-player-classes {
+      display: flex;
+      flex-direction: row;
+      gap: 2px;
+      align-items: center;
+      color: var(--color-abru-light-50);
+    }
+
+    .pick-buttons {
+      display: flex;
+      flex-direction: row;
+      gap: 4px;
+      margin-left: 4px;
+    }
+
+    .pick-button {
+      @apply transition-colors;
+      @apply duration-75;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background-color: var(--color-accent);
+      color: white;
+
+      &:hover:enabled {
+        background-color: var(--color-accent-hover);
+      }
+    }
+  }
+
+  /* ─── Map ban panel ───────────────────────────────────────────── */
+
+  .map-ban-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .map-ban-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-ash);
+  }
+
+  .map-ban-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+
+    @media (width < theme(--breakpoint-md)) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .map-ban-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--color-abru-light-5);
+
+    .map-thumbnail-wrapper {
+      aspect-ratio: 3 / 1;
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+    }
+
+    .map-name {
+      padding: 8px 10px 4px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--color-ash);
+    }
+
+    .ban-label {
+      padding: 2px 10px 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--color-abru-light-50);
+    }
+
+    .ban-button {
+      @apply transition-colors;
+      @apply duration-75;
+
+      margin: 4px 10px 10px;
+      padding: 6px 16px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background-color: var(--color-abru-light-15);
+      color: var(--color-abru-light-75);
+      align-self: flex-start;
+
+      &:hover:enabled {
+        background-color: var(--color-abru-light-20);
+        color: var(--color-ash);
+      }
+    }
+
+    &.banned {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  /* ─── Selected map ────────────────────────────────────────────── */
+
+  .selected-map {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--color-abru-light-5);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--color-abru-light-60);
+    font-size: 15px;
+
+    .selected-map-name {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--color-ash);
+    }
+
+    .selected-map-thumbnail {
+      margin-left: auto;
+      width: 120px;
+      border-radius: 6px;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+    }
+  }
+}

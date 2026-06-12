@@ -1,6 +1,7 @@
 import type { GameSlotModel } from './game-slot.model'
 import type { GameCreated, GameEventModel } from './game-event.model'
 import type { Tf2Team } from '../../shared/types/tf2-team'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 declare const _gameNumber: unique symbol
 export type GameNumber = number & { [_gameNumber]: never }
@@ -72,4 +73,6 @@ export interface GameModel {
   logSecret?: string
   connectString?: string
   stvConnectString?: string
+
+  captains?: Record<Tf2Team, SteamId64>
 }

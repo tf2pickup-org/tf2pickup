@@ -29,6 +29,8 @@ import type { FuturePlayerSkillModel } from './models/future-player-skill.model'
 import type { PendingImportModel } from './models/pending-import.model'
 import type { LogsTfLogModel } from './models/logs-tf-log.model'
 import type { DeferredKickModel } from './models/deferred-kick.model'
+import type { QueuePlayerModel } from './models/queue-player.model'
+import type { DraftModel } from './models/draft.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -54,7 +56,9 @@ export const collections = {
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
   players: database.collection<PlayerModel>('players'),
+  captainDraft: database.collection<DraftModel>('queue.draft'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),
+  queuePlayers: database.collection<QueuePlayerModel>('queue.players'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),
   queueState: database.collection<QueueStateModel>('queue.state'),
   queueMapOptions: database.collection<QueueMapOptionModel>('queue.mapoptions'),

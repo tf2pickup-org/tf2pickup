@@ -24,6 +24,7 @@ import {
   IconTable,
   IconUserExclamation,
   IconUserPlus,
+  IconUserScan,
 } from '../../../html/components/icons'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
@@ -35,6 +36,11 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { requestContext } from '@fastify/request-context'
 
 const adminPages = {
+  queue: {
+    title: 'Queue',
+    icon: IconUserScan,
+    section: 'Configuration',
+  },
   'player-restrictions': {
     title: 'Player restrictions',
     icon: IconUserExclamation,
