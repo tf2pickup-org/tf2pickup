@@ -33,6 +33,9 @@ vi.mock('../database/collections', () => ({
     onlinePlayers: {
       countDocuments: vi.fn(),
     },
+    games: {
+      countDocuments: vi.fn(),
+    },
   },
 }))
 
@@ -41,10 +44,11 @@ const fetchMock = vi.fn()
 beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock)
   fetchMock.mockResolvedValue({ ok: true, status: 204 })
-  vi.mocked(collections.queueSlots.countDocuments).mockImplementation(async filter =>
+  vi.mocked(collections.queueSlots.countDocuments).mockImplementation(async (filter?: unknown) =>
     filter ? 7 : 12,
   )
   vi.mocked(collections.onlinePlayers.countDocuments).mockResolvedValue(23)
+  vi.mocked(collections.games.countDocuments).mockResolvedValue(2)
 })
 
 afterEach(() => {
@@ -89,6 +93,7 @@ describe('when ATLAS_SECRET is set', () => {
         capacity: 12,
       },
       onlinePlayers: 23,
+      liveGames: 2,
     })
   })
 
