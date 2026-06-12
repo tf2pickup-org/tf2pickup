@@ -11,13 +11,16 @@ export class AdminPage {
     }
   }
 
-  async banPlayer(steamId: string, { reason }: { reason: string }) {
+  async banPlayer(steamId: string, { reason, anonymous }: { reason: string; anonymous?: boolean }) {
     await this.page.goto(`/players/${steamId}`)
     await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
     await this.page.getByRole('link', { name: 'Bans' }).click()
     await this.page.getByRole('link', { name: 'Add ban' }).click()
     await this.page.getByLabel('Reason').fill(reason)
+    if (anonymous) {
+      await this.page.getByLabel('Anonymous').check()
+    }
     await this.page.getByRole('button', { name: 'Save' }).click()
   }
 

@@ -8,9 +8,11 @@ import { makeTitle } from '../../../html/make-title'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
 import { getBanExpiryDate } from '../../get-ban-expiry-date'
+import { environment } from '../../../environment'
 
 export async function AddBanPage(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['name'])
+  const safeWebsiteName = environment.WEBSITE_NAME
   return (
     <Layout
       title={makeTitle(`Ban ${player.name}`)}
@@ -118,6 +120,15 @@ export async function AddBanPage(props: { steamId: SteamId64 }) {
                   Reason
                 </label>
                 <input type="text" name="reason" id="banReason" required />
+              </div>
+
+              <div class="form-checkbox">
+                <input type="checkbox" name="anonymous" id="banAnonymous" />
+                <label for="banAnonymous">Anonymous</label>
+                <p class="description">
+                  The banned player will see this ban as issued by {safeWebsiteName} Staff. Admins
+                  will still see who issued it.
+                </p>
               </div>
             </div>
 

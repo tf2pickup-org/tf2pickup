@@ -23,6 +23,7 @@ export interface PlayerBan {
   start: Date
   end: Date
   reason: string
+  anonymous?: boolean
 }
 
 export interface TwitchTvProfile {
