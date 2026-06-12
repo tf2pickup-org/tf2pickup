@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.11.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.11.0...4.11.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **atlas:** report live games count in the heartbeat ([#660](https://github.com/tf2pickup-org/tf2pickup/issues/660)) ([a822101](https://github.com/tf2pickup-org/tf2pickup/commit/a822101097214a4c002399c8246762a29196598d))
+* **deps:** update dependency @tailwindcss/typography to v0.5.20 ([1667e39](https://github.com/tf2pickup-org/tf2pickup/commit/1667e39bb68c3a7ee7b828b267782ca25b81083a))
+
 # [4.11.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.2...4.11.0) (2026-06-10)
 
 
