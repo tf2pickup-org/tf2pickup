@@ -11,6 +11,7 @@ export async function addBan(props: {
   admin: SteamId64 | Bot
   end: Date
   reason: string
+  anonymous?: boolean
 }): Promise<PlayerBan> {
   const actor = isBot(props.admin) ? 'bot' : (await bySteamId(props.admin, ['steamId'])).steamId
   const ban: PlayerBan = {
@@ -18,6 +19,7 @@ export async function addBan(props: {
     start: new Date(),
     end: props.end,
     reason: props.reason,
+    ...(props.anonymous ? { anonymous: true } : {}),
   }
 
   await update(props.player, { $push: { bans: ban } })

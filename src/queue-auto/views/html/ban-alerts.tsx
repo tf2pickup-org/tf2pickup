@@ -1,5 +1,8 @@
 import { collections } from '../../../database/collections'
-import type { PlayerModel } from '../../../database/models/player.model'
+import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
+import { environment } from '../../../environment'
+import { players } from '../../../players'
+import { isBot } from '../../../shared/types/bot'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function BanAlerts(props: { actor?: SteamId64 | undefined }) {
@@ -42,8 +45,29 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
           <span class="font-bold" safe>
             {ban.reason}
           </span>
+          <BanAttribution ban={ban} />
         </div>
       ))}
+    </>
+  )
+}
+
+async function BanAttribution(props: { ban: PlayerBan }) {
+  let actorName: string
+  if (props.ban.anonymous) {
+    actorName = `${environment.WEBSITE_NAME} Staff`
+  } else if (isBot(props.ban.actor)) {
+    return <></>
+  } else {
+    actorName = (await players.bySteamId(props.ban.actor, ['name'])).name
+  }
+
+  return (
+    <>
+      &nbsp;by&nbsp;
+      <span class="font-bold" safe>
+        {actorName}
+      </span>
     </>
   )
 }

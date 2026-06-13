@@ -372,7 +372,10 @@ export async function BanDetails(props: {
           <span class="me-2 text-2xl font-bold" safe>
             {props.ban.reason}
           </span>
-          <span class="text-sm">by {actorDesc}</span>
+          <span class="text-sm">
+            by {actorDesc}
+            {props.ban.anonymous && <span class="italic"> (anonymous)</span>}
+          </span>
         </div>
 
         <div class="row-span-2 flex items-center">
