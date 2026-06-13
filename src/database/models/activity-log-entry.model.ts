@@ -46,6 +46,24 @@ export interface BanRevokedEntry {
   reason: string
 }
 
+export interface ChatMuteAddedEntry {
+  type: 'chat mute added'
+  timestamp: Date
+  player: SteamId64
+  actor: SteamId64 | 'bot'
+  reason: string
+  start: Date
+  end: Date
+}
+
+export interface ChatMuteRevokedEntry {
+  type: 'chat mute revoked'
+  timestamp: Date
+  player: SteamId64
+  actor: SteamId64
+  reason: string
+}
+
 export interface MapPoolChangeEntry {
   type: 'map pool change'
   timestamp: Date
@@ -105,6 +123,8 @@ export type ActivityLogEntryModel =
   | ConfigurationChangeEntry
   | BanAddedEntry
   | BanRevokedEntry
+  | ChatMuteAddedEntry
+  | ChatMuteRevokedEntry
   | MapPoolChangeEntry
   | MapScrambleEntry
   | GameReconfiguredEntry
@@ -121,6 +141,8 @@ export type ActivityLogInput =
   | Omit<ConfigurationChangeEntry, 'timestamp'>
   | Omit<BanAddedEntry, 'timestamp'>
   | Omit<BanRevokedEntry, 'timestamp'>
+  | Omit<ChatMuteAddedEntry, 'timestamp'>
+  | Omit<ChatMuteRevokedEntry, 'timestamp'>
   | Omit<MapPoolChangeEntry, 'timestamp'>
   | Omit<GameReconfiguredEntry, 'timestamp'>
   | Omit<GameServerReassignedEntry, 'timestamp'>
