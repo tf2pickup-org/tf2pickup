@@ -12,7 +12,7 @@ overrides:
   minimatch@9: 10.2.5
   brace-expansion@2: 5.0.6
   brace-expansion@5: 5.0.6
-  protobufjs: 8.6.1
+  protobufjs: 8.6.2
   '@protobufjs/utf8': 1.1.1
   qs: 6.15.2
 
@@ -4548,8 +4548,8 @@ packages:
   process-warning@5.0.0:
     resolution: {integrity: sha512-a39t9ApHNx2L4+HBnQKqxxHNs1r7KF+Intd8Q/g1bUh6q0WIp9voPXJ/x0j+ZL45KF1pJd9+q2jLIRMfvEshkA==}
 
-  protobufjs@8.6.1:
-    resolution: {integrity: sha512-s4qQPr4pU0W95iYnUInh95skjIg+3aM2sakYsw60QYanU+qWRDY2zQxOAQV6zU7ROJpSNDG9B+VSmk4dqdWWSA==}
+  protobufjs@8.6.2:
+    resolution: {integrity: sha512-CCERJxzRvKMeEdJSLwdQf40TXWNPc8M4RkN7j/lxY6FQB+4do8rETWqj60AqxP9n0XIsxnSefZ8uhAaGKg2njw==}
     engines: {node: '>=12.0.0'}
 
   protocols@2.0.2:
@@ -5824,7 +5824,7 @@ snapshots:
     dependencies:
       lodash.camelcase: 4.3.0
       long: 5.3.2
-      protobufjs: 8.6.1
+      protobufjs: 8.6.2
       yargs: 17.7.2
 
   '@humanfs/core@0.19.1': {}
@@ -9515,7 +9515,7 @@ snapshots:
 
   process-warning@5.0.0: {}
 
-  protobufjs@8.6.1:
+  protobufjs@8.6.2:
     dependencies:
       long: 5.3.2
 
