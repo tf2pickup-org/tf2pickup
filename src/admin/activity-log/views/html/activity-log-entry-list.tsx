@@ -25,6 +25,8 @@ const typeLabels: Record<ActivityLogEntryType, string> = {
   'configuration change': 'Config change',
   'ban added': 'Ban added',
   'ban revoked': 'Ban revoked',
+  'chat mute added': 'Chat mute added',
+  'chat mute revoked': 'Chat mute revoked',
   'map pool change': 'Map pool change',
   'map scramble': 'Map scramble',
   'game reconfigured': 'Game reconfigured',
@@ -40,6 +42,8 @@ const typeColors: Record<ActivityLogEntryType, string> = {
   'configuration change': 'text-purple-400',
   'ban added': 'text-red-400',
   'ban revoked': 'text-orange-400',
+  'chat mute added': 'text-red-300',
+  'chat mute revoked': 'text-orange-300',
   'map pool change': 'text-teal-400',
   'map scramble': 'text-yellow-400',
   'game reconfigured': 'text-sky-400',
@@ -177,6 +181,8 @@ function getPlayer(log: ActivityLogEntryModel): SteamId64 | undefined {
     log.type === 'player skill change' ||
     log.type === 'ban added' ||
     log.type === 'ban revoked' ||
+    log.type === 'chat mute added' ||
+    log.type === 'chat mute revoked' ||
     log.type === 'substitute requested'
   ) {
     return log.player
@@ -189,6 +195,8 @@ function getActor(log: ActivityLogEntryModel): SteamId64 | 'bot' | undefined {
   if (log.type === 'player skill change' || log.type === 'map scramble') return log.actor
   if (log.type === 'ban added') return log.actor
   if (log.type === 'ban revoked') return log.actor
+  if (log.type === 'chat mute added') return log.actor
+  if (log.type === 'chat mute revoked') return log.actor
   if (log.type === 'configuration change') return log.actor
   if (log.type === 'substitute requested') return log.actor
   if (log.type === 'queue cleared') return log.actor
@@ -237,6 +245,27 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   }
 
   if (log.type === 'ban revoked') {
+    return (
+      <span>
+        <span class="text-abru-light-50">Reason was: </span>
+        <span safe>{log.reason}</span>
+      </span>
+    )
+  }
+
+  if (log.type === 'chat mute added') {
+    return (
+      <span>
+        <span safe>{log.reason}</span>
+        <span class="text-abru-light-50">
+          {' · expires '}
+          <span safe>{log.end.toLocaleDateString()}</span>
+        </span>
+      </span>
+    )
+  }
+
+  if (log.type === 'chat mute revoked') {
     return (
       <span>
         <span class="text-abru-light-50">Reason was: </span>

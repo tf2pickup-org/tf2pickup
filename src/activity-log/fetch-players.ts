@@ -10,7 +10,9 @@ export async function fetchPlayers(logs: ActivityLogEntryModel[]): Promise<Map<S
       log.type === 'player name change' ||
       log.type === 'player skill change' ||
       log.type === 'ban added' ||
-      log.type === 'ban revoked'
+      log.type === 'ban revoked' ||
+      log.type === 'chat mute added' ||
+      log.type === 'chat mute revoked'
     ) {
       ids.add(log.player)
     }
@@ -24,6 +26,12 @@ export async function fetchPlayers(logs: ActivityLogEntryModel[]): Promise<Map<S
       ids.add(log.actor)
     }
     if (log.type === 'ban revoked') {
+      ids.add(log.actor)
+    }
+    if (log.type === 'chat mute added' && log.actor !== 'bot') {
+      ids.add(log.actor)
+    }
+    if (log.type === 'chat mute revoked') {
       ids.add(log.actor)
     }
     if (log.type === 'configuration change' && log.actor !== 'bot') {

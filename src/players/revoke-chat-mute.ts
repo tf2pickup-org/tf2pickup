@@ -3,6 +3,7 @@ import { events } from '../events'
 import { update } from './update'
 import type { PlayerBan } from '../database/models/player.model'
 import { errors } from '../errors'
+import { activityLog } from '../activity-log'
 
 export async function revokeChatMute(props: {
   player: SteamId64
@@ -30,6 +31,12 @@ export async function revokeChatMute(props: {
     player: after.steamId,
     chatMute,
     admin: props.admin,
+  })
+  await activityLog.record({
+    type: 'chat mute revoked',
+    player: after.steamId,
+    actor: props.admin,
+    reason: chatMute.reason,
   })
   return chatMute
 }

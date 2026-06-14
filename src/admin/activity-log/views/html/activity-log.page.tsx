@@ -24,6 +24,8 @@ const typeOptions: { value: ActivityLogEntryType; label: string }[] = [
   { value: 'configuration change', label: 'Configuration change' },
   { value: 'ban added', label: 'Ban added' },
   { value: 'ban revoked', label: 'Ban revoked' },
+  { value: 'chat mute added', label: 'Chat mute added' },
+  { value: 'chat mute revoked', label: 'Chat mute revoked' },
   { value: 'map pool change', label: 'Map pool changed' },
   { value: 'map scramble', label: 'Maps scrambled' },
   { value: 'game reconfigured', label: 'Game reconfigured' },
