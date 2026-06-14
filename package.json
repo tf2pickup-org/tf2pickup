@@ -25,7 +25,7 @@
     "@fastify/multipart": "10.0.0",
     "@fastify/otel": "0.18.1",
     "@fastify/rate-limit": "10.3.0",
-    "@fastify/request-context": "6.2.1",
+    "@fastify/request-context": "7.0.0",
     "@fastify/secure-session": "8.3.0",
     "@fastify/sensible": "6.0.4",
     "@fastify/static": "9.1.3",
