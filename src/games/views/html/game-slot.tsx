@@ -8,6 +8,7 @@ import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
+import { players } from '../../../players'
 import type { PickDeep } from 'type-fest'
 
 export async function GameSlot(props: {
@@ -53,10 +54,9 @@ async function GameSlotContent(props: {
   actor: SteamId64 | undefined
 }) {
   const actor = props.actor
-    ? await collections.players.findOne<Pick<PlayerModel, 'roles' | 'steamId' | 'activeGame'>>(
-        { steamId: props.actor },
-        { projection: { roles: 1, steamId: 1, activeGame: 1 } },
-      )
+    ? await collections.players.findOne<
+        Pick<PlayerModel, 'roles' | 'steamId' | 'activeGame' | 'bans'>
+      >({ steamId: props.actor }, { projection: { roles: 1, steamId: 1, activeGame: 1, bans: 1 } })
     : null
   const isAdmin = actor?.roles.includes(PlayerRole.admin)
 
@@ -108,7 +108,11 @@ async function GameSlotContent(props: {
       )
 
     case SlotStatus.waitingForSubstitute: {
-      if (actor && (props.slot.player === actor.steamId || actor.activeGame === undefined)) {
+      if (
+        actor &&
+        (props.slot.player === actor.steamId ||
+          (actor.activeGame === undefined && !players.hasActiveBan(actor)))
+      ) {
         return (
           <button
             class="text-abru-light-60 hover:text-abru-light-70 flex flex-1 justify-center"

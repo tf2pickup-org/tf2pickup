@@ -3,6 +3,7 @@ import { addChatMute } from './add-chat-mute'
 import { bySteamId } from './by-steam-id'
 import { findByName } from './find-by-name'
 import { getBanExpiryDate } from './get-ban-expiry-date'
+import { hasActiveBan } from './has-active-ban'
 import { hasActiveChatMute } from './has-active-chat-mute'
 import { revokeBan } from './revoke-ban'
 import { revokeChatMute } from './revoke-chat-mute'
@@ -17,6 +18,7 @@ export const players = {
   bySteamId,
   findByName,
   getBanExpiryDate,
+  hasActiveBan,
   hasActiveChatMute,
   revokeBan,
   revokeChatMute,
