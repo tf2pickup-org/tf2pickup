@@ -8,7 +8,7 @@ import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
-import { players } from '../../../players'
+import { hasActiveBan } from '../../../players/has-active-ban'
 import type { PickDeep } from 'type-fest'
 
 export async function GameSlot(props: {
@@ -111,7 +111,7 @@ async function GameSlotContent(props: {
       if (
         actor &&
         (props.slot.player === actor.steamId ||
-          (actor.activeGame === undefined && !players.hasActiveBan(actor)))
+          (actor.activeGame === undefined && !hasActiveBan(actor)))
       ) {
         return (
           <button
