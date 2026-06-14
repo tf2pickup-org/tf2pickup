@@ -8,6 +8,7 @@ import { update } from './update'
 import { GameEventType } from '../database/models/game-event.model'
 import { events } from '../events'
 import { applyCooldown } from './apply-cooldown'
+import { players } from '../players'
 
 const replacePlayerMutex = new Mutex()
 
@@ -45,6 +46,10 @@ export async function replacePlayer({
 
       if (rm.activeGame !== undefined) {
         throw new Error(`player denied: player has active game`)
+      }
+
+      if (players.hasActiveBan(rm)) {
+        throw new Error(`player denied: player is banned`)
       }
     }
 
