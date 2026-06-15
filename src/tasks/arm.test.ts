@@ -4,12 +4,18 @@ import { arm } from './arm'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { scheduledTaskTimers } from './scheduled-task-timers'
+import { taskExecutionCount } from './metrics'
 
 const handler = vi.hoisted(() => vi.fn())
 
 vi.mock('./tasks', () => ({
   tasks: { 'games.freePlayer': handler },
   tasksSchema: { parse: (doc: unknown) => doc },
+}))
+
+vi.mock('./metrics', () => ({
+  taskExecutionCount: { add: vi.fn() },
+  taskExecutionDuration: { record: vi.fn() },
 }))
 
 vi.mock('../database/collections', () => ({
@@ -70,6 +76,10 @@ describe('arm()', () => {
     expect(collections.tasks.findOneAndDelete).toHaveBeenCalledWith({ _id: task._id })
     expect(handler).toHaveBeenCalledWith({ player: '76561198074409147' })
     expect(scheduledTaskTimers.has(task._id.toString())).toBe(false)
+    expect(taskExecutionCount.add).toHaveBeenCalledWith(1, {
+      name: 'games.freePlayer',
+      result: 'success',
+    })
   })
 
   it('should run past-due tasks immediately', async () => {
@@ -96,5 +106,9 @@ describe('arm()', () => {
 
     await vi.advanceTimersByTimeAsync(5000)
     expect(logger.error).toHaveBeenCalled()
+    expect(taskExecutionCount.add).toHaveBeenCalledWith(1, {
+      name: 'games.freePlayer',
+      result: 'error',
+    })
   })
 })

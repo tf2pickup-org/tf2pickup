@@ -13,6 +13,11 @@ vi.mock('./tasks', () => ({
   tasksSchema: { parse: (doc: unknown) => doc },
 }))
 
+vi.mock('./metrics', () => ({
+  taskExecutionCount: { add: vi.fn() },
+  taskExecutionDuration: { record: vi.fn() },
+}))
+
 vi.mock('../database/collections', () => ({
   collections: {
     tasks: {
