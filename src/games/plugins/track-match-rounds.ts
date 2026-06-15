@@ -14,6 +14,10 @@ interface RoundData {
     [Tf2Team.blu]?: number
     [Tf2Team.red]?: number
   }
+  captures?: {
+    [Tf2Team.blu]: number[]
+    [Tf2Team.red]: number[]
+  }
 }
 
 export default fp(
@@ -55,6 +59,10 @@ export default fp(
                     [Tf2Team.red]: value.score.red,
                     [Tf2Team.blu]: value.score.blu,
                   },
+                  captures: value.captures ?? {
+                    [Tf2Team.blu]: [],
+                    [Tf2Team.red]: [],
+                  },
                 },
               },
             },
@@ -81,6 +89,13 @@ export default fp(
       round.score = { ...round.score, [teamName]: score }
       rounds.set(gameNumber, round)
       await maybeRoundEnded()
+    })
+
+    events.on('match/controlPoint:captured', ({ gameNumber, team, controlPoint }) => {
+      const round = rounds.get(gameNumber) ?? {}
+      const captures = round.captures ?? { [Tf2Team.blu]: [], [Tf2Team.red]: [] }
+      captures[team] = [...captures[team], controlPoint]
+      rounds.set(gameNumber, { ...round, captures })
     })
   },
   {

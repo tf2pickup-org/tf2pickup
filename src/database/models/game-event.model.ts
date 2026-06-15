@@ -125,6 +125,11 @@ export interface RoundEnded {
   winner: Tf2Team
   lengthMs: number
   score: Record<Tf2Team, number>
+
+  // control points captured by each team during this round, used to
+  // recompute the match score on attack/defend payload maps where TF2's
+  // own "final score" reporting is broken
+  captures?: Record<Tf2Team, number[]> | undefined
 }
 
 export type GameEventModel =

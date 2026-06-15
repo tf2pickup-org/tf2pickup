@@ -14,6 +14,7 @@ vi.mock('../../events', () => ({
 vi.mock('../../logger', () => ({
   logger: {
     info: vi.fn(),
+    error: vi.fn(),
   },
 }))
 
@@ -21,93 +22,151 @@ vi.mock('../update', () => ({
   update: vi.fn(),
 }))
 
+vi.mock('../find-one', () => ({
+  findOne: vi.fn(),
+}))
+
+vi.mock('../../utils/safe', () => ({
+  safe: <T>(fn: T): T => fn,
+}))
+
 import { events } from '../../events'
 import { update } from '../update'
+import { findOne } from '../find-one'
 import { Tf2Team } from '../../shared/types/tf2-team'
+import { GameEventType } from '../../database/models/game-event.model'
 import plugin from './track-attack-defend-score'
-import type { GameNumber } from '../../database/models/game.model'
+import type { GameModel, GameNumber } from '../../database/models/game.model'
 
 const gameNumber = 2784 as GameNumber
 
 describe('track-attack-defend-score', () => {
-  let handlers: Record<string, (params: never) => unknown>
+  let scoreFinalHandler: (params: {
+    gameNumber: GameNumber
+    team: Tf2Team
+    score: number
+  }) => Promise<void>
 
   beforeEach(async () => {
     vi.resetAllMocks()
     vi.mocked(update).mockResolvedValue({} as never)
     await (plugin as unknown as () => Promise<void>)()
 
-    handlers = {}
-    for (const [event, handler] of vi.mocked(events.on).mock.calls) {
-      handlers[event as string] = handler as (params: never) => unknown
-    }
+    const call = vi
+      .mocked(events.on)
+      .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'match/score:final')
+    scoreFinalHandler = call![1] as typeof scoreFinalHandler
   })
 
-  async function playRound(winner: Tf2Team, captures: Partial<Record<Tf2Team, number>>) {
-    handlers['match:roundWon']!({ gameNumber, winner } as never)
-    for (const [team, count] of Object.entries(captures)) {
-      for (let cp = 0; cp < (count ?? 0); cp++) {
-        handlers['match/controlPoint:captured']!({
-          gameNumber,
-          team: team as Tf2Team,
-          controlPoint: cp,
-        } as never)
-      }
-    }
-    await handlers['match:roundLength']!({ gameNumber, lengthMs: 1000 } as never)
-  }
-
   it('recomputes the score for an attack/defend map reporting a broken 0:0 final score', async () => {
-    handlers['match:started']!({ gameNumber } as never)
-
     // round 1: blu pushes the cart all the way (4 control points)
-    await playRound(Tf2Team.blu, { [Tf2Team.blu]: 4 })
     // round 2: blu pushes the cart all the way again, but it's already "used up"
-    await playRound(Tf2Team.blu, { [Tf2Team.blu]: 4 })
+    const events_: GameModel['events'] = [
+      { event: GameEventType.gameCreated, at: new Date() },
+      {
+        event: GameEventType.roundEnded,
+        at: new Date(),
+        winner: Tf2Team.blu,
+        lengthMs: 415_000,
+        score: { [Tf2Team.blu]: 4, [Tf2Team.red]: 0 },
+        captures: { [Tf2Team.blu]: [0, 1, 2, 3], [Tf2Team.red]: [] },
+      },
+      {
+        event: GameEventType.roundEnded,
+        at: new Date(),
+        winner: Tf2Team.blu,
+        lengthMs: 347_000,
+        score: { [Tf2Team.blu]: 4, [Tf2Team.red]: 4 },
+        captures: { [Tf2Team.blu]: [0, 1, 2, 3], [Tf2Team.red]: [] },
+      },
+    ]
 
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.red, score: 0 } as never)
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.blu, score: 0 } as never)
+    vi.mocked(findOne).mockResolvedValue({
+      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },
+      events: events_,
+    } as never)
+
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.red, score: 0 })
 
     expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.red': 0 } })
-    expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.blu': 0 } })
     expect(update).toHaveBeenLastCalledWith(gameNumber, {
       $set: { 'score.blu': 1, 'score.red': 0 },
     })
   })
 
   it('does not recompute the score when the final score is non-zero', async () => {
-    handlers['match:started']!({ gameNumber } as never)
+    vi.mocked(findOne).mockResolvedValue({
+      score: { [Tf2Team.blu]: 1, [Tf2Team.red]: 0 },
+      events: [
+        { event: GameEventType.gameCreated, at: new Date() },
+        {
+          event: GameEventType.roundEnded,
+          at: new Date(),
+          winner: Tf2Team.blu,
+          lengthMs: 100_000,
+          score: { [Tf2Team.blu]: 1, [Tf2Team.red]: 0 },
+          captures: { [Tf2Team.blu]: [0], [Tf2Team.red]: [] },
+        },
+      ],
+    } as never)
 
-    await playRound(Tf2Team.blu, { [Tf2Team.blu]: 1 })
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.blu, score: 1 })
 
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.red, score: 0 } as never)
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.blu, score: 1 } as never)
-
-    expect(update).toHaveBeenCalledTimes(2)
-    expect(update).toHaveBeenLastCalledWith(gameNumber, { $set: { 'score.blu': 1 } })
+    expect(update).toHaveBeenCalledTimes(1)
+    expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.blu': 1 } })
   })
 
-  it('does not recompute the score when no rounds were tracked', async () => {
-    handlers['match:started']!({ gameNumber } as never)
+  it('does not recompute the score when no rounds were recorded', async () => {
+    vi.mocked(findOne).mockResolvedValue({
+      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },
+      events: [{ event: GameEventType.gameCreated, at: new Date() }],
+    } as never)
 
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.red, score: 0 } as never)
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.blu, score: 0 } as never)
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.blu, score: 0 })
 
-    expect(update).toHaveBeenCalledTimes(2)
-    expect(update).toHaveBeenLastCalledWith(gameNumber, { $set: { 'score.blu': 0 } })
+    expect(update).toHaveBeenCalledTimes(1)
+    expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.blu': 0 } })
   })
 
-  it('resets tracked state when the match restarts', async () => {
-    handlers['match:started']!({ gameNumber } as never)
-    await playRound(Tf2Team.blu, { [Tf2Team.blu]: 4 })
+  it('only recomputes once both teams have reported a 0 final score', async () => {
+    const game: GameModel = {
+      score: { [Tf2Team.blu]: 4, [Tf2Team.red]: 4 },
+      events: [
+        { event: GameEventType.gameCreated, at: new Date() },
+        {
+          event: GameEventType.roundEnded,
+          at: new Date(),
+          winner: Tf2Team.blu,
+          lengthMs: 415_000,
+          score: { [Tf2Team.blu]: 4, [Tf2Team.red]: 0 },
+          captures: { [Tf2Team.blu]: [0, 1, 2, 3], [Tf2Team.red]: [] },
+        },
+        {
+          event: GameEventType.roundEnded,
+          at: new Date(),
+          winner: Tf2Team.blu,
+          lengthMs: 347_000,
+          score: { [Tf2Team.blu]: 4, [Tf2Team.red]: 4 },
+          captures: { [Tf2Team.blu]: [0, 1, 2, 3], [Tf2Team.red]: [] },
+        },
+      ],
+    } as unknown as GameModel
 
-    handlers['match:restarted']!({ gameNumber } as never)
-    await playRound(Tf2Team.blu, { [Tf2Team.blu]: 4 })
+    vi.mocked(findOne).mockImplementation(() => Promise.resolve(game as never))
+    vi.mocked(update).mockImplementation((_number: unknown, patch: unknown) => {
+      for (const [key, value] of Object.entries((patch as { $set: Record<string, number> }).$set)) {
+        const field = key.replace(/^score\./, '') as Tf2Team
+        game.score![field] = value
+      }
+      return Promise.resolve(game as never)
+    })
 
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.red, score: 0 } as never)
-    await handlers['match/score:final']!({ gameNumber, team: Tf2Team.blu, score: 0 } as never)
+    // "Team Red final score 0" arrives first: blu is still 4, no recompute yet
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.red, score: 0 })
+    expect(update).toHaveBeenCalledTimes(1)
 
-    // only one round was tracked after the restart, and it counts as a win
+    // "Team Blue final score 0" arrives next: both are now 0, recompute kicks in
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.blu, score: 0 })
     expect(update).toHaveBeenLastCalledWith(gameNumber, {
       $set: { 'score.blu': 1, 'score.red': 0 },
     })
