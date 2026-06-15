@@ -1,5 +1,27 @@
 # Changelog
 
+# [4.12.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.11.1...4.12.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/rate-limit to v11 ([#662](https://github.com/tf2pickup-org/tf2pickup/issues/662)) ([83ddc6e](https://github.com/tf2pickup-org/tf2pickup/commit/83ddc6e0bda432eacbba3f12ceedc7038b165f89))
+* **deps:** update dependency @fastify/request-context to v7 ([#663](https://github.com/tf2pickup-org/tf2pickup/issues/663)) ([a639568](https://github.com/tf2pickup-org/tf2pickup/commit/a63956807e5ecd4d617613965cd30eefa740fa62))
+* **deps:** update dependency cssnano to v8.0.2 ([5c2c3cc](https://github.com/tf2pickup-org/tf2pickup/commit/5c2c3cc442401b666f7ae0cf1e388a342a54be05))
+* **deps:** update dependency esbuild to v0.28.1 [security] ([#667](https://github.com/tf2pickup-org/tf2pickup/issues/667)) ([66ad51f](https://github.com/tf2pickup-org/tf2pickup/commit/66ad51f1070d6c597a90b8a64c3a18d6873c6d3f))
+* **deps:** update dependency fastify-plugin to v6 ([#664](https://github.com/tf2pickup-org/tf2pickup/issues/664)) ([d8d4680](https://github.com/tf2pickup-org/tf2pickup/commit/d8d4680f3d94a5e699ed8f17cb68b3ddcafc6377))
+* **deps:** update dependency mongodb to v7.3.0 ([f5f3f73](https://github.com/tf2pickup-org/tf2pickup/commit/f5f3f73762b0ff928a7e1b6f13edf5f62872ce69))
+* **deps:** update dependency sanitize-html to v2.17.5 ([5ddc35c](https://github.com/tf2pickup-org/tf2pickup/commit/5ddc35c1c7b024a7934a74bce4486a0ebaac82fe))
+* **deps:** update opentelemetry-js monorepo ([a7aa835](https://github.com/tf2pickup-org/tf2pickup/commit/a7aa835c9de0496887c5deca41db717ced4b87c1))
+* **deps:** update opentelemetry-js-contrib monorepo ([#670](https://github.com/tf2pickup-org/tf2pickup/issues/670)) ([c7f045b](https://github.com/tf2pickup-org/tf2pickup/commit/c7f045b632b8cfec0655b33cae9dd0673925b168))
+* notify on chat mutes and chat mute revokes ([#668](https://github.com/tf2pickup-org/tf2pickup/issues/668)) ([d33ef35](https://github.com/tf2pickup-org/tf2pickup/commit/d33ef3535ea044a1fc0be11ef05dde5bfa51bfab))
+* prevent banned players from taking substitute spots ([#669](https://github.com/tf2pickup-org/tf2pickup/issues/669)) ([0cefef9](https://github.com/tf2pickup-org/tf2pickup/commit/0cefef9cdc2b989b2ede47c22911815384283fbb))
+
+
+### Features
+
+* anonymous bans ([#666](https://github.com/tf2pickup-org/tf2pickup/issues/666)) ([4ca212c](https://github.com/tf2pickup-org/tf2pickup/commit/4ca212c06f9cc54d66ee5634a27492d192c3683b))
+
 ## [4.11.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.11.0...4.11.1) (2026-06-12)
 
 
