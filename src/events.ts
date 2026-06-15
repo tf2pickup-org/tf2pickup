@@ -122,6 +122,11 @@ export interface Events {
     team: Tf2Team
     score: number
   }
+  'match/controlPoint:captured': {
+    gameNumber: GameNumber
+    team: Tf2Team
+    controlPoint: number
+  }
   'match/logs:uploaded': {
     gameNumber: GameNumber
     logsUrl: string

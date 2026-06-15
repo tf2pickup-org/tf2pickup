@@ -160,6 +160,21 @@ const gameEvents: GameEvent[] = [
     },
   },
   {
+    name: 'point captured',
+    // https://regex101.com/r/3fJZ4r/1
+    regex: /^[\d/\s\-:]+Team "(.[^"]+)" triggered "pointcaptured" \(cp "(\d+)"\)/,
+    handle: (gameNumber, matches) => {
+      const [, teamName, controlPoint] = matches
+      if (teamName && controlPoint) {
+        events.emit('match/controlPoint:captured', {
+          gameNumber,
+          team: fixTeamName(teamName),
+          controlPoint: Number(controlPoint),
+        })
+      }
+    },
+  },
+  {
     name: 'demo uploaded',
     // https://regex101.com/r/JLGRYa/2
     regex: /^[\d/\s-:]+\[demos\.tf\]:\sSTV\savailable\sat:\s(.+)$/,
