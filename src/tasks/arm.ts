@@ -14,6 +14,9 @@ export function arm(task: WithId<TaskModel>) {
   const timer = setTimeout(() => {
     void run()
   }, delay)
+  // the db is the source of truth and tasks re-arm on startup, so a pending
+  // timer must not keep the process alive / block shutdown
+  timer.unref()
   scheduledTaskTimers.set(key, timer)
 
   async function run() {
