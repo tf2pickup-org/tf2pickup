@@ -28,6 +28,7 @@ const renderedEvents = [
   GameEventType.playerReplaced,
 
   GameEventType.roundEnded,
+  GameEventType.scoreCorrected,
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
@@ -78,6 +79,7 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
 function getGameEventTone(event: GameEventType) {
   switch (event) {
     case GameEventType.gameServerInitialized:
+    case GameEventType.scoreCorrected:
       return 'info'
     case GameEventType.substituteRequested:
       return 'warning'
@@ -286,6 +288,19 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       return (
         <div class="flex flex-row items-center gap-2">
           <span class="flex-1">Round ended</span>
+          <span class="bg-team-blu rounded-sm px-2 py-1 tabular-nums">
+            BLU: {props.event.score.blu}
+          </span>
+          <span class="bg-team-red rounded-sm px-2 py-1 tabular-nums">
+            RED: {props.event.score.red}
+          </span>
+        </div>
+      )
+    }
+    case GameEventType.scoreCorrected: {
+      return (
+        <div class="flex flex-row items-center gap-2">
+          <span class="flex-1">Score corrected</span>
           <span class="bg-team-blu rounded-sm px-2 py-1 tabular-nums">
             BLU: {props.event.score.blu}
           </span>

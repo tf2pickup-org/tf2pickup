@@ -14,6 +14,7 @@ import { tasks } from '../../tasks'
 import { games } from '../../games'
 import { errors } from '../../errors'
 import { gameLogSink } from '../../games/game-log-sink'
+import { reconcileScoreWithLogsTf } from '../reconcile-score-with-logs-tf'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -47,6 +48,7 @@ tasks.register('logsTf:fetchLog', async ({ gameNumber, logId }) => {
   try {
     const data = await fetchLog(logId)
     await collections.logsTfLogs.insertOne({ logId, gameNumber, fetchedAt: new Date(), data })
+    await reconcileScoreWithLogsTf(gameNumber, data)
   } catch (error) {
     if (error instanceof LogsTfRateLimitError) {
       logger.warn({ gameNumber, logId }, 'logs.tf rate limited, retrying in 5 minutes')

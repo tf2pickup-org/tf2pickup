@@ -23,6 +23,7 @@ export enum GameEventType {
   playerLeftGameServer = 'player left game server',
 
   roundEnded = 'round ended',
+  scoreCorrected = 'score corrected',
 }
 
 export interface GameCreated {
@@ -132,6 +133,12 @@ export interface RoundEnded {
   captures?: Record<Tf2Team, number[]> | undefined
 }
 
+export interface ScoreCorrected {
+  event: GameEventType.scoreCorrected
+  at: Date
+  score: Record<Tf2Team, number>
+}
+
 export type GameEventModel =
   | GameCreated
   | GameStarted
@@ -148,3 +155,4 @@ export type GameEventModel =
   | SubstituteRequested
   | PlayerReplaced
   | RoundEnded
+  | ScoreCorrected

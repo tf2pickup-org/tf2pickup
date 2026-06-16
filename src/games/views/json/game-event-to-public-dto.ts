@@ -46,6 +46,9 @@ export function gameEventToPublicDto(event: GameEventModel) {
         score: event.score,
       }
 
+    case GameEventType.scoreCorrected:
+      return { type: 'scoreCorrected', at, score: event.score }
+
     case GameEventType.gameServerAssignmentFailed:
     case GameEventType.gameServerReinitializationOrdered:
       return null
