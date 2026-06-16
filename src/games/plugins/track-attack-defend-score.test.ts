@@ -116,6 +116,28 @@ describe('track-attack-defend-score', () => {
     expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.blu': 1 } })
   })
 
+  it('does not recompute the score on symmetric maps where both teams captured points', async () => {
+    vi.mocked(findOne).mockResolvedValue({
+      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },
+      events: [
+        { event: GameEventType.gameCreated, at: new Date() },
+        {
+          event: GameEventType.roundEnded,
+          at: new Date(),
+          winner: Tf2Team.blu,
+          lengthMs: 100_000,
+          score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },
+          captures: { [Tf2Team.blu]: [0, 1], [Tf2Team.red]: [2, 3] },
+        },
+      ],
+    } as never)
+
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.blu, score: 0 })
+
+    expect(update).toHaveBeenCalledTimes(1)
+    expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.blu': 0 } })
+  })
+
   it('does not recompute the score when no rounds were recorded', async () => {
     vi.mocked(findOne).mockResolvedValue({
       score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },

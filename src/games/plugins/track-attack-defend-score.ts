@@ -67,6 +67,20 @@ export default fp(
           return
         }
 
+        // Only attack/defend & payload maps report a broken 0:0 final score. On
+        // those, a single team attacks and captures control points while the
+        // other only defends. On symmetric maps (cp/koth) both teams capture
+        // points and TF2 reports the final score correctly, so if anything other
+        // than a single team captured, leave the score untouched.
+        const capturingTeams = new Set(
+          rounds.flatMap(round =>
+            [Tf2Team.blu, Tf2Team.red].filter(team => (round.captures?.[team] ?? []).length > 0),
+          ),
+        )
+        if (capturingTeams.size !== 1) {
+          return
+        }
+
         const computedScore = computeAttackDefendScore(rounds)
         logger.info(
           { gameNumber, score: computedScore },
