@@ -12,38 +12,21 @@ type ScoreByTeam = Record<Tf2Team, number>
 const noScore = (): ScoreByTeam => ({ [Tf2Team.blu]: 0, [Tf2Team.red]: 0 })
 
 /**
- * On attack/defend payload maps, TF2 never updates the "Team X final score"
- * counters, so they always report 0:0. The actual outcome can be derived from
- * how many (new) control points each round's winner captured: a round only
- * "counts" if the winner made progress beyond what was already captured
- * earlier in the match, capped at the total number of control points on the
- * map. This mirrors how logs.tf derives the score for these maps.
+ * On attack/defend & payload maps, TF2 never updates the "Team X final score"
+ * counters, so they always report 0:0. These are stopwatch maps: each team
+ * attacks once (the attacking team is always the in-game "Blue") and the teams
+ * swap sides between rounds. TF2 already decides the winner of every round via
+ * its Round_Win events, and that decision accounts for the swap — the roster
+ * that set the benchmark keeps it after switching colours. The map is therefore
+ * won 1:0 by the winner of the last round, which matches how logs.tf derives
+ * the score for these maps.
  */
 function computeAttackDefendScore(rounds: RoundEnded[]): ScoreByTeam {
-  const capturedControlPoints = new Set<number>()
-  for (const round of rounds) {
-    for (const team of [Tf2Team.blu, Tf2Team.red]) {
-      for (const controlPoint of round.captures?.[team] ?? []) {
-        capturedControlPoints.add(controlPoint)
-      }
-    }
-  }
-  const totalControlPoints = capturedControlPoints.size
-
-  const cumulative = noScore()
   const score = noScore()
-
-  for (const round of rounds) {
-    for (const team of [Tf2Team.blu, Tf2Team.red]) {
-      const before = cumulative[team]
-      const after = Math.min(totalControlPoints, before + (round.captures?.[team] ?? []).length)
-      cumulative[team] = after
-      if (team === round.winner && after > before) {
-        score[team] += 1
-      }
-    }
+  const lastRound = rounds[rounds.length - 1]
+  if (lastRound) {
+    score[lastRound.winner] = 1
   }
-
   return score
 }
 
@@ -84,7 +67,7 @@ export default fp(
         const computedScore = computeAttackDefendScore(rounds)
         logger.info(
           { gameNumber, score: computedScore },
-          'final score reported as 0:0, recomputed from control point captures',
+          'final score reported as 0:0, recomputed from the last round winner',
         )
         await update(gameNumber, {
           $set: {

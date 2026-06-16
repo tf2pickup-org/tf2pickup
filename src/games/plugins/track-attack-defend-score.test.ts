@@ -60,7 +60,8 @@ describe('track-attack-defend-score', () => {
 
   it('recomputes the score for an attack/defend map reporting a broken 0:0 final score', async () => {
     // round 1: blu pushes the cart all the way (4 control points)
-    // round 2: blu pushes the cart all the way again, but it's already "used up"
+    // round 2: the other roster (also "blu" while attacking) wins the last round,
+    // so blu takes the map 1:0
     const events_: GameModel['events'] = [
       { event: GameEventType.gameCreated, at: new Date() },
       {
@@ -91,6 +92,43 @@ describe('track-attack-defend-score', () => {
     expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.red': 0 } })
     expect(update).toHaveBeenLastCalledWith(gameNumber, {
       $set: { 'score.blu': 1, 'score.red': 0 },
+    })
+  })
+
+  it('awards the map to the last round winner when the teams swapped sides', async () => {
+    // attack/defend stopwatch: blu always attacks, but the rosters swap between
+    // rounds. round 1 blu caps everything (sets the benchmark); round 2 blu
+    // fails to beat it, so the defenders (red) win the last round and the map.
+    // captures are all "blu" (the attacking colour) yet red must win 0:1.
+    const events_: GameModel['events'] = [
+      { event: GameEventType.gameCreated, at: new Date() },
+      {
+        event: GameEventType.roundEnded,
+        at: new Date(),
+        winner: Tf2Team.blu,
+        lengthMs: 356_000,
+        score: { [Tf2Team.blu]: 5, [Tf2Team.red]: 0 },
+        captures: { [Tf2Team.blu]: [0, 1, 2, 3, 4], [Tf2Team.red]: [] },
+      },
+      {
+        event: GameEventType.roundEnded,
+        at: new Date(),
+        winner: Tf2Team.red,
+        lengthMs: 356_000,
+        score: { [Tf2Team.blu]: 4, [Tf2Team.red]: 5 },
+        captures: { [Tf2Team.blu]: [0, 1, 2, 3], [Tf2Team.red]: [] },
+      },
+    ]
+
+    vi.mocked(findOne).mockResolvedValue({
+      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },
+      events: events_,
+    } as never)
+
+    await scoreFinalHandler({ gameNumber, team: Tf2Team.red, score: 0 })
+
+    expect(update).toHaveBeenLastCalledWith(gameNumber, {
+      $set: { 'score.blu': 0, 'score.red': 1 },
     })
   })
 
