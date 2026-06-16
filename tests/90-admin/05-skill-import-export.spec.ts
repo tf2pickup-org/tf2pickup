@@ -4,17 +4,20 @@ import { resolve } from 'node:path'
 import { writeFile, unlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 
-authUsers('skill import/export page is accessible for admins', async ({ users: userManager }) => {
-  const adminPage = await userManager.getAdmin().page()
-  await adminPage.goto('/admin/skill-import-export')
-  await expect(adminPage.getByRole('heading', { name: 'Export player skills' })).toBeVisible()
-  await expect(adminPage.getByRole('heading', { name: 'Import player skills' })).toBeVisible()
-  await expect(adminPage.getByRole('link', { name: 'Download CSV' })).toBeVisible()
-  await expect(adminPage.getByRole('button', { name: 'Upload and preview' })).toBeVisible()
-})
+authUsers(
+  'skill import/export page is accessible for admins @6v6 @9v9',
+  async ({ users: userManager }) => {
+    const adminPage = await userManager.getAdmin().page()
+    await adminPage.goto('/admin/skill-import-export')
+    await expect(adminPage.getByRole('heading', { name: 'Export player skills' })).toBeVisible()
+    await expect(adminPage.getByRole('heading', { name: 'Import player skills' })).toBeVisible()
+    await expect(adminPage.getByRole('link', { name: 'Download CSV' })).toBeVisible()
+    await expect(adminPage.getByRole('button', { name: 'Upload and preview' })).toBeVisible()
+  },
+)
 
 authUsers(
-  'skill import/export page is not accessible for non-admins',
+  'skill import/export page is not accessible for non-admins @6v6 @9v9',
   async ({ users: userManager }) => {
     const userPage = await userManager.getNext(u => !u.isAdmin).page()
     await userPage.goto('/admin/skill-import-export')
@@ -23,7 +26,7 @@ authUsers(
   },
 )
 
-authUsers('export skills downloads a CSV file', async ({ users: userManager }) => {
+authUsers('export skills downloads a CSV file @6v6 @9v9', async ({ users: userManager }) => {
   const adminPage = await userManager.getAdmin().page()
   await adminPage.goto('/admin/skill-import-export')
 
@@ -34,7 +37,7 @@ authUsers('export skills downloads a CSV file', async ({ users: userManager }) =
   expect(download.suggestedFilename()).toMatch(/player-skills-.*\.csv/)
 })
 
-authUsers('upload CSV shows preview page', async ({ users: userManager }) => {
+authUsers('upload CSV shows preview page @6v6 @9v9', async ({ users: userManager }) => {
   const adminPage = await userManager.getAdmin().page()
   await adminPage.goto('/admin/skill-import-export')
 
@@ -59,7 +62,7 @@ ${users[1].steamId},${users[1].name},3,4,3,4`
   }
 })
 
-authUsers('apply import updates player skills', async ({ users: userManager, db }) => {
+authUsers('apply import updates player skills @6v6 @9v9', async ({ users: userManager, db }) => {
   const adminPage = await userManager.getAdmin().page()
   const adminSteamId = users[0].steamId
   const targetSteamId = users[1].steamId
@@ -116,7 +119,7 @@ ${targetSteamId},TestPlayer,7,8,9,10`
 })
 
 authUsers(
-  'future player skills are stored for unregistered players',
+  'future player skills are stored for unregistered players @6v6 @9v9',
   async ({ users: userManager, db }) => {
     const adminPage = await userManager.getAdmin().page()
     const futureSteamId = '76561198000000001' // A Steam ID that doesn't exist in the database
