@@ -69,7 +69,9 @@ tasks.register('logsTf:uploadLogs', async ({ gameNumber }) => {
     logFile: logFile,
   })
   logger.info({ gameNumber, url }, 'logs uploaded to logs.tf')
-  await games.update(gameNumber, { $set: { logsUrl: url } })
+  // Converge on the same path the gameserver (TFTrue) upload takes: this stores
+  // the url and schedules the parsed-log fetch, which reconciles the score.
+  events.emit('match/logs:uploaded', { gameNumber, logsUrl: url })
 })
 
 async function getGameLogs(gameNumber: GameNumber): Promise<{ logFile: string; map: string }> {
