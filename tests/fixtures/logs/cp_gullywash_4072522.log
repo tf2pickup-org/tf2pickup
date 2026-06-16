@@ -1,0 +1,63 @@
+L 06/16/2026 - 08:06:36: World triggered "Round_Start"
+L 06/16/2026 - 08:06:36: World triggered "Round_Start"
+L 06/16/2026 - 08:07:20: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "-25 -135 256") 
+L 06/16/2026 - 08:09:17: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "2") (player1 "basic<21><[U:1:1147536781]><Red>") (position1 "936 -1540 164") (player2 "rraaaagggyyy<18><[U:1:169747273]><Red>") (position2 "1060 -1466 162") 
+L 06/16/2026 - 08:10:36: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "4") (player1 "z3<5><[U:1:418823886]><Blue>") (position1 "925 -1708 442") (player2 "Cymboll<8><[U:1:83318636]><Blue>") (position2 "1049 -1575 168") (player3 "JohnJohnVonJohn<19><[U:1:1077449251]><Blue>") (position3 "1093 -1473 162") (player4 "Personal Joke<23><[U:1:31718940]><Blue>") (position4 "950 -1511 162") 
+L 06/16/2026 - 08:11:44: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "Personal Joke<23><[U:1:31718940]><Blue>") (position1 "-136 -18 256") 
+L 06/16/2026 - 08:13:09: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "3") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "-49 -157 256") (player2 "spas<6><[U:1:28504532]><Red>") (position2 "-68 -48 430") (player3 "ᶠᶸᶜᵏᵧₒᵤChelios<13><[U:1:43330557]><Red>") (position3 "-118 96 256") 
+L 06/16/2026 - 08:13:42: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "2") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "1118 -1625 168") (player2 "tony snell<20><[U:1:132984793]><Red>") (position2 "921 -1737 442") 
+L 06/16/2026 - 08:14:13: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "4") (player1 "lite zawg<16><[U:1:1133020269]><Blue>") (position1 "910 -1604 442") (player2 "z3<5><[U:1:418823886]><Blue>") (position2 "994 -1546 168") (player3 "Cymboll<8><[U:1:83318636]><Blue>") (position3 "1042 -1557 168") (player4 "Personal Joke<23><[U:1:31718940]><Blue>") (position4 "1039 -1625 168") 
+L 06/16/2026 - 08:14:42: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "Personal Joke<23><[U:1:31718940]><Blue>") (position1 "-123 83 256") 
+L 06/16/2026 - 08:15:18: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "-141 -39 256") 
+L 06/16/2026 - 08:15:26: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "3") (player1 "ᶠᶸᶜᵏᵧₒᵤChelios<13><[U:1:43330557]><Red>") (position1 "1004 -1664 168") (player2 "rraaaagggyyy<18><[U:1:169747273]><Red>") (position2 "1137 -1414 210") (player3 "tony snell<20><[U:1:132984793]><Red>") (position3 "1109 -1597 168") 
+L 06/16/2026 - 08:16:40: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "1") (player1 "lite zawg<16><[U:1:1133020269]><Blue>") (position1 "1029 -1609 168") 
+L 06/16/2026 - 08:17:22: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "2") (player1 "Cymboll<8><[U:1:83318636]><Blue>") (position1 "133 55 256") (player2 "Personal Joke<23><[U:1:31718940]><Blue>") (position2 "111 -89 256") 
+L 06/16/2026 - 08:18:13: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "#Well_cap_red_two") (numcappers "1") (player1 "Personal Joke<23><[U:1:31718940]><Blue>") (position1 "-1068 1565 169") 
+L 06/16/2026 - 08:18:21: Team "Blue" triggered "pointcaptured" (cp "4") (cpname "#Well_cap_red_rocket") (numcappers "2") (player1 "Cymboll<8><[U:1:83318636]><Blue>") (position1 "-3821 726 166") (player2 "Personal Joke<23><[U:1:31718940]><Blue>") (position2 "-3749 785 166") 
+L 06/16/2026 - 08:18:21: World triggered "Round_Win" (winner "Blue")
+L 06/16/2026 - 08:18:21: World triggered "Round_Length" (seconds "704.98")
+L 06/16/2026 - 08:18:21: Team "Red" current score "0" with "6" players
+L 06/16/2026 - 08:18:21: Team "Blue" current score "1" with "6" players
+L 06/16/2026 - 08:18:36: World triggered "Round_Start"
+L 06/16/2026 - 08:19:32: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "tony snell<20><[U:1:132984793]><Red>") (position1 "-30 -150 256") 
+L 06/16/2026 - 08:20:29: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "932 -1553 442") 
+L 06/16/2026 - 08:21:29: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#Well_cap_blue_rocket") (numcappers "2") (player1 "rraaaagggyyy<18><[U:1:169747273]><Red>") (position1 "3763 -823 165") (player2 "tony snell<20><[U:1:132984793]><Red>") (position2 "3572 -666 159") 
+L 06/16/2026 - 08:21:29: World triggered "Round_Win" (winner "Red")
+L 06/16/2026 - 08:21:29: World triggered "Round_Length" (seconds "172.84")
+L 06/16/2026 - 08:21:29: Team "Red" current score "1" with "6" players
+L 06/16/2026 - 08:21:29: Team "Blue" current score "1" with "6" players
+L 06/16/2026 - 08:21:44: World triggered "Round_Start"
+L 06/16/2026 - 08:22:29: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "117 -111 256") 
+L 06/16/2026 - 08:22:43: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "981 -1701 168") 
+L 06/16/2026 - 08:23:22: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#Well_cap_blue_rocket") (numcappers "3") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "3760 -819 165") (player2 "basic<21><[U:1:1147536781]><Red>") (position2 "3736 -834 165") (player3 "ᶠᶸᶜᵏᵧₒᵤChelios<13><[U:1:43330557]><Red>") (position3 "3829 -840 165") 
+L 06/16/2026 - 08:23:22: World triggered "Round_Win" (winner "Red")
+L 06/16/2026 - 08:23:22: World triggered "Round_Length" (seconds "97.88")
+L 06/16/2026 - 08:23:22: Team "Red" current score "2" with "6" players
+L 06/16/2026 - 08:23:22: Team "Blue" current score "1" with "6" players
+L 06/16/2026 - 08:23:37: World triggered "Round_Start"
+L 06/16/2026 - 08:25:11: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "138 87 256") 
+L 06/16/2026 - 08:25:31: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "1") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "1153 -1696 442") 
+L 06/16/2026 - 08:25:53: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#Well_cap_blue_rocket") (numcappers "2") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "3876 -722 163") (player2 "tony snell<20><[U:1:132984793]><Red>") (position2 "3784 -805 197") 
+L 06/16/2026 - 08:25:53: World triggered "Round_Win" (winner "Red")
+L 06/16/2026 - 08:25:53: World triggered "Round_Length" (seconds "136.33")
+L 06/16/2026 - 08:25:53: Team "Red" current score "3" with "6" players
+L 06/16/2026 - 08:25:53: Team "Blue" current score "1" with "6" players
+L 06/16/2026 - 08:26:08: World triggered "Round_Start"
+L 06/16/2026 - 08:26:49: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "2") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "-79 -124 256") (player2 "basic<21><[U:1:1147536781]><Red>") (position2 "-71 124 256") 
+L 06/16/2026 - 08:27:09: Team "Red" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "2") (player1 "Cornchip<3><[U:1:1108057081]><Red>") (position1 "1153 -1689 442") (player2 "rraaaagggyyy<18><[U:1:169747273]><Red>") (position2 "1140 -1510 162") 
+L 06/16/2026 - 08:30:03: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "#Well_cap_blue_two") (numcappers "2") (player1 "dark pebble<22><[U:1:81933016]><Blue>") (position1 "924 -1496 442") (player2 "Personal Joke<23><[U:1:31718940]><Blue>") (position2 "1097 -1500 164") 
+L 06/16/2026 - 08:30:26: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#Well_cap_center") (numcappers "4") (player1 "lite zawg<16><[U:1:1133020269]><Blue>") (position1 "60 128 256") (player2 "dark pebble<22><[U:1:81933016]><Blue>") (position2 "-59 211 256") (player3 "JohnJohnVonJohn<19><[U:1:1077449251]><Blue>") (position3 "-63 -138 256") (player4 "Personal Joke<23><[U:1:31718940]><Blue>") (position4 "-136 -48 256") 
+L 06/16/2026 - 08:30:49: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "#Well_cap_red_two") (numcappers "1") (player1 "Personal Joke<23><[U:1:31718940]><Blue>") (position1 "-1099 1485 162") 
+L 06/16/2026 - 08:31:00: Team "Blue" triggered "pointcaptured" (cp "4") (cpname "#Well_cap_red_rocket") (numcappers "1") (player1 "Cymboll<8><[U:1:83318636]><Blue>") (position1 "-3711 723 166") 
+L 06/16/2026 - 08:31:00: World triggered "Round_Win" (winner "Blue")
+L 06/16/2026 - 08:31:00: World triggered "Round_Length" (seconds "291.63")
+L 06/16/2026 - 08:31:00: Team "Red" current score "3" with "6" players
+L 06/16/2026 - 08:31:00: Team "Blue" current score "2" with "6" players
+L 06/16/2026 - 08:31:15: World triggered "Round_Start"
+L 06/16/2026 - 08:31:35: World triggered "Round_Win" (winner "Red")
+L 06/16/2026 - 08:31:35: World triggered "Round_Length" (seconds "20.27")
+L 06/16/2026 - 08:31:35: Team "Red" current score "3" with "6" players
+L 06/16/2026 - 08:31:35: Team "Blue" current score "2" with "6" players
+L 06/16/2026 - 08:31:50: World triggered "Game_Over" reason "Reached Time Limit"
+L 06/16/2026 - 08:31:50: Team "Red" final score "3" with "6" players
+L 06/16/2026 - 08:31:50: Team "Blue" final score "2" with "6" players
