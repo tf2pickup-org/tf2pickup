@@ -324,6 +324,21 @@ export class GameServerSimulator {
     await delay(this.eventDelay / 2)
   }
 
+  // Feeds raw log lines (as downloaded from logs.tf) through the same pipeline
+  // a real gameserver uses. The leading `L MM/DD/YYYY - HH:MM:SS: ` prefix is
+  // stripped so the simulator can re-stamp each line with its own timestamp,
+  // matching what the server would emit live.
+  async feedLogs(lines: AsyncIterable<string> | Iterable<string>) {
+    for await (const line of lines) {
+      const payload = line.replace(/^L \d{2}\/\d{2}\/\d{4} - \d{2}:\d{2}:\d{2}: /, '').trim()
+      if (!payload) {
+        continue
+      }
+      this.log(payload)
+      await delay(this.eventDelay / 2)
+    }
+  }
+
   async sendHeartbeat() {
     const params = new URLSearchParams()
     params.set('name', 'Simulated Game Server')

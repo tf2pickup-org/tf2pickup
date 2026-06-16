@@ -1,0 +1,44 @@
+L 06/16/2026 - 10:38:23: World triggered "Round_Start"
+L 06/16/2026 - 10:38:23: World triggered "Round_Start"
+L 06/16/2026 - 10:39:27: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "1") (player1 "IndustrialSoap<8><[U:1:313341773]><Red>") (position1 "-1646 115 225") 
+L 06/16/2026 - 10:39:52: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "1") (player1 "foidian slip<15><[U:1:284174046]><Blue>") (position1 "-1680 -122 225") 
+L 06/16/2026 - 10:41:14: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "3") (player1 "Revan<9><[U:1:195643820]><Red>") (position1 "-1793 25 236") (player2 "Tenzin<11><[U:1:68920502]><Red>") (position2 "-1611 141 225") (player3 "henrygamer69<12><[U:1:167148320]><Red>") (position3 "-1402 192 302") 
+L 06/16/2026 - 10:41:35: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "3") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1726 127 226") (player2 "foidian slip<15><[U:1:284174046]><Blue>") (position2 "-1563 137 305") (player3 "bootywhole :yum:<16><[U:1:345495888]><Blue>") (position3 "-1708 -112 226") 
+L 06/16/2026 - 10:43:05: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "2") (player1 "50/50 Bad Boy<3><[U:1:35381368]><Red>") (position1 "-1597 37 231") (player2 "henrygamer69<12><[U:1:167148320]><Red>") (position2 "-1356 -126 229") 
+L 06/16/2026 - 10:43:34: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "3") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1561 -95 231") (player2 "foidian slip<15><[U:1:284174046]><Blue>") (position2 "-1703 86 226") (player3 "bootywhole :yum:<16><[U:1:345495888]><Blue>") (position3 "-1324 -207 236") 
+L 06/16/2026 - 10:43:43: World triggered "Round_Win" (winner "Blue")
+L 06/16/2026 - 10:43:43: World triggered "Round_Length" (seconds "319.12")
+L 06/16/2026 - 10:43:43: Team "Red" current score "0" with "6" players
+L 06/16/2026 - 10:43:43: Team "Blue" current score "1" with "6" players
+L 06/16/2026 - 10:43:53: World triggered "Round_Start"
+L 06/16/2026 - 10:44:52: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "4") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1598 -94 231") (player2 "fortnitenude<14><[U:1:364034856]><Blue>") (position2 "-1509 207 236") (player3 "foidian slip<15><[U:1:284174046]><Blue>") (position3 "-1355 -45 229") (player4 "bootywhole :yum:<16><[U:1:345495888]><Blue>") (position4 "-1320 -163 236") 
+L 06/16/2026 - 10:45:50: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "1") (player1 "henrygamer69<12><[U:1:167148320]><Red>") (position1 "-1627 120 225") 
+L 06/16/2026 - 10:47:11: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "2") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1793 77 236") (player2 "foidian slip<15><[U:1:284174046]><Blue>") (position2 "-1724 -76 227") 
+L 06/16/2026 - 10:48:01: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "4") (player1 "50/50 Bad Boy<3><[U:1:35381368]><Red>") (position1 "-1542 184 236") (player2 "Revan<9><[U:1:195643820]><Red>") (position2 "-1342 -139 233") (player3 "henrygamer69<12><[U:1:167148320]><Red>") (position3 "-1522 65 231") (player4 "Zando<13><[U:1:1032437618]><Red>") (position4 "-1292 -100 368") 
+L 06/16/2026 - 10:49:40: World triggered "Round_Win" (winner "Red")
+L 06/16/2026 - 10:49:40: World triggered "Round_Length" (seconds "347.79")
+L 06/16/2026 - 10:49:40: Team "Red" current score "1" with "6" players
+L 06/16/2026 - 10:49:40: Team "Blue" current score "1" with "6" players
+L 06/16/2026 - 10:49:50: World triggered "Round_Start"
+L 06/16/2026 - 10:51:06: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "3") (player1 "50/50 Bad Boy<3><[U:1:35381368]><Red>") (position1 "-1751 159 236") (player2 "henrygamer69<12><[U:1:167148320]><Red>") (position2 "-1468 -35 231") (player3 "Zando<13><[U:1:1032437618]><Red>") (position3 "-1319 57 236") 
+L 06/16/2026 - 10:51:35: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "2") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1540 -180 236") (player2 "foidian slip<15><[U:1:284174046]><Blue>") (position2 "-1607 28 231") 
+L 06/16/2026 - 10:53:39: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "1") (player1 "Tenzin<11><[U:1:68920502]><Red>") (position1 "-1735 113 226") 
+L 06/16/2026 - 10:54:10: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "1") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1576 -42 231") 
+L 06/16/2026 - 10:55:06: World triggered "Round_Win" (winner "Blue")
+L 06/16/2026 - 10:55:06: World triggered "Round_Length" (seconds "315.81")
+L 06/16/2026 - 10:55:06: Team "Red" current score "1" with "6" players
+L 06/16/2026 - 10:55:06: Team "Blue" current score "2" with "6" players
+L 06/16/2026 - 10:55:16: World triggered "Round_Start"
+L 06/16/2026 - 10:56:09: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "2") (player1 "Revan<9><[U:1:195643820]><Red>") (position1 "-1383 -42 228") (player2 "Zando<13><[U:1:1032437618]><Red>") (position2 "-1525 164 264") 
+L 06/16/2026 - 10:58:31: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "3") (player1 "fortnitenude<14><[U:1:364034856]><Blue>") (position1 "-1313 -166 236") (player2 "foidian slip<15><[U:1:284174046]><Blue>") (position2 "-1521 -22 231") (player3 "bootywhole :yum:<16><[U:1:345495888]><Blue>") (position3 "-1288 -134 236") 
+L 06/16/2026 - 10:59:12: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "3") (player1 "50/50 Bad Boy<3><[U:1:35381368]><Red>") (position1 "-1571 63 231") (player2 "Revan<9><[U:1:195643820]><Red>") (position2 "-1411 -10 260") (player3 "Tenzin<11><[U:1:68920502]><Red>") (position3 "-1668 58 225") 
+L 06/16/2026 - 10:59:48: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "2") (player1 "FNCS 2019 TRIOS WINNER<17><[U:1:182704897]><Blue>") (position1 "-1724 11 228") (player2 "foidian slip<15><[U:1:284174046]><Blue>") (position2 "-1287 -143 236") 
+L 06/16/2026 - 11:00:25: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#koth_viaduct_cap") (numcappers "2") (player1 "Tenzin<11><[U:1:68920502]><Red>") (position1 "-1410 159 231") (player2 "henrygamer69<12><[U:1:167148320]><Red>") (position2 "-1761 5 236") 
+L 06/16/2026 - 11:00:30: World triggered "Round_Win" (winner "Red")
+L 06/16/2026 - 11:00:30: World triggered "Round_Length" (seconds "313.47")
+L 06/16/2026 - 11:00:30: Team "Red" current score "2" with "6" players
+L 06/16/2026 - 11:00:30: Team "Blue" current score "2" with "6" players
+L 06/16/2026 - 11:00:40: World triggered "Round_Start"
+L 06/16/2026 - 11:00:42: World triggered "Game_Over" reason "Reached Win Limit"
+L 06/16/2026 - 11:00:42: Team "Red" final score "2" with "6" players
+L 06/16/2026 - 11:00:42: Team "Blue" final score "2" with "6" players
