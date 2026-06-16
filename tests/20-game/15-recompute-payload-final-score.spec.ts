@@ -9,7 +9,7 @@ launchGame.use({ waitForStage: 'started' })
 // score has to be recomputed from the control point captures to 1:0, matching
 // what logs.tf derives.
 launchGame(
-  'recomputes the final score on a payload map reporting a broken 0:0',
+  'recomputes the final score on a payload map reporting a broken 0:0 @6v6 @9v9',
   async ({ gameNumber, page, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()

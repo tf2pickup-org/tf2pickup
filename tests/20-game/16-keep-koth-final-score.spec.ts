@@ -8,7 +8,7 @@ launchGame.use({ waitForStage: 'started' })
 // (and cp) maps TF2 reports the final score correctly, so it must be left as-is
 // (2:2) and never recomputed from control point captures.
 launchGame(
-  'keeps a correctly reported koth final score',
+  'keeps a correctly reported koth final score @6v6 @9v9',
   async ({ gameNumber, page, gameServer }) => {
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()
