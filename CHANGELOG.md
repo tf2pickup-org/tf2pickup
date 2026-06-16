@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.12.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.0...4.12.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency es-toolkit to v1.47.1 ([788286e](https://github.com/tf2pickup-org/tf2pickup/commit/788286e5f55e8ea6f57ea32efa2fb325b0513d3c))
+* **deps:** update dependency form-data to v4.0.6 [security] ([506d76f](https://github.com/tf2pickup-org/tf2pickup/commit/506d76fa3b5ba4cc73b61f69fdaec8d07b83fa97))
+* **deps:** update tailwindcss monorepo to v4.3.1 ([20d7bb6](https://github.com/tf2pickup-org/tf2pickup/commit/20d7bb6248cea4531f091aa8ffba8b150aaf4307))
+
 # [4.12.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.11.1...4.12.0) (2026-06-15)
 
 
