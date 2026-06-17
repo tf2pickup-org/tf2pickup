@@ -18,7 +18,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await GamesPage())
+        await reply.status(200).html(GamesPage())
       },
     )
     .post(
@@ -59,7 +59,7 @@ export default routes(async app => {
           configuration.set('games.logs_tf_upload_method', request.body.logsTfUploadMethod, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await GamesPage())
+        await reply.status(200).html(GamesPage())
       },
     )
 })

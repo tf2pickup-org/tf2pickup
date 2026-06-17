@@ -31,7 +31,7 @@ export default routes(async app => {
         })
       }
 
-      reply.status(204).send()
+      await reply.status(204).send()
     },
   )
 })

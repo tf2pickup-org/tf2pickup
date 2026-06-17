@@ -15,6 +15,7 @@ export default routes(async app => {
     async (request, reply) => {
       const banExpiryDate = players.getBanExpiryDate(request.query)
       reply.status(200).html(format(banExpiryDate, 'dd.MM.yyyy HH:mm'))
+      return reply
     },
   )
 })
