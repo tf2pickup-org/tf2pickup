@@ -11,6 +11,7 @@ import { isBot } from '../../../shared/types/bot'
 import { players } from '../../../players'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { errors } from '../../../errors'
+import { isStopwatchGame } from '../../is-stopwatch-game'
 
 const renderedEvents = [
   GameEventType.gameCreated,
@@ -69,7 +70,7 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
   // captured control points, not the match score, so "Round ended" rows like
   // "BLU: 4 RED: 4" are meaningless to viewers. Hide them on those maps; the
   // "Teams swapped sides" and "Score corrected" events tell the real story.
-  if (props.event.event === GameEventType.roundEnded && isStopwatchGame(props.game)) {
+  if (props.event.event === GameEventType.roundEnded && isStopwatchGame(props.game.events)) {
     return <></>
   }
 
@@ -83,26 +84,6 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
       </div>
     </div>
   )
-}
-
-// A stopwatch (payload / attack-defend) game is one where a single round bumped
-// the reported score by more than 1 (it counts captured control points) while
-// control points were actually captured. This mirrors the swap detection in
-// track-match-rounds and reliably tells stopwatch maps apart from cp/koth/ctf.
-function isStopwatchGame(game: GameModel): boolean {
-  let prev = { blu: 0, red: 0 }
-  for (const event of game.events) {
-    if (event.event !== GameEventType.roundEnded) {
-      continue
-    }
-    const capturedPoints = (event.captures?.blu.length ?? 0) + (event.captures?.red.length ?? 0)
-    const scoreJump = Math.max(event.score.blu - prev.blu, event.score.red - prev.red)
-    if (capturedPoints > 0 && scoreJump > 1) {
-      return true
-    }
-    prev = event.score
-  }
-  return false
 }
 
 function getGameEventTone(event: GameEventType) {

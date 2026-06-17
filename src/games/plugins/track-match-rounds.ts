@@ -6,6 +6,7 @@ import { logger } from '../../logger'
 import { update } from '../update'
 import { GameEventType } from '../../database/models/game-event.model'
 import { findOne } from '../find-one'
+import { isStopwatchRound } from '../is-stopwatch-round'
 
 interface RoundData {
   winner?: Tf2Team
@@ -45,21 +46,19 @@ export default fp(
             continue
           }
 
-          // On attack/defend & payload (stopwatch) maps the reported score
-          // counts captured control points, so a single round bumps it by more
-          // than 1; on cp/koth/ctf it only ever grows by 1 per round won.
-          // Together with the presence of control point captures (absent on
-          // ctf/bball), a jump > 1 marks a stopwatch round, after which TF2
-          // switches the teams' sides. We defer the swap event to the next
-          // round start so the final round doesn't produce a trailing swap.
-          const scoreJump = Math.max(
-            value.score.blu - (game.score?.blu ?? 0),
-            value.score.red - (game.score?.red ?? 0),
-          )
-          const capturedPoints =
-            (value.captures?.[Tf2Team.blu].length ?? 0) +
-            (value.captures?.[Tf2Team.red].length ?? 0)
-          if (capturedPoints > 0 && scoreJump > 1) {
+          // On stopwatch (attack/defend & payload) rounds TF2 switches the
+          // teams' sides afterwards. We defer the swap event to the next round
+          // start so the final round doesn't produce a trailing swap.
+          if (
+            isStopwatchRound({
+              previousScore: {
+                [Tf2Team.blu]: game.score?.blu ?? 0,
+                [Tf2Team.red]: game.score?.red ?? 0,
+              },
+              score: { [Tf2Team.blu]: value.score.blu, [Tf2Team.red]: value.score.red },
+              captures: value.captures,
+            })
+          ) {
             swapPending.add(gameNumber)
           }
 
