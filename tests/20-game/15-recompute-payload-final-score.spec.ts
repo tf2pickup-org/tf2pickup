@@ -24,5 +24,9 @@ launchGame(
     await expect(
       gamePage.page.getByLabel('Game events').getByText('Teams swapped sides'),
     ).toBeVisible()
+
+    // per-round "Round ended" rows count captured control points, not the match
+    // score, so they're meaningless on stopwatch maps and must be hidden
+    await expect(gamePage.page.getByLabel('Game events').getByText('Round ended')).toHaveCount(0)
   },
 )

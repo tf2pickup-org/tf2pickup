@@ -22,5 +22,11 @@ launchGame(
     await expect(
       gamePage.page.getByLabel('Game events').getByText('Teams swapped sides'),
     ).toHaveCount(0)
+
+    // on koth the per-round score is the actual match score, so "Round ended"
+    // rows are meaningful and must still be shown
+    await expect(
+      gamePage.page.getByLabel('Game events').getByText('Round ended').first(),
+    ).toBeVisible()
   },
 )
