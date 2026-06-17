@@ -12,6 +12,7 @@ import { getState } from '../queue/get-state'
 import { meetsSkillThreshold } from './meets-skill-threshold'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
+import { playerAvatarUrl } from '../shared/player-avatar-url'
 
 export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
   logger.trace({ steamId, slotId }, `queue.join()`)
@@ -61,7 +62,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
           player: {
             steamId: player.steamId,
             name: player.name,
-            avatarUrl: player.avatar.medium,
+            avatarUrl: playerAvatarUrl(player.avatar, 'medium'),
           },
           ready: state === QueueState.ready,
         },

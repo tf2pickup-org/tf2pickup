@@ -7,6 +7,7 @@ import { environment } from '../../environment'
 import { client } from '../client'
 import { makePlayerChangesNotificationBody } from '../make-player-changes-notification-body'
 import { safe } from '../../utils/safe'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
@@ -33,11 +34,11 @@ export default fp(
               .setColor('#5230dc')
               .setAuthor({
                 name: admin.name,
-                iconURL: admin.avatar.medium,
+                iconURL: playerAvatarUrl(admin.avatar, 'medium'),
                 url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
               })
               .setTitle('Player profile updated')
-              .setThumbnail(after.avatar.large)
+              .setThumbnail(playerAvatarUrl(after.avatar, 'large'))
               .setDescription(
                 `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**\n${changes}`,
               )

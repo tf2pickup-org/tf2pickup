@@ -3,6 +3,7 @@ import type { PlayerModel } from '../../database/models/player.model'
 import { bundle } from '../bundle'
 import { IconLogout, IconSettings, IconSettingsFilled, IconUserCircle } from './icons'
 import type { PickDeep } from 'type-fest'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>) {
   const animateProfileMenuJs = await bundle(
@@ -13,7 +14,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
       <div class="relative grow lg:grow-0">
         <button class="nav-profile-button" id="open-profile-menu-button">
           <img
-            src={player.avatar.medium}
+            src={playerAvatarUrl(player.avatar, 'medium')}
             width="64"
             class="h-[42px] w-[42px] rounded-[3px]"
             alt="{name}'s avatar"

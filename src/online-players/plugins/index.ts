@@ -8,6 +8,7 @@ import { tasks } from '../../tasks'
 import { meter } from '../../otel'
 import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from '../../websocket/types'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 const verifyPlayerTimeout = secondsToMilliseconds(10)
 
@@ -49,7 +50,7 @@ export default fp(
           {
             $set: {
               name: player.name,
-              avatar: player.avatar.small,
+              avatar: playerAvatarUrl(player.avatar, 'small'),
             },
           },
           {

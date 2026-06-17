@@ -2,6 +2,7 @@ import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { queue } from '../../../queue-auto'
@@ -150,7 +151,7 @@ function PlayerPresentation(props: {
   return (
     <div class="player-presentation">
       <img
-        src={props.player.avatar.large}
+        src={playerAvatarUrl(props.player.avatar, 'large')}
         width="184"
         height="184"
         class="player-avatar"
