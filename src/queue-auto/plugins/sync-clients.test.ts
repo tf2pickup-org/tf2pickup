@@ -170,10 +170,16 @@ describe('sync-clients', () => {
   })
 
   describe('queue/slots:updated handler', () => {
-    it('pre-fetches all connected players in a single batch query', async () => {
-      ;(app.websocketServer.clients as Set<unknown>).add({ player: { steamId: steamId1 } })
-      ;(app.websocketServer.clients as Set<unknown>).add({ player: { steamId: steamId2 } })
-      ;(app.websocketServer.clients as Set<unknown>).add({ player: undefined })
+    it('pre-fetches queue-page players in a single batch query', async () => {
+      ;(app.websocketServer.clients as Set<unknown>).add({
+        currentUrl: '/',
+        player: { steamId: steamId1 },
+      })
+      ;(app.websocketServer.clients as Set<unknown>).add({
+        currentUrl: '/',
+        player: { steamId: steamId2 },
+      })
+      ;(app.websocketServer.clients as Set<unknown>).add({ currentUrl: '/', player: undefined })
       mockPlayersFind.mockReturnValue({
         toArray: vi.fn().mockResolvedValue([{ steamId: steamId1 }, { steamId: steamId2 }]),
       })
@@ -189,8 +195,24 @@ describe('sync-clients', () => {
       expect(vi.mocked(players.bySteamId)).not.toHaveBeenCalled()
     })
 
-    it('does not include unauthenticated clients in the batch query', async () => {
-      ;(app.websocketServer.clients as Set<unknown>).add({ player: undefined })
+    it('targets only clients on the queue page', async () => {
+      ;(app.websocketServer.clients as Set<unknown>).add({
+        currentUrl: '/',
+        player: { steamId: steamId1 },
+      })
+      const handler = getHandler<{ slots: unknown[] }>('queue/slots:updated')
+
+      await handler({ slots: [] })
+
+      expect(app.gateway.to).toHaveBeenCalledWith({ url: '/' })
+    })
+
+    it('ignores players that are not on the queue page', async () => {
+      ;(app.websocketServer.clients as Set<unknown>).add({
+        currentUrl: '/players',
+        player: { steamId: steamId1 },
+      })
+      ;(app.websocketServer.clients as Set<unknown>).add({ currentUrl: '/', player: undefined })
       const handler = getHandler<{ slots: unknown[] }>('queue/slots:updated')
 
       await handler({ slots: [] })
@@ -199,6 +221,21 @@ describe('sync-clients', () => {
         { steamId: { $in: [] } },
         expect.objectContaining({ projection: expect.any(Object) }),
       )
+    })
+
+    it('skips DB work and slot updates when no client is on the queue page', async () => {
+      ;(app.websocketServer.clients as Set<unknown>).add({
+        currentUrl: '/players',
+        player: { steamId: steamId1 },
+      })
+      const handler = getHandler<{ slots: unknown[] }>('queue/slots:updated')
+
+      await handler({ slots: [] })
+
+      expect(mockPlayersFind).not.toHaveBeenCalled()
+      expect(app.gateway.to).not.toHaveBeenCalled()
+      // the document title is still broadcast to every client
+      expect(app.gateway.broadcast).toHaveBeenCalledOnce()
     })
   })
 })
