@@ -22,7 +22,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await VoiceServerPage())
+        await reply.status(200).html(VoiceServerPage())
       },
     )
     .post(
@@ -67,7 +67,7 @@ export default routes(async app => {
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await VoiceServerPage())
+        await reply.status(200).html(VoiceServerPage())
       },
     )
 })

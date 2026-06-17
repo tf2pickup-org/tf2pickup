@@ -21,7 +21,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await MapPoolPage())
+        await reply.status(200).html(MapPoolPage())
       },
     )
     .post(
@@ -55,7 +55,7 @@ export default routes(async app => {
         const newMaps = await mapPool.set(request.body.maps)
         await activityLog.record({ type: 'map pool change', maps: newMaps.map(m => m.name) })
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await MapPoolPage())
+        await reply.status(200).html(MapPoolPage())
       },
     )
     .post('/create', async (_request, response) => {

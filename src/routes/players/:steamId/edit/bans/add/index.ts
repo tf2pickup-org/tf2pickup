@@ -23,7 +23,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId } = request.params
-        reply.status(200).html(await AddBanPage({ steamId }))
+        await reply.status(200).html(AddBanPage({ steamId }))
       },
     )
     .post(
@@ -56,7 +56,7 @@ export default routes(async app => {
           anonymous: request.body.anonymous,
         })
         request.flash('success', `Player ban added`)
-        reply.redirect(`/players/${request.params.steamId}/edit/bans`)
+        await reply.redirect(`/players/${request.params.steamId}/edit/bans`)
       },
     )
 })

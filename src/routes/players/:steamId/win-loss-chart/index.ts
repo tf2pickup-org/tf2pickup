@@ -22,7 +22,7 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const { steamId, selection } = request.params
-      reply.status(200).html(await WinLossChart({ steamId, selection }))
+      await reply.status(200).html(WinLossChart({ steamId, selection }))
     },
   )
 })

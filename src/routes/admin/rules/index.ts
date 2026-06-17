@@ -16,7 +16,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await DocumentsPage({ name: 'rules' }))
+        await reply.status(200).html(DocumentsPage({ name: 'rules' }))
       },
     )
     .post(
@@ -35,7 +35,7 @@ export default routes(async app => {
           { $set: { body: request.body.body } },
         )
         requestContext.set('messages', { success: ['Configuration saved'] })
-        reply.status(200).html(await DocumentsPage({ name: 'rules' }))
+        await reply.status(200).html(DocumentsPage({ name: 'rules' }))
       },
     )
 })

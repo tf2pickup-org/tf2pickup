@@ -18,7 +18,7 @@ export default routes(async app => {
       const url = twitchTv.makeOauthRedirectUrl(
         await twitchTv.state.make({ steamId: request.user!.player.steamId }),
       )
-      reply.redirect(url, 302)
+      await reply.redirect(url, 302)
     },
   )
 })
