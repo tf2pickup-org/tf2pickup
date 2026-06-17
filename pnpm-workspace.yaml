@@ -1,5 +1,5 @@
 overrides:
-  axios: '1.17.0'
+  axios: '1.18.0'
   fast-uri: '4.0.0'
   follow-redirects: '1.16.0'
   lodash: '4.18.1'
