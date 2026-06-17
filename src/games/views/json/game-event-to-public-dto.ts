@@ -49,6 +49,9 @@ export function gameEventToPublicDto(event: GameEventModel) {
     case GameEventType.scoreCorrected:
       return { type: 'scoreCorrected', at, score: event.score }
 
+    case GameEventType.teamsSwapped:
+      return { type: 'teamsSwapped', at }
+
     case GameEventType.gameServerAssignmentFailed:
     case GameEventType.gameServerReinitializationOrdered:
       return null

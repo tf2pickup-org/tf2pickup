@@ -17,5 +17,10 @@ launchGame(
 
     await expect(gamePage.page.getByLabel('blu team score')).toHaveText('2')
     await expect(gamePage.page.getByLabel('red team score')).toHaveText('2')
+
+    // koth teams never switch sides, so no "teams swapped" event must show up
+    await expect(
+      gamePage.page.getByLabel('Game events').getByText('Teams swapped sides'),
+    ).toHaveCount(0)
   },
 )

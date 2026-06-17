@@ -24,6 +24,9 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     const rounds = new Map<GameNumber, RoundData>()
+    // games whose teams will switch sides when the next round starts (see the
+    // attack/defend detection in maybeRoundEnded below)
+    const swapPending = new Set<GameNumber>()
 
     async function maybeRoundEnded() {
       for (const [gameNumber, value] of rounds) {
@@ -40,6 +43,24 @@ export default fp(
             logger.info(`score is the same, not updating`)
             rounds.delete(gameNumber)
             continue
+          }
+
+          // On attack/defend & payload (stopwatch) maps the reported score
+          // counts captured control points, so a single round bumps it by more
+          // than 1; on cp/koth/ctf it only ever grows by 1 per round won.
+          // Together with the presence of control point captures (absent on
+          // ctf/bball), a jump > 1 marks a stopwatch round, after which TF2
+          // switches the teams' sides. We defer the swap event to the next
+          // round start so the final round doesn't produce a trailing swap.
+          const scoreJump = Math.max(
+            value.score.blu - (game.score?.blu ?? 0),
+            value.score.red - (game.score?.red ?? 0),
+          )
+          const capturedPoints =
+            (value.captures?.[Tf2Team.blu].length ?? 0) +
+            (value.captures?.[Tf2Team.red].length ?? 0)
+          if (capturedPoints > 0 && scoreJump > 1) {
+            swapPending.add(gameNumber)
           }
 
           await update(
@@ -96,6 +117,22 @@ export default fp(
       const captures = round.captures ?? { [Tf2Team.blu]: [], [Tf2Team.red]: [] }
       captures[team] = [...captures[team], controlPoint]
       rounds.set(gameNumber, { ...round, captures })
+    })
+
+    events.on('match:started', async ({ gameNumber }) => {
+      if (!swapPending.has(gameNumber)) {
+        return
+      }
+      swapPending.delete(gameNumber)
+      logger.info({ gameNumber }, 'teams swapped sides')
+      await update(
+        { number: gameNumber },
+        { $push: { events: { at: new Date(), event: GameEventType.teamsSwapped } } },
+      )
+    })
+
+    events.on('match:ended', ({ gameNumber }) => {
+      swapPending.delete(gameNumber)
     })
   },
   {

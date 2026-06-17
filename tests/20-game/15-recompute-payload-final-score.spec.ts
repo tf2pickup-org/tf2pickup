@@ -18,5 +18,11 @@ launchGame(
 
     await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
     await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
+
+    // the teams switch sides between the two stopwatch rounds, which is shown
+    // as a "teams swapped" event in the game event timeline
+    await expect(
+      gamePage.page.getByLabel('Game events').getByText('Teams swapped sides'),
+    ).toBeVisible()
   },
 )

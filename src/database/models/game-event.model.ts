@@ -24,6 +24,7 @@ export enum GameEventType {
 
   roundEnded = 'round ended',
   scoreCorrected = 'score corrected',
+  teamsSwapped = 'teams swapped',
 }
 
 export interface GameCreated {
@@ -139,6 +140,13 @@ export interface ScoreCorrected {
   score: Record<Tf2Team, number>
 }
 
+// emitted between rounds on attack/defend & payload (stopwatch) maps, where the
+// teams switch sides after each round
+export interface TeamsSwapped {
+  event: GameEventType.teamsSwapped
+  at: Date
+}
+
 export type GameEventModel =
   | GameCreated
   | GameStarted
@@ -156,3 +164,4 @@ export type GameEventModel =
   | PlayerReplaced
   | RoundEnded
   | ScoreCorrected
+  | TeamsSwapped

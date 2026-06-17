@@ -29,6 +29,7 @@ const renderedEvents = [
 
   GameEventType.roundEnded,
   GameEventType.scoreCorrected,
+  GameEventType.teamsSwapped,
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
@@ -80,6 +81,7 @@ function getGameEventTone(event: GameEventType) {
   switch (event) {
     case GameEventType.gameServerInitialized:
     case GameEventType.scoreCorrected:
+    case GameEventType.teamsSwapped:
       return 'info'
     case GameEventType.substituteRequested:
       return 'warning'
@@ -310,6 +312,8 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         </div>
       )
     }
+    case GameEventType.teamsSwapped:
+      return <span>Teams swapped sides</span>
 
     default:
       return <span class="italic">{props.event.event}</span>

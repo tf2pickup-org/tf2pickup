@@ -172,4 +172,11 @@ describe('gameEventToPublicDto()', () => {
       score: { red: 1, blu: 0 },
     })
   })
+
+  it('maps teamsSwapped', () => {
+    expect(gameEventToPublicDto({ event: GameEventType.teamsSwapped, at })).toEqual({
+      type: 'teamsSwapped',
+      at: atStr,
+    })
+  })
 })
