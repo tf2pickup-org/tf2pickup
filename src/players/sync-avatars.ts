@@ -7,32 +7,16 @@ import { steamId64 } from '../shared/schemas/steam-id-64'
 
 const steamApi = new SteamAPI(environment.STEAM_API_KEY)
 
-// Steam's GetPlayerSummaries accepts up to 100 steam ids per request, so one
-// batch is a single API call.
 const batchSize = 100
-
-// How long a synced avatar is considered fresh before it is refreshed again.
 const staleAfterDays = 7
 
-/**
- * Refresh stored player avatars from Steam, one batch per call.
- *
- * Players are picked oldest-first by `avatarLastSyncedAt`, so accounts that have
- * never been synced (e.g. those the avatar backfill migration could not reach,
- * which currently fall back to the default avatar) are prioritised, followed by
- * the players whose avatars are the most stale.
- *
- * Avatars are written directly to the collection (no `player:updated` event) to
- * avoid triggering downstream listeners on a routine refresh.
- */
 export async function syncAvatars() {
-  const staleThreshold = subDays(new Date(), staleAfterDays)
   const candidates = await collections.players
     .find(
       {
         $or: [
           { avatarLastSyncedAt: { $exists: false } },
-          { avatarLastSyncedAt: { $lt: staleThreshold } },
+          { avatarLastSyncedAt: { $lt: subDays(new Date(), staleAfterDays) } },
         ],
       },
       { projection: { steamId: 1 }, sort: { avatarLastSyncedAt: 1 }, limit: batchSize },
@@ -50,8 +34,15 @@ export async function syncAvatars() {
   try {
     summaries = await steamApi.getUserSummary(steamIds)
   } catch (error) {
-    logger.warn({ error }, 'failed to fetch Steam summaries while syncing avatars')
-    return
+    // steamapi throws when Steam returns no players at all (the whole batch is
+    // deleted / banned / private). Treat that as an empty result so the batch
+    // still gets marked as synced below and stops sorting first forever.
+    if (error instanceof Error && error.message === 'No players found') {
+      summaries = []
+    } else {
+      logger.warn({ error }, 'failed to fetch Steam summaries while syncing avatars')
+      return
+    }
   }
 
   const summaryArray = Array.isArray(summaries) ? summaries : [summaries]

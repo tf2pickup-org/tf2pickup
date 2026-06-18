@@ -113,6 +113,19 @@ describe('syncAvatars', () => {
     ])
   })
 
+  it('marks the whole batch as synced when Steam returns no players', async () => {
+    toArray.mockResolvedValue([{ steamId: '11' }, { steamId: '22' }])
+    getUserSummary.mockRejectedValue(new Error('No players found'))
+
+    await syncAvatars()
+
+    expect(collections.players.updateOne).not.toHaveBeenCalled()
+    expect(collections.players.updateMany).toHaveBeenCalledWith(
+      { steamId: { $in: ['11', '22'] } },
+      { $set: { avatarLastSyncedAt: expect.any(Date) } },
+    )
+  })
+
   it('writes nothing when the Steam request fails', async () => {
     toArray.mockResolvedValue([{ steamId: '11' }])
     getUserSummary.mockRejectedValue(new Error('rate limited'))
