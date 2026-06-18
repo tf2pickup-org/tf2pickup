@@ -8,6 +8,7 @@ import { environment } from '../../environment'
 import { formatDistanceToNow } from 'date-fns'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -26,7 +27,7 @@ export default fp(
           const admin = await players.bySteamId(ban.actor, ['name', 'steamId', 'avatar.medium'])
           author = {
             name: admin.name,
-            iconURL: admin.avatar.medium,
+            iconURL: playerAvatarUrl(admin.avatar, 'medium'),
             url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
           }
         }
@@ -38,7 +39,7 @@ export default fp(
               .setColor('#dc3545')
               .setAuthor(author)
               .setTitle('Player ban added')
-              .setThumbnail(p.avatar.large)
+              .setThumbnail(playerAvatarUrl(p.avatar, 'large'))
               .setDescription(
                 [
                   `Player: **[${p.name}](${environment.WEBSITE_URL}/players/${p.steamId})**`,
@@ -66,7 +67,7 @@ export default fp(
           const { name, avatar } = await players.bySteamId(admin, ['name', 'avatar.medium'])
           author = {
             name,
-            iconURL: avatar.medium,
+            iconURL: playerAvatarUrl(avatar, 'medium'),
             url: `${environment.WEBSITE_URL}/players/${admin}`,
           }
         }
@@ -78,7 +79,7 @@ export default fp(
               .setColor('#9838dc')
               .setAuthor(author)
               .setTitle('Player ban revoked')
-              .setThumbnail(p.avatar.large)
+              .setThumbnail(playerAvatarUrl(p.avatar, 'large'))
               .setDescription(
                 [
                   `Player: **[${p.name}](${environment.WEBSITE_URL}/players/${p.steamId})**`,

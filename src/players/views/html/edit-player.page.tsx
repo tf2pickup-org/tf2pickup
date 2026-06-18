@@ -24,6 +24,7 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { queue } from '../../../queue-auto'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
 import type { Children } from '@kitajs/html'
@@ -76,7 +77,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
 
             <div class="row-span-3">
               <img
-                src={player.avatar.large}
+                src={playerAvatarUrl(player.avatar, 'large')}
                 width="184"
                 height="184"
                 class="player-avatar rounded-sm"

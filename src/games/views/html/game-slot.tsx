@@ -10,6 +10,7 @@ import { PlayerConnectionStatusIndicator } from './player-connection-status-indi
 import { errors } from '../../../errors'
 import { hasActiveBan } from '../../../players/has-active-ban'
 import type { PickDeep } from 'type-fest'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 
 export async function GameSlot(props: {
   game: GameModel
@@ -75,7 +76,7 @@ async function GameSlotContent(props: {
             <GameClassIcon gameClass={props.slot.gameClass} size={32} />
           </div>
           <img
-            src={props.player.avatar.medium}
+            src={playerAvatarUrl(props.player.avatar, 'medium')}
             width="38"
             height="38"
             alt={`${props.player.name}'s avatar`}
