@@ -1,4 +1,5 @@
 import pino from 'pino'
+import princess from 'pino-princess'
 import { logs } from '@opentelemetry/api-logs'
 import { trace } from '@opentelemetry/api'
 import type { AttributeValue, Attributes } from '@opentelemetry/api'
@@ -81,6 +82,6 @@ const otelStream = {
 const stream =
   environment.NODE_ENV === 'production'
     ? pino.multistream([{ stream: process.stdout }, { stream: otelStream }])
-    : (pino.transport({ target: 'pino-princess' }) as pino.DestinationStream)
+    : (princess() as pino.DestinationStream)
 
 export const logger = pino({ level: environment.LOG_LEVEL }, stream)
