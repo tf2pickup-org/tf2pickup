@@ -28,3 +28,5 @@ publicHoistPattern:
   - '@fastify/*'
   - '@opentelemetry/*'
   - 'thread-stream'
+  - 'sonic-boom'
+  - 'pino-std-serializers'
