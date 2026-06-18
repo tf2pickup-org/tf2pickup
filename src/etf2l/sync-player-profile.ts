@@ -32,7 +32,7 @@ export async function syncPlayerProfile(playerId: SteamId64) {
           })
           break
         case 429:
-          logger.warn(
+          logger.debug(
             { steamId: player.steamId },
             'ETF2L API rate limited while syncing player profile, rescheduling',
           )

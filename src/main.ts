@@ -89,9 +89,8 @@ app.addHook('onSend', async (request, reply) => {
 })
 
 app.setErrorHandler((error, request, reply) => {
-  logger.error(error)
-
   if (!(error instanceof Error)) {
+    logger.error(error)
     return
   }
 
@@ -100,6 +99,17 @@ app.setErrorHandler((error, request, reply) => {
   if ('statusCode' in error && typeof error.statusCode === 'number') {
     statusCode = error.statusCode
     message = error.message
+  }
+
+  // Only server faults (5xx) are genuine errors. Client errors (4xx) are routine
+  // — unknown players, aborted games, queue races, validation — so don't log
+  // them at error level. 404s and 429s are noisy enough to belong at info.
+  if (statusCode >= 500) {
+    logger.error(error)
+  } else if (statusCode === 404 || statusCode === 429) {
+    logger.info(error)
+  } else {
+    logger.warn(error)
   }
 
   const accept = request.accepts()
