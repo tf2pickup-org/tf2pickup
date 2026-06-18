@@ -180,17 +180,6 @@ export default fp(
     )
 
     events.on(
-      'match/score:final',
-      safe(async ({ gameNumber, team, score }) => {
-        await update(gameNumber, {
-          $set: {
-            [`score.${team}`]: score,
-          },
-        })
-      }),
-    )
-
-    events.on(
       'match/logs:uploaded',
       safe(async ({ gameNumber, logsUrl }) => {
         await update(gameNumber, { $set: { logsUrl } })

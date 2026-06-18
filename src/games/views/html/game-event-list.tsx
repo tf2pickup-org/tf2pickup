@@ -11,6 +11,7 @@ import { isBot } from '../../../shared/types/bot'
 import { players } from '../../../players'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { errors } from '../../../errors'
+import { isStopwatchGame } from '../../is-stopwatch-game'
 
 const renderedEvents = [
   GameEventType.gameCreated,
@@ -28,6 +29,8 @@ const renderedEvents = [
   GameEventType.playerReplaced,
 
   GameEventType.roundEnded,
+  GameEventType.scoreCorrected,
+  GameEventType.teamsSwapped,
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
@@ -63,6 +66,14 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
     return <></>
   }
 
+  // On stopwatch (payload & attack/defend) maps the per-round score only counts
+  // captured control points, not the match score, so "Round ended" rows like
+  // "BLU: 4 RED: 4" are meaningless to viewers. Hide them on those maps; the
+  // "Teams swapped sides" and "Score corrected" events tell the real story.
+  if (props.event.event === GameEventType.roundEnded && isStopwatchGame(props.game.events)) {
+    return <></>
+  }
+
   return (
     <div class="game-event" data-tone={getGameEventTone(props.event.event)}>
       <span class="at" safe>
@@ -78,6 +89,8 @@ function GameEvent(props: { event: GameEventModel; game: GameModel }) {
 function getGameEventTone(event: GameEventType) {
   switch (event) {
     case GameEventType.gameServerInitialized:
+    case GameEventType.scoreCorrected:
+    case GameEventType.teamsSwapped:
       return 'info'
     case GameEventType.substituteRequested:
       return 'warning'
@@ -295,6 +308,21 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         </div>
       )
     }
+    case GameEventType.scoreCorrected: {
+      return (
+        <div class="flex flex-row items-center gap-2">
+          <span class="flex-1">Score corrected</span>
+          <span class="bg-team-blu rounded-sm px-2 py-1 tabular-nums">
+            BLU: {props.event.score.blu}
+          </span>
+          <span class="bg-team-red rounded-sm px-2 py-1 tabular-nums">
+            RED: {props.event.score.red}
+          </span>
+        </div>
+      )
+    }
+    case GameEventType.teamsSwapped:
+      return <span>Teams swapped sides</span>
 
     default:
       return <span class="italic">{props.event.event}</span>

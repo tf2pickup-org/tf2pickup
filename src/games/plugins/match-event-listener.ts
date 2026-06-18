@@ -49,9 +49,10 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'round length',
+    // payload/attack-defend maps emit "Mini_Round_Length" instead of "Round_Length"
     // https://regex101.com/r/mvOYMz/3
     regex:
-      /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Length" \(seconds "([\d.]+)"\)$/,
+      /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "(?:Mini_)?Round_Length" \(seconds "([\d.]+)"\)$/,
     handle: (gameNumber, matches) => {
       if (matches[1]) {
         const seconds = parseFloat(matches[1])
@@ -155,6 +156,21 @@ const gameEvents: GameEvent[] = [
           gameNumber,
           team: fixTeamName(teamName),
           score: Number(score),
+        })
+      }
+    },
+  },
+  {
+    name: 'point captured',
+    // https://regex101.com/r/3fJZ4r/1
+    regex: /^[\d/\s\-:]+Team "(.[^"]+)" triggered "pointcaptured" \(cp "(\d+)"\)/,
+    handle: (gameNumber, matches) => {
+      const [, teamName, controlPoint] = matches
+      if (teamName && controlPoint) {
+        events.emit('match/controlPoint:captured', {
+          gameNumber,
+          team: fixTeamName(teamName),
+          controlPoint: Number(controlPoint),
         })
       }
     },

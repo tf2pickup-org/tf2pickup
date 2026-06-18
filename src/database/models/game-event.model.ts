@@ -23,6 +23,8 @@ export enum GameEventType {
   playerLeftGameServer = 'player left game server',
 
   roundEnded = 'round ended',
+  scoreCorrected = 'score corrected',
+  teamsSwapped = 'teams swapped',
 }
 
 export interface GameCreated {
@@ -125,6 +127,24 @@ export interface RoundEnded {
   winner: Tf2Team
   lengthMs: number
   score: Record<Tf2Team, number>
+
+  // control points captured by each team during this round, used to
+  // recompute the match score on attack/defend payload maps where TF2's
+  // own "final score" reporting is broken
+  captures?: Record<Tf2Team, number[]> | undefined
+}
+
+export interface ScoreCorrected {
+  event: GameEventType.scoreCorrected
+  at: Date
+  score: Record<Tf2Team, number>
+}
+
+// emitted between rounds on attack/defend & payload (stopwatch) maps, where the
+// teams switch sides after each round
+export interface TeamsSwapped {
+  event: GameEventType.teamsSwapped
+  at: Date
 }
 
 export type GameEventModel =
@@ -143,3 +163,5 @@ export type GameEventModel =
   | SubstituteRequested
   | PlayerReplaced
   | RoundEnded
+  | ScoreCorrected
+  | TeamsSwapped

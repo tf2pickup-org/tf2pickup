@@ -159,4 +159,24 @@ describe('gameEventToPublicDto()', () => {
       score: { red: 1, blu: 0 },
     })
   })
+
+  it('maps scoreCorrected with the score', () => {
+    const event = {
+      event: GameEventType.scoreCorrected,
+      at,
+      score: { red: 1, blu: 0 } as Record<Tf2Team, number>,
+    }
+    expect(gameEventToPublicDto(event)).toEqual({
+      type: 'scoreCorrected',
+      at: atStr,
+      score: { red: 1, blu: 0 },
+    })
+  })
+
+  it('maps teamsSwapped', () => {
+    expect(gameEventToPublicDto({ event: GameEventType.teamsSwapped, at })).toEqual({
+      type: 'teamsSwapped',
+      at: atStr,
+    })
+  })
 })
