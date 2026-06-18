@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.12.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.1...4.12.2) (2026-06-18)
+
+
+### Bug Fixes
+
+* await reply.html/send/redirect to prevent double-send errors ([#677](https://github.com/tf2pickup-org/tf2pickup/issues/677)) ([74ca722](https://github.com/tf2pickup-org/tf2pickup/commit/74ca722559f696aae9b83f26f9359d1d1fa620bf))
+* compute correct final score on attack/defend payload maps ([#672](https://github.com/tf2pickup-org/tf2pickup/issues/672)) ([76bc4c1](https://github.com/tf2pickup-org/tf2pickup/commit/76bc4c1470aa671ad9c52c7c57a22c2abe83ebda))
+* **deps:** update dependency @fastify/otel to v0.19.0 ([3efa2bf](https://github.com/tf2pickup-org/tf2pickup/commit/3efa2bfb54b9ef5492b842e69bf962cf3ddf616f))
+* **deps:** update dependency csv-parse to v7 ([#682](https://github.com/tf2pickup-org/tf2pickup/issues/682)) ([a74bc69](https://github.com/tf2pickup-org/tf2pickup/commit/a74bc692ccc61ede56d0a0a33ad5a649c649ee07))
+* **deps:** update dependency csv-stringify to v6.8.0 ([4a14679](https://github.com/tf2pickup-org/tf2pickup/commit/4a1467927da438741418739110aaeb431f34a147))
+* **logger:** use pino-princess as inline stream in dev ([#683](https://github.com/tf2pickup-org/tf2pickup/issues/683)) ([04f4d92](https://github.com/tf2pickup-org/tf2pickup/commit/04f4d921317e8ebcff4460818b64634a02a28265))
+* **players:** fall back to default Steam avatar when avatar is missing ([#679](https://github.com/tf2pickup-org/tf2pickup/issues/679)) ([f51fac8](https://github.com/tf2pickup-org/tf2pickup/commit/f51fac8e9b7dba424217e8ffd257555240b60d1e))
+
 ## [4.12.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.0...4.12.1) (2026-06-16)
 
 
