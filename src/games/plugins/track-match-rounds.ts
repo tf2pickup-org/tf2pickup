@@ -1,6 +1,8 @@
 import fp from 'fastify-plugin'
+import { MongoError, type UpdateFilter } from 'mongodb'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import type { GameNumber } from '../../database/models/game.model'
+import type { GameRoundProgressModel } from '../../database/models/game-round-progress.model'
 import { events } from '../../events'
 import { logger } from '../../logger'
 import { update } from '../update'
@@ -8,6 +10,25 @@ import { GameEventType } from '../../database/models/game-event.model'
 import { findOne } from '../find-one'
 import { isStopwatchRound } from '../is-stopwatch-round'
 import { collections } from '../../database/collections'
+
+// Upserting into the progress document races on its unique gameNumber index:
+// when two log lines for a brand-new game arrive near-simultaneously, both
+// upserts try to insert and one fails with a duplicate key error. Retrying once
+// succeeds, since the document now exists (same pattern as game-log-sink).
+async function upsertRoundProgress(
+  gameNumber: GameNumber,
+  patch: UpdateFilter<GameRoundProgressModel>,
+) {
+  try {
+    await collections.gamesRoundProgress.updateOne({ gameNumber }, patch, { upsert: true })
+  } catch (error) {
+    if (error instanceof MongoError && error.code === 11000) {
+      await collections.gamesRoundProgress.updateOne({ gameNumber }, patch, { upsert: true })
+    } else {
+      throw error
+    }
+  }
+}
 
 // TF2 reports a round's outcome across several log lines that may arrive in any
 // order — Round_Win, Round_Length and the per-team score. We accumulate them in
@@ -71,11 +92,7 @@ export default fp(
           captures,
         })
       ) {
-        await collections.gamesRoundProgress.updateOne(
-          { gameNumber },
-          { $set: { swapPending: true } },
-          { upsert: true },
-        )
+        await upsertRoundProgress(gameNumber, { $set: { swapPending: true } })
       }
 
       await update(
@@ -103,40 +120,22 @@ export default fp(
     }
 
     events.on('match:roundWon', async ({ gameNumber, winner }) => {
-      await collections.gamesRoundProgress.updateOne(
-        { gameNumber },
-        { $set: { 'round.winner': winner } },
-        { upsert: true },
-      )
+      await upsertRoundProgress(gameNumber, { $set: { 'round.winner': winner } })
       await maybeRoundEnded(gameNumber)
     })
 
     events.on('match:roundLength', async ({ gameNumber, lengthMs }) => {
-      await collections.gamesRoundProgress.updateOne(
-        { gameNumber },
-        { $set: { 'round.lengthMs': lengthMs } },
-        { upsert: true },
-      )
+      await upsertRoundProgress(gameNumber, { $set: { 'round.lengthMs': lengthMs } })
       await maybeRoundEnded(gameNumber)
     })
 
     events.on('match/score:reported', async ({ gameNumber, teamName, score }) => {
-      await collections.gamesRoundProgress.updateOne(
-        { gameNumber },
-        { $set: { [`round.score.${teamName}`]: score } },
-        { upsert: true },
-      )
+      await upsertRoundProgress(gameNumber, { $set: { [`round.score.${teamName}`]: score } })
       await maybeRoundEnded(gameNumber)
     })
 
     events.on('match/controlPoint:captured', async ({ gameNumber, team, controlPoint }) => {
-      await collections.gamesRoundProgress.updateOne(
-        { gameNumber },
-        {
-          $push: { [`round.captures.${team}`]: controlPoint },
-        },
-        { upsert: true },
-      )
+      await upsertRoundProgress(gameNumber, { $push: { [`round.captures.${team}`]: controlPoint } })
     })
 
     events.on('match:started', async ({ gameNumber }) => {
