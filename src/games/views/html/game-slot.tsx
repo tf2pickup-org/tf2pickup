@@ -161,8 +161,14 @@ function DeletedGameSlot(props: { slot: GameSlotModel }) {
       <div class="class-icon">
         <GameClassIcon gameClass={props.slot.gameClass} size={32} />
       </div>
+      <img
+        src={playerAvatarUrl(undefined, 'medium')}
+        width="38"
+        height="38"
+        alt="deleted user's avatar"
+      />
       <span class="player-link">
-        <DeletedUser class="player-name" />
+        <DeletedUser class="text-[20px] font-medium" />
       </span>
     </form>
   )
