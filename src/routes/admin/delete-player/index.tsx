@@ -56,12 +56,13 @@ export default routes(async app => {
         config: { authorize: [PlayerRole.superUser] },
         schema: {
           params: z.object({ steamId: steamId64 }),
-          body: z.object({ confirmation: z.string().optional() }),
+          // htmx 2 sends DELETE parameters in the query string, not the body.
+          querystring: z.object({ confirmation: z.string().optional() }),
         },
       },
       async (request, reply) => {
         const { steamId } = request.params
-        const confirmation = request.body.confirmation?.trim() ?? ''
+        const confirmation = request.query.confirmation?.trim() ?? ''
 
         const player = await collections.players.findOne<DeletePlayerSummary>(
           { steamId },
