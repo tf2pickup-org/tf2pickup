@@ -5,8 +5,9 @@ import type {
 } from '../../../../database/models/activity-log-entry.model'
 import type { PlayerSkill } from '../../../../database/models/player.model'
 import { Pagination, paginate } from '../../../../html/components/pagination'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import { isDeletedUser, type SteamId64 } from '../../../../shared/types/steam-id-64'
 import { activityLog } from '../../../../activity-log'
+import { DeletedUser } from '../../../../html/components/deleted-user'
 
 interface ActivityLogEntryListProps {
   logs: WithId<ActivityLogEntryModel>[]
@@ -150,9 +151,13 @@ function ActivityLogEntry(props: {
       </td>
       <td class="truncate px-4 py-2">
         {player ? (
-          <a href={`/players/${player}`} safe>
-            {playerNames.get(player) ?? player}
-          </a>
+          isDeletedUser(player) ? (
+            <DeletedUser />
+          ) : (
+            <a href={`/players/${player}`} safe>
+              {playerNames.get(player) ?? player}
+            </a>
+          )
         ) : (
           <span class="text-abru-light-25">—</span>
         )}
@@ -164,9 +169,13 @@ function ActivityLogEntry(props: {
         {actor === 'bot' ? (
           <span class="text-abru-light-50">bot</span>
         ) : actor ? (
-          <a href={`/players/${actor}`} safe>
-            {playerNames.get(actor) ?? actor}
-          </a>
+          isDeletedUser(actor) ? (
+            <DeletedUser />
+          ) : (
+            <a href={`/players/${actor}`} safe>
+              {playerNames.get(actor) ?? actor}
+            </a>
+          )
         ) : (
           <span class="text-abru-light-25">—</span>
         )}

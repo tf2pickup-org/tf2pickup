@@ -1,6 +1,7 @@
 import { addBan } from './add-ban'
 import { addChatMute } from './add-chat-mute'
 import { bySteamId } from './by-steam-id'
+import { deletePlayer } from './delete-player'
 import { findByName } from './find-by-name'
 import { getBanExpiryDate } from './get-ban-expiry-date'
 import { hasActiveBan } from './has-active-ban'
@@ -16,6 +17,7 @@ export const players = {
   addBan,
   addChatMute,
   bySteamId,
+  deletePlayer,
   findByName,
   getBanExpiryDate,
   hasActiveBan,
