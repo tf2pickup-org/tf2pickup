@@ -105,7 +105,10 @@ describe('arm()', () => {
     arm(task)
 
     await vi.advanceTimersByTimeAsync(5000)
-    expect(logger.error).toHaveBeenCalled()
+    expect(logger.error).toHaveBeenCalledWith(
+      expect.any(Error),
+      expect.stringContaining('games.freePlayer'),
+    )
     expect(taskExecutionCount.add).toHaveBeenCalledWith(1, {
       name: 'games.freePlayer',
       result: 'error',

@@ -49,7 +49,7 @@ export function arm(task: WithId<TaskModel>) {
       )
     } catch (error) {
       assertIsError(error)
-      logger.error(error)
+      logger.error(error, `scheduled task failed: ${task.name}`)
     }
   }
 }
