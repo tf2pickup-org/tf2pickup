@@ -21,8 +21,7 @@ vi.mock('../database/collections', () => ({
   collections: {
     players: {
       find: vi.fn(() => ({ toArray })),
-      updateOne: vi.fn(),
-      updateMany: vi.fn(),
+      bulkWrite: vi.fn(),
     },
   },
 }))
@@ -46,7 +45,7 @@ describe('syncAvatars', () => {
     await syncAvatars()
 
     expect(getUserSummary).not.toHaveBeenCalled()
-    expect(collections.players.updateOne).not.toHaveBeenCalled()
+    expect(collections.players.bulkWrite).not.toHaveBeenCalled()
   })
 
   it('updates avatars for the players Steam returns', async () => {
@@ -59,17 +58,30 @@ describe('syncAvatars', () => {
     await syncAvatars()
 
     expect(getUserSummary).toHaveBeenCalledWith(['11', '22'])
-    expect(collections.players.updateOne).toHaveBeenCalledWith(
-      { steamId: '11' },
+    expect(collections.players.bulkWrite).toHaveBeenCalledWith([
       {
-        $set: {
-          avatar: { small: 's1', medium: 'm1', large: 'l1' },
-          avatarLastSyncedAt: expect.any(Date),
+        updateOne: {
+          filter: { steamId: '11' },
+          update: {
+            $set: {
+              avatar: { small: 's1', medium: 'm1', large: 'l1' },
+              avatarLastSyncedAt: expect.any(Date),
+            },
+          },
         },
       },
-    )
-    expect(collections.players.updateOne).toHaveBeenCalledTimes(2)
-    expect(collections.players.updateMany).not.toHaveBeenCalled()
+      {
+        updateOne: {
+          filter: { steamId: '22' },
+          update: {
+            $set: {
+              avatar: { small: 's2', medium: 'm2', large: 'l2' },
+              avatarLastSyncedAt: expect.any(Date),
+            },
+          },
+        },
+      },
+    ])
   })
 
   it('marks players Steam does not return as synced so they stop blocking the queue', async () => {
@@ -80,11 +92,25 @@ describe('syncAvatars', () => {
 
     await syncAvatars()
 
-    expect(collections.players.updateOne).toHaveBeenCalledTimes(1)
-    expect(collections.players.updateMany).toHaveBeenCalledWith(
-      { steamId: { $in: ['99'] } },
-      { $set: { avatarLastSyncedAt: expect.any(Date) } },
-    )
+    expect(collections.players.bulkWrite).toHaveBeenCalledWith([
+      {
+        updateOne: {
+          filter: { steamId: '11' },
+          update: {
+            $set: {
+              avatar: { small: 's1', medium: 'm1', large: 'l1' },
+              avatarLastSyncedAt: expect.any(Date),
+            },
+          },
+        },
+      },
+      {
+        updateMany: {
+          filter: { steamId: { $in: ['99'] } },
+          update: { $set: { avatarLastSyncedAt: expect.any(Date) } },
+        },
+      },
+    ])
   })
 
   it('writes nothing when the Steam request fails', async () => {
@@ -93,7 +119,6 @@ describe('syncAvatars', () => {
 
     await syncAvatars()
 
-    expect(collections.players.updateOne).not.toHaveBeenCalled()
-    expect(collections.players.updateMany).not.toHaveBeenCalled()
+    expect(collections.players.bulkWrite).not.toHaveBeenCalled()
   })
 })

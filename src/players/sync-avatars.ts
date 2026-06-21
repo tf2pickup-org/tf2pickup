@@ -56,10 +56,11 @@ export async function syncAvatars() {
 
   const summaryArray = Array.isArray(summaries) ? summaries : [summaries]
 
-  for (const summary of summaryArray) {
-    await collections.players.updateOne(
-      { steamId: steamId64.parse(summary.steamID) },
-      {
+  type AvatarSyncOp = Parameters<typeof collections.players.bulkWrite>[0][number]
+  const operations: AvatarSyncOp[] = summaryArray.map(summary => ({
+    updateOne: {
+      filter: { steamId: steamId64.parse(summary.steamID) },
+      update: {
         $set: {
           avatar: {
             small: summary.avatar.small,
@@ -69,8 +70,8 @@ export async function syncAvatars() {
           avatarLastSyncedAt: now,
         },
       },
-    )
-  }
+    },
+  }))
 
   // Mark players Steam returned no summary for (deleted / banned / private
   // accounts) as synced too, so they don't keep sorting first and starving the
@@ -78,11 +79,16 @@ export async function syncAvatars() {
   const syncedIds = new Set(summaryArray.map(summary => steamId64.parse(summary.steamID)))
   const notReturned = steamIds.filter(steamId => !syncedIds.has(steamId))
   if (notReturned.length > 0) {
-    await collections.players.updateMany(
-      { steamId: { $in: notReturned } },
-      { $set: { avatarLastSyncedAt: now } },
-    )
+    operations.push({
+      updateMany: {
+        filter: { steamId: { $in: notReturned } },
+        update: { $set: { avatarLastSyncedAt: now } },
+      },
+    })
   }
+
+  // A single batched round-trip instead of one write per player.
+  await collections.players.bulkWrite(operations)
 
   logger.debug(
     { requested: steamIds.length, updated: summaryArray.length, skipped: notReturned.length },
