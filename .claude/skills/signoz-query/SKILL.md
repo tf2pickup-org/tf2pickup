@@ -42,13 +42,34 @@ Body skeleton (swap `dataSource` and the builder query):
 ### Metrics query (a builderQuery)
 
 ```json
-{ "queryName":"A","dataSource":"metrics","expression":"A","disabled":false,
-  "aggregateOperator":"sum_rate",
-  "aggregateAttribute":{"key":"tf2pickup.tasks.execution.count","dataType":"float64","type":"Sum","isColumn":true},
-  "timeAggregation":"increase","spaceAggregation":"sum",
-  "filters":{"op":"AND","items":[{"key":{"key":"result","dataType":"string","type":"tag"},"op":"=","value":"error"}]},
-  "groupBy":[{"key":"name","dataType":"string","type":"tag"}],
-  "stepInterval":60,"reduceTo":"sum" }
+{
+  "queryName": "A",
+  "dataSource": "metrics",
+  "expression": "A",
+  "disabled": false,
+  "aggregateOperator": "sum_rate",
+  "aggregateAttribute": {
+    "key": "tf2pickup.tasks.execution.count",
+    "dataType": "float64",
+    "type": "Sum",
+    "isColumn": true
+  },
+  "timeAggregation": "increase",
+  "spaceAggregation": "sum",
+  "filters": {
+    "op": "AND",
+    "items": [
+      {
+        "key": { "key": "result", "dataType": "string", "type": "tag" },
+        "op": "=",
+        "value": "error"
+      }
+    ]
+  },
+  "groupBy": [{ "key": "name", "dataType": "string", "type": "tag" }],
+  "stepInterval": 60,
+  "reduceTo": "sum"
+}
 ```
 
 - App metrics are named `tf2pickup.*`. Discover them:
@@ -64,20 +85,37 @@ Body skeleton (swap `dataSource` and the builder query):
 ### Logs query
 
 ```json
-{ "queryName":"A","dataSource":"logs","expression":"A","disabled":false,
-  "aggregateOperator":"noop",                       // "count" for counts
-  "aggregateAttribute":{"key":"","dataType":"","type":""},
-  "filters":{"op":"AND","items":[
-    {"key":{"key":"body","dataType":"string","type":""},"op":"contains","value":"request completed"}
-  ]},
-  "groupBy":[],"orderBy":[{"columnName":"timestamp","order":"desc"}],
-  "limit":20,"offset":0,"pageSize":20,"stepInterval":60 }
+{
+  "queryName": "A",
+  "dataSource": "logs",
+  "expression": "A",
+  "disabled": false,
+  "aggregateOperator": "noop", // "count" for counts
+  "aggregateAttribute": { "key": "", "dataType": "", "type": "" },
+  "filters": {
+    "op": "AND",
+    "items": [
+      {
+        "key": { "key": "body", "dataType": "string", "type": "" },
+        "op": "contains",
+        "value": "request completed"
+      }
+    ]
+  },
+  "groupBy": [],
+  "orderBy": [{ "columnName": "timestamp", "order": "desc" }],
+  "limit": 20,
+  "offset": 0,
+  "pageSize": 20,
+  "stepInterval": 60
+}
 ```
 
 Read results from `.data.result[0].list[].data` (fields: `body`, `attributes_string`,
 `attributes_number`, `resources_string`, `severity_text`, ...).
 
 Log gotchas:
+
 - **`severity_text` is UPPERCASE**: `INFO`, `WARN`, `ERROR` (filtering `"error"` returns nothing).
 - Error objects are flattened to attributes `exception.type` / `exception.message` /
   `exception.stacktrace` (pino→otel bridge in `src/logger.ts`); `msg` becomes `body`.
@@ -128,15 +166,17 @@ Threshold rule body:
 - In annotations, label keys are dotted→underscored: `service.name` → `{{$labels.service_name}}`.
 
 Channels:
+
 - `GET /api/v1/channels` / `POST /api/v1/channels`. SigNoz has no native Discord — register Discord
   as a `slack` channel with `slack_configs[].api_url = <discord-webhook>/slack`.
 - `POST /api/v1/testChannel` (body = channel config with real `api_url`) sends a live test → `204`.
 
 ### Existing rules
+
 - **Scheduled task failures** (`019ee4e4-1b5e-7ca1-b65c-a031d956fd88`) — metric
-  `tf2pickup.tasks.execution.count{result=error}`, >5 in 5m, grouped by `name`.
+  `tf2pickup.tasks.execution.count{result=error}`, more than 5 in 5m, grouped by `name`.
 - **HTTP 5xx errors** (`019ee513-32f2-70c8-8913-f09ed70c4c96`) — logs `res.statusCode>=500`,
-  >5 in 5m, grouped by `service.name`.
+  more than 5 in 5m, grouped by `service.name`.
 - Both notify the `discord` channel.
 
 ## Tips
