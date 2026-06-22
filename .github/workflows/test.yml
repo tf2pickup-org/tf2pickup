@@ -23,11 +23,11 @@ jobs:
     name: unit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
       - uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.8.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24.17.0
           cache: pnpm
@@ -46,7 +46,7 @@ jobs:
     steps:
       - name: Docker meta
         id: docker_meta
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@v6.1.0
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
@@ -58,11 +58,11 @@ jobs:
             type=semver,pattern=stable,enable=${{ !contains(github.event.push.ref, 'alpha') && !contains(github.event.push.ref, 'beta') && !contains(github.event.push.ref, 'rc') }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
+        uses: docker/setup-buildx-action@v4.1.0
 
       - name: Build
         id: docker_build
-        uses: docker/build-push-action@v7
+        uses: docker/build-push-action@v7.2.0
         with:
           push: false
           tags: ${{ steps.docker_meta.outputs.tags }}
@@ -73,7 +73,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: image
           path: /tmp/image.tar
@@ -123,12 +123,12 @@ jobs:
           --user root
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
       - uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.8.0
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24.17.0
           cache: pnpm
@@ -140,7 +140,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Download artifact
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v8.0.1
         with:
           name: image
           path: /tmp
@@ -223,7 +223,7 @@ jobs:
         run: docker container logs nginx
 
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: blob-report-${{ matrix.queue-config }}-${{ matrix.shard }}
           path: blob-report
@@ -235,11 +235,11 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6.0.3
       - uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.8.0
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v6.4.0
         with:
           node-version: 24.17.0
           cache: pnpm
@@ -247,7 +247,7 @@ jobs:
         run: pnpm install
 
       - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@v8.0.1
         continue-on-error: true
         with:
           path: all-blob-reports
@@ -260,13 +260,13 @@ jobs:
 
       - name: Upload HTML report
         if: ${{ hashFiles('playwright-report/**') != '' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: html-report-attempt-${{ github.run_attempt }}
           path: playwright-report
           retention-days: 30
 
-      - uses: daun/playwright-report-summary@v4
+      - uses: daun/playwright-report-summary@v4.0.0
         if: ${{ hashFiles('results.json') != '' }}
         with:
           report-file: results.json
