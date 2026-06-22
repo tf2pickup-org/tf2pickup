@@ -23,7 +23,7 @@ jobs:
     name: unit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.8.0
@@ -123,7 +123,7 @@ jobs:
           --user root
 
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.8.0
@@ -235,7 +235,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - uses: pnpm/action-setup@v6.0.9
         with:
           version: 11.8.0
