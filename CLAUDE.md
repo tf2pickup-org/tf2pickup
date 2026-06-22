@@ -71,6 +71,10 @@ Collections are exported from `src/database/collections.ts` with TypeScript mode
 
 All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for available variables. Key ones: `MONGODB_URI`, `STEAM_API_KEY`, `QUEUE_CONFIG` (6v6/9v9/bball/ultiduo/test), `WEBSITE_URL`.
 
+### Observability
+
+OpenTelemetry (`src/otel.ts`) ships metrics (`tf2pickup.*`), logs, and traces to SigNoz at `https://logs.tf2pickup.org` (`SIGNOZ_API_KEY` in `.env`). To query it from the CLI — investigate errors/latency, search logs, or build dashboards/alerts — use the `signoz-query` skill (`.claude/skills/signoz-query/SKILL.md`).
+
 ## Conventions
 
 - **One export per file** — the exported function name must match the file name (e.g., `foo-bar.ts` → `export function fooBar()`)
