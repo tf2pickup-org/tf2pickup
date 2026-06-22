@@ -13,7 +13,9 @@ const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
 
 export async function PlayerListPage() {
   const players = await collections.players
-    .find<Pick<PlayerModel, 'steamId' | 'name'>>({}, { projection: { steamId: 1, name: 1 } })
+    .find<
+      Pick<PlayerModel, 'steamId' | 'name'>
+    >({}, { projection: { _id: 0, steamId: 1, name: 1 } })
     .toArray()
   const groupedPlayers = groupPlayers(players)
 
