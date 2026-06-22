@@ -8,14 +8,19 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { makeTitle } from '../../../html/make-title'
 
-const alpha = Array.from(Array(26)).map((_e, i) => i + 65)
-const groups = ['#', ...alpha.map(x => String.fromCharCode(x))]
+const latin = Array.from(Array(26)).map((_e, i) => String.fromCharCode(i + 65))
 
 export async function PlayerListPage() {
   const players = await collections.players
     .find<Pick<PlayerModel, 'steamId' | 'name'>>({}, { projection: { steamId: 1, name: 1 } })
     .toArray()
   const groupedPlayers = groupPlayers(players)
+
+  // Append non-Latin letters (e.g. Cyrillic) only when this instance's players use them.
+  const extraGroups = Array.from(groupedPlayers.keys())
+    .filter(key => key !== '#' && !latin.includes(key))
+    .sort((a, b) => a.localeCompare(b))
+  const groups = ['#', ...latin, ...extraGroups]
 
   return (
     <Layout
@@ -29,7 +34,7 @@ export async function PlayerListPage() {
         <div class="container mx-auto">
           <div class="text-abru-light-75 my-9 text-[48px] font-bold">Players</div>
 
-          <div class="text-abru-light-75 hidden flex-row justify-between text-2xl font-bold md:flex">
+          <div class="text-abru-light-75 hidden flex-row flex-wrap justify-between gap-x-3 gap-y-1 text-2xl font-bold md:flex">
             {groups.map(letter => (
               <a href={`#${letter}`} style="uppercase" safe>
                 {letter}
@@ -70,17 +75,22 @@ function groupPlayers(
   players: Pick<PlayerModel, 'steamId' | 'name'>[],
 ): Map<string, Pick<PlayerModel, 'steamId' | 'name'>[]> {
   return players.reduce((result, player) => {
-    let key = player.name
+    const first = player.name
       .replace(
         /[\s\p{Emoji}\p{Emoji_Modifier}\p{Emoji_Component}\p{Emoji_Modifier_Base}\p{Emoji_Presentation}]/gu,
         '',
       )
       .charAt(0)
-      .toLocaleUpperCase()
-    key = deburr(key)
 
-    if (!/[a-zA-Z]/.test(key)) {
-      key = '#'
+    let key: string
+    if (/\p{Script=Cyrillic}/u.test(first)) {
+      key = first.toLocaleUpperCase('ru')
+      if (key === 'Ё') key = 'Е'
+    } else {
+      key = deburr(first).toLocaleUpperCase()
+      if (!/[a-zA-Z]/.test(key)) {
+        key = '#'
+      }
     }
 
     if (!result.has(key)) {
