@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.13.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.3...4.13.0) (2026-06-22)
+
+
+### Features
+
+* **branding:** add tf2pick-up.ru branding ([#691](https://github.com/tf2pickup-org/tf2pickup/issues/691)) ([a0b1034](https://github.com/tf2pickup-org/tf2pickup/commit/a0b10348403d52ce15f9119f7bb4c02890324419))
+
 ## [4.12.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.2...4.12.3) (2026-06-22)
 
 
