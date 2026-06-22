@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.12.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.2...4.12.3) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency nanoid to v5.1.14 ([0c408ba](https://github.com/tf2pickup-org/tf2pickup/commit/0c408babb5f175e1e65756d91bc2f9d365337517))
+* **etf2l:** surface the real cause in scheduled task error logs ([#685](https://github.com/tf2pickup-org/tf2pickup/issues/685)) ([41ca07c](https://github.com/tf2pickup-org/tf2pickup/commit/41ca07cb67d7e6728aa70365e8d5d04d0f6d19e9)), closes [#671](https://github.com/tf2pickup-org/tf2pickup/issues/671)
+
 ## [4.12.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.1...4.12.2) (2026-06-18)
 
 
