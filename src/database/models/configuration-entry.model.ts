@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
+import { HideServerInfoMode } from '../../shared/types/hide-server-info-mode'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 
 export const configurationSchema = z.discriminatedUnion('key', [
@@ -121,6 +122,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.enum(LogsTfUploadMethod).default(LogsTfUploadMethod.backend),
     })
     .describe('Method of uploading logs to the logs.tf service'),
+  z
+    .object({
+      key: z.literal('games.hide_server_info_from_spectators'),
+      value: z.enum(HideServerInfoMode).default(HideServerInfoMode.auto),
+    })
+    .describe(
+      'Hide the game server connect info (incl. SourceTV) from non-participants to mitigate DDoS. "auto" only hides it for non-serveme.tf servers, which have built-in DDoS protection.',
+    ),
   z.object({
     key: z.literal('games.voice_server_type'),
     value: z.enum(VoiceServerType).default(VoiceServerType.none),

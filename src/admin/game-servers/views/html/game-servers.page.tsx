@@ -1,6 +1,7 @@
 import { servemeTf } from '../../../../serveme-tf'
 import { tf2QuickServer } from '../../../../tf2-quick-server'
 import { Admin } from '../../../views/html/admin'
+import { HideServerInfoSetting } from './hide-server-info-setting'
 import { ServemeTfBanGameServers } from './serveme-tf-ban-gameservers'
 import { ServemeTfPreferredRegion } from './serveme-tf-preferred-region'
 import { ServemeTfStatus } from './serveme-tf-status'
@@ -12,6 +13,11 @@ export async function GameServersPage() {
   return (
     <Admin activePage="game-servers">
       <div class="admin-panel-set">
+        <h4 class="pb-4">General</h4>
+        <HideServerInfoSetting />
+      </div>
+
+      <div class="admin-panel-set mt-4">
         <h4 class="pb-4">Static servers</h4>
         <StaticGameServerList />
       </div>
