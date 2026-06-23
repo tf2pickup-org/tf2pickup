@@ -1,11 +1,15 @@
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { shouldHideServerInfo } from '../../should-hide-server-info'
 import { ConnectString } from './connect-string'
 import { JoinGameButton } from './join-game-button'
 import { JoinVoiceButton } from './join-voice-button'
 
 export function ConnectInfo(props: {
-  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  game: Pick<
+    GameModel,
+    'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString' | 'gameServer'
+  >
   actor: SteamId64 | undefined
 }) {
   const connectInfoVisible = [
@@ -34,7 +38,10 @@ export function ConnectInfo(props: {
 }
 
 async function UserConnectString(props: {
-  game: Pick<GameModel, 'state' | 'number' | 'slots' | 'connectString' | 'stvConnectString'>
+  game: Pick<
+    GameModel,
+    'state' | 'number' | 'slots' | 'connectString' | 'stvConnectString' | 'gameServer'
+  >
   actor: SteamId64 | undefined
 }) {
   let connectString: string | undefined
@@ -48,10 +55,15 @@ async function UserConnectString(props: {
       content = <i>configuring server...</i>
       break
     default:
-      connectString = actorInGame(props.game, props.actor)
-        ? (props.game.connectString ?? '')
-        : (props.game.stvConnectString ?? '')
-      content = connectString
+      if (actorInGame(props.game, props.actor)) {
+        connectString = props.game.connectString ?? ''
+        content = connectString
+      } else if (await shouldHideServerInfo(props.game)) {
+        content = <i>hidden</i>
+      } else {
+        connectString = props.game.stvConnectString ?? ''
+        content = connectString
+      }
   }
 
   return (

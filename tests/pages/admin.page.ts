@@ -97,6 +97,17 @@ export class AdminPage {
     }
   }
 
+  async configureHideServerInfo(mode: 'never' | 'auto' | 'always') {
+    await this.page.goto('/admin/game-servers')
+    await Promise.all([
+      this.page.waitForResponse(
+        resp =>
+          resp.url().includes('/admin/game-servers/hide-server-info') && resp.status() === 200,
+      ),
+      this.page.getByLabel('Hide server info from spectators').selectOption(mode),
+    ])
+  }
+
   async configurePlayerSkillThreshold(threshold: number | null) {
     await this.page.goto('/admin/player-restrictions')
     await this.page

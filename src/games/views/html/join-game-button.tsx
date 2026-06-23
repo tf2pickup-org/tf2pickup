@@ -7,9 +7,13 @@ import { GameState, type GameModel } from '../../../database/models/game.model'
 import { IconEye, IconLoader3, IconPlayerPlayFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { connectStringToLink } from '../../connect-string-to-link'
+import { shouldHideServerInfo } from '../../should-hide-server-info'
 
 export async function JoinGameButton(props: {
-  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  game: Pick<
+    GameModel,
+    'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString' | 'gameServer'
+  >
   actor: SteamId64 | undefined
 }) {
   return (
@@ -20,7 +24,10 @@ export async function JoinGameButton(props: {
 }
 
 async function JoinGameButtonContent(props: {
-  game: Pick<GameModel, 'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString'>
+  game: Pick<
+    GameModel,
+    'number' | 'state' | 'slots' | 'connectString' | 'stvConnectString' | 'gameServer'
+  >
   actor: SteamId64 | undefined
 }) {
   let btnContent: JSX.Element
@@ -34,6 +41,9 @@ async function JoinGameButtonContent(props: {
     )
   } else {
     const slot = getPlayerSlot(props.game, props.actor)
+    if (!slot && (await shouldHideServerInfo(props.game))) {
+      return <></>
+    }
     const connectString = (slot ? props.game.connectString : props.game.stvConnectString) ?? ''
     connectLink = connectStringToLink(connectString)
     btnContent = slot ? <JoinAsPlayer slot={slot} /> : <JoinAsSpectator />
