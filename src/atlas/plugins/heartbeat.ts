@@ -1,10 +1,11 @@
-import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds, subDays } from 'date-fns'
 import { debounce } from 'es-toolkit'
 import fp from 'fastify-plugin'
 import { environment } from '../../environment'
 import { events } from '../../events'
 import { safe } from '../../utils/safe'
 import { sendHeartbeat } from '../send-heartbeat'
+import { sendActivity } from '../send-activity'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -20,6 +21,13 @@ export default fp(
 
     setInterval(safe(sendHeartbeat), minutesToMilliseconds(3)).unref()
     safe(sendHeartbeat)()
+
+    // backfill the full history once on boot, then keep recent days fresh
+    setInterval(
+      safe(() => sendActivity(subDays(new Date(), 2))),
+      minutesToMilliseconds(3),
+    ).unref()
+    safe(() => sendActivity())()
   },
   { name: 'atlas heartbeat' },
 )
