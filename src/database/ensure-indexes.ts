@@ -21,6 +21,8 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   ],
   players: [
     { spec: { steamId: 1 }, options: { unique: true } },
+    // Covers the player list query (steamId + name, no _id) so it runs index-only.
+    { spec: { steamId: 1, name: 1 } },
     { spec: { 'stats.totalGames': -1 } },
     { spec: { 'stats.gamesByClass.medic': -1 } },
   ],
