@@ -1,5 +1,23 @@
 # Changelog
 
+# [4.14.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.13.0...4.14.0) (2026-06-23)
+
+
+### Bug Fixes
+
+* group Cyrillic player names under their own alphabet ([#692](https://github.com/tf2pickup-org/tf2pickup/issues/692)) ([39403da](https://github.com/tf2pickup-org/tf2pickup/commit/39403dac0abc8ea1a44a17ce97e7e0b7d2e866a2))
+* stop logging routine queue and match events as errors ([#694](https://github.com/tf2pickup-org/tf2pickup/issues/694)) ([9e26269](https://github.com/tf2pickup-org/tf2pickup/commit/9e2626934de6152c3ab62d04842a97deb3e8950e)), closes [hi#volume](https://github.com/hi/issues/volume)
+
+
+### Features
+
+* report daily game launch counts to atlas ([#695](https://github.com/tf2pickup-org/tf2pickup/issues/695)) ([d1a3228](https://github.com/tf2pickup-org/tf2pickup/commit/d1a3228be89eb234553ad88edcb127520f85b1ce)), closes [atlas#1](https://github.com/atlas/issues/1) [tf2pickup-org/atlas#1](https://github.com/tf2pickup-org/atlas/issues/1)
+
+
+### Performance Improvements
+
+* serve player list query from a covering index ([#693](https://github.com/tf2pickup-org/tf2pickup/issues/693)) ([c52e59f](https://github.com/tf2pickup-org/tf2pickup/commit/c52e59f8b6b076cb43094b8dcc96b613a17b1846)), closes [#692](https://github.com/tf2pickup-org/tf2pickup/issues/692)
+
 # [4.13.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.3...4.13.0) (2026-06-22)
 
 
