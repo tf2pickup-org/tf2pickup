@@ -263,6 +263,12 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.number().default(minutesToMilliseconds(5)),
     })
     .describe('TF2 Quick Server creation timeout'),
+  z
+    .object({
+      key: z.literal('log_receiver.use_worker_thread'),
+      value: z.boolean().default(false),
+    })
+    .describe('Experimental: process game server logs in a dedicated worker thread'),
   z.object({
     key: z.literal('twitchtv.promoted_streams'),
     value: z
