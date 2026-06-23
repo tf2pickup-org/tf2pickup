@@ -47,6 +47,6 @@ describe('shouldHideServerInfo()', () => {
 
   it('hides when mode is auto and there is no game server yet', async () => {
     vi.mocked(configuration.get).mockResolvedValue(HideServerInfoMode.auto)
-    expect(await shouldHideServerInfo({ gameServer: undefined })).toBe(true)
+    expect(await shouldHideServerInfo({})).toBe(true)
   })
 })
