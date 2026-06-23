@@ -14,6 +14,16 @@ export default fp(
     events.on(
       'match:started',
       safe(async ({ gameNumber }) => {
+        // Game servers fire match:started repeatedly (map load, mp_restartgame).
+        // The first event transitions the game launching -> started; ignore the
+        // rest instead of failing to find a launching game.
+        const game = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1 } },
+        )
+        if (game?.state !== GameState.launching) {
+          return
+        }
         await update(
           { number: gameNumber, state: GameState.launching },
           {
