@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.14.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.14.0...4.14.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* hide game server info from spectators to mitigate DDoS ([#697](https://github.com/tf2pickup-org/tf2pickup/issues/697)) ([c9688ff](https://github.com/tf2pickup-org/tf2pickup/commit/c9688ff27655d8fc7706e5e0743058ce7f624375))
+* key rate limiter on real client IP ([#696](https://github.com/tf2pickup-org/tf2pickup/issues/696)) ([b929f97](https://github.com/tf2pickup-org/tf2pickup/commit/b929f9780e1191b298c61a709b9ff5787a2118f2))
+
 # [4.14.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.13.0...4.14.0) (2026-06-23)
 
 
