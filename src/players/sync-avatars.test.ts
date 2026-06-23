@@ -119,11 +119,14 @@ describe('syncAvatars', () => {
 
     await syncAvatars()
 
-    expect(collections.players.updateOne).not.toHaveBeenCalled()
-    expect(collections.players.updateMany).toHaveBeenCalledWith(
-      { steamId: { $in: ['11', '22'] } },
-      { $set: { avatarLastSyncedAt: expect.any(Date) } },
-    )
+    expect(collections.players.bulkWrite).toHaveBeenCalledWith([
+      {
+        updateMany: {
+          filter: { steamId: { $in: ['11', '22'] } },
+          update: { $set: { avatarLastSyncedAt: expect.any(Date) } },
+        },
+      },
+    ])
   })
 
   it('writes nothing when the Steam request fails', async () => {
