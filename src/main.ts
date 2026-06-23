@@ -7,6 +7,7 @@ import { logger, logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
+import { realIp } from './utils/real-ip'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
@@ -19,7 +20,9 @@ app.setValidatorCompiler(validatorCompiler)
 logger.info(`starting tf2pickup.org ${version}`)
 
 if (process.env['CI'] !== 'true') {
-  await app.register(await import('@fastify/rate-limit'))
+  await app.register(await import('@fastify/rate-limit'), {
+    keyGenerator: req => realIp(req),
+  })
 }
 
 await app.register(await import('@fastify/helmet'), {
