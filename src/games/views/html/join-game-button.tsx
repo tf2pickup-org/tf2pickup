@@ -5,6 +5,7 @@ import {
 } from '../../../database/models/game-slot.model'
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import { IconEye, IconLoader3, IconPlayerPlayFilled } from '../../../html/components/icons'
+import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { connectStringToLink } from '../../connect-string-to-link'
 import { shouldHideServerInfo } from '../../should-hide-server-info'
@@ -41,7 +42,11 @@ async function JoinGameButtonContent(props: {
     )
   } else {
     const slot = getPlayerSlot(props.game, props.actor)
-    if (!slot && (await shouldHideServerInfo(props.game))) {
+    if (
+      !slot &&
+      (await shouldHideServerInfo(props.game)) &&
+      !(await players.isAdmin(props.actor))
+    ) {
       return <></>
     }
     const connectString = (slot ? props.game.connectString : props.game.stvConnectString) ?? ''

@@ -5,6 +5,7 @@ import { findByName } from './find-by-name'
 import { getBanExpiryDate } from './get-ban-expiry-date'
 import { hasActiveBan } from './has-active-ban'
 import { hasActiveChatMute } from './has-active-chat-mute'
+import { isAdmin } from './is-admin'
 import { revokeBan } from './revoke-ban'
 import { revokeChatMute } from './revoke-chat-mute'
 import { setSkill } from './set-skill'
@@ -20,6 +21,7 @@ export const players = {
   getBanExpiryDate,
   hasActiveBan,
   hasActiveChatMute,
+  isAdmin,
   revokeBan,
   revokeChatMute,
   setSkill,
