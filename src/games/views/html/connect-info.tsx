@@ -1,4 +1,5 @@
 import { GameState, type GameModel } from '../../../database/models/game.model'
+import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { shouldHideServerInfo } from '../../should-hide-server-info'
 import { ConnectString } from './connect-string'
@@ -58,7 +59,10 @@ async function UserConnectString(props: {
       if (actorInGame(props.game, props.actor)) {
         connectString = props.game.connectString ?? ''
         content = connectString
-      } else if (await shouldHideServerInfo(props.game)) {
+      } else if (
+        (await shouldHideServerInfo(props.game)) &&
+        !(await players.isAdmin(props.actor))
+      ) {
         content = <i>hidden</i>
       } else {
         connectString = props.game.stvConnectString ?? ''
