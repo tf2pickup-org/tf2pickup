@@ -16,7 +16,7 @@ export function DeletePlayerPage(props: {
   return (
     <Admin activePage="delete-player">
       <div class="admin-panel-set">
-        <div class="bg-abru-dark-6 border-l-4 border-red-500 p-4 text-sm">
+        <div class="bg-abru-dark-6 mb-4 border-l-4 border-red-500 p-4 text-sm">
           <p class="font-bold text-red-400">Warning — this action is irreversible.</p>
           <p class="text-abru-light-50 mt-1">
             Deleting a player permanently removes their profile. The profile page will no longer be
@@ -111,7 +111,7 @@ export function DeletePlayerCard(props: { player: DeletePlayerSummary }) {
               type="text"
               name="confirmation"
               autocomplete="off"
-              class="mt-1 w-full"
+              class="bg-abru-dark-6! mt-1 w-full"
               required
             />
           </label>
