@@ -11,7 +11,7 @@ export const getStreamsResponseSchema = z.object({
       game_name: z.string(),
       type: z.enum(['live']),
       title: z.string(),
-      tags: z.array(z.string()),
+      tags: z.array(z.string()).nullable(),
       viewer_count: z.number(),
       started_at: z.string(),
       language: z.string(),
