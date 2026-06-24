@@ -25,6 +25,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { steamId: 1, name: 1 } },
     { spec: { 'stats.totalGames': -1 } },
     { spec: { 'stats.gamesByClass.medic': -1 } },
+    { spec: { avatarLastSyncedAt: 1 } },
   ],
   games: [
     { spec: { number: 1 }, options: { unique: true } },
