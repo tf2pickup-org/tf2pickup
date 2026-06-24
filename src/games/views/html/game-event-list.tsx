@@ -5,12 +5,9 @@ import {
   type GameEventModel,
 } from '../../../database/models/game-event.model'
 import type { GameModel } from '../../../database/models/game.model'
-import { collections } from '../../../database/collections'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { isBot } from '../../../shared/types/bot'
-import { players } from '../../../players'
-import type { PlayerModel } from '../../../database/models/player.model'
-import { errors } from '../../../errors'
+import { PlayerLink } from '../../../html/components/player-link'
 import { isStopwatchGame } from '../../is-stopwatch-game'
 
 const renderedEvents = [
@@ -131,13 +128,10 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         )
       }
 
-      const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
       return (
         <span class="flex min-w-0 flex-wrap gap-x-1">
           <span class="shrink-0 whitespace-nowrap">
-            <a href={`/players/${actor.steamId}`} safe>
-              {actor.name}
-            </a>
+            <PlayerLink steamId={props.event.actor} />
             {' assigned game server:'}
           </span>
           <strong class="min-w-0 grow overflow-hidden text-ellipsis whitespace-nowrap" safe>
@@ -157,13 +151,9 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
     case GameEventType.gameServerReinitializationOrdered: {
       let actor = <></>
       if (props.event.actor) {
-        const a = await players.bySteamId(props.event.actor, ['steamId', 'name'])
         actor = (
           <>
-            by{' '}
-            <a href={`/players/${a.steamId}`} class="font-bold whitespace-nowrap" safe>
-              {a.name}
-            </a>
+            by <PlayerLink steamId={props.event.actor} class="font-bold whitespace-nowrap" />
           </>
         )
       }
@@ -186,13 +176,10 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
             return <span>Game interrupted by bot</span>
           }
 
-          const actor = await players.bySteamId(props.event.actor, ['steamId', 'name'])
           return (
             <span>
               Game interrupted by{' '}
-              <a href={`/players/${actor.steamId}`} class="font-bold whitespace-nowrap" safe>
-                {actor.name}
-              </a>
+              <PlayerLink steamId={props.event.actor} class="font-bold whitespace-nowrap" />
             </span>
           )
         }
@@ -202,37 +189,19 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
           return <span>Game ended</span>
       }
     case GameEventType.substituteRequested: {
-      const player = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
-        { steamId: props.event.player },
-        { projection: { steamId: 1, name: 1 } },
+      const playerRef = (
+        <span class="font-bold whitespace-nowrap">
+          <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
+          <PlayerLink steamId={props.event.player} />
+        </span>
       )
-      if (!player) {
-        throw errors.internalServerError(`player not found: ${props.event.player}`)
-      }
 
       if (props.event.actor) {
-        let safeActorDesc: string | Promise<string>
-        if (isBot(props.event.actor)) {
-          safeActorDesc = 'bot'
-        } else {
-          const actor = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
-            {
-              steamId: props.event.actor,
-            },
-            { projection: { steamId: 1, name: 1 } },
-          )
-          if (!actor) {
-            throw errors.internalServerError(`actor not found: ${props.event.actor}`)
-          }
-
-          safeActorDesc = (
-            <>
-              <a href={`/players/${actor.steamId}`} class="font-bold whitespace-nowrap" safe>
-                {actor.name}
-              </a>
-            </>
-          )
-        }
+        const safeActorDesc = isBot(props.event.actor) ? (
+          'bot'
+        ) : (
+          <PlayerLink steamId={props.event.actor} class="font-bold whitespace-nowrap" />
+        )
 
         let reason = <></>
         if (props.event.reason) {
@@ -242,55 +211,19 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
 
         return (
           <span>
-            {safeActorDesc} requested substitute for{' '}
-            <a href={`/players/${player.steamId}`} class="font-bold whitespace-nowrap">
-              <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
-              <span safe>{player.name}</span>
-            </a>
+            {safeActorDesc} requested substitute for {playerRef}
             {reason}
           </span>
         )
       } else {
-        return (
-          <span>
-            Requested substitute for{' '}
-            <a href={`/player/${player.steamId}`} class="font-bold whitespace-nowrap">
-              <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
-              <span safe>{player.name}</span>
-            </a>
-          </span>
-        )
+        return <span>Requested substitute for {playerRef}</span>
       }
     }
     case GameEventType.playerReplaced: {
-      const replacee = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
-        {
-          steamId: props.event.replacee,
-        },
-        { projection: { steamId: 1, name: 1 } },
-      )
-      if (!replacee) {
-        throw errors.internalServerError(`replacee not found: ${replacee}`)
-      }
-      const replacement = await collections.players.findOne<Pick<PlayerModel, 'steamId' | 'name'>>(
-        {
-          steamId: props.event.replacement,
-        },
-        { projection: { steamId: 1, name: 1 } },
-      )
-      if (!replacement) {
-        throw errors.internalServerError(`replacement not found: ${replacement}`)
-      }
-
       return (
         <span>
-          <a href={`/players/${replacement.steamId}`} class="font-bold whitespace-nowrap" safe>
-            {replacement.name}
-          </a>{' '}
-          replaced{' '}
-          <a href={`/players/${replacee.steamId}`} class="font-bold whitespace-nowrap" safe>
-            {replacee.name}
-          </a>{' '}
+          <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}
+          replaced <PlayerLink steamId={props.event.replacee} class="font-bold whitespace-nowrap" />{' '}
           on <GameClassIcon gameClass={props.event.gameClass} size={20} /> {props.event.gameClass}
         </span>
       )

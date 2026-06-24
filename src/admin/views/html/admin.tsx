@@ -22,6 +22,7 @@ import {
   IconServer,
   IconSpy,
   IconTable,
+  IconTrash,
   IconUserExclamation,
   IconUserPlus,
 } from '../../../html/components/icons'
@@ -117,6 +118,11 @@ const superUserPages = {
     title: 'Player action logs',
     icon: IconLogs,
     section: 'Configuration',
+  },
+  'delete-player': {
+    title: 'Delete player',
+    icon: IconTrash,
+    section: 'Actions',
   },
 } as const
 

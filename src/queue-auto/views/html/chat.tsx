@@ -6,6 +6,8 @@ import { IconLoader3, IconSend2, IconX } from '../../../html/components/icons'
 import { players } from '../../../players'
 import type { User } from '../../../auth/types/user'
 import { PlayerRole } from '../../../database/models/player.model'
+import { DeletedUser } from '../../../html/components/deleted-user'
+import { isDeletedUser, type SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function Chat(props: { user?: User | undefined }) {
   const isAdmin = props.user?.player.roles.includes(PlayerRole.admin) ?? false
@@ -175,24 +177,14 @@ export function ChatPrompt(props: { isMuted: boolean }) {
 }
 
 async function ChatMessage(props: { message: WithId<ChatMessageModel> }) {
-  const author = await players.bySteamId(props.message.author, ['name', 'roles', 'steamId'])
   const safeAt = format(props.message.at, 'HH:mm')
   const safeBody = props.message.body
-  const isAdmin = author.roles.includes(PlayerRole.admin)
   const messageId = props.message._id.toString()
   return (
     <p class="chat-message" id={`msg-${messageId}`}>
       <span class="message-text">
-        <span class="at">{safeAt}</span>{' '}
-        <a
-          href={`/players/${author.steamId}`}
-          class={`author ${isAdmin ? 'admin' : ''}`}
-          preload="mousedown"
-          safe
-        >
-          {author.name}
-        </a>
-        : <span class="body">{safeBody}</span>
+        <span class="at">{safeAt}</span> <ChatMessageAuthor steamId={props.message.author} />:{' '}
+        <span class="body">{safeBody}</span>
       </span>
       <button
         class="delete-btn"
@@ -206,5 +198,23 @@ async function ChatMessage(props: { message: WithId<ChatMessageModel> }) {
         <span class="sr-only">Delete message</span>
       </button>
     </p>
+  )
+}
+
+async function ChatMessageAuthor(props: { steamId: SteamId64 }) {
+  if (isDeletedUser(props.steamId)) {
+    return <DeletedUser class="author" />
+  }
+  const author = await players.bySteamId(props.steamId, ['name', 'roles', 'steamId'])
+  const isAdmin = author.roles.includes(PlayerRole.admin)
+  return (
+    <a
+      href={`/players/${author.steamId}`}
+      class={`author ${isAdmin ? 'admin' : ''}`}
+      preload="mousedown"
+      safe
+    >
+      {author.name}
+    </a>
   )
 }
