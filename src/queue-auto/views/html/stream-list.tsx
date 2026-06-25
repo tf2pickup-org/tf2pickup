@@ -2,28 +2,37 @@ import { collections } from '../../../database/collections'
 import type { StreamModel } from '../../../database/models/stream.model'
 import { IconEye } from '../../../html/components/icons'
 
+const featuredCount = 3
+
 export async function StreamList() {
-  const streams = await collections.streams.find({}).toArray()
+  const streams = await collections.streams.find({}).sort({ viewerCount: -1 }).toArray()
   if (streams.length === 0) {
     return <div id="stream-list" class="hidden" />
   }
 
+  const featured = streams.slice(0, featuredCount)
+  const rest = streams.slice(featuredCount)
+
   return (
-    <div
-      class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-      id="stream-list"
-    >
-      <span class="text-[32px] font-bold text-white md:col-span-2 lg:col-span-3 xl:col-span-4">
-        Now streaming
-      </span>
-      {streams.map(stream => (
-        <Stream {...stream} />
-      ))}
+    <div class="flex flex-col gap-4" id="stream-list">
+      <span class="text-[32px] font-bold text-white">Now streaming</span>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {featured.map(stream => (
+          <FeaturedStream {...stream} />
+        ))}
+        {rest.length > 0 && (
+          <div class="flex flex-col gap-2">
+            {rest.map(stream => (
+              <CompactStream {...stream} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
-async function Stream(props: StreamModel) {
+function FeaturedStream(props: StreamModel) {
   const thumbnail = props.thumbnailUrl.replace('{width}', '177').replace('{height}', '100')
   return (
     <a
@@ -42,6 +51,28 @@ async function Stream(props: StreamModel) {
           {props.viewerCount}
         </span>
       </div>
+      <span class="tooltip" safe>
+        {props.title}
+      </span>
+    </a>
+  )
+}
+
+function CompactStream(props: StreamModel) {
+  return (
+    <a
+      class="stream-link flex flex-row items-center justify-between gap-4 rounded-lg px-4 py-2.5"
+      href={`https://www.twitch.tv/${props.userName}`}
+      target="_blank"
+      rel="noreferrer"
+    >
+      <span class="text-abru-light-75 truncate text-lg font-medium" safe>
+        {props.userName}
+      </span>
+      <span class="text-abru-light-75 flex shrink-0 flex-row items-center gap-1.5 text-sm font-medium">
+        <IconEye size={18} />
+        {props.viewerCount}
+      </span>
       <span class="tooltip" safe>
         {props.title}
       </span>
