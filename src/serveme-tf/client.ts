@@ -1,4 +1,4 @@
-import { Client } from '@tf2pickup-org/serveme-tf-client'
+import { Client } from './api'
 import { environment } from '../environment'
 import { logger } from '../logger'
 

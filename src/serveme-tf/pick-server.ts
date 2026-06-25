@@ -1,4 +1,4 @@
-import type { ServerId } from '@tf2pickup-org/serveme-tf-client'
+import type { ServerId } from './api'
 import { configuration } from '../configuration'
 import { sample } from 'es-toolkit'
 import { errors } from '../errors'

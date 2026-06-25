@@ -1,4 +1,4 @@
-import { Reservation, type ReservationId } from '@tf2pickup-org/serveme-tf-client'
+import { Reservation, type ReservationId } from './api'
 import { client } from './client'
 import { errors } from '../errors'
 

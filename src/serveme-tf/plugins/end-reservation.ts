@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin'
 import { tasks } from '../../tasks'
 import { client } from '../client'
-import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
+import type { ReservationId } from '../api'
 import { events } from '../../events'
 import { GameServerProvider } from '../../database/models/game.model'
 import { secondsToMilliseconds } from 'date-fns'

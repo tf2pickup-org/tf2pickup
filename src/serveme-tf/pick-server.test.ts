@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { pickServer } from './pick-server'
-import type { ServerId } from '@tf2pickup-org/serveme-tf-client'
+import type { ServerId } from './api'
 
 const configuration = vi.hoisted(() => new Map<string, unknown>([]))
 vi.mock('../configuration', () => ({

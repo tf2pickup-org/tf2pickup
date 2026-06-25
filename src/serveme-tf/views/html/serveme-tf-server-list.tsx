@@ -1,4 +1,4 @@
-import type { ServerOption } from '@tf2pickup-org/serveme-tf-client'
+import type { ServerOption } from '../../api'
 import { IconLoader3 } from '../../../html/components/icons'
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 
