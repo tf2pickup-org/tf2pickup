@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { pickServer } from './pick-server'
-import type { ServerId } from './api'
+import type { ServerId } from './types/server-id'
 
 const configuration = vi.hoisted(() => new Map<string, unknown>([]))
 vi.mock('../configuration', () => ({

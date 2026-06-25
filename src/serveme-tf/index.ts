@@ -1,13 +1,13 @@
+import { environment } from '../environment'
 import { assign } from './assign'
-import { client } from './client'
+import { findServers } from './find-servers'
 import { listRegions } from './list-regions'
 import { waitForStart } from './wait-for-start'
 
 export const servemeTf = {
+  isEnabled: environment.SERVEME_TF_API_KEY !== undefined,
   assign,
-  isEnabled: client !== null,
+  findServers,
   listRegions,
   waitForStart,
-
-  client,
 } as const

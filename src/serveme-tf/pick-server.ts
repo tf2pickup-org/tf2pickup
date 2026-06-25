@@ -1,4 +1,4 @@
-import type { ServerId } from './api'
+import type { ServerId } from './types/server-id'
 import { configuration } from '../configuration'
 import { sample } from 'es-toolkit'
 import { errors } from '../errors'

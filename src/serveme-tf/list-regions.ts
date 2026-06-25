@@ -1,10 +1,6 @@
-import { client } from './client'
+import { findServers } from './find-servers'
 
-export async function listRegions() {
-  if (!client) {
-    throw new Error(`serveme.tf disabled`)
-  }
-
-  const { servers } = await client.findOptions()
+export async function listRegions(): Promise<string[]> {
+  const servers = await findServers()
   return [...new Set(servers.map(({ flag }) => flag))]
 }

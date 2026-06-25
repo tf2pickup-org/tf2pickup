@@ -14,11 +14,11 @@ export default routes(async app => {
       },
     },
     async (_, reply) => {
-      if (!servemeTf.client) {
+      if (!servemeTf.isEnabled) {
         throw errors.badRequest(`serveme.tf is disabled`)
       }
 
-      const { servers } = await servemeTf.client.findOptions()
+      const servers = await servemeTf.findServers()
       return reply.html(ServemeTfServerList({ servers }))
     },
   )

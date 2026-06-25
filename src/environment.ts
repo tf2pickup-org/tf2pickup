@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import dotenv from 'dotenv'
-import { KnownEndpoint } from './serveme-tf/api'
+import { KnownEndpoint } from './serveme-tf/types/known-endpoint'
 import { steamId64 } from './shared/schemas/steam-id-64'
 
 dotenv.config()

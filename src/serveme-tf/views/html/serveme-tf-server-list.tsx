@@ -1,20 +1,23 @@
-import type { ServerOption } from '../../api'
+import type { ServemeTfServer } from '../../types/serveme-tf-server'
 import { IconLoader3 } from '../../../html/components/icons'
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 
-export async function ServemeTfServerList(props: { servers?: ServerOption[] }) {
+export async function ServemeTfServerList(props: { servers?: ServemeTfServer[] }) {
   if (props.servers) {
-    const groupedServers = props.servers.reduce<Record<string, ServerOption[]>>((acc, server) => {
-      const match = /^(.*?) #/.exec(server.name)
-      if (!match) {
-        return acc
-      }
+    const groupedServers = props.servers.reduce<Record<string, ServemeTfServer[]>>(
+      (acc, server) => {
+        const match = /^(.*?) #/.exec(server.name)
+        if (!match) {
+          return acc
+        }
 
-      const groupName = match[1]!
-      acc[groupName] ??= []
-      acc[groupName].push(server)
-      return acc
-    }, {})
+        const groupName = match[1]!
+        acc[groupName] ??= []
+        acc[groupName].push(server)
+        return acc
+      },
+      {},
+    )
 
     return (
       <ul>

@@ -1,21 +1,17 @@
 import { GameServerProvider, type GameModel, type GameServer } from '../database/models/game.model'
-import { client } from './client'
 import { logger } from '../logger'
 import { pickServer } from './pick-server'
-import { errors } from '../errors'
+import { findServers } from './find-servers'
+import { createReservation } from './create-reservation'
 
 export async function assign(game: GameModel, name?: string): Promise<GameServer> {
-  if (!client) {
-    throw errors.badRequest(`serveme.tf is disabled`)
-  }
-
-  const { servers } = await client.findOptions()
+  const servers = await findServers()
   logger.debug({ servers }, 'serveme.tf servers listed')
 
   const serverId = await pickServer(servers, name)
   logger.debug({ serverId }, 'serveme.tf server selected')
 
-  const reservation = await client.create({
+  const reservation = await createReservation({
     serverId,
     enableDemosTf: true,
     enablePlugins: true,
@@ -38,7 +34,7 @@ export async function assign(game: GameModel, name?: string): Promise<GameServer
     name: reservation.server.name,
     address: reservation.server.ip,
     port: reservation.server.port,
-    logSecret: reservation.logSecret,
+    logSecret: reservation.logsecret,
 
     rcon: {
       address: reservation.server.ip,
