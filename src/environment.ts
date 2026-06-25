@@ -31,6 +31,12 @@ const environmentSchema = z.object({
   ATLAS_URL: z.url().default('https://atlas.tf2pickup.org'),
   ATLAS_SECRET: z.string().optional(),
 
+  TELEMETRY_URL: z.url().default('https://telemetry.tf2pickup.org'),
+  TELEMETRY_DISABLED: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform(value => value === 'true'),
+
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),
 
