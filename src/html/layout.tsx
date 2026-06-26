@@ -78,7 +78,7 @@ export async function Layout(
             data-performance={environment.UMAMI_TRACK_PERFORMANCE === 'true' ? 'true' : undefined}
           ></script>
         )}
-        {umamiEnabled && environment.UMAMI_RECORDER_SCRIPT_SRC && (
+        {umamiEnabled && !!environment.UMAMI_RECORDER_SCRIPT_SRC && (
           <script
             defer
             src={environment.UMAMI_RECORDER_SCRIPT_SRC}
