@@ -37,6 +37,9 @@ await app.register(await import('@fastify/helmet'), {
               ...(environment.UMAMI_SCRIPT_SRC
                 ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
                 : []),
+              ...(environment.UMAMI_RECORDER_SCRIPT_SRC
+                ? [new URL(environment.UMAMI_RECORDER_SCRIPT_SRC).origin]
+                : []),
             ],
             'script-src-attr': ["'unsafe-inline'"],
             'img-src': [
@@ -52,6 +55,9 @@ await app.register(await import('@fastify/helmet'), {
               "'self'",
               ...(environment.UMAMI_SCRIPT_SRC
                 ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
+                : []),
+              ...(environment.UMAMI_RECORDER_SCRIPT_SRC
+                ? [new URL(environment.UMAMI_RECORDER_SCRIPT_SRC).origin]
                 : []),
             ],
           },

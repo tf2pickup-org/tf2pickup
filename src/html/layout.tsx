@@ -75,6 +75,14 @@ export async function Layout(
             defer
             src={environment.UMAMI_SCRIPT_SRC}
             data-website-id={environment.UMAMI_WEBSITE_ID}
+            data-performance={environment.UMAMI_TRACK_PERFORMANCE === 'true' ? 'true' : undefined}
+          ></script>
+        )}
+        {umamiEnabled && environment.UMAMI_RECORDER_SCRIPT_SRC && (
+          <script
+            defer
+            src={environment.UMAMI_RECORDER_SCRIPT_SRC}
+            data-website-id={environment.UMAMI_WEBSITE_ID}
           ></script>
         )}
 
