@@ -18,7 +18,12 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
         <StaticGameServerList name="gameServer" />
         {servemeTf.isEnabled && <ServemeTfServerList />}
         {tf2QuickServer.isEnabled && <Tf2QuickServerList gameNumber={props.gameNumber} />}
-        <button class="button mt-8 self-center" data-variant="accent">
+        <button
+          class="button mt-8 self-center"
+          data-variant="accent"
+          data-umami-event="reassign-game-server"
+          data-umami-event-game-number={props.gameNumber}
+        >
           Select
         </button>
       </form>

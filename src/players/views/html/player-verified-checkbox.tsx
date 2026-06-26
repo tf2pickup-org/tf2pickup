@@ -19,6 +19,8 @@ export function PlayerVerifiedCheckbox(props: {
         value="true"
         checked={player.verified}
         hx-put={`/players/${player.steamId}/verify`}
+        data-umami-event="verify-player"
+        data-umami-event-player={player.steamId}
         hx-trigger="change"
         hx-target="#player-verified-checkbox"
         hx-swap="outerHTML transition:false"

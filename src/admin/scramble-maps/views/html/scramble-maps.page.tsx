@@ -12,6 +12,7 @@ export async function ScrambleMaps() {
             class="button"
             data-variant="accent"
             data-size="dense"
+            data-umami-event="scramble-maps"
             hx-put="/admin/scramble-maps/scramble"
             hx-target="#adminPanelMapVoteOptions"
             hx-swap="outerHTML"

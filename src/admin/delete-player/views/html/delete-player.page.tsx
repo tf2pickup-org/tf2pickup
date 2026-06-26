@@ -121,6 +121,8 @@ export function DeletePlayerCard(props: { player: DeletePlayerSummary }) {
               class="button"
               data-variant="accent"
               data-size="dense"
+              data-umami-event="delete-player"
+              data-umami-event-player={props.player.steamId}
               hx-delete={`/admin/delete-player/${props.player.steamId}`}
               hx-target={`#delete-player-card-${props.player.steamId}`}
               hx-swap="outerHTML"

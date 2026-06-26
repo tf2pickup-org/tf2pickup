@@ -101,7 +101,14 @@ export async function AdminToolbox(props: {
                 ))}
 
                 <div class="skill-buttons">
-                  <button type="submit" class="button" data-variant="accent" title="Save">
+                  <button
+                    type="submit"
+                    class="button"
+                    data-variant="accent"
+                    title="Save"
+                    data-umami-event="save-player-skill"
+                    data-umami-event-player={player.steamId}
+                  >
                     <IconDeviceFloppy size={20} />
                     <span>Save</span>
                   </button>
@@ -110,6 +117,8 @@ export async function AdminToolbox(props: {
                     type="button"
                     class="button"
                     title="Reset"
+                    data-umami-event="reset-player-skill"
+                    data-umami-event-player={player.steamId}
                     hx-delete={`/players/${player.steamId}/edit/skill`}
                     hx-confirm="Are you sure you want to reset this player's skill?"
                     hx-trigger="click"

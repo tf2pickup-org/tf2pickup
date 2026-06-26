@@ -58,6 +58,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
               href="/auth/sign-out"
               class="profile-menu-item"
               data-variant="accent"
+              data-umami-event="logout"
               hx-boost="false"
             >
               <IconLogout />
