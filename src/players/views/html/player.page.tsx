@@ -52,7 +52,8 @@ export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
   return (
     <Layout
       title={makeTitle(player.name)}
-      description={`${player.name}'s profile on ${environment.WEBSITE_NAME}`}
+      description={`${player.name} · ${player.stats.totalGames} games played on ${environment.WEBSITE_NAME} · member since ${format(player.joinedAt, 'MMMM yyyy')}`}
+      image={`/players/${player.steamId}/og-image.png`}
       canonical={`/players/${player.steamId}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >

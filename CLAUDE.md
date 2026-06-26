@@ -80,6 +80,7 @@ OpenTelemetry (`src/otel.ts`) ships metrics (`tf2pickup.*`), logs, and traces to
 - **One export per file** — the exported function name must match the file name (e.g., `foo-bar.ts` → `export function fooBar()`)
 - **Conventional commits** for PR titles and commit messages (check git log for examples)
 - **Use date-fns helpers** for time durations instead of raw numbers (e.g., `secondsToMilliseconds(1)` not `1000`)
+- **camelCase for constants** — never `UPPER_CASE`/`SCREAMING_SNAKE_CASE`, even for module-level or "global" consts (e.g., `const maxRetries = 3` not `const MAX_RETRIES = 3`)
 - **Strict TypeScript** — project uses `@tsconfig/strictest`
 - **ESM only** — `"type": "module"` in package.json
 - **pnpm** as package manager
