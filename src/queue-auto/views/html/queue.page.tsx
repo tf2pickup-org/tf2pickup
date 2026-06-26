@@ -150,6 +150,7 @@ export async function ClearQueueButton(props: { actor?: User | undefined }) {
     <button
       class="button"
       data-variant="accent"
+      data-umami-event="clear-queue"
       hx-delete="/queue/players"
       hx-confirm="Are you sure you want to kick everyone from the queue?"
     >

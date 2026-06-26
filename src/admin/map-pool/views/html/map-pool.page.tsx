@@ -27,6 +27,7 @@ export async function MapPoolPage() {
 
           <button
             class="mt-2 flex flex-row items-center gap-2 text-white hover:underline"
+            data-umami-event="add-map-pool-entry"
             hx-post="/admin/map-pool/create"
             hx-trigger="click"
             hx-target="#mapPoolList"

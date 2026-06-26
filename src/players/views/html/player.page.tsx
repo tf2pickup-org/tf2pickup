@@ -208,6 +208,8 @@ function PlayerPresentation(props: {
           rel="noreferrer"
           class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
           title="Steam"
+          data-umami-event="open-external-profile"
+          data-umami-event-target="steam"
         >
           <IconBrandSteam />
           <span>steam</span>
@@ -219,6 +221,8 @@ function PlayerPresentation(props: {
           rel="noreferrer"
           class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
           title="Logs"
+          data-umami-event="open-external-profile"
+          data-umami-event-target="logs"
         >
           <IconAlignBoxBottomRight />
           <span>logs</span>
@@ -231,6 +235,8 @@ function PlayerPresentation(props: {
             rel="noreferrer"
             class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
             title="ETF2L"
+            data-umami-event="open-external-profile"
+            data-umami-event-target="etf2l"
           >
             <IconStars />
             <span>etf2l</span>
@@ -246,6 +252,8 @@ function PlayerPresentation(props: {
             rel="noreferrer"
             class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
             title="Twitch"
+            data-umami-event="open-external-profile"
+            data-umami-event-target="twitch"
           >
             <IconBrandTwitch />
             <span>twitch</span>

@@ -40,6 +40,8 @@ function FeaturedStream(props: StreamModel) {
       href={`https://www.twitch.tv/${props.userName}`}
       target="_blank"
       rel="noreferrer"
+      data-umami-event="watch-stream"
+      data-umami-event-streamer={props.userName}
     >
       <img src={thumbnail} alt="stream thumbnail" class="rounded-xs" width="177" height="100" />
       <div class="text-abru-light-75 flex flex-col justify-center font-medium">
@@ -65,6 +67,8 @@ function CompactStream(props: StreamModel) {
       href={`https://www.twitch.tv/${props.userName}`}
       target="_blank"
       rel="noreferrer"
+      data-umami-event="watch-stream"
+      data-umami-event-streamer={props.userName}
     >
       <span class="text-abru-light-75 truncate text-lg font-medium" safe>
         {props.userName}

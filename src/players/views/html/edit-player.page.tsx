@@ -100,7 +100,14 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
             </div>
 
             <div class="self-end">
-              <button type="submit" class="button" data-variant="accent" data-size="dense">
+              <button
+                type="submit"
+                class="button"
+                data-variant="accent"
+                data-size="dense"
+                data-umami-event="save-player-profile"
+                data-umami-event-player={player.steamId}
+              >
                 <IconDeviceFloppy size={20} />
                 <span>Save</span>
               </button>
@@ -213,7 +220,14 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
             </p>
           </div>
 
-          <button type="submit" class="button" data-variant="accent" data-size="dense">
+          <button
+            type="submit"
+            class="button"
+            data-variant="accent"
+            data-size="dense"
+            data-umami-event="save-player-roles"
+            data-umami-event-player={player.steamId}
+          >
             <IconDeviceFloppy size={20} />
             <span>Save</span>
           </button>
@@ -384,6 +398,8 @@ export async function BanDetails(props: {
             <button
               class="button"
               data-variant="darker"
+              data-umami-event="revoke-ban"
+              data-umami-event-player={props.player.steamId}
               hx-put={`/players/${props.player.steamId}/edit/bans/${props.ban.start.getTime().toString()}/revoke`}
               hx-trigger="click"
               hx-target={`#player-ban-${props.ban.start.getTime().toString()}`}
@@ -443,6 +459,8 @@ export async function ChatMuteDetails(props: {
             <button
               class="button"
               data-variant="darker"
+              data-umami-event="revoke-chat-mute"
+              data-umami-event-player={props.player.steamId}
               hx-put={`/players/${props.player.steamId}/edit/chat-mutes/${props.chatMute.start.getTime().toString()}/revoke`}
               hx-trigger="click"
               hx-target={`#player-chat-mute-${props.chatMute.start.getTime().toString()}`}

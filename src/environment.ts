@@ -43,6 +43,8 @@ const environmentSchema = z.object({
 
   UMAMI_SCRIPT_SRC: z.string().optional(),
   UMAMI_WEBSITE_ID: z.string().optional(),
+  UMAMI_RECORDER_SCRIPT_SRC: z.string().optional(),
+  UMAMI_TRACK_PERFORMANCE: z.enum(['true', 'false']).default('false'),
 })
 
 export const environment = environmentSchema.parse(process.env)

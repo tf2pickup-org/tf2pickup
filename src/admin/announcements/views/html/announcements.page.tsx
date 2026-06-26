@@ -71,6 +71,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
         <div class="flex gap-2">
           <button
             class="text-accent-500 flex items-center gap-1 hover:underline"
+            data-umami-event="toggle-announcement"
             hx-post={`/admin/announcements/${id}/toggle`}
             hx-target="closest div.rounded-sm"
             hx-swap="outerHTML"
@@ -79,6 +80,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
           </button>
           <button
             class="flex items-center gap-1 text-white hover:underline"
+            data-umami-event="edit-announcement"
             hx-get={`/admin/announcements/${id}/edit`}
             hx-target="closest div.rounded-sm"
             hx-swap="outerHTML"
@@ -87,6 +89,7 @@ export function AnnouncementEntry(props: { announcement: WithId<AnnouncementMode
           </button>
           <button
             class="text-alert flex items-center gap-1 hover:underline"
+            data-umami-event="delete-announcement"
             hx-delete={`/admin/announcements/${id}`}
             hx-confirm="Are you sure you want to delete this announcement?"
             hx-target="closest div.rounded-sm"
