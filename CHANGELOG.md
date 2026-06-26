@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.16.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.15.0...4.16.0) (2026-06-26)
+
+
+### Features
+
+* link-preview meta tags and generated OG images ([#707](https://github.com/tf2pickup-org/tf2pickup/issues/707)) ([a502c24](https://github.com/tf2pickup-org/tf2pickup/commit/a502c2432ce717f6b75cb608ccb3aaffe3d23827))
+
 # [4.15.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.14.1...4.15.0) (2026-06-26)
 
 
