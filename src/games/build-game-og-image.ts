@@ -2,21 +2,15 @@ import { createCanvas } from '@napi-rs/canvas'
 import { environment } from '../environment'
 import { type GameModel } from '../database/models/game.model'
 import { gameStateLabel } from './game-state-label'
-import { ogImageSize } from '../og-image/og-image-size'
-import { registerOgFonts } from '../og-image/register-og-fonts'
-import { loadOgImage } from '../og-image/load-og-image'
-import { drawOgBackground } from '../og-image/draw-og-background'
-import { drawOgLogo } from '../og-image/draw-og-logo'
-import { truncateToWidth } from '../og-image/truncate-to-width'
-import { ogImageRenderDuration } from '../og-image/og-image-metrics'
+import { ogImage } from '../og-image'
 
-const { width: WIDTH, height: HEIGHT } = ogImageSize
+const { width: WIDTH, height: HEIGHT } = ogImage.size
 const RED = '#b8383b'
 const BLU = '#5885a2'
 
 function loadMapBackground(map: string) {
   const mapName = /^([a-z]+_[a-zA-Z0-9]+)/.exec(map)?.[0] ?? 'unknown'
-  return loadOgImage(
+  return ogImage.load(
     `${environment.THUMBNAIL_SERVICE_URL}/unsafe/${WIDTH}x${HEIGHT}/${mapName}.jpg`,
   )
 }
@@ -25,13 +19,13 @@ export async function buildGameOgImage(
   game: Pick<GameModel, 'number' | 'map' | 'state' | 'score'>,
 ): Promise<Buffer> {
   const start = performance.now()
-  registerOgFonts()
+  ogImage.registerFonts()
 
   const canvas = createCanvas(WIDTH, HEIGHT)
   const ctx = canvas.getContext('2d')
 
   const background = await loadMapBackground(game.map)
-  drawOgBackground(ctx, background)
+  ogImage.drawBackground(ctx, background)
 
   // scrim for legibility
   const scrim = ctx.createLinearGradient(0, 0, 0, HEIGHT)
@@ -40,7 +34,7 @@ export async function buildGameOgImage(
   ctx.fillStyle = scrim
   ctx.fillRect(0, 0, WIDTH, HEIGHT)
 
-  await drawOgLogo(ctx)
+  await ogImage.drawLogo(ctx)
 
   // game number
   ctx.fillStyle = '#cdc6cf'
@@ -87,11 +81,11 @@ export async function buildGameOgImage(
   ctx.textAlign = 'left'
   ctx.fillStyle = '#ffffff'
   ctx.font = '700 96px Satoshi'
-  ctx.fillText(truncateToWidth(ctx, game.map, contentLeftEdge - 96), 64, HEIGHT - 90)
+  ctx.fillText(ogImage.truncateToWidth(ctx, game.map, contentLeftEdge - 96), 64, HEIGHT - 90)
 
   // encode off the main thread (libuv threadpool) to keep the event loop responsive
   const png = await canvas.encode('png')
-  ogImageRenderDuration.record(performance.now() - start, {
+  ogImage.metrics.renderDuration.record(performance.now() - start, {
     subject: 'game',
     map_background: background ? 'loaded' : 'missing',
   })

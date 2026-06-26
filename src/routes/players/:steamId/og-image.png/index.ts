@@ -2,7 +2,7 @@ import z from 'zod'
 import { players } from '../../../../players'
 import { steamId64 } from '../../../../shared/schemas/steam-id-64'
 import { buildPlayerOgImage } from '../../../../players/build-player-og-image'
-import { ogImageFallbacks } from '../../../../og-image/og-image-metrics'
+import { ogImage } from '../../../../og-image'
 import { routes } from '../../../../utils/routes'
 import { logger } from '../../../../logger'
 
@@ -31,7 +31,7 @@ export default routes(async app => {
           .header('cache-control', 'public, max-age=3600')
           .send(image)
       } catch (error) {
-        ogImageFallbacks.add(1, { subject: 'player' })
+        ogImage.metrics.fallbacks.add(1, { subject: 'player' })
         logger.error(error, `failed to render og image for player ${request.params.steamId}`)
         return reply.redirect('/og-image.png')
       }

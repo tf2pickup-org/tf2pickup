@@ -3,6 +3,15 @@ import { buildGameOgImage } from './build-game-og-image'
 import { GameState, type GameNumber } from '../database/models/game.model'
 import { Tf2Team } from '../shared/types/tf2-team'
 
+// environment validates required vars at import; mock it so the test needs no .env (e.g. in CI)
+vi.mock('../environment', () => ({
+  environment: {
+    WEBSITE_URL: 'https://tf2pickup.test',
+    THUMBNAIL_SERVICE_URL: 'https://thumbnails.test',
+    WEBSITE_BRANDING: undefined,
+  },
+}))
+
 function isPng(buffer: Buffer) {
   return buffer.subarray(1, 4).toString() === 'PNG'
 }

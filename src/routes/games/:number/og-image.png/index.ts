@@ -1,7 +1,7 @@
 import z from 'zod'
 import { games } from '../../../../games'
 import { buildGameOgImage } from '../../../../games/build-game-og-image'
-import { ogImageFallbacks } from '../../../../og-image/og-image-metrics'
+import { ogImage } from '../../../../og-image'
 import { GameState } from '../../../../database/models/game.model'
 import { routes } from '../../../../utils/routes'
 import { logger } from '../../../../logger'
@@ -32,7 +32,7 @@ export default routes(async app => {
           : 'public, max-age=300'
         return await reply.type('image/png').header('cache-control', cacheControl).send(image)
       } catch (error) {
-        ogImageFallbacks.add(1, { subject: 'game' })
+        ogImage.metrics.fallbacks.add(1, { subject: 'game' })
         logger.error(error, `failed to render og image for game #${game.number}`)
         return reply.redirect('/og-image.png')
       }

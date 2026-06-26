@@ -2,6 +2,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { buildPlayerOgImage } from './build-player-og-image'
 import { PlayerRole } from '../database/models/player.model'
 
+// environment validates required vars at import; mock it so the test needs no .env (e.g. in CI)
+vi.mock('../environment', () => ({
+  environment: {
+    WEBSITE_URL: 'https://tf2pickup.test',
+    THUMBNAIL_SERVICE_URL: 'https://thumbnails.test',
+    WEBSITE_BRANDING: undefined,
+  },
+}))
+
 function isPng(buffer: Buffer) {
   return buffer.subarray(1, 4).toString() === 'PNG'
 }
