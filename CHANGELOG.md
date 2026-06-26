@@ -1,5 +1,25 @@
 # Changelog
 
+# [4.15.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.14.1...4.15.0) (2026-06-26)
+
+
+### Bug Fixes
+
+* **analytics:** expand umami tracking coverage ([#706](https://github.com/tf2pickup-org/tf2pickup/issues/706)) ([8ecb710](https://github.com/tf2pickup-org/tf2pickup/commit/8ecb710423ec7fa8f5d0d9b3a2c840158bda8230))
+* **deps:** update dependency country-flag-icons to v1.6.18 ([4902750](https://github.com/tf2pickup-org/tf2pickup/commit/4902750795a75aed63480136a58e3ec3d405974a))
+* **deps:** update dependency es-toolkit to v1.48.1 ([96cc070](https://github.com/tf2pickup-org/tf2pickup/commit/96cc07035e41d8e2380ad3a065d81acdaec0e261))
+* **deps:** update dependency nanoid to v5.1.15 ([ed45ac4](https://github.com/tf2pickup-org/tf2pickup/commit/ed45ac4a87922ad9cce35d6fd416ca62233db37f))
+* keep game connect info visible to admins when hidden from spectators ([#699](https://github.com/tf2pickup-org/tf2pickup/issues/699)) ([957b08b](https://github.com/tf2pickup-org/tf2pickup/commit/957b08b46b9b95624f9b221d2e491af5f79837e4)), closes [#697](https://github.com/tf2pickup-org/tf2pickup/issues/697) [#698](https://github.com/tf2pickup-org/tf2pickup/issues/698)
+* **players:** make steam id confirmation input visible ([#701](https://github.com/tf2pickup-org/tf2pickup/issues/701)) ([aea3483](https://github.com/tf2pickup-org/tf2pickup/commit/aea34839da900e23a2efb1f6e10f1e83b4c9d9f9))
+* **queue:** match stream list to Figma design ([#705](https://github.com/tf2pickup-org/tf2pickup/issues/705)) ([bc1e822](https://github.com/tf2pickup-org/tf2pickup/commit/bc1e8225b30c75cc89ff81a01053052479797689))
+* tolerate null tags in Twitch streams response ([#700](https://github.com/tf2pickup-org/tf2pickup/issues/700)) ([d7f240c](https://github.com/tf2pickup-org/tf2pickup/commit/d7f240cc3117a948fdc6569f2947607900e30098))
+
+
+### Features
+
+* **players:** allow super-users to delete player profiles ([#684](https://github.com/tf2pickup-org/tf2pickup/issues/684)) ([4764c32](https://github.com/tf2pickup-org/tf2pickup/commit/4764c325abe35338a954d8d78c859e0adf3023ed))
+* **players:** periodically re-sync player avatars from Steam ([#680](https://github.com/tf2pickup-org/tf2pickup/issues/680)) ([07481c8](https://github.com/tf2pickup-org/tf2pickup/commit/07481c819a214aa0c1a933a96410912c73f51695)), closes [#679](https://github.com/tf2pickup-org/tf2pickup/issues/679) [#679](https://github.com/tf2pickup-org/tf2pickup/issues/679) [#679](https://github.com/tf2pickup-org/tf2pickup/issues/679)
+
 ## [4.14.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.14.0...4.14.1) (2026-06-23)
 
 
