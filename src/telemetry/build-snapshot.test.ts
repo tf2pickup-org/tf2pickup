@@ -140,4 +140,19 @@ describe('buildSnapshot', () => {
     expect(snapshot.maps).toEqual({ process: 120, gullywash: 80 })
     expect(snapshot.mapPool).toEqual(['cp_process_f12', 'cp_gullywash_f9'])
   })
+
+  it('ships display metadata for every reported key', async () => {
+    const snapshot = await buildSnapshot()
+    expect(snapshot.meta.features).toContainEqual({
+      key: 'games.skill_suggestions',
+      label: 'Skill suggestions (experimental)',
+      group: 'Games',
+    })
+    expect(snapshot.meta.integrations).toContainEqual({ key: 'discord', label: 'Discord' })
+    expect(snapshot.meta.usage).toContainEqual({
+      key: 'skillSuggestionsApplied30d',
+      label: 'Skill suggestions applied (30d)',
+    })
+    expect(snapshot.meta.features.map(entry => entry.key)).toEqual(Object.keys(snapshot.features))
+  })
 })
