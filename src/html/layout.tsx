@@ -14,6 +14,7 @@ export async function Layout(
     title?: string
     description?: string
     canonical?: string
+    image?: string
     embedStyle?: string
   }>,
 ) {
@@ -104,16 +105,37 @@ export async function Layout(
   )
 }
 
-function MetaTags(props?: { title?: string; description?: string; canonical?: string }) {
+function MetaTags(props?: {
+  title?: string
+  description?: string
+  canonical?: string
+  image?: string
+}) {
   const safeMetaTags: JSX.Element[] = []
   const safeOgTags: JSX.Element[] = []
 
-  if (props?.title) {
-    safeOgTags.push(<meta property="og:title" content={props.title} />)
-  }
+  const title = props?.title ?? environment.WEBSITE_NAME
+  const image = `${environment.WEBSITE_URL}${props?.image ?? '/og-image.png'}`
+
+  safeOgTags.push(
+    <meta property="og:type" content="website" />,
+    <meta property="og:site_name" content={environment.WEBSITE_NAME} />,
+    <meta property="og:title" content={title} />,
+    <meta property="og:image" content={image} />,
+    <meta property="og:image:width" content="1200" />,
+    <meta property="og:image:height" content="630" />,
+  )
+  safeMetaTags.push(
+    <meta name="twitter:card" content="summary_large_image" />,
+    <meta name="twitter:title" content={title} />,
+    <meta name="twitter:image" content={image} />,
+  )
 
   if (props?.description) {
-    safeMetaTags.push(<meta name="description" content={props.description} />)
+    safeMetaTags.push(
+      <meta name="description" content={props.description} />,
+      <meta name="twitter:description" content={props.description} />,
+    )
     safeOgTags.push(<meta property="og:description" content={props.description} />)
   }
 

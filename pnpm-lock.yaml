@@ -71,6 +71,9 @@ importers:
       '@kitajs/ts-html-plugin':
         specifier: 4.1.4
         version: 4.1.4(@kitajs/html@4.2.13)(typescript@6.0.3)
+      '@napi-rs/canvas':
+        specifier: ^1.0.1
+        version: 1.0.1
       '@opentelemetry/api':
         specifier: 1.9.1
         version: 1.9.1
@@ -326,7 +329,7 @@ importers:
         version: 1.6.1(typescript@6.0.3)
       postcss-cli:
         specifier: 11.0.1
-        version: 11.0.1(jiti@2.6.1)(postcss@8.5.15)(tsx@4.22.4)
+        version: 11.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)
       prettier:
         specifier: 3.8.4
         version: 3.8.4
@@ -1224,6 +1227,81 @@ packages:
 
   '@mongodb-js/saslprep@1.3.0':
     resolution: {integrity: sha512-zlayKCsIjYb7/IdfqxorK5+xUMyi4vOKcFy10wKJYc63NSdKI8mNME+uJqfatkPmOSMMUiojrL58IePKBm3gvQ==}
+
+  '@napi-rs/canvas-android-arm64@1.0.1':
+    resolution: {integrity: sha512-d7ZCwJsgH4QNG50C7HQeVRsRG1gRDa1UeDUb1jEcqgLuiEJp6GVbGiZkFXPlmt0dEs2QHRQCPJoOv+bOkSQR/w==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [android]
+
+  '@napi-rs/canvas-darwin-arm64@1.0.1':
+    resolution: {integrity: sha512-ppyVSzIHsVldc3B++mdh03ed0Q0hoVR2QDG9O/wEUR0PurJKwDEEYV87uBQDpbSumJBfLEINDndsOPzQj71qEQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@napi-rs/canvas-darwin-x64@1.0.1':
+    resolution: {integrity: sha512-/BlXif9VOzf/WP32g9zxl612dO0KLvwqplBFqfRcyr3PyR5fhPrilTuJxSBq3zkwCKGKy82JsoPd2JeQI/HBlA==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@napi-rs/canvas-linux-arm-gnueabihf@1.0.1':
+    resolution: {integrity: sha512-JTGq93/Pje+iSNVjL+ggB0+pqEfu7nXvQGrHTvugz+Lp08wCDa5rjov4JeEljGDk16/inVBU9sp4N9f0/+o+9A==}
+    engines: {node: '>= 10'}
+    cpu: [arm]
+    os: [linux]
+
+  '@napi-rs/canvas-linux-arm64-gnu@1.0.1':
+    resolution: {integrity: sha512-i74zqEh5yFmYwHkszFo+4EH4l5ATD4bSlJG21iW2j5kpqiN2b0WN9SG/xdq2O60MjZK0ZLSu3a/Z3aQAsmDQ5A==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@napi-rs/canvas-linux-arm64-musl@1.0.1':
+    resolution: {integrity: sha512-COqBxybXcKb6gNgEhjh04rPHrpsJB+n/5+p4ySPgQWl0i+xVNYHn4rvzCtUBIFqOgY6HEJ9UaP6c4W9EMwzfpQ==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
+  '@napi-rs/canvas-linux-riscv64-gnu@1.0.1':
+    resolution: {integrity: sha512-1vdAZGpD85lMUo7K3qtEdoIWeMc0xcpUD5PagK3fVcMSdf8dkSL5bg/KE4Rwv5NF+PYx4plrgfn0KRMOqdKtwA==}
+    engines: {node: '>= 10'}
+    cpu: [riscv64]
+    os: [linux]
+    libc: [glibc]
+
+  '@napi-rs/canvas-linux-x64-gnu@1.0.1':
+    resolution: {integrity: sha512-W/iC2qJZGqKKQJ0JrNo3QkhoAy/PvzlmdYLW8Yz5/L6XgT5d7t26dnqgP2rCbL58P3CbPw7ES0Rz8OG0gn7JeQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@napi-rs/canvas-linux-x64-musl@1.0.1':
+    resolution: {integrity: sha512-a5mmIVwxF92UGUe+1c7Ap32ZRnApbRMnQC/KgYyFB0AXZShBCHVGaURq+BDkiV7jvHhVwvvAP0Q/3aWNhqgVZg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@napi-rs/canvas-win32-arm64-msvc@1.0.1':
+    resolution: {integrity: sha512-rVnDhVvcXlqcHMsgnxxhZgdRkRIqVBlx+FJwSAHi4VbWWwsowvV5ldFEecEHD2+Ac/IL3fNWF/LB5CZTghNwRA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@napi-rs/canvas-win32-x64-msvc@1.0.1':
+    resolution: {integrity: sha512-UMstkP/nZHbithgdSJv1EvYVrYhdao5B5N3szMVU2i5/b6ijMcVPXOEyrk0QXl0iPjv8Hkoow+Tap+MiOxppOQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@napi-rs/canvas@1.0.1':
+    resolution: {integrity: sha512-mPD43G7pXbQhIGa7z4IpT/vXm1jbF8cBM1oY5UqjL8LSaTCNGhNi2Lidc/0+LwKbNiqbv/Tq0JlBRwKu+LW3iw==}
+    engines: {node: '>= 10'}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -6018,6 +6096,53 @@ snapshots:
     dependencies:
       sparse-bitfield: 3.0.3
 
+  '@napi-rs/canvas-android-arm64@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-darwin-arm64@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-darwin-x64@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-linux-arm-gnueabihf@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-linux-arm64-gnu@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-linux-arm64-musl@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-linux-riscv64-gnu@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-linux-x64-gnu@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-linux-x64-musl@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-win32-arm64-msvc@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas-win32-x64-msvc@1.0.1':
+    optional: true
+
+  '@napi-rs/canvas@1.0.1':
+    optionalDependencies:
+      '@napi-rs/canvas-android-arm64': 1.0.1
+      '@napi-rs/canvas-darwin-arm64': 1.0.1
+      '@napi-rs/canvas-darwin-x64': 1.0.1
+      '@napi-rs/canvas-linux-arm-gnueabihf': 1.0.1
+      '@napi-rs/canvas-linux-arm64-gnu': 1.0.1
+      '@napi-rs/canvas-linux-arm64-musl': 1.0.1
+      '@napi-rs/canvas-linux-riscv64-gnu': 1.0.1
+      '@napi-rs/canvas-linux-x64-gnu': 1.0.1
+      '@napi-rs/canvas-linux-x64-musl': 1.0.1
+      '@napi-rs/canvas-win32-arm64-msvc': 1.0.1
+      '@napi-rs/canvas-win32-x64-msvc': 1.0.1
+
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -9244,14 +9369,14 @@ snapshots:
       postcss-selector-parser: 7.1.1
       postcss-value-parser: 4.2.0
 
-  postcss-cli@11.0.1(jiti@2.6.1)(postcss@8.5.15)(tsx@4.22.4):
+  postcss-cli@11.0.1(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4):
     dependencies:
       chokidar: 3.6.0
       dependency-graph: 1.0.0
       fs-extra: 11.2.0
       picocolors: 1.1.1
       postcss: 8.5.15
-      postcss-load-config: 5.1.0(jiti@2.6.1)(postcss@8.5.15)(tsx@4.22.4)
+      postcss-load-config: 5.1.0(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4)
       postcss-reporter: 7.1.0(postcss@8.5.15)
       pretty-hrtime: 1.0.3
       read-cache: 1.0.0
@@ -9300,12 +9425,12 @@ snapshots:
       read-cache: 1.0.0
       resolve: 1.22.8
 
-  postcss-load-config@5.1.0(jiti@2.6.1)(postcss@8.5.15)(tsx@4.22.4):
+  postcss-load-config@5.1.0(jiti@2.7.0)(postcss@8.5.15)(tsx@4.22.4):
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.5.0
     optionalDependencies:
-      jiti: 2.6.1
+      jiti: 2.7.0
       postcss: 8.5.15
       tsx: 4.22.4
 

@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
-import { type GameNumber } from '../../../database/models/game.model'
+import { type GameNumber, type GameModel } from '../../../database/models/game.model'
+import { gameStateLabel } from '../../game-state-label'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Layout } from '../../../html/layout'
@@ -33,7 +34,8 @@ export async function GamePage(props: { number: GameNumber }) {
   return (
     <Layout
       title={makeTitle(`game #${game.number}`)}
-      description={`game #${game.number} details`}
+      description={gameDescription(game)}
+      image={`/games/${game.number}/og-image.png`}
       canonical={`/games/${game.number}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
@@ -52,4 +54,14 @@ export async function GamePage(props: { number: GameNumber }) {
       <Footer />
     </Layout>
   )
+}
+
+function gameDescription(game: Pick<GameModel, 'number' | 'map' | 'state' | 'score'>) {
+  const parts = [`game #${game.number}`, game.map]
+  if (game.score) {
+    parts.push(`RED ${game.score.red} : ${game.score.blu} BLU`)
+  } else {
+    parts.push(gameStateLabel(game.state))
+  }
+  return parts.join(' · ')
 }
