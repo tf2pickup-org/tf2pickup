@@ -1,7 +1,7 @@
-import { loadImage, type Image } from '@napi-rs/canvas'
+import { loadImage as decodeImage, type Image } from '@napi-rs/canvas'
 import { secondsToMilliseconds } from 'date-fns'
 
-export async function loadOgImage(
+export async function loadImage(
   url: string,
   timeout = secondsToMilliseconds(3),
 ): Promise<Image | undefined> {
@@ -10,7 +10,7 @@ export async function loadOgImage(
     if (!response.ok) {
       return undefined
     }
-    return await loadImage(Buffer.from(await response.arrayBuffer()))
+    return await decodeImage(Buffer.from(await response.arrayBuffer()))
   } catch {
     return undefined
   }

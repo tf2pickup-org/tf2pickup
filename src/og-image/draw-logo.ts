@@ -1,10 +1,10 @@
 import { loadImage, type SKRSContext2D } from '@napi-rs/canvas'
-import { ogLogoPath } from './og-logo-path'
+import { logoPath } from './logo-path'
 
 // draws the (branding-aware) site logo in the top-left corner
-export async function drawOgLogo(ctx: SKRSContext2D) {
+export async function drawLogo(ctx: SKRSContext2D) {
   try {
-    const logo = await loadImage(ogLogoPath())
+    const logo = await loadImage(logoPath())
     const logoHeight = 56
     const logoWidth = (logo.width / logo.height) * logoHeight
     ctx.drawImage(logo, 64, 56, logoWidth, logoHeight)

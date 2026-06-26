@@ -12,7 +12,7 @@ const fontPath = resolve(
 
 let registered = false
 
-export function registerOgFonts() {
+export function registerFonts() {
   if (registered) return
   GlobalFonts.registerFromPath(fontPath, 'Satoshi')
   registered = true

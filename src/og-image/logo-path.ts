@@ -4,7 +4,7 @@ import { environment } from '../environment'
 
 const publicDir = resolve(import.meta.dirname, '..', '..', 'public')
 
-export function ogLogoPath() {
+export function logoPath() {
   if (environment.WEBSITE_BRANDING) {
     const branded = resolve(publicDir, 'branding', environment.WEBSITE_BRANDING, 'logo.png')
     if (existsSync(branded)) {
