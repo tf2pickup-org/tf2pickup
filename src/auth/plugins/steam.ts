@@ -45,9 +45,11 @@ const verifySteamCallback = (url: string): Promise<string> =>
   new Promise((resolve, reject) => {
     openId.verifyAssertion(url, (err, result) => {
       if (err) {
-        // OpenID assertion failures (replayed nonce, bad signature) come from
-        // stale/duplicated callback requests, not server faults — log at debug.
-        reject(withLogLevel(new Error(err.message), 'debug'))
+        const error = new Error(err.message)
+        // A replayed nonce just means a stale/duplicated callback request (e.g.
+        // the user refreshed the return URL), not a server fault — log at debug.
+        // Other assertion failures are rarer and kept at the default level.
+        reject(err.message === 'Invalid or replayed nonce' ? withLogLevel(error, 'debug') : error)
         return
       }
 
