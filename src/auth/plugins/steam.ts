@@ -8,6 +8,7 @@ import { players } from '../../players'
 import type { User } from '../types/user'
 import { SteamApiError } from '../../steam/errors/steam-api.error'
 import { PrivateSteamProfilePage } from '../views/html/private-steam-profile.page'
+import { withLogLevel } from '../../utils/with-log-level'
 
 declare module '@fastify/secure-session' {
   interface SessionData {
@@ -44,7 +45,11 @@ const verifySteamCallback = (url: string): Promise<string> =>
   new Promise((resolve, reject) => {
     openId.verifyAssertion(url, (err, result) => {
       if (err) {
-        reject(new Error(err.message))
+        const error = new Error(err.message)
+        // A replayed nonce just means a stale/duplicated callback request (e.g.
+        // the user refreshed the return URL), not a server fault — log at debug.
+        // Other assertion failures are rarer and kept at the default level.
+        reject(err.message === 'Invalid or replayed nonce' ? withLogLevel(error, 'debug') : error)
         return
       }
 

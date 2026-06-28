@@ -9,6 +9,7 @@ import { players } from '../players'
 import { preReady } from '../pre-ready'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from '../queue/get-state'
+import { withLogLevel } from '../utils/with-log-level'
 import { meetsSkillThreshold } from './meets-skill-threshold'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
@@ -52,7 +53,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
   return await withQueueLock('join', async () => {
     const state = await getState()
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
-      throw errors.badRequest('invalid queue state')
+      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
 
     const targetSlot = await collections.queueSlots.findOneAndUpdate(
@@ -73,7 +74,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
     )
 
     if (!targetSlot) {
-      throw errors.badRequest('slot occupied')
+      throw withLogLevel(errors.badRequest('slot occupied'), 'debug')
     }
 
     const oldSlot = await collections.queueSlots.findOneAndUpdate(

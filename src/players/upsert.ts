@@ -11,6 +11,7 @@ import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { errors } from '../errors'
 import { environment } from '../environment'
 import { events } from '../events'
+import { withLogLevel } from '../utils/with-log-level'
 
 interface UpsertPlayerParams {
   steamID: string
@@ -70,9 +71,12 @@ async function verifyInGameHours(steamId: SteamId64) {
   const reportedHours = await getTf2InGameHours(steamId)
   logger.debug({ steamId, reportedHours, requiredHours }, 'in-game hours verification')
   if (reportedHours < requiredHours) {
-    logger.warn({ steamId, reportedHours, requiredHours }, 'insufficient TF2 in-game hours')
-    throw errors.forbidden(
-      `insufficient TF2 in-game hours (reported: ${reportedHours}, required: ${requiredHours})`,
+    logger.info({ steamId, reportedHours, requiredHours }, 'insufficient TF2 in-game hours')
+    throw withLogLevel(
+      errors.forbidden(
+        `insufficient TF2 in-game hours (reported: ${reportedHours}, required: ${requiredHours})`,
+      ),
+      'info',
     )
   }
 }
@@ -99,8 +103,8 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
     }
   } catch (error) {
     if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
-      logger.warn({ player }, 'ETF2L.org account not found')
-      throw errors.forbidden(`ETF2L.org account is required`)
+      logger.info({ player }, 'ETF2L.org account not found')
+      throw withLogLevel(errors.forbidden(`ETF2L.org account is required`), 'info')
     } else {
       throw error
     }

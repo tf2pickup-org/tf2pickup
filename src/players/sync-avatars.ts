@@ -40,7 +40,7 @@ export async function syncAvatars() {
     if (error instanceof Error && error.message === 'No players found') {
       summaries = []
     } else {
-      logger.warn({ error }, 'failed to fetch Steam summaries while syncing avatars')
+      logger.info({ error }, 'failed to fetch Steam summaries while syncing avatars')
       return
     }
   }

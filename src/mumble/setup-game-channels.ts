@@ -1,4 +1,5 @@
 import type { GameModel } from '../database/models/game.model'
+import { CommandTimedOutError } from '@tf2pickup-org/mumble-client'
 import { assertClientIsConnected } from './assert-client-is-connected'
 import { client } from './client'
 import { moveToTargetChannel } from './move-to-target-channel'
@@ -6,6 +7,7 @@ import { Tf2Team } from '../shared/types/tf2-team'
 import { games } from '../games'
 import { collections } from '../database/collections'
 import { mumbleDirectUrl } from './mumble-direct-url'
+import { withLogLevel } from '../utils/with-log-level'
 
 // subchannels for each game
 const subChannelNames = [Tf2Team.blu.toUpperCase(), Tf2Team.red.toUpperCase()]
@@ -14,10 +16,19 @@ export async function setupGameChannels(game: GameModel) {
   assertClientIsConnected(client)
   await moveToTargetChannel(client)
   const channelName = `${game.number}`
-  const channel = await client.user.channel.createSubChannel(channelName)
-  await Promise.all(
-    subChannelNames.map(async subChannelName => await channel.createSubChannel(subChannelName)),
-  )
+  try {
+    const channel = await client.user.channel.createSubChannel(channelName)
+    await Promise.all(
+      subChannelNames.map(async subChannelName => await channel.createSubChannel(subChannelName)),
+    )
+  } catch (error) {
+    // Mumble command timeouts are transient (server busy / packet loss); channel
+    // setup retries on the next game, so this isn't a server fault.
+    if (error instanceof CommandTimedOutError) {
+      throw withLogLevel(error, 'warn')
+    }
+    throw error
+  }
 
   // update game
   await games.update(game.number, {
