@@ -67,6 +67,8 @@ Browser JS lives in `src/html/@client/`. Files are bundled by esbuild and served
 
 Collections are exported from `src/database/collections.ts` with TypeScript models in `src/database/models/`. Migrations in `src/migrations/` use Umzug.
 
+- Add new DB indexes via `ensureIndexes()` rather than via migrations, unless explicitly told otherwise.
+
 ### Environment
 
 All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for available variables. Key ones: `MONGODB_URI`, `STEAM_API_KEY`, `QUEUE_CONFIG` (6v6/9v9/bball/ultiduo/test), `WEBSITE_URL`.
@@ -84,3 +86,20 @@ OpenTelemetry (`src/otel.ts`) ships metrics (`tf2pickup.*`), logs, and traces to
 - **Strict TypeScript** — project uses `@tsconfig/strictest`
 - **ESM only** — `"type": "module"` in package.json
 - **pnpm** as package manager
+- **Adapt external code** — when integrating external/third-party code, adapt it to tf2pickup's coding style and idioms rather than vendoring it wholesale.
+
+## Development Environment
+
+Before starting a dev server or MongoDB, check whether one is already running (e.g., check ports 3000/27017) and reuse it rather than spawning your own.
+
+## Dependencies & Imports
+
+When importing dependencies in production code paths, verify the package is a runtime dependency (not a `devDependency`), and prefer lazy imports for optional/dev-only modules. Avoid barrel imports that pull in `environment.ts`.
+
+## Transparency / Working Style
+
+Always disclose any non-obvious transformation of assets or data (e.g., upscaling an image, modifying inputs) instead of doing it silently.
+
+## Testing & CI
+
+After any change, run lint, typecheck, and tests, and watch CI until it is fully green before considering a PR done.
