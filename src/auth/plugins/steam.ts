@@ -8,6 +8,7 @@ import { players } from '../../players'
 import type { User } from '../types/user'
 import { SteamApiError } from '../../steam/errors/steam-api.error'
 import { PrivateSteamProfilePage } from '../views/html/private-steam-profile.page'
+import { withLogLevel } from '../../utils/with-log-level'
 
 declare module '@fastify/secure-session' {
   interface SessionData {
@@ -44,7 +45,9 @@ const verifySteamCallback = (url: string): Promise<string> =>
   new Promise((resolve, reject) => {
     openId.verifyAssertion(url, (err, result) => {
       if (err) {
-        reject(new Error(err.message))
+        // OpenID assertion failures (replayed nonce, bad signature) come from
+        // stale/duplicated callback requests, not server faults — log at debug.
+        reject(withLogLevel(new Error(err.message), 'debug'))
         return
       }
 

@@ -48,6 +48,16 @@ export default fp(
     events.on(
       'match:restarted',
       safe(async ({ gameNumber }) => {
+        // Gameservers re-fire match:restarted (mp_restartgame, map reloads); only
+        // the started -> launching transition is meaningful. Ignore the rest
+        // instead of failing to find a started game.
+        const game = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1 } },
+        )
+        if (game?.state !== GameState.started) {
+          return
+        }
         await update(
           { number: gameNumber, state: GameState.started },
           {
@@ -71,6 +81,16 @@ export default fp(
     events.on(
       'match:ended',
       safe(async ({ gameNumber }) => {
+        // Gameservers re-fire match:ended after the game already left the started
+        // state (ended, force-ended, restarted). Ignore the rest instead of
+        // failing to find a started game.
+        const existing = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1 } },
+        )
+        if (existing?.state !== GameState.started) {
+          return
+        }
         await collections.gamesSubstituteRequests.deleteMany({ gameNumber })
         const game = await update(
           { number: gameNumber, state: GameState.started },

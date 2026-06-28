@@ -5,6 +5,7 @@ import { logger } from '../logger'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { withQueueLock } from '../queue/with-queue-lock'
+import { withLogLevel } from '../utils/with-log-level'
 
 export async function voteMap(steamId: SteamId64, map: string): Promise<Record<string, number>> {
   return await withQueueLock('vote-map', async () => {
@@ -16,7 +17,7 @@ export async function voteMap(steamId: SteamId64, map: string): Promise<Record<s
 
     const slotCount = await collections.queueSlots.countDocuments({ 'player.steamId': steamId })
     if (slotCount === 0) {
-      throw errors.badRequest('player not in the queue')
+      throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
     }
 
     const { deletedCount } = await collections.queueMapVotes.deleteOne({ player: steamId, map })

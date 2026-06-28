@@ -27,7 +27,7 @@ vi.mock('../database/collections', () => ({
 }))
 
 vi.mock('../logger', () => ({
-  logger: { warn: vi.fn(), debug: vi.fn() },
+  logger: { info: vi.fn(), warn: vi.fn(), debug: vi.fn() },
 }))
 
 import { collections } from '../database/collections'

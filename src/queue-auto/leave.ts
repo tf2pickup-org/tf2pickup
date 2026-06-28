@@ -9,13 +9,14 @@ import { getState } from '../queue/get-state'
 import { withQueueLock } from '../queue/with-queue-lock'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
+import { withLogLevel } from '../utils/with-log-level'
 
 export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
   return await withQueueLock('leave', async () => {
     logger.trace({ steamId }, 'queue.leave()')
     const state = await getState()
     if (state === QueueState.launching) {
-      throw errors.badRequest('invalid queue state')
+      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
 
     const slot = await collections.queueSlots.findOneAndUpdate(
@@ -31,7 +32,7 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
     )
 
     if (!slot) {
-      throw errors.badRequest('player not in the queue')
+      throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
     }
     events.emit('queue/slots:updated', { slots: [slot] })
 
