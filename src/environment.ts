@@ -10,6 +10,7 @@ const environmentSchema = z.object({
   LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
   APP_HOST: z.string().default('localhost'),
   APP_PORT: z.coerce.number().default(3000),
+  TRUST_PROXY: z.string().default('loopback, uniquelocal'),
 
   ENABLE_TEST_AUTH: z.enum(['true', 'false']).default('false'),
 
