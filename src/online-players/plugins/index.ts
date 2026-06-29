@@ -51,6 +51,7 @@ export default fp(
             $set: {
               name: player.name,
               avatar: playerAvatarUrl(player.avatar, 'small'),
+              roles: player.roles,
             },
           },
           {
