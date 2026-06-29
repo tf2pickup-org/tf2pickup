@@ -71,9 +71,9 @@ export async function buildSnapshot() {
     pool,
   ] = await Promise.all([
     collections.announcements.countDocuments({ enabled: true }),
-    collections.players.countDocuments(),
-    collections.staticGameServers.countDocuments(),
-    collections.games.countDocuments(),
+    collections.players.estimatedDocumentCount(),
+    collections.staticGameServers.countDocuments({ isOnline: true }),
+    collections.games.estimatedDocumentCount(),
     isDocumentsCustomized(),
     getUsageCounters(),
     getPlayedMapsCount(),
@@ -91,7 +91,7 @@ export async function buildSnapshot() {
     {
       key: 'games.skill_suggestions',
       value: skillSuggestions,
-      label: 'Skill suggestions (experimental)',
+      label: 'Skill suggestions',
       group: 'Games',
     },
     { key: 'games.skill_step', value: skillStep, label: 'Skill adjustment step', group: 'Games' },

@@ -27,9 +27,9 @@ vi.mock('../configuration', () => ({
 vi.mock('../database/collections', () => ({
   collections: {
     announcements: { countDocuments: vi.fn().mockResolvedValue(1) },
-    players: { countDocuments: vi.fn().mockResolvedValue(120) },
+    players: { estimatedDocumentCount: vi.fn().mockResolvedValue(120) },
     staticGameServers: { countDocuments: vi.fn().mockResolvedValue(3) },
-    games: { countDocuments: vi.fn().mockResolvedValue(5000) },
+    games: { estimatedDocumentCount: vi.fn().mockResolvedValue(5000) },
   },
 }))
 
@@ -145,7 +145,7 @@ describe('buildSnapshot', () => {
     const snapshot = await buildSnapshot()
     expect(snapshot.meta.features).toContainEqual({
       key: 'games.skill_suggestions',
-      label: 'Skill suggestions (experimental)',
+      label: 'Skill suggestions',
       group: 'Games',
     })
     expect(snapshot.meta.integrations).toContainEqual({ key: 'discord', label: 'Discord' })
