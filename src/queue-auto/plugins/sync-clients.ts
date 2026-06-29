@@ -1,4 +1,5 @@
 import fp from 'fastify-plugin'
+import { debounce } from 'es-toolkit'
 import { events } from '../../events'
 import { OnlinePlayerList } from '../views/html/online-player-list'
 import { safe } from '../../utils/safe'
@@ -97,14 +98,16 @@ export default fp(
       await syncQueuePage(socket)
     })
 
-    async function updateOnlinePlayers() {
-      const opl = await OnlinePlayerList()
-      const opc = await OnlinePlayerCount()
-      app.gateway.to({ url: '/' }).send(() => [opl, opc])
-    }
+    const updateOnlinePlayers = debounce(
+      safe(async () => {
+        const [opl, opc] = await Promise.all([OnlinePlayerList(), OnlinePlayerCount()])
+        app.gateway.to({ url: '/' }).send(() => [opl, opc])
+      }),
+      300,
+    )
 
-    events.on('player:connected', safe(updateOnlinePlayers))
-    events.on('player:disconnected', safe(updateOnlinePlayers))
+    events.on('player:connected', updateOnlinePlayers)
+    events.on('player:disconnected', updateOnlinePlayers)
 
     events.on(
       'player/activeGame:updated',
