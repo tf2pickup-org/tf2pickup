@@ -77,6 +77,8 @@ All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for ava
 
 OpenTelemetry (`src/otel.ts`) ships metrics (`tf2pickup.*`), logs, and traces to SigNoz at `https://logs.tf2pickup.org` (`SIGNOZ_API_KEY` in `.env`). To query it from the CLI — investigate errors/latency, search logs, or build dashboards/alerts — use the `signoz-query` skill (`.claude/skills/signoz-query/SKILL.md`).
 
+There are three instrumentation channels — **OTel/SigNoz** (operational metrics/logs/traces for instances we host), **Umami** (per-instance, in-browser product analytics, via `data-umami-event` tags), and **tf2pickup telemetry** (anonymous cross-instance feature-adoption snapshot built in `src/telemetry/build-snapshot.ts`). See [docs/observability.md](docs/observability.md) for what belongs in each and a decision framework.
+
 ## Conventions
 
 - **One export per file** — the exported function name must match the file name (e.g., `foo-bar.ts` → `export function fooBar()`)
@@ -87,6 +89,7 @@ OpenTelemetry (`src/otel.ts`) ships metrics (`tf2pickup.*`), logs, and traces to
 - **ESM only** — `"type": "module"` in package.json
 - **pnpm** as package manager
 - **Adapt external code** — when integrating external/third-party code, adapt it to tf2pickup's coding style and idioms rather than vendoring it wholesale.
+- **Instrument new features when applicable** — consider whether a new feature warrants telemetry or metrics, and route it to the right channel per [docs/observability.md](docs/observability.md): a config/feature flag → add an entry to `src/telemetry/build-snapshot.ts` (anonymous cross-instance adoption); a user-facing interaction → a `data-umami-event` tag; operational health/outcomes → OTel metrics/logs. Skip it when none of these fit.
 
 ## Development Environment
 

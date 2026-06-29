@@ -30,6 +30,7 @@ import type { PendingImportModel } from './models/pending-import.model'
 import type { LogsTfLogModel } from './models/logs-tf-log.model'
 import type { DeferredKickModel } from './models/deferred-kick.model'
 import type { GameRoundProgressModel } from './models/game-round-progress.model'
+import type { TelemetryStatModel } from './models/telemetry-stat.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -66,6 +67,7 @@ export const collections = {
   staticGameServers: database.collection<StaticGameServerModel>('staticgameservers'),
   streams: database.collection<StreamModel>('streams'),
   tasks: database.collection<TaskModel>('tasks'),
+  telemetryStats: database.collection<TelemetryStatModel>('telemetrystats'),
 }
 
 await ensureIndexes()

@@ -20,7 +20,7 @@ app.setValidatorCompiler(validatorCompiler)
 
 logger.info(`starting tf2pickup.org ${version}`)
 
-if (process.env['CI'] !== 'true') {
+if (!environment.CI) {
   await app.register(await import('@fastify/rate-limit'), {
     keyGenerator: req => realIp(req),
   })

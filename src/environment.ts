@@ -7,6 +7,10 @@ dotenv.config()
 
 const environmentSchema = z.object({
   NODE_ENV: z.string().default('development'),
+  CI: z
+    .string()
+    .default('false')
+    .transform(value => ['true', '1', 'yes', 'on'].includes(value.trim().toLowerCase())),
   LOG_LEVEL: z.enum(['trace', 'debug', 'info', 'warn', 'error', 'fatal']).default('info'),
   APP_HOST: z.string().default('localhost'),
   APP_PORT: z.coerce.number().default(3000),
@@ -30,6 +34,12 @@ const environmentSchema = z.object({
 
   ATLAS_URL: z.url().default('https://atlas.tf2pickup.org'),
   ATLAS_SECRET: z.string().optional(),
+
+  TELEMETRY_URL: z.url().default('https://telemetry.tf2pickup.org'),
+  TELEMETRY_DISABLED: z
+    .string()
+    .default('false')
+    .transform(value => ['true', '1', 'yes', 'on'].includes(value.trim().toLowerCase())),
 
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),

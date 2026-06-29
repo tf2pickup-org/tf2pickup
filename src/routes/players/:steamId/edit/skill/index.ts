@@ -6,6 +6,8 @@ import { players } from '../../../../../players'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { routes } from '../../../../../utils/routes'
 import { AdminToolbox } from '../../../../../players/views/html/admin-toolbox'
+import { recordSkillSuggestionUsage } from '../../../../../telemetry/record-skill-suggestion-usage'
+import { safe } from '../../../../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -57,7 +59,14 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const { steamId } = request.params
-      const player = await players.bySteamId(steamId, ['steamId'])
+      const player = await players.bySteamId(steamId, [
+        'steamId',
+        'skill',
+        'elo',
+        'stats',
+        'skillHistory',
+      ])
+      const oldSkill = player.skill ?? {}
       const skill = Object.entries(request.body)
         .filter(([key]) => key.startsWith('skill.'))
         .reduce<Partial<Record<Tf2ClassName, number>>>(
@@ -69,6 +78,7 @@ export default routes(async app => {
         skill,
         actor: request.user!.player.steamId,
       })
+      safe(() => recordSkillSuggestionUsage({ player, oldSkill, newSkill: skill }))()
       request.flash('success', `Player skill updated`)
       await reply.redirect(`/players/${steamId}`)
     },
