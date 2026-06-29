@@ -31,6 +31,10 @@
       &:hover {
         text-decoration: underline;
       }
+
+      &.admin {
+        color: var(--color-alert);
+      }
     }
   }
 }
