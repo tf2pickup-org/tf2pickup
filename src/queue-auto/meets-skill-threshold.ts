@@ -1,6 +1,7 @@
 import { configuration } from '../configuration'
 import type { PlayerModel } from '../database/models/player.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
+import { currentGamemode } from '../shared/current-gamemode'
 
 export async function meetsSkillThreshold(
   player: Pick<PlayerModel, 'skill'>,
@@ -12,7 +13,7 @@ export async function meetsSkillThreshold(
   }
 
   const skill =
-    player.skill?.[slot.gameClass] ??
+    player.skill?.[currentGamemode]?.[slot.gameClass] ??
     (await configuration.get('games.default_player_skill'))[slot.gameClass] ??
     0
   return skill >= skillThreshold

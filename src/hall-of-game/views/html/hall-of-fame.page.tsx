@@ -5,6 +5,7 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { collections } from '../../../database/collections'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { IconAwardFilled } from '../../../html/components/icons'
@@ -88,12 +89,12 @@ async function getMostActiveOverall(): Promise<HallOfFameEntry[]> {
 async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
   const players = await collections.players
     .find(
-      { 'stats.gamesByClass.medic': { $gt: 0 } },
-      { sort: { 'stats.gamesByClass.medic': -1 }, limit: 10 },
+      { [`stats.gamesByClass.${currentGamemode}.medic`]: { $gt: 0 } },
+      { sort: { [`stats.gamesByClass.${currentGamemode}.medic`]: -1 }, limit: 10 },
     )
     .toArray()
   return players.map(player => ({
     player,
-    count: player.stats.gamesByClass[Tf2ClassName.medic] ?? 0,
+    count: player.stats.gamesByClass[currentGamemode]?.[Tf2ClassName.medic] ?? 0,
   }))
 }

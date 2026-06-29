@@ -2,6 +2,7 @@ import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { GameState } from '../database/models/game.model'
 import { SlotStatus } from '../database/models/game-slot.model'
+import type { PlayerStats } from '../database/models/player.model'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 
 export async function up() {
@@ -37,11 +38,13 @@ export async function up() {
       }
     }
 
+    // Predates the gamemode dimension: writes the flat shape that migration 024
+    // later re-nests under the instance's gamemode.
     await collections.players.updateOne(
       { steamId: player.steamId },
       {
         $set: {
-          stats,
+          stats: stats as unknown as PlayerStats,
         },
       },
     )

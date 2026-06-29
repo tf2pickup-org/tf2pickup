@@ -19,6 +19,7 @@ export async function GamePage(props: { number: GameNumber }) {
   const user = requestContext.get('user')
   const game = await findOne({ number: props.number }, [
     'number',
+    'gamemode',
     'map',
     'state',
     'slots',

@@ -3,6 +3,7 @@ import { parse } from 'node-html-parser'
 import { GameSlot } from './game-slot'
 import { GameState } from '../../../database/models/game.model'
 import type { GameModel, GameNumber } from '../../../database/models/game.model'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { PlayerConnectionStatus, SlotStatus } from '../../../database/models/game-slot.model'
 import type { GameSlotId } from '../../../shared/types/game-slot-id'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
@@ -37,6 +38,7 @@ const baseSlot = {
 
 const baseGame = {
   number: 1 as GameNumber,
+  gamemode: Gamemode.sixes,
   map: 'cp_badlands',
   state: GameState.launching,
   slots: [baseSlot],

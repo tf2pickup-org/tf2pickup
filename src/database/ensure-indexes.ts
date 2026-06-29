@@ -6,6 +6,7 @@ import {
   type IndexSpecification,
 } from 'mongodb'
 import { logger } from '../logger'
+import { currentGamemode } from '../shared/current-gamemode'
 
 interface IndexDefinition {
   spec: IndexSpecification
@@ -24,7 +25,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     // Covers the player list query (steamId + name, no _id) so it runs index-only.
     { spec: { steamId: 1, name: 1 } },
     { spec: { 'stats.totalGames': -1 } },
-    { spec: { 'stats.gamesByClass.medic': -1 } },
+    { spec: { [`stats.gamesByClass.${currentGamemode}.medic`]: -1 } },
     { spec: { avatarLastSyncedAt: 1 } },
   ],
   games: [

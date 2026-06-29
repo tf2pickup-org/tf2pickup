@@ -8,7 +8,8 @@ import type { PlayerModel } from '../../database/models/player.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 function isEligibleForAutoVerification(player: Pick<PlayerModel, 'skill' | 'stats'>): boolean {
-  return player.skill !== undefined || player.stats.totalGames > 0
+  const hasSkill = player.skill !== undefined && Object.keys(player.skill).length > 0
+  return hasSkill || player.stats.totalGames > 0
 }
 
 async function verify(steamId: SteamId64): Promise<void> {
@@ -45,7 +46,7 @@ export default fp(
         await collections.players.updateMany(
           {
             verified: { $ne: true },
-            $or: [{ skill: { $exists: true } }, { 'stats.totalGames': { $gt: 0 } }],
+            $or: [{ skill: { $exists: true, $ne: {} } }, { 'stats.totalGames': { $gt: 0 } }],
           },
           { $set: { verified: true } },
         )

@@ -28,6 +28,7 @@ setup('authenticate', async ({ browser, db }) => {
           preferences: {},
           stats: {
             totalGames: 0,
+            gamesByGamemode: {},
             gamesByClass: {},
           },
         },
