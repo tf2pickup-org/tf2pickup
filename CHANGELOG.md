@@ -1,5 +1,19 @@
 # Changelog
 
+# [4.17.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.16.1...4.17.0) (2026-06-29)
+
+
+### Features
+
+* **logging:** record real client IP and User-Agent on request logs ([#713](https://github.com/tf2pickup-org/tf2pickup/issues/713)) ([03a8369](https://github.com/tf2pickup-org/tf2pickup/commit/03a8369236ce3110595f9b570bc7a3ae48f08729))
+* **queue:** mark admins in the online player list ([#714](https://github.com/tf2pickup-org/tf2pickup/issues/714)) ([9c154ac](https://github.com/tf2pickup-org/tf2pickup/commit/9c154ac35ad425f8257722ad4f214a8e15ea2b5b))
+* report anonymous instance telemetry ([#702](https://github.com/tf2pickup-org/tf2pickup/issues/702)) ([0e79485](https://github.com/tf2pickup-org/tf2pickup/commit/0e79485341620ef7d4144c538a9453d0cc4571de))
+
+
+### Performance Improvements
+
+* **queue:** debounce online player list broadcasts ([#715](https://github.com/tf2pickup-org/tf2pickup/issues/715)) ([3d910e8](https://github.com/tf2pickup-org/tf2pickup/commit/3d910e8e0160482cbf92c578f539b256d2322b91))
+
 ## [4.16.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.16.0...4.16.1) (2026-06-29)
 
 
