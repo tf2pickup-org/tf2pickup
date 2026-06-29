@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.16.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.16.0...4.16.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* **branding:** standardize favicon resolutions across instances ([#710](https://github.com/tf2pickup-org/tf2pickup/issues/710)) ([a22eeef](https://github.com/tf2pickup-org/tf2pickup/commit/a22eeef3dd78bc02ded8f691cd1c82d9e0111f5f))
+* **deps:** update dependency country-flag-icons to v1.6.19 ([11ea678](https://github.com/tf2pickup-org/tf2pickup/commit/11ea67888589753b89b513c019ffefe0bc4fc3de))
+* **deps:** update dependency es-toolkit to v1.49.0 ([708f096](https://github.com/tf2pickup-org/tf2pickup/commit/708f096bcc74747f33f03a9a8e4387d3d1a524a3))
+* **deps:** update dependency fastify-type-provider-zod to v7 ([#709](https://github.com/tf2pickup-org/tf2pickup/issues/709)) ([c82ddcd](https://github.com/tf2pickup-org/tf2pickup/commit/c82ddcd5b3837c0dcb8a7b355bb41b471dc75678))
+* **deps:** update dependency motion to v12.41.0 ([fe46943](https://github.com/tf2pickup-org/tf2pickup/commit/fe469433afe5aa95a3c80dc65dcaa4532c0474d6))
+* **deps:** update dependency motion to v12.42.0 ([3e2754c](https://github.com/tf2pickup-org/tf2pickup/commit/3e2754c46113a50d547ff922194a147baa52ea7b))
+* **deps:** update dependency nanoid to v5.1.16 ([00905f6](https://github.com/tf2pickup-org/tf2pickup/commit/00905f614d7dd2bcf5a3c8189733884864c94521))
+* **logging:** right-size noisy warn/error logs and guard match end/restart ([#712](https://github.com/tf2pickup-org/tf2pickup/issues/712)) ([fe7676a](https://github.com/tf2pickup-org/tf2pickup/commit/fe7676ae9d66f4a3d69c28863bab6c547444ff09))
+
 # [4.16.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.15.0...4.16.0) (2026-06-26)
 
 
