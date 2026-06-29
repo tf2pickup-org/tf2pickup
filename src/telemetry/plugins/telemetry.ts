@@ -8,7 +8,7 @@ import { sendTelemetry } from '../send-telemetry'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    if (environment.TELEMETRY_DISABLED) {
+    if (environment.NODE_ENV !== 'production' || environment.CI || environment.TELEMETRY_DISABLED) {
       return
     }
 
