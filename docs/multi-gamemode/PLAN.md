@@ -130,10 +130,10 @@ and inherited keys are stored under a gamemode-scoped key.
 | `games.whitelist_id` | **per-gamemode** | different competitive whitelist per mode |
 | `queue.player_skill_threshold` | **per-gamemode** | skill is per-mode now |
 | `queue.map_cooldown` | **per-gamemode** | map pools differ |
+| `games.auto_force_end_threshold` | **per-gamemode** | bigger teams warrant a higher threshold; per-mode sensible defaults |
 | map pool (`maps` collection) | **per-gamemode** | |
 | `games.join_queue_cooldown` | **inherited** | per-class; allow per-mode override |
 | `games.execute_extra_commands` | **inherited** | global base commands + per-mode extras |
-| `games.auto_force_end_threshold` | **inherited** | bigger teams may warrant a higher threshold |
 | `games.cooldown_levels` | global | player-behaviour bans, mode-agnostic |
 | `games.skill_step` / `games.skill_suggestions` | global | admin-tool UX |
 | `games.join_gameserver_timeout` / `rejoin_gameserver_timeout` | global | |
@@ -147,9 +147,9 @@ and inherited keys are stored under a gamemode-scoped key.
 | `tf2_quick_server.*` | global | |
 | `discord.*`, `misc.*`, `twitchtv.*` | global | |
 
-> Open for review: `auto_force_end_threshold` and the queue timeouts are marked
-> conservatively — if reviewers prefer, they can stay global or move fully
-> per-gamemode. The mechanism (inherited override) supports either.
+> Open for review: the queue timeouts (`ready_up_timeout` / `ready_state_timeout`
+> / `pre_ready_up_timeout`) are marked global conservatively — if reviewers
+> prefer, the inherited-override mechanism can make them per-mode later.
 
 ### Mechanism
 
@@ -238,8 +238,9 @@ reviewed, dry-run-able script. After both instances have run migration A:
    `legacy = { gamemode, number: <oldNumber> }`. Index `{ 'legacy.gamemode': 1,
    'legacy.number': 1 }`.
 2. **Merge players** by `steamId`: union per-gamemode skill/elo/stats (disjoint
-   gamemode keys, so no class-level conflict). Reconcile profile fields (name,
-   bans, roles) with a documented precedence (primary instance wins).
+   gamemode keys, so no class-level conflict). Reconcile profile fields with
+   **primary instance wins** — **except `roles`, which are unioned** (an admin on
+   `hl.tf2pickup.eu` keeps their authority after merging into the 6v6 instance).
 3. **Merge maps** per gamemode; merge per-gamemode configuration.
 4. **Rewrite references** to game numbers (logs, activity log, etc.) using the
    remap table.
@@ -279,8 +280,7 @@ Each phase is independently shippable and keeps the app green.
   unranked there — confirm that's acceptable (it matches "provisional" ELO).
 - Concurrent launches across modes increase simultaneous gameserver demand;
   verify assignment handles contention (shared static + serveme.tf pool).
-- Merger reconciliation precedence for player profile fields needs sign-off.
-- `auto_force_end_threshold` / queue timeout scoping (see config table note).
+- Queue timeout scoping (global vs per-mode) — see config table note.
 
 ---
 
