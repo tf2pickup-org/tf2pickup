@@ -3,6 +3,7 @@ import { logs } from '@opentelemetry/api-logs'
 import { trace } from '@opentelemetry/api'
 import type { AttributeValue, Attributes } from '@opentelemetry/api'
 import { environment } from './environment'
+import { serializeRequest } from './utils/serialize-request'
 
 // https://opentelemetry.io/docs/specs/otel/logs/data-model/#field-severitynumber
 const pinoLevelToSeverityNumber = (level: number) => {
@@ -85,4 +86,7 @@ const stream =
       // so it must be loaded lazily and only on the dev path.
       ((await import('pino-princess')).default() as pino.DestinationStream)
 
-export const logger = pino({ level: environment.LOG_LEVEL }, stream)
+export const logger = pino(
+  { level: environment.LOG_LEVEL, serializers: { req: serializeRequest } },
+  stream,
+)

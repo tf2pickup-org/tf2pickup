@@ -13,7 +13,7 @@ import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 
-const app = fastify({ loggerInstance })
+const app = fastify({ loggerInstance, trustProxy: environment.TRUST_PROXY })
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
