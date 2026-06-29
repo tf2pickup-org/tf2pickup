@@ -7,18 +7,23 @@ import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
 import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import type { Gamemode } from '../shared/types/gamemode'
 import { pickTeams, type PlayerSlot } from './pick-teams'
 
 export async function create(
+  gamemode: Gamemode,
   queueSlots: QueueSlotModel[],
   map: string,
   friends: SteamId64[][] = [],
 ) {
-  const playerSlots: PlayerSlot[] = await Promise.all(queueSlots.map(queueSlotToPlayerSlot))
+  const playerSlots: PlayerSlot[] = await Promise.all(
+    queueSlots.map(slot => queueSlotToPlayerSlot(gamemode, slot)),
+  )
   const slots = pickTeams(playerSlots, { friends })
 
   const { insertedId } = await collections.games.insertOne({
     number: await getNextGameNumber(),
+    gamemode,
     map,
     state: GameState.created,
     slots: slots.map(slot => ({
@@ -47,7 +52,10 @@ export async function create(
   return game
 }
 
-async function queueSlotToPlayerSlot(queueSlot: QueueSlotModel): Promise<PlayerSlot> {
+async function queueSlotToPlayerSlot(
+  gamemode: Gamemode,
+  queueSlot: QueueSlotModel,
+): Promise<PlayerSlot> {
   if (!queueSlot.player) {
     throw new Error(`queue slot ${queueSlot.id} is empty`)
   }
@@ -57,8 +65,9 @@ async function queueSlotToPlayerSlot(queueSlot: QueueSlotModel): Promise<PlayerS
   let skill = defaultPlayerSkill[gameClass]!
 
   const { skill: playerSkill } = await players.bySteamId(player.steamId, ['skill'])
-  if (playerSkill && gameClass in playerSkill) {
-    skill = playerSkill[gameClass]!
+  const gamemodeSkill = playerSkill?.[gamemode]
+  if (gamemodeSkill && gameClass in gamemodeSkill) {
+    skill = gamemodeSkill[gameClass]!
   }
 
   return { player: player.steamId, gameClass, skill }

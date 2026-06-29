@@ -2,6 +2,7 @@ import { PlayerRole } from '../../../../../database/models/player.model'
 import { z } from 'zod'
 import { queue } from '../../../../../queue-auto'
 import type { Tf2ClassName } from '../../../../../shared/types/tf2-class-name'
+import { currentGamemode } from '../../../../../shared/current-gamemode'
 import { players } from '../../../../../players'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { routes } from '../../../../../utils/routes'
@@ -25,7 +26,12 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const { steamId } = request.params
-      await players.update(steamId, { $unset: { skill: '' } }, {}, request.user!.player.steamId)
+      await players.update(
+        steamId,
+        { $unset: { [`skill.${currentGamemode}`]: '' } },
+        {},
+        request.user!.player.steamId,
+      )
       const player = await players.bySteamId(steamId, [
         'steamId',
         'skill',
@@ -67,7 +73,7 @@ export default routes(async app => {
         'stats',
         'skillHistory',
       ])
-      const oldSkill = player.skill ?? {}
+      const oldSkill = player.skill?.[currentGamemode] ?? {}
       const skill = Object.entries(request.body)
         .filter(([key]) => key.startsWith('skill.'))
         .reduce<Partial<Record<Tf2ClassName, number>>>(

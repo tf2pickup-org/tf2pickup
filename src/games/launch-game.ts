@@ -1,5 +1,6 @@
 import { logger } from '../logger'
 import { queue } from '../queue-auto'
+import { currentGamemode } from '../shared/current-gamemode'
 import { assignGameServer } from './assign-game-server'
 import { create } from './create'
 import { configure } from './rcon/configure'
@@ -10,7 +11,7 @@ export async function launchGame() {
   const map = await queue.getMapWinner()
   const friends = await queue.getFriends()
   logger.trace({ slots, map, friends }, 'launchGame()')
-  const { number } = await create(slots, map, friends)
+  const { number } = await create(currentGamemode, slots, map, friends)
   await assignGameServer(number, { retries: 3 })
   void configure(number)
 }

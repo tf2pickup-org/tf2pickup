@@ -21,7 +21,7 @@
 
 - A player being in more than one queue at the same time. **One player → one
   queue at a time.**
-- Runtime add/remove of a gamemode's *existence* on an instance (the enabled set
+- Runtime add/remove of a gamemode's _existence_ on an instance (the enabled set
   is fixed at boot; see [Enabled gamemodes](#enabled-gamemodes)).
 - Cross-gamemode matchmaking / shared ELO across modes.
 
@@ -53,12 +53,12 @@ The **universe** of gamemodes equals the set of queue configs we ship under
 
 ### Decisions
 
-| Question | Decision |
-| --- | --- |
-| Per-player concurrency | One player can be in **one** queue at a time. Joining queue B auto-leaves queue A. |
-| Game numbering on merge | Re-sequence **all** games across merged instances by launch date, assign fresh global numbers. Keep a legacy mapping for redirects. |
-| Backward-compat for old game URLs | `/games/:number?old_gamemode=6v6` → 302 to the new number. |
-| Release | Breaking change, **v5**. |
+| Question                          | Decision                                                                                                                            |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Per-player concurrency            | One player can be in **one** queue at a time. Joining queue B auto-leaves queue A.                                                  |
+| Game numbering on merge           | Re-sequence **all** games across merged instances by launch date, assign fresh global numbers. Keep a legacy mapping for redirects. |
+| Backward-compat for old game URLs | `/games/:number?old_gamemode=6v6` → 302 to the new number.                                                                          |
+| Release                           | Breaking change, **v5**.                                                                                                            |
 
 ---
 
@@ -124,28 +124,28 @@ Each existing configuration key is classified as **global**, **per-gamemode**, o
 **inherited** (global base value, with optional per-gamemode override). Per-gamemode
 and inherited keys are stored under a gamemode-scoped key.
 
-| Key | Scope | Notes |
-| --- | --- | --- |
-| `games.default_player_skill` | **per-gamemode** | class set + starting skill differ per mode |
-| `games.whitelist_id` | **per-gamemode** | different competitive whitelist per mode |
-| `queue.player_skill_threshold` | **per-gamemode** | skill is per-mode now |
-| `queue.map_cooldown` | **per-gamemode** | map pools differ |
-| `games.auto_force_end_threshold` | **per-gamemode** | bigger teams warrant a higher threshold; per-mode sensible defaults |
-| map pool (`maps` collection) | **per-gamemode** | |
-| `games.join_queue_cooldown` | **inherited** | per-class; allow per-mode override |
-| `games.execute_extra_commands` | **inherited** | global base commands + per-mode extras |
-| `games.cooldown_levels` | global | player-behaviour bans, mode-agnostic |
-| `games.skill_step` / `games.skill_suggestions` | global | admin-tool UX |
-| `games.join_gameserver_timeout` / `rejoin_gameserver_timeout` | global | |
-| `games.logs_tf_upload_method` | global | |
-| `games.hide_server_info_from_spectators` | global | |
-| `games.voice_server*` (all) | global | |
-| `queue.ready_up_timeout` / `ready_state_timeout` / `pre_ready_up_timeout` | global | queue UX timing |
-| `queue.require_player_verification` | global | |
-| `players.*` (etf2l, min hours, bypass) | global | registration restrictions are instance-wide |
-| `serveme_tf.*` | global | server pool is shared across modes |
-| `tf2_quick_server.*` | global | |
-| `discord.*`, `misc.*`, `twitchtv.*` | global | |
+| Key                                                                       | Scope            | Notes                                                               |
+| ------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------- |
+| `games.default_player_skill`                                              | **per-gamemode** | class set + starting skill differ per mode                          |
+| `games.whitelist_id`                                                      | **per-gamemode** | different competitive whitelist per mode                            |
+| `queue.player_skill_threshold`                                            | **per-gamemode** | skill is per-mode now                                               |
+| `queue.map_cooldown`                                                      | **per-gamemode** | map pools differ                                                    |
+| `games.auto_force_end_threshold`                                          | **per-gamemode** | bigger teams warrant a higher threshold; per-mode sensible defaults |
+| map pool (`maps` collection)                                              | **per-gamemode** |                                                                     |
+| `games.join_queue_cooldown`                                               | **inherited**    | per-class; allow per-mode override                                  |
+| `games.execute_extra_commands`                                            | **inherited**    | global base commands + per-mode extras                              |
+| `games.cooldown_levels`                                                   | global           | player-behaviour bans, mode-agnostic                                |
+| `games.skill_step` / `games.skill_suggestions`                            | global           | admin-tool UX                                                       |
+| `games.join_gameserver_timeout` / `rejoin_gameserver_timeout`             | global           |                                                                     |
+| `games.logs_tf_upload_method`                                             | global           |                                                                     |
+| `games.hide_server_info_from_spectators`                                  | global           |                                                                     |
+| `games.voice_server*` (all)                                               | global           |                                                                     |
+| `queue.ready_up_timeout` / `ready_state_timeout` / `pre_ready_up_timeout` | global           | queue UX timing                                                     |
+| `queue.require_player_verification`                                       | global           |                                                                     |
+| `players.*` (etf2l, min hours, bypass)                                    | global           | registration restrictions are instance-wide                         |
+| `serveme_tf.*`                                                            | global           | server pool is shared across modes                                  |
+| `tf2_quick_server.*`                                                      | global           |                                                                     |
+| `discord.*`, `misc.*`, `twitchtv.*`                                       | global           |                                                                     |
 
 > Open for review: the queue timeouts (`ready_up_timeout` / `ready_state_timeout`
 > / `pre_ready_up_timeout`) are marked global conservatively — if reviewers
@@ -217,15 +217,27 @@ field where a queue/game is in scope.
 
 ### A. Per-instance backfill (Umzug migration, runs on every instance)
 
-Small, deterministic. Uses the instance's previous `QUEUE_CONFIG` as the single
-existing gamemode `g0`:
+Small, deterministic, idempotent. Uses the instance's previous `QUEUE_CONFIG`
+(`currentGamemode`) as the single existing gamemode `g0`. Implemented in
+`024-multi-gamemode-backfill.ts` (Phase 1):
 
 1. Set `gamemode = g0` on all existing games.
-2. Re-nest player `skill`/`elo`/`eloHistory`/`skillHistory` under `g0`.
+2. Re-nest player `skill`/`elo` under `g0`; tag each `eloHistory` /
+   `skillHistory` entry with `gamemode = g0`.
 3. Re-nest `stats.gamesByClass` under `g0`; set `gamesByGamemode = { g0: totalGames }`.
-4. Tag `queue.*` collections with `gamemode = g0`.
-5. Move per-gamemode config values (`default_player_skill`, `whitelist_id`,
-   `player_skill_threshold`, `map_cooldown`, map pool) under the `g0` namespace.
+
+Idempotency is by shape detection: a flat class-keyed map is migrated, an
+already-gamemode-keyed map is skipped, so re-runs (and fresh databases) are
+no-ops.
+
+Deferred to later phases (each ships its own migration alongside the schema
+change that needs it):
+
+- Tag `queue.*` collections with `gamemode = g0` — **Phase 2** (when the queue
+  collections gain the discriminator).
+- Move per-gamemode config values (`default_player_skill`, `whitelist_id`,
+  `player_skill_threshold`, `map_cooldown`, map pool) under the `g0` namespace —
+  **Phase 3** (when configuration resolution becomes gamemode-aware).
 
 ### B. Cross-instance merger (standalone ops script, run once)
 
@@ -236,7 +248,7 @@ reviewed, dry-run-able script. After both instances have run migration A:
 1. **Re-sequence games.** Take all games from all merged instances, order by
    launch date, assign fresh sequential `number`s. On each game set
    `legacy = { gamemode, number: <oldNumber> }`. Index `{ 'legacy.gamemode': 1,
-   'legacy.number': 1 }`.
+'legacy.number': 1 }`.
 2. **Merge players** by `steamId`: union per-gamemode skill/elo/stats (disjoint
    gamemode keys, so no class-level conflict). Reconcile profile fields with
    **primary instance wins** — **except `roles`, which are unioned** (an admin on
@@ -273,10 +285,60 @@ Each phase is independently shippable and keeps the app green.
 
 ---
 
+## Testing strategy
+
+Each phase ships with the tests that can meaningfully cover it. Multi-gamemode
+behaviour only becomes user-visible from Phase 2 onward, so the bulk of the new
+**e2e** coverage lands then; Phase 1 is validated by unit tests plus regression
+of the existing suite.
+
+### Unit / integration (per phase)
+
+- **Phase 1** ✅ — migration backfill (`024-multi-gamemode-backfill.test.ts`:
+  game tagging, flat→nested skill/elo/stats, history tagging, idempotency);
+  existing unit suite kept green after the player-model restructure.
+- **Phase 2** — per-gamemode queue state machine (two queues advance
+  independently; readiness counts are scoped; reset only clears one mode).
+- **Phase 3** — config resolution (per-gamemode override, inherited
+  global+override merge, global passthrough); per-gamemode whitelist in
+  `configure.ts`.
+- **Phase 5** — merger transform (game renumbering by launch date, legacy map,
+  player union, role union) as pure-function unit tests over fixture DBs.
+
+### E2E (Playwright, `tests/`)
+
+The e2e harness is currently single-gamemode (`QUEUE_CONFIG=6v6` for the test
+app). Multi-gamemode e2e needs fixture work first:
+
+- **Harness changes**
+  - Boot the test app with `ENABLED_GAMEMODES=6v6,9v9` (Phase 2+).
+  - Extend `tests/data.ts` with enough users to fill a 9v9 queue (18 players)
+    in addition to 6v6.
+  - Teach `tests/pages/queue.page.ts` about the gamemode tab selector, and
+    `queue-slots.ts` to enumerate slots for the active gamemode.
+  - `tests/game-server-simulator.ts` / `fixtures/launch-game.ts` to launch a
+    game for a specified gamemode.
+  - A helper to assert a player's per-gamemode skill/stats on the profile page.
+
+- **New specs (land with the phase that makes them pass)**
+  - `tests/10-queue/` — switch gamemode tab updates the visible queue; joining
+    6v6 then switching to 9v9 and joining **moves** the player (one queue at a
+    time); a full 9v9 queue launches a 9v9 game; map vote uses the 9v9 pool.
+  - `tests/20-game/` — a launched 9v9 game shows `gamemode` and ranks its
+    players' 9v9 skill/ELO independently of their 6v6 values.
+  - `tests/00-misc/` or a new `tests/50-gamemodes/` — game list filters by
+    gamemode ("All" + per-mode); a player profile shows separate per-gamemode
+    skill/stats tabs; hall of fame is per-gamemode.
+  - `tests/90-admin/` — admin skill editor edits a chosen gamemode's skill
+    without touching the others; per-gamemode config sections persist
+    independently; skill CSV import/export round-trips per gamemode.
+  - **Merger** (Phase 5) — integration test over two seeded databases asserting
+    renumbering, `?old_gamemode=` redirect, and merged role union.
+
 ## Risks & open questions
 
-- **Skill on merge between *enabled* modes is disjoint, so safe.** But when a
-  previously single-mode instance later *enables a new* mode, players start
+- **Skill on merge between _enabled_ modes is disjoint, so safe.** But when a
+  previously single-mode instance later _enables a new_ mode, players start
   unranked there — confirm that's acceptable (it matches "provisional" ELO).
 - Concurrent launches across modes increase simultaneous gameserver demand;
   verify assignment handles contention (shared static + serveme.tf pool).
@@ -286,10 +348,10 @@ Each phase is independently shippable and keeps the app green.
 
 ## Checklist (living)
 
-- [ ] Phase 1: `Gamemode` type + configs registry
-- [ ] Phase 1: games `gamemode` field + `create.ts`
-- [ ] Phase 1: player skill/elo/stats restructure
-- [ ] Phase 1: migration A (per-instance backfill)
+- [x] Phase 1: `Gamemode` type + configs registry keyed by gamemode
+- [x] Phase 1: games `gamemode` (+ `legacy`) field + `create.ts` / `launch-game.ts`
+- [x] Phase 1: player skill/elo/stats restructure + all consumers
+- [x] Phase 1: migration A (`024-multi-gamemode-backfill`) + unit test
 - [ ] Phase 2: queue collections discriminator + scoped queries
 - [ ] Phase 2: per-gamemode state machine, locks, reset, launch wiring
 - [ ] Phase 2: `ENABLED_GAMEMODES` env (replace `QUEUE_CONFIG`)

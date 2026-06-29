@@ -15,6 +15,7 @@ import {
   IconPlus,
 } from '../../../html/components/icons'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../../queue/types/queue-slot-id'
@@ -98,7 +99,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
       { projection: { skill: 1 } },
     )
     isAdmin = true
-    skill = slotPlayer?.skill
+    skill = slotPlayer?.skill?.[currentGamemode]
   }
 
   let slotActionButton: JSX.Element

@@ -5,6 +5,7 @@ import { PlayerRole, type PlayerModel } from '../../../database/models/player.mo
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import { queue } from '../../../queue-auto'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
@@ -65,7 +66,7 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
           <PlayerPresentation
             player={player}
             gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass}
+            gameCountOnClasses={player.stats.gamesByClass[currentGamemode] ?? {}}
             isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 
@@ -173,7 +174,7 @@ function PlayerPresentation(props: {
         ) : (
           <></>
         )}
-        {props.isAdmin && props.player.skill === undefined && (
+        {props.isAdmin && props.player.skill?.[currentGamemode] === undefined && (
           <span class="flex items-center gap-1 rounded-[3px] bg-green-700 px-[8px] py-[6px] leading-none font-bold text-white">
             <IconClover size={14} />
             fresh

@@ -1,6 +1,7 @@
 import type { Bot } from '../../shared/types/bot'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { GameNumber } from './game.model'
 
 export interface PlayerAvatar {
@@ -39,14 +40,24 @@ export interface Etf2lProfile {
   country: string
 }
 
+// Per-class counts/values within a single gamemode.
+export type ClassCount = Partial<Record<Tf2ClassName, number>>
+
 export interface PlayerStats {
   totalGames: number
-  gamesByClass: Partial<Record<Tf2ClassName, number>>
+  gamesByGamemode: Partial<Record<Gamemode, number>>
+  gamesByClass: Partial<Record<Gamemode, ClassCount>>
 }
 
+// A single gamemode's class→skill / class→elo map.
 export type PlayerSkill = Partial<Record<Tf2ClassName, number>>
 
 export type PlayerElo = Partial<Record<Tf2ClassName, number>>
+
+// The full per-gamemode storage shape on the player document.
+export type PlayerSkillByGamemode = Partial<Record<Gamemode, PlayerSkill>>
+
+export type PlayerEloByGamemode = Partial<Record<Gamemode, PlayerElo>>
 
 export interface PlayerModel {
   name: string
@@ -60,16 +71,17 @@ export interface PlayerModel {
   etf2lProfileLastSyncedAt?: Date
   cooldownLevel: number
   activeGame?: GameNumber
-  skill?: PlayerSkill
+  skill?: PlayerSkillByGamemode
   skillHistory?: {
     at: Date
+    gamemode: Gamemode
     skill: PlayerSkill
     actor: SteamId64
     lastGame?: GameNumber | undefined
-    // Snapshot of stats.gamesByClass at the time of the skill change.
+    // Snapshot of stats.gamesByClass[gamemode] at the time of the skill change.
     // Used by skill suggestion cooldown: compare against current counts to know
     // how many games have been played since the last edit, without an extra query.
-    gamesByClass?: Partial<Record<Tf2ClassName, number>>
+    gamesByClass?: ClassCount
   }[]
   nameHistory?: {
     name: string
@@ -82,9 +94,10 @@ export interface PlayerModel {
   verified?: boolean
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
-  elo?: PlayerElo
+  elo?: PlayerEloByGamemode
   eloHistory?: {
     at: Date
+    gamemode: Gamemode
     elo: PlayerElo
     game: GameNumber
   }[]

@@ -3,7 +3,7 @@ import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { GameState } from '../database/models/game.model'
 import { GameEventType } from '../database/models/game-event.model'
-import type { PlayerElo } from '../database/models/player.model'
+import type { PlayerElo, PlayerModel } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { GameNumber } from '../database/models/game.model'
@@ -56,12 +56,23 @@ export async function up() {
     }
   }
 
-  // Write results to the database
+  // Write results to the database.
+  // Predates the gamemode dimension: writes the flat shape that migration 024
+  // later re-nests under the instance's gamemode.
   let updated = 0
   for (const [steamId, elo] of eloState) {
     await collections.players.updateOne(
       { steamId },
-      { $set: { elo }, $push: { eloHistory: { $each: eloHistoryState.get(steamId) ?? [] } } },
+      {
+        $set: { elo: elo as unknown as NonNullable<PlayerModel['elo']> },
+        $push: {
+          eloHistory: {
+            $each: (eloHistoryState.get(steamId) ?? []) as unknown as NonNullable<
+              PlayerModel['eloHistory']
+            >,
+          },
+        },
+      },
     )
     updated++
   }
