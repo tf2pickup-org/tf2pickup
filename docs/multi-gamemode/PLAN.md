@@ -307,20 +307,32 @@ of the existing suite.
 
 ### E2E (Playwright, `tests/`)
 
-The e2e harness is currently single-gamemode (`QUEUE_CONFIG=6v6` for the test
-app). Multi-gamemode e2e needs fixture work first:
+**Current harness shape.** `test.yml` runs a matrix
+`queue-config: ['6v6', '9v9'] × shard: 1..8`. For each value it boots a separate
+**single-gamemode** app with `QUEUE_CONFIG=<config>` and runs only the specs
+tagged for it via `--grep @<config>` (specs carry tags like
+`@6v6 @9v9` in their title). So today "multi-gamemode" coverage is really two
+isolated single-mode apps.
 
-- **Harness changes**
-  - Boot the test app with `ENABLED_GAMEMODES=6v6,9v9` (Phase 2+).
+**Approach.** Keep the existing per-config matrix entries (they still validate a
+single-mode deployment, which remains a supported configuration). Add a **third
+matrix entry** that boots one app with **both** modes enabled and runs the
+multi-gamemode specs:
+
+- Replace the env wiring so the matrix value maps to `ENABLED_GAMEMODES`
+  (`6v6` → `ENABLED_GAMEMODES=6v6`, etc.) and add a `multi` value →
+  `ENABLED_GAMEMODES=6v6,9v9`. Tag cross-mode specs `@multi`.
+
+- **Fixture work**
   - Extend `tests/data.ts` with enough users to fill a 9v9 queue (18 players)
-    in addition to 6v6.
-  - Teach `tests/pages/queue.page.ts` about the gamemode tab selector, and
-    `queue-slots.ts` to enumerate slots for the active gamemode.
+    alongside the existing 6v6 set.
+  - Teach `tests/pages/queue.page.ts` about the gamemode tab selector and
+    `tests/queue-slots.ts` to enumerate slots for the active gamemode.
   - `tests/game-server-simulator.ts` / `fixtures/launch-game.ts` to launch a
     game for a specified gamemode.
   - A helper to assert a player's per-gamemode skill/stats on the profile page.
 
-- **New specs (land with the phase that makes them pass)**
+- **New `@multi` specs (land with the phase that makes them pass)**
   - `tests/10-queue/` — switch gamemode tab updates the visible queue; joining
     6v6 then switching to 9v9 and joining **moves** the player (one queue at a
     time); a full 9v9 queue launches a 9v9 game; map vote uses the 9v9 pool.
