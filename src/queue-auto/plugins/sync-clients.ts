@@ -98,9 +98,6 @@ export default fp(
       await syncQueuePage(socket)
     })
 
-    // Connect/disconnect events can arrive in bursts (deploys, reconnect storms,
-    // a game ending). Debounce so a burst collapses into a single re-render and
-    // broadcast instead of one full list render + broadcast per event.
     const updateOnlinePlayers = debounce(
       safe(async () => {
         const [opl, opc] = await Promise.all([OnlinePlayerList(), OnlinePlayerCount()])
