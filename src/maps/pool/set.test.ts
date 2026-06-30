@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { set } from './set'
 import { mapPoolSchema, type MapPoolEntry } from '../../database/models/map-pool-entry.model'
+import { Gamemode } from '../../shared/types/gamemode'
 
 const events = vi.hoisted(() => {
   return {
@@ -48,13 +49,14 @@ describe('set()', () => {
     })
 
     it('should reject', async () => {
-      await expect(set([{ name: 'cp_process_final' }])).rejects.toThrow()
+      await expect(set(Gamemode.sixes, [{ name: 'cp_process_final' }])).rejects.toThrow()
     })
   })
 
   it('should emit event', async () => {
     const maps = [{ name: 'cp_process_final' }, { name: 'cp_badlands' }, { name: 'cp_granary' }]
-    await set(maps)
-    expect(events.emit).toHaveBeenCalledWith('queue/mapPool:reset', { maps })
+    const scoped = maps.map(map => ({ ...map, gamemode: Gamemode.sixes }))
+    await set(Gamemode.sixes, maps)
+    expect(events.emit).toHaveBeenCalledWith('queue/mapPool:reset', { maps: scoped })
   })
 })

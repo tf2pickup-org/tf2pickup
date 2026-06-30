@@ -367,8 +367,8 @@ multi-gamemode specs:
 - [x] Phase 2: queue collections discriminator + scoped queries
 - [x] Phase 2: per-gamemode state machine, locks, reset, launch wiring
 - [x] Phase 2: `ENABLED_GAMEMODES` env (`QUEUE_CONFIG` kept as deprecated single-mode alias)
-- [ ] Phase 3: per-gamemode/inherited config resolution
-- [ ] Phase 3: per-gamemode map pools + whitelist
+- [x] Phase 3: per-gamemode/inherited config resolution (`get/set/reset(key, gamemode?)`, composite-key storage)
+- [x] Phase 3: per-gamemode map pools + whitelist (admin per-gamemode config/pool UI sections deferred to phase 4)
 - [ ] Phase 4: gamemode tabs component + all surfaces
 - [ ] Phase 4: events + logs gamemode param
 - [ ] Phase 5: cross-instance merger script

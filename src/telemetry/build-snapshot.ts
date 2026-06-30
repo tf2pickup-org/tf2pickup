@@ -3,6 +3,7 @@ import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { environment } from '../environment'
 import { mapPool } from '../maps/pool'
+import { currentGamemode } from '../shared/current-gamemode'
 import { getPlayedMapsCount } from '../statistics/get-played-maps-count'
 import { version } from '../version'
 import { getUsageCounters } from './get-usage-counters'
@@ -77,7 +78,7 @@ export async function buildSnapshot() {
     isDocumentsCustomized(),
     getUsageCounters(),
     getPlayedMapsCount(),
-    mapPool.get(),
+    mapPool.get(currentGamemode),
   ])
 
   const maps = Object.fromEntries(

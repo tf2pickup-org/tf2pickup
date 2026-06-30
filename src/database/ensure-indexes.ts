@@ -51,7 +51,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   discordBotState: [{ spec: { guildId: 1 }, options: { unique: true } }],
   keys: [{ spec: { name: 1 }, options: { unique: true } }],
   secrets: [{ spec: { name: 1 }, options: { unique: true } }],
-  maps: [{ spec: { name: 1 }, options: { unique: true } }],
+  maps: [{ spec: { gamemode: 1, name: 1 }, options: { unique: true } }],
   telemetryStats: [{ spec: { day: 1 }, options: { unique: true } }],
   chatMessages: [{ spec: { at: -1 } }],
   queueMapOptions: [{ spec: { gamemode: 1, name: 1 }, options: { unique: true } }],
