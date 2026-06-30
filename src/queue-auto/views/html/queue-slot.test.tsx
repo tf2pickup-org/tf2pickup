@@ -2,12 +2,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { QueueSlot } from './queue-slot'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { Gamemode } from '../../../shared/types/gamemode'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { collections } from '../../../database/collections'
 import { configuration } from '../../../configuration'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../../queue/types/queue-slot-id'
 import { PlayerRole, type PlayerBan } from '../../../database/models/player.model'
+
+vi.mock('../../../shared/current-gamemode', () => ({ currentGamemode: '6v6' }))
 
 vi.mock('../../../database/collections', () => ({
   collections: {
@@ -33,6 +37,7 @@ const actor = {
 }
 
 const emptySlot = {
+  gamemode: Gamemode.sixes,
   id: 'soldier-0' as QueueSlotId,
   gameClass: Tf2ClassName.soldier,
   player: null,
@@ -143,6 +148,7 @@ describe('QueueSlot', () => {
   describe('when slot has a player and actor is admin', () => {
     const adminActor = { ...actor, roles: [PlayerRole.admin] }
     const occupiedSlot = {
+      gamemode: Gamemode.sixes,
       id: 'soldier-0' as QueueSlotId,
       gameClass: Tf2ClassName.soldier,
       player: {
@@ -156,7 +162,7 @@ describe('QueueSlot', () => {
     describe('when player has skills set', () => {
       beforeEach(() => {
         vi.mocked(collections.players.findOne).mockResolvedValueOnce({
-          skill: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 },
+          skill: { [currentGamemode]: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 } },
         })
         vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
         vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)

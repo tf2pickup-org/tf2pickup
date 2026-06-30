@@ -1,14 +1,14 @@
 import { type GameModel } from '../../../database/models/game.model'
-import { environment } from '../../../environment'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { queue } from '../../../queue-auto'
+import { getQueueConfig } from '../../../queue-auto/configs'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2Team } from '../../../shared/types/tf2-team'
 import { GameScore } from './game-score'
 import { GameSlot } from './game-slot'
 
 export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undefined }) {
-  const configClassNames = `config-${environment.QUEUE_CONFIG}`
+  const config = getQueueConfig(props.game.gamemode)
+  const configClassNames = `config-${props.game.gamemode}`
   return (
     <>
       <div class="score-header team-blu">
@@ -28,7 +28,7 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
       </div>
 
       <div class="game-class-icons">
-        {queue.config.classes.map(c => {
+        {config.classes.map(c => {
           const ret: JSX.Element[] = []
           for (let i = 0; i < c.count; ++i) {
             ret.push(<GameClassIcon gameClass={c.name} size={32} />)

@@ -156,7 +156,7 @@ describe('auto-verify-eligible-players', () => {
       expect(collections.players.updateMany).toHaveBeenCalledWith(
         {
           verified: { $ne: true },
-          $or: [{ skill: { $exists: true } }, { 'stats.totalGames': { $gt: 0 } }],
+          $or: [{ skill: { $exists: true, $ne: {} } }, { 'stats.totalGames': { $gt: 0 } }],
         },
         { $set: { verified: true } },
       )

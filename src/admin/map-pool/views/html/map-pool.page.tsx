@@ -1,10 +1,11 @@
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { mapPool } from '../../../../maps/pool'
+import { currentGamemode } from '../../../../shared/current-gamemode'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 
 export async function MapPoolPage() {
-  const maps = await mapPool.get()
+  const maps = await mapPool.get(currentGamemode)
 
   return (
     <Admin activePage="map-pool">

@@ -15,6 +15,7 @@ import { GameClassSkillInput } from '../../../html/components/game-class-skill-i
 import { players } from '../..'
 import { format, formatDistanceToNow } from 'date-fns'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { makeSkillSuggestions } from '../../make-skill-suggestions'
@@ -76,7 +77,7 @@ export async function AdminToolbox(props: {
 
         <div class={['admin-toolbox-body', compact && 'compact']}>
           <div class="admin-toolbox-skill">
-            {player.skill === undefined && (
+            {player.skill?.[currentGamemode] === undefined && (
               <div class="flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
                 <IconClover size={16} />
                 <span>This player has no skill assigned</span>
@@ -89,7 +90,11 @@ export async function AdminToolbox(props: {
                   <GameClassSkillInput
                     gameClass={gameClass.name}
                     name={`skill.${gameClass.name}`}
-                    value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
+                    value={
+                      player.skill?.[currentGamemode]?.[gameClass.name] ??
+                      defaultSkill[gameClass.name] ??
+                      0
+                    }
                     step={skillStep}
                   >
                     <SkillLastUpdated

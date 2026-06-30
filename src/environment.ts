@@ -2,6 +2,7 @@ import { z } from 'zod'
 import dotenv from 'dotenv'
 import { KnownEndpoint } from '@tf2pickup-org/serveme-tf-client'
 import { steamId64 } from './shared/schemas/steam-id-64'
+import { Gamemode } from './shared/types/gamemode'
 
 dotenv.config()
 
@@ -24,7 +25,8 @@ const environmentSchema = z.object({
   MONGODB_URI: z.url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),
-  QUEUE_CONFIG: z.enum(['6v6', '9v9']).default('6v6'),
+  QUEUE_CONFIG: z.enum([Gamemode.sixes, Gamemode.highlander]).default(Gamemode.sixes),
+  ENABLED_GAMEMODES: z.string().optional(),
   KEY_STORE_PASSPHRASE: z.string(),
   LOG_RELAY_ADDRESS: z.string(),
   LOG_RELAY_PORT: z.coerce.number(),

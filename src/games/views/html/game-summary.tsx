@@ -12,6 +12,7 @@ export function GameSummary(props: {
     GameModel,
     | 'events'
     | 'number'
+    | 'gamemode'
     | 'map'
     | 'state'
     | 'connectString'

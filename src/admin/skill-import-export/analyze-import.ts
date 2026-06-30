@@ -4,6 +4,7 @@ export type { ImportAnalysis } from './types'
 import { collections } from '../../database/collections'
 import type { PlayerModel, PlayerSkill } from '../../database/models/player.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { currentGamemode } from '../../shared/current-gamemode'
 
 function skillsEqual(a: PlayerSkill | undefined, b: PlayerSkill): boolean {
   const aKeys = Object.keys(a ?? {}).filter(k => a?.[k as keyof PlayerSkill] !== undefined)
@@ -45,9 +46,10 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
       continue
     }
 
-    const hasExistingSkill = existing.skill && Object.keys(existing.skill).length > 0
+    const existingSkill = existing.skill?.[currentGamemode]
+    const hasExistingSkill = existingSkill && Object.keys(existingSkill).length > 0
 
-    if (skillsEqual(existing.skill, parsed.skill)) {
+    if (skillsEqual(existingSkill, parsed.skill)) {
       unaffectedCount++
       continue
     }
@@ -57,7 +59,7 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
         steamId: existing.steamId,
         name: existing.name,
         profileUrl: makeProfileUrl(existing.steamId),
-        oldSkill: existing.skill!,
+        oldSkill: existingSkill,
         newSkill: parsed.skill,
       })
     } else {

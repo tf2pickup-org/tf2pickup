@@ -25,6 +25,7 @@ import {
 } from '../../../html/components/icons'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import { queue } from '../../../queue-auto'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
 import type { Children } from '@kitajs/html'
@@ -253,8 +254,8 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
           </thead>
           <tbody>
             {queue.config.classes.map(({ name: gameClass }) => {
-              const elo = player.elo?.[gameClass]
-              const games = player.stats.gamesByClass[gameClass] ?? 0
+              const elo = player.elo?.[currentGamemode]?.[gameClass]
+              const games = player.stats.gamesByClass[currentGamemode]?.[gameClass] ?? 0
               const provisional = games < provisionalThreshold
               return (
                 <tr class="border-abru-light-10 border-b last:border-0">

@@ -1,6 +1,7 @@
 import type { GameSlotModel } from './game-slot.model'
 import type { GameCreated, GameEventModel } from './game-event.model'
 import type { Tf2Team } from '../../shared/types/tf2-team'
+import type { Gamemode } from '../../shared/types/gamemode'
 
 declare const _gameNumber: unique symbol
 export type GameNumber = number & { [_gameNumber]: never }
@@ -58,8 +59,16 @@ export interface GameServer {
 
 export interface GameModel {
   number: GameNumber
+  gamemode: Gamemode
   map: string
   state: GameState
+
+  // Set only on games migrated from another instance: their original gamemode +
+  // game number before re-sequencing. Powers the `?old_gamemode=` redirect.
+  legacy?: {
+    gamemode: Gamemode
+    number: GameNumber
+  }
 
   slots: GameSlotModel[]
   events: [GameCreated, ...GameEventModel[]]

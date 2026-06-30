@@ -9,10 +9,15 @@ import { Pagination, paginate } from '../../../html/components/pagination'
 import { makeTitle } from '../../../html/make-title'
 import type { PickDeep } from 'type-fest'
 import type { GameModel } from '../../../database/models/game.model'
+import { GamemodeTabs, type GamemodeTab } from '../../../html/components/gamemode-tabs'
 
 const itemsPerPage = 8
 
-export async function GameListPage(props: { page: number }) {
+function gamemodeFilter(gamemode: GamemodeTab) {
+  return gamemode === 'all' ? {} : { gamemode }
+}
+
+export async function GameListPage(props: { page: number; gamemode: GamemodeTab }) {
   return (
     <Layout
       title={makeTitle('games')}
@@ -24,6 +29,14 @@ export async function GameListPage(props: { page: number }) {
       <Page>
         <div class="container mx-auto">
           <div class="text-abru-light-75 my-9 text-[48px] font-bold">Games</div>
+          <div class="mb-6">
+            <GamemodeTabs
+              active={props.gamemode}
+              includeAll
+              hxTarget="#gameList"
+              hrefFn={tab => `/games?gamemode=${tab}`}
+            />
+          </div>
           <div class="contents" id="gameList">
             <GameList {...props} />
           </div>
@@ -34,14 +47,19 @@ export async function GameListPage(props: { page: number }) {
   )
 }
 
-export async function GameList(props: { page: number }) {
-  const { page } = props
-  const { last, around } = paginate(page, itemsPerPage, await collections.games.countDocuments())
+export async function GameList(props: { page: number; gamemode: GamemodeTab }) {
+  const { page, gamemode } = props
+  const filter = gamemodeFilter(gamemode)
+  const { last, around } = paginate(
+    page,
+    itemsPerPage,
+    await collections.games.countDocuments(filter),
+  )
   const skip = (page - 1) * itemsPerPage
 
   const games = await collections.games
-    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'>>(
-      {},
+    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'gamemode'>>(
+      filter,
       {
         limit: itemsPerPage,
         skip,
@@ -51,6 +69,7 @@ export async function GameList(props: { page: number }) {
           state: 1,
           score: 1,
           map: 1,
+          gamemode: 1,
           events: { $slice: 1 },
         },
       },
@@ -61,11 +80,11 @@ export async function GameList(props: { page: number }) {
     <>
       <div class="game-list" style="view-transition-name: game-list">
         {games.map(game => (
-          <GameListItem game={game} />
+          <GameListItem game={game} showGamemode />
         ))}
       </div>
       <Pagination
-        hrefFn={page => `/games?page=${page}`}
+        hrefFn={page => `/games?gamemode=${gamemode}&page=${page}`}
         lastPage={last}
         currentPage={page}
         around={around}

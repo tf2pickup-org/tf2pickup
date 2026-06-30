@@ -2,6 +2,7 @@ import { stringify } from 'csv-stringify/sync'
 import { collections } from '../../database/collections'
 import { config } from '../../queue-auto/config'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import { currentGamemode } from '../../shared/current-gamemode'
 
 interface ExportedPlayerSkill extends Partial<Record<Tf2ClassName, string | number>> {
   steamId: string
@@ -16,13 +17,14 @@ export async function exportSkills(): Promise<string> {
     .toArray()
 
   const rows = players.map(player => {
+    const skill = player.skill?.[currentGamemode]
     const row: ExportedPlayerSkill = {
       steamId: player.steamId,
       name: player.name,
     }
 
     for (const className of classNames) {
-      row[className] = player.skill?.[className] ?? ''
+      row[className] = skill?.[className] ?? ''
     }
 
     return row

@@ -107,7 +107,7 @@ export default fp(
             await MapVoteSelection({ actor: socket.player?.steamId }),
           ])
 
-        const queueState = await getState()
+        const queueState = await getState(slot.gamemode)
         if (queueState === QueueState.ready) {
           const close = await ReadyUpDialog.close()
           app.gateway.to({ player: socket.player.steamId }).send(() => close)
