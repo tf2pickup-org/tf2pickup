@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.17.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.1...4.17.2) (2026-06-30)
+
+
+### Bug Fixes
+
+* **games:** prevent htmx from swallowing the join voice link ([#719](https://github.com/tf2pickup-org/tf2pickup/issues/719)) ([b418de7](https://github.com/tf2pickup-org/tf2pickup/commit/b418de71cf05c0e4dfd1482ca9e46f0b03caa8de))
+
 ## [4.17.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.0...4.17.1) (2026-06-30)
 
 
