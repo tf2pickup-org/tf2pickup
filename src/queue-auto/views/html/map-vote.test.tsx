@@ -16,6 +16,8 @@ vi.mock('../../get-map-vote-results', () => ({
   getMapVoteResults: vi.fn(),
 }))
 
+vi.mock('../../../shared/current-gamemode', () => ({ currentGamemode: '6v6' }))
+
 vi.mock('../../../html/components/map-thumbnail', () => ({
   MapThumbnail: () => '',
 }))

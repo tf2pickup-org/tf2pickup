@@ -9,9 +9,9 @@ import { currentGamemode } from '../../../../shared/current-gamemode'
 export default routes(async app => {
   app.get('/', async (_req, reply) => {
     const [state, slots, mapVoteResults] = await Promise.all([
-      getState(),
-      getSlots(),
-      getMapVoteResults(),
+      getState(currentGamemode),
+      getSlots(currentGamemode),
+      getMapVoteResults(currentGamemode),
     ])
 
     const config = getQueueConfig(currentGamemode)

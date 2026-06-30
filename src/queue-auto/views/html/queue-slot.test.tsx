@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { QueueSlot } from './queue-slot'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { currentGamemode } from '../../../shared/current-gamemode'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { collections } from '../../../database/collections'
@@ -36,6 +37,7 @@ const actor = {
 }
 
 const emptySlot = {
+  gamemode: Gamemode.sixes,
   id: 'soldier-0' as QueueSlotId,
   gameClass: Tf2ClassName.soldier,
   player: null,
@@ -146,6 +148,7 @@ describe('QueueSlot', () => {
   describe('when slot has a player and actor is admin', () => {
     const adminActor = { ...actor, roles: [PlayerRole.admin] }
     const occupiedSlot = {
+      gamemode: Gamemode.sixes,
       id: 'soldier-0' as QueueSlotId,
       gameClass: Tf2ClassName.soldier,
       player: {

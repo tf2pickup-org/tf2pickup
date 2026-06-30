@@ -45,13 +45,14 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
   if (!slot) {
     throw errors.notFound('no such slot')
   }
+  const gamemode = slot.gamemode
 
   if (!(await meetsSkillThreshold(player, slot))) {
     throw errors.badRequest(`player does not meet skill threshold`)
   }
 
-  return await withQueueLock('join', async () => {
-    const state = await getState()
+  return await withQueueLock(gamemode, 'join', async () => {
+    const state = await getState(gamemode)
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
@@ -77,6 +78,8 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       throw withLogLevel(errors.badRequest('slot occupied'), 'debug')
     }
 
+    // Enforce one queue at a time: vacate any slot this player still occupies,
+    // including in another gamemode's queue.
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
         'player.steamId': player.steamId,
@@ -90,14 +93,19 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       },
     )
 
-    await collections.queueState.updateOne({}, { $set: { last: player.steamId } })
+    await collections.queueState.updateOne({ gamemode }, { $set: { last: player.steamId } })
 
-    const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
-    events.emit('queue/slots:updated', { slots })
+    if (oldSlot && oldSlot.gamemode !== gamemode) {
+      events.emit('queue/slots:updated', { gamemode: oldSlot.gamemode, slots: [oldSlot] })
+      events.emit('queue/slots:updated', { gamemode, slots: [targetSlot] })
+    } else {
+      const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
+      events.emit('queue/slots:updated', { gamemode, slots })
+    }
 
     if (targetSlot.ready) {
       await preReady.start(steamId)
     }
-    return slots
+    return [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
   })
 }

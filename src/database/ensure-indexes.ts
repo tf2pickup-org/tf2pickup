@@ -38,9 +38,12 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   gameLogs: [{ spec: { logSecret: 1 }, options: { unique: true, sparse: true } }],
   queueSlots: [
     { spec: { 'player.steamId': 1 }, options: { sparse: true } },
-    { spec: { id: 1 }, options: { unique: true } },
+    { spec: { gamemode: 1, id: 1 }, options: { unique: true } },
+    { spec: { gamemode: 1 } },
   ],
-  queueFriends: [{ spec: { source: 1 } }],
+  queueState: [{ spec: { gamemode: 1 }, options: { unique: true } }],
+  queueMapVotes: [{ spec: { gamemode: 1, player: 1 } }],
+  queueFriends: [{ spec: { gamemode: 1, source: 1 } }],
   configuration: [{ spec: { key: 1 }, options: { unique: true } }],
   documents: [{ spec: { name: 1 }, options: { unique: true } }],
   announcements: [{ spec: { createdAt: -1 } }],
@@ -51,7 +54,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   maps: [{ spec: { name: 1 }, options: { unique: true } }],
   telemetryStats: [{ spec: { day: 1 }, options: { unique: true } }],
   chatMessages: [{ spec: { at: -1 } }],
-  queueMapOptions: [{ spec: { name: 1 }, options: { unique: true } }],
+  queueMapOptions: [{ spec: { gamemode: 1, name: 1 }, options: { unique: true } }],
   discordSubstituteNotifications: [
     { spec: { guildId: 1, gameNumber: 1, slotId: 1 }, options: { unique: true } },
   ],
