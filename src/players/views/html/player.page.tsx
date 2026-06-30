@@ -24,29 +24,31 @@ import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
 import { AdminToolbox } from './admin-toolbox'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { players } from '../..'
 import type { PickDeep } from 'type-fest'
 import type { GameModel } from '../../../database/models/game.model'
 import { requestContext } from '@fastify/request-context'
 
 const gamesPerPage = 5
 
-export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
-  const player = await players.bySteamId(props.steamId, [
-    'steamId',
-    'name',
-    'joinedAt',
-    'roles',
-    'etf2lProfile',
-    'twitchTvProfile',
-    'avatar.large',
-    'stats',
-    'skill',
-    'skillHistory',
-    'verified',
-    'bans',
-    'elo',
-  ])
+export type PlayerPageData = PickDeep<
+  PlayerModel,
+  | 'steamId'
+  | 'name'
+  | 'joinedAt'
+  | 'roles'
+  | 'etf2lProfile'
+  | 'twitchTvProfile'
+  | 'avatar.large'
+  | 'stats'
+  | 'skill'
+  | 'skillHistory'
+  | 'verified'
+  | 'bans'
+  | 'elo'
+>
+
+export async function PlayerPage(props: { player: PlayerPageData; page: number }) {
+  const { player } = props
   const user = requestContext.get('user')
 
   return (
@@ -157,6 +159,7 @@ function PlayerPresentation(props: {
         height="184"
         class="player-avatar"
         alt={`${props.player.name}'s avatar`}
+        fetchpriority="high"
       />
 
       <div class="flex flex-row items-center gap-[10px]">

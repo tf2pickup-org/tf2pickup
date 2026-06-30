@@ -24,18 +24,34 @@ export default routes(async app => {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        const player = await players.bySteamId(steamId, ['etf2lProfileLastSyncedAt'])
+        const page = Number(req.query.gamespage) || 1
+
+        const player = await players.bySteamId(steamId, [
+          'steamId',
+          'name',
+          'joinedAt',
+          'roles',
+          'etf2lProfile',
+          'twitchTvProfile',
+          'avatar.large',
+          'stats',
+          'skill',
+          'skillHistory',
+          'verified',
+          'bans',
+          'elo',
+          'etf2lProfileLastSyncedAt',
+        ])
 
         if (shouldSyncEtf2lProfile(player)) {
           await tasks.schedule('etf2l:syncPlayerProfile', 0, { player: steamId })
         }
 
-        const page = Number(req.query.gamespage) || 1
         await reply.html(
           req.isPartialFor('gameList') ? (
             <PlayerGameList steamId={steamId} page={page} />
           ) : (
-            <PlayerPage steamId={steamId} page={page} />
+            <PlayerPage player={player} page={page} />
           ),
         )
       },
