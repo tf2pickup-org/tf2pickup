@@ -5,8 +5,9 @@ import { PlayerRole, type PlayerModel } from '../../../database/models/player.mo
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import { currentGamemode } from '../../../shared/current-gamemode'
-import { queue } from '../../../queue-auto'
+import type { Gamemode } from '../../../shared/types/gamemode'
+import { getQueueConfig } from '../../../queue-auto/configs'
+import { GamemodeTabs } from '../../../html/components/gamemode-tabs'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
@@ -48,8 +49,12 @@ export type PlayerPageData = PickDeep<
   | 'elo'
 >
 
-export async function PlayerPage(props: { player: PlayerPageData; page: number }) {
-  const { player } = props
+export async function PlayerPage(props: {
+  player: PlayerPageData
+  page: number
+  gamemode: Gamemode
+}) {
+  const { player, gamemode } = props
   const user = requestContext.get('user')
 
   return (
@@ -63,10 +68,18 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
       <NavigationBar />
       <Page>
         <div class="relative container mx-auto flex flex-col gap-[30px]">
+          <div>
+            <GamemodeTabs
+              active={gamemode}
+              hrefFn={tab => `/players/${player.steamId}?gamemode=${tab}`}
+            />
+          </div>
+
           <PlayerPresentation
             player={player}
+            gamemode={gamemode}
             gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass[currentGamemode] ?? {}}
+            gameCountOnClasses={player.stats.gamesByClass[gamemode] ?? {}}
             isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 
@@ -148,10 +161,12 @@ function PlayerPresentation(props: {
     | 'steamId'
     | 'skill'
   >
+  gamemode: Gamemode
   gameCount: number
   gameCountOnClasses: Partial<Record<Tf2ClassName, number>>
   isAdmin: boolean
 }) {
+  const config = getQueueConfig(props.gamemode)
   return (
     <div class="player-presentation">
       <img
@@ -174,7 +189,7 @@ function PlayerPresentation(props: {
         ) : (
           <></>
         )}
-        {props.isAdmin && props.player.skill?.[currentGamemode] === undefined && (
+        {props.isAdmin && props.player.skill?.[props.gamemode] === undefined && (
           <span class="flex items-center gap-1 rounded-[3px] bg-green-700 px-[8px] py-[6px] leading-none font-bold text-white">
             <IconClover size={14} />
             fresh
@@ -198,7 +213,7 @@ function PlayerPresentation(props: {
 
         <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
 
-        {queue.config.classes.map(({ name: gameClass }) => (
+        {config.classes.map(({ name: gameClass }) => (
           <>
             <GameClassIcon gameClass={gameClass} size={32} />
             <span class="text-2xl font-bold">{props.gameCountOnClasses[gameClass] ?? 0}</span>
@@ -211,7 +226,7 @@ function PlayerPresentation(props: {
           href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+          class={['player-presentation-link', config.classes.length > 4 && 'compact']}
           title="Steam"
           data-umami-event="open-external-profile"
           data-umami-event-target="steam"
@@ -224,7 +239,7 @@ function PlayerPresentation(props: {
           href={`https://logs.tf/profile/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+          class={['player-presentation-link', config.classes.length > 4 && 'compact']}
           title="Logs"
           data-umami-event="open-external-profile"
           data-umami-event-target="logs"
@@ -238,7 +253,7 @@ function PlayerPresentation(props: {
             href={`https://etf2l.org/forum/user/${props.player.etf2lProfile.id}`}
             target="_blank"
             rel="noreferrer"
-            class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+            class={['player-presentation-link', config.classes.length > 4 && 'compact']}
             title="ETF2L"
             data-umami-event="open-external-profile"
             data-umami-event-target="etf2l"
@@ -255,7 +270,7 @@ function PlayerPresentation(props: {
             href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}/`}
             target="_blank"
             rel="noreferrer"
-            class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+            class={['player-presentation-link', config.classes.length > 4 && 'compact']}
             title="Twitch"
             data-umami-event="open-external-profile"
             data-umami-event-target="twitch"
