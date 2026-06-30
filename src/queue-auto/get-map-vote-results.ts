@@ -1,13 +1,23 @@
 import { collections } from '../database/collections'
+import type { Gamemode } from '../shared/types/gamemode'
 
-export async function getMapVoteResults(): Promise<Record<string, number>> {
+export async function getMapVoteResults(gamemode: Gamemode): Promise<Record<string, number>> {
   const results = await collections.queueMapOptions
     .aggregate([
       {
+        $match: { gamemode },
+      },
+      {
         $lookup: {
           from: collections.queueMapVotes.collectionName,
-          localField: 'name',
-          foreignField: 'map',
+          let: { map: '$name' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $and: [{ $eq: ['$map', '$$map'] }, { $eq: ['$gamemode', gamemode] }] },
+              },
+            },
+          ],
           as: 'votes',
         },
       },

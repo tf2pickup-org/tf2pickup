@@ -1,5 +1,6 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { debounce, retry } from 'es-toolkit'
+import { currentGamemode } from '../../shared/current-gamemode'
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { queue } from '../../queue-auto'
@@ -31,10 +32,10 @@ const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
 
 async function refreshPrompt() {
   await queuePromptMutex.runExclusive(async () => {
-    const slots = await queue.getSlots()
+    const slots = await queue.getSlots(currentGamemode)
     const playerCount = slots.filter(slot => !!slot.player).length
     const requiredPlayerCount = slots.length
-    const mapVoteResults = await queue.getMapVoteResults()
+    const mapVoteResults = await queue.getMapVoteResults(currentGamemode)
     await forEachEnabledChannel('queuePrompts', async channel => {
       const embed = queuePreview({
         playerCount,

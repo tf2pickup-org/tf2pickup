@@ -364,9 +364,9 @@ multi-gamemode specs:
 - [x] Phase 1: games `gamemode` (+ `legacy`) field + `create.ts` / `launch-game.ts`
 - [x] Phase 1: player skill/elo/stats restructure + all consumers
 - [x] Phase 1: migration A (`024-multi-gamemode-backfill`) + unit test
-- [ ] Phase 2: queue collections discriminator + scoped queries
-- [ ] Phase 2: per-gamemode state machine, locks, reset, launch wiring
-- [ ] Phase 2: `ENABLED_GAMEMODES` env (replace `QUEUE_CONFIG`)
+- [x] Phase 2: queue collections discriminator + scoped queries
+- [x] Phase 2: per-gamemode state machine, locks, reset, launch wiring
+- [x] Phase 2: `ENABLED_GAMEMODES` env (`QUEUE_CONFIG` kept as deprecated single-mode alias)
 - [ ] Phase 3: per-gamemode/inherited config resolution
 - [ ] Phase 3: per-gamemode map pools + whitelist
 - [ ] Phase 4: gamemode tabs component + all surfaces

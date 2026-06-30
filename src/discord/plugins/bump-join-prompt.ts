@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
+import { currentGamemode } from '../../shared/current-gamemode'
 import { collections } from '../../database/collections'
 import { getMessage } from '../get-message'
 import { minutesToMilliseconds } from 'date-fns'
@@ -39,7 +40,7 @@ async function ensurePromptIsVisible() {
       }
 
       const thresholdRatio = config.bumpPlayerThresholdRatio
-      const slots = await queue.getSlots()
+      const slots = await queue.getSlots(currentGamemode)
       const playerCount = slots.filter(slot => !!slot.player).length
       const requiredPlayerCount = slots.length
 

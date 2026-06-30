@@ -28,6 +28,7 @@ const environmentSchema = z.object({
   QUEUE_CONFIG: z
     .enum([Gamemode.sixes, Gamemode.highlander, Gamemode.ultiduo])
     .default(Gamemode.sixes),
+  ENABLED_GAMEMODES: z.string().optional(),
   KEY_STORE_PASSPHRASE: z.string(),
   LOG_RELAY_ADDRESS: z.string(),
   LOG_RELAY_PORT: z.coerce.number(),

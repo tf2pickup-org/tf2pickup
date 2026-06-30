@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { steamId64 } from '../shared/schemas/steam-id-64'
 import { gameNumber } from '../games/schemas/game-number'
+import { Gamemode } from '../shared/types/gamemode'
 
 export const tasksSchema = z.discriminatedUnion('name', [
   z.object({
@@ -36,11 +37,11 @@ export const tasksSchema = z.discriminatedUnion('name', [
   }),
   z.object({
     name: z.literal('queue:readyUpTimeout'),
-    args: z.object({}),
+    args: z.object({ gamemode: z.enum(Gamemode) }),
   }),
   z.object({
     name: z.literal('queue:unready'),
-    args: z.object({}),
+    args: z.object({ gamemode: z.enum(Gamemode) }),
   }),
   z.object({
     name: z.literal('staticGameServers:free'),

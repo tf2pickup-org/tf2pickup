@@ -11,21 +11,36 @@ import { configure } from '../rcon/configure'
 import { getOrphanedGames } from '../get-orphaned-games'
 import { collections } from '../../database/collections'
 import { GameState } from '../../database/models/game.model'
+import type { Gamemode } from '../../shared/types/gamemode'
+import { enabledGamemodes } from '../../shared/enabled-gamemodes'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    const launchGameDebounced = debounce(safe(launchGame), 100)
+    const launchGameDebounced = new Map<Gamemode, () => void>()
+    function launchGameFor(gamemode: Gamemode) {
+      let fn = launchGameDebounced.get(gamemode)
+      if (!fn) {
+        fn = debounce(
+          safe(() => launchGame(gamemode)),
+          100,
+        )
+        launchGameDebounced.set(gamemode, fn)
+      }
+      fn()
+    }
 
-    events.on('queue/state:updated', ({ state }) => {
+    events.on('queue/state:updated', ({ gamemode, state }) => {
       if (state === QueueState.launching) {
-        launchGameDebounced()
+        launchGameFor(gamemode)
       }
     })
 
     app.addHook('onListen', async () => {
-      if ((await queue.getState()) === QueueState.launching) {
-        launchGameDebounced()
+      for (const gamemode of enabledGamemodes) {
+        if ((await queue.getState(gamemode)) === QueueState.launching) {
+          launchGameFor(gamemode)
+        }
       }
 
       const orphanedGames = await getOrphanedGames()
