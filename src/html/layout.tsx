@@ -62,6 +62,7 @@ export async function Layout(
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="htmx-config" content='{"historyCacheSize":"0","globalViewTransitions":true}' />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://avatars.steamstatic.com" />
         <link
           rel="preload"
           href="/fonts/Satoshi-Variable.woff2"
