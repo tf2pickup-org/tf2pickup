@@ -61,7 +61,7 @@ async function queueSlotToPlayerSlot(
   }
 
   const { player, gameClass } = queueSlot
-  const defaultPlayerSkill = await configuration.get('games.default_player_skill')
+  const defaultPlayerSkill = await configuration.get('games.default_player_skill', gamemode)
   let skill = defaultPlayerSkill[gameClass]!
 
   const { skill: playerSkill } = await players.bySteamId(player.steamId, ['skill'])

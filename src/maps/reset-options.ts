@@ -5,14 +5,15 @@ import type { Gamemode } from '../shared/types/gamemode'
 import { mapPool } from './pool'
 
 export async function resetMapOptions(gamemode: Gamemode) {
-  if ((await collections.maps.countDocuments()) === 0) {
-    await mapPool.reset()
+  if ((await collections.maps.countDocuments({ gamemode })) === 0) {
+    await mapPool.reset(gamemode)
   }
 
   const choices = await collections.maps
     .aggregate<MapPoolEntry>([
       {
         $match: {
+          gamemode,
           $or: [
             {
               cooldown: {

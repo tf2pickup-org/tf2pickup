@@ -2,6 +2,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { get } from './get'
 import { collections } from '../database/collections'
 
+vi.mock('../shared/enabled-gamemodes', () => ({
+  defaultGamemode: '6v6',
+  enabledGamemodes: ['6v6'],
+}))
+
 vi.mock('../database/collections', () => ({
   collections: {
     configuration: {

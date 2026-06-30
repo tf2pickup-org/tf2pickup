@@ -6,6 +6,7 @@ import {
 import { z } from 'zod'
 import type { MapPoolEntry } from '../../../database/models/map-pool-entry.model'
 import { mapPool } from '../../../maps/pool'
+import { currentGamemode } from '../../../shared/current-gamemode'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
 import { activityLog } from '../../../activity-log'
@@ -52,7 +53,7 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        const newMaps = await mapPool.set(request.body.maps)
+        const newMaps = await mapPool.set(currentGamemode, request.body.maps)
         await activityLog.record({ type: 'map pool change', maps: newMaps.map(m => m.name) })
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(MapPoolPage())

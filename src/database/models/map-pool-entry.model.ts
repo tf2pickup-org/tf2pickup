@@ -1,6 +1,8 @@
 import { z } from 'zod'
+import { Gamemode } from '../../shared/types/gamemode'
 
 export const mapPoolEntrySchema = z.object({
+  gamemode: z.enum(Gamemode).optional(),
   name: z.string(),
   execConfig: z.string().optional(),
   cooldown: z.number().optional(),

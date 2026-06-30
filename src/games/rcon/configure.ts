@@ -231,12 +231,12 @@ async function* compileConfig(game: GameModel, password: string): AsyncGenerator
     yield `changelevel ${game.map}`
   }
 
-  const map = await collections.maps.findOne({ name: game.map })
+  const map = await collections.maps.findOne({ gamemode: game.gamemode, name: game.map })
   if (map?.execConfig) {
     yield `exec ${map.execConfig}`
   }
 
-  const whitelistId = await configuration.get('games.whitelist_id')
+  const whitelistId = await configuration.get('games.whitelist_id', game.gamemode)
   if (whitelistId !== null) {
     yield `tftrue_whitelist_id ${whitelistId}`
   }
@@ -258,7 +258,7 @@ async function* compileConfig(game: GameModel, password: string): AsyncGenerator
     yield `logstf_autoupload 0`
   }
 
-  const extraCommands = await configuration.get('games.execute_extra_commands')
+  const extraCommands = await configuration.get('games.execute_extra_commands', game.gamemode)
   for (const command of extraCommands) {
     yield command as RconCommand
   }
