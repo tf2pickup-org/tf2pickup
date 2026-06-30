@@ -9,6 +9,8 @@ import { tf2QuickServer } from '../../../tf2-quick-server'
 import { configuration } from '../../../configuration'
 import { Tf2QuickServerList } from '../../../tf2-quick-server/views/html/tf2-quick-server-list'
 import { logger } from '../../../logger'
+import { Gamemode } from '../../../shared/types/gamemode'
+import { collections } from '../../../database/collections'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -20,10 +22,28 @@ export default routes(async app => {
           params: z.object({
             number: games.schemas.gameNumber,
           }),
+          querystring: z.object({
+            old_gamemode: z.enum(Gamemode).optional(),
+          }),
         },
       },
       async (request, reply) => {
         const { number } = request.params
+
+        // Backward-compatible deep links from a pre-merge instance: `number` is
+        // that instance's old game number, looked up via the legacy mapping and
+        // redirected to the new global number.
+        const oldGamemode = request.query.old_gamemode
+        if (oldGamemode) {
+          const game = await collections.games.findOne(
+            { 'legacy.gamemode': oldGamemode, 'legacy.number': number },
+            { projection: { number: 1 } },
+          )
+          if (game) {
+            return await reply.redirect(`/games/${game.number}`, 301)
+          }
+        }
+
         await reply.html(GamePage({ number }))
       },
     )

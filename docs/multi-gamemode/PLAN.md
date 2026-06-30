@@ -380,6 +380,9 @@ multi-gamemode specs:
 - [ ] Phase 4 (remaining): admin per-gamemode config + skill-editor sections
       (config resolution and storage already support it from phase 3; the bare
       key still edits the default gamemode).
-- [ ] Phase 5: cross-instance merger script
-- [ ] Phase 5: `old_gamemode` redirect
-- [ ] Docs: `sample.env`, README, upgrade/migration guide
+- [x] Phase 5: cross-instance merger script (`src/merge-instances/`: pure
+      `renumberGames` + `mergePlayers` transforms with unit tests, plus a
+      dry-run-able `run.ts` that folds maps, per-gamemode config and logs.tf
+      references in)
+- [x] Phase 5: `old_gamemode` redirect (`GET /games/:n?old_gamemode=<g>` → 301)
+- [x] Docs: `sample.env` documents `ENABLED_GAMEMODES`
