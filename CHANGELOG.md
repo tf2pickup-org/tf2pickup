@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.17.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.0...4.17.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mongodb to v7.4.0 ([fc0e408](https://github.com/tf2pickup-org/tf2pickup/commit/fc0e408839ae4d39656f01dcf83d83c59ee20d73))
+
+
+### Performance Improvements
+
+* **players:** speed up player page LCP and dedupe profile query ([#717](https://github.com/tf2pickup-org/tf2pickup/issues/717)) ([547de4c](https://github.com/tf2pickup-org/tf2pickup/commit/547de4c0a5df445967f2907212bd8089d9315bf6))
+
 # [4.17.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.16.1...4.17.0) (2026-06-29)
 
 
