@@ -5,19 +5,23 @@ import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
 import { collections } from '../../../database/collections'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import { currentGamemode } from '../../../shared/current-gamemode'
+import type { Gamemode } from '../../../shared/types/gamemode'
 import type { PlayerModel } from '../../../database/models/player.model'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { IconAwardFilled } from '../../../html/components/icons'
 import { makeTitle } from '../../../html/make-title'
+import { GamemodeTabs } from '../../../html/components/gamemode-tabs'
 
 interface HallOfFameEntry {
   player: PlayerModel
   count: number
 }
 
-export async function HallOfFamePage() {
-  const [all, medics] = await Promise.all([getMostActiveOverall(), getMostActiveMedics()])
+export async function HallOfFamePage(props: { gamemode: Gamemode }) {
+  const [all, medics] = await Promise.all([
+    getMostActiveOverall(),
+    getMostActiveMedics(props.gamemode),
+  ])
 
   return (
     <Layout
@@ -33,8 +37,12 @@ export async function HallOfFamePage() {
             Hall of Fame
           </div>
 
+          <div class="lg:col-span-2">
+            <GamemodeTabs active={props.gamemode} hrefFn={tab => `/hall-of-fame?gamemode=${tab}`} />
+          </div>
+
           <Board title="All classes" entries={all} />
-          <Board title="Medics" entries={medics} />
+          <Board title={`Medics (${props.gamemode})`} entries={medics} />
         </div>
       </Page>
       <Footer />
@@ -86,15 +94,15 @@ async function getMostActiveOverall(): Promise<HallOfFameEntry[]> {
   return players.map(player => ({ player, count: player.stats.totalGames }))
 }
 
-async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
+async function getMostActiveMedics(gamemode: Gamemode): Promise<HallOfFameEntry[]> {
   const players = await collections.players
     .find(
-      { [`stats.gamesByClass.${currentGamemode}.medic`]: { $gt: 0 } },
-      { sort: { [`stats.gamesByClass.${currentGamemode}.medic`]: -1 }, limit: 10 },
+      { [`stats.gamesByClass.${gamemode}.medic`]: { $gt: 0 } },
+      { sort: { [`stats.gamesByClass.${gamemode}.medic`]: -1 }, limit: 10 },
     )
     .toArray()
   return players.map(player => ({
     player,
-    count: player.stats.gamesByClass[currentGamemode]?.[Tf2ClassName.medic] ?? 0,
+    count: player.stats.gamesByClass[gamemode]?.[Tf2ClassName.medic] ?? 0,
   }))
 }

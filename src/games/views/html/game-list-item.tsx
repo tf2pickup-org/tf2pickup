@@ -5,10 +5,15 @@ import { GameLiveIndicator } from '../../../html/components/game-live-indicator'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PickDeep } from 'type-fest'
+import type { Gamemode } from '../../../shared/types/gamemode'
+import { enabledGamemodes } from '../../../shared/enabled-gamemodes'
 
 export function GameListItem(props: {
-  game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'>
+  game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'> & {
+    gamemode?: Gamemode
+  }
   classPlayed?: Tf2ClassName
+  showGamemode?: boolean
 }) {
   const isRunning = [
     GameState.created,
@@ -59,6 +64,15 @@ export function GameListItem(props: {
       <span class="launched-at" safe>
         {format(launchedAt, 'dd.MM.yyyy HH:mm')}
       </span>
+
+      {props.showGamemode && props.game.gamemode && enabledGamemodes.length > 1 && (
+        <span
+          class="bg-abru-light-15 text-ash absolute top-2 right-2 rounded-[3px] px-[6px] py-[3px] text-sm leading-none font-bold"
+          safe
+        >
+          {props.game.gamemode}
+        </span>
+      )}
 
       <div class="game-class-icon">
         {props.classPlayed && <GameClassIcon gameClass={props.classPlayed} size={32} />}

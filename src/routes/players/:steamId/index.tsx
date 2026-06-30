@@ -6,6 +6,8 @@ import { routes } from '../../../utils/routes'
 import { tasks } from '../../../tasks'
 import { shouldSyncEtf2lProfile } from '../../../etf2l/should-sync-etf2l-profile'
 import { collections } from '../../../database/collections'
+import { Gamemode } from '../../../shared/types/gamemode'
+import { defaultGamemode } from '../../../shared/enabled-gamemodes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -19,12 +21,14 @@ export default routes(async app => {
           }),
           querystring: z.object({
             gamespage: z.coerce.number().optional(),
+            gamemode: z.enum(Gamemode).optional(),
           }),
         },
       },
       async (req, reply) => {
         const { steamId } = req.params
         const page = Number(req.query.gamespage) || 1
+        const gamemode = req.query.gamemode ?? defaultGamemode
 
         const player = await players.bySteamId(steamId, [
           'steamId',
@@ -51,7 +55,7 @@ export default routes(async app => {
           req.isPartialFor('gameList') ? (
             <PlayerGameList steamId={steamId} page={page} />
           ) : (
-            <PlayerPage player={player} page={page} />
+            <PlayerPage player={player} page={page} gamemode={gamemode} />
           ),
         )
       },

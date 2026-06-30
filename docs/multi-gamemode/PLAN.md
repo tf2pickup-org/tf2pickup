@@ -369,8 +369,17 @@ multi-gamemode specs:
 - [x] Phase 2: `ENABLED_GAMEMODES` env (`QUEUE_CONFIG` kept as deprecated single-mode alias)
 - [x] Phase 3: per-gamemode/inherited config resolution (`get/set/reset(key, gamemode?)`, composite-key storage)
 - [x] Phase 3: per-gamemode map pools + whitelist (admin per-gamemode config/pool UI sections deferred to phase 4)
-- [ ] Phase 4: gamemode tabs component + all surfaces
-- [ ] Phase 4: events + logs gamemode param
+- [x] Phase 4: gamemode tabs component
+- [x] Phase 4: per-gamemode game list (filter + tabs), hall of fame, player profile, per-game slot layout
+- [x] Phase 4: events + logs gamemode param (queue events carry gamemode; game-scoped logs include it)
+- [ ] Phase 4 (remaining): live **queue-page** gamemode selector — needs per-gamemode WS
+      room routing (the gateway matches `currentUrl` exactly and sync-clients
+      broadcasts to `{ url: '/' }`, so a `/?gamemode=` URL would misroute live
+      updates) and a `@multi` (`ENABLED_GAMEMODES=6v6,9v9`) e2e matrix entry to
+      validate it. The single-mode queue page is unchanged and correct.
+- [ ] Phase 4 (remaining): admin per-gamemode config + skill-editor sections
+      (config resolution and storage already support it from phase 3; the bare
+      key still edits the default gamemode).
 - [ ] Phase 5: cross-instance merger script
 - [ ] Phase 5: `old_gamemode` redirect
 - [ ] Docs: `sample.env`, README, upgrade/migration guide
