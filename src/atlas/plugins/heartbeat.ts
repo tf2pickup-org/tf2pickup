@@ -6,6 +6,7 @@ import { events } from '../../events'
 import { safe } from '../../utils/safe'
 import { sendHeartbeat } from '../send-heartbeat'
 import { sendActivity } from '../send-activity'
+import { sendActivePlayers } from '../send-active-players'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -28,6 +29,10 @@ export default fp(
       minutesToMilliseconds(3),
     ).unref()
     safe(() => sendActivity())()
+
+    // report the 30-day active player set on boot, then refresh periodically
+    setInterval(safe(sendActivePlayers), minutesToMilliseconds(15)).unref()
+    safe(sendActivePlayers)()
   },
   { name: 'atlas heartbeat' },
 )
