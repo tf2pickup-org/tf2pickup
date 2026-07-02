@@ -24,6 +24,7 @@ import './details-persist'
 import './ready-up-dialog'
 import './remove-closest'
 import './skill-input'
+import './sound-blocked-alert'
 import './tabs'
 import './toggle-disabled'
 
