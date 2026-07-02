@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.18.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.0...4.18.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency @napi-rs/canvas to v1.0.1 ([#721](https://github.com/tf2pickup-org/tf2pickup/issues/721)) ([ff1814c](https://github.com/tf2pickup-org/tf2pickup/commit/ff1814c7828caa71e04019be73cfe43f67981217))
+* **queue:** warn Chrome users when the browser blocks the ready-up sound ([#722](https://github.com/tf2pickup-org/tf2pickup/issues/722)) ([d6cdc86](https://github.com/tf2pickup-org/tf2pickup/commit/d6cdc86770a552b8bd6976f7be1342f42db6d16f))
+
 # [4.18.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.2...4.18.0) (2026-07-02)
 
 
