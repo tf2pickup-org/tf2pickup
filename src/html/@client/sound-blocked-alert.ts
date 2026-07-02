@@ -56,23 +56,33 @@ function shouldShow() {
   return isAudioBlocked() && isInQueue() && !notificationBannerVisible()
 }
 
-function update() {
-  if (banner) {
-    if (shouldShow()) {
-      if (showTimer === undefined && banner.style.display === 'none') {
-        showTimer = window.setTimeout(() => {
-          showTimer = undefined
-          if (banner && shouldShow()) banner.style.display = ''
-        }, showDelay)
-      }
-    } else {
-      if (showTimer !== undefined) {
-        clearTimeout(showTimer)
-        showTimer = undefined
-      }
-      banner.style.display = 'none'
-    }
+function cancelScheduledShow() {
+  if (showTimer === undefined) return
+  clearTimeout(showTimer)
+  showTimer = undefined
+}
+
+function scheduleShow() {
+  // nothing to do if it's already visible or a show is already pending
+  if (banner?.style.display !== 'none' || showTimer !== undefined) return
+  showTimer = window.setTimeout(() => {
+    showTimer = undefined
+    if (banner && shouldShow()) banner.style.display = ''
+  }, showDelay)
+}
+
+function syncBanner() {
+  if (!banner) return
+  if (shouldShow()) {
+    scheduleShow()
+  } else {
+    cancelScheduledShow()
+    banner.style.display = 'none'
   }
+}
+
+function update() {
+  syncBanner()
   reportAudioStatus()
 }
 
