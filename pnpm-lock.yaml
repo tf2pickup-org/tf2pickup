@@ -72,7 +72,7 @@ importers:
         specifier: 4.1.4
         version: 4.1.4(@kitajs/html@4.2.13)(typescript@6.0.3)
       '@napi-rs/canvas':
-        specifier: ^1.0.1
+        specifier: 1.0.1
         version: 1.0.1
       '@opentelemetry/api':
         specifier: 1.9.1
