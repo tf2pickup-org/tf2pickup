@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.18.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.2...4.18.0) (2026-07-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/rate-limit to v11.1.0 ([110f8e5](https://github.com/tf2pickup-org/tf2pickup/commit/110f8e56c0373404ae08d5eb256c263aa25abc55))
+* **deps:** update dependency postcss to v8.5.16 ([0ed0090](https://github.com/tf2pickup-org/tf2pickup/commit/0ed0090b385ef4500f6b88e3821307c5492cf128))
+
+
+### Features
+
+* **atlas:** report 30-day active players ([#720](https://github.com/tf2pickup-org/tf2pickup/issues/720)) ([2879cc7](https://github.com/tf2pickup-org/tf2pickup/commit/2879cc74e8dfea2fa6d065c81c4983bc2af62dee)), closes [tf2pickup-org/atlas#3](https://github.com/tf2pickup-org/atlas/issues/3)
+
 ## [4.17.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.1...4.17.2) (2026-06-30)
 
 
