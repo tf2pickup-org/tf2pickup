@@ -11,6 +11,7 @@ import { environment } from '../../../environment'
 import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
 import { OfflineAlert } from './offline-alert'
+import { SoundBlockedAlert } from './sound-blocked-alert'
 import { Footer } from '../../../html/components/footer'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -51,6 +52,7 @@ export async function QueuePage() {
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />
             {!!user && <RequestNotificationPermissions />}
+            {!!user && <SoundBlockedAlert />}
             <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
             <Announcements />

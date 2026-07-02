@@ -20,6 +20,7 @@ export interface ClientToServerEvents {
   'queue:readyup': () => void
   'queue:markasfriend': (steamId: SteamId64 | null) => void
   'queue:togglepreready': () => void
+  'queue:audiostatus': (audioReady: boolean) => void
 }
 
 type GatewayEvents = ClientToServerEvents
@@ -68,6 +69,11 @@ const navigated = z.object({
   HEADERS: htmxHeaders.optional(),
 })
 
+const audioStatus = z.object({
+  audioReady: z.boolean(),
+  HEADERS: htmxHeaders.optional(),
+})
+
 const clientMessage = z.union([
   joinQueue,
   leaveQueue,
@@ -76,6 +82,7 @@ const clientMessage = z.union([
   markAsFriend,
   preReadyToggle,
   navigated,
+  audioStatus,
 ])
 
 type MessageFn = (
@@ -274,6 +281,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:markasfriend', socket, parsed.markasfriend)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
+      } else if ('audioReady' in parsed) {
+        this.emit('queue:audiostatus', socket, parsed.audioReady)
       }
     } catch (error) {
       logger.error({ error }, `failed to parse message: ${message}`)
