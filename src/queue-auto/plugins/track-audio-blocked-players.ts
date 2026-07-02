@@ -16,9 +16,10 @@ export default fp(
       valueType: ValueType.INT,
     })
     gauge.addCallback(result => {
-      const blocked = [...app.websocketServer.clients].filter(
-        client => (client as AppWebSocket).audioReady === false,
-      ).length
+      const blocked = [...app.websocketServer.clients].filter(client => {
+        const socket = client as AppWebSocket
+        return !!socket.player && socket.audioReady === false
+      }).length
       result.observe(blocked)
     })
   },
