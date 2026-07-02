@@ -12,6 +12,12 @@ let socket: SocketWrapper | undefined
 let banner: HTMLElement | undefined
 let lastReported: boolean | undefined
 let ctxListenerAttached = false
+let showTimer: number | undefined
+
+// Delay showing the banner so that joining a queue — which is itself the user
+// gesture that resumes the audio context — doesn't flash it for a split second
+// before the context reports it is running.
+const showDelay = 500
 
 function isAudioBlocked() {
   return Howler.ctx.state === 'suspended'
@@ -29,9 +35,26 @@ function reportAudioStatus() {
   socket.send(JSON.stringify({ audioReady }))
 }
 
+function shouldShow() {
+  return isAudioBlocked() && isInQueue()
+}
+
 function update() {
   if (banner) {
-    banner.style.display = isAudioBlocked() && isInQueue() ? '' : 'none'
+    if (shouldShow()) {
+      if (showTimer === undefined && banner.style.display === 'none') {
+        showTimer = window.setTimeout(() => {
+          showTimer = undefined
+          if (banner && shouldShow()) banner.style.display = ''
+        }, showDelay)
+      }
+    } else {
+      if (showTimer !== undefined) {
+        clearTimeout(showTimer)
+        showTimer = undefined
+      }
+      banner.style.display = 'none'
+    }
   }
   reportAudioStatus()
 }
