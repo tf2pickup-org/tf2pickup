@@ -44,8 +44,16 @@ function reportAudioStatus() {
   socket.send(JSON.stringify({ audioReady }))
 }
 
+function notificationBannerVisible() {
+  // the notification-permission banners cover the same "you'll miss the game" concern,
+  // and their call to action already unlocks audio, so don't stack a second banner
+  return ['notifications-permission-default', 'notifications-permission-denied'].some(
+    id => document.getElementById(id)?.style.display === 'block',
+  )
+}
+
 function shouldShow() {
-  return isAudioBlocked() && isInQueue()
+  return isAudioBlocked() && isInQueue() && !notificationBannerVisible()
 }
 
 function update() {
