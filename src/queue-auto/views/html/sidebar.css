@@ -2,27 +2,35 @@
 
 @layer components {
   .queue-sidebar {
+    display: flex;
     flex-flow: column nowrap;
-    height: 100%;
-    max-height: 100%;
-    border-radius: 8px;
-    background-color: var(--color-abru-dark-6);
-    padding: 8px;
-    display: none;
 
     @media (width >= theme(--breakpoint-lg)) {
-      display: flex;
+      height: 100%;
+      max-height: 100%;
+      border-radius: 8px;
+      background-color: var(--color-abru-dark-6);
+      padding: 8px;
+    }
+
+    @media (width < theme(--breakpoint-lg)) {
+      .online-player-list,
+      .chat {
+        flex: none;
+        background-color: var(--color-abru-dark-6);
+        border-radius: 8px;
+        overflow: hidden;
+      }
     }
 
     .tab {
       margin: 10px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+      display: flex;
       align-items: center;
 
-      .tab-link,
-      .tablink {
+      .tab-link {
         position: relative;
+        flex: 1;
 
         display: flex;
         flex-flow: row nowrap;
@@ -37,6 +45,14 @@
         font-weight: 700;
         line-height: normal;
 
+        @media (width < theme(--breakpoint-lg)) {
+          text-transform: uppercase;
+
+          &.active {
+            color: var(--color-ash);
+          }
+        }
+
         &.active::after {
           content: '';
           display: block;
@@ -45,6 +61,12 @@
           width: 66px;
           left: calc(50% - 33px);
           border-bottom: 2px solid var(--color-accent);
+
+          @media (width < theme(--breakpoint-lg)) {
+            width: auto;
+            left: 8px;
+            right: 8px;
+          }
         }
 
         &.has-mention::before {

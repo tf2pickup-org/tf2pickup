@@ -1,6 +1,5 @@
 @layer components {
-  .nav-menu-item,
-  .menu-item {
+  .nav-menu-item {
     @apply transition-colors;
     @apply duration-75;
 
@@ -9,25 +8,26 @@
     align-items: center;
     gap: 4px;
 
-    background-color: var(--color-abru-dark-29);
     color: var(--color-abru-light-75);
 
-    font-size: 36px;
+    font-size: 20px;
     font-weight: 500;
 
-    border-radius: 10px;
-    padding: 7px 34px;
+    border-radius: 4px;
+    padding: 12px;
 
     &:hover {
       background-color: color-mix(in hsl, var(--color-abru-dark-20), transparent 60%);
     }
 
+    @media (width < theme(--breakpoint-lg)) {
+      svg {
+        display: none;
+      }
+    }
+
     @media (width >= theme(--breakpoint-lg)) {
-      background-color: initial;
-
       font-size: 18px;
-
-      border-radius: 4px;
       padding: 4px 10px;
     }
 
@@ -66,8 +66,7 @@
 }
 
 @layer components {
-  .nav-steam-button,
-  .steam-button {
+  .nav-steam-button {
     background-color: var(--color-steam);
     color: #ffffff;
     border-radius: 5px;
@@ -99,8 +98,7 @@
 }
 
 @layer components {
-  .nav-profile-button,
-  .profile-button {
+  .nav-profile-button {
     @apply transition-colors;
     @apply duration-75;
 
@@ -110,7 +108,7 @@
     justify-content: flex-start;
     gap: 8px;
 
-    width: 100%;
+    width: 300px;
     padding: 11px;
     border-radius: 10px;
     text-overflow: ellipsis;
@@ -118,10 +116,6 @@
     background-color: var(--color-abru-dark-29);
     color: var(--color-abru-light-75);
     text-align: left;
-
-    @media (width >= theme(--breakpoint-lg)) {
-      width: 300px;
-    }
 
     &:hover {
       background-color: color-mix(in hsl, var(--color-abru-dark-29), white 2%);
@@ -134,8 +128,7 @@
 }
 
 @layer components {
-  .profile-menu-divider,
-  .divider {
+  .profile-menu-divider {
     width: 236px;
     height: 1px;
     align-self: center;

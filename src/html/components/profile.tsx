@@ -11,7 +11,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
   )
   return (
     <>
-      <div class="relative grow lg:grow-0">
+      <div class="relative">
         <button class="nav-profile-button" id="open-profile-menu-button">
           <img
             src={playerAvatarUrl(player.avatar, 'medium')}

@@ -20,12 +20,12 @@
       border-radius: 2px;
       padding: 4px 8px;
       font-weight: 300;
-      text-align: center;
+      text-align: start;
       display: inline-block;
       width: 100%;
 
-      @media (width >= theme(--breakpoint-lg)) {
-        text-align: start;
+      @media (width < theme(--breakpoint-lg)) {
+        padding: 10px 12px;
       }
 
       &:hover {

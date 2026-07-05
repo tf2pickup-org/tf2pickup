@@ -137,16 +137,32 @@
     background: var(--color-abru-dark-29);
     padding: 20px 24px;
 
+    @media (width < theme(--breakpoint-sm)) {
+      padding: 16px;
+    }
+
     .admin-toolbox-header {
       display: flex;
       align-items: center;
       gap: 12px;
+
+      @media (width < theme(--breakpoint-sm)) {
+        flex-wrap: wrap;
+
+        > .button {
+          flex: 1 0 100%;
+        }
+      }
     }
 
     .admin-toolbox-divider {
       height: 1px;
       background: var(--color-abru-light-10);
       margin-inline: -24px;
+
+      @media (width < theme(--breakpoint-sm)) {
+        margin-inline: -16px;
+      }
     }
 
     .admin-toolbox-body {
@@ -209,6 +225,20 @@
       .game-class-skill-input {
         flex-shrink: 1;
         min-width: 0;
+
+        @media (width < theme(--breakpoint-sm)) {
+          img {
+            margin-left: 4px;
+          }
+
+          .skill-spinner-btn {
+            padding: 0 3px;
+          }
+
+          .skill-spinner-display {
+            min-width: 20px;
+          }
+        }
       }
     }
 
@@ -219,6 +249,14 @@
 
       &.compact span {
         display: none;
+      }
+
+      @media (width < theme(--breakpoint-sm)) {
+        width: 100%;
+
+        .button {
+          flex: 1;
+        }
       }
     }
 
