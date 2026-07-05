@@ -48,9 +48,10 @@ export default routes(async app => {
               skillStep: z.coerce.number().positive(),
               ...queue.config.classes
                 .map(({ name }) => name)
-                .reduce<
-                  Partial<Record<`defaultPlayerSkill.${Tf2ClassName}`, z.ZodNumber>>
-                >((acc, key) => ({ ...acc, [`defaultPlayerSkill.${key}`]: z.coerce.number() }), {}),
+                .reduce<Partial<Record<`defaultPlayerSkill.${Tf2ClassName}`, z.ZodNumber>>>(
+                  (acc, key) => ({ ...acc, [`defaultPlayerSkill.${key}`]: z.coerce.number() }),
+                  {},
+                ),
             }),
           ),
         },
