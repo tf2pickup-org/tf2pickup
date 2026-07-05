@@ -58,23 +58,25 @@ export async function QueuePage() {
             <Announcements />
           </div>
 
-          <div class="order-2 lg:col-span-3">
-            <div class="flex flex-col gap-8">
-              <QueueState actor={user} required={required} />
-              <Queue slots={slots} actor={user?.player.steamId} />
+          <div class="order-2 lg:order-3 lg:row-span-2">
+            <Sidebar user={user} required={required} />
+          </div>
+
+          <div id="queue-content" class="tab-content lg:contents!">
+            <div class="order-3 lg:order-2 lg:col-span-3">
+              <div class="flex flex-col gap-8">
+                <QueueState actor={user} required={required} />
+                <Queue slots={slots} actor={user?.player.steamId} />
+              </div>
             </div>
-          </div>
 
-          <div class="order-4 lg:col-span-3">
-            <MapVote actor={user?.player.steamId} />
-          </div>
+            <div class="order-4 lg:col-span-3">
+              <MapVote actor={user?.player.steamId} />
+            </div>
 
-          <div class="order-last lg:order-3 lg:row-span-2">
-            <Sidebar user={user} />
-          </div>
-
-          <div class="order-5 lg:col-span-4">
-            <StreamList />
+            <div class="order-5 lg:col-span-4">
+              <StreamList />
+            </div>
           </div>
         </div>
       </Page>
@@ -91,16 +93,16 @@ async function QueueState(props: { actor?: User | undefined; required: number })
   return (
     <div class="flex flex-col gap-2">
       <form ws-send class="flex flex-row items-center justify-center">
-        <h3 class="text-ash flex-1 text-center text-2xl font-bold md:text-start">
+        <h3 class="text-ash flex-1 text-center text-2xl font-bold max-lg:hidden md:text-start">
           Players: <CurrentPlayerCount />/{props.required}
         </h3>
 
-        <div class="flex flex-row gap-2">
+        <div class="flex flex-row gap-2 max-lg:grow">
           <ClearQueueButton actor={props.actor} />
           <PreReadyUpButton actor={props.actor?.player.steamId} />
         </div>
       </form>
-      <div class="bg-abru-light-25 h-[2px] rounded-xs"></div>
+      <div class="bg-abru-light-25 h-[2px] rounded-xs max-lg:hidden"></div>
     </div>
   )
 }
@@ -150,7 +152,7 @@ export async function ClearQueueButton(props: { actor?: User | undefined }) {
 
   return (
     <button
-      class="button"
+      class="button max-lg:flex-1 max-lg:px-3 max-lg:text-sm max-lg:whitespace-nowrap"
       data-variant="accent"
       data-umami-event="clear-queue"
       hx-delete="/queue/players"

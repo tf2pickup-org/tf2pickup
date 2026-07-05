@@ -66,7 +66,7 @@ export function GameListItem(props: {
 
       {gameLabel}
 
-      <div class="absolute top-0 right-0 bottom-0 left-0 -z-10 overflow-hidden rounded-lg xl:left-1/3">
+      <div class="absolute top-0 right-0 bottom-0 left-0 -z-10 overflow-hidden rounded-lg max-sm:left-1/3 xl:left-1/3">
         <MapThumbnail map={props.game.map} />
       </div>
     </a>
