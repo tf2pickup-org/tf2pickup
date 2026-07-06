@@ -1,5 +1,20 @@
 # Changelog
 
+## [4.18.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.1...4.18.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @napi-rs/canvas to v1.0.2 ([28f7af1](https://github.com/tf2pickup-org/tf2pickup/commit/28f7af176b29254e5ee75bb443d78b9526aebf68))
+* **deps:** update dependency country-flag-icons to v1.6.20 ([773af2d](https://github.com/tf2pickup-org/tf2pickup/commit/773af2d8ef68a5dcb83607fcee324729fdaf69d2))
+* **deps:** update dependency csv-parse to v7.0.1 ([0173b2b](https://github.com/tf2pickup-org/tf2pickup/commit/0173b2bf45f76e4221bcf33438fc41d9c4d6ac18))
+* **deps:** update dependency csv-stringify to v6.8.1 ([68d021e](https://github.com/tf2pickup-org/tf2pickup/commit/68d021e6de8ab1c9fabbec593d73658f6b41e7ca))
+* **deps:** update dependency fastify to v5.9.0 ([#723](https://github.com/tf2pickup-org/tf2pickup/issues/723)) ([9d93d1d](https://github.com/tf2pickup-org/tf2pickup/commit/9d93d1d074f14d0b5eb3d2e88dd8a4fee6df0829))
+* **deps:** update dependency motion to v12.42.2 ([209d6ec](https://github.com/tf2pickup-org/tf2pickup/commit/209d6ecee5d8119ca6a2718c76018b45126f9f2f))
+* **deps:** update dependency openid to v2.0.17 ([#724](https://github.com/tf2pickup-org/tf2pickup/issues/724)) ([6d9ad00](https://github.com/tf2pickup-org/tf2pickup/commit/6d9ad008ddee6a195d9c16779626aeeb2def9b4b))
+* **deps:** update tailwindcss monorepo to v4.3.2 ([c109fa2](https://github.com/tf2pickup-org/tf2pickup/commit/c109fa2c1600dc542bb9dfd0da225ba5ee248bde))
+* **html:** revamp mobile UI ([#725](https://github.com/tf2pickup-org/tf2pickup/issues/725)) ([448e9ad](https://github.com/tf2pickup-org/tf2pickup/commit/448e9adcb851803dfa9a79480164863731f476f1))
+
 ## [4.18.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.0...4.18.1) (2026-07-02)
 
 
