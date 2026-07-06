@@ -1,6 +1,5 @@
 @layer components {
-  .pagination-page,
-  .page {
+  .pagination-page {
     height: 32px;
     min-width: 28px;
     display: flex;

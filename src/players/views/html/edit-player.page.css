@@ -2,13 +2,6 @@
 @import '../../../admin/views/html/style.css';
 
 @layer components {
-  .player-skill {
-    appearance: textfield;
-    text-align: center;
-    width: 42px;
-    height: 42px;
-  }
-
   .edit-player-ban-list {
     display: grid;
     grid-template-columns: auto auto 1fr auto;
