@@ -13,7 +13,14 @@ import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 
-const app = fastify({ loggerInstance, trustProxy: environment.TRUST_PROXY })
+const app = fastify({
+  loggerInstance,
+  trustProxy: environment.TRUST_PROXY,
+  // Bind the client IP into the per-request child logger so every request-scoped
+  // log line (notably fastify's "request completed") is attributable to an IP.
+  childLoggerFactory: (parent, bindings, childLoggerOpts, rawReq) =>
+    parent.child({ ...bindings, 'req.clientIp': realIp(rawReq) }, childLoggerOpts),
+})
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
