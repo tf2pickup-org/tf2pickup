@@ -39,7 +39,6 @@ export function GamemodeTabs(props: {
             data-umami-event="switch-gamemode"
             data-umami-event-gamemode={tab}
             {...(props.hxTarget ? { 'hx-target': props.hxTarget } : {})}
-            safe
           >
             {tab === 'all' ? 'All gamemodes' : tab}
           </a>
