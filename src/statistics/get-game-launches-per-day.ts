@@ -5,6 +5,8 @@ export interface GameLaunchesPerDay {
   count: number
 }
 
+const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
 export async function getGameLaunchesPerDay(since?: Date): Promise<GameLaunchesPerDay[]> {
   return await collections.games
     .aggregate<GameLaunchesPerDay>([
@@ -27,6 +29,7 @@ export async function getGameLaunchesPerDay(since?: Date): Promise<GameLaunchesP
               date: {
                 $arrayElemAt: ['$events.at', 0],
               },
+              timezone,
             },
           },
           count: { $sum: 1 },

@@ -10,8 +10,10 @@ export async function PlayedMapsCount() {
 
   return (
     <>
-      <span class="text-abru-light-75 text-2xl font-bold">Most played maps</span>
-      <canvas id="played-maps-count"></canvas>
+      <span class="text-abru-light-75 mb-6 text-2xl font-bold">Most played maps</span>
+      <div class="mx-auto my-auto w-full max-w-[26rem]">
+        <canvas id="played-maps-count"></canvas>
+      </div>
       <script type="module">
         {`
         import { makePlayedMapsCountChart } from '${mainJs}';
