@@ -3,7 +3,7 @@ import { getGameLaunchesPerDay } from '../../get-game-launches-per-day'
 
 const activityLevels = [0, 1, 2, 3, 4] as const
 
-const weekdayLabels = ['Mon', '', 'Wed', '', 'Fri', '', ''] as const
+const weekdayLabels = ['', 'Mon', '', 'Wed', '', 'Fri', ''] as const
 
 export async function GameActivity() {
   const now = new Date()
@@ -13,10 +13,10 @@ export async function GameActivity() {
   const max = Math.max(1, ...counts.values())
   const firstDay = launches.length > 0 ? parseISO(launches.map(({ day }) => day).sort()[0]!) : now
 
-  const start = startOfWeek(firstDay, { weekStartsOn: 1 })
+  const start = startOfWeek(firstDay)
   const weeks: Date[][] = []
   for (let day = start; day <= now; day = addDays(day, 1)) {
-    if (weeks.length === 0 || day.getDay() === 1) {
+    if (weeks.length === 0 || day.getDay() === 0) {
       weeks.push([])
     }
     weeks.at(-1)!.push(day)
@@ -41,48 +41,47 @@ export async function GameActivity() {
             ))}
           </div>
 
-          <div
-            id="game-activity-scroll"
-            class="scrollbar-thin [scrollbar-color:var(--color-abru-light-30)_transparent] overflow-x-auto pb-1"
-          >
-            <div
-              class="mb-[3px] grid h-4 gap-[3px]"
-              style={`grid-template-columns: repeat(${weeks.length}, 12px)`}
-            >
-              {weeks.map((week, i) => {
-                const last = week.at(-1)!
-                if (i > 0 && isSameMonth(last, weeks[i - 1]!.at(-1)!)) {
-                  return <span></span>
-                }
+          <div class="flex scrollbar-thin [scrollbar-color:var(--color-abru-light-30)_transparent] flex-row-reverse overflow-x-auto pb-1">
+            <div>
+              <div
+                class="mb-[3px] grid h-4 gap-[3px]"
+                style={`grid-template-columns: repeat(${weeks.length}, 12px)`}
+              >
+                {weeks.map((week, i) => {
+                  const last = week.at(-1)!
+                  if (i > 0 && isSameMonth(last, weeks[i - 1]!.at(-1)!)) {
+                    return <span></span>
+                  }
 
-                const isYearMark = getMonth(last) === 0
-                return (
-                  <span
-                    safe
-                    class={`overflow-visible text-xs leading-4 whitespace-nowrap ${isYearMark ? 'text-abru-light-75 font-bold' : 'text-abru-light-50'}`}
-                  >
-                    {format(last, isYearMark ? 'yyyy' : 'MMM')}
-                  </span>
-                )
-              })}
-            </div>
-
-            <div
-              class="activity-cells grid grid-flow-col grid-rows-7 gap-[3px]"
-              style={`grid-template-columns: repeat(${weeks.length}, 12px)`}
-            >
-              {weeks.map(week =>
-                week.map(day => {
-                  const count = counts.get(format(day, 'yyyy-MM-dd')) ?? 0
-                  const level = cellLevel(count, max)
+                  const isYearMark = getMonth(last) === 0
                   return (
-                    <div
-                      data-activity={level === 0 ? undefined : `${level}`}
-                      title={`${count} ${count === 1 ? 'game' : 'games'} on ${format(day, 'MMM d, yyyy')}`}
-                    ></div>
+                    <span
+                      safe
+                      class={`overflow-visible text-xs leading-4 whitespace-nowrap ${isYearMark ? 'text-abru-light-75 font-bold' : 'text-abru-light-50'}`}
+                    >
+                      {format(last, isYearMark ? 'yyyy' : 'MMM')}
+                    </span>
                   )
-                }),
-              )}
+                })}
+              </div>
+
+              <div
+                class="activity-cells grid grid-flow-col grid-rows-7 gap-[3px]"
+                style={`grid-template-columns: repeat(${weeks.length}, 12px)`}
+              >
+                {weeks.map(week =>
+                  week.map(day => {
+                    const count = counts.get(format(day, 'yyyy-MM-dd')) ?? 0
+                    const level = cellLevel(count, max)
+                    return (
+                      <div
+                        data-activity={level === 0 ? undefined : `${level}`}
+                        title={`${count} ${count === 1 ? 'game' : 'games'} on ${format(day, 'MMM d, yyyy')}`}
+                      ></div>
+                    )
+                  }),
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -95,13 +94,6 @@ export async function GameActivity() {
           More
         </div>
       </div>
-
-      <script type="module">
-        {`
-        const scroll = document.getElementById('game-activity-scroll');
-        scroll.scrollLeft = scroll.scrollWidth;
-        `}
-      </script>
     </div>
   )
 }
