@@ -80,7 +80,7 @@ export class QueuePage {
   constructor(public readonly page: Page) {}
 
   async goto(gamemode?: string) {
-    await this.page.goto(gamemode ? `/?gamemode=${gamemode}` : '/')
+    await this.page.goto(gamemode ? `/${gamemode}` : '/')
   }
 
   gamemodeCard(gamemode: string) {

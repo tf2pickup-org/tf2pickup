@@ -19,7 +19,7 @@ test('gamemode selector switches queues and shows live occupancy @multi', async 
   const p1 = await users.getNext().queuePage()
   await p1.goto()
   await p1.gamemodeCard('9v9').click()
-  await expect(p1.page).toHaveURL(/gamemode=9v9/)
+  await expect(p1.page).toHaveURL(/\/9v9$/)
   await expect(p1.gamemodeCard('9v9')).toHaveAttribute('aria-selected', 'true')
   await expect(p1.header()).toContainText('0/18')
 

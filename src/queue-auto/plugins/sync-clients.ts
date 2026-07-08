@@ -24,7 +24,7 @@ import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 import { errors } from '../../errors'
 import { enabledGamemodes } from '../../shared/enabled-gamemodes'
-import { urlGamemode } from '../../shared/url-gamemode'
+import { queuePageGamemode } from '../../shared/queue-page-gamemode'
 import type { Gamemode } from '../../shared/types/gamemode'
 import { GamemodeQueueGauge } from '../views/html/gamemode-selector'
 
@@ -66,8 +66,7 @@ export default fp(
       operator.send(() => gauges)
     }
 
-    async function syncQueuePage(socket: AppWebSocket) {
-      const gamemode = urlGamemode(socket.currentUrl ?? '/')
+    async function syncQueuePage(socket: AppWebSocket, gamemode: Gamemode) {
       const slots = await collections.queueSlots.find({ gamemode }).toArray()
       const actor = socket.player
         ? await players.bySteamId(socket.player.steamId, [
@@ -108,19 +107,21 @@ export default fp(
     }
 
     app.gateway.on('ready', async socket => {
-      if (socket.currentUrl !== '/') {
+      const gamemode = socket.currentUrl && queuePageGamemode(socket.currentUrl)
+      if (!gamemode) {
         return
       }
 
-      await syncQueuePage(socket)
+      await syncQueuePage(socket, gamemode)
     })
 
     app.gateway.on('navigated', async (socket, url) => {
-      if (url !== '/') {
+      const gamemode = queuePageGamemode(url)
+      if (!gamemode) {
         return
       }
 
-      await syncQueuePage(socket)
+      await syncQueuePage(socket, gamemode)
     })
 
     const updateOnlinePlayers = debounce(

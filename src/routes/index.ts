@@ -1,29 +1,19 @@
-import z from 'zod'
 import { QueuePage } from '../queue-auto/views/html/queue.page'
 import { defaultGamemode, enabledGamemodes } from '../shared/enabled-gamemodes'
-import { Gamemode } from '../shared/types/gamemode'
-import { errors } from '../errors'
 import { routes } from '../utils/routes'
 import disableCache from 'fastify-disablecache'
 
 export default routes(async app => {
   await app.register(disableCache)
-  app.get(
-    '/',
-    {
-      schema: {
-        querystring: z.object({
-          gamemode: z.enum(Gamemode).optional(),
-        }),
-      },
-    },
-    async (request, reply) => {
-      const gamemode = request.query.gamemode ?? defaultGamemode
-      if (!enabledGamemodes.includes(gamemode)) {
-        throw errors.notFound(`gamemode not enabled: ${gamemode}`)
-      }
+  app.get('/', async (_req, reply) => {
+    return reply.html(QueuePage({ gamemode: defaultGamemode }))
+  })
 
+  // static per-gamemode routes so /logo.png etc. still fall through to the
+  // static file handler
+  for (const gamemode of enabledGamemodes) {
+    app.get(`/${gamemode}`, async (_req, reply) => {
       return reply.html(QueuePage({ gamemode }))
-    },
-  )
+    })
+  }
 })

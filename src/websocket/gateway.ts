@@ -10,7 +10,7 @@ import { meter } from '../otel'
 import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from './types'
 import type { Gamemode } from '../shared/types/gamemode'
-import { urlGamemode } from '../shared/url-gamemode'
+import { queuePageGamemode } from '../shared/queue-page-gamemode'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
@@ -163,14 +163,11 @@ type UserFilters =
   | { urls: string[] }
   | { gamemode: Gamemode }
 
-// url filters match by pathname only, so `{ url: '/' }` covers `/?gamemode=9v9`
-// too; the gamemode filter narrows further by the gamemode the client views.
-function urlPathname(url: string) {
-  try {
-    return new URL(url, 'http://localhost').pathname
-  } catch {
-    return url
-  }
+// Queue pages live at `/` and `/<gamemode>`; `{ url: '/' }` targets the queue
+// page regardless of the gamemode viewed, and the gamemode filter narrows
+// further by the gamemode the client views.
+function normalizeUrl(url: string) {
+  return queuePageGamemode(url) ? '/' : url
 }
 
 function mergeFilters(base: Filters, additional: UserFilters) {
@@ -231,13 +228,13 @@ class BroadcastOperator {
       }
 
       if (this.filters.urls) {
-        if (!socket.currentUrl || !this.filters.urls.has(urlPathname(socket.currentUrl))) {
+        if (!socket.currentUrl || !this.filters.urls.has(normalizeUrl(socket.currentUrl))) {
           return
         }
       }
 
       if (this.filters.gamemode) {
-        if (!socket.currentUrl || urlGamemode(socket.currentUrl) !== this.filters.gamemode) {
+        if (!socket.currentUrl || queuePageGamemode(socket.currentUrl) !== this.filters.gamemode) {
           return
         }
       }
