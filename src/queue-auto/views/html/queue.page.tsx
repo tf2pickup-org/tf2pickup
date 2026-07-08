@@ -108,7 +108,12 @@ async function QueueState(props: { actor?: User | undefined; required: number })
 }
 
 async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }) {
-  const gridCols = config.classes.length > 4 ? 'xl:grid-cols-3' : 'xl:grid-cols-4'
+  const gridCols =
+    config.classes.length > 4
+      ? 'xl:grid-cols-3'
+      : config.classes.length > 2
+        ? 'xl:grid-cols-4'
+        : 'xl:grid-cols-2'
   const actor = props.actor
     ? await players.bySteamId(props.actor, [
         'steamId',
