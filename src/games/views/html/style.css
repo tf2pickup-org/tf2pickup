@@ -31,6 +31,18 @@
       grid-template-columns: 2fr 3fr auto auto 3fr;
     }
 
+    &.config-ultiduo {
+      @media (width >= theme(--breakpoint-xl)) {
+        grid-template-areas:
+          'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
+          'gameSummary slotsBlu     gameClassIcons  gameClassIcons  slotsRed'
+          'gameSummary adminToolbox adminToolbox    adminToolbox    adminToolbox'
+          'gameSummary .            .               .               .'
+          'gameEvents  .            .               .               .';
+        grid-template-rows: auto auto auto 1fr auto;
+      }
+    }
+
     .score-header {
       display: grid;
       grid-column: 2 / span 2;
@@ -171,6 +183,36 @@
           'redMedic1'
           'redSniper1'
           'redSpy1';
+
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 8px 0;
+        }
+      }
+
+      &.config-ultiduo.team-blu {
+        grid-area: slotsBlu;
+        grid-template-areas:
+          'bluSoldier1'
+          'bluMedic1';
+
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 0 8px;
+
+          .slot {
+            flex-flow: row-reverse nowrap;
+
+            .player-link {
+              justify-content: flex-end;
+            }
+          }
+        }
+      }
+
+      &.config-ultiduo.team-red {
+        grid-area: slotsRed;
+        grid-template-areas:
+          'redSoldier1'
+          'redMedic1';
 
         @media (width >= theme(--breakpoint-lg)) {
           border-radius: 0 0 8px 0;
