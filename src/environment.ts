@@ -25,10 +25,7 @@ const environmentSchema = z.object({
   MONGODB_URI: z.url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),
-  QUEUE_CONFIG: z
-    .enum([Gamemode.sixes, Gamemode.highlander, Gamemode.ultiduo])
-    .default(Gamemode.sixes),
-  ENABLED_GAMEMODES: z.string().optional(),
+  ENABLED_GAMEMODES: z.string().default(Gamemode.sixes),
   KEY_STORE_PASSPHRASE: z.string(),
   LOG_RELAY_ADDRESS: z.string(),
   LOG_RELAY_PORT: z.coerce.number(),

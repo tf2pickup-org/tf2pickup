@@ -4,7 +4,7 @@ import { configuration } from '../configuration'
 
 vi.mock('../environment', () => ({
   environment: {
-    QUEUE_CONFIG: '6v6',
+    ENABLED_GAMEMODES: '6v6',
     DISCORD_BOT_TOKEN: 'token',
     SERVEME_TF_API_KEY: undefined,
     TF2_QUICK_SERVER_CLIENT_ID: 'id',

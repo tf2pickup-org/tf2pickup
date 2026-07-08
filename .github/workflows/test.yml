@@ -87,7 +87,7 @@ jobs:
       WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-      QUEUE_CONFIG: ${{ matrix.queue-config }}
+      ENABLED_GAMEMODES: ${{ matrix.queue-config }}
       THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
       LOG_RELAY_ADDRESS: '127.0.0.1'
       LOG_RELAY_PORT: '9871'
@@ -160,7 +160,7 @@ jobs:
             -e WEBSITE_URL \
             -e MONGODB_URI \
             -e STEAM_API_KEY \
-            -e QUEUE_CONFIG \
+            -e ENABLED_GAMEMODES \
             -e KEY_STORE_PASSPHRASE \
             -e LOG_RELAY_ADDRESS \
             -e LOG_RELAY_PORT \

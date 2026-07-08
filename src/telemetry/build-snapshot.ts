@@ -230,7 +230,7 @@ export async function buildSnapshot() {
   return {
     instanceId,
     version,
-    queueConfig: environment.QUEUE_CONFIG,
+    queueConfig: currentGamemode,
     features: Object.fromEntries(featureEntries.map(({ key, value }) => [key, value])),
     integrations: Object.fromEntries(integrationEntries.map(({ key, value }) => [key, value])),
     usage: Object.fromEntries(usageEntries.map(({ key, value }) => [key, value])),

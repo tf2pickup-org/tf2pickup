@@ -10,7 +10,7 @@ vi.mock('../environment', () => ({
     ATLAS_SECRET: 'supersecret',
     WEBSITE_URL: 'https://tf2pickup.pl',
     WEBSITE_NAME: 'tf2pickup.pl',
-    QUEUE_CONFIG: '6v6',
+    ENABLED_GAMEMODES: '6v6',
   },
 }))
 

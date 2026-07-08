@@ -9,7 +9,7 @@ vi.mock('../../../database/collections', () => ({
 vi.mock('../../../environment', () => ({
   environment: {
     WEBSITE_NAME: 'tf2pickup.org',
-    QUEUE_CONFIG: '6v6',
+    ENABLED_GAMEMODES: '6v6',
     LOG_LEVEL: 'info',
     NODE_ENV: 'test',
   },

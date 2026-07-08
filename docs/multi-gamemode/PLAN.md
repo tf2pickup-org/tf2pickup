@@ -309,7 +309,7 @@ of the existing suite.
 
 **Current harness shape.** `test.yml` runs a matrix
 `queue-config: ['6v6', '9v9'] × shard: 1..8`. For each value it boots a separate
-**single-gamemode** app with `QUEUE_CONFIG=<config>` and runs only the specs
+**single-gamemode** app with `ENABLED_GAMEMODES=<config>` and runs only the specs
 tagged for it via `--grep @<config>` (specs carry tags like
 `@6v6 @9v9` in their title). So today "multi-gamemode" coverage is really two
 isolated single-mode apps.
@@ -366,7 +366,7 @@ multi-gamemode specs:
 - [x] Phase 1: migration A (`024-multi-gamemode-backfill`) + unit test
 - [x] Phase 2: queue collections discriminator + scoped queries
 - [x] Phase 2: per-gamemode state machine, locks, reset, launch wiring
-- [x] Phase 2: `ENABLED_GAMEMODES` env (`QUEUE_CONFIG` kept as deprecated single-mode alias)
+- [x] Phase 2: `ENABLED_GAMEMODES` env (legacy `QUEUE_CONFIG` removed)
 - [x] Phase 3: per-gamemode/inherited config resolution (`get/set/reset(key, gamemode?)`, composite-key storage)
 - [x] Phase 3: per-gamemode map pools + whitelist (admin per-gamemode config/pool UI sections deferred to phase 4)
 - [x] Phase 4: gamemode tabs component

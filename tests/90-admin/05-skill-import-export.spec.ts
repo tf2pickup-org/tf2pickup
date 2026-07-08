@@ -91,8 +91,8 @@ ${targetSteamId},TestPlayer,7,8,9,10`
     await expect(adminPage.getByText(/Successfully applied/)).toBeVisible()
 
     // Verify database was updated. Skill is stored per gamemode, keyed by the
-    // gamemode this instance runs (QUEUE_CONFIG).
-    const gamemode = process.env.QUEUE_CONFIG ?? '6v6'
+    // gamemode this instance runs (ENABLED_GAMEMODES).
+    const gamemode = process.env['ENABLED_GAMEMODES'] ?? '6v6'
     const updatedPlayer = await db.collection('players').findOne({ steamId: targetSteamId })
     const skillByGamemode = updatedPlayer?.['skill'] as Record<string, unknown> | undefined
     expect(skillByGamemode?.[gamemode]).toMatchObject({

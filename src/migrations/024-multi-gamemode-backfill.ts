@@ -7,7 +7,7 @@ import { Tf2ClassName } from '../shared/types/tf2-class-name'
 
 // Phase 1 backfill: introduce the gamemode dimension on a single-gamemode
 // instance. Every existing game and every player's skill/elo/stats is attributed
-// to the gamemode this instance has been running (QUEUE_CONFIG → currentGamemode).
+// to the gamemode this instance has been running (currentGamemode).
 //
 // Idempotent: already-nested documents are detected and skipped, so a re-run (or
 // a run on a fresh database) is a no-op.

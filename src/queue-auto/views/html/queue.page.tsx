@@ -8,6 +8,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { Page } from '../../../html/components/page'
 import type { User } from '../../../auth/types/user'
 import { environment } from '../../../environment'
+import { enabledGamemodes } from '../../../shared/enabled-gamemodes'
 import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
 import { OfflineAlert } from './offline-alert'
@@ -40,7 +41,7 @@ export async function QueuePage() {
   return (
     <Layout
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      description={`${environment.QUEUE_CONFIG} competitive pick-up games for everyone`}
+      description={`${enabledGamemodes.join(', ')} competitive pick-up games for everyone`}
       canonical="/"
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >

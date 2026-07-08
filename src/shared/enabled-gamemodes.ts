@@ -4,20 +4,13 @@ import { Gamemode } from './types/gamemode'
 /**
  * The set of gamemodes this instance serves, fixed at boot.
  *
- * Configured via `ENABLED_GAMEMODES` (comma-separated, e.g. `6v6,9v9`). For
- * backward compatibility a single-gamemode instance can keep using the legacy
- * `QUEUE_CONFIG`; it is treated as `ENABLED_GAMEMODES=<value>`. The first entry
- * is the instance default (pre-selected queue, atlas heartbeat primary).
+ * Configured via `ENABLED_GAMEMODES` (comma-separated, e.g. `6v6,9v9`). The
+ * first entry is the instance default (pre-selected queue, atlas heartbeat
+ * primary).
  */
 function parseEnabledGamemodes(): Gamemode[] {
-  const raw = environment.ENABLED_GAMEMODES
-  if (!raw) {
-    return [environment.QUEUE_CONFIG]
-  }
-
   const known = new Set<string>(Object.values(Gamemode))
-  const parsed = raw
-    .split(',')
+  const parsed = environment.ENABLED_GAMEMODES.split(',')
     .map(value => value.trim())
     .filter(Boolean)
     .map(value => {

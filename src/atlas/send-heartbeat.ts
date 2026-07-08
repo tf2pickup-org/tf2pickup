@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import { GameState } from '../database/models/game.model'
 import { environment } from '../environment'
 import { logger } from '../logger'
+import { currentGamemode } from '../shared/current-gamemode'
 import { version } from '../version'
 
 export async function sendHeartbeat() {
@@ -32,7 +33,7 @@ export async function sendHeartbeat() {
       name: environment.WEBSITE_NAME,
       version,
       queue: {
-        config: environment.QUEUE_CONFIG,
+        config: currentGamemode,
         occupied,
         capacity,
       },
