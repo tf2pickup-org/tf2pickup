@@ -32,7 +32,7 @@ describe('GET /games', () => {
   it('renders the game list for a numeric page', async () => {
     const response = await app.inject({ method: 'GET', url: '/', query: { page: '2' } })
     expect(response.statusCode).toBe(200)
-    expect(GameListPage).toHaveBeenCalledWith({ page: 2 })
+    expect(GameListPage).toHaveBeenCalledWith({ page: 2, gamemode: 'all' })
   })
 
   it.each(['1 UNION SELECT NULL--', "1' AND (SELECT 1 FROM pg_sleep(5))--", '../../../etc/passwd'])(
@@ -52,6 +52,6 @@ describe('GET /games', () => {
       query: { goto: '1 UNION SELECT username, password FROM users--' },
     })
     expect(response.statusCode).toBe(200)
-    expect(GameListPage).toHaveBeenCalledWith({ page: 1 })
+    expect(GameListPage).toHaveBeenCalledWith({ page: 1, gamemode: 'all' })
   })
 })
