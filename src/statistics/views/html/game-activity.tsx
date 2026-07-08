@@ -27,7 +27,7 @@ export async function GameActivity() {
       <div class="mb-4 flex items-center gap-4">
         <span class="text-abru-light-75 text-2xl font-bold">Game activity</span>
         <span class="text-abru-light-50 text-sm">
-          {total} games launched since {format(firstDay, 'MMMM yyyy')}
+          {total} games launched since <span safe>{format(firstDay, 'MMMM yyyy')}</span>
         </span>
       </div>
 
@@ -58,6 +58,7 @@ export async function GameActivity() {
                 const isYearMark = getMonth(last) === 0
                 return (
                   <span
+                    safe
                     class={`overflow-visible text-xs leading-4 whitespace-nowrap ${isYearMark ? 'text-abru-light-75 font-bold' : 'text-abru-light-50'}`}
                   >
                     {format(last, isYearMark ? 'yyyy' : 'MMM')}
