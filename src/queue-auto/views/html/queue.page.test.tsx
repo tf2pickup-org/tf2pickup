@@ -41,6 +41,7 @@ vi.mock('../../../players', () => ({
 }))
 
 import { parse } from 'node-html-parser'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { ClearQueueButton } from './queue.page'
 import { PlayerRole } from '../../../database/models/player.model'
 import type { User } from '../../../auth/types/user'
@@ -66,21 +67,21 @@ const regularUser: User = {
 
 describe('ClearQueueButton', () => {
   it('renders the button for admins', async () => {
-    const html = await ClearQueueButton({ actor: adminUser })
+    const html = await ClearQueueButton({ actor: adminUser, gamemode: Gamemode.sixes })
     const root = parse(html)
-    const button = root.querySelector('[hx-delete="/queue/players"]')
+    const button = root.querySelector('[hx-delete="/queue/players?gamemode=6v6"]')
     expect(button).not.toBeNull()
   })
 
   it('does not render for non-admins', async () => {
-    const html = await ClearQueueButton({ actor: regularUser })
+    const html = await ClearQueueButton({ actor: regularUser, gamemode: Gamemode.sixes })
     const root = parse(html)
-    expect(root.querySelector('[hx-delete="/queue/players"]')).toBeNull()
+    expect(root.querySelector('[hx-delete="/queue/players?gamemode=6v6"]')).toBeNull()
   })
 
   it('does not render when there is no actor', async () => {
-    const html = await ClearQueueButton({ actor: undefined })
+    const html = await ClearQueueButton({ actor: undefined, gamemode: Gamemode.sixes })
     const root = parse(html)
-    expect(root.querySelector('[hx-delete="/queue/players"]')).toBeNull()
+    expect(root.querySelector('[hx-delete="/queue/players?gamemode=6v6"]')).toBeNull()
   })
 })

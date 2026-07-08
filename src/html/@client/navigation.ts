@@ -8,9 +8,10 @@ let socket: SocketWrapper | undefined
 
 function normalizePath(path: string) {
   try {
-    return new URL(path, window.location.href).pathname
+    const url = new URL(path, window.location.href)
+    return url.pathname + url.search
   } catch {
-    return path.split('?')[0]!.split('#')[0]!
+    return path.split('#')[0]!
   }
 }
 
@@ -29,7 +30,7 @@ export async function goTo(path: string) {
 
 htmx.on('htmx:wsOpen', event => {
   socket = (event as CustomEvent<{ socketWrapper: SocketWrapper }>).detail.socketWrapper
-  reportNavigation(window.location.pathname)
+  reportNavigation(window.location.pathname + window.location.search)
 })
 
 htmx.on('htmx:pushedIntoHistory', event => {

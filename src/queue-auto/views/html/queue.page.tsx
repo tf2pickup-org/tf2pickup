@@ -3,7 +3,8 @@ import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
-import { config } from '../../config'
+import { getQueueConfig } from '../../configs'
+import { queuePageUrl } from '../../queue-page-url'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { Page } from '../../../html/components/page'
 import type { User } from '../../../auth/types/user'
@@ -31,9 +32,12 @@ import { Announcements } from './announcements'
 import { PlayerRole } from '../../../database/models/player.model'
 import { IconEraser } from '../../../html/components/icons'
 import { players } from '../../../players'
+import type { Gamemode } from '../../../shared/types/gamemode'
+import { GamemodeSelector } from './gamemode-selector'
 
-export async function QueuePage() {
-  const slots = await collections.queueSlots.find().toArray()
+export async function QueuePage(props: { gamemode: Gamemode }) {
+  const { gamemode } = props
+  const slots = await collections.queueSlots.find({ gamemode }).toArray()
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
   const user = requestContext.get('user')
@@ -42,7 +46,7 @@ export async function QueuePage() {
     <Layout
       title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
       description={`${enabledGamemodes.join(', ')} competitive pick-up games for everyone`}
-      canonical="/"
+      canonical={queuePageUrl(gamemode)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
       <NavigationBar />
@@ -57,22 +61,23 @@ export async function QueuePage() {
             <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
             <Announcements />
+            <GamemodeSelector active={gamemode} />
           </div>
 
           <div class="order-2 lg:order-3 lg:row-span-2">
-            <Sidebar user={user} required={required} />
+            <Sidebar user={user} gamemode={gamemode} required={required} />
           </div>
 
           <div id="queue-content" class="tab-content lg:contents!">
             <div class="order-3 lg:order-2 lg:col-span-3">
               <div class="flex flex-col gap-8">
-                <QueueState actor={user} required={required} />
-                <Queue slots={slots} actor={user?.player.steamId} />
+                <QueueState actor={user} gamemode={gamemode} required={required} />
+                <Queue slots={slots} gamemode={gamemode} actor={user?.player.steamId} />
               </div>
             </div>
 
             <div class="order-4 lg:col-span-3">
-              <MapVote actor={user?.player.steamId} />
+              <MapVote gamemode={gamemode} actor={user?.player.steamId} />
             </div>
 
             <div class="order-5 lg:col-span-4">
@@ -90,16 +95,20 @@ export async function QueuePage() {
   )
 }
 
-async function QueueState(props: { actor?: User | undefined; required: number }) {
+async function QueueState(props: {
+  actor?: User | undefined
+  gamemode: Gamemode
+  required: number
+}) {
   return (
     <div class="flex flex-col gap-2">
       <form ws-send class="flex flex-row items-center justify-center">
         <h3 class="text-ash flex-1 text-center text-2xl font-bold max-lg:hidden md:text-start">
-          Players: <CurrentPlayerCount />/{props.required}
+          Players: <CurrentPlayerCount gamemode={props.gamemode} />/{props.required}
         </h3>
 
         <div class="flex flex-row gap-2 max-lg:grow">
-          <ClearQueueButton actor={props.actor} />
+          <ClearQueueButton actor={props.actor} gamemode={props.gamemode} />
           <PreReadyUpButton actor={props.actor?.player.steamId} />
         </div>
       </form>
@@ -108,7 +117,12 @@ async function QueueState(props: { actor?: User | undefined; required: number })
   )
 }
 
-async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undefined }) {
+async function Queue(props: {
+  slots: QueueSlotModel[]
+  gamemode: Gamemode
+  actor?: SteamId64 | undefined
+}) {
+  const config = getQueueConfig(props.gamemode)
   const gridCols =
     config.classes.length > 4
       ? 'xl:grid-cols-3'
@@ -151,7 +165,7 @@ async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undef
   )
 }
 
-export async function ClearQueueButton(props: { actor?: User | undefined }) {
+export async function ClearQueueButton(props: { actor?: User | undefined; gamemode: Gamemode }) {
   if (!props.actor?.player.roles.includes(PlayerRole.admin)) {
     return <></>
   }
@@ -161,7 +175,7 @@ export async function ClearQueueButton(props: { actor?: User | undefined }) {
       class="button max-lg:flex-1 max-lg:px-3 max-lg:text-sm max-lg:whitespace-nowrap"
       data-variant="accent"
       data-umami-event="clear-queue"
-      hx-delete="/queue/players"
+      hx-delete={`/queue/players?gamemode=${props.gamemode}`}
       hx-confirm="Are you sure you want to kick everyone from the queue?"
     >
       <IconEraser />

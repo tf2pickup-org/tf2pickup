@@ -79,8 +79,12 @@ class ReadyUpDialog {
 export class QueuePage {
   constructor(public readonly page: Page) {}
 
-  async goto() {
-    await this.page.goto('/')
+  async goto(gamemode?: string) {
+    await this.page.goto(gamemode ? `/?gamemode=${gamemode}` : '/')
+  }
+
+  gamemodeCard(gamemode: string) {
+    return this.page.getByRole('tab', { name: `${gamemode} queue` })
   }
 
   async joinQueue(slot: SlotId) {

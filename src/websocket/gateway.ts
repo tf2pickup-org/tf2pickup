@@ -9,12 +9,14 @@ import type { QueueSlotId } from '../queue/types/queue-slot-id'
 import { meter } from '../otel'
 import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from './types'
+import type { Gamemode } from '../shared/types/gamemode'
+import { urlGamemode } from '../shared/url-gamemode'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
   ready: () => void
   navigated: (url: string) => void
-  'queue:join': (slotId: QueueSlotId) => void
+  'queue:join': (gamemode: Gamemode, slotId: QueueSlotId) => void
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void
   'queue:readyup': () => void
@@ -35,7 +37,7 @@ const htmxHeaders = z.object({
 })
 
 const joinQueue = z.object({
-  join: z.string().regex(/^\w+-\d$/),
+  join: z.string().regex(/^\w+\/\w+-\d+$/),
   HEADERS: htmxHeaders,
 })
 
@@ -151,6 +153,7 @@ interface Filters {
   authenticated?: boolean
   players?: Set<SteamId64>
   urls?: Set<string>
+  gamemode?: Gamemode
 }
 type UserFilters =
   | { authenticated: boolean }
@@ -158,6 +161,17 @@ type UserFilters =
   | { players: SteamId64[] }
   | { url: string }
   | { urls: string[] }
+  | { gamemode: Gamemode }
+
+// url filters match by pathname only, so `{ url: '/' }` covers `/?gamemode=9v9`
+// too; the gamemode filter narrows further by the gamemode the client views.
+function urlPathname(url: string) {
+  try {
+    return new URL(url, 'http://localhost').pathname
+  } catch {
+    return url
+  }
+}
 
 function mergeFilters(base: Filters, additional: UserFilters) {
   if ('authenticated' in additional) {
@@ -182,6 +196,10 @@ function mergeFilters(base: Filters, additional: UserFilters) {
   if ('urls' in additional) {
     base.urls ??= new Set()
     additional.urls.forEach(url => base.urls!.add(url))
+  }
+
+  if ('gamemode' in additional) {
+    base.gamemode = additional.gamemode
   }
   return base
 }
@@ -213,7 +231,13 @@ class BroadcastOperator {
       }
 
       if (this.filters.urls) {
-        if (!socket.currentUrl || !this.filters.urls.has(socket.currentUrl)) {
+        if (!socket.currentUrl || !this.filters.urls.has(urlPathname(socket.currentUrl))) {
+          return
+        }
+      }
+
+      if (this.filters.gamemode) {
+        if (!socket.currentUrl || urlGamemode(socket.currentUrl) !== this.filters.gamemode) {
           return
         }
       }
@@ -270,7 +294,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
 
       // all the other calls are for authenticated clients only
       if ('join' in parsed) {
-        this.emit('queue:join', socket, parsed.join)
+        const [gamemode, slotId] = parsed.join.split('/') as [Gamemode, QueueSlotId]
+        this.emit('queue:join', socket, gamemode, slotId)
       } else if ('leave' in parsed) {
         this.emit('queue:leave', socket)
       } else if ('ready' in parsed) {

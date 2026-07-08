@@ -14,9 +14,14 @@ import { meetsSkillThreshold } from './meets-skill-threshold'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
 import { playerAvatarUrl } from '../shared/player-avatar-url'
+import type { Gamemode } from '../shared/types/gamemode'
 
-export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
-  logger.trace({ steamId, slotId }, `queue.join()`)
+export async function join(
+  gamemode: Gamemode,
+  slotId: QueueSlotId,
+  steamId: SteamId64,
+): Promise<QueueSlotModel[]> {
+  logger.trace({ steamId, gamemode, slotId }, `queue.join()`)
   const player = await players.bySteamId(steamId, [
     'hasAcceptedRules',
     'activeGame',
@@ -41,11 +46,10 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
     }
   }
 
-  const slot = await collections.queueSlots.findOne({ id: slotId })
+  const slot = await collections.queueSlots.findOne({ gamemode, id: slotId })
   if (!slot) {
     throw errors.notFound('no such slot')
   }
-  const gamemode = slot.gamemode
 
   if (!(await meetsSkillThreshold(player, slot))) {
     throw errors.badRequest(`player does not meet skill threshold`)

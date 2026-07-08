@@ -372,11 +372,10 @@ multi-gamemode specs:
 - [x] Phase 4: gamemode tabs component
 - [x] Phase 4: per-gamemode game list (filter + tabs), hall of fame, player profile, per-game slot layout
 - [x] Phase 4: events + logs gamemode param (queue events carry gamemode; game-scoped logs include it)
-- [ ] Phase 4 (remaining): live **queue-page** gamemode selector — needs per-gamemode WS
-      room routing (the gateway matches `currentUrl` exactly and sync-clients
-      broadcasts to `{ url: '/' }`, so a `/?gamemode=` URL would misroute live
-      updates) and a `@multi` (`ENABLED_GAMEMODES=6v6,9v9`) e2e matrix entry to
-      validate it. The single-mode queue page is unchanged and correct.
+- [x] Phase 4: live **queue-page** gamemode selector — clients report path+query,
+      the gateway matches urls by pathname and gains a `gamemode` filter, queue
+      broadcasts are scoped per gamemode, and a `@multi`
+      (`ENABLED_GAMEMODES=6v6,9v9`) e2e matrix entry validates it.
 - [ ] Phase 4 (remaining): admin per-gamemode config + skill-editor sections
       (config resolution and storage already support it from phase 3; the bare
       key still edits the default gamemode).

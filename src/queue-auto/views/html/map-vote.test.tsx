@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { MapResult, MapVote } from './map-vote'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { collections } from '../../../database/collections'
 import { getMapVoteResults } from '../../get-map-vote-results'
 
@@ -64,14 +65,14 @@ describe('MapVote', () => {
   })
 
   it('renders one vote button per map option', async () => {
-    const html = await MapVote({})
+    const html = await MapVote({ gamemode: Gamemode.sixes })
     const root = parse(html)
     const buttons = root.querySelectorAll('.map-vote-button')
     expect(buttons).toHaveLength(2)
   })
 
   it('renders vote buttons with the correct map names', async () => {
-    const html = await MapVote({})
+    const html = await MapVote({ gamemode: Gamemode.sixes })
     const root = parse(html)
     const buttons = root.querySelectorAll('.map-vote-button')
     expect(buttons[0]?.getAttribute('value')).toBe('cp_badlands')
