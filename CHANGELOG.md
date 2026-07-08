@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.18.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.2...4.18.3) (2026-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency type-fest to v5.8.0 ([2ae6efa](https://github.com/tf2pickup-org/tf2pickup/commit/2ae6efa2d43d592cff06cef1f68dcd2d65ad0492))
+* **deps:** update opentelemetry-js-contrib monorepo ([ccd9a51](https://github.com/tf2pickup-org/tf2pickup/commit/ccd9a5163be8a2785ef524fc075e81098ad65fde))
+* harden against recon/injection activity from security review ([#728](https://github.com/tf2pickup-org/tf2pickup/issues/728)) ([de59644](https://github.com/tf2pickup-org/tf2pickup/commit/de596445c6fbfa77e0d92a4a6a253653ec4354e1))
+
 ## [4.18.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.1...4.18.2) (2026-07-06)
 
 
