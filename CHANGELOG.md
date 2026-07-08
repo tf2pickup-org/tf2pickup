@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.19.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.3...4.19.0) (2026-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v5.10.0 ([1bb41fb](https://github.com/tf2pickup-org/tf2pickup/commit/1bb41fbac21f7fb45d7dbb89b3010207ac00c730))
+
+
+### Features
+
+* add ultiduo queue config ([#731](https://github.com/tf2pickup-org/tf2pickup/issues/731)) ([856ee85](https://github.com/tf2pickup-org/tf2pickup/commit/856ee85d23427de87c590160ceadf6b8fddfdd90)), closes [#728](https://github.com/tf2pickup-org/tf2pickup/issues/728)
+* all-time game activity heatmap on the statistics page ([#730](https://github.com/tf2pickup-org/tf2pickup/issues/730)) ([1f35cad](https://github.com/tf2pickup-org/tf2pickup/commit/1f35cad4fe2fc74dff0de20c372b7ba8ee4f2a35))
+
 ## [4.18.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.2...4.18.3) (2026-07-08)
 
 
