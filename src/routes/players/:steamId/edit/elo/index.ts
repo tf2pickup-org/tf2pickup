@@ -15,7 +15,7 @@ export default routes(async app => {
     '/',
     {
       config: {
-        authorize: [PlayerRole.superUser],
+        authorize: [PlayerRole.admin],
       },
       schema: {
         params: z.object({

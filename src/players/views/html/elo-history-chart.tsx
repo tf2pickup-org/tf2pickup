@@ -5,6 +5,7 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import type { Gamemode } from '../../../shared/types/gamemode'
 import { getQueueConfig } from '../../../queue-auto/configs'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
+import { defaultElo } from '../../../games/calculate-elo-updates'
 import type { EloDataPoint, EloHistoryData, SkillData } from './@client/elo-history-chart'
 
 export async function EloHistoryChart(props: { steamId: SteamId64; gamemode: Gamemode }) {
@@ -81,7 +82,7 @@ export async function EloHistoryChart(props: { steamId: SteamId64; gamemode: Gam
         import { initEloHistoryChart } from '${mainJs}';
         const data = ${JSON.stringify(data)};
         const skillData = ${JSON.stringify(skillData)};
-        initEloHistoryChart(data, skillData);
+        initEloHistoryChart(data, skillData, ${JSON.stringify(defaultElo)});
         `}
       </script>
     </div>
