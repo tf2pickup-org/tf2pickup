@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.20.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.19.0...4.20.0) (2026-07-09)
+
+
+### Features
+
+* mark 1500 ELO as the balance target and open the ELO view to admins ([#732](https://github.com/tf2pickup-org/tf2pickup/issues/732)) ([8249589](https://github.com/tf2pickup-org/tf2pickup/commit/82495892ed834bf305e8ab365ef6ae3e3a13ee72))
+
 # [4.19.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.3...4.19.0) (2026-07-08)
 
 
