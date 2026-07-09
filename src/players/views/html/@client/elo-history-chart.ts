@@ -22,10 +22,38 @@ const colors: Record<string, string> = {
   spy: '#e91e63',
 }
 
+function targetEloLine(targetElo: number) {
+  return {
+    id: 'targetEloLine',
+    afterDatasetsDraw(chart: Chart) {
+      const yScale = chart.scales['y']
+      if (!yScale) return
+      const y = yScale.getPixelForValue(targetElo)
+      const { left, right } = chart.chartArea
+      const ctx = chart.ctx
+      ctx.save()
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)'
+      ctx.setLineDash([6, 6])
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(left, y)
+      ctx.lineTo(right, y)
+      ctx.stroke()
+      ctx.setLineDash([])
+      ctx.fillStyle = 'rgba(255,255,255,0.65)'
+      ctx.font = '11px sans-serif'
+      ctx.textBaseline = 'bottom'
+      ctx.fillText(`${targetElo} target`, left + 4, y - 3)
+      ctx.restore()
+    },
+  }
+}
+
 function buildChartConfig(
   points: EloDataPoint[],
   gameClass: string,
   xMode: XAxisMode,
+  targetElo: number,
   skillPoints?: (number | null)[],
 ): ChartConfiguration<'line'> {
   const color = colors[gameClass] ?? '#F61059'
@@ -102,6 +130,8 @@ function buildChartConfig(
           grid: { color: 'rgba(217,217,217,0.15)' },
           ticks: { color: '#C7C4C7' },
           position: 'left',
+          suggestedMin: targetElo,
+          suggestedMax: targetElo,
         },
         ...(hasSkill
           ? {
@@ -122,7 +152,11 @@ function buildChartConfig(
   }
 }
 
-export function initEloHistoryChart(data: EloHistoryData, skillData?: SkillData) {
+export function initEloHistoryChart(
+  data: EloHistoryData,
+  skillData: SkillData | undefined,
+  targetElo: number,
+) {
   const canvas = document.getElementById('elo-history-canvas') as HTMLCanvasElement | null
   if (!canvas) return
 
@@ -148,7 +182,8 @@ export function initEloHistoryChart(data: EloHistoryData, skillData?: SkillData)
       return
     }
 
-    const config = buildChartConfig(points, activeClass, xMode, skillData?.[activeClass])
+    const config = buildChartConfig(points, activeClass, xMode, targetElo, skillData?.[activeClass])
+    config.plugins = [targetEloLine(targetElo)]
 
     if (chart) {
       chart.data = config.data

@@ -14,6 +14,7 @@ import {
 } from '../../../html/components/admin-panel'
 import {
   IconAirTrafficControl,
+  IconAlertSquareRounded,
   IconArrowBackUp,
   IconBan,
   IconChartArrowsVertical,
@@ -242,6 +243,13 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
   return (
     <EditPlayer player={player} activePage="/elo">
       <div class="admin-panel-content">
+        <p class="bg-abru-dark-25 text-abru-light-75 mb-4 flex items-center gap-2 rounded-lg px-4 py-3 text-sm">
+          <IconAlertSquareRounded size={20} />
+          <span>
+            ELO should aim at {defaultElo} when the games are properly balanced — values drifting
+            away from it suggest unbalanced games.
+          </span>
+        </p>
         <table class="w-full text-sm text-white">
           <thead>
             <tr class="text-abru-light-75 border-abru-light-15 border-b text-left font-light">
@@ -329,6 +337,13 @@ function EditPlayer(props: {
               <IconMessageCircleOff />
               Chat mutes
             </AdminPanelLink>
+            <AdminPanelLink
+              href={`/players/${props.player.steamId}/edit/elo`}
+              active={props.activePage === '/elo'}
+            >
+              <IconChartArrowsVertical />
+              ELO
+            </AdminPanelLink>
 
             {user.player.roles.includes(PlayerRole.superUser) && (
               <>
@@ -339,13 +354,6 @@ function EditPlayer(props: {
                 >
                   <IconAirTrafficControl />
                   Roles
-                </AdminPanelLink>
-                <AdminPanelLink
-                  href={`/players/${props.player.steamId}/edit/elo`}
-                  active={props.activePage === '/elo'}
-                >
-                  <IconChartArrowsVertical />
-                  ELO
                 </AdminPanelLink>
               </>
             )}
