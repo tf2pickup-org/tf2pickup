@@ -2,17 +2,23 @@ import { resolve } from 'node:path'
 import { bundle } from '../../../html/bundle'
 import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { queue } from '../../../queue-auto'
+import type { Gamemode } from '../../../shared/types/gamemode'
+import { getQueueConfig } from '../../../queue-auto/configs'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import type { EloDataPoint, EloHistoryData, SkillData } from './@client/elo-history-chart'
 
-export async function EloHistoryChart(props: { steamId: SteamId64 }) {
+export async function EloHistoryChart(props: { steamId: SteamId64; gamemode: Gamemode }) {
   const player = await players.bySteamId(props.steamId, ['eloHistory', 'skillHistory'])
   const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'elo-history-chart.ts'))
 
-  const classes = queue.config.classes.map(c => c.name)
-  const data = buildChartData(player.eloHistory ?? [])
-  const skillData = buildSkillData(data, player.skillHistory ?? [])
+  const classes = getQueueConfig(props.gamemode).classes.map(c => c.name)
+  const data = buildChartData(
+    (player.eloHistory ?? []).filter(entry => entry.gamemode === props.gamemode),
+  )
+  const skillData = buildSkillData(
+    data,
+    (player.skillHistory ?? []).filter(entry => entry.gamemode === props.gamemode),
+  )
 
   return (
     <div class="mt-6">

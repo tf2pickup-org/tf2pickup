@@ -376,9 +376,15 @@ multi-gamemode specs:
       the gateway matches urls by pathname and gains a `gamemode` filter, queue
       broadcasts are scoped per gamemode, and a `@multi`
       (`ENABLED_GAMEMODES=6v6,9v9`) e2e matrix entry validates it.
-- [ ] Phase 4 (remaining): admin per-gamemode config + skill-editor sections
-      (config resolution and storage already support it from phase 3; the bare
-      key still edits the default gamemode).
+- [x] Phase 4: per-gamemode skill editors — `GamemodeTabs` gained a `fragment`
+      mode (hx-get swap, no routing) used by the admin toolbox skill editor,
+      the admin panel's default player skill section and the player edit ELO
+      page; the player game history gained routed gamemode filter tabs.
+- [ ] Phase 4 (remaining): per-gamemode admin **config** sections for the other
+      scoped keys (map pool/cooldown, whitelist, auto force end threshold, join
+      queue cooldown, execute extra commands, player skill threshold) — the
+      bare key still edits the default gamemode; skill CSV import/export is
+      also still default-gamemode only.
 - [x] Phase 5: cross-instance merger script (`src/merge-instances/`: pure
       `renumberGames` + `mergePlayers` transforms with unit tests, plus a
       dry-run-able `run.ts` that folds maps, per-gamemode config and logs.tf

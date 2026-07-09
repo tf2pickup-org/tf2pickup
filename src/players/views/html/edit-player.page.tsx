@@ -24,9 +24,10 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
+import { GamemodeTabs } from '../../../html/components/gamemode-tabs'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
-import { currentGamemode } from '../../../shared/current-gamemode'
-import { queue } from '../../../queue-auto'
+import type { Gamemode } from '../../../shared/types/gamemode'
+import { getQueueConfig } from '../../../queue-auto/configs'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
 import type { Children } from '@kitajs/html'
 import {
@@ -238,52 +239,68 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
   )
 }
 
-export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
-  const player = await players.bySteamId(props.steamId, ['name', 'steamId', 'elo', 'stats'])
+export async function EditPlayerEloPage(props: { steamId: SteamId64; gamemode: Gamemode }) {
+  const player = await players.bySteamId(props.steamId, ['name', 'steamId'])
   return (
     <EditPlayer player={player} activePage="/elo">
-      <div class="admin-panel-content">
-        <table class="w-full text-sm text-white">
-          <thead>
-            <tr class="text-abru-light-75 border-abru-light-15 border-b text-left font-light">
-              <th class="pb-2 font-light">Class</th>
-              <th class="pb-2 font-light">ELO</th>
-              <th class="pb-2 font-light">Games</th>
-              <th class="pb-2 font-light">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {queue.config.classes.map(({ name: gameClass }) => {
-              const elo = player.elo?.[currentGamemode]?.[gameClass]
-              const games = player.stats.gamesByClass[currentGamemode]?.[gameClass] ?? 0
-              const provisional = games < provisionalThreshold
-              return (
-                <tr class="border-abru-light-10 border-b last:border-0">
-                  <td class="py-2">
-                    <div class="flex items-center gap-2">
-                      <GameClassIcon gameClass={gameClass} size={20} />
-                      <span class="capitalize">{gameClass}</span>
-                    </div>
-                  </td>
-                  <td class="py-2 font-bold">{elo ?? defaultElo}</td>
-                  <td class="text-abru-light-75 py-2">{games}</td>
-                  <td class="py-2">
-                    {games === 0 ? (
-                      <span class="text-abru-light-50">—</span>
-                    ) : provisional ? (
-                      <span class="text-yellow-400">Provisional</span>
-                    ) : (
-                      <span class="text-green-400">Established</span>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-        <EloHistoryChart steamId={props.steamId} />
-      </div>
+      <EditPlayerElo steamId={props.steamId} gamemode={props.gamemode} />
     </EditPlayer>
+  )
+}
+
+export async function EditPlayerElo(props: { steamId: SteamId64; gamemode: Gamemode }) {
+  const { gamemode } = props
+  const player = await players.bySteamId(props.steamId, ['steamId', 'elo', 'stats'])
+  return (
+    <div id="edit-player-elo" class="admin-panel-content">
+      <div class="mb-4">
+        <GamemodeTabs
+          active={gamemode}
+          fragment
+          hxTarget="#edit-player-elo"
+          hrefFn={tab => `/players/${props.steamId}/edit/elo?gamemode=${tab}`}
+        />
+      </div>
+      <table class="w-full text-sm text-white">
+        <thead>
+          <tr class="text-abru-light-75 border-abru-light-15 border-b text-left font-light">
+            <th class="pb-2 font-light">Class</th>
+            <th class="pb-2 font-light">ELO</th>
+            <th class="pb-2 font-light">Games</th>
+            <th class="pb-2 font-light">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {getQueueConfig(gamemode).classes.map(({ name: gameClass }) => {
+            const elo = player.elo?.[gamemode]?.[gameClass]
+            const games = player.stats.gamesByClass[gamemode]?.[gameClass] ?? 0
+            const provisional = games < provisionalThreshold
+            return (
+              <tr class="border-abru-light-10 border-b last:border-0">
+                <td class="py-2">
+                  <div class="flex items-center gap-2">
+                    <GameClassIcon gameClass={gameClass} size={20} />
+                    <span class="capitalize">{gameClass}</span>
+                  </div>
+                </td>
+                <td class="py-2 font-bold">{elo ?? defaultElo}</td>
+                <td class="text-abru-light-75 py-2">{games}</td>
+                <td class="py-2">
+                  {games === 0 ? (
+                    <span class="text-abru-light-50">—</span>
+                  ) : provisional ? (
+                    <span class="text-yellow-400">Provisional</span>
+                  ) : (
+                    <span class="text-green-400">Established</span>
+                  )}
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+      <EloHistoryChart steamId={props.steamId} gamemode={gamemode} />
+    </div>
   )
 }
 

@@ -1,16 +1,23 @@
 import type { PlayerModel } from '../database/models/player.model'
+import type { Gamemode } from '../shared/types/gamemode'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 
 export function pluckLastEdit(
   skillHistory: NonNullable<PlayerModel['skillHistory']>,
   className: Tf2ClassName,
+  gamemode: Gamemode,
 ): {
   lastEdit: NonNullable<PlayerModel['skillHistory']>[number]
   previousValue: number | 'unknown'
-} {
-  for (let i = skillHistory.length - 1; i >= 1; i--) {
-    const current = skillHistory[i]!
-    const previous = skillHistory[i - 1]!
+} | null {
+  const history = skillHistory.filter(entry => entry.gamemode === gamemode)
+  if (history.length === 0) {
+    return null
+  }
+
+  for (let i = history.length - 1; i >= 1; i--) {
+    const current = history[i]!
+    const previous = history[i - 1]!
     if (current.skill[className] !== previous.skill[className]) {
       return {
         lastEdit: current,
@@ -20,7 +27,7 @@ export function pluckLastEdit(
   }
 
   return {
-    lastEdit: skillHistory.at(-1)!,
+    lastEdit: history.at(-1)!,
     previousValue: 'unknown',
   }
 }

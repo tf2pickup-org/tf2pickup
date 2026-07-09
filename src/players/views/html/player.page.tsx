@@ -7,7 +7,7 @@ import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { Gamemode } from '../../../shared/types/gamemode'
 import { getQueueConfig } from '../../../queue-auto/configs'
-import { GamemodeTabs } from '../../../html/components/gamemode-tabs'
+import { GamemodeTabs, type GamemodeTab } from '../../../html/components/gamemode-tabs'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
@@ -53,6 +53,7 @@ export async function PlayerPage(props: {
   player: PlayerPageData
   page: number
   gamemode: Gamemode
+  gamesGamemode: GamemodeTab
 }) {
   const { player, gamemode } = props
   const user = requestContext.get('user')
@@ -83,10 +84,16 @@ export async function PlayerPage(props: {
             isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 
-          {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
+          {user?.player.roles.includes(PlayerRole.admin) && (
+            <AdminToolbox player={player} gamemode={gamemode} />
+          )}
 
           <div id="gameList" class="contents">
-            <PlayerGameList steamId={player.steamId} page={props.page} />
+            <PlayerGameList
+              steamId={player.steamId}
+              page={props.page}
+              gamemode={props.gamesGamemode}
+            />
           </div>
         </div>
       </Page>
@@ -95,11 +102,20 @@ export async function PlayerPage(props: {
   )
 }
 
-export async function PlayerGameList(props: { steamId: SteamId64; page: number }) {
+export async function PlayerGameList(props: {
+  steamId: SteamId64
+  page: number
+  gamemode: GamemodeTab
+}) {
+  const { gamemode } = props
+  const filter = {
+    'slots.player': props.steamId,
+    ...(gamemode === 'all' ? {} : { gamemode }),
+  }
   const skip = (props.page - 1) * gamesPerPage
   const games = await collections.games
     .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'slots'>>(
-      { 'slots.player': props.steamId },
+      filter,
       {
         limit: gamesPerPage,
         skip,
@@ -119,33 +135,47 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
   const { last, around } = paginate(
     props.page,
     gamesPerPage,
-    await collections.games.countDocuments({ 'slots.player': props.steamId }),
+    await collections.games.countDocuments(filter),
   )
 
-  return games.length > 0 ? (
+  if (games.length === 0 && gamemode === 'all') {
+    return <div></div>
+  }
+
+  return (
     <>
-      <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
-        Game history
+      <div class="flex flex-row flex-wrap items-center justify-between gap-2">
+        <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
+          Game history
+        </div>
+        <GamemodeTabs
+          active={gamemode}
+          includeAll
+          hxTarget="#gameList"
+          hrefFn={tab => `/players/${props.steamId}?gamesgamemode=${tab}`}
+        />
       </div>
-      <div class="game-list col-span-2" style="view-transition-name: player-game-list">
-        {games.map(game => (
-          <GameListItem
-            game={game}
-            classPlayed={game.slots.find(s => s.player === props.steamId)!.gameClass}
-          />
-        ))}
-      </div>
+      {games.length > 0 ? (
+        <div class="game-list col-span-2" style="view-transition-name: player-game-list">
+          {games.map(game => (
+            <GameListItem
+              game={game}
+              classPlayed={game.slots.find(s => s.player === props.steamId)!.gameClass}
+            />
+          ))}
+        </div>
+      ) : (
+        <p class="text-abru-light-50">No games yet.</p>
+      )}
 
       <Pagination
-        hrefFn={page => `/players/${props.steamId}?gamespage=${page}`}
+        hrefFn={page => `/players/${props.steamId}?gamesgamemode=${gamemode}&gamespage=${page}`}
         lastPage={last}
         currentPage={props.page}
         around={around}
         hxTarget="#gameList"
       />
     </>
-  ) : (
-    <div></div>
   )
 }
 

@@ -22,6 +22,7 @@ export default routes(async app => {
           querystring: z.object({
             gamespage: z.coerce.number().optional(),
             gamemode: z.enum(Gamemode).optional(),
+            gamesgamemode: z.union([z.enum(Gamemode), z.literal('all')]).optional(),
           }),
         },
       },
@@ -29,6 +30,7 @@ export default routes(async app => {
         const { steamId } = req.params
         const page = Number(req.query.gamespage) || 1
         const gamemode = req.query.gamemode ?? defaultGamemode
+        const gamesGamemode = req.query.gamesgamemode ?? 'all'
 
         const player = await players.bySteamId(steamId, [
           'steamId',
@@ -53,9 +55,14 @@ export default routes(async app => {
 
         await reply.html(
           req.isPartialFor('gameList') ? (
-            <PlayerGameList steamId={steamId} page={page} />
+            <PlayerGameList steamId={steamId} page={page} gamemode={gamesGamemode} />
           ) : (
-            <PlayerPage player={player} page={page} gamemode={gamemode} />
+            <PlayerPage
+              player={player}
+              page={page}
+              gamemode={gamemode}
+              gamesGamemode={gamesGamemode}
+            />
           ),
         )
       },
