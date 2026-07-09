@@ -69,13 +69,6 @@ export async function PlayerPage(props: {
       <NavigationBar />
       <Page>
         <div class="relative container mx-auto flex flex-col gap-[30px]">
-          <div>
-            <GamemodeTabs
-              active={gamemode}
-              hrefFn={tab => `/players/${player.steamId}?gamemode=${tab}`}
-            />
-          </div>
-
           <PlayerPresentation
             player={player}
             gamemode={gamemode}
@@ -208,23 +201,29 @@ function PlayerPresentation(props: {
         fetchpriority="high"
       />
 
-      <div class="flex flex-row items-center gap-[10px]">
-        <span class="-mt-[6px] text-[48px] leading-none font-bold" safe>
-          {props.player.name}
-        </span>
-        {props.player.roles.includes(PlayerRole.admin) ? (
-          <span class="bg-alert text-abru-light-3 rounded-[3px] px-[8px] py-[6px] leading-none font-bold">
-            admin
+      <div class="flex flex-col items-center gap-[10px] md:items-start">
+        <div class="flex flex-row items-center gap-[10px]">
+          <span class="-mt-[6px] text-[48px] leading-none font-bold" safe>
+            {props.player.name}
           </span>
-        ) : (
-          <></>
-        )}
-        {props.isAdmin && props.player.skill?.[props.gamemode] === undefined && (
-          <span class="flex items-center gap-1 rounded-[3px] bg-green-700 px-[8px] py-[6px] leading-none font-bold text-white">
-            <IconClover size={14} />
-            fresh
-          </span>
-        )}
+          {props.player.roles.includes(PlayerRole.admin) ? (
+            <span class="bg-alert text-abru-light-3 rounded-[3px] px-[8px] py-[6px] leading-none font-bold">
+              admin
+            </span>
+          ) : (
+            <></>
+          )}
+          {props.isAdmin && props.player.skill?.[props.gamemode] === undefined && (
+            <span class="flex items-center gap-1 rounded-[3px] bg-green-700 px-[8px] py-[6px] leading-none font-bold text-white">
+              <IconClover size={14} />
+              fresh
+            </span>
+          )}
+        </div>
+        <GamemodeTabs
+          active={props.gamemode}
+          hrefFn={tab => `/players/${props.player.steamId}?gamemode=${tab}`}
+        />
       </div>
 
       <div class="flex-col md:justify-self-end">

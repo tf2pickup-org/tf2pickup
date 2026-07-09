@@ -59,10 +59,10 @@ export async function AdminToolbox(props: {
 
         <div class="admin-toolbox-divider" />
 
-        <div class={['admin-toolbox-body', compact && 'compact']}>
+        <div class="admin-toolbox-body">
           <AdminToolboxSkill player={player} gamemode={gamemode} />
 
-          <div class="admin-toolbox-sep" />
+          <div class="admin-toolbox-divider" />
 
           <div class="admin-toolbox-winloss">
             <h4 class="caption">Win-loss chart</h4>
