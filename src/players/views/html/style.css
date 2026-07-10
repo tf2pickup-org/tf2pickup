@@ -169,28 +169,6 @@
       display: flex;
       flex-direction: column;
       gap: 16px;
-
-      @media (width >= theme(--breakpoint-xl)) {
-        &:not(.compact) {
-          flex-direction: row;
-          align-items: flex-start;
-
-          .admin-toolbox-skill {
-            padding-right: 24px;
-          }
-
-          .admin-toolbox-sep {
-            display: block;
-            width: 1px;
-            align-self: stretch;
-            background: var(--color-abru-light-10);
-          }
-
-          .admin-toolbox-winloss {
-            padding-left: 24px;
-          }
-        }
-      }
     }
 
     .admin-toolbox-skill {
@@ -199,10 +177,6 @@
       gap: 8px;
       flex: 1;
       min-width: 0;
-    }
-
-    .admin-toolbox-sep {
-      display: none;
     }
 
     .admin-toolbox-winloss {

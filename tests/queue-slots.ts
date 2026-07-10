@@ -1,4 +1,4 @@
-const queueConfig = process.env['QUEUE_CONFIG'] ?? '6v6'
+const queueConfig = process.env['ENABLED_GAMEMODES'] ?? '6v6'
 
 type SlotId6v6 = `${'scout' | 'soldier'}-${1 | 2 | 3 | 4}` | `${'demoman' | 'medic'}-${1 | 2}`
 

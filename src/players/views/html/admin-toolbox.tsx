@@ -1,23 +1,12 @@
 import { configuration } from '../../../configuration'
 import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
-import {
-  IconBan,
-  IconCheck,
-  IconChevronRight,
-  IconClover,
-  IconDeviceFloppy,
-  IconEdit,
-  IconInputX,
-} from '../../../html/components/icons'
-import { queue } from '../../../queue-auto'
+import { IconBan, IconCheck, IconChevronRight, IconEdit } from '../../../html/components/icons'
 import { WinLossChart } from './win-loss-chart'
-import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
-import { players } from '../..'
-import { format, formatDistanceToNow } from 'date-fns'
-import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import { pluckLastEdit } from '../../pluck-last-edit'
+import { format } from 'date-fns'
+import { getQueueConfig } from '../../../queue-auto/configs'
+import type { Gamemode } from '../../../shared/types/gamemode'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { makeSkillSuggestions } from '../../make-skill-suggestions'
+import { AdminToolboxSkill } from './admin-toolbox-skill'
 import { PlayerVerifiedCheckbox } from './player-verified-checkbox'
 
 export async function AdminToolbox(props: {
@@ -25,15 +14,11 @@ export async function AdminToolbox(props: {
     PlayerModel,
     'skill' | 'steamId' | 'skillHistory' | 'verified' | 'bans' | 'elo' | 'stats'
   >
+  gamemode: Gamemode
 }) {
-  const { player } = props
-  const defaultSkill = await configuration.get('games.default_player_skill')
-  const skillStep = await configuration.get('games.skill_step')
+  const { player, gamemode } = props
   const requireVerification = await configuration.get('queue.require_player_verification')
-  const skillSuggestions = (await configuration.get('games.skill_suggestions'))
-    ? makeSkillSuggestions({ player })
-    : undefined
-  const compact = queue.config.classes.length > 4
+  const compact = getQueueConfig(gamemode).classes.length > 4
 
   return (
     <details
@@ -74,67 +59,10 @@ export async function AdminToolbox(props: {
 
         <div class="admin-toolbox-divider" />
 
-        <div class={['admin-toolbox-body', compact && 'compact']}>
-          <div class="admin-toolbox-skill">
-            {player.skill === undefined && (
-              <div class="flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
-                <IconClover size={16} />
-                <span>This player has no skill assigned</span>
-              </div>
-            )}
-            <h4 class="caption">Skill</h4>
-            <form method="post" action={`/players/${player.steamId}/edit/skill`}>
-              <div class={['skill-inputs', compact && 'compact']}>
-                {queue.config.classes.map(gameClass => (
-                  <GameClassSkillInput
-                    gameClass={gameClass.name}
-                    name={`skill.${gameClass.name}`}
-                    value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
-                    step={skillStep}
-                  >
-                    <SkillLastUpdated
-                      className={gameClass.name}
-                      skillHistory={player.skillHistory}
-                    />
-                    <SkillSuggestionIndicator direction={skillSuggestions?.get(gameClass.name)} />
-                  </GameClassSkillInput>
-                ))}
+        <div class="admin-toolbox-body">
+          <AdminToolboxSkill player={player} gamemode={gamemode} />
 
-                <div class="skill-buttons">
-                  <button
-                    type="submit"
-                    class="button"
-                    data-variant="accent"
-                    title="Save"
-                    data-umami-event="save-player-skill"
-                    data-umami-event-player={player.steamId}
-                  >
-                    <IconDeviceFloppy size={20} />
-                    <span>Save</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="button"
-                    title="Reset"
-                    data-umami-event="reset-player-skill"
-                    data-umami-event-player={player.steamId}
-                    hx-delete={`/players/${player.steamId}/edit/skill`}
-                    hx-confirm="Are you sure you want to reset this player's skill?"
-                    hx-trigger="click"
-                    hx-disabled-elt="this"
-                    hx-target="#player-admin-toolbox"
-                    hx-swap="outerHTML"
-                  >
-                    <IconInputX size={20} />
-                    <span>Reset</span>
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-
-          <div class="admin-toolbox-sep" />
+          <div class="admin-toolbox-divider" />
 
           <div class="admin-toolbox-winloss">
             <h4 class="caption">Win-loss chart</h4>
@@ -185,46 +113,5 @@ function BanStatus(props: { bans: PlayerBan[] | undefined; steamId: SteamId64 })
         Manage bans
       </a>
     </div>
-  )
-}
-
-async function SkillLastUpdated(props: {
-  className: Tf2ClassName
-  skillHistory: PlayerModel['skillHistory']
-}) {
-  const skillHistory = props.skillHistory
-  if (!skillHistory) {
-    return <></>
-  }
-
-  const { lastEdit, previousValue } = pluckLastEdit(skillHistory, props.className)
-  if (previousValue === 'unknown') {
-    return <></>
-  }
-
-  const admin = await players.bySteamId(lastEdit.actor, ['name'])
-  return (
-    <div class="tooltip">
-      <p class="text-nowrap">
-        Last updated by <strong safe>{admin.name}</strong>{' '}
-        {formatDistanceToNow(lastEdit.at, { addSuffix: true }) as 'safe'}
-      </p>
-      <p class="text-nowrap">
-        <strong>{previousValue}</strong> → <strong>{lastEdit.skill[props.className]}</strong>
-      </p>
-    </div>
-  )
-}
-
-function SkillSuggestionIndicator(props: { direction: 'up' | 'down' | undefined }) {
-  if (props.direction === undefined) return <></>
-  const isUp = props.direction === 'up'
-  return (
-    <span
-      class={['pr-2 text-sm', isUp ? 'text-yellow-500/60' : 'text-orange-500/60']}
-      title={isUp ? 'Skill too low' : 'Skill too high'}
-    >
-      {(isUp ? '↑' : '↓') as 'safe'}
-    </span>
   )
 }

@@ -14,9 +14,14 @@ import { meetsSkillThreshold } from './meets-skill-threshold'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
 import { playerAvatarUrl } from '../shared/player-avatar-url'
+import type { Gamemode } from '../shared/types/gamemode'
 
-export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
-  logger.trace({ steamId, slotId }, `queue.join()`)
+export async function join(
+  gamemode: Gamemode,
+  slotId: QueueSlotId,
+  steamId: SteamId64,
+): Promise<QueueSlotModel[]> {
+  logger.trace({ steamId, gamemode, slotId }, `queue.join()`)
   const player = await players.bySteamId(steamId, [
     'hasAcceptedRules',
     'activeGame',
@@ -41,7 +46,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
     }
   }
 
-  const slot = await collections.queueSlots.findOne({ id: slotId })
+  const slot = await collections.queueSlots.findOne({ gamemode, id: slotId })
   if (!slot) {
     throw errors.notFound('no such slot')
   }
@@ -50,8 +55,8 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
     throw errors.badRequest(`player does not meet skill threshold`)
   }
 
-  return await withQueueLock('join', async () => {
-    const state = await getState()
+  return await withQueueLock(gamemode, 'join', async () => {
+    const state = await getState(gamemode)
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
@@ -77,6 +82,8 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       throw withLogLevel(errors.badRequest('slot occupied'), 'debug')
     }
 
+    // Enforce one queue at a time: vacate any slot this player still occupies,
+    // including in another gamemode's queue.
     const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
         'player.steamId': player.steamId,
@@ -90,14 +97,19 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
       },
     )
 
-    await collections.queueState.updateOne({}, { $set: { last: player.steamId } })
+    await collections.queueState.updateOne({ gamemode }, { $set: { last: player.steamId } })
 
-    const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
-    events.emit('queue/slots:updated', { slots })
+    if (oldSlot && oldSlot.gamemode !== gamemode) {
+      events.emit('queue/slots:updated', { gamemode: oldSlot.gamemode, slots: [oldSlot] })
+      events.emit('queue/slots:updated', { gamemode, slots: [targetSlot] })
+    } else {
+      const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
+      events.emit('queue/slots:updated', { gamemode, slots })
+    }
 
     if (targetSlot.ready) {
       await preReady.start(steamId)
     }
-    return slots
+    return [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
   })
 }

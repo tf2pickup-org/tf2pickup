@@ -4,6 +4,7 @@ import { isEqual } from 'es-toolkit'
 import { players } from '../../players'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import { Gamemode } from '../../shared/types/gamemode'
 import { toAdmins } from '../to-admins'
 import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
@@ -15,17 +16,26 @@ function generateChangesText(
   oldSkill: PlayerModel['skill'],
   newSkill: PlayerModel['skill'],
 ): string {
-  const allClasses = new Set([
+  const gamemodes = new Set([
     ...Object.keys(oldSkill ?? {}),
     ...Object.keys(newSkill ?? {}),
-  ]) as Set<Tf2ClassName>
-  return [...allClasses]
-    .filter(gameClass => newSkill?.[gameClass] !== oldSkill?.[gameClass])
-    .map(
-      gameClass =>
-        `${gameClass}: ${oldSkill?.[gameClass] ?? 'not set'} => **${newSkill?.[gameClass] ?? 'not set'}**`,
-    )
-    .join('\n')
+  ]) as Set<Gamemode>
+  const lines: string[] = []
+  for (const gamemode of gamemodes) {
+    const oldClassSkill = oldSkill?.[gamemode]
+    const newClassSkill = newSkill?.[gamemode]
+    const allClasses = new Set([
+      ...Object.keys(oldClassSkill ?? {}),
+      ...Object.keys(newClassSkill ?? {}),
+    ]) as Set<Tf2ClassName>
+    for (const gameClass of allClasses) {
+      if (newClassSkill?.[gameClass] === oldClassSkill?.[gameClass]) continue
+      lines.push(
+        `${gamemode} ${gameClass}: ${oldClassSkill?.[gameClass] ?? 'not set'} => **${newClassSkill?.[gameClass] ?? 'not set'}**`,
+      )
+    }
+  }
+  return lines.join('\n')
 }
 
 export default fp(

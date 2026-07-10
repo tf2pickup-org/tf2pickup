@@ -87,7 +87,7 @@ jobs:
       WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-      QUEUE_CONFIG: ${{ matrix.queue-config }}
+      ENABLED_GAMEMODES: ${{ matrix.queue-config == 'multi' && '6v6,9v9' || matrix.queue-config }}
       THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
       LOG_RELAY_ADDRESS: '127.0.0.1'
       LOG_RELAY_PORT: '9871'
@@ -102,6 +102,12 @@ jobs:
       matrix:
         queue-config: ['6v6', '9v9']
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
+        shard-total: [8]
+        include:
+          # the multi-gamemode suite is small, so it runs unsharded
+          - queue-config: multi
+            shard: 1
+            shard-total: 1
 
     services:
       mongo:
@@ -160,7 +166,7 @@ jobs:
             -e WEBSITE_URL \
             -e MONGODB_URI \
             -e STEAM_API_KEY \
-            -e QUEUE_CONFIG \
+            -e ENABLED_GAMEMODES \
             -e KEY_STORE_PASSPHRASE \
             -e LOG_RELAY_ADDRESS \
             -e LOG_RELAY_PORT \
@@ -202,7 +208,7 @@ jobs:
         run: docker ps
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
+        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ matrix.shard-total }} --grep @${{ matrix.queue-config }}
         env:
           API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}

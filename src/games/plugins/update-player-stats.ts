@@ -21,7 +21,8 @@ export default fp(
             await players.update(slot.player, {
               $inc: {
                 'stats.totalGames': 1,
-                [`stats.gamesByClass.${slot.gameClass}`]: 1,
+                [`stats.gamesByGamemode.${game.gamemode}`]: 1,
+                [`stats.gamesByClass.${game.gamemode}.${slot.gameClass}`]: 1,
               },
             })
           }),

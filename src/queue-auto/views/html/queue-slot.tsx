@@ -15,6 +15,7 @@ import {
   IconPlus,
 } from '../../../html/components/icons'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import type { Gamemode } from '../../../shared/types/gamemode'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { meetsSkillThreshold } from '../../meets-skill-threshold'
 import type { QueueSlotId } from '../../../queue/types/queue-slot-id'
@@ -49,7 +50,9 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) 
     ) {
       disabled = 'You are not verified to join the queue'
     }
-    slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
+    slotContent = (
+      <JoinButton gamemode={props.slot.gamemode} slotId={props.slot.id} disabled={disabled} />
+    )
   }
 
   return (
@@ -64,12 +67,16 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) 
   )
 }
 
-function JoinButton(props: { slotId: QueueSlotId; disabled: string | undefined }) {
+function JoinButton(props: {
+  gamemode: Gamemode
+  slotId: QueueSlotId
+  disabled: string | undefined
+}) {
   return (
     <button
       class="join-queue-button"
       name="join"
-      value={props.slotId}
+      value={`${props.gamemode}/${props.slotId}`}
       disabled={!!props.disabled}
       data-umami-event="join-queue"
       data-umami-event-slot-id={props.slotId}
@@ -98,7 +105,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
       { projection: { skill: 1 } },
     )
     isAdmin = true
-    skill = slotPlayer?.skill
+    skill = slotPlayer?.skill?.[props.slot.gamemode]
   }
 
   let slotActionButton: JSX.Element

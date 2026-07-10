@@ -148,6 +148,7 @@ describe('upsertPlayer()', () => {
       preferences: {},
       stats: {
         totalGames: 0,
+        gamesByGamemode: {},
         gamesByClass: {},
       },
     })
@@ -199,6 +200,7 @@ describe('upsertPlayer()', () => {
             preferences: {},
             stats: {
               totalGames: 0,
+              gamesByGamemode: {},
               gamesByClass: {},
             },
           })
@@ -231,6 +233,7 @@ describe('upsertPlayer()', () => {
             preferences: {},
             stats: {
               totalGames: 0,
+              gamesByGamemode: {},
               gamesByClass: {},
             },
           })
@@ -260,6 +263,7 @@ describe('upsertPlayer()', () => {
           preferences: {},
           stats: {
             totalGames: 0,
+            gamesByGamemode: {},
             gamesByClass: {},
           },
         })

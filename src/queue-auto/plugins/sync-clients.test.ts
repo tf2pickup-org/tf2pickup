@@ -69,6 +69,13 @@ vi.mock('../views/html/chat', () => ({
   }),
 }))
 vi.mock('../views/html/is-in-queue', () => ({ IsInQueue: vi.fn().mockResolvedValue('') }))
+vi.mock('../views/html/gamemode-selector', () => ({
+  GamemodeQueueGauge: vi.fn().mockResolvedValue(''),
+}))
+vi.mock('../../shared/enabled-gamemodes', () => ({
+  enabledGamemodes: ['6v6'],
+  defaultGamemode: '6v6',
+}))
 
 import { events } from '../../events'
 import { players } from '../../players'

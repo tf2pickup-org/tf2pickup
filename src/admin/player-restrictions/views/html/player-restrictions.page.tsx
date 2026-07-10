@@ -1,11 +1,12 @@
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
-import { queue } from '../../../../queue-auto'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
-import { GameClassSkillInput } from '../../../../html/components/game-class-skill-input'
+import { defaultGamemode } from '../../../../shared/enabled-gamemodes'
+import type { Gamemode } from '../../../../shared/types/gamemode'
+import { DefaultPlayerSkill } from './default-player-skill'
 
-export async function PlayerRestrictionsPage() {
+export async function PlayerRestrictionsPage(props?: { gamemode?: Gamemode }) {
   return (
     <Admin activePage="player-restrictions">
       <form action="" method="post" id="playerRestrictionsForm">
@@ -16,7 +17,7 @@ export async function PlayerRestrictionsPage() {
           <PlayerSkillThreshold />
           <SkillStep />
           <SkillSuggestions />
-          <DefaultPlayerSkill />
+          <DefaultPlayerSkill gamemode={props?.gamemode ?? defaultGamemode} />
 
           <p>
             <SaveButton />
@@ -188,35 +189,5 @@ async function SkillSuggestions() {
       </dl>
       <Switch id="skillSuggestions" checked={skillSuggestions} name="skillSuggestions" />
     </div>
-  )
-}
-
-async function DefaultPlayerSkill() {
-  const defaultPlayerSkill = await configuration.get('games.default_player_skill')
-  const skillStep = await configuration.get('games.skill_step')
-  const classes = queue.config.classes.map(({ name }) => name)
-
-  return (
-    <dl>
-      <dt>
-        <span class="text-abru-light-75 font-bold">Default player skill</span>
-      </dt>
-      <dd class="flex flex-col">
-        <div class="flex flex-row flex-wrap gap-2">
-          {classes.map(gameClass => (
-            <GameClassSkillInput
-              gameClass={gameClass}
-              name={`defaultPlayerSkill.${gameClass}`}
-              value={defaultPlayerSkill[gameClass] ?? 1}
-              step={skillStep}
-            />
-          ))}
-        </div>
-        <p class="text-abru-light-75 text-sm">
-          If a player starts a game without skill assigned for them, the game balance system will
-          use this fallback value.
-        </p>
-      </dd>
-    </dl>
   )
 }

@@ -23,7 +23,7 @@ export default fp(
         return
       }
 
-      const threshold = await configuration.get('games.auto_force_end_threshold')
+      const threshold = await configuration.get('games.auto_force_end_threshold', game.gamemode)
       if (threshold <= 0) {
         return
       }

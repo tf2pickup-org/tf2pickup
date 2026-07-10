@@ -10,25 +10,26 @@ import { kick } from '../kick'
 import { unready } from '../unready'
 import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
+import type { Gamemode } from '../../shared/types/gamemode'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    async function maybeUpdateQueueState() {
-      const state = await getState()
+    async function maybeUpdateQueueState(gamemode: Gamemode) {
+      const state = await getState(gamemode)
       const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
-        collections.queueSlots.countDocuments({ player: { $ne: null } }),
-        collections.queueSlots.countDocuments({ ready: { $eq: true } }),
-        collections.queueSlots.countDocuments(),
+        collections.queueSlots.countDocuments({ gamemode, player: { $ne: null } }),
+        collections.queueSlots.countDocuments({ gamemode, ready: { $eq: true } }),
+        collections.queueSlots.countDocuments({ gamemode }),
       ])
 
-      logger.debug(`${currentPlayerCount}/${requiredPlayerCount}`)
+      logger.debug(`${gamemode}: ${currentPlayerCount}/${requiredPlayerCount}`)
 
       switch (state) {
         case QueueState.waiting: {
           if (currentPlayerCount === requiredPlayerCount) {
-            logger.info('queue full, wait for players to ready up')
-            await readyUp()
+            logger.info({ gamemode }, 'queue full, wait for players to ready up')
+            await readyUp(gamemode)
           }
 
           break
@@ -36,12 +37,12 @@ export default fp(
 
         case QueueState.ready: {
           if (currentPlayerCount === 0) {
-            await unreadyQueue()
+            await unreadyQueue({ gamemode })
           } else if (readyPlayerCount === requiredPlayerCount) {
-            logger.info('all players ready, queue ready')
-            await setState(QueueState.launching)
-            await tasks.cancelAll('queue:readyUpTimeout')
-            await tasks.cancelAll('queue:unready')
+            logger.info({ gamemode }, 'all players ready, queue ready')
+            await setState(gamemode, QueueState.launching)
+            await tasks.cancel('queue:readyUpTimeout', { gamemode })
+            await tasks.cancel('queue:unready', { gamemode })
           }
 
           break
@@ -49,27 +50,27 @@ export default fp(
       }
     }
 
-    async function kickUnreadyPlayers() {
+    async function kickUnreadyPlayers(gamemode: Gamemode) {
       const unreadyPlayers = (
         await collections.queueSlots
-          .find({ player: { $ne: null }, ready: { $eq: false } })
+          .find({ gamemode, player: { $ne: null }, ready: { $eq: false } })
           .toArray()
       ).map(slot => slot.player!.steamId)
       await kick(...unreadyPlayers)
     }
 
-    async function unreadyQueue() {
-      logger.info('unready queue')
-      await setState(QueueState.waiting)
+    async function unreadyQueue({ gamemode }: { gamemode: Gamemode }) {
+      logger.info({ gamemode }, 'unready queue')
+      await setState(gamemode, QueueState.waiting)
       const allPlayers = (
-        await collections.queueSlots.find({ player: { $ne: null } }).toArray()
+        await collections.queueSlots.find({ gamemode, player: { $ne: null } }).toArray()
       ).map(slot => slot.player!.steamId)
       await unready(...allPlayers)
     }
 
-    async function readyUpTimeout() {
-      logger.info('ready up timeout, kick players that are not ready')
-      await kickUnreadyPlayers()
+    async function readyUpTimeout({ gamemode }: { gamemode: Gamemode }) {
+      logger.info({ gamemode }, 'ready up timeout, kick players that are not ready')
+      await kickUnreadyPlayers(gamemode)
 
       const readyStateTimeout = await configuration.get('queue.ready_state_timeout')
       const readyUpTimeout = await configuration.get('queue.ready_up_timeout')
@@ -77,22 +78,25 @@ export default fp(
       const nextTimeout = readyStateTimeout - readyUpTimeout
 
       if (nextTimeout > 0) {
-        await tasks.schedule('queue:unready', nextTimeout)
+        await tasks.schedule('queue:unready', nextTimeout, { gamemode })
       } else {
-        await unreadyQueue()
+        await unreadyQueue({ gamemode })
       }
     }
 
-    async function readyUp() {
-      await setState(QueueState.ready)
+    async function readyUp(gamemode: Gamemode) {
+      await setState(gamemode, QueueState.ready)
       const timeout = await configuration.get('queue.ready_up_timeout')
-      await tasks.schedule('queue:readyUpTimeout', timeout)
+      await tasks.schedule('queue:readyUpTimeout', timeout, { gamemode })
     }
 
     tasks.register('queue:readyUpTimeout', readyUpTimeout)
     tasks.register('queue:unready', unreadyQueue)
 
-    events.on('queue/slots:updated', safe(maybeUpdateQueueState))
+    events.on(
+      'queue/slots:updated',
+      safe(({ gamemode }) => maybeUpdateQueueState(gamemode)),
+    )
   },
   { name: 'auto update queue state' },
 )
