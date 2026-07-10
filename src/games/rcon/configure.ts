@@ -19,6 +19,7 @@ import { extractConVarValue } from '../extract-con-var-value'
 import { generate } from 'generate-password'
 import { events } from '../../events'
 import { withRcon } from './with-rcon'
+import { verifyLogTransmission } from './verify-log-transmission'
 import { servemeTf } from '../../serveme-tf'
 import { tf2QuickServer } from '../../tf2-quick-server'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
@@ -177,6 +178,9 @@ async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = 
     for await (const line of compileConfig(game, password)) {
       logger.debug(line)
       await rcon.send(line)
+      if (line.startsWith('logaddress_add')) {
+        await verifyLogTransmission({ rcon, logSecret, gameNumber: game.number, signal })
+      }
       if (line.startsWith('changelevel')) {
         await delay(secondsToMilliseconds(10))
       }

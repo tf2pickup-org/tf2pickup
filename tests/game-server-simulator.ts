@@ -190,6 +190,9 @@ export class GameServerSimulator {
 
               socket.write(response.toBuffer())
             }
+
+            // real srcds logs every rcon command (sv_rcon_log)
+            this.log(`rcon from "127.0.0.1:51234": command "${packet.body}"`)
             break
           }
 
