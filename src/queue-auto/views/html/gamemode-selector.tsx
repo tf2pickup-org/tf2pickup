@@ -1,5 +1,6 @@
 import { collections } from '../../../database/collections'
 import { enabledGamemodes } from '../../../shared/enabled-gamemodes'
+import { gamemodeDisplayName } from '../../../shared/gamemode-display-name'
 import type { Gamemode } from '../../../shared/types/gamemode'
 import { queuePageUrl } from '../../queue-page-url'
 
@@ -32,11 +33,11 @@ export async function GamemodeSelector(props: { active: Gamemode }) {
             role="tab"
             href={queuePageUrl(gamemode)}
             aria-selected={gamemode === props.active ? 'true' : 'false'}
-            aria-label={`${gamemode} queue`}
+            aria-label={`${gamemodeDisplayName(gamemode)} queue`}
             data-umami-event="switch-queue-gamemode"
             data-umami-event-gamemode={gamemode}
           >
-            <span class="font-bold text-white">{gamemode}</span>
+            <span class="font-bold text-white">{gamemodeDisplayName(gamemode)}</span>
             <GamemodeQueueGauge gamemode={gamemode} />
           </a>
         ))}

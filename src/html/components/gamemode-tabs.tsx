@@ -1,4 +1,5 @@
 import { enabledGamemodes } from '../../shared/enabled-gamemodes'
+import { gamemodeDisplayName } from '../../shared/gamemode-display-name'
 import type { Gamemode } from '../../shared/types/gamemode'
 
 export type GamemodeTab = Gamemode | 'all'
@@ -29,15 +30,16 @@ export function GamemodeTabs(props: {
     : [...enabledGamemodes]
 
   return (
-    <div class="flex flex-row flex-wrap gap-2" role="tablist">
+    <div
+      class="border-abru-light-15 bg-abru-dark-25 inline-flex flex-row flex-wrap gap-1 rounded-lg border p-1"
+      role="tablist"
+    >
       {tabs.map(tab => {
         const active = tab === props.active
         const commonAttrs = {
           class: [
-            'rounded-md px-4 py-2 leading-none font-bold',
-            active
-              ? 'bg-accent text-abru-light-3'
-              : 'bg-abru-light-15 text-ash hover:bg-abru-light-25',
+            'rounded-md px-3 py-1.5 text-sm leading-none font-bold whitespace-nowrap',
+            active ? 'bg-accent text-white' : 'text-abru-light-60 hover:text-white',
           ],
           role: 'tab',
           'aria-selected': active ? 'true' : 'false',
@@ -45,7 +47,7 @@ export function GamemodeTabs(props: {
           'data-umami-event-gamemode': tab,
           ...(props.hxTarget ? { 'hx-target': props.hxTarget } : {}),
         }
-        const label = tab === 'all' ? 'All gamemodes' : tab
+        const label = tab === 'all' ? 'All' : gamemodeDisplayName(tab)
         return props.fragment ? (
           <button type="button" hx-get={props.hrefFn(tab)} hx-swap="outerHTML" {...commonAttrs}>
             {label}

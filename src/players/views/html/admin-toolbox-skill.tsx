@@ -6,6 +6,7 @@ import { GamemodeTabs } from '../../../html/components/gamemode-tabs'
 import { IconClover, IconDeviceFloppy, IconInputX } from '../../../html/components/icons'
 import { getQueueConfig } from '../../../queue-auto/configs'
 import { enabledGamemodes } from '../../../shared/enabled-gamemodes'
+import { gamemodeDisplayName } from '../../../shared/gamemode-display-name'
 import type { Gamemode } from '../../../shared/types/gamemode'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { players } from '../..'
@@ -37,22 +38,20 @@ export async function AdminToolboxSkill(props: {
           <span>This player has no skill assigned</span>
         </div>
       )}
-      <div class="flex flex-row flex-wrap items-center justify-between gap-2">
-        <h4 class="caption">Skill</h4>
-        {enabledGamemodes.length > 1 && (
-          <div class="flex flex-row flex-wrap items-center gap-3">
-            <span class="text-abru-light-75 text-sm">
-              Editing for <strong>{gamemode}</strong>
-            </span>
-            <GamemodeTabs
-              active={gamemode}
-              fragment
-              hxTarget="#admin-toolbox-skill"
-              hrefFn={tab => `/players/${player.steamId}/edit/skill?gamemode=${tab}`}
-            />
-          </div>
-        )}
-      </div>
+      <h4 class="caption">Skill</h4>
+      {enabledGamemodes.length > 1 && (
+        <div class="flex flex-row flex-wrap items-center justify-between gap-2">
+          <span class="text-abru-light-75 text-sm">
+            Editing for <strong>{gamemodeDisplayName(gamemode)}</strong>
+          </span>
+          <GamemodeTabs
+            active={gamemode}
+            fragment
+            hxTarget="#admin-toolbox-skill"
+            hrefFn={tab => `/players/${player.steamId}/edit/skill?gamemode=${tab}`}
+          />
+        </div>
+      )}
       <form method="post" action={`/players/${player.steamId}/edit/skill?gamemode=${gamemode}`}>
         <div class={['skill-inputs', compact && 'compact']}>
           {classes.map(gameClass => (

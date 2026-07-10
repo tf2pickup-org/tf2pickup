@@ -7,6 +7,7 @@ import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PickDeep } from 'type-fest'
 import type { Gamemode } from '../../../shared/types/gamemode'
 import { enabledGamemodes } from '../../../shared/enabled-gamemodes'
+import { gamemodeDisplayName } from '../../../shared/gamemode-display-name'
 
 export function GameListItem(props: {
   game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'> & {
@@ -67,7 +68,7 @@ export function GameListItem(props: {
 
       {props.showGamemode && props.game.gamemode && enabledGamemodes.length > 1 && (
         <span class="bg-abru-light-15 text-ash absolute top-2 right-2 rounded-[3px] px-[6px] py-[3px] text-sm leading-none font-bold">
-          {props.game.gamemode}
+          {gamemodeDisplayName(props.game.gamemode)}
         </span>
       )}
 

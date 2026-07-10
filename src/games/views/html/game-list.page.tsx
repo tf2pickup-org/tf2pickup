@@ -28,8 +28,8 @@ export async function GameListPage(props: { page: number; gamemode: GamemodeTab 
       <NavigationBar />
       <Page>
         <div class="container mx-auto">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Games</div>
-          <div class="mb-6">
+          <div class="my-9 flex flex-row flex-wrap items-center justify-between gap-2">
+            <div class="text-abru-light-75 text-[48px] font-bold">Games</div>
             <GamemodeTabs
               active={props.gamemode}
               includeAll

@@ -3,6 +3,7 @@ import { GameClassSkillInput } from '../../../../html/components/game-class-skil
 import { GamemodeTabs } from '../../../../html/components/gamemode-tabs'
 import { getQueueConfig } from '../../../../queue-auto/configs'
 import { enabledGamemodes } from '../../../../shared/enabled-gamemodes'
+import { gamemodeDisplayName } from '../../../../shared/gamemode-display-name'
 import type { Gamemode } from '../../../../shared/types/gamemode'
 
 /**
@@ -18,12 +19,14 @@ export async function DefaultPlayerSkill(props: { gamemode: Gamemode }) {
 
   return (
     <dl id="default-player-skill">
-      <dt class="flex flex-row flex-wrap items-center justify-between gap-2">
+      <dt>
         <span class="text-abru-light-75 font-bold">Default player skill</span>
+      </dt>
+      <dd class="flex flex-col">
         {enabledGamemodes.length > 1 && (
-          <div class="flex flex-row flex-wrap items-center gap-3">
+          <div class="mb-2 flex flex-row flex-wrap items-center justify-between gap-2">
             <span class="text-abru-light-75 text-sm font-normal">
-              Editing for <strong>{gamemode}</strong>
+              Editing for <strong>{gamemodeDisplayName(gamemode)}</strong>
             </span>
             <GamemodeTabs
               active={gamemode}
@@ -33,8 +36,6 @@ export async function DefaultPlayerSkill(props: { gamemode: Gamemode }) {
             />
           </div>
         )}
-      </dt>
-      <dd class="flex flex-col">
         <input type="hidden" name="defaultPlayerSkillGamemode" value={gamemode} />
         <div class="flex flex-row flex-wrap gap-2">
           {classes.map(gameClass => (
