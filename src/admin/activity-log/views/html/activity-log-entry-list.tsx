@@ -34,6 +34,7 @@ const typeLabels: Record<ActivityLogEntryType, string> = {
   'game server reassigned': 'Server reassigned',
   'game force-ended': 'Game force-ended',
   'substitute requested': 'Sub requested',
+  'rcon command executed': 'Rcon command',
   'queue cleared': 'Queue cleared',
 }
 
@@ -51,6 +52,7 @@ const typeColors: Record<ActivityLogEntryType, string> = {
   'game server reassigned': 'text-cyan-400',
   'game force-ended': 'text-rose-400',
   'substitute requested': 'text-amber-400',
+  'rcon command executed': 'text-lime-400',
   'queue cleared': 'text-fuchsia-400',
 }
 
@@ -208,6 +210,7 @@ function getActor(log: ActivityLogEntryModel): SteamId64 | 'bot' | undefined {
   if (log.type === 'chat mute revoked') return log.actor
   if (log.type === 'configuration change') return log.actor
   if (log.type === 'substitute requested') return log.actor
+  if (log.type === 'rcon command executed') return log.actor
   if (log.type === 'queue cleared') return log.actor
   if (
     log.type === 'game reconfigured' ||
@@ -331,6 +334,20 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
             · <span safe>{log.reason}</span>
           </span>
         )}
+      </span>
+    )
+  }
+
+  if (log.type === 'rcon command executed') {
+    return (
+      <span>
+        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
+          Game #{log.gameNumber}
+        </a>
+        <span class="text-abru-light-50"> · </span>
+        <span class="font-mono" safe>
+          {log.command}
+        </span>
       </span>
     )
   }

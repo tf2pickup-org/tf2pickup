@@ -1,6 +1,8 @@
 import z from 'zod'
 import { GamePage } from '../../../games/views/html/game.page'
+import { RconConsoleDialog } from '../../../games/views/html/rcon-console-dialog'
 import { games } from '../../../games'
+import { assertIsError } from '../../../utils/assert-is-error'
 import { gameServerSelection } from '../../../games/schemas/game-server-selection'
 import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
@@ -138,6 +140,38 @@ export default routes(async app => {
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)
           .send()
+      },
+    )
+    .post(
+      '/rcon',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+        schema: {
+          params: z.object({
+            number: games.schemas.gameNumber,
+          }),
+          body: z.object({
+            command: z.string().trim().min(1).max(1024),
+          }),
+        },
+      },
+      async (request, reply) => {
+        const { number } = request.params
+        const { command } = request.body
+        try {
+          const response = await games.executeRconCommand(
+            number,
+            command,
+            request.user!.player.steamId,
+          )
+          await reply.html(RconConsoleDialog.entry({ command, response }))
+        } catch (error) {
+          logger.error(error)
+          assertIsError(error)
+          await reply.html(RconConsoleDialog.entry({ command, error: error.message }))
+        }
       },
     )
     .get(

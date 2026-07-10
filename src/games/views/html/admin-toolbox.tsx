@@ -5,6 +5,7 @@ import {
   IconEye,
   IconEyeOff,
   IconRefreshDot,
+  IconTerminal2,
   IconX,
 } from '../../../html/components/icons'
 import { ConnectString } from './connect-string'
@@ -81,6 +82,18 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
       >
         <IconX />
         Force-end
+      </button>
+
+      <button
+        class="button"
+        disabled={disabled || !props.game.gameServer}
+        id={`game-${props.game.number}-rcon-console-button`}
+        onclick="htmx.trigger('#rcon-console-dialog', 'open')"
+        data-umami-event="open-rcon-console"
+        data-umami-event-game-number={props.game.number}
+      >
+        <IconTerminal2 />
+        RCON console
       </button>
     </>
   )

@@ -32,6 +32,7 @@ const typeOptions: { value: ActivityLogEntryType; label: string }[] = [
   { value: 'game server reassigned', label: 'Game server reassigned' },
   { value: 'game force-ended', label: 'Game force-ended' },
   { value: 'substitute requested', label: 'Substitute requested' },
+  { value: 'rcon command executed', label: 'Rcon command executed' },
   { value: 'queue cleared', label: 'Queue cleared' },
 ]
 

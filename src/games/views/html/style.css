@@ -532,4 +532,134 @@
       display: block;
     }
   }
+
+  .rcon-console {
+    @apply shadow-xl;
+
+    width: min(92vw, 44rem);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--color-abru-dark-29);
+    color: var(--color-abru-light-75);
+    padding: 0;
+
+    header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding: 16px 20px;
+
+      .title {
+        font-weight: 700;
+        color: var(--color-ash);
+      }
+
+      .server {
+        @apply font-mono;
+
+        font-size: 13px;
+        color: var(--color-abru-light-50);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .close {
+        margin-left: auto;
+        align-self: center;
+        color: var(--color-abru-light-50);
+
+        &:hover {
+          color: var(--color-ash);
+        }
+      }
+    }
+
+    .transcript {
+      @apply font-mono;
+
+      height: min(320px, 50dvh);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 12px 16px;
+      background-color: var(--color-abru);
+      font-size: 14px;
+      line-height: 1.5;
+
+      .hint {
+        color: var(--color-abru-light-35);
+      }
+
+      .entry {
+        display: flex;
+        flex-direction: column;
+        margin-top: 8px;
+
+        .command {
+          color: var(--color-ash);
+          font-weight: 500;
+          overflow-wrap: anywhere;
+
+          &::before {
+            content: '] ';
+            color: var(--color-accent-400);
+          }
+        }
+
+        .response {
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
+
+          &:empty {
+            display: none;
+          }
+
+          &.error {
+            color: var(--color-alert);
+          }
+        }
+      }
+    }
+
+    form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background-color: var(--color-abru);
+      border-top: 1px solid var(--color-abru-light-15);
+
+      &:focus-within {
+        background-color: color-mix(in srgb, var(--color-abru), white 3%);
+      }
+
+      .prompt {
+        @apply font-mono;
+
+        color: var(--color-accent-400);
+        font-weight: 700;
+      }
+
+      input[type='text'] {
+        @apply font-mono;
+
+        flex: 1 1 0%;
+        min-width: 0;
+        padding: 8px 0;
+        border-radius: 0;
+        background-color: transparent;
+        font-size: 14px;
+        color: var(--color-ash);
+        caret-color: var(--color-accent-400);
+
+        &:focus {
+          outline: none;
+        }
+
+        &::placeholder {
+          color: var(--color-abru-light-30);
+        }
+      }
+    }
+  }
 }
