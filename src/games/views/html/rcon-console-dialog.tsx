@@ -13,7 +13,7 @@ export function RconConsoleDialog(props: { game: GameModel }) {
     >
       <header>
         <span class="title">RCON console</span>
-        {props.game.gameServer && (
+        {props.game.gameServer !== undefined && (
           <span class="server" safe>
             {props.game.gameServer.name}
           </span>
