@@ -21,6 +21,20 @@ export const defaultMapPools: Partial<Record<Gamemode, MapPoolEntry[]>> = {
     { name: 'cp_steel_f12', execConfig: 'etf2l_9v9_stopwatch' },
     { name: 'koth_ashville_final1', execConfig: 'etf2l_9v9_koth' },
   ],
+  [Gamemode.bball]: [
+    { name: 'ctf_bball2', execConfig: 'etf2l_bball' },
+    { name: 'ctf_bball_sweethills_v1', execConfig: 'etf2l_bball' },
+    { name: 'ctf_bball_alpine_b4', execConfig: 'etf2l_bball' },
+    { name: 'ctf_bball_snow_b1', execConfig: 'etf2l_bball' },
+  ],
+  [Gamemode.ultiduo]: [
+    { name: 'koth_ultiduo_r_b7', execConfig: 'etf2l_ultiduo' },
+    { name: 'ultiduo_baloo_v2', execConfig: 'etf2l_ultiduo' },
+    { name: 'ultiduo_grove_b4', execConfig: 'etf2l_ultiduo' },
+    { name: 'ultiduo_lookout_b1', execConfig: 'etf2l_ultiduo' },
+    { name: 'ultiduo_champions_b1', execConfig: 'etf2l_ultiduo' },
+    { name: 'ultiduo_gullywash_b2', execConfig: 'etf2l_ultiduo' },
+  ],
 }
 
 export async function reset(gamemode: Gamemode): Promise<MapPoolEntry[]> {
