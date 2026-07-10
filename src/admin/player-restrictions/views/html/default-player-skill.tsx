@@ -26,7 +26,7 @@ export async function DefaultPlayerSkill(props: { gamemode: Gamemode }) {
         {enabledGamemodes.length > 1 && (
           <div class="mb-2 flex flex-row flex-wrap items-center justify-between gap-2">
             <span class="text-abru-light-75 text-sm font-normal">
-              Editing for <strong>{gamemodeDisplayName(gamemode)}</strong>
+              Editing for <strong safe>{gamemodeDisplayName(gamemode)}</strong>
             </span>
             <GamemodeTabs
               active={gamemode}

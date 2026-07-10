@@ -49,11 +49,17 @@ export function GamemodeTabs(props: {
         }
         const label = tab === 'all' ? 'All' : gamemodeDisplayName(tab)
         return props.fragment ? (
-          <button type="button" hx-get={props.hrefFn(tab)} hx-swap="outerHTML" {...commonAttrs}>
+          <button
+            type="button"
+            hx-get={props.hrefFn(tab)}
+            hx-swap="outerHTML"
+            {...commonAttrs}
+            safe
+          >
             {label}
           </button>
         ) : (
-          <a href={props.hrefFn(tab)} {...commonAttrs}>
+          <a href={props.hrefFn(tab)} {...commonAttrs} safe>
             {label}
           </a>
         )

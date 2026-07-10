@@ -67,7 +67,10 @@ export function GameListItem(props: {
       </span>
 
       {props.showGamemode && props.game.gamemode && enabledGamemodes.length > 1 && (
-        <span class="bg-abru-light-15 text-ash absolute top-2 right-2 rounded-[3px] px-[6px] py-[3px] text-sm leading-none font-bold">
+        <span
+          class="bg-abru-light-15 text-ash absolute top-2 right-2 rounded-[3px] px-[6px] py-[3px] text-sm leading-none font-bold"
+          safe
+        >
           {gamemodeDisplayName(props.game.gamemode)}
         </span>
       )}

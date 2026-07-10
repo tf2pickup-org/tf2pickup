@@ -37,7 +37,9 @@ export async function GamemodeSelector(props: { active: Gamemode }) {
             data-umami-event="switch-queue-gamemode"
             data-umami-event-gamemode={gamemode}
           >
-            <span class="font-bold text-white">{gamemodeDisplayName(gamemode)}</span>
+            <span class="font-bold text-white" safe>
+              {gamemodeDisplayName(gamemode)}
+            </span>
             <GamemodeQueueGauge gamemode={gamemode} />
           </a>
         ))}
