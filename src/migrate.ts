@@ -3,7 +3,9 @@ import { logger } from './logger'
 import { database } from './database/database'
 
 const u = new Umzug({
-  migrations: { glob: ['migrations/*.{ts,js}', { cwd: import.meta.dirname }] },
+  migrations: {
+    glob: ['migrations/*.{ts,js}', { cwd: import.meta.dirname, ignore: '**/*.test.*' }],
+  },
   logger,
   storage: new MongoDBStorage({
     connection: database,
