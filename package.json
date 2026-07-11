@@ -79,7 +79,7 @@
     "linkifyjs": "4.3.3",
     "marked": "18.0.5",
     "mime": "4.1.0",
-    "mongodb": "7.4.0",
+    "mongodb": "7.5.0",
     "motion": "12.42.2",
     "nanoid": "5.1.16",
     "openid": "2.0.17",
