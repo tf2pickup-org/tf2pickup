@@ -22,7 +22,7 @@
     "@fastify/flash": "6.0.3",
     "@fastify/formbody": "8.0.2",
     "@fastify/helmet": "13.1.0",
-    "@fastify/multipart": "10.0.0",
+    "@fastify/multipart": "10.1.0",
     "@fastify/otel": "0.19.0",
     "@fastify/rate-limit": "11.1.0",
     "@fastify/request-context": "7.0.0",
