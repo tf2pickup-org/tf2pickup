@@ -8,12 +8,14 @@ const {
   mockQueueSlotsFind,
   mockQueueSlotsFindOne,
   mockNotFound,
+  mockGetState,
 } = vi.hoisted(() => ({
   mockPlayersFind: vi.fn(),
   mockPlayersCollectionFindOne: vi.fn(),
   mockQueueSlotsFind: vi.fn(),
   mockQueueSlotsFindOne: vi.fn(),
   mockNotFound: vi.fn((msg: string) => new Error(msg)),
+  mockGetState: vi.fn(),
 }))
 
 vi.mock('fastify-plugin', () => ({ default: <T>(fn: T): T => fn }))
@@ -21,6 +23,7 @@ vi.mock('../../events', () => ({ events: { on: vi.fn() } }))
 vi.mock('../../utils/safe', () => ({ safe: <T>(fn: T): T => fn }))
 vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../errors', () => ({ errors: { notFound: mockNotFound } }))
+vi.mock('../../queue/get-state', () => ({ getState: mockGetState }))
 vi.mock('../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },
@@ -72,6 +75,8 @@ vi.mock('../views/html/is-in-queue', () => ({ IsInQueue: vi.fn().mockResolvedVal
 
 import { events } from '../../events'
 import { players } from '../../players'
+import { ReadyUpDialog } from '../views/html/ready-up-dialog'
+import { QueueState } from '../../database/models/queue-state.model'
 import plugin from './sync-clients'
 
 const steamId1 = '76561198000000001' as SteamId64
@@ -111,6 +116,7 @@ describe('sync-clients', () => {
     mockQueueSlotsFindOne.mockResolvedValue(null)
     mockPlayersCollectionFindOne.mockResolvedValue(null)
     mockPlayersFind.mockReturnValue({ toArray: vi.fn().mockResolvedValue([]) })
+    mockGetState.mockResolvedValue(QueueState.waiting)
     await (plugin as unknown as (app: FastifyInstance) => Promise<void>)(app)
   })
 
@@ -166,6 +172,53 @@ describe('sync-clients', () => {
         { steamId: { $in: [steamId1, steamId2] } },
         expect.objectContaining({ projection: expect.any(Object) }),
       )
+    })
+  })
+
+  describe('syncQueuePage', () => {
+    function getReadyHandler(): (socket: unknown) => Promise<void> {
+      const call = vi
+        .mocked(app.gateway.on)
+        .mock.calls.find(([e]: [unknown, unknown]) => e === 'ready')
+      if (!call) throw new Error('No gateway handler registered for event: ready')
+      return call[1] as (socket: unknown) => Promise<void>
+    }
+
+    function makeSocket() {
+      return { player: { steamId: steamId1 }, currentUrl: '/', send: vi.fn() }
+    }
+
+    it('shows the ready-up dialog when the queue is in ready state and the player has not readied up', async () => {
+      mockGetState.mockResolvedValue(QueueState.ready)
+      mockQueueSlotsFindOne.mockResolvedValue({ player: { steamId: steamId1 }, ready: false })
+      const socket = makeSocket()
+
+      await getReadyHandler()(socket)
+
+      expect(mockQueueSlotsFindOne).toHaveBeenCalledWith({
+        'player.steamId': steamId1,
+        ready: false,
+      })
+      expect(vi.mocked(ReadyUpDialog.show)).toHaveBeenCalledWith(steamId1)
+    })
+
+    it('does not show the ready-up dialog when the player has already readied up', async () => {
+      mockGetState.mockResolvedValue(QueueState.ready)
+      mockQueueSlotsFindOne.mockResolvedValue(null)
+      const socket = makeSocket()
+
+      await getReadyHandler()(socket)
+
+      expect(vi.mocked(ReadyUpDialog.show)).not.toHaveBeenCalled()
+    })
+
+    it('does not show the ready-up dialog when the queue is not in ready state', async () => {
+      mockGetState.mockResolvedValue(QueueState.waiting)
+      const socket = makeSocket()
+
+      await getReadyHandler()(socket)
+
+      expect(vi.mocked(ReadyUpDialog.show)).not.toHaveBeenCalled()
     })
   })
 

@@ -23,6 +23,7 @@ import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 import { errors } from '../../errors'
+import { getState } from '../../queue/get-state'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -79,6 +80,16 @@ export default fp(
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
+
+        if ((await getState()) === QueueState.ready) {
+          const slot = await collections.queueSlots.findOne({
+            'player.steamId': socket.player.steamId,
+            ready: false,
+          })
+          if (slot) {
+            socket.send(await ReadyUpDialog.show(socket.player.steamId))
+          }
+        }
       }
     }
 
