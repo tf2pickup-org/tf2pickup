@@ -1,6 +1,6 @@
 import { expect, launchGame } from '../fixtures/launch-game'
 
-launchGame.use({ waitForStage: 'launching', killGame: false })
+launchGame.use({ waitForStage: 'launching' })
 launchGame(
   'update player connection status @6v6 @9v9',
   async ({ players, gameNumber, gameServer }) => {
