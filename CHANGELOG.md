@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.20.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.1...4.20.2) (2026-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency discord.js to v14.26.5 ([6a0e3bd](https://github.com/tf2pickup-org/tf2pickup/commit/6a0e3bd1002f3aca0a9e728c146fce3f090c6046))
+* **queue:** show ready-up dialog after page refresh ([#736](https://github.com/tf2pickup-org/tf2pickup/issues/736)) ([296a340](https://github.com/tf2pickup-org/tf2pickup/commit/296a3402ead4f33801f3ce3a18227a57c0ed21b0))
+
 ## [4.20.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.0...4.20.1) (2026-07-13)
 
 
