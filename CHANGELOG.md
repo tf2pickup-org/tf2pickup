@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.20.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.0...4.20.1) (2026-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/autoload to v6.4.0 ([715dcf5](https://github.com/tf2pickup-org/tf2pickup/commit/715dcf546434730fe7fd447a61559d29d6b872ba))
+* **deps:** update dependency @fastify/helmet to v13.1.0 ([3d58bac](https://github.com/tf2pickup-org/tf2pickup/commit/3d58bacf7698359f680e47687e271e417574f80d))
+* **deps:** update dependency @fastify/multipart to v10.1.0 ([a00796a](https://github.com/tf2pickup-org/tf2pickup/commit/a00796afee4b35a4cc732176f2900ff9d216b88e))
+* **deps:** update dependency @fastify/otel to v0.20.0 ([#737](https://github.com/tf2pickup-org/tf2pickup/issues/737)) ([e8c508a](https://github.com/tf2pickup-org/tf2pickup/commit/e8c508adfe1ce49935cab86ad4edddf0602995fc))
+* **deps:** update dependency @fastify/static to v9.3.0 ([1ff66ef](https://github.com/tf2pickup-org/tf2pickup/commit/1ff66efdfce5046b375344346a7124f04c606f9d))
+* **deps:** update dependency marked to v18.0.6 ([88c640d](https://github.com/tf2pickup-org/tf2pickup/commit/88c640d5e05a618c2af87a67bb07778c5c756cce))
+* **deps:** update dependency mongodb to v7.5.0 ([a4df013](https://github.com/tf2pickup-org/tf2pickup/commit/a4df0133aeb5e5099ad4f79f2dc36c4837bc7b9e))
+
 # [4.20.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.19.0...4.20.0) (2026-07-09)
 
 
