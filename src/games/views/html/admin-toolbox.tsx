@@ -13,23 +13,26 @@ import { ConnectString } from './connect-string'
 export function AdminToolbox(props: { game: GameModel }) {
   return (
     <div class="game-admin-toolbox">
-      <AdminToolbox.gameControlButtons {...props} />
-      <AdminToolbox.rconConnect {...props} />
+      <div class="controls">
+        <AdminToolbox.gameControlButtons {...props} />
 
-      <label class="show-assigned-skills-checkbox">
-        <input type="checkbox" class="button" data-variant="accent" id="show-assigned-skills" />
-        <div class="icon">
-          <div class="on">
-            <IconEyeOff />
-            <span class="sr-only">Hide sensitive data</span>
+        <label class="show-assigned-skills-checkbox">
+          <input type="checkbox" class="button" data-variant="accent" id="show-assigned-skills" />
+          <div class="icon">
+            <div class="on">
+              <IconEyeOff />
+              <span class="sr-only">Hide sensitive data</span>
+            </div>
+            <div class="off">
+              <IconEye />
+              <span class="sr-only">Show sensitive data</span>
+            </div>
           </div>
-          <div class="off">
-            <IconEye />
-            <span class="sr-only">Show sensitive data</span>
-          </div>
-        </div>
-        <span class="tooltip text-nowrap">Toggle sensitive data</span>
-      </label>
+          <span class="tooltip text-nowrap">Toggle sensitive data</span>
+        </label>
+      </div>
+
+      <AdminToolbox.rconConnect {...props} />
     </div>
   )
 }
@@ -106,7 +109,7 @@ AdminToolbox.rconConnect = (props: { game: GameModel }) => {
     ![GameState.launching, GameState.started].includes(props.game.state) ||
     !props.game.gameServer
   ) {
-    return <div class="grow" id={id}></div>
+    return <div class="hidden" id={id}></div>
   }
 
   const rconConnect = `rcon_address ${props.game.gameServer.rcon.address}:${props.game.gameServer.rcon.port}; rcon_password "${props.game.gameServer.rcon.password}"`

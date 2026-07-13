@@ -464,8 +464,22 @@
     gap: 8px;
 
     @media (width >= theme(--breakpoint-lg)) {
-      flex-direction: row;
       margin-top: 16px;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      @media (width >= theme(--breakpoint-lg)) {
+        flex-direction: row;
+        flex-wrap: wrap;
+
+        .show-assigned-skills-checkbox {
+          margin-left: auto;
+        }
+      }
     }
   }
 
