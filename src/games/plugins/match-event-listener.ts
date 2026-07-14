@@ -34,7 +34,11 @@ const gameEvents: GameEvent[] = [
     // TF2 logs Round_Start once per regular round, but twice in the same
     // second when a tournament match (re)starts — e.g. at the initial ready-up,
     // or mid-game when everyone leaves to spectator and readies up again. The
-    // doubled line means the server has just reset its scoreboard.
+    // doubled line means the server has just reset its scoreboard. A regular
+    // round transition always has a Round_Win between two Round_Starts (which
+    // clears the remembered timestamp below), so two same-second Round_Starts
+    // with no round won in between can only be the restart pair — even when
+    // log lines arrive with compressed timestamps, as in e2e log replays.
     regex: /^(\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}):\sWorld triggered "Round_Start"$/,
     handle: (gameNumber, matches) => {
       events.emit('match:started', { gameNumber })
@@ -57,6 +61,7 @@ const gameEvents: GameEvent[] = [
     regex:
       /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Win" \(winner "(.+)"\)$/,
     handle: (gameNumber, matches) => {
+      lastRoundStartAt.delete(gameNumber)
       if (matches[1]) {
         const winner = fixTeamName(matches[1])
         events.emit('match:roundWon', { gameNumber, winner })

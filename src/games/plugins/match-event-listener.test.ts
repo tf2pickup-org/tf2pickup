@@ -76,4 +76,18 @@ describe('match-event-listener', () => {
     await onGameLogMessage(roundStart('07/13/2026 - 18:07:40'))
     expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
   })
+
+  it('does not emit match/score:reset when a round was won in between', async () => {
+    // log replays re-stamp lines with the current time, so consecutive rounds
+    // can share a timestamp — a completed round marks a regular transition
+    await onGameLogMessage(roundStart('06/16/2026 - 10:38:23'))
+    await onGameLogMessage({
+      message: {
+        payload: '06/16/2026 - 10:38:23: World triggered "Round_Win" (winner "Blue")',
+        password: logSecret,
+      },
+    })
+    await onGameLogMessage(roundStart('06/16/2026 - 10:38:23'))
+    expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
+  })
 })
