@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate OG Cards"
+  short_description: "Regenerate branded OpenGraph image cards"
+  default_prompt: "Use $generate-og-cards to refresh the static branded social cards."
