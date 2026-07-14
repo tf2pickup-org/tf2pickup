@@ -23,12 +23,28 @@ interface GameEvent {
 // converts 'Red' and 'Blue' to valid team names
 const fixTeamName = (teamName: string): Tf2Team => teamName.toLowerCase().substring(0, 3) as Tf2Team
 
+// timestamp of the last Round_Start line seen per game; used to detect the
+// doubled Round_Start below
+const lastRoundStartAt = new Map<GameNumber, string>()
+
 const gameEvents: GameEvent[] = [
   {
     // TODO rename to "round start"
     name: 'match started',
-    regex: /^[\d/\s-:]+World triggered "Round_Start"$/,
-    handle: gameNumber => events.emit('match:started', { gameNumber }),
+    // TF2 logs Round_Start once per regular round, but twice in the same
+    // second when a tournament match (re)starts — e.g. at the initial ready-up,
+    // or mid-game when everyone leaves to spectator and readies up again. The
+    // doubled line means the server has just reset its scoreboard.
+    regex: /^(\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}):\sWorld triggered "Round_Start"$/,
+    handle: (gameNumber, matches) => {
+      events.emit('match:started', { gameNumber })
+      if (matches[1]) {
+        if (lastRoundStartAt.get(gameNumber) === matches[1]) {
+          events.emit('match/score:reset', { gameNumber })
+        }
+        lastRoundStartAt.set(gameNumber, matches[1])
+      }
+    },
   },
   {
     name: 'game restarted',
@@ -64,7 +80,10 @@ const gameEvents: GameEvent[] = [
     // TODO rename to "game over"
     name: 'match ended',
     regex: /^[\d/\s-:]+World triggered "Game_Over" reason ".*"$/,
-    handle: gameNumber => events.emit('match:ended', { gameNumber }),
+    handle: gameNumber => {
+      lastRoundStartAt.delete(gameNumber)
+      events.emit('match:ended', { gameNumber })
+    },
   },
   {
     name: 'logs uploaded',

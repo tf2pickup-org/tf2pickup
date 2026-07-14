@@ -13,6 +13,13 @@ export default fp(
     events.on('match:restarted', async ({ gameNumber }) => {
       await pruneLogs(gameNumber)
     })
+    // drop pre-restart log lines so the log uploaded to logs.tf contains only
+    // the restarted match and its parsed score agrees with ours
+    events.on('game:restarted', async ({ game }) => {
+      if (game.logSecret) {
+        await gameLogSink.clear(game.logSecret)
+      }
+    })
   },
   { name: 'game log collector', encapsulate: true },
 )

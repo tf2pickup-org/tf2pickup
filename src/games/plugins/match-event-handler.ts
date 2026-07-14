@@ -79,6 +79,45 @@ export default fp(
     )
 
     events.on(
+      'match/score:reset',
+      safe(async ({ gameNumber }) => {
+        // The server reset its scoreboard mid-match (tournament restart, e.g.
+        // after everyone left to spectator) — rounds won before the restart no
+        // longer count. Zero our score to match and record the restart. At the
+        // initial match start (or when nothing was scored yet) there is
+        // nothing to reset.
+        const game = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1, score: 1 } },
+        )
+        if (
+          game?.state !== GameState.started ||
+          ((game.score?.[Tf2Team.blu] ?? 0) === 0 && (game.score?.[Tf2Team.red] ?? 0) === 0)
+        ) {
+          return
+        }
+        const updated = await update(
+          { number: gameNumber, state: GameState.started },
+          {
+            $set: {
+              score: {
+                [Tf2Team.blu]: 0,
+                [Tf2Team.red]: 0,
+              },
+            },
+            $push: {
+              events: {
+                at: new Date(),
+                event: GameEventType.gameRestarted,
+              },
+            },
+          },
+        )
+        events.emit('game:restarted', { game: updated })
+      }),
+    )
+
+    events.on(
       'match:ended',
       safe(async ({ gameNumber }) => {
         // Gameservers re-fire match:ended after the game already left the started

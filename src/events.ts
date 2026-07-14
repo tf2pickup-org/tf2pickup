@@ -71,6 +71,10 @@ export interface Events {
   'game:ended': {
     game: GameModel
   }
+  // a mid-game match restart was detected and the game's score was reset
+  'game:restarted': {
+    game: GameModel
+  }
 
   'gamelog:message': {
     message: LogMessage
@@ -121,6 +125,11 @@ export interface Events {
     gameNumber: GameNumber
     team: Tf2Team
     score: number
+  }
+  // the server reset its scoreboard — a tournament match (re)start, detected
+  // by Round_Start being logged twice in the same second
+  'match/score:reset': {
+    gameNumber: GameNumber
   }
   'match/controlPoint:captured': {
     gameNumber: GameNumber
