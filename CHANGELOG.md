@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.20.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.2...4.20.3) (2026-07-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sanitize-html to v2.17.6 ([da521d2](https://github.com/tf2pickup-org/tf2pickup/commit/da521d2d6acd0a8fe7528143897c254fccc4db88))
+* **game-servers:** free static game servers when a game is reassigned ([#740](https://github.com/tf2pickup-org/tf2pickup/issues/740)) ([edf0eda](https://github.com/tf2pickup-org/tf2pickup/commit/edf0eda5df794604890b5c8f2e2fd6c449e17c3b)), closes [#6862](https://github.com/tf2pickup-org/tf2pickup/issues/6862) [#8](https://github.com/tf2pickup-org/tf2pickup/issues/8) [#6](https://github.com/tf2pickup-org/tf2pickup/issues/6) [#02](https://github.com/tf2pickup-org/tf2pickup/issues/02)
+
 ## [4.20.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.1...4.20.2) (2026-07-13)
 
 
