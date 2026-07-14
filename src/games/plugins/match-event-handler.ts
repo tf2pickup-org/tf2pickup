@@ -51,16 +51,12 @@ export default fp(
         // The server reset its scoreboard mid-match (tournament restart —
         // everyone left to spectator, an admin re-exec'd the config, etc.) —
         // rounds won before the restart no longer count. Zero our score to
-        // match and record the restart. At the initial match start (or when
-        // nothing was scored yet) there is nothing to reset.
+        // match and record the restart.
         const game = await collections.games.findOne(
           { number: gameNumber },
-          { projection: { state: 1, score: 1 } },
+          { projection: { state: 1 } },
         )
-        if (
-          game?.state !== GameState.started ||
-          ((game.score?.[Tf2Team.blu] ?? 0) === 0 && (game.score?.[Tf2Team.red] ?? 0) === 0)
-        ) {
+        if (game?.state !== GameState.started) {
           return
         }
         const updated = await update(

@@ -53,6 +53,15 @@ describe('match-event-listener', () => {
       .mocked(events.on)
       .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'gamelog:message')
     onGameLogMessage = call![1] as typeof onGameLogMessage
+
+    // reset the module-level round start tracking between tests
+    await onGameLogMessage({
+      message: {
+        payload: '07/13/2026 - 00:00:00: World triggered "Game_Over" reason "test reset"',
+        password: logSecret,
+      },
+    })
+    vi.mocked(events.emit).mockClear()
   })
 
   const roundStart = (timestamp: string) => ({
@@ -65,10 +74,20 @@ describe('match-event-listener', () => {
     expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
   })
 
-  it('emits match/score:reset for a doubled round start', async () => {
+  it('emits match/score:reset for a doubled round start mid-game', async () => {
+    // the real sequence of https://tf2pickup.pl/games/7615: the round started
+    // at 17:35:10 was aborted (everyone left to spectator) and the match was
+    // restarted at 17:39:30
+    await onGameLogMessage(roundStart('07/13/2026 - 17:35:10'))
     await onGameLogMessage(roundStart('07/13/2026 - 17:39:30'))
     await onGameLogMessage(roundStart('07/13/2026 - 17:39:30'))
     expect(events.emit).toHaveBeenCalledWith('match/score:reset', { gameNumber })
+  })
+
+  it('does not emit match/score:reset for the doubled round start at the initial match start', async () => {
+    await onGameLogMessage(roundStart('07/13/2026 - 17:33:28'))
+    await onGameLogMessage(roundStart('07/13/2026 - 17:33:28'))
+    expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
   })
 
   it('does not emit match/score:reset for round starts at different times', async () => {

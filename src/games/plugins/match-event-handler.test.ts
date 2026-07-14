@@ -51,10 +51,9 @@ describe('match-event-handler', () => {
     scoreResetHandler = call![1] as typeof scoreResetHandler
   })
 
-  it('zeroes the score and records the restart for a started game with a nonzero score', async () => {
+  it('zeroes the score and records the restart for a started game', async () => {
     vi.mocked(collections.games.findOne).mockResolvedValue({
       state: GameState.started,
-      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 1 },
     } as never)
     const updated = { number: gameNumber } as never
     vi.mocked(update).mockResolvedValue(updated)
@@ -71,18 +70,6 @@ describe('match-event-handler', () => {
       }),
     )
     expect(events.emit).toHaveBeenCalledWith('game:restarted', { game: updated })
-  })
-
-  it('ignores the reset when nothing was scored yet', async () => {
-    vi.mocked(collections.games.findOne).mockResolvedValue({
-      state: GameState.started,
-      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 },
-    } as never)
-
-    await scoreResetHandler({ gameNumber })
-
-    expect(update).not.toHaveBeenCalled()
-    expect(events.emit).not.toHaveBeenCalled()
   })
 
   it('ignores the reset when the game is not started', async () => {

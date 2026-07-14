@@ -23,31 +23,45 @@ interface GameEvent {
 // converts 'Red' and 'Blue' to valid team names
 const fixTeamName = (teamName: string): Tf2Team => teamName.toLowerCase().substring(0, 3) as Tf2Team
 
-// timestamp of the last Round_Start line seen per game; used to detect the
+// the last Round_Start line seen per game (cleared when a round is won) and
+// whether any Round_Start was seen at all this match; used to detect the
 // doubled Round_Start below
-const lastRoundStartAt = new Map<GameNumber, string>()
+const lastRoundStart = new Map<GameNumber, { at: string; precededByRoundStart: boolean }>()
+const seenRoundStart = new Set<GameNumber>()
 
 const gameEvents: GameEvent[] = [
   {
     // TODO rename to "round start"
     name: 'match started',
     // TF2 logs Round_Start once per regular round, but twice in the same
-    // second when a tournament match (re)starts — e.g. at the initial ready-up,
-    // or mid-game when everyone leaves to spectator and readies up again. The
-    // doubled line means the server has just reset its scoreboard. A regular
-    // round transition always has a Round_Win between two Round_Starts (which
-    // clears the remembered timestamp below), so two same-second Round_Starts
-    // with no round won in between can only be the restart pair — even when
-    // log lines arrive with compressed timestamps, as in e2e log replays.
+    // second when a tournament match (re)starts. A regular round transition
+    // always has a Round_Win between two Round_Starts (which clears the
+    // remembered line below), so a same-second pair can only be the (re)start
+    // doubling — even when log lines arrive with compressed timestamps, as in
+    // e2e log replays. The pair at the initial match start is expected; a pair
+    // preceded by an earlier Round_Start means the match was restarted
+    // mid-game (everyone left to spectator, an admin re-exec'd the config,
+    // mp_tournament_restart) and the server reset its scoreboard.
     regex: /^(\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}):\sWorld triggered "Round_Start"$/,
     handle: (gameNumber, matches) => {
       events.emit('match:started', { gameNumber })
-      if (matches[1]) {
-        if (lastRoundStartAt.get(gameNumber) === matches[1]) {
+      const at = matches[1]
+      if (!at) {
+        return
+      }
+      const last = lastRoundStart.get(gameNumber)
+      if (last?.at === at) {
+        if (last.precededByRoundStart) {
+          lastRoundStart.delete(gameNumber)
           events.emit('match/score:reset', { gameNumber })
         }
-        lastRoundStartAt.set(gameNumber, matches[1])
+      } else {
+        lastRoundStart.set(gameNumber, {
+          at,
+          precededByRoundStart: seenRoundStart.has(gameNumber),
+        })
       }
+      seenRoundStart.add(gameNumber)
     },
   },
   {
@@ -56,7 +70,7 @@ const gameEvents: GameEvent[] = [
     regex:
       /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Win" \(winner "(.+)"\)$/,
     handle: (gameNumber, matches) => {
-      lastRoundStartAt.delete(gameNumber)
+      lastRoundStart.delete(gameNumber)
       if (matches[1]) {
         const winner = fixTeamName(matches[1])
         events.emit('match:roundWon', { gameNumber, winner })
@@ -81,7 +95,8 @@ const gameEvents: GameEvent[] = [
     name: 'match ended',
     regex: /^[\d/\s-:]+World triggered "Game_Over" reason ".*"$/,
     handle: gameNumber => {
-      lastRoundStartAt.delete(gameNumber)
+      lastRoundStart.delete(gameNumber)
+      seenRoundStart.delete(gameNumber)
       events.emit('match:ended', { gameNumber })
     },
   },
