@@ -11,7 +11,7 @@ class GameLogSink {
   constructor(private readonly collection: Collection<GameLogsModel>) {}
 
   push(message: LogMessage): void {
-    this.enqueue(message.password, async () => {
+    void this.enqueue(message.password, async () => {
       await this.safePushLogMessage(message)
     })
   }
