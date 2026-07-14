@@ -302,6 +302,17 @@ export class GameServerSimulator {
     await delay(this.eventDelay / 2)
   }
 
+  // a tournament match restart logs Round_Start twice in the same second
+  async matchRestarts() {
+    await delay(this.eventDelay / 2)
+    this.log('World triggered "Round_Start"')
+    this.log('World triggered "Round_Start"')
+    this.roundStartTimestamp = Date.now()
+    this.score.blu = 0
+    this.score.red = 0
+    await delay(this.eventDelay / 2)
+  }
+
   async matchEnds() {
     const playersPerTeam = this.addedPlayers.length / 2
     await delay(this.eventDelay / 2)

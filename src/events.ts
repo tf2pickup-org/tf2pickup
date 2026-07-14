@@ -83,9 +83,6 @@ export interface Events {
   'match:started': {
     gameNumber: GameNumber
   }
-  'match:restarted': {
-    gameNumber: GameNumber
-  }
   'match:roundWon': {
     gameNumber: GameNumber
     winner: Tf2Team
