@@ -1,4 +1,4 @@
 interface:
-  display_name: "Query SigNoz"
-  short_description: "Investigate tf2pickup production observability"
-  default_prompt: "Use $signoz-query to investigate recent tf2pickup production errors."
+  display_name: 'Query SigNoz'
+  short_description: 'Investigate tf2pickup production observability'
+  default_prompt: 'Use $signoz-query to investigate recent tf2pickup production errors.'
