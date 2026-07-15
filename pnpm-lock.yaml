@@ -216,8 +216,8 @@ importers:
         specifier: 12.42.2
         version: 12.42.2
       nanoid:
-        specifier: 5.1.16
-        version: 5.1.16
+        specifier: 6.0.0
+        version: 6.0.0
       openid:
         specifier: 2.0.17
         version: 2.0.17
@@ -4027,9 +4027,9 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.16:
-    resolution: {integrity: sha512-kVrnsrJqMR8+oLJnGEmSWw9BivK5mt7H3FZatVRjrc5wGqFYuBxX1yG7+A7Gi5AefkX6t/oCkizcQgpu0cY1dQ==}
-    engines: {node: ^18 || >=20}
+  nanoid@6.0.0:
+    resolution: {integrity: sha512-mkUH+rPkwU2qPadJ0oJZOjeZ5Mxn8Q1UhevwkTRWNuUZzyia3h4rhzK39hxaHTk0o2OxB8W2SQ6A8k23ZDi1pQ==}
+    engines: {node: ^22 || ^24 || >=26}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -9221,7 +9221,7 @@ snapshots:
 
   nanoid@3.3.12: {}
 
-  nanoid@5.1.16: {}
+  nanoid@6.0.0: {}
 
   natural-compare@1.4.0: {}
 
