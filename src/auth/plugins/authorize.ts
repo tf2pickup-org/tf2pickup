@@ -24,6 +24,11 @@ export default fp(
         return
       }
 
+      if (request.routeOptions.url?.startsWith('/admin')) {
+        reply.callNotFound()
+        return
+      }
+
       return reply.forbidden()
     })
   },

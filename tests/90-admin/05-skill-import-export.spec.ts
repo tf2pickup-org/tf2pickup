@@ -21,8 +21,8 @@ authUsers(
   async ({ users: userManager }) => {
     const userPage = await userManager.getNext(u => !u.isAdmin).page()
     await userPage.goto('/admin/skill-import-export')
-    await expect(userPage.getByText('403')).toBeVisible()
-    await expect(userPage.getByText('Forbidden')).toBeVisible()
+    await expect(userPage.getByText('404')).toBeVisible()
+    await expect(userPage.getByText('Not found')).toBeVisible()
   },
 )
 

@@ -13,8 +13,8 @@ authUsers('admin panel is not visible for non-admins @6v6 @9v9', async ({ users 
   await expect(userPage.getByRole('link', { name: 'Admin panel' })).not.toBeVisible()
 
   await userPage.goto('/admin')
-  await expect(userPage.getByText('403')).toBeVisible()
-  await expect(userPage.getByText('Forbidden')).toBeVisible()
+  await expect(userPage.getByText('404')).toBeVisible()
+  await expect(userPage.getByText('Not found')).toBeVisible()
   await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
 })
 
@@ -45,8 +45,8 @@ authUsers('admin panel is not visible for anonymous users @6v6 @9v9', async ({ p
     async ({ users }) => {
       const userPage = await users.getNext(u => !u.isAdmin).page()
       await userPage.goto(adminPage)
-      await expect(userPage.getByText('403')).toBeVisible()
-      await expect(userPage.getByText('Forbidden')).toBeVisible()
+      await expect(userPage.getByText('404')).toBeVisible()
+      await expect(userPage.getByText('Not found')).toBeVisible()
       await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
     },
   )
