@@ -37,7 +37,7 @@ export async function PlayerListPage() {
         <div class="container mx-auto">
           <div class="text-abru-light-75 my-9 text-[48px] font-bold">Players</div>
 
-          <div class="text-abru-light-75 hidden flex-row flex-wrap justify-between gap-x-3 gap-y-1 text-2xl font-bold md:flex">
+          <div class="player-list-index">
             {groups.map(letter => (
               <a href={`#${letter}`} style="uppercase" safe>
                 {letter}
@@ -46,26 +46,20 @@ export async function PlayerListPage() {
           </div>
 
           {groups.map(letter => (
-            <>
-              <div class="bg-abru-light-15 my-4 h-[2px]"></div>
-              <div class="text-abru-light-75 grid min-h-[120px] grid-cols-3 gap-x-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-10">
-                <a id={letter} class="text-[64px] leading-none font-bold" safe>
-                  {letter}
-                </a>
+            <div class="player-list-section">
+              <div class="section-divider"></div>
+              <a id={letter} class="section-letter" safe>
+                {letter}
+              </a>
 
-                <div class="player-group col-span-1 grid grid-cols-9 content-start md:col-span-3 lg:col-span-5 xl:col-span-9">
-                  {groupedPlayers.get(letter)?.map(player => (
-                    <a
-                      href={`/players/${player.steamId}`}
-                      class="truncate whitespace-nowrap hover:underline"
-                      safe
-                    >
-                      {player.name}
-                    </a>
-                  ))}
-                </div>
+              <div class="player-group">
+                {groupedPlayers.get(letter)?.map(player => (
+                  <a href={`/players/${player.steamId}`} safe>
+                    {player.name}
+                  </a>
+                ))}
               </div>
-            </>
+            </div>
           ))}
         </div>
       </Page>
