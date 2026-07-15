@@ -20,16 +20,7 @@ export default fp(
         return
       }
 
-      if (request.routeOptions.url?.startsWith('/admin')) {
-        reply.callNotFound()
-        return
-      }
-
-      if (!request.user) {
-        return reply.unauthorized()
-      }
-
-      return reply.forbidden()
+      reply.callNotFound()
     })
   },
   {
