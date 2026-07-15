@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.20.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.3...4.20.4) (2026-07-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/static to v10 ([#742](https://github.com/tf2pickup-org/tf2pickup/issues/742)) ([5c91c40](https://github.com/tf2pickup-org/tf2pickup/commit/5c91c402712dd53a1618e2208b228c22622826f8))
+* **deps:** update dependency @fastify/websocket to v11.3.0 ([e2f5d28](https://github.com/tf2pickup-org/tf2pickup/commit/e2f5d28658c940c56c095c7fbcb49932361e089b))
+* **deps:** update dependency postcss to v8.5.17 ([9545223](https://github.com/tf2pickup-org/tf2pickup/commit/95452238a59a1cb43dffe7605ed575d0d723c053))
+* player list layout on small screens ([#745](https://github.com/tf2pickup-org/tf2pickup/issues/745)) ([8d1349e](https://github.com/tf2pickup-org/tf2pickup/commit/8d1349e60feb4dcda3c4054db583fe7ae63d581c))
+* verify log transmission before configuring the game server ([#734](https://github.com/tf2pickup-org/tf2pickup/issues/734)) ([eb7ce11](https://github.com/tf2pickup-org/tf2pickup/commit/eb7ce11eafdcc4f924952495a8241daf5b6685a4))
+
 ## [4.20.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.2...4.20.3) (2026-07-14)
 
 
