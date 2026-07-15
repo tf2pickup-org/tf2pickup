@@ -162,8 +162,8 @@ importers:
         specifier: 5.10.0
         version: 5.10.0
       fastify-disablecache:
-        specifier: 5.0.0
-        version: 5.0.0
+        specifier: 5.0.1
+        version: 5.0.1
       fastify-plugin:
         specifier: 6.0.0
         version: 6.0.0
@@ -3146,8 +3146,8 @@ packages:
   fast-wrap-ansi@0.2.0:
     resolution: {integrity: sha512-rLV8JHxTyhVmFYhBJuMujcrHqOT2cnO5Zxj37qROj23CP39GXubJRBUFF0z8KFK77Uc0SukZUf7JZhsVEQ6n8w==}
 
-  fastify-disablecache@5.0.0:
-    resolution: {integrity: sha512-ZtJo9c116CQR1xGMLjFZAo6befJOAkTZ0SghsgUjhQ2HGu2Dfe8OYOx13EBp7olW1nOetjVM/l8AKimd4UI78w==}
+  fastify-disablecache@5.0.1:
+    resolution: {integrity: sha512-Drich9DlvwoW93HnuDKAvvL30LA4zZaAi4p2CGMJXPe9KggjKNklxxBg17khMsiyC2vNqV5B6WjD9v/2hYmIFQ==}
     engines: {node: '>=20'}
 
   fastify-plugin@5.1.0:
@@ -8419,9 +8419,9 @@ snapshots:
     dependencies:
       fast-string-width: 3.0.2
 
-  fastify-disablecache@5.0.0:
+  fastify-disablecache@5.0.1:
     dependencies:
-      fastify-plugin: 5.1.0
+      fastify-plugin: 6.0.0
 
   fastify-plugin@5.1.0: {}
 
