@@ -29,8 +29,7 @@
     align-items: flex-start;
     gap: 4px;
 
-    .form-label,
-    .label {
+    .form-label {
       font-size: 16px;
       font-weight: 500;
     }
@@ -99,8 +98,7 @@
         flex-direction: column;
         gap: 4px;
 
-        .form-label,
-        .label {
+        .form-label {
           color: var(--color-abru-light-50);
           font-size: 16px;
           font-weight: 500;

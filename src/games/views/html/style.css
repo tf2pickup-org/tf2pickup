@@ -122,8 +122,6 @@
             flex-flow: row-reverse nowrap;
 
             .player-link {
-              /* text-align: right; */
-              /* flex-flow: row-reverse nowrap; */
               justify-content: flex-end;
             }
           }
@@ -312,8 +310,7 @@
   .game-summary-caption {
     background: linear-gradient(180deg, transparent 35%, var(--color-abru-dark-29) 90%);
 
-    .game-floating-label,
-    .floating-label {
+    .game-floating-label {
       background: color-mix(in srgb, var(--color-abru) 90%, transparent);
       position: absolute;
       height: 28px;
@@ -341,13 +338,11 @@
 
     color: var(--color-abru-light-75);
 
-    .game-info-label,
-    .label {
+    .game-info-label {
       font-weight: 300;
     }
 
-    .game-info-value,
-    .value {
+    .game-info-value {
       font-weight: 500;
     }
   }
