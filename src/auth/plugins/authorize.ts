@@ -11,22 +11,22 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     app.addHook('preHandler', async (request, reply) => {
-      if (!request.routeOptions.config.authorize) {
+      const roles = request.routeOptions.config.authorize
+      if (!roles) {
         return
       }
 
-      if (!request.user) {
-        return reply.unauthorized()
-      }
-
-      const roles = request.routeOptions.config.authorize
-      if (roles.some(r => request.user!.player.roles.includes(r))) {
+      if (request.user && roles.some(r => request.user!.player.roles.includes(r))) {
         return
       }
 
       if (request.routeOptions.url?.startsWith('/admin')) {
         reply.callNotFound()
         return
+      }
+
+      if (!request.user) {
+        return reply.unauthorized()
       }
 
       return reply.forbidden()

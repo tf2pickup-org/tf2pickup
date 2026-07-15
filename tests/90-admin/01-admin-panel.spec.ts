@@ -23,8 +23,8 @@ authUsers('admin panel is not visible for anonymous users @6v6 @9v9', async ({ p
   await expect(page.getByRole('link', { name: 'Admin panel' })).not.toBeVisible()
 
   await page.goto('/admin')
-  await expect(page.getByText('401')).toBeVisible()
-  await expect(page.getByText('Unauthorized')).toBeVisible()
+  await expect(page.getByText('404')).toBeVisible()
+  await expect(page.getByText('Not found')).toBeVisible()
   await expect(page.getByRole('link', { name: 'Go back home' })).toBeVisible()
 })
 ;[
