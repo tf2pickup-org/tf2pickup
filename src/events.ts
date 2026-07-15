@@ -245,6 +245,10 @@ class TypedEventEmitter extends EventEmitter {
   override on<K extends keyof Events>(event: K, listener: (params: Events[K]) => void): this {
     return super.on(event, listener)
   }
+
+  override off<K extends keyof Events>(event: K, listener: (params: Events[K]) => void): this {
+    return super.off(event, listener)
+  }
 }
 
 export const events = new TypedEventEmitter()
