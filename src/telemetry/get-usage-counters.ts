@@ -1,24 +1,76 @@
 import { subDays } from 'date-fns'
 import { collections } from '../database/collections'
+import { GameEventType } from '../database/models/game-event.model'
 import { utcDayKey } from './utc-day-key'
 
+function perGame(count: number, games: number): number {
+  return games === 0 ? 0 : Math.round((count / games) * 1000) / 1000
+}
+
 export async function getUsageCounters() {
-  const since = utcDayKey(subDays(new Date(), 30))
-  const [totals] = await collections.telemetryStats
-    .aggregate<{ applied: number; changes: number }>([
-      { $match: { day: { $gte: since } } },
-      {
-        $group: {
-          _id: null,
-          applied: { $sum: '$skillSuggestionsApplied' },
-          changes: { $sum: '$adminSkillChanges' },
+  const since = subDays(new Date(), 30)
+  const [[totals], [gameTotals]] = await Promise.all([
+    collections.telemetryStats
+      .aggregate<{ applied: number; changes: number; eloPageRenders: number }>([
+        { $match: { day: { $gte: utcDayKey(since) } } },
+        {
+          $group: {
+            _id: null,
+            applied: { $sum: '$skillSuggestionsApplied' },
+            changes: { $sum: '$adminSkillChanges' },
+            eloPageRenders: { $sum: '$eloPageRenders' },
+          },
         },
-      },
-    ])
-    .toArray()
+      ])
+      .toArray(),
+    collections.games
+      .aggregate<{ games: number; reinitializations: number; reassignments: number }>([
+        { $match: { 'events.0.at': { $gte: since } } },
+        {
+          $project: {
+            reinitializations: {
+              $size: {
+                $filter: {
+                  input: '$events',
+                  cond: {
+                    $eq: ['$$this.event', GameEventType.gameServerReinitializationOrdered],
+                  },
+                },
+              },
+            },
+            assignments: {
+              $size: {
+                $filter: {
+                  input: '$events',
+                  cond: { $eq: ['$$this.event', GameEventType.gameServerAssigned] },
+                },
+              },
+            },
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            games: { $sum: 1 },
+            reinitializations: { $sum: '$reinitializations' },
+            reassignments: { $sum: { $max: [{ $subtract: ['$assignments', 1] }, 0] } },
+          },
+        },
+      ])
+      .toArray(),
+  ])
+
+  const games = gameTotals?.games ?? 0
+  const reinitializations = gameTotals?.reinitializations ?? 0
+  const reassignments = gameTotals?.reassignments ?? 0
 
   return {
     skillSuggestionsApplied30d: totals?.applied ?? 0,
     adminSkillChanges30d: totals?.changes ?? 0,
+    eloPageRenders30d: totals?.eloPageRenders ?? 0,
+    gameReinitializations30d: reinitializations,
+    gameReinitializationsPerGame: perGame(reinitializations, games),
+    gameServerReassignments30d: reassignments,
+    gameServerReassignmentsPerGame: perGame(reassignments, games),
   }
 }

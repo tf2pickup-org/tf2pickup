@@ -48,9 +48,15 @@ vi.mock('../statistics/get-played-maps-count', () => ({
 }))
 
 vi.mock('./get-usage-counters', () => ({
-  getUsageCounters: vi
-    .fn()
-    .mockResolvedValue({ skillSuggestionsApplied30d: 12, adminSkillChanges30d: 30 }),
+  getUsageCounters: vi.fn().mockResolvedValue({
+    skillSuggestionsApplied30d: 12,
+    adminSkillChanges30d: 30,
+    eloPageRenders30d: 7,
+    gameReinitializations30d: 4,
+    gameReinitializationsPerGame: 0.02,
+    gameServerReassignments30d: 2,
+    gameServerReassignmentsPerGame: 0.01,
+  }),
 }))
 
 vi.mock('./is-documents-customized', () => ({
@@ -130,6 +136,11 @@ describe('buildSnapshot', () => {
     expect(snapshot.usage).toEqual({
       skillSuggestionsApplied30d: 12,
       adminSkillChanges30d: 30,
+      eloPageRenders30d: 7,
+      gameReinitializations30d: 4,
+      gameReinitializationsPerGame: 0.02,
+      gameServerReassignments30d: 2,
+      gameServerReassignmentsPerGame: 0.01,
       gamesLaunchedLifetime: 5000,
       staticGameServers: 3,
     })

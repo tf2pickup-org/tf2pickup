@@ -2,7 +2,9 @@ import z from 'zod'
 import { PlayerRole } from '../../../../../database/models/player.model'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { EditPlayerEloPage } from '../../../../../players/views/html/edit-player.page'
+import { recordEloPageRender } from '../../../../../telemetry/record-elo-page-render'
 import { routes } from '../../../../../utils/routes'
+import { safe } from '../../../../../utils/safe'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -20,6 +22,7 @@ export default routes(async app => {
     },
     async (req, reply) => {
       const { steamId } = req.params
+      safe(recordEloPageRender)()
       await reply.status(200).html(EditPlayerEloPage({ steamId }))
     },
   )

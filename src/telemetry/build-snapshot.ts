@@ -219,6 +219,31 @@ export async function buildSnapshot() {
       label: 'Admin skill changes (30d)',
     },
     {
+      key: 'eloPageRenders30d',
+      value: usage.eloPageRenders30d,
+      label: 'ELO page renders (30d)',
+    },
+    {
+      key: 'gameReinitializations30d',
+      value: usage.gameReinitializations30d,
+      label: 'Game reinitializations (30d)',
+    },
+    {
+      key: 'gameReinitializationsPerGame',
+      value: usage.gameReinitializationsPerGame,
+      label: 'Game reinitializations per game (30d)',
+    },
+    {
+      key: 'gameServerReassignments30d',
+      value: usage.gameServerReassignments30d,
+      label: 'Game server reassignments (30d)',
+    },
+    {
+      key: 'gameServerReassignmentsPerGame',
+      value: usage.gameServerReassignmentsPerGame,
+      label: 'Game server reassignments per game (30d)',
+    },
+    {
       key: 'gamesLaunchedLifetime',
       value: gamesLaunchedLifetime,
       label: 'Games launched (lifetime)',
