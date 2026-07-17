@@ -249,9 +249,9 @@ export async function buildSnapshot() {
       label: 'Games force-ended (30d)',
     },
     {
-      key: 'gamesForceEndedPerGame',
-      value: usage.gamesForceEndedPerGame,
-      label: 'Games force-ended per game (30d)',
+      key: 'gamesForceEndedShare',
+      value: usage.gamesForceEndedShare,
+      label: 'Games force-ended share (30d)',
     },
     {
       key: 'gamesLaunchedLifetime',

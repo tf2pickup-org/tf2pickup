@@ -82,6 +82,6 @@ export async function getUsageCounters() {
     gameServerReassignments30d: reassignments,
     gameServerReassignmentsPerGame: perGame(reassignments, games),
     gamesForceEnded30d: forceEnded,
-    gamesForceEndedPerGame: perGame(forceEnded, games),
+    gamesForceEndedShare: perGame(forceEnded, games),
   }
 }
