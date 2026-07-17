@@ -96,6 +96,35 @@ describe('match-event-listener', () => {
     expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
   })
 
+  it('does not emit match/score:reset when a round ended in a stalemate in between', async () => {
+    // stalemates end a round with no Round_Win line; in compressed-timestamp
+    // log replays the post-stalemate round start shares the second with the
+    // previous one
+    await onGameLogMessage(roundStart('05/16/2026 - 16:46:17'))
+    await onGameLogMessage({
+      message: {
+        payload: '05/16/2026 - 16:46:17: World triggered "Round_Stalemate"',
+        password: logSecret,
+      },
+    })
+    await onGameLogMessage(roundStart('05/16/2026 - 16:46:17'))
+    expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
+  })
+
+  it('emits match/score:reset for a doubled round start straddling a second boundary mid-game', async () => {
+    await onGameLogMessage(roundStart('07/13/2026 - 17:30:00'))
+    await onGameLogMessage(roundStart('07/13/2026 - 17:35:10'))
+    await onGameLogMessage(roundStart('07/13/2026 - 17:35:11'))
+    expect(events.emit).toHaveBeenCalledWith('match/score:reset', { gameNumber })
+  })
+
+  it('does not emit match/score:reset for the initial doubled round start straddling a second boundary', async () => {
+    // real case: https://logs.tf/4084159
+    await onGameLogMessage(roundStart('07/13/2026 - 16:35:01'))
+    await onGameLogMessage(roundStart('07/13/2026 - 16:35:02'))
+    expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
+  })
+
   it('does not emit match/score:reset when a round was won in between', async () => {
     // log replays re-stamp lines with the current time, so consecutive rounds
     // can share a timestamp — a completed round marks a regular transition

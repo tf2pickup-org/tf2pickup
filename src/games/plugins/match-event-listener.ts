@@ -1,4 +1,5 @@
 import fp from 'fastify-plugin'
+import { differenceInSeconds, parse } from 'date-fns'
 import type { GameNumber } from '../../database/models/game.model'
 import { events } from '../../events'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
@@ -23,34 +24,38 @@ interface GameEvent {
 // converts 'Red' and 'Blue' to valid team names
 const fixTeamName = (teamName: string): Tf2Team => teamName.toLowerCase().substring(0, 3) as Tf2Team
 
-// the last Round_Start line seen per game (cleared when a round is won) and
-// whether any Round_Start was seen at all this match; used to detect the
-// doubled Round_Start below
-const lastRoundStart = new Map<GameNumber, { at: string; precededByRoundStart: boolean }>()
+// the last Round_Start line seen per game (cleared when a round ends with a
+// win or a stalemate) and whether any Round_Start was seen at all this match;
+// used to detect the doubled Round_Start below
+const lastRoundStart = new Map<GameNumber, { at: Date; precededByRoundStart: boolean }>()
 const seenRoundStart = new Set<GameNumber>()
+
+const parseLogTimestamp = (timestamp: string) =>
+  parse(timestamp, 'MM/dd/yyyy - HH:mm:ss', new Date())
 
 const gameEvents: GameEvent[] = [
   {
     // TODO rename to "round start"
     name: 'match started',
-    // TF2 logs Round_Start once per regular round, but twice in the same
-    // second when a tournament match (re)starts. A regular round transition
-    // always has a Round_Win between two Round_Starts (which clears the
-    // remembered line below), so a same-second pair can only be the (re)start
-    // doubling — even when log lines arrive with compressed timestamps, as in
-    // e2e log replays. The pair at the initial match start is expected; a pair
-    // preceded by an earlier Round_Start means the match was restarted
-    // mid-game (everyone left to spectator, an admin re-exec'd the config,
+    // TF2 logs Round_Start once per regular round, but twice within the same
+    // second (occasionally straddling a second boundary) when a tournament
+    // match (re)starts. A regular round transition always has a Round_Win or a
+    // Round_Stalemate between two Round_Starts (both clear the remembered line
+    // below), so a pair ≤1s apart can only be the (re)start doubling — even
+    // when log lines arrive with compressed timestamps, as in e2e log replays.
+    // The pair at the initial match start is expected; a pair preceded by an
+    // earlier Round_Start means the match was restarted mid-game (everyone
+    // left to spectator, an admin re-exec'd the config,
     // mp_tournament_restart) and the server reset its scoreboard.
     regex: /^(\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}):\sWorld triggered "Round_Start"$/,
     handle: (gameNumber, matches) => {
       events.emit('match:started', { gameNumber })
-      const at = matches[1]
-      if (!at) {
+      if (!matches[1]) {
         return
       }
+      const at = parseLogTimestamp(matches[1])
       const last = lastRoundStart.get(gameNumber)
-      if (last?.at === at) {
+      if (last && Math.abs(differenceInSeconds(at, last.at)) <= 1) {
         if (last.precededByRoundStart) {
           lastRoundStart.delete(gameNumber)
           events.emit('match/score:reset', { gameNumber })
@@ -75,6 +80,15 @@ const gameEvents: GameEvent[] = [
         const winner = fixTeamName(matches[1])
         events.emit('match:roundWon', { gameNumber, winner })
       }
+    },
+  },
+  {
+    name: 'round stalemate',
+    // a stalemate ends a round with no Round_Win line; clear the remembered
+    // Round_Start so the next one is not mistaken for a restart doubling
+    regex: /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Stalemate"$/,
+    handle: gameNumber => {
+      lastRoundStart.delete(gameNumber)
     },
   },
   {
