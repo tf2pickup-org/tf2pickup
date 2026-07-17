@@ -1,0 +1,56 @@
+L 07/09/2026 - 16:35:01: World triggered "Round_Start"
+L 07/09/2026 - 16:35:02: World triggered "Round_Start"
+L 07/09/2026 - 16:36:15: Team "Red" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "1") (player1 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position1 "-92 -68 487") 
+L 07/09/2026 - 16:36:24: Team "Red" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "2") (player1 "Drozdzers<5><[U:1:40373966]><Red>") (position1 "-1888 -2214 768") (player2 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position2 "-1594 -2248 775") 
+L 07/09/2026 - 16:39:05: Team "Red" triggered "pointcaptured" (cp "0") (cpname "Blue Final Point") (numcappers "3") (player1 "Drozdzers<5><[U:1:40373966]><Red>") (position1 "-3472 -1305 583") (player2 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position2 "-3575 -1211 583") (player3 "Amadi<14><[U:1:326278245]><Red>") (position3 "-3583 -1164 578") 
+L 07/09/2026 - 16:39:05: World triggered "Round_Win" (winner "Red")
+L 07/09/2026 - 16:39:05: World triggered "Round_Length" (seconds "243.81")
+L 07/09/2026 - 16:39:05: Team "Red" current score "1" with "6" players
+L 07/09/2026 - 16:39:05: Team "Blue" current score "0" with "6" players
+L 07/09/2026 - 16:39:22: World triggered "Round_Start"
+L 07/09/2026 - 16:40:10: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "1") (player1 "deli<7><[U:1:56245732]><Blue>") (position1 "90 -48 487") 
+L 07/09/2026 - 16:40:49: Team "Red" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "4") (player1 "Drozdzers<5><[U:1:40373966]><Red>") (position1 "-402 -146 480") (player2 "Dosu<6><[U:1:186867964]><Red>") (position2 "-49 -26 487") (player3 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position3 "-343 -74 480") (player4 "Amadi<14><[U:1:326278245]><Red>") (position4 "-320 -102 480") 
+L 07/09/2026 - 16:41:02: Team "Red" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "4") (player1 "Drozdzers<5><[U:1:40373966]><Red>") (position1 "-1799 -2151 768") (player2 "Dosu<6><[U:1:186867964]><Red>") (position2 "-1684 -2177 775") (player3 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position3 "-1595 -2263 775") (player4 "Amadi<14><[U:1:326278245]><Red>") (position4 "-1714 -2139 775") 
+L 07/09/2026 - 16:42:20: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "3") (player1 "CR8<8><[U:1:83755882]><Blue>") (position1 "-1764 -2084 768") (player2 "wonszu<4><[U:1:60952177]><Blue>") (position2 "-1713 -2055 773") (player3 "mejf tajson<10><[U:1:202138486]><Blue>") (position3 "-1647 -2271 775") 
+L 07/09/2026 - 16:43:53: Team "Red" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "3") (player1 "Dosu<6><[U:1:186867964]><Red>") (position1 "-1624 -2187 775") (player2 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position2 "-1726 -2212 775") (player3 "wG papito<12><[U:1:248256384]><Red>") (position3 "-1780 -2166 771") 
+L 07/09/2026 - 16:44:22: Team "Red" triggered "pointcaptured" (cp "0") (cpname "Blue Final Point") (numcappers "1") (player1 "maly<13><[U:1:114143419]><Red>") (position1 "-3577 -1316 583") 
+L 07/09/2026 - 16:44:22: World triggered "Round_Win" (winner "Red")
+L 07/09/2026 - 16:44:22: World triggered "Round_Length" (seconds "300.15")
+L 07/09/2026 - 16:44:22: Team "Red" current score "2" with "6" players
+L 07/09/2026 - 16:44:22: Team "Blue" current score "0" with "6" players
+L 07/09/2026 - 16:44:39: World triggered "Round_Start"
+L 07/09/2026 - 16:45:21: Team "Red" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "1") (player1 "Amadi<14><[U:1:326278245]><Red>") (position1 "-356 -127 480") 
+L 07/09/2026 - 16:45:32: Team "Red" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "2") (player1 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position1 "-1789 -2234 768") (player2 "Amadi<14><[U:1:326278245]><Red>") (position2 "-1889 -2171 768") 
+L 07/09/2026 - 16:46:00: Team "Red" triggered "pointcaptured" (cp "0") (cpname "Blue Final Point") (numcappers "1") (player1 "wG tomciopaluch<11><[U:1:124205952]><Red>") (position1 "-3599 -1369 583") 
+L 07/09/2026 - 16:46:00: World triggered "Round_Win" (winner "Red")
+L 07/09/2026 - 16:46:00: World triggered "Round_Length" (seconds "80.36")
+L 07/09/2026 - 16:46:00: Team "Red" current score "3" with "6" players
+L 07/09/2026 - 16:46:00: Team "Blue" current score "0" with "6" players
+L 07/09/2026 - 16:46:17: World triggered "Round_Start"
+L 07/09/2026 - 16:47:04: Team "Red" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "1") (player1 "Amadi<14><[U:1:326278245]><Red>") (position1 "-336 -113 480") 
+L 07/09/2026 - 16:47:12: Team "Red" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "1") (player1 "Amadi<14><[U:1:326278245]><Red>") (position1 "-1764 -2153 775") 
+L 07/09/2026 - 16:47:40: Team "Red" triggered "pointcaptured" (cp "0") (cpname "Blue Final Point") (numcappers "2") (player1 "Drozdzers<5><[U:1:40373966]><Red>") (position1 "-3507 -1288 583") (player2 "Dosu<6><[U:1:186867964]><Red>") (position2 "-3399 -1167 576") 
+L 07/09/2026 - 16:47:40: World triggered "Round_Win" (winner "Red")
+L 07/09/2026 - 16:47:40: World triggered "Round_Length" (seconds "83.67")
+L 07/09/2026 - 16:47:40: Team "Red" current score "4" with "6" players
+L 07/09/2026 - 16:47:40: Team "Blue" current score "0" with "6" players
+L 07/09/2026 - 16:47:58: World triggered "Round_Start"
+L 07/09/2026 - 16:48:53: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "1") (player1 "deli<7><[U:1:56245732]><Blue>") (position1 "194 -10 480") 
+L 07/09/2026 - 16:49:10: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "Red Mini-Spire") (numcappers "1") (player1 "deli<7><[U:1:56245732]><Blue>") (position1 "1737 2213 775") 
+L 07/09/2026 - 16:49:12: Team "Blue" triggered "pointcaptured" (cp "4") (cpname "Red Final Point") (numcappers "3") (player1 "wonszu<4><[U:1:60952177]><Blue>") (position1 "3604 1195 583") (player2 "Zuri<9><[U:1:440805949]><Blue>") (position2 "3609 1322 583") (player3 "mejf tajson<10><[U:1:202138486]><Blue>") (position3 "3592 1321 583") 
+L 07/09/2026 - 16:49:12: World triggered "Round_Win" (winner "Blue")
+L 07/09/2026 - 16:49:12: World triggered "Round_Length" (seconds "74.11")
+L 07/09/2026 - 16:49:12: Team "Red" current score "4" with "6" players
+L 07/09/2026 - 16:49:12: Team "Blue" current score "1" with "6" players
+L 07/09/2026 - 16:49:29: World triggered "Round_Start"
+L 07/09/2026 - 16:51:00: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "4") (player1 "CR8<8><[U:1:83755882]><Blue>") (position1 "-276 -7 480") (player2 "wonszu<4><[U:1:60952177]><Blue>") (position2 "343 -103 480") (player3 "Zuri<9><[U:1:440805949]><Blue>") (position3 "-239 11 480") (player4 "mejf tajson<10><[U:1:202138486]><Blue>") (position4 "219 -17 480") 
+L 07/09/2026 - 16:53:16: Team "Red" triggered "pointcaptured" (cp "2") (cpname "Middle Point") (numcappers "2") (player1 "Dosu<6><[U:1:186867964]><Red>") (position1 "-198 11 480") (player2 "Amadi<14><[U:1:326278245]><Red>") (position2 "-318 -76 480") 
+L 07/09/2026 - 16:53:44: Team "Red" triggered "pointcaptured" (cp "1") (cpname "Blue Mini-Spire") (numcappers "1") (player1 "Amadi<14><[U:1:326278245]><Red>") (position1 "-1842 -2146 768") 
+L 07/09/2026 - 16:53:55: Team "Red" triggered "pointcaptured" (cp "0") (cpname "Blue Final Point") (numcappers "2") (player1 "Drozdzers<5><[U:1:40373966]><Red>") (position1 "-3474 -1230 583") (player2 "maly<13><[U:1:114143419]><Red>") (position2 "-3627 -1302 583") 
+L 07/09/2026 - 16:53:55: World triggered "Round_Win" (winner "Red")
+L 07/09/2026 - 16:53:55: World triggered "Round_Length" (seconds "266.69")
+L 07/09/2026 - 16:53:55: Team "Red" current score "5" with "6" players
+L 07/09/2026 - 16:53:55: Team "Blue" current score "1" with "6" players
+L 07/09/2026 - 16:54:12: World triggered "Game_Over" reason "Reached Win Limit"
+L 07/09/2026 - 16:54:12: Team "Red" final score "5" with "2" players
+L 07/09/2026 - 16:54:12: Team "Blue" final score "1" with "0" players
