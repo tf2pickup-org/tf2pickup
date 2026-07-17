@@ -1,6 +1,7 @@
 import { subDays } from 'date-fns'
 import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
+import { GameState } from '../database/models/game.model'
 import { utcDayKey } from './utc-day-key'
 
 function perGame(count: number, games: number): number {
@@ -24,7 +25,12 @@ export async function getUsageCounters() {
       ])
       .toArray(),
     collections.games
-      .aggregate<{ games: number; reinitializations: number; reassignments: number }>([
+      .aggregate<{
+        games: number
+        reinitializations: number
+        reassignments: number
+        forceEnded: number
+      }>([
         { $match: { 'events.0.at': { $gte: since } } },
         {
           $project: {
@@ -46,6 +52,7 @@ export async function getUsageCounters() {
                 },
               },
             },
+            forceEnded: { $cond: [{ $eq: ['$state', GameState.interrupted] }, 1, 0] },
           },
         },
         {
@@ -54,6 +61,7 @@ export async function getUsageCounters() {
             games: { $sum: 1 },
             reinitializations: { $sum: '$reinitializations' },
             reassignments: { $sum: { $max: [{ $subtract: ['$assignments', 1] }, 0] } },
+            forceEnded: { $sum: '$forceEnded' },
           },
         },
       ])
@@ -63,6 +71,7 @@ export async function getUsageCounters() {
   const games = gameTotals?.games ?? 0
   const reinitializations = gameTotals?.reinitializations ?? 0
   const reassignments = gameTotals?.reassignments ?? 0
+  const forceEnded = gameTotals?.forceEnded ?? 0
 
   return {
     skillSuggestionsApplied30d: totals?.applied ?? 0,
@@ -72,5 +81,7 @@ export async function getUsageCounters() {
     gameReinitializationsPerGame: perGame(reinitializations, games),
     gameServerReassignments30d: reassignments,
     gameServerReassignmentsPerGame: perGame(reassignments, games),
+    gamesForceEnded30d: forceEnded,
+    gamesForceEndedPerGame: perGame(forceEnded, games),
   }
 }

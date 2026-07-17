@@ -56,6 +56,8 @@ vi.mock('./get-usage-counters', () => ({
     gameReinitializationsPerGame: 0.02,
     gameServerReassignments30d: 2,
     gameServerReassignmentsPerGame: 0.01,
+    gamesForceEnded30d: 3,
+    gamesForceEndedPerGame: 0.015,
   }),
 }))
 
@@ -141,6 +143,8 @@ describe('buildSnapshot', () => {
       gameReinitializationsPerGame: 0.02,
       gameServerReassignments30d: 2,
       gameServerReassignmentsPerGame: 0.01,
+      gamesForceEnded30d: 3,
+      gamesForceEndedPerGame: 0.015,
       gamesLaunchedLifetime: 5000,
       staticGameServers: 3,
     })

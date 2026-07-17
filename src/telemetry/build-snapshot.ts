@@ -244,6 +244,16 @@ export async function buildSnapshot() {
       label: 'Game server reassignments per game (30d)',
     },
     {
+      key: 'gamesForceEnded30d',
+      value: usage.gamesForceEnded30d,
+      label: 'Games force-ended (30d)',
+    },
+    {
+      key: 'gamesForceEndedPerGame',
+      value: usage.gamesForceEndedPerGame,
+      label: 'Games force-ended per game (30d)',
+    },
+    {
       key: 'gamesLaunchedLifetime',
       value: gamesLaunchedLifetime,
       label: 'Games launched (lifetime)',
