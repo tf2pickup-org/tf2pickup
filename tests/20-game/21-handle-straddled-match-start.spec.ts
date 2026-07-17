@@ -2,7 +2,10 @@ import { expect, launchGame } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
 import { logFixture } from '../fixtures/log-fixture'
 
-launchGame.use({ waitForStage: 'started' })
+// the replayed log drives the whole match lifecycle, including the initial
+// doubled Round_Start — starting the match here would make that pair look
+// like a mid-game restart
+launchGame.use({ waitForStage: 'launching' })
 
 // Replays the real log of https://logs.tf/4084159 (cp_process_f12, a 6v6 5cp
 // map). The doubled Round_Start at the match start straddles a second boundary

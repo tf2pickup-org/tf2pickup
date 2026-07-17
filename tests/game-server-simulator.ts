@@ -373,7 +373,7 @@ export class GameServerSimulator {
     const header = Buffer.from([255, 255, 255, 255, 0x53])
     const logSecret = Buffer.from(this.logSecret ?? '')
     const magicStringEnd = Buffer.from('L ')
-    const timeStamp = format(new Date(), 'dd/MM/yyyy - HH:mm:ss')
+    const timeStamp = format(new Date(), 'MM/dd/yyyy - HH:mm:ss')
     const payloadBuffer = Buffer.from(`${timeStamp}: ${payload}`)
     return Buffer.concat([header, logSecret, magicStringEnd, payloadBuffer, Buffer.from([0, 0])])
   }

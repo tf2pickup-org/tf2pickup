@@ -2,7 +2,10 @@ import { expect, launchGame } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
 import { logFixture } from '../fixtures/log-fixture'
 
-launchGame.use({ waitForStage: 'started' })
+// the replayed log drives the whole match lifecycle, including the initial
+// doubled Round_Start — starting the match here would make that pair look
+// like a mid-game restart
+launchGame.use({ waitForStage: 'launching' })
 
 // Replays the real log of https://logs.tf/4056794 (cp_snakewater_final1, a 6v6
 // 5cp map). Two rounds end in a stalemate, so there is no Round_Win between
