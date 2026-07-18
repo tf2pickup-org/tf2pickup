@@ -1,4 +1,5 @@
 import fp from 'fastify-plugin'
+import { differenceInSeconds, parse } from 'date-fns'
 import type { GameNumber } from '../../database/models/game.model'
 import { events } from '../../events'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
@@ -23,17 +24,50 @@ interface GameEvent {
 // converts 'Red' and 'Blue' to valid team names
 const fixTeamName = (teamName: string): Tf2Team => teamName.toLowerCase().substring(0, 3) as Tf2Team
 
+// the last Round_Start line seen per game (cleared when a round ends with a
+// win or a stalemate) and whether any Round_Start was seen at all this match;
+// used to detect the doubled Round_Start below
+const lastRoundStart = new Map<GameNumber, { at: Date; precededByRoundStart: boolean }>()
+const seenRoundStart = new Set<GameNumber>()
+
+const parseLogTimestamp = (timestamp: string) =>
+  parse(timestamp, 'MM/dd/yyyy - HH:mm:ss', new Date())
+
 const gameEvents: GameEvent[] = [
   {
     // TODO rename to "round start"
     name: 'match started',
-    regex: /^[\d/\s-:]+World triggered "Round_Start"$/,
-    handle: gameNumber => events.emit('match:started', { gameNumber }),
-  },
-  {
-    name: 'game restarted',
-    regex: /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\srcon from ".+": command "exec etf2l_.+"$/,
-    handle: gameNumber => events.emit('match:restarted', { gameNumber }),
+    // TF2 logs Round_Start once per regular round, but twice within the same
+    // second (occasionally straddling a second boundary) when a tournament
+    // match (re)starts. A regular round transition always has a Round_Win or a
+    // Round_Stalemate between two Round_Starts (both clear the remembered line
+    // below), so a pair ≤1s apart can only be the (re)start doubling — even
+    // when log lines arrive with compressed timestamps, as in e2e log replays.
+    // The pair at the initial match start is expected; a pair preceded by an
+    // earlier Round_Start means the match was restarted mid-game (everyone
+    // left to spectator, an admin re-exec'd the config,
+    // mp_tournament_restart) and the server reset its scoreboard.
+    regex: /^(\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}):\sWorld triggered "Round_Start"$/,
+    handle: (gameNumber, matches) => {
+      events.emit('match:started', { gameNumber })
+      if (!matches[1]) {
+        return
+      }
+      const at = parseLogTimestamp(matches[1])
+      const last = lastRoundStart.get(gameNumber)
+      if (last && Math.abs(differenceInSeconds(at, last.at)) <= 1) {
+        if (last.precededByRoundStart) {
+          lastRoundStart.delete(gameNumber)
+          events.emit('match/score:reset', { gameNumber })
+        }
+      } else {
+        lastRoundStart.set(gameNumber, {
+          at,
+          precededByRoundStart: seenRoundStart.has(gameNumber),
+        })
+      }
+      seenRoundStart.add(gameNumber)
+    },
   },
   {
     name: 'round win',
@@ -41,10 +75,20 @@ const gameEvents: GameEvent[] = [
     regex:
       /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Win" \(winner "(.+)"\)$/,
     handle: (gameNumber, matches) => {
+      lastRoundStart.delete(gameNumber)
       if (matches[1]) {
         const winner = fixTeamName(matches[1])
         events.emit('match:roundWon', { gameNumber, winner })
       }
+    },
+  },
+  {
+    name: 'round stalemate',
+    // a stalemate ends a round with no Round_Win line; clear the remembered
+    // Round_Start so the next one is not mistaken for a restart doubling
+    regex: /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Stalemate"$/,
+    handle: gameNumber => {
+      lastRoundStart.delete(gameNumber)
     },
   },
   {
@@ -64,7 +108,11 @@ const gameEvents: GameEvent[] = [
     // TODO rename to "game over"
     name: 'match ended',
     regex: /^[\d/\s-:]+World triggered "Game_Over" reason ".*"$/,
-    handle: gameNumber => events.emit('match:ended', { gameNumber }),
+    handle: gameNumber => {
+      lastRoundStart.delete(gameNumber)
+      seenRoundStart.delete(gameNumber)
+      events.emit('match:ended', { gameNumber })
+    },
   },
   {
     name: 'logs uploaded',

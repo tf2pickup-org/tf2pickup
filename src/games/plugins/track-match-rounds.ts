@@ -156,6 +156,12 @@ export default fp(
     events.on('match:ended', async ({ gameNumber }) => {
       await collections.gamesRoundProgress.deleteOne({ gameNumber })
     })
+
+    // a match restart aborts the round in progress; drop any partially
+    // observed round data so it doesn't leak into the first post-restart round
+    events.on('match/score:reset', async ({ gameNumber }) => {
+      await collections.gamesRoundProgress.deleteOne({ gameNumber })
+    })
   },
   {
     name: 'track match rounds',

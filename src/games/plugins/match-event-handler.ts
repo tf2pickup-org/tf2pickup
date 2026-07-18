@@ -46,11 +46,12 @@ export default fp(
     )
 
     events.on(
-      'match:restarted',
+      'match/score:reset',
       safe(async ({ gameNumber }) => {
-        // Gameservers re-fire match:restarted (mp_restartgame, map reloads); only
-        // the started -> launching transition is meaningful. Ignore the rest
-        // instead of failing to find a started game.
+        // The server reset its scoreboard mid-match (tournament restart —
+        // everyone left to spectator, an admin re-exec'd the config, etc.) —
+        // rounds won before the restart no longer count. Zero our score to
+        // match and record the restart.
         const game = await collections.games.findOne(
           { number: gameNumber },
           { projection: { state: 1 } },
@@ -58,14 +59,14 @@ export default fp(
         if (game?.state !== GameState.started) {
           return
         }
-        await update(
+        const updated = await update(
           { number: gameNumber, state: GameState.started },
           {
             $set: {
-              state: GameState.launching,
-            },
-            $unset: {
-              score: 1,
+              score: {
+                [Tf2Team.blu]: 0,
+                [Tf2Team.red]: 0,
+              },
             },
             $push: {
               events: {
@@ -75,6 +76,7 @@ export default fp(
             },
           },
         )
+        events.emit('game:restarted', { game: updated })
       }),
     )
 

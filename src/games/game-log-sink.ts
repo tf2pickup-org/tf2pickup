@@ -11,17 +11,18 @@ class GameLogSink {
   constructor(private readonly collection: Collection<GameLogsModel>) {}
 
   push(message: LogMessage): void {
-    this.enqueue(message.password, async () => {
+    void this.enqueue(message.password, async () => {
       await this.safePushLogMessage(message)
     })
   }
 
-  private enqueue(logSecret: string, operation: () => Promise<void>): void {
+  private enqueue(logSecret: string, operation: () => Promise<void>): Promise<void> {
     const previous = this.queues.get(logSecret) ?? Promise.resolve()
     const current = previous.then(operation)
 
     // Store a caught version to prevent unhandled rejection and to not break the chain
     this.queues.set(logSecret, current.catch(noop))
+    return current
   }
 
   async waitForCompletion(logSecret: string): Promise<void> {
@@ -32,8 +33,9 @@ class GameLogSink {
   }
 
   async clear(logSecret: string): Promise<void> {
-    this.queues.delete(logSecret)
-    await this.collection.deleteOne({ logSecret })
+    await this.enqueue(logSecret, async () => {
+      await this.collection.deleteOne({ logSecret })
+    })
   }
 
   private async safePushLogMessage(message: LogMessage) {
