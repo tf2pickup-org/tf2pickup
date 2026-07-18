@@ -22,5 +22,6 @@ launchGame(
     await expect(gamePage.page.getByLabel('red team score')).toHaveText('5')
     await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
     await expect(gamePage.gameEvent('Game restarted')).not.toBeVisible()
+    await expect(gamePage.gameEvent('Game started')).toHaveCount(1)
   },
 )
