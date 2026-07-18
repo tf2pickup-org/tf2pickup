@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.20.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.4...4.20.5) (2026-07-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/otel to v0.20.1 ([bbe697c](https://github.com/tf2pickup-org/tf2pickup/commit/bbe697c1f2918dcd91246e25bac47c502db8755c))
+* **deps:** update dependency fastify-disablecache to v5.0.1 ([ea3acd6](https://github.com/tf2pickup-org/tf2pickup/commit/ea3acd69692d5bb562f39732dda1f637b2949afc))
+* **deps:** update dependency nanoid to v6 ([#746](https://github.com/tf2pickup-org/tf2pickup/issues/746)) ([dba449a](https://github.com/tf2pickup-org/tf2pickup/commit/dba449af54f82673328ff4ef5744198aaf1412f8))
+* **deps:** update dependency postcss to v8.5.18 ([f41e2c6](https://github.com/tf2pickup-org/tf2pickup/commit/f41e2c61b52b018b2e2b1bb93976687d062a7a0d))
+* **deps:** update dependency postcss to v8.5.19 ([005d156](https://github.com/tf2pickup-org/tf2pickup/commit/005d15624f0537bbaa5158f41e49d0f797a4a903))
+* **deps:** update dependency ws to v8.21.1 ([1bbff7f](https://github.com/tf2pickup-org/tf2pickup/commit/1bbff7fd7cb6272f12eb5709d1c66b9b294d592c))
+* **games:** detect mid-game match restarts and reset the score ([#739](https://github.com/tf2pickup-org/tf2pickup/issues/739)) ([8d7f318](https://github.com/tf2pickup-org/tf2pickup/commit/8d7f31805b1acd755ce665a9df58410d992665db))
+* **telemetry:** track game reinitializations, server reassignments and ELO page renders ([#748](https://github.com/tf2pickup-org/tf2pickup/issues/748)) ([0b325cb](https://github.com/tf2pickup-org/tf2pickup/commit/0b325cb1d2ad7598dae82e7208780b8e9c154eaa))
+
 ## [4.20.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.3...4.20.4) (2026-07-15)
 
 
