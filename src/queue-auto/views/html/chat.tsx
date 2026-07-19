@@ -155,7 +155,7 @@ export function ChatPrompt(props: { isMuted: boolean }) {
         hx-post="/chat"
         hx-swap="none"
         hx-disabled-elt="find input[type='text'], find button"
-        hx-on--after-request="if(event.detail.successful) { this.reset(); this.querySelector('input[type=\'text\']').focus(); }"
+        data-reset-on-success="input[type='text']"
         data-disable-when-offline
       >
         <input
