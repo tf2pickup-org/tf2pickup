@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.20.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.5...4.20.6) (2026-07-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/etag to v6.2.0 ([9f607cf](https://github.com/tf2pickup-org/tf2pickup/commit/9f607cf3af0e92d042480378212e9caebb0d396d))
+* **deps:** update dependency discord.js to v14.27.0 ([a823791](https://github.com/tf2pickup-org/tf2pickup/commit/a8237913258f7193039dc418f5640bd693bed647))
+* **deps:** update tailwindcss monorepo to v4.3.3 ([b7f9a97](https://github.com/tf2pickup-org/tf2pickup/commit/b7f9a97db992589c6a1575bfb2273ab1f02494ec))
+* remove 'unsafe-eval' from Content Security Policy ([#750](https://github.com/tf2pickup-org/tf2pickup/issues/750)) ([b5d848e](https://github.com/tf2pickup-org/tf2pickup/commit/b5d848e471ef4c82fa1d0af60bfab9d75bf11bcf))
+
 ## [4.20.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.4...4.20.5) (2026-07-18)
 
 
