@@ -11,6 +11,7 @@ import { GameEventList } from './game-event-list'
 import { PlayerRole } from '../../../database/models/player.model'
 import { makeTitle } from '../../../html/make-title'
 import { ChooseGameServerDialog } from './choose-game-server-dialog'
+import { RconConsoleDialog } from './rcon-console-dialog'
 import { AdminToolbox } from './admin-toolbox'
 import { findOne } from '../../find-one'
 import { requestContext } from '@fastify/request-context'
@@ -51,6 +52,7 @@ export async function GamePage(props: { number: GameNumber }) {
         </div>
 
         <ChooseGameServerDialog gameNumber={game.number} />
+        {user?.player.roles.includes(PlayerRole.admin) && <RconConsoleDialog game={game} />}
       </Page>
       <Footer />
     </Layout>

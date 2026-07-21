@@ -110,6 +110,14 @@ export interface SubstituteRequestedEntry {
   reason?: string
 }
 
+export interface RconCommandExecutedEntry {
+  type: 'rcon command executed'
+  timestamp: Date
+  gameNumber: GameNumber
+  command: string
+  actor: SteamId64
+}
+
 export interface QueueClearedEntry {
   type: 'queue cleared'
   timestamp: Date
@@ -131,6 +139,7 @@ export type ActivityLogEntryModel =
   | GameServerReassignedEntry
   | GameForceEndedEntry
   | SubstituteRequestedEntry
+  | RconCommandExecutedEntry
   | QueueClearedEntry
 
 export type ActivityLogEntryType = ActivityLogEntryModel['type']
@@ -148,4 +157,5 @@ export type ActivityLogInput =
   | Omit<GameServerReassignedEntry, 'timestamp'>
   | Omit<GameForceEndedEntry, 'timestamp'>
   | Omit<SubstituteRequestedEntry, 'timestamp'>
+  | Omit<RconCommandExecutedEntry, 'timestamp'>
   | Omit<QueueClearedEntry, 'timestamp'>
