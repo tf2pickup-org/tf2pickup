@@ -1,5 +1,12 @@
 # Changelog
 
+# [4.21.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.6...4.21.0) (2026-07-21)
+
+
+### Features
+
+* **games:** RCON console for admins on the game page ([#735](https://github.com/tf2pickup-org/tf2pickup/issues/735)) ([bfb1bc5](https://github.com/tf2pickup-org/tf2pickup/commit/bfb1bc50a2ee1683e12d86779622e429b5f690bf))
+
 ## [4.20.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.5...4.20.6) (2026-07-20)
 
 
