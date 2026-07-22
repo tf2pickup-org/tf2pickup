@@ -16,6 +16,7 @@ export async function PlayerRestrictionsPage() {
           <PlayerSkillThreshold />
           <SkillStep />
           <SkillSuggestions />
+          <SkillSuggestionsDigest />
           <DefaultPlayerSkill />
 
           <p>
@@ -187,6 +188,32 @@ async function SkillSuggestions() {
         </dd>
       </dl>
       <Switch id="skillSuggestions" checked={skillSuggestions} name="skillSuggestions" />
+    </div>
+  )
+}
+
+async function SkillSuggestionsDigest() {
+  const skillSuggestionsDigest = await configuration.get('games.skill_suggestions_digest')
+  return (
+    <div class="group flex flex-row items-center justify-between">
+      <dl>
+        <dt>
+          <label class="text-abru-light-75" for="skillSuggestionsDigest">
+            Skill suggestions Discord digest
+          </label>
+        </dt>
+        <dd class="text-abru-light-75">
+          <span class="hidden group-has-checked:inline-block">
+            A weekly digest of pending skill suggestions is sent to Discord admin channels
+          </span>
+          <span class="group-has-checked:hidden">No digest is sent</span>
+        </dd>
+      </dl>
+      <Switch
+        id="skillSuggestionsDigest"
+        checked={skillSuggestionsDigest}
+        name="skillSuggestionsDigest"
+      />
     </div>
   )
 }

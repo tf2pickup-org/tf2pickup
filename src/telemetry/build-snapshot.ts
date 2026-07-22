@@ -28,6 +28,7 @@ function registeredPlayersBucket(count: number): string {
 export async function buildSnapshot() {
   const [
     skillSuggestions,
+    skillSuggestionsDigest,
     skillStep,
     logsTfUploadMethod,
     hideServerInfo,
@@ -44,6 +45,7 @@ export async function buildSnapshot() {
     extraCommands,
   ] = await Promise.all([
     configuration.get('games.skill_suggestions'),
+    configuration.get('games.skill_suggestions_digest'),
     configuration.get('games.skill_step'),
     configuration.get('games.logs_tf_upload_method'),
     configuration.get('games.hide_server_info_from_spectators'),
@@ -92,6 +94,12 @@ export async function buildSnapshot() {
       key: 'games.skill_suggestions',
       value: skillSuggestions,
       label: 'Skill suggestions',
+      group: 'Games',
+    },
+    {
+      key: 'games.skill_suggestions_digest',
+      value: skillSuggestionsDigest,
+      label: 'Skill suggestions Discord digest',
       group: 'Games',
     },
     { key: 'games.skill_step', value: skillStep, label: 'Skill adjustment step', group: 'Games' },
