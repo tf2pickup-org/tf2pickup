@@ -1,5 +1,18 @@
 # Changelog
 
+# [4.22.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.21.0...4.22.0) (2026-07-22)
+
+
+### Bug Fixes
+
+* **games:** make RCON console dialog work without 'unsafe-eval' CSP ([#753](https://github.com/tf2pickup-org/tf2pickup/issues/753)) ([dd10afd](https://github.com/tf2pickup-org/tf2pickup/commit/dd10afd6172047be14d858ea62bcae4be5467fa5)), closes [#735](https://github.com/tf2pickup-org/tf2pickup/issues/735) [#750](https://github.com/tf2pickup-org/tf2pickup/issues/750)
+* **ui:** make admin panel and edit player views usable on mobile ([#751](https://github.com/tf2pickup-org/tf2pickup/issues/751)) ([8b7f7a2](https://github.com/tf2pickup-org/tf2pickup/commit/8b7f7a2cae1f3c3b6f4c2f7b2f50db098d2ad265))
+
+
+### Features
+
+* **players:** add staff page ([#752](https://github.com/tf2pickup-org/tf2pickup/issues/752)) ([b84ef03](https://github.com/tf2pickup-org/tf2pickup/commit/b84ef0357c55faf61f0b20ae38a993f16ecf88ac))
+
 # [4.21.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.6...4.21.0) (2026-07-21)
 
 
