@@ -10,8 +10,9 @@ export function GameServerCommandPreview(props: {
 }) {
   return (
     <div class="bg-abru-dark-25 flex flex-col overflow-x-auto rounded-lg p-4 font-mono text-sm whitespace-nowrap text-white">
-      <span safe>
-        logaddress_add {environment.LOG_RELAY_ADDRESS}:{environment.LOG_RELAY_PORT}
+      <span>
+        logaddress_add{' '}
+        {Html.escapeHtml(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`)}
       </span>
       <span>kickall</span>
       <span>
