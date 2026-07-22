@@ -19,15 +19,15 @@ export async function ViewForNerdsPage() {
   return (
     <Admin activePage="view-for-nerds">
       <div class="admin-panel-set">
-        <div class="table w-full">
-          <div class="table-header-group">
+        <div class="table w-full max-lg:block">
+          <div class="table-header-group max-lg:hidden">
             <div class="table-row">
               <div class="table-cell">Key</div>
               <div class="table-cell">Value</div>
             </div>
           </div>
 
-          <div class="table-row-group">
+          <div class="table-row-group max-lg:block max-lg:space-y-4">
             {entries.map(props => (
               <ConfigurationEntryEdit {...props} />
             ))}
@@ -66,12 +66,12 @@ export function ConfigurationEntryEdit(props: {
 
   return (
     <form
-      class="hover:bg-abru-dark-15 table-row"
+      class="hover:bg-abru-dark-15 table-row max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:items-center max-lg:gap-x-2"
       hx-post="/admin/view-for-nerds"
       hx-swap="outerHTML"
     >
       <input type="hidden" name="key" value={props._key} />
-      <div class="text-abru-light-75 table-cell">
+      <div class="text-abru-light-75 table-cell max-lg:col-span-2 max-lg:[overflow-wrap:anywhere]">
         <label for={`${props._key}-edit`} class={[isDefault && 'font-normal']}>
           {props._key}
         </label>

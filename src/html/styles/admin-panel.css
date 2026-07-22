@@ -5,10 +5,24 @@
     font-weight: 500;
     padding: 8px 12px;
 
+    @media (width < theme(--breakpoint-lg)) {
+      flex-shrink: 0;
+      align-self: center;
+      white-space: nowrap;
+    }
+
     &:not(:first-child) {
       border-top: 1px solid var(--color-abru-light-25);
       padding-top: 16px;
       margin-top: 8px;
+
+      @media (width < theme(--breakpoint-lg)) {
+        border-top: none;
+        border-left: 1px solid var(--color-abru-light-25);
+        padding: 8px 12px 8px 16px;
+        margin-top: 0;
+        margin-left: 4px;
+      }
     }
   }
 
@@ -47,6 +61,11 @@
     padding: 6px 12px;
     position: relative;
 
+    @media (width < theme(--breakpoint-lg)) {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
     &:hover {
       background-color: color-mix(in hsl, var(--color-abru-dark-25), transparent 80%);
     }
@@ -63,6 +82,13 @@
         height: calc(100% - 8px);
         background-color: var(--color-accent);
         border-radius: 2px;
+
+        @media (width < theme(--breakpoint-lg)) {
+          top: auto;
+          bottom: 0;
+          width: calc(100% - 8px);
+          height: 3px;
+        }
       }
     }
   }

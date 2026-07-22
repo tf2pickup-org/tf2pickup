@@ -11,7 +11,7 @@ export async function MapVoteOptions() {
       ))}
 
       {mapOptions.map(({ name }) => (
-        <p class="text-center" safe>
+        <p class="text-center [overflow-wrap:anywhere] max-lg:text-sm" safe>
           {name}
         </p>
       ))}

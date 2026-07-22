@@ -22,7 +22,7 @@ export function LogEntryList(props: LogEntryListProps) {
   return (
     <>
       <input type="hidden" name="sort" value={props.sort} />
-      <table class="w-full table-fixed text-left text-sm rtl:text-right">
+      <table class="w-full table-fixed text-left text-sm max-lg:min-w-2xl rtl:text-right">
         <thead>
           <tr>
             <th class="w-[160px] px-4 py-2">

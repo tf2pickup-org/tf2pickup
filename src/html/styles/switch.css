@@ -4,6 +4,7 @@
     display: inline-block;
     width: 47px;
     height: 24px;
+    flex-shrink: 0;
 
     input {
       opacity: 0;

@@ -10,7 +10,7 @@ export async function MapPoolPage() {
     <Admin activePage="map-pool">
       <form action="" method="post">
         <div class="admin-panel-set">
-          <table class="table-auto">
+          <table class="table-auto max-lg:w-full">
             <thead>
               <tr>
                 <th>Map name</th>
@@ -53,10 +53,21 @@ export function MapPoolEntry(props: { name: string; execConfig?: string | undefi
   return (
     <tr>
       <td>
-        <input type="text" name="name[]" value={props.name} required />
+        <input
+          type="text"
+          name="name[]"
+          value={props.name}
+          required
+          class="max-lg:w-full max-lg:min-w-0"
+        />
       </td>
       <td>
-        <input type="text" name="execConfig[]" value={props.execConfig} />
+        <input
+          type="text"
+          name="execConfig[]"
+          value={props.execConfig}
+          class="max-lg:w-full max-lg:min-w-0"
+        />
       </td>
       <td>
         <button class="text-white" data-remove-closest="tr">

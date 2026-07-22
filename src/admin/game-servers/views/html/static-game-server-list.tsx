@@ -10,7 +10,7 @@ export async function StaticGameServerList() {
     .toArray()
 
   return (
-    <table class="w-full table-fixed" id="admin-panel-static-game-server-list">
+    <table class="w-full table-fixed max-lg:min-w-2xl" id="admin-panel-static-game-server-list">
       <thead>
         <tr>
           <th class="border-ash/50 w-[15%] border-b pb-3 text-left">Name</th>
