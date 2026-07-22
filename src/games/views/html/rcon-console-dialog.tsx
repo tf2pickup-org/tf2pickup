@@ -5,12 +5,7 @@ const dialogId = 'rcon-console-dialog'
 
 export function RconConsoleDialog(props: { game: GameModel }) {
   return (
-    <dialog
-      id={dialogId}
-      class="rcon-console"
-      hx-on-open={`document.getElementById('${dialogId}').showModal()`}
-      hx-on-close={`document.getElementById('${dialogId}').close()`}
-    >
+    <dialog id={dialogId} class="rcon-console" data-dialog-events>
       <header>
         <span class="title">RCON console</span>
         {props.game.gameServer !== undefined && (
@@ -33,7 +28,7 @@ export function RconConsoleDialog(props: { game: GameModel }) {
         hx-target="#rcon-console-transcript"
         hx-swap="beforeend scroll:bottom"
         hx-disabled-elt="find input, find button"
-        hx-on--after-request="if(event.detail.successful) { this.reset(); this.querySelector('input').focus(); }"
+        data-reset-on-success="input"
       >
         <span class="prompt" aria-hidden="true">
           ]
