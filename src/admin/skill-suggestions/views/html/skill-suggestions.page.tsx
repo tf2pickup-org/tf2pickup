@@ -105,8 +105,7 @@ function SuggestionRow(props: {
           <input type="hidden" name="direction" value={direction} />
           <button
             type="submit"
-            class="button compact"
-            data-variant="accent"
+            class="button"
             title={isUp ? 'Skill too low' : 'Skill too high'}
             data-umami-event="apply-skill-suggestion"
             data-umami-event-player={player.steamId}
