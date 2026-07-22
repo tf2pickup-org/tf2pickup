@@ -64,7 +64,7 @@ export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
   return (
     <>
       <input type="hidden" name="sort" value={props.sort} />
-      <table class="w-full text-left text-sm">
+      <table class="w-full text-left text-sm max-lg:min-w-2xl">
         <thead>
           <tr class="border-abru-light-25 border-b">
             <th class="w-[160px] px-4 py-2">

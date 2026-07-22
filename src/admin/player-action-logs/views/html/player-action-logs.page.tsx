@@ -18,7 +18,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
   return (
     <Admin activePage="player-action-logs">
       <div class="admin-panel-set">
-        <div class="flex items-center gap-4 p-4">
+        <div class="flex flex-wrap items-center gap-4 p-4">
           <input type="hidden" name="page" value="1" />
 
           <select
@@ -68,7 +68,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
           />
         </div>
 
-        <div id="log-results">
+        <div id="log-results" class="max-lg:overflow-x-auto">
           <LogEntryList
             logs={props.logs}
             playerNames={props.playerNames}

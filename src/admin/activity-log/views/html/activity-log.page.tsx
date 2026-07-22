@@ -86,7 +86,7 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
           />
         </div>
 
-        <div id="activity-log-results">
+        <div id="activity-log-results" class="max-lg:overflow-x-auto">
           <ActivityLogEntryList {...props} />
         </div>
       </div>

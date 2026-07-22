@@ -19,7 +19,9 @@ export async function GameServersPage() {
 
       <div class="admin-panel-set mt-4">
         <h4 class="pb-4">Static servers</h4>
-        <StaticGameServerList />
+        <div class="max-lg:overflow-x-auto">
+          <StaticGameServerList />
+        </div>
       </div>
 
       <div class="admin-panel-set mt-4">

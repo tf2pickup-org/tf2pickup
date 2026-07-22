@@ -67,7 +67,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
     <EditPlayer player={player} activePage="/profile">
       <form action="" method="post">
         <div class="admin-panel-set">
-          <div class="grid grid-cols-[1fr_184px] gap-y-4">
+          <div class="grid grid-cols-1 gap-y-4 lg:grid-cols-[1fr_184px]">
             <div class="input-group">
               <label class="form-label" for="player-nickname">
                 Nickname
@@ -76,7 +76,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
               <NicknameHistoryOverview nameHistory={player.nameHistory ?? []} />
             </div>
 
-            <div class="row-span-3">
+            <div class="max-lg:order-first max-lg:justify-self-center lg:row-span-3">
               <img
                 src={playerAvatarUrl(player.avatar, 'large')}
                 width="184"

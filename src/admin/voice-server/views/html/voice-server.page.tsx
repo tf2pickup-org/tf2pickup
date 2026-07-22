@@ -98,8 +98,14 @@ export async function VoiceServerPage() {
                   id="mumble-url"
                   value={mumbleUrl ?? ''}
                   placeholder="mumble.tf2pickup.org"
+                  class="max-lg:min-w-0 max-lg:flex-1"
                 />
-                <input type="number" name="mumblePort" value={mumblePort.toString()} />
+                <input
+                  type="number"
+                  name="mumblePort"
+                  value={mumblePort.toString()}
+                  class="max-lg:w-24 max-lg:min-w-0"
+                />
               </dd>
             </dl>
 
