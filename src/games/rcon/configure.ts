@@ -226,6 +226,7 @@ async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = 
   })
 }
 
+// keep in sync with GameServerCommandPreview in src/admin/games/views/html/game-server-command-preview.tsx
 async function* compileConfig(game: GameModel, password: string): AsyncGenerator<RconCommand> {
   yield `logaddress_add ${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`
   yield 'kickall'
