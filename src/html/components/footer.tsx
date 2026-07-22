@@ -16,6 +16,7 @@ export function Footer() {
           </span>
           <div class="grow" />
           <div class="flex flex-col items-center gap-2 md:flex-row md:gap-5">
+            <a href="/staff">Staff</a>
             <a href="/privacy-policy">Privacy policy</a>
             <a
               href="https://github.com/tf2pickup-org/tf2pickup"

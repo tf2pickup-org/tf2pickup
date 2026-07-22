@@ -1,0 +1,53 @@
+@reference '../../../html/styles/main.css';
+
+@layer components {
+  .staff-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .staff-card {
+    @apply transition-colors;
+    @apply duration-75;
+
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    padding: 14px;
+
+    background-color: rgba(19, 16, 20, 0.5);
+    color: var(--color-abru-light-75);
+    border-radius: 8px;
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--color-abru-light-5) 70%, transparent);
+    }
+
+    &.staff-card--super-user {
+      --role-color: var(--color-accent);
+    }
+
+    &.staff-card--admin {
+      --role-color: var(--color-alert);
+    }
+
+    .staff-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 4px;
+      border-bottom: 3px solid var(--role-color);
+    }
+
+    .online-dot {
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: var(--color-game-result-win);
+      border: 3px solid var(--color-abru-dark-29);
+    }
+  }
+}
