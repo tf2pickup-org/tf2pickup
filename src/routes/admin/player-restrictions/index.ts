@@ -45,6 +45,7 @@ export default routes(async app => {
               minimumInGameHours: z.coerce.number(),
               requirePlayerVerification: z.coerce.boolean().default(false),
               skillSuggestions: z.coerce.boolean().default(false),
+              skillSuggestionsDigest: z.coerce.boolean().default(false),
               skillStep: z.coerce.number().positive(),
               ...queue.config.classes
                 .map(({ name }) => name)
@@ -63,6 +64,7 @@ export default routes(async app => {
           requirePlayerVerification,
           playerSkillThresholdEnabled,
           skillSuggestions,
+          skillSuggestionsDigest,
           skillStep,
         } = request.body
         const defaultPlayerSkill = Object.entries(request.body)
@@ -85,6 +87,7 @@ export default routes(async app => {
           configuration.set('games.default_player_skill', defaultPlayerSkill, actor),
           configuration.set('games.skill_step', skillStep, actor),
           configuration.set('games.skill_suggestions', skillSuggestions, actor),
+          configuration.set('games.skill_suggestions_digest', skillSuggestionsDigest, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(PlayerRestrictionsPage())

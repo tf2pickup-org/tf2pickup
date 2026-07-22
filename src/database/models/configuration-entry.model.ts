@@ -198,6 +198,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
     .describe(
       'Experimental: show skill adjustment suggestions in the admin toolbox based on player performance',
     ),
+  z
+    .object({
+      key: z.literal('games.skill_suggestions_digest'),
+      value: z.boolean().default(false),
+    })
+    .describe(
+      'Send a weekly digest of pending skill suggestions to Discord admin notification channels',
+    ),
   z.object({
     key: z.literal('misc.discord_invite_link'),
     value: z.url().nullable().default(null),

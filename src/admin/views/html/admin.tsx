@@ -13,6 +13,7 @@ import {
   IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
+  IconChartArrowsVertical,
   IconHeadset,
   IconHistory,
   IconLogs,
@@ -99,6 +100,11 @@ const adminPages = {
   'skill-import-export': {
     title: 'Skill import/export',
     icon: IconTable,
+    section: 'Actions',
+  },
+  'skill-suggestions': {
+    title: 'Skill suggestions',
+    icon: IconChartArrowsVertical,
     section: 'Actions',
   },
   rules: {
