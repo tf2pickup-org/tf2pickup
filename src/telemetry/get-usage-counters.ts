@@ -4,10 +4,6 @@ import { GameEventType } from '../database/models/game-event.model'
 import { GameState } from '../database/models/game.model'
 import { utcDayKey } from './utc-day-key'
 
-function perGame(count: number, games: number): number {
-  return games === 0 ? 0 : Math.round((count / games) * 1000) / 1000
-}
-
 export async function getUsageCounters() {
   const since = subDays(new Date(), 30)
   const [[totals], [gameTotals]] = await Promise.all([
@@ -68,20 +64,13 @@ export async function getUsageCounters() {
       .toArray(),
   ])
 
-  const games = gameTotals?.games ?? 0
-  const reinitializations = gameTotals?.reinitializations ?? 0
-  const reassignments = gameTotals?.reassignments ?? 0
-  const forceEnded = gameTotals?.forceEnded ?? 0
-
   return {
     skillSuggestionsApplied30d: totals?.applied ?? 0,
     adminSkillChanges30d: totals?.changes ?? 0,
     eloPageRenders30d: totals?.eloPageRenders ?? 0,
-    gameReinitializations30d: reinitializations,
-    gameReinitializationsPerGame: perGame(reinitializations, games),
-    gameServerReassignments30d: reassignments,
-    gameServerReassignmentsPerGame: perGame(reassignments, games),
-    gamesForceEnded30d: forceEnded,
-    gamesForceEndedShare: perGame(forceEnded, games),
+    games30d: gameTotals?.games ?? 0,
+    gameReinitializations30d: gameTotals?.reinitializations ?? 0,
+    gameServerReassignments30d: gameTotals?.reassignments ?? 0,
+    gamesForceEnded30d: gameTotals?.forceEnded ?? 0,
   }
 }

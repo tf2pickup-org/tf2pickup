@@ -224,14 +224,14 @@ export async function buildSnapshot() {
       label: 'ELO page renders (30d)',
     },
     {
+      key: 'games30d',
+      value: usage.games30d,
+      label: 'Games launched (30d)',
+    },
+    {
       key: 'gameReinitializations30d',
       value: usage.gameReinitializations30d,
       label: 'Game reinitializations (30d)',
-    },
-    {
-      key: 'gameReinitializationsPerGame',
-      value: usage.gameReinitializationsPerGame,
-      label: 'Game reinitializations per game (30d)',
     },
     {
       key: 'gameServerReassignments30d',
@@ -239,19 +239,9 @@ export async function buildSnapshot() {
       label: 'Game server reassignments (30d)',
     },
     {
-      key: 'gameServerReassignmentsPerGame',
-      value: usage.gameServerReassignmentsPerGame,
-      label: 'Game server reassignments per game (30d)',
-    },
-    {
       key: 'gamesForceEnded30d',
       value: usage.gamesForceEnded30d,
       label: 'Games force-ended (30d)',
-    },
-    {
-      key: 'gamesForceEndedShare',
-      value: usage.gamesForceEndedShare,
-      label: 'Games force-ended share (30d)',
     },
     {
       key: 'gamesLaunchedLifetime',
