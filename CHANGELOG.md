@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.22.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.0...4.22.1) (2026-07-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency postcss to v8.5.20 ([c271df0](https://github.com/tf2pickup-org/tf2pickup/commit/c271df02fadb8c2ab4e97f8ff2d6a43134ec4558))
+* **telemetry:** report games30d instead of per-instance ratios ([#756](https://github.com/tf2pickup-org/tf2pickup/issues/756)) ([2bc0405](https://github.com/tf2pickup-org/tf2pickup/commit/2bc0405fcddf1081b3a027c08cd070a83fdce826))
+
 # [4.22.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.21.0...4.22.0) (2026-07-22)
 
 
