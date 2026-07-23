@@ -7,7 +7,7 @@ import { logger } from '../../logger'
 import { QueueState } from '../../database/models/queue-state.model'
 import { setState } from '../../queue/set-state'
 import { kick } from '../kick'
-import { unready } from '../unready'
+import { unreadyQueue } from '../unready-queue'
 import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
 
@@ -56,15 +56,6 @@ export default fp(
           .toArray()
       ).map(slot => slot.player!.steamId)
       await kick(...unreadyPlayers)
-    }
-
-    async function unreadyQueue() {
-      logger.info('unready queue')
-      await setState(QueueState.waiting)
-      const allPlayers = (
-        await collections.queueSlots.find({ player: { $ne: null } }).toArray()
-      ).map(slot => slot.player!.steamId)
-      await unready(...allPlayers)
     }
 
     async function readyUpTimeout() {
