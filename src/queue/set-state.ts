@@ -4,11 +4,25 @@ import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
 import { preReady } from '../pre-ready'
+import { withLogLevel } from '../utils/with-log-level'
 import { withQueueLock } from './with-queue-lock'
 
 export async function setState(state: QueueState) {
   await withQueueLock('set-state', async () => {
     logger.trace({ state }, 'queue.setState()')
+
+    if (state === QueueState.launching) {
+      const notReadyCount = await collections.queueSlots.countDocuments({
+        $or: [{ player: { $eq: null } }, { ready: { $eq: false } }],
+      })
+      if (notReadyCount > 0) {
+        throw withLogLevel(
+          errors.conflict('cannot launch: queue is no longer full and ready'),
+          'warn',
+        )
+      }
+    }
+
     await collections.queueState.updateOne({}, { $set: { state } })
 
     if (state === QueueState.ready) {
