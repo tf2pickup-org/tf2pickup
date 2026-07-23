@@ -52,12 +52,10 @@ vi.mock('./get-usage-counters', () => ({
     skillSuggestionsApplied30d: 12,
     adminSkillChanges30d: 30,
     eloPageRenders30d: 7,
+    games30d: 200,
     gameReinitializations30d: 4,
-    gameReinitializationsPerGame: 0.02,
     gameServerReassignments30d: 2,
-    gameServerReassignmentsPerGame: 0.01,
     gamesForceEnded30d: 3,
-    gamesForceEndedShare: 0.015,
   }),
 }))
 
@@ -139,12 +137,10 @@ describe('buildSnapshot', () => {
       skillSuggestionsApplied30d: 12,
       adminSkillChanges30d: 30,
       eloPageRenders30d: 7,
+      games30d: 200,
       gameReinitializations30d: 4,
-      gameReinitializationsPerGame: 0.02,
       gameServerReassignments30d: 2,
-      gameServerReassignmentsPerGame: 0.01,
       gamesForceEnded30d: 3,
-      gamesForceEndedShare: 0.015,
       gamesLaunchedLifetime: 5000,
       staticGameServers: 3,
     })
