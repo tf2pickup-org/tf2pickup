@@ -24,7 +24,7 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
         'player.steamId': steamId,
       },
       {
-        $set: { player: null },
+        $set: { player: null, ready: false },
       },
       {
         returnDocument: 'after',
