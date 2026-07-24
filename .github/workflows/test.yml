@@ -113,7 +113,7 @@ jobs:
         # Pinned: mumble-server 1.6.x rejects the SuperUser password login the
         # e2e suite relies on ("Wrong certificate or password for existing user").
         # 1.5.901 is the last version known to work. See tests/20-game/10-setup-mumble-server.spec.ts
-        image: mumblevoip/mumble-server:v1.5.901
+        image: mumblevoip/mumble-server:v1.6.870
         ports:
           - 64738:64738/tcp
           - 64738:64738/udp
