@@ -26,6 +26,9 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { 'stats.totalGames': -1 } },
     { spec: { 'stats.gamesByClass.medic': -1 } },
     { spec: { avatarLastSyncedAt: 1 } },
+    // Sparse: preReadyUntil is $unset once the pre-ready lapses, so this only
+    // ever holds the handful of players pre-readied right now.
+    { spec: { preReadyUntil: 1 }, options: { sparse: true } },
   ],
   games: [
     { spec: { number: 1 }, options: { unique: true } },
