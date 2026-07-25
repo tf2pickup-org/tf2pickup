@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.22.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.1...4.22.2) (2026-07-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/static to v10.1.2 [security] ([e25364a](https://github.com/tf2pickup-org/tf2pickup/commit/e25364a252ff8d724ad1686c633b6f81d1db3aa7))
+* **deps:** update dependency marked to v18.0.7 ([9d7d656](https://github.com/tf2pickup-org/tf2pickup/commit/9d7d656750541142f7a86dc13cfb3db4f9d89f38))
+* **deps:** update dependency postcss to v8.5.21 ([4c9d670](https://github.com/tf2pickup-org/tf2pickup/commit/4c9d670351f410ab3f49841d3c8b20feba2e89e5))
+* **deps:** update dependency postcss to v8.5.22 ([a27514d](https://github.com/tf2pickup-org/tf2pickup/commit/a27514da56d04d52b55c343206e66d6426279367))
+* **games:** revert queue to waiting when game creation fails ([#758](https://github.com/tf2pickup-org/tf2pickup/issues/758)) ([993963a](https://github.com/tf2pickup-org/tf2pickup/commit/993963aadae0737e32fd98f9f04b23adca6acd20)), closes [#757](https://github.com/tf2pickup-org/tf2pickup/issues/757)
+* **queue:** prevent launching the queue with vacated slots ([#757](https://github.com/tf2pickup-org/tf2pickup/issues/757)) ([0ada397](https://github.com/tf2pickup-org/tf2pickup/commit/0ada397c8440a23c0fbe2107847526f7cd90009b))
+
 ## [4.22.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.0...4.22.1) (2026-07-23)
 
 
