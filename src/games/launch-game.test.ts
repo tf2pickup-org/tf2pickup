@@ -5,11 +5,8 @@ vi.mock('../queue-auto', () => ({
     getSlots: vi.fn().mockResolvedValue([]),
     getMapWinner: vi.fn().mockResolvedValue('cp_badlands'),
     getFriends: vi.fn().mockResolvedValue([]),
+    unreadyQueue: vi.fn().mockResolvedValue(),
   },
-}))
-
-vi.mock('../queue-auto/unready-queue', () => ({
-  unreadyQueue: vi.fn(),
 }))
 
 vi.mock('./create', () => ({
@@ -29,9 +26,9 @@ vi.mock('../logger', () => ({
 }))
 
 import { launchGame } from './launch-game'
-import { unreadyQueue } from '../queue-auto/unready-queue'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
+import { queue } from '../queue-auto'
 
 describe('launchGame()', () => {
   beforeEach(() => {
@@ -45,7 +42,7 @@ describe('launchGame()', () => {
     await launchGame()
 
     expect(assignGameServer).toHaveBeenCalledWith(42, { retries: 3 })
-    expect(unreadyQueue).not.toHaveBeenCalled()
+    expect(queue.unreadyQueue).not.toHaveBeenCalled()
   })
 
   it('reverts the queue when game creation fails', async () => {
@@ -53,7 +50,7 @@ describe('launchGame()', () => {
 
     await launchGame()
 
-    expect(unreadyQueue).toHaveBeenCalled()
+    expect(queue.unreadyQueue).toHaveBeenCalled()
     expect(assignGameServer).not.toHaveBeenCalled()
   })
 })

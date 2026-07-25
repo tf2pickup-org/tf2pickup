@@ -1,7 +1,6 @@
 import type { GameModel } from '../database/models/game.model'
 import { logger } from '../logger'
 import { queue } from '../queue-auto'
-import { unreadyQueue } from '../queue-auto/unready-queue'
 import { assignGameServer } from './assign-game-server'
 import { create } from './create'
 import { configure } from './rcon/configure'
@@ -18,7 +17,7 @@ export async function launchGame() {
     game = await create(slots, map, friends)
   } catch (error) {
     logger.error({ error }, 'failed to launch game; reverting queue')
-    await unreadyQueue()
+    await queue.unreadyQueue()
     return
   }
 
