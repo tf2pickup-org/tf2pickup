@@ -33,7 +33,10 @@ export async function setState(state: QueueState) {
       }
 
       const preReadiedPlayers = await collections.players
-        .find<Pick<PlayerModel, 'steamId'>>({ preReadyUntil: { $gte: new Date() } }, { projection: { steamId: 1 }})
+        .find<Pick<PlayerModel, 'steamId'>>(
+          { preReadyUntil: { $gte: new Date() } },
+          { projection: { steamId: 1 } },
+        )
         .toArray()
       const toReadyUp = (
         await collections.queueSlots
