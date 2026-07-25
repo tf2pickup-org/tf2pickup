@@ -1,4 +1,5 @@
 import { collections } from '../database/collections'
+import type { PlayerModel } from '../database/models/player.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
 import { events } from '../events'
@@ -31,12 +32,12 @@ export async function setState(state: QueueState) {
         throw errors.internalServerError('invalid queue state: last undefined')
       }
 
-      const preReadiesPlayers = await collections.players
-        .find({ preReadyUntil: { $gte: new Date() } })
+      const preReadiedPlayers = await collections.players
+        .find<Pick<PlayerModel, 'steamId'>>({ preReadyUntil: { $gte: new Date() } }, { projection: { steamId: 1 }})
         .toArray()
       const toReadyUp = (
         await collections.queueSlots
-          .find({ 'player.steamId': { $in: preReadiesPlayers.map(({ steamId }) => steamId) } })
+          .find({ 'player.steamId': { $in: preReadiedPlayers.map(({ steamId }) => steamId) } })
           .toArray()
       ).map(slot => slot.player!.steamId)
 
