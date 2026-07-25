@@ -46,7 +46,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   configuration: [{ spec: { key: 1 }, options: { unique: true } }],
   documents: [{ spec: { name: 1 }, options: { unique: true } }],
   announcements: [{ spec: { createdAt: -1 } }],
-  tasks: [{ spec: { at: 1 } }],
+  tasks: [{ spec: { at: 1 } }, { spec: { name: 1 } }],
   discordBotState: [{ spec: { guildId: 1 }, options: { unique: true } }],
   keys: [{ spec: { name: 1 }, options: { unique: true } }],
   secrets: [{ spec: { name: 1 }, options: { unique: true } }],
