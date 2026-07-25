@@ -11,24 +11,23 @@ vi.mock('../../events', () => ({
   },
 }))
 
-vi.mock('../../players/update', () => ({
-  update: vi.fn(),
-}))
-
 vi.mock('../../utils/safe', () => ({
   safe: <T>(fn: T): T => fn,
 }))
 
-vi.mock('../../database/collections', () => ({
-  collections: {
-    players: {
-      find: vi.fn(),
-    },
+vi.mock('../../tasks', () => ({
+  tasks: {
+    register: vi.fn(),
   },
 }))
 
+vi.mock('../cancel', () => ({
+  cancel: vi.fn(),
+}))
+
 import { events } from '../../events'
-import { update } from '../../players/update'
+import { tasks } from '../../tasks'
+import { cancel } from '../cancel'
 import plugin from './auto-cancel'
 import type { GameModel, GameNumber } from '../../database/models/game.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
@@ -41,7 +40,6 @@ describe('auto-cancel pre-ready up', () => {
 
   beforeEach(async () => {
     vi.resetAllMocks()
-    vi.mocked(update).mockResolvedValue({} as never)
     await (plugin as unknown as () => Promise<void>)()
     const call = vi
       .mocked(events.on)
@@ -49,7 +47,16 @@ describe('auto-cancel pre-ready up', () => {
     gameCreatedHandler = call![1] as typeof gameCreatedHandler
   })
 
-  it('emits player/preReady:updated with undefined for each player on game:created', async () => {
+  it('cancels the pre-ready when the scheduled expiry fires', async () => {
+    const [name, handler] = vi.mocked(tasks.register).mock.calls[0]!
+
+    expect(name).toBe('preReady:cancel')
+    await handler({ player: player1 })
+
+    expect(cancel).toHaveBeenCalledWith(player1)
+  })
+
+  it('cancels the pre-ready of every player on game:created', async () => {
     const game = {
       number: 1 as GameNumber,
       slots: [{ player: player1 }, { player: player2 }],
@@ -57,13 +64,7 @@ describe('auto-cancel pre-ready up', () => {
 
     await gameCreatedHandler({ game })
 
-    expect(events.emit).toHaveBeenCalledWith('player/preReady:updated', {
-      steamId: player1,
-      preReadyUntil: undefined,
-    })
-    expect(events.emit).toHaveBeenCalledWith('player/preReady:updated', {
-      steamId: player2,
-      preReadyUntil: undefined,
-    })
+    expect(cancel).toHaveBeenCalledWith(player1)
+    expect(cancel).toHaveBeenCalledWith(player2)
   })
 })
