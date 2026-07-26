@@ -12,7 +12,7 @@ export const captainMode = authUsers.extend<CaptainModeFixture>({
     async ({ page, users }, use) => {
       // Check if captain mode is currently active
       await page.goto('/')
-      const isCaptainMode = await page.locator('#captain-player-count').isVisible()
+      const isCaptainMode = await page.locator('#captain-queue').isVisible()
 
       // Always set captainMinGames=0 so all test players are eligible captains,
       // even if captain mode was already active from a previous run.
@@ -23,7 +23,7 @@ export const captainMode = authUsers.extend<CaptainModeFixture>({
       if (!isCaptainMode) {
         // Navigate the observer page to the new mode's queue page
         await page.goto('/')
-        await expect(page.locator('#captain-player-count')).toBeVisible({
+        await expect(page.locator('#captain-queue')).toBeVisible({
           timeout: secondsToMilliseconds(10),
         })
       }

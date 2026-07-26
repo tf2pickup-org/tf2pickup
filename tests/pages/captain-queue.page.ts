@@ -112,7 +112,7 @@ export class CaptainQueuePage {
   }
 
   playerCount(): Locator {
-    return this.page.locator('#captain-player-count')
+    return this.page.locator('#queue-current-player-count')
   }
 
   header(): Locator {
