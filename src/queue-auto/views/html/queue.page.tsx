@@ -1,34 +1,19 @@
 import { collections } from '../../../database/collections'
-import { Layout } from '../../../html/layout'
-import { NavigationBar } from '../../../html/components/navigation-bar'
 import { QueueSlot } from './queue-slot'
 import { resolve } from 'path'
 import { config } from '../../config'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { Page } from '../../../html/components/page'
 import type { User } from '../../../auth/types/user'
-import { environment } from '../../../environment'
-import { RunningGameSnackbar } from './running-game-snackbar'
 import { MapVote } from './map-vote'
-import { OfflineAlert } from './offline-alert'
-import { SoundBlockedAlert } from './sound-blocked-alert'
-import { Footer } from '../../../html/components/footer'
 import type { QueueSlotModel } from '../../../database/models/queue-slot.model'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { RequestNotificationPermissions } from './request-notification-permissions'
-import { SubstitutionRequests } from './substitution-requests'
-import { StreamList } from './stream-list'
-import { BanAlerts } from './ban-alerts'
-import { AcceptRulesDialog } from './accept-rules-dialog'
 import { CurrentPlayerCount } from './current-player-count'
 import { PreReadyUpButton } from '../../../pre-ready/views/html/pre-ready-up-button'
-import { Sidebar } from './sidebar'
 import { IsInQueue } from './is-in-queue'
 import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
-import { Announcements } from './announcements'
-import { PlayerRole } from '../../../database/models/player.model'
-import { IconEraser } from '../../../html/components/icons'
+import { ClearQueueButton } from '../../../queue/views/html/clear-queue-button'
+import { QueuePageShell } from '../../../queue/views/html/queue-page-shell'
 import { players } from '../../../players'
 
 export async function QueuePage() {
@@ -38,58 +23,29 @@ export async function QueuePage() {
   const user = requestContext.get('user')
 
   return (
-    <Layout
-      title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
-      description={`${environment.QUEUE_CONFIG} competitive pick-up games for everyone`}
-      canonical="/"
+    <QueuePageShell
+      count={current}
+      required={required}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar />
-      <Page>
-        <IsInQueue actor={user?.player.steamId} />
-        <MapVoteSelection actor={user?.player.steamId} />
-        <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
-          <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
-            <OfflineAlert />
-            {!!user && <RequestNotificationPermissions />}
-            {!!user && <SoundBlockedAlert />}
-            <BanAlerts actor={user?.player.steamId} />
-            <SubstitutionRequests />
-            <Announcements />
-          </div>
+      <IsInQueue actor={user?.player.steamId} />
+      <MapVoteSelection actor={user?.player.steamId} />
 
-          <div class="order-2 lg:order-3 lg:row-span-2">
-            <Sidebar user={user} required={required} />
-          </div>
-
-          <div id="queue-content" class="tab-content lg:contents!">
-            <div class="order-3 lg:order-2 lg:col-span-3">
-              <div class="flex flex-col gap-8">
-                <QueueState actor={user} required={required} />
-                <Queue slots={slots} actor={user?.player.steamId} />
-              </div>
-            </div>
-
-            <div class="order-4 lg:col-span-3">
-              <MapVote actor={user?.player.steamId} />
-            </div>
-
-            <div class="order-5 lg:col-span-4">
-              <StreamList />
-            </div>
-          </div>
+      <div class="order-3 lg:order-2 lg:col-span-3">
+        <div class="flex flex-col gap-8">
+          <QueueHeader actor={user} required={required} />
+          <Queue slots={slots} actor={user?.player.steamId} />
         </div>
-      </Page>
-      <Footer />
+      </div>
 
-      <div id="queue-notify-container"></div>
-      <RunningGameSnackbar gameNumber={user?.player.activeGame} />
-      <AcceptRulesDialog actor={user} />
-    </Layout>
+      <div class="order-4 lg:col-span-3">
+        <MapVote actor={user?.player.steamId} />
+      </div>
+    </QueuePageShell>
   )
 }
 
-async function QueueState(props: { actor?: User | undefined; required: number }) {
+async function QueueHeader(props: { actor?: User | undefined; required: number }) {
   return (
     <div class="flex flex-col gap-2">
       <form ws-send class="flex flex-row items-center justify-center">
@@ -147,24 +103,5 @@ async function Queue(props: { slots: QueueSlotModel[]; actor?: SteamId64 | undef
           </div>
         ))}
     </form>
-  )
-}
-
-export async function ClearQueueButton(props: { actor?: User | undefined }) {
-  if (!props.actor?.player.roles.includes(PlayerRole.admin)) {
-    return <></>
-  }
-
-  return (
-    <button
-      class="button max-lg:flex-1 max-lg:px-3 max-lg:text-sm max-lg:whitespace-nowrap"
-      data-variant="accent"
-      data-umami-event="clear-queue"
-      hx-delete="/queue/players"
-      hx-confirm="Are you sure you want to kick everyone from the queue?"
-    >
-      <IconEraser />
-      <span>Clear queue</span>
-    </button>
   )
 }

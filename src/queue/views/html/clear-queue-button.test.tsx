@@ -1,47 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
-
-vi.mock('../../../database/collections', () => ({
-  collections: {
-    queueSlots: { find: vi.fn() },
-  },
-}))
-
-vi.mock('../../../environment', () => ({
-  environment: {
-    WEBSITE_NAME: 'tf2pickup.org',
-    QUEUE_CONFIG: '6v6',
-    LOG_LEVEL: 'info',
-    NODE_ENV: 'test',
-  },
-}))
-
-vi.mock('../../../events', () => ({
-  events: {
-    emit: vi.fn(),
-    on: vi.fn(),
-  },
-}))
-
-vi.mock('../../config', () => ({
-  config: {
-    classes: [],
-  },
-}))
-
-vi.mock('@fastify/request-context', () => ({
-  requestContext: {
-    get: vi.fn(),
-  },
-}))
-
-vi.mock('../../../players', () => ({
-  players: {
-    bySteamId: vi.fn(),
-  },
-}))
-
+import { describe, it, expect } from 'vitest'
 import { parse } from 'node-html-parser'
-import { ClearQueueButton } from './queue.page'
+import { ClearQueueButton } from './clear-queue-button'
 import { PlayerRole } from '../../../database/models/player.model'
 import type { User } from '../../../auth/types/user'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
