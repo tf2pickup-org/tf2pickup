@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin'
-import { configuration } from '../../configuration'
+import { watchMode } from '../../queue/watch-mode'
 import { collections } from '../../database/collections'
 import type { PlayerModel } from '../../database/models/player.model'
 import { QueueState } from '../../database/models/queue-state.model'
@@ -25,16 +25,12 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export default fp(
   async app => {
-    let isActive = (await configuration.get('queue.mode')) === 'captain'
-
-    events.on('queue/mode:changed', ({ mode }) => {
-      isActive = mode === 'captain'
-    })
+    const isActive = await watchMode('captain')
 
     const config = queueConfigs[environment.QUEUE_CONFIG]
 
     async function syncQueuePage(socket: AppWebSocket) {
-      if (!isActive) return
+      if (!isActive()) return
       const allPlayers = await collections.queuePlayers.find({}).toArray()
       const actor = socket.player?.steamId
 
@@ -70,7 +66,7 @@ export default fp(
     })
 
     async function broadcastClassColumns() {
-      if (!isActive) return
+      if (!isActive()) return
       const allPlayers = await collections.queuePlayers.find({}).toArray()
       const count = await CaptainPlayerCount()
 
@@ -91,7 +87,7 @@ export default fp(
     events.on(
       'queue/state:updated',
       safe(async ({ state }) => {
-        if (!isActive) return
+        if (!isActive()) return
 
         if (state === QueueState.ready) {
           const unreadyPlayers = (
@@ -118,7 +114,7 @@ export default fp(
       'queue/captain:selected',
       // eslint-disable-next-line @typescript-eslint/require-await
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         app.gateway.to({ url: '/' }).send(actor => DraftBoard({ actor }))
       }),
     )
@@ -127,7 +123,7 @@ export default fp(
       'queue/draft:pickMade',
       // eslint-disable-next-line @typescript-eslint/require-await
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         app.gateway.to({ url: '/' }).send(actor => DraftBoard({ actor }))
       }),
     )
@@ -136,7 +132,7 @@ export default fp(
       'queue/draft:mapBanMade',
       // eslint-disable-next-line @typescript-eslint/require-await
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         app.gateway.to({ url: '/' }).send(actor => DraftBoard({ actor }))
       }),
     )
@@ -145,20 +141,20 @@ export default fp(
       'queue/draft:completed',
       // eslint-disable-next-line @typescript-eslint/require-await
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         app.gateway.to({ url: '/' }).send(actor => DraftBoard({ actor }))
       }),
     )
 
     events.on('queue:playerKicked', ({ player }) => {
-      if (!isActive) return
+      if (!isActive()) return
       app.gateway.to({ player }).send(() => undefined)
     })
 
     events.on(
       'player:connected',
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         const opl = await OnlinePlayerList()
         const opc = await OnlinePlayerCount()
         app.gateway.to({ url: '/' }).send(() => [opl, opc])
@@ -168,7 +164,7 @@ export default fp(
     events.on(
       'player:disconnected',
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         const opl = await OnlinePlayerList()
         const opc = await OnlinePlayerCount()
         app.gateway.to({ url: '/' }).send(() => [opl, opc])
@@ -178,7 +174,7 @@ export default fp(
     events.on(
       'player/activeGame:updated',
       safe(async ({ steamId, activeGame }) => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await RunningGameSnackbar({ gameNumber: activeGame })
         app.gateway
           .to({ player: steamId })
@@ -190,7 +186,7 @@ export default fp(
     events.on(
       'game:substituteRequested',
       safe(async ({ game, replacee }) => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await SubstitutionRequests()
         app.gateway.to({ url: '/' }).send(() => cmp)
         app.gateway.broadcast((actor: SteamId64 | undefined) =>
@@ -202,7 +198,7 @@ export default fp(
     events.on(
       'game:playerReplaced',
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await SubstitutionRequests()
         app.gateway.to({ url: '/' }).send(() => cmp)
       }),
@@ -211,7 +207,7 @@ export default fp(
     events.on(
       'game:ended',
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await SubstitutionRequests()
         app.gateway.to({ url: '/' }).send(() => cmp)
       }),
@@ -220,7 +216,7 @@ export default fp(
     events.on(
       'twitch.tv/streams:updated',
       safe(async () => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await StreamList()
         app.gateway.to({ url: '/' }).send(() => cmp)
       }),
@@ -229,7 +225,7 @@ export default fp(
     events.on(
       'player/ban:added',
       safe(async ({ player }) => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await BanAlerts({ actor: player })
         app.gateway.to({ players: [player] }).send(() => cmp)
       }),
@@ -238,14 +234,14 @@ export default fp(
     events.on(
       'player/ban:revoked',
       safe(async ({ player }) => {
-        if (!isActive) return
+        if (!isActive()) return
         const cmp = await BanAlerts({ actor: player })
         app.gateway.to({ players: [player] }).send(() => cmp)
       }),
     )
 
     events.on('chat:messageSent', ({ message, previousMessage }) => {
-      if (!isActive) return
+      if (!isActive()) return
       app.gateway
         .to({ authenticated: true })
         .to({ url: '/' })
@@ -253,7 +249,7 @@ export default fp(
     })
 
     events.on('chat:messageDeleted', ({ messageId }) => {
-      if (!isActive) return
+      if (!isActive()) return
       app.gateway
         .to({ authenticated: true })
         .to({ url: '/' })

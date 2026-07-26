@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin'
 import { configuration } from '../../configuration'
+import { watchMode } from '../../queue/watch-mode'
 import { collections } from '../../database/collections'
 import { QueueState } from '../../database/models/queue-state.model'
 import { environment } from '../../environment'
@@ -20,14 +21,10 @@ import { unready } from '../unready'
 
 export default fp(
   async () => {
-    let isActive = (await configuration.get('queue.mode')) === 'captain'
-
-    events.on('queue/mode:changed', ({ mode }) => {
-      isActive = mode === 'captain'
-    })
+    const isActive = await watchMode('captain')
 
     async function maybeUpdateQueueState() {
-      if (!isActive) return
+      if (!isActive()) return
 
       const state = await getState()
       const allPlayers = await collections.queuePlayers.find({}).toArray()
@@ -56,6 +53,40 @@ export default fp(
           }
           break
         }
+
+        case QueueState.draft: {
+          const draft = await collections.captainDraft.findOne({})
+          if (!draft) break
+
+          const drafted = [
+            ...draft.picks.map(pick => pick.player),
+            ...Object.values(draft.captains),
+          ]
+          const present = new Set(allPlayers.map(player => player.steamId))
+          const gone = drafted.filter(steamId => !present.has(steamId))
+          if (gone.length === 0) break
+
+          logger.warn({ players: gone }, 'captain queue: drafted player left, abandoning draft')
+          await tasks.cancelAll('captain:pickTimeout')
+          await collections.captainDraft.deleteMany({})
+          await recoverFromAbortedDraft()
+          break
+        }
+      }
+    }
+
+    // Shared by the pick timeout and the draft integrity check above: the draft
+    // document is already gone, decide where the remaining players end up.
+    async function recoverFromAbortedDraft() {
+      const config = queueConfigs[environment.QUEUE_CONFIG]
+      const remaining = await collections.queuePlayers.find({}).toArray()
+      if (canFormTeams(remaining, config)) {
+        logger.info('captain queue: requirements still met, going back to ready-up')
+        await setState(QueueState.ready)
+        const timeout = await configuration.get('queue.ready_up_timeout')
+        await tasks.schedule('captain:readyUpTimeout', timeout)
+      } else {
+        await setState(QueueState.waiting)
       }
     }
 
@@ -96,7 +127,7 @@ export default fp(
     }
 
     async function pickTimeout() {
-      if (!isActive) return
+      if (!isActive()) return
       const state = await getState()
       if (state !== QueueState.draft) return
 
@@ -118,16 +149,7 @@ export default fp(
 
         await collections.captainDraft.deleteMany({})
         await kick(timedOutCaptain)
-
-        const remaining = await collections.queuePlayers.find({}).toArray()
-        if (canFormTeams(remaining, config)) {
-          logger.info('captain queue: requirements still met after kick, going to ready-up')
-          await setState(QueueState.ready)
-          const timeout = await configuration.get('queue.ready_up_timeout')
-          await tasks.schedule('captain:readyUpTimeout', timeout)
-        } else {
-          await setState(QueueState.waiting)
-        }
+        await recoverFromAbortedDraft()
       } else {
         await autoBanMap()
       }
@@ -162,7 +184,7 @@ export default fp(
     }
 
     async function readyUpTimeout() {
-      if (!isActive) return
+      if (!isActive()) return
       logger.info('captain queue: ready-up timeout')
 
       const unreadyIds = (await collections.queuePlayers.find({ ready: false }).toArray()).map(
@@ -195,7 +217,7 @@ export default fp(
     events.on(
       'queue/draft:completed',
       safe(async ({ selectedMap }) => {
-        if (!isActive) return
+        if (!isActive()) return
         logger.info({ selectedMap }, 'captain draft complete, launching game')
         await setState(QueueState.launching)
       }),

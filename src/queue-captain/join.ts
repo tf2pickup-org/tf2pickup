@@ -8,6 +8,7 @@ import { players } from '../players'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from '../queue/get-state'
+import { assertQueueOpen } from './assert-queue-open'
 import { withQueueLock } from '../queue/with-queue-lock'
 import { isEligibleCaptain } from './is-eligible-captain'
 
@@ -42,9 +43,7 @@ export async function join(
     }
 
     const state = await getState()
-    if (![QueueState.waiting, QueueState.ready].includes(state)) {
-      throw errors.badRequest('invalid queue state')
-    }
+    assertQueueOpen(state)
 
     if (wantsCaptain && !(await isEligibleCaptain(player))) {
       throw errors.badRequest('player is not eligible to be captain')

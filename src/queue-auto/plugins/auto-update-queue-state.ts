@@ -9,18 +9,15 @@ import { setState } from '../../queue/set-state'
 import { kick } from '../kick'
 import { unreadyQueue } from '../unready-queue'
 import { configuration } from '../../configuration'
+import { watchMode } from '../../queue/watch-mode'
 import { tasks } from '../../tasks'
 
 export default fp(
   async () => {
-    let isActive = (await configuration.get('queue.mode')) === 'auto'
-
-    events.on('queue/mode:changed', ({ mode }) => {
-      isActive = mode === 'auto'
-    })
+    const isActive = await watchMode('auto')
 
     async function maybeUpdateQueueState() {
-      if (!isActive) return
+      if (!isActive()) return
       const state = await getState()
       const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
         collections.queueSlots.countDocuments({ player: { $ne: null } }),
