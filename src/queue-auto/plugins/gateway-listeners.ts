@@ -6,7 +6,6 @@ import { leave } from '../leave'
 import { readyUp } from '../ready-up'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { voteMap } from '../vote-map'
-import { logError } from '../../utils/log-error'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../../queue/get-state'
@@ -15,11 +14,8 @@ import { preReady } from '../../pre-ready'
 import { errors } from '../../errors'
 import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../views/html/map-vote-selection'
-import { FlashMessage } from '../../html/components/flash-message'
-import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
-import { queueWsCallDuration } from '../../queue/metrics'
-import { measureTime } from '../../utils/measure-time'
+import { wsSafe } from '../../websocket/ws-safe'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -37,37 +33,6 @@ export default fp(
       app.gateway
         .to({ player: actorId })
         .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
-    }
-
-    function wsSafe<Args extends unknown[]>(
-      operation: string,
-      fn: (socket: AppWebSocket, ...args: Args) => Promise<void>,
-    ) {
-      return (socket: AppWebSocket, ...args: Args) => {
-        measureTime(
-          async () => {
-            await fn(socket, ...args)
-          },
-          ({ ms, result }) => {
-            queueWsCallDuration.record(ms, {
-              operation,
-              result,
-            })
-          },
-        ).catch(async (error: unknown) => {
-          // Same levelling as the HTTP error handler (src/main.ts): client errors
-          // (4xx) — queue races ('slot occupied'), invalid state, unauthorized —
-          // are routine and not logged at error level. See logError.
-          logError(error)
-          if (error instanceof Error) {
-            const msg = await FlashMessage({
-              message: `Error: ${error.message}`,
-              type: 'error',
-            })
-            socket.send(msg)
-          }
-        })
-      }
     }
 
     app.gateway.on(

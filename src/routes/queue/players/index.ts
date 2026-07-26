@@ -1,7 +1,10 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { routes } from '../../../utils/routes'
+import { configuration } from '../../../configuration'
+import { collections } from '../../../database/collections'
 import { getSlots } from '../../../queue-auto/get-slots'
 import { kick } from '../../../queue-auto/kick'
+import { kick as kickFromCaptainQueue } from '../../../queue-captain/kick'
 import { events } from '../../../events'
 import { activityLog } from '../../../activity-log'
 
@@ -15,11 +18,14 @@ export default routes(async app => {
       },
     },
     async (request, reply) => {
-      const slots = await getSlots()
-      const steamIds = slots.flatMap(slot => (slot.player ? [slot.player.steamId] : []))
+      const mode = await configuration.get('queue.mode')
+      const steamIds =
+        mode === 'captain'
+          ? (await collections.queuePlayers.find({}).toArray()).map(player => player.steamId)
+          : (await getSlots()).flatMap(slot => (slot.player ? [slot.player.steamId] : []))
 
       if (steamIds.length > 0) {
-        await kick(...steamIds)
+        await (mode === 'captain' ? kickFromCaptainQueue(...steamIds) : kick(...steamIds))
         events.emit('queue:cleared', {
           admin: request.user!.player.steamId,
           playerCount: steamIds.length,

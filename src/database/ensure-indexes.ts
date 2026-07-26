@@ -42,6 +42,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { 'player.steamId': 1 }, options: { sparse: true } },
     { spec: { id: 1 }, options: { unique: true } },
   ],
+  queuePlayers: [{ spec: { steamId: 1 }, options: { unique: true } }],
   queueFriends: [{ spec: { source: 1 } }],
   configuration: [{ spec: { key: 1 }, options: { unique: true } }],
   documents: [{ spec: { name: 1 }, options: { unique: true } }],

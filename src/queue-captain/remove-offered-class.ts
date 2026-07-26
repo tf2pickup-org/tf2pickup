@@ -1,6 +1,5 @@
 import { collections } from '../database/collections'
 import type { QueuePlayerModel } from '../database/models/queue-player.model'
-import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
@@ -8,6 +7,7 @@ import { preReady } from '../pre-ready'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from '../queue/get-state'
+import { assertQueueOpen } from './assert-queue-open'
 import { withQueueLock } from '../queue/with-queue-lock'
 
 export async function removeOfferedClass(
@@ -17,10 +17,7 @@ export async function removeOfferedClass(
   return await withQueueLock('captain.removeOfferedClass', async () => {
     logger.trace({ steamId, gameClass }, 'queue-captain.removeOfferedClass()')
 
-    const state = await getState()
-    if (state === QueueState.launching) {
-      throw errors.badRequest('invalid queue state')
-    }
+    assertQueueOpen(await getState())
 
     const existing = await collections.queuePlayers.findOne({ steamId })
     if (!existing) {
