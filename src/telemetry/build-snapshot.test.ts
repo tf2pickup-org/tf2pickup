@@ -75,6 +75,9 @@ const values: Record<string, unknown> = {
   'queue.player_skill_threshold': null,
   'queue.require_player_verification': false,
   'queue.map_cooldown': 2,
+  'queue.mode': 'captain',
+  'queue.captain_min_games': 10,
+  'queue.captain_pick_timeout': 60000,
   'serveme_tf.preferred_region': 'eu',
   'games.cooldown_levels': [{ level: 0, banLengthMs: 1 }],
   'games.default_player_skill': { soldier: 5 },
@@ -107,6 +110,18 @@ describe('buildSnapshot', () => {
     expect(snapshot.features['games.voice_server_type']).toBe('mumble')
     expect(snapshot.features['queue.player_skill_threshold']).toBeNull()
     expect(snapshot.features['serveme_tf.preferred_region']).toBe('eu')
+  })
+
+  it('reports queue mode and captain settings', async () => {
+    const snapshot = await buildSnapshot()
+    expect(snapshot.features['queue.mode']).toBe('captain')
+    expect(snapshot.features['queue.captain_min_games']).toBe(10)
+    expect(snapshot.features['queue.captain_pick_timeout']).toBe(60000)
+    expect(snapshot.meta.features).toContainEqual({
+      key: 'queue.mode',
+      label: 'Queue mode',
+      group: 'Queue',
+    })
   })
 
   it('derives integration flags from env presence', async () => {
