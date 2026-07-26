@@ -3,6 +3,7 @@ import { configuration } from '../../../../configuration'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
+import { GameServerCommandPreview } from './game-server-command-preview'
 
 export async function GamesPage() {
   const whitelistId = await configuration.get('games.whitelist_id')
@@ -113,6 +114,21 @@ export async function GamesPage() {
                   Gameserver - logs will be uploaded by the logs.tf sourcemod plugin
                 </option>
               </select>
+            </dd>
+          </dl>
+
+          <dl>
+            <dt>Game server startup commands</dt>
+            <dd class="flex flex-col">
+              <GameServerCommandPreview
+                whitelistId={whitelistId}
+                executeExtraCommands={executeExtraCommands}
+                logsTfUploadMethod={logsTfUploadMethod}
+              />
+              <span class="text-abru-light-75 text-sm">
+                Commands executed on the game server when a game starts, in order. Reflects the
+                saved configuration above.
+              </span>
             </dd>
           </dl>
 
