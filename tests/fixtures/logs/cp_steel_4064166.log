@@ -1,0 +1,23 @@
+L 05/31/2026 - 19:29:59: World triggered "Round_Start"
+L 05/31/2026 - 19:29:59: World triggered "Round_Start"
+L 05/31/2026 - 19:31:20: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "Cap A, The front door dock") (numcappers "3") (player1 "Yellow Iverson<32><[U:1:35451476]><Blue>") (position1 "-1095 -1480 -248") (player2 "Tomba<43><[U:1:50957349]><Blue>") (position2 "-1132 -1446 -248") (player3 "kalju rotta<46><[U:1:52544220]><Blue>") (position3 "-1095 -1511 -248") 
+L 05/31/2026 - 19:32:27: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "Cap B, the Red Shed spawn") (numcappers "1") (player1 "Yellow Iverson<32><[U:1:35451476]><Blue>") (position1 "1822 -821 -227") 
+L 05/31/2026 - 19:32:56: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "Cap C, The bridge controls") (numcappers "2") (player1 "Yellow Iverson<32><[U:1:35451476]><Blue>") (position1 "1442 1581 -24") (player2 "Habina<41><[U:1:132507896]><Blue>") (position2 "1429 1763 -28") 
+L 05/31/2026 - 19:35:24: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "Cap D, Red spawn door to E") (numcappers "3") (player1 "murje<45><[U:1:24166588]><Blue>") (position1 "-850 910 -191") (player2 "Tromato<31><[U:1:49918478]><Blue>") (position2 "-889 1138 -191") (player3 "Yellow Iverson<32><[U:1:35451476]><Blue>") (position3 "-1270 1121 -84") 
+L 05/31/2026 - 19:35:56: Team "Blue" triggered "pointcaptured" (cp "4") (cpname "Cap E, The main point") (numcappers "4") (player1 "murje<45><[U:1:24166588]><Blue>") (position1 "29 174 -216") (player2 "Yellow Iverson<32><[U:1:35451476]><Blue>") (position2 "-2 114 -216") (player3 "Tomba<43><[U:1:50957349]><Blue>") (position3 "15 53 -216") (player4 "Joe<37><[U:1:185374175]><Blue>") (position4 "19 72 -216") 
+L 05/31/2026 - 19:35:56: World triggered "Round_Win" (winner "Blue")
+L 05/31/2026 - 19:35:56: World triggered "Round_Length" (seconds "356.73")
+L 05/31/2026 - 19:35:56: Team "Red" current score "0" with "9" players
+L 05/31/2026 - 19:35:56: Team "Blue" current score "5" with "9" players
+L 05/31/2026 - 19:36:11: World triggered "Round_Start"
+L 05/31/2026 - 19:37:36: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "Cap A, The front door dock") (numcappers "7") (player1 "Bliss<24><[U:1:123635940]><Blue>") (position1 "-1124 -1395 -248") (player2 "jimmy the fish<25><[U:1:87562923]><Blue>") (position2 "-1182 -1191 -255") (player3 "heatburn<27><[U:1:58736264]><Blue>") (position3 "-1162 -1367 -248") (player4 "Necris<28><[U:1:293072102]><Blue>") (position4 "-1191 -1383 -248") (player5 "kingor<30><[U:1:293602500]><Blue>") (position5 "-1180 -1406 -248") (player6 "ike<33><[U:1:79579919]><Blue>") (position6 "-1141 -1475 -248") (player7 "paz, piedad y perdón<44><[U:1:285837700]><Blue>") (position7 "-1275 -1210 -255") 
+L 05/31/2026 - 19:38:57: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "Cap B, the Red Shed spawn") (numcappers "4") (player1 "jimmy the fish<25><[U:1:87562923]><Blue>") (position1 "2024 -872 -295") (player2 "heatburn<27><[U:1:58736264]><Blue>") (position2 "1914 -850 -295") (player3 "Necris<28><[U:1:293072102]><Blue>") (position3 "1891 -998 -288") (player4 "ike<33><[U:1:79579919]><Blue>") (position4 "1987 -846 -295") 
+L 05/31/2026 - 19:40:25: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "Cap C, The bridge controls") (numcappers "3") (player1 "Bliss<24><[U:1:123635940]><Blue>") (position1 "1551 1737 -31") (player2 "Necris<28><[U:1:293072102]><Blue>") (position2 "1635 1674 -31") (player3 "kuno is low<47><[U:1:107815702]><Blue>") (position3 "1601 1537 11") 
+L 05/31/2026 - 19:40:58: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "Cap D, Red spawn door to E") (numcappers "3") (player1 "Bliss<24><[U:1:123635940]><Blue>") (position1 "-1173 989 -184") (player2 "heatburn<27><[U:1:58736264]><Blue>") (position2 "-1020 935 -191") (player3 "Necris<28><[U:1:293072102]><Blue>") (position3 "-966 984 -191") 
+L 05/31/2026 - 19:42:07: World triggered "Round_Win" (winner "Red")
+L 05/31/2026 - 19:42:07: World triggered "Round_Length" (seconds "356.04")
+L 05/31/2026 - 19:42:07: Team "Red" current score "5" with "9" players
+L 05/31/2026 - 19:42:07: Team "Blue" current score "4" with "9" players
+L 05/31/2026 - 19:42:22: World triggered "Game_Over" reason "Reached Round Limit"
+L 05/31/2026 - 19:42:22: Team "Red" final score "0" with "9" players
+L 05/31/2026 - 19:42:22: Team "Blue" final score "0" with "9" players

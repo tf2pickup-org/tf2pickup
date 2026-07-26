@@ -19,19 +19,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6.0.8
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.0.9
         with:
-          version: 11.3.0
+          version: 11.16.0
       - run: pnpm install
       - run: pnpm lint
 
   xss-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: pnpm/action-setup@v6.0.8
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.0.9
         with:
-          version: 11.3.0
+          version: 11.16.0
       - run: pnpm install
       - run: pnpm xss-scan

@@ -8,8 +8,20 @@ import type { GameSlotId } from '../../../shared/types/game-slot-id'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { configuration } from '../../../configuration'
+import { HideServerInfoMode } from '../../../shared/types/hide-server-info-mode'
+import { players } from '../../../players'
+
+vi.mock('../../../configuration', () => ({
+  configuration: { get: vi.fn() },
+}))
+
+vi.mock('../../../players', () => ({
+  players: { isAdmin: vi.fn() },
+}))
 
 const actor = '76561198000000001' as SteamId64
+const admin = '76561198000000002' as SteamId64
 
 const activeSlot = {
   id: 'red-soldier-0' as GameSlotId,
@@ -29,6 +41,11 @@ const baseGame = {
 }
 
 describe('JoinGameButton', () => {
+  beforeEach(() => {
+    vi.mocked(configuration.get).mockResolvedValue(HideServerInfoMode.never)
+    vi.mocked(players.isAdmin).mockResolvedValue(false)
+  })
+
   describe('when game is not yet ready (created/configuring)', () => {
     it('shows a waiting loader for created state', async () => {
       const html = await JoinGameButton({ game: { ...baseGame, state: GameState.created }, actor })
@@ -67,6 +84,31 @@ describe('JoinGameButton', () => {
       const root = parse(html)
       const link = root.querySelector('.join-game-button')
       expect(link?.getAttribute('href')).toBe('steam://connect/192.168.1.1:27020')
+    })
+
+    it('hides the spectator button when server info is hidden', async () => {
+      vi.mocked(configuration.get).mockResolvedValue(HideServerInfoMode.always)
+      const html = await JoinGameButton({ game: baseGame, actor: undefined })
+      const root = parse(html)
+      expect(root.querySelector('.join-game-button')).toBeNull()
+    })
+
+    it('still shows the spectator button to an admin when server info is hidden', async () => {
+      vi.mocked(configuration.get).mockResolvedValue(HideServerInfoMode.always)
+      vi.mocked(players.isAdmin).mockResolvedValue(true)
+      const game = { ...baseGame, slots: [] }
+      const html = await JoinGameButton({ game, actor: admin })
+      const root = parse(html)
+      const link = root.querySelector('.join-game-button')
+      expect(link?.getAttribute('href')).toBe('steam://connect/192.168.1.1:27020')
+    })
+
+    it('still links a participant to the game connect string when server info is hidden', async () => {
+      vi.mocked(configuration.get).mockResolvedValue(HideServerInfoMode.always)
+      const html = await JoinGameButton({ game: baseGame, actor })
+      const root = parse(html)
+      const link = root.querySelector('.join-game-button')
+      expect(link?.getAttribute('href')).toBe('steam://connect/192.168.1.1:27015/abc')
     })
 
     it('links to the game connect string when actor slot is waitingForSubstitute', async () => {

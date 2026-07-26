@@ -14,6 +14,7 @@ import {
 } from '../../../html/components/admin-panel'
 import {
   IconAirTrafficControl,
+  IconAlertSquareRounded,
   IconArrowBackUp,
   IconBan,
   IconChartArrowsVertical,
@@ -24,6 +25,7 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { queue } from '../../../queue-auto'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
 import type { Children } from '@kitajs/html'
@@ -65,7 +67,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
     <EditPlayer player={player} activePage="/profile">
       <form action="" method="post">
         <div class="admin-panel-set">
-          <div class="grid grid-cols-[1fr_184px] gap-y-4">
+          <div class="grid grid-cols-1 gap-y-4 lg:grid-cols-[1fr_184px]">
             <div class="input-group">
               <label class="form-label" for="player-nickname">
                 Nickname
@@ -74,9 +76,9 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
               <NicknameHistoryOverview nameHistory={player.nameHistory ?? []} />
             </div>
 
-            <div class="row-span-3">
+            <div class="max-lg:order-first max-lg:justify-self-center lg:row-span-3">
               <img
-                src={player.avatar.large}
+                src={playerAvatarUrl(player.avatar, 'large')}
                 width="184"
                 height="184"
                 class="player-avatar rounded-sm"
@@ -99,7 +101,14 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
             </div>
 
             <div class="self-end">
-              <button type="submit" class="button" data-variant="accent" data-size="dense">
+              <button
+                type="submit"
+                class="button"
+                data-variant="accent"
+                data-size="dense"
+                data-umami-event="save-player-profile"
+                data-umami-event-player={player.steamId}
+              >
                 <IconDeviceFloppy size={20} />
                 <span>Save</span>
               </button>
@@ -212,7 +221,14 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
             </p>
           </div>
 
-          <button type="submit" class="button" data-variant="accent" data-size="dense">
+          <button
+            type="submit"
+            class="button"
+            data-variant="accent"
+            data-size="dense"
+            data-umami-event="save-player-roles"
+            data-umami-event-player={player.steamId}
+          >
             <IconDeviceFloppy size={20} />
             <span>Save</span>
           </button>
@@ -227,6 +243,13 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
   return (
     <EditPlayer player={player} activePage="/elo">
       <div class="admin-panel-content">
+        <p class="bg-abru-dark-25 text-abru-light-75 mb-4 flex items-center gap-2 rounded-lg px-4 py-3 text-sm">
+          <IconAlertSquareRounded size={20} />
+          <span>
+            ELO should aim at {defaultElo} when the games are properly balanced — values drifting
+            away from it suggest unbalanced games.
+          </span>
+        </p>
         <table class="w-full text-sm text-white">
           <thead>
             <tr class="text-abru-light-75 border-abru-light-15 border-b text-left font-light">
@@ -314,6 +337,13 @@ function EditPlayer(props: {
               <IconMessageCircleOff />
               Chat mutes
             </AdminPanelLink>
+            <AdminPanelLink
+              href={`/players/${props.player.steamId}/edit/elo`}
+              active={props.activePage === '/elo'}
+            >
+              <IconChartArrowsVertical />
+              ELO
+            </AdminPanelLink>
 
             {user.player.roles.includes(PlayerRole.superUser) && (
               <>
@@ -324,13 +354,6 @@ function EditPlayer(props: {
                 >
                   <IconAirTrafficControl />
                   Roles
-                </AdminPanelLink>
-                <AdminPanelLink
-                  href={`/players/${props.player.steamId}/edit/elo`}
-                  active={props.activePage === '/elo'}
-                >
-                  <IconChartArrowsVertical />
-                  ELO
                 </AdminPanelLink>
               </>
             )}
@@ -372,7 +395,10 @@ export async function BanDetails(props: {
           <span class="me-2 text-2xl font-bold" safe>
             {props.ban.reason}
           </span>
-          <span class="text-sm">by {actorDesc}</span>
+          <span class="text-sm">
+            by {actorDesc}
+            {props.ban.anonymous && <span class="italic"> (anonymous)</span>}
+          </span>
         </div>
 
         <div class="row-span-2 flex items-center">
@@ -380,6 +406,8 @@ export async function BanDetails(props: {
             <button
               class="button"
               data-variant="darker"
+              data-umami-event="revoke-ban"
+              data-umami-event-player={props.player.steamId}
               hx-put={`/players/${props.player.steamId}/edit/bans/${props.ban.start.getTime().toString()}/revoke`}
               hx-trigger="click"
               hx-target={`#player-ban-${props.ban.start.getTime().toString()}`}
@@ -439,6 +467,8 @@ export async function ChatMuteDetails(props: {
             <button
               class="button"
               data-variant="darker"
+              data-umami-event="revoke-chat-mute"
+              data-umami-event-player={props.player.steamId}
               hx-put={`/players/${props.player.steamId}/edit/chat-mutes/${props.chatMute.start.getTime().toString()}/revoke`}
               hx-trigger="click"
               hx-target={`#player-chat-mute-${props.chatMute.start.getTime().toString()}`}

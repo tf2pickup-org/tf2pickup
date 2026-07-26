@@ -1,0 +1,23 @@
+@reference '../../../html/styles/main.css';
+
+@layer components {
+  .activity-cells > div {
+    @apply bg-abru-light-5 size-3 rounded-xs;
+
+    &[data-activity='1'] {
+      background-color: #4c1126;
+    }
+
+    &[data-activity='2'] {
+      background-color: #831137;
+    }
+
+    &[data-activity='3'] {
+      background-color: #bd1048;
+    }
+
+    &[data-activity='4'] {
+      background-color: var(--color-accent);
+    }
+  }
+}

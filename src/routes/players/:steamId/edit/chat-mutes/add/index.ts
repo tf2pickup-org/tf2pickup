@@ -23,7 +23,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId } = request.params
-        reply.status(200).html(await AddChatMutePage({ steamId }))
+        await reply.status(200).html(AddChatMutePage({ steamId }))
       },
     )
     .post(
@@ -52,7 +52,7 @@ export default routes(async app => {
           reason: request.body.reason,
         })
         request.flash('success', `Player chat mute added`)
-        reply.redirect(`/players/${request.params.steamId}/edit/chat-mutes`)
+        await reply.redirect(`/players/${request.params.steamId}/edit/chat-mutes`)
       },
     )
 })

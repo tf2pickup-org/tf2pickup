@@ -2,8 +2,9 @@ export class Etf2lApiError extends Error {
   constructor(
     public readonly url: string,
     public readonly response: Response,
-    public override readonly message: string,
+    public readonly detail: string,
   ) {
-    super(`ETF2L API error (${url}): ${message}`)
+    super(`ETF2L API error (${url}): ${detail}`)
+    this.name = 'Etf2lApiError'
   }
 }

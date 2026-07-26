@@ -9,78 +9,81 @@ import { players } from '../players'
 import { preReady } from '../pre-ready'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from '../queue/get-state'
+import { withLogLevel } from '../utils/with-log-level'
 import { meetsSkillThreshold } from './meets-skill-threshold'
 import { withQueueLock } from '../queue/with-queue-lock'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
+import { playerAvatarUrl } from '../shared/player-avatar-url'
 
 export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<QueueSlotModel[]> {
+  logger.trace({ steamId, slotId }, `queue.join()`)
+  const player = await players.bySteamId(steamId, [
+    'hasAcceptedRules',
+    'activeGame',
+    'skill',
+    'steamId',
+    'name',
+    'avatar.medium',
+    'verified',
+  ])
+
+  if (!player.hasAcceptedRules) {
+    throw errors.badRequest(`player has not accepted rules`)
+  }
+
+  if (player.activeGame) {
+    throw errors.badRequest(`player has active game`)
+  }
+
+  if (await configuration.get('queue.require_player_verification')) {
+    if (!player.verified) {
+      throw errors.badRequest(`player is not verified`)
+    }
+  }
+
+  const slot = await collections.queueSlots.findOne({ id: slotId })
+  if (!slot) {
+    throw errors.notFound('no such slot')
+  }
+
+  if (!(await meetsSkillThreshold(player, slot))) {
+    throw errors.badRequest(`player does not meet skill threshold`)
+  }
+
   return await withQueueLock('join', async () => {
-    logger.trace({ steamId, slotId }, `queue.join()`)
-    const player = await players.bySteamId(steamId, [
-      'hasAcceptedRules',
-      'activeGame',
-      'skill',
-      'steamId',
-      'name',
-      'avatar.medium',
-      'verified',
-    ])
-
-    if (!player.hasAcceptedRules) {
-      throw errors.badRequest(`player has not accepted rules`)
-    }
-
-    if (player.activeGame) {
-      throw errors.badRequest(`player has active game`)
-    }
-
     const state = await getState()
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
-      throw errors.badRequest('invalid queue state')
+      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
 
-    let targetSlot = await collections.queueSlots.findOne({ id: slotId })
-    if (!targetSlot) {
-      throw errors.notFound('no such slot')
-    }
-
-    if (targetSlot.player) {
-      throw errors.badRequest('slot occupied')
-    }
-
-    if (!(await meetsSkillThreshold(player, targetSlot))) {
-      throw errors.badRequest(`player does not meet skill threshold`)
-    }
-
-    if (await configuration.get('queue.require_player_verification')) {
-      if (!player.verified) {
-        throw errors.badRequest(`player is not verified`)
-      }
-    }
-
-    const oldSlot = await collections.queueSlots.findOneAndUpdate(
+    const targetSlot = await collections.queueSlots.findOneAndUpdate(
+      { _id: slot._id, player: null },
       {
-        'player.steamId': player.steamId,
-      },
-      {
-        $set: { player: null, ready: false },
+        $set: {
+          player: {
+            steamId: player.steamId,
+            name: player.name,
+            avatarUrl: playerAvatarUrl(player.avatar, 'medium'),
+          },
+          ready: state === QueueState.ready,
+        },
       },
       {
         returnDocument: 'after',
       },
     )
 
-    targetSlot = await collections.queueSlots.findOneAndUpdate(
-      { _id: targetSlot._id },
+    if (!targetSlot) {
+      throw withLogLevel(errors.badRequest('slot occupied'), 'debug')
+    }
+
+    const oldSlot = await collections.queueSlots.findOneAndUpdate(
       {
-        $set: {
-          player: {
-            steamId: player.steamId,
-            name: player.name,
-            avatarUrl: player.avatar.medium,
-          },
-          ready: state === QueueState.ready,
-        },
+        'player.steamId': player.steamId,
+        _id: { $ne: targetSlot._id },
+      },
+      {
+        $set: { player: null, ready: false },
       },
       {
         returnDocument: 'after',
@@ -92,7 +95,7 @@ export async function join(slotId: QueueSlotId, steamId: SteamId64): Promise<Que
     const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
     events.emit('queue/slots:updated', { slots })
 
-    if (targetSlot?.ready) {
+    if (targetSlot.ready) {
       await preReady.start(steamId)
     }
     return slots

@@ -19,7 +19,7 @@ export function ServemeTfBanGameServers() {
             hx-post="/admin/game-servers/serveme-tf/ban-gameservers"
             hx-target="#bannedGameServersList"
             hx-swap="outerHTML"
-            hx-on--after-request="if(event.detail.successful) this.reset()"
+            data-reset-on-success
           >
             <input
               type="text"

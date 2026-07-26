@@ -9,6 +9,7 @@ import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 function generateChangesText(
   oldSkill: PlayerModel['skill'],
@@ -47,11 +48,11 @@ export default fp(
                 .setColor('#ff953e')
                 .setAuthor({
                   name: admin.name,
-                  iconURL: admin.avatar.medium,
+                  iconURL: playerAvatarUrl(admin.avatar, 'medium'),
                   url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
                 })
                 .setTitle('Player skill updated')
-                .setThumbnail(after.avatar.large)
+                .setThumbnail(playerAvatarUrl(after.avatar, 'large'))
                 .setDescription(
                   `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**\n${changes}`,
                 )

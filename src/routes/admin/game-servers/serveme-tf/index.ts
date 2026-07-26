@@ -35,6 +35,7 @@ export default routes(async app => {
         await configuration.set(
           'serveme_tf.preferred_region',
           request.body.servemeTfPreferredRegion,
+          request.user!.player.steamId,
         )
         return reply.status(200).html(RegionList({ saveResult: { success: true } }))
       },
@@ -59,7 +60,11 @@ export default routes(async app => {
           return reply.status(200).html(BannedGameServersList())
         }
 
-        await configuration.set('serveme_tf.ban_gameservers', [...config, pattern])
+        await configuration.set(
+          'serveme_tf.ban_gameservers',
+          [...config, pattern],
+          request.user!.player.steamId,
+        )
         return reply.status(200).html(BannedGameServersList())
       },
     )
@@ -81,6 +86,7 @@ export default routes(async app => {
         await configuration.set(
           'serveme_tf.ban_gameservers',
           config.filter(c => c !== pattern),
+          request.user!.player.steamId,
         )
         return reply.status(200).html(BannedGameServersList())
       },

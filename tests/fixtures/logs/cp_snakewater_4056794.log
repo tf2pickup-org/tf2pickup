@@ -1,0 +1,59 @@
+L 05/16/2026 - 16:33:46: World triggered "Round_Start"
+L 05/16/2026 - 16:33:46: World triggered "Round_Start"
+L 05/16/2026 - 16:34:48: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "1") (player1 "mejf tajson<12><[U:1:202138486]><Blue>") (position1 "708 0 109") 
+L 05/16/2026 - 16:34:57: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "2") (player1 "front<3><[U:1:1010740820]><Blue>") (position1 "2756 -1813 -111") (player2 "kefju<9><[U:1:124205952]><Blue>") (position2 "2674 -1810 -111") 
+L 05/16/2026 - 16:35:39: Team "Blue" triggered "pointcaptured" (cp "4") (cpname "#CP_cap_red_cp1") (numcappers "2") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "4984 -1428 -151") (player2 "Sochin<15><[U:1:1007147137]><Blue>") (position2 "4963 -1647 -144") 
+L 05/16/2026 - 16:35:39: World triggered "Round_Win" (winner "Blue")
+L 05/16/2026 - 16:35:39: World triggered "Round_Length" (seconds "113.36")
+L 05/16/2026 - 16:35:39: Team "Red" current score "0" with "6" players
+L 05/16/2026 - 16:35:39: Team "Blue" current score "1" with "6" players
+L 05/16/2026 - 16:35:56: World triggered "Round_Start"
+L 05/16/2026 - 16:37:14: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "1") (player1 "Twelvef<4><[U:1:931860472]><Red>") (position1 "547 119 67") 
+L 05/16/2026 - 16:37:26: Team "Red" triggered "pointcaptured" (cp "1") (cpname "the BLU Forward Point") (numcappers "1") (player1 "Twelvef<4><[U:1:931860472]><Red>") (position1 "-1720 2453 -111") 
+L 05/16/2026 - 16:37:47: Team "Red" triggered "pointcaptured" (cp "0") (cpname "#CP_cap_blue_cp1") (numcappers "2") (player1 "CR8<10><[U:1:83755882]><Red>") (position1 "-4044 1895 -151") (player2 "wonszu<8><[U:1:60952177]><Red>") (position2 "-4143 1905 -151") 
+L 05/16/2026 - 16:37:47: World triggered "Round_Win" (winner "Red")
+L 05/16/2026 - 16:37:47: World triggered "Round_Length" (seconds "110.82")
+L 05/16/2026 - 16:37:47: Team "Red" current score "1" with "6" players
+L 05/16/2026 - 16:37:47: Team "Blue" current score "1" with "6" players
+L 05/16/2026 - 16:38:04: World triggered "Round_Start"
+L 05/16/2026 - 16:39:36: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "2") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "665 110 68") (player2 "Sochin<15><[U:1:1007147137]><Blue>") (position2 "591 301 67") 
+L 05/16/2026 - 16:39:56: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "2") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "2668 -1931 -104") (player2 "baichi<11><[U:1:288579558]><Blue>") (position2 "2605 -1816 -104") 
+L 05/16/2026 - 16:41:02: Team "Red" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "2") (player1 "sam sung el dzekson<13><[U:1:148896172]><Red>") (position1 "2505 -1704 -56") (player2 "Zuri<14><[U:1:440805949]><Red>") (position2 "2733 -1807 -111") 
+L 05/16/2026 - 16:41:17: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "1") (player1 "baichi<11><[U:1:288579558]><Blue>") (position1 "2581 -1981 -104") 
+L 05/16/2026 - 16:46:17: World triggered "Round_Stalemate"
+L 05/16/2026 - 16:46:17: Team "Red" current score "1" with "6" players
+L 05/16/2026 - 16:46:17: Team "Blue" current score "1" with "6" players
+L 05/16/2026 - 16:46:34: World triggered "Round_Start"
+L 05/16/2026 - 16:47:34: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "1") (player1 "baichi<11><[U:1:288579558]><Blue>") (position1 "594 135 67") 
+L 05/16/2026 - 16:48:19: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "2") (player1 "front<3><[U:1:1010740820]><Blue>") (position1 "2684 -1890 -108") (player2 "Sochin<15><[U:1:1007147137]><Blue>") (position2 "2682 -1775 -111") 
+L 05/16/2026 - 16:53:19: World triggered "Round_Stalemate"
+L 05/16/2026 - 16:53:19: Team "Red" current score "1" with "6" players
+L 05/16/2026 - 16:53:19: Team "Blue" current score "1" with "6" players
+L 05/16/2026 - 16:53:36: World triggered "Round_Start"
+L 05/16/2026 - 16:54:33: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "3") (player1 "CR8<10><[U:1:83755882]><Red>") (position1 "494 140 67") (player2 "sam sung el dzekson<13><[U:1:148896172]><Red>") (position2 "554 273 67") (player3 "Zuri<14><[U:1:440805949]><Red>") (position3 "604 86 64") 
+L 05/16/2026 - 16:56:51: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "2") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "703 58 64") (player2 "Sochin<15><[U:1:1007147137]><Blue>") (position2 "391 170 64") 
+L 05/16/2026 - 16:57:27: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "2") (player1 "baichi<11><[U:1:288579558]><Blue>") (position1 "2484 -1874 -104") (player2 "mejf tajson<12><[U:1:202138486]><Blue>") (position2 "2578 -1933 -104") 
+L 05/16/2026 - 16:57:40: Team "Red" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "3") (player1 "Twelvef<4><[U:1:931860472]><Red>") (position1 "2497 -1970 -104") (player2 "CR8<10><[U:1:83755882]><Red>") (position2 "2496 -1914 -104") (player3 "sam sung el dzekson<13><[U:1:148896172]><Red>") (position3 "2510 -2056 -54") 
+L 05/16/2026 - 16:58:10: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "3") (player1 "CR8<10><[U:1:83755882]><Red>") (position1 "376 323 64") (player2 "wonszu<8><[U:1:60952177]><Red>") (position2 "552 284 67") (player3 "Zuri<14><[U:1:440805949]><Red>") (position3 "643 74 64") 
+L 05/16/2026 - 16:58:45: Team "Red" triggered "pointcaptured" (cp "1") (cpname "the BLU Forward Point") (numcappers "1") (player1 "Twelvef<4><[U:1:931860472]><Red>") (position1 "-1690 2345 -111") 
+L 05/16/2026 - 16:59:26: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "the BLU Forward Point") (numcappers "5") (player1 "front<3><[U:1:1010740820]><Blue>") (position1 "-1370 2118 -111") (player2 "😡alov😡<5><[U:1:248256384]><Blue>") (position2 "-1379 2148 -111") (player3 "baichi<11><[U:1:288579558]><Blue>") (position3 "-1576 2365 -104") (player4 "mejf tajson<12><[U:1:202138486]><Blue>") (position4 "-1404 2333 -92") (player5 "Sochin<15><[U:1:1007147137]><Blue>") (position5 "-1505 2440 -111") 
+L 05/16/2026 - 16:59:55: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "1") (player1 "baichi<11><[U:1:288579558]><Blue>") (position1 "628 186 67") 
+L 05/16/2026 - 17:00:09: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "the RED Forward Point") (numcappers "2") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "2738 -1797 -111") (player2 "baichi<11><[U:1:288579558]><Blue>") (position2 "2521 -1914 -104") 
+L 05/16/2026 - 17:00:23: Team "Blue" triggered "pointcaptured" (cp "4") (cpname "#CP_cap_red_cp1") (numcappers "4") (player1 "😡alov😡<5><[U:1:248256384]><Blue>") (position1 "5041 -1473 -151") (player2 "baichi<11><[U:1:288579558]><Blue>") (position2 "5163 -1608 -144") (player3 "mejf tajson<12><[U:1:202138486]><Blue>") (position3 "5121 -1806 -125") (player4 "Sochin<15><[U:1:1007147137]><Blue>") (position4 "4994 -1765 -151") 
+L 05/16/2026 - 17:00:23: World triggered "Round_Win" (winner "Blue")
+L 05/16/2026 - 17:00:23: World triggered "Round_Length" (seconds "407.40")
+L 05/16/2026 - 17:00:23: Team "Red" current score "1" with "6" players
+L 05/16/2026 - 17:00:23: Team "Blue" current score "2" with "6" players
+L 05/16/2026 - 17:00:40: World triggered "Round_Start"
+L 05/16/2026 - 17:01:48: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "2") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "512 311 67") (player2 "baichi<11><[U:1:288579558]><Blue>") (position2 "482 158 67") 
+L 05/16/2026 - 17:02:18: Team "Red" triggered "pointcaptured" (cp "2") (cpname "#CP_cap_cp3") (numcappers "2") (player1 "Twelvef<4><[U:1:931860472]><Red>") (position1 "346 392 64") (player2 "wonszu<8><[U:1:60952177]><Red>") (position2 "483 0 64") 
+L 05/16/2026 - 17:02:33: Team "Red" triggered "pointcaptured" (cp "1") (cpname "the BLU Forward Point") (numcappers "2") (player1 "sam sung el dzekson<13><[U:1:148896172]><Red>") (position1 "-1701 2495 -111") (player2 "Zuri<14><[U:1:440805949]><Red>") (position2 "-1337 2153 -111") 
+L 05/16/2026 - 17:03:01: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "the BLU Forward Point") (numcappers "1") (player1 "kefju<9><[U:1:124205952]><Blue>") (position1 "-1622 2321 -106") 
+L 05/16/2026 - 17:03:21: Team "Red" triggered "pointcaptured" (cp "1") (cpname "the BLU Forward Point") (numcappers "1") (player1 "Twelvef<4><[U:1:931860472]><Red>") (position1 "-1617 2192 -111") 
+L 05/16/2026 - 17:03:44: World triggered "Round_Win" (winner "Blue")
+L 05/16/2026 - 17:03:44: World triggered "Round_Length" (seconds "184.09")
+L 05/16/2026 - 17:03:44: Team "Red" current score "1" with "6" players
+L 05/16/2026 - 17:03:44: Team "Blue" current score "2" with "6" players
+L 05/16/2026 - 17:04:02: World triggered "Game_Over" reason "Reached Time Limit"
+L 05/16/2026 - 17:04:02: Team "Red" final score "1" with "3" players
+L 05/16/2026 - 17:04:02: Team "Blue" final score "2" with "2" players

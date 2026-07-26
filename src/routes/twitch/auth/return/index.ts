@@ -41,7 +41,7 @@ export default routes(async app => {
 
       const { steamId } = await twitchTv.state.verify(request.query.state)
       await twitchTv.saveUserProfile({ steamId, code: request.query.code })
-      reply.redirect('/settings', 302)
+      await reply.redirect('/settings', 302)
     },
   )
 })

@@ -6,9 +6,11 @@ import { replacePlayer } from './replace-player'
 import { forceEnd } from './force-end'
 import { requestGameServerReinitialization } from './request-game-server-reinitialization'
 import { assignAndConfigure } from './assign-and-configure'
+import { executeRconCommand } from './execute-rcon-command'
 
 export const games = {
   assignAndConfigure,
+  executeRconCommand,
   findOne,
   forceEnd,
   replacePlayer,

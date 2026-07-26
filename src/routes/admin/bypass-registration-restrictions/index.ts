@@ -47,7 +47,11 @@ export default routes(async app => {
           return reply.html(BypassRegistrationRestrictionsPage())
         }
 
-        await configuration.set('players.bypass_registration_restrictions', [...config, steamId])
+        await configuration.set(
+          'players.bypass_registration_restrictions',
+          [...config, steamId],
+          request.user!.player.steamId,
+        )
         requestContext.set('messages', { success: ['Steam ID added'] })
         return reply.html(BypassRegistrationRestrictionsPage())
       },
@@ -70,6 +74,7 @@ export default routes(async app => {
         await configuration.set(
           'players.bypass_registration_restrictions',
           config.filter(c => c !== steamId),
+          request.user!.player.steamId,
         )
         return reply.html(BypassedSteamIds())
       },

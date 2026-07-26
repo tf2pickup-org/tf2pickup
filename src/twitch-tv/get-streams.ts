@@ -2,20 +2,28 @@ import { chunk } from 'es-toolkit'
 import { environment } from '../environment'
 import { getAppAccessToken } from './get-app-access-token'
 import { getStreamsResponseSchema } from './schemas/get-streams-response.schema'
+import { withLogLevel } from '../utils/with-log-level'
 import type { Stream } from './types/stream'
 
 const twitchTvApiUrl = 'https://api.twitch.tv/helix'
 
-const withTwitchTvAuth = async (input: string | URL | Request, init?: RequestInit) =>
-  fetch(input, {
-    ...init,
-    headers: {
-      // eslint-disable-next-line @typescript-eslint/no-misused-spread
-      ...init?.headers,
-      Authorization: `Bearer ${await getAppAccessToken()}`,
-      'Client-ID': environment.TWITCH_CLIENT_ID!,
-    },
-  })
+const withTwitchTvAuth = async (input: string | URL | Request, init?: RequestInit) => {
+  try {
+    return await fetch(input, {
+      ...init,
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/no-misused-spread
+        ...init?.headers,
+        Authorization: `Bearer ${await getAppAccessToken()}`,
+        'Client-ID': environment.TWITCH_CLIENT_ID!,
+      },
+    })
+  } catch (error) {
+    // Twitch is a non-critical external dependency; transient DNS/network
+    // failures (EAI_AGAIN, timeouts) are routine and retried every minute.
+    throw withLogLevel(error, 'warn')
+  }
+}
 
 export async function getStreams(params: {
   userIds: string[]

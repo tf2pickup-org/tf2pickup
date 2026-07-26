@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin'
 import { logger } from '../logger'
 import { Gateway } from './gateway'
-import { extractClientIp } from './extract-client-ip'
+import { realIp } from '../utils/real-ip'
 import websocket from '@fastify/websocket'
 import { secondsToMilliseconds } from 'date-fns'
 import { nanoid } from 'nanoid'
@@ -89,7 +89,7 @@ export default fp(
         gateway.parse(client, messageString)
       })
 
-      const ipAddress = extractClientIp(req.headers) ?? req.socket.remoteAddress
+      const ipAddress = realIp(req)
       const userAgent = req.headers['user-agent']
       gateway.emit('connected', client, ipAddress, userAgent)
     })

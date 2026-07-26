@@ -4,6 +4,8 @@ import { queue } from '../../../queue-auto'
 import { MapVoteOptions } from '../../../admin/scramble-maps/views/html/map-vote-options'
 import { routes } from '../../../utils/routes'
 import { FlashMessage } from '../../../html/components/flash-message'
+import { collections } from '../../../database/collections'
+import { activityLog } from '../../../activity-log'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -19,8 +21,15 @@ export default routes(async app => {
         await reply.html(ScrambleMaps())
       },
     )
-    .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (_request, reply) => {
+    .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (request, reply) => {
       await queue.resetMapOptions()
+      const newMaps = await collections.queueMapOptions
+        .find({}, { projection: { name: 1 } })
+        .toArray()
+      await activityLog.recordMapScramble(
+        request.user!.player.steamId,
+        newMaps.map(m => m.name),
+      )
       await reply.html(
         <>
           <MapVoteOptions />

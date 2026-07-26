@@ -27,8 +27,7 @@ const enum MarkAsFriendButtonState {
 }
 
 type Actor =
-  | Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
-  | undefined
+  Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'> | undefined
 
 export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) {
   let slotContent = <></>

@@ -14,6 +14,16 @@ export default fp(
     events.on(
       'match:started',
       safe(async ({ gameNumber }) => {
+        // Game servers fire match:started repeatedly (map load, mp_restartgame).
+        // The first event transitions the game launching -> started; ignore the
+        // rest instead of failing to find a launching game.
+        const game = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1 } },
+        )
+        if (game?.state !== GameState.launching) {
+          return
+        }
         await update(
           { number: gameNumber, state: GameState.launching },
           {
@@ -36,16 +46,27 @@ export default fp(
     )
 
     events.on(
-      'match:restarted',
+      'match/score:reset',
       safe(async ({ gameNumber }) => {
-        await update(
+        // The server reset its scoreboard mid-match (tournament restart —
+        // everyone left to spectator, an admin re-exec'd the config, etc.) —
+        // rounds won before the restart no longer count. Zero our score to
+        // match and record the restart.
+        const game = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1 } },
+        )
+        if (game?.state !== GameState.started) {
+          return
+        }
+        const updated = await update(
           { number: gameNumber, state: GameState.started },
           {
             $set: {
-              state: GameState.launching,
-            },
-            $unset: {
-              score: 1,
+              score: {
+                [Tf2Team.blu]: 0,
+                [Tf2Team.red]: 0,
+              },
             },
             $push: {
               events: {
@@ -55,12 +76,23 @@ export default fp(
             },
           },
         )
+        events.emit('game:restarted', { game: updated })
       }),
     )
 
     events.on(
       'match:ended',
       safe(async ({ gameNumber }) => {
+        // Gameservers re-fire match:ended after the game already left the started
+        // state (ended, force-ended, restarted). Ignore the rest instead of
+        // failing to find a started game.
+        const existing = await collections.games.findOne(
+          { number: gameNumber },
+          { projection: { state: 1 } },
+        )
+        if (existing?.state !== GameState.started) {
+          return
+        }
         await collections.gamesSubstituteRequests.deleteMany({ gameNumber })
         const game = await update(
           { number: gameNumber, state: GameState.started },
@@ -175,17 +207,6 @@ export default fp(
           game,
           player: steamId,
           playerConnectionStatus: PlayerConnectionStatus.offline,
-        })
-      }),
-    )
-
-    events.on(
-      'match/score:final',
-      safe(async ({ gameNumber, team, score }) => {
-        await update(gameNumber, {
-          $set: {
-            [`score.${team}`]: score,
-          },
         })
       }),
     )

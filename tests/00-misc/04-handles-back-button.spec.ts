@@ -5,7 +5,7 @@ import { QueuePage } from '../pages/queue.page'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-test('handle back button', async ({ page, users }) => {
+test('handle back button @6v6 @9v9', async ({ page, users }) => {
   // Make sure htmx caching is disabled.
 
   const queuePage = new QueuePage(page)

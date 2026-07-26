@@ -1,4 +1,5 @@
 import fp from 'fastify-plugin'
+import { debounce } from 'es-toolkit'
 import { events } from '../../events'
 import { OnlinePlayerList } from '../views/html/online-player-list'
 import { safe } from '../../utils/safe'
@@ -22,6 +23,7 @@ import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 import { errors } from '../../errors'
+import { getState } from '../../queue/get-state'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -78,6 +80,16 @@ export default fp(
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
+
+        if ((await getState()) === QueueState.ready) {
+          const slot = await collections.queueSlots.findOne({
+            'player.steamId': socket.player.steamId,
+            ready: false,
+          })
+          if (slot) {
+            socket.send(await ReadyUpDialog.show(socket.player.steamId))
+          }
+        }
       }
     }
 
@@ -97,14 +109,16 @@ export default fp(
       await syncQueuePage(socket)
     })
 
-    async function updateOnlinePlayers() {
-      const opl = await OnlinePlayerList()
-      const opc = await OnlinePlayerCount()
-      app.gateway.to({ url: '/' }).send(() => [opl, opc])
-    }
+    const updateOnlinePlayers = debounce(
+      safe(async () => {
+        const [opl, opc] = await Promise.all([OnlinePlayerList(), OnlinePlayerCount()])
+        app.gateway.to({ url: '/' }).send(() => [opl, opc])
+      }),
+      300,
+    )
 
-    events.on('player:connected', safe(updateOnlinePlayers))
-    events.on('player:disconnected', safe(updateOnlinePlayers))
+    events.on('player:connected', updateOnlinePlayers)
+    events.on('player:disconnected', updateOnlinePlayers)
 
     events.on(
       'player/activeGame:updated',

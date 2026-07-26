@@ -20,7 +20,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        reply.status(200).html(await SkillImportExportPage())
+        await reply.status(200).html(SkillImportExportPage())
       },
     )
     .get(
@@ -52,7 +52,7 @@ export default routes(async app => {
         const data = await request.file()
         if (!data) {
           requestContext.set('messages', { error: ['No file uploaded'] })
-          reply.status(400).html(await SkillImportExportPage())
+          await reply.status(400).html(SkillImportExportPage())
           return
         }
 
@@ -62,7 +62,7 @@ export default routes(async app => {
         const parseResult = parseCsv(csvContent)
         if (!parseResult.success) {
           requestContext.set('messages', { error: [parseResult.error] })
-          reply.status(400).html(await SkillImportExportPage())
+          await reply.status(400).html(SkillImportExportPage())
           return
         }
 
@@ -120,7 +120,7 @@ export default routes(async app => {
             `Successfully applied ${totalChanges} skill change${totalChanges !== 1 ? 's' : ''}`,
           ],
         })
-        reply.status(200).html(await SkillImportExportPage())
+        await reply.status(200).html(SkillImportExportPage())
       },
     )
 })

@@ -73,15 +73,16 @@ export interface Events {
   'game:ended': {
     game: GameModel
   }
+  // a mid-game match restart was detected and the game's score was reset
+  'game:restarted': {
+    game: GameModel
+  }
 
   'gamelog:message': {
     message: LogMessage
   }
 
   'match:started': {
-    gameNumber: GameNumber
-  }
-  'match:restarted': {
     gameNumber: GameNumber
   }
   'match:roundWon': {
@@ -124,6 +125,16 @@ export interface Events {
     team: Tf2Team
     score: number
   }
+  // the server reset its scoreboard — a tournament match (re)start, detected
+  // by Round_Start being logged twice in the same second
+  'match/score:reset': {
+    gameNumber: GameNumber
+  }
+  'match/controlPoint:captured': {
+    gameNumber: GameNumber
+    team: Tf2Team
+    controlPoint: number
+  }
   'match/logs:uploaded': {
     gameNumber: GameNumber
     logsUrl: string
@@ -151,8 +162,8 @@ export interface Events {
     steamId: SteamId64
   }
   'player:updated': {
-    before: PlayerModel
-    after: PlayerModel
+    before: Omit<PlayerModel, 'eloHistory' | 'skillHistory' | 'nameHistory'>
+    after: Omit<PlayerModel, 'eloHistory' | 'skillHistory' | 'nameHistory'>
     adminId?: SteamId64 | undefined
   }
   'player/activeGame:updated': {
@@ -269,6 +280,10 @@ class TypedEventEmitter extends EventEmitter {
 
   override on<K extends keyof Events>(event: K, listener: (params: Events[K]) => void): this {
     return super.on(event, listener)
+  }
+
+  override off<K extends keyof Events>(event: K, listener: (params: Events[K]) => void): this {
+    return super.off(event, listener)
   }
 }
 

@@ -2,7 +2,7 @@ import { expect, launchGame } from '../fixtures/launch-game'
 import { queueSlots } from '../queue-slots'
 
 launchGame(
-  'queue is locked for players that are involved in active game',
+  'queue is locked for players that are involved in active game @6v6 @9v9',
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async ({ players, gameNumber }) => {
     await Promise.all(

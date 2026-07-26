@@ -14,6 +14,7 @@ export async function Layout(
     title?: string
     description?: string
     canonical?: string
+    image?: string
     embedStyle?: string
   }>,
 ) {
@@ -61,6 +62,7 @@ export async function Layout(
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="htmx-config" content='{"historyCacheSize":"0","globalViewTransitions":true}' />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="preconnect" href="https://avatars.steamstatic.com" />
         <link
           rel="preload"
           href="/fonts/Satoshi-Variable.woff2"
@@ -74,6 +76,14 @@ export async function Layout(
           <script
             defer
             src={environment.UMAMI_SCRIPT_SRC}
+            data-website-id={environment.UMAMI_WEBSITE_ID}
+            data-performance={environment.UMAMI_TRACK_PERFORMANCE === 'true' ? 'true' : undefined}
+          ></script>
+        )}
+        {umamiEnabled && !!environment.UMAMI_RECORDER_SCRIPT_SRC && (
+          <script
+            defer
+            src={environment.UMAMI_RECORDER_SCRIPT_SRC}
             data-website-id={environment.UMAMI_WEBSITE_ID}
           ></script>
         )}
@@ -96,16 +106,37 @@ export async function Layout(
   )
 }
 
-function MetaTags(props?: { title?: string; description?: string; canonical?: string }) {
+function MetaTags(props?: {
+  title?: string
+  description?: string
+  canonical?: string
+  image?: string
+}) {
   const safeMetaTags: JSX.Element[] = []
   const safeOgTags: JSX.Element[] = []
 
-  if (props?.title) {
-    safeOgTags.push(<meta property="og:title" content={props.title} />)
-  }
+  const title = props?.title ?? environment.WEBSITE_NAME
+  const image = `${environment.WEBSITE_URL}${props?.image ?? '/og-image.png'}`
+
+  safeOgTags.push(
+    <meta property="og:type" content="website" />,
+    <meta property="og:site_name" content={environment.WEBSITE_NAME} />,
+    <meta property="og:title" content={title} />,
+    <meta property="og:image" content={image} />,
+    <meta property="og:image:width" content="1200" />,
+    <meta property="og:image:height" content="630" />,
+  )
+  safeMetaTags.push(
+    <meta name="twitter:card" content="summary_large_image" />,
+    <meta name="twitter:title" content={title} />,
+    <meta name="twitter:image" content={image} />,
+  )
 
   if (props?.description) {
-    safeMetaTags.push(<meta name="description" content={props.description} />)
+    safeMetaTags.push(
+      <meta name="description" content={props.description} />,
+      <meta name="twitter:description" content={props.description} />,
+    )
     safeOgTags.push(<meta property="og:description" content={props.description} />)
   }
 

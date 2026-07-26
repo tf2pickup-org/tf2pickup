@@ -4,7 +4,7 @@ import { GamePage } from '../pages/game.page'
 import { delay } from 'es-toolkit'
 
 launchGame.use({ waitForStage: 'started' })
-launchGame('report rounds', async ({ gameNumber, page, gameServer }) => {
+launchGame('report rounds @6v6 @9v9', async ({ gameNumber, page, gameServer }) => {
   // wait for the gameserver to be configured
   const gamePage = new GamePage(page, gameNumber)
   await gamePage.goto()

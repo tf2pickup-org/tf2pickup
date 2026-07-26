@@ -4,7 +4,7 @@ import { delay } from 'es-toolkit'
 
 launchGame.use({ waitForStage: 'started' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-launchGame('cleanup game server', async ({ gameServer, gameNumber }) => {
+launchGame('cleanup game server @6v6 @9v9', async ({ gameServer, gameNumber }) => {
   launchGame.setTimeout(minutesToMilliseconds(2))
 
   await delay(secondsToMilliseconds(3))

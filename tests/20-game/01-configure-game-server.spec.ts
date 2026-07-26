@@ -2,7 +2,7 @@ import { launchGame, expect } from '../fixtures/launch-game'
 import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
 
-launchGame('configure game server', async ({ players, gameNumber, page, gameServer }) => {
+launchGame('configure game server @6v6 @9v9', async ({ players, gameNumber, page, gameServer }) => {
   await Promise.all(
     players.map(async player => {
       const page = await player.gamePage(gameNumber)
@@ -24,8 +24,9 @@ launchGame('configure game server', async ({ players, gameNumber, page, gameServ
     }),
   )
 
+  // default "auto" hides connect info from spectators on non-serveme.tf servers
   const gamePage = new GamePage(page, gameNumber)
   await gamePage.goto()
-  await expect(gamePage.connectString()).toHaveText(/^connect ([a-z0-9\s.:]+)(;\s?password tv)?$/)
-  await expect(gamePage.watchStvButton()).toBeVisible()
+  await expect(gamePage.connectString()).toHaveText('hidden')
+  await expect(gamePage.watchStvButton()).not.toBeVisible()
 })

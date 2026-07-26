@@ -1,0 +1,22 @@
+L 06/13/2026 - 23:35:30: World triggered "Round_Start"
+L 06/13/2026 - 23:35:30: World triggered "Round_Start"
+L 06/13/2026 - 23:39:00: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#Badwater_cap_1") (numcappers "3") (player1 "Ash<7><[U:1:188472797]><Blue>") (position1 "955 -1461 128") (player2 "kenarf<18><[U:1:198219056]><Blue>") (position2 "1006 -1487 128") (player3 "Honeybee_<23><[U:1:328664426]><Blue>") (position3 "959 -1566 129") 
+L 06/13/2026 - 23:39:48: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "#Badwater_cap_2") (numcappers "2") (player1 "SchmitShot<3><[U:1:14220905]><Blue>") (position1 "1549 1129 334") (player2 "Ash<7><[U:1:188472797]><Blue>") (position2 "1558 1111 334") 
+L 06/13/2026 - 23:40:59: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#Badwater_cap_3") (numcappers "3") (player1 "SchmitShot<3><[U:1:14220905]><Blue>") (position1 "-1025 696 612") (player2 "Ash<7><[U:1:188472797]><Blue>") (position2 "-1026 744 512") (player3 "Morbus<13><[U:1:298451818]><Blue>") (position3 "-944 702 512") 
+L 06/13/2026 - 23:42:25: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "#Badwater_cap_4") (numcappers "2") (player1 "SchmitShot<3><[U:1:14220905]><Blue>") (position1 "494 -545 501") (player2 "kenarf<18><[U:1:198219056]><Blue>") (position2 "520 -558 498") 
+L 06/13/2026 - 23:42:25: World triggered "Mini_Round_Length" (seconds "414.99")
+L 06/13/2026 - 23:42:25: World triggered "Round_Win" (winner "Blue")
+L 06/13/2026 - 23:42:25: Team "Red" current score "0" with "9" players
+L 06/13/2026 - 23:42:25: Team "Blue" current score "4" with "9" players
+L 06/13/2026 - 23:42:40: World triggered "Round_Start"
+L 06/13/2026 - 23:44:47: Team "Blue" triggered "pointcaptured" (cp "0") (cpname "#Badwater_cap_1") (numcappers "1") (player1 "stun<4><[U:1:316415963]><Blue>") (position1 "1095 -1551 198") 
+L 06/13/2026 - 23:45:33: Team "Blue" triggered "pointcaptured" (cp "1") (cpname "#Badwater_cap_2") (numcappers "2") (player1 "stun<4><[U:1:316415963]><Blue>") (position1 "1464 1081 257") (player2 "Blanc<6><[U:1:236419358]><Blue>") (position2 "1597 1018 257") 
+L 06/13/2026 - 23:47:11: Team "Blue" triggered "pointcaptured" (cp "2") (cpname "#Badwater_cap_3") (numcappers "2") (player1 "stun<4><[U:1:316415963]><Blue>") (position1 "-1110 742 512") (player2 "TheMasterOfDisaster<12><[U:1:22162172]><Blue>") (position2 "-1047 688 512") 
+L 06/13/2026 - 23:48:27: World triggered "Mini_Round_Length" (seconds "346.85")
+L 06/13/2026 - 23:48:27: World triggered "Round_Win" (winner "Blue")
+L 06/13/2026 - 23:48:27: Team "Red" current score "4" with "9" players
+L 06/13/2026 - 23:48:27: Team "Blue" current score "4" with "9" players
+L 06/13/2026 - 23:48:27: Team "Blue" triggered "pointcaptured" (cp "3") (cpname "#Badwater_cap_4") (numcappers "2") (player1 "samii<10><[U:1:230673489]><Blue>") (position1 "563 -506 511") (player2 "TheMasterOfDisaster<12><[U:1:22162172]><Blue>") (position2 "504 -536 504") 
+L 06/13/2026 - 23:48:42: World triggered "Game_Over" reason "Reached Round Limit"
+L 06/13/2026 - 23:48:42: Team "Red" final score "0" with "6" players
+L 06/13/2026 - 23:48:42: Team "Blue" final score "0" with "8" players

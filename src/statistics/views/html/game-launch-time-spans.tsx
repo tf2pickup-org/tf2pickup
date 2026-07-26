@@ -9,8 +9,10 @@ export async function GameLaunchTimeSpans() {
 
   return (
     <>
-      <span class="text-abru-light-75 text-2xl font-bold">Game launch times</span>
-      <canvas id="game-launch-time-spans"></canvas>
+      <span class="text-abru-light-75 mb-6 text-2xl font-bold">Game launch times</span>
+      <div class="my-auto w-full px-4">
+        <canvas id="game-launch-time-spans"></canvas>
+      </div>
       <script type="module">
         {`
         import { makeGameLaunchTimeSpansChart } from '${mainJs}';

@@ -72,8 +72,12 @@ export async function tryConnect() {
       attempt += 1
 
       if (attempt > maxReconnectAttempts) {
-        logger.error(error, 'mumble socket error')
-        reportError(error)
+        if (attempt === maxReconnectAttempts + 1) {
+          logger.error(error, 'mumble socket error')
+          reportError(error)
+        } else {
+          logger.debug(error, 'mumble socket error')
+        }
         reconnecting = false
         return
       }

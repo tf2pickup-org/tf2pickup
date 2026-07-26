@@ -21,6 +21,7 @@ function showReadyUpDialog() {
 
   if (!dialog.open) {
     dialog.showModal()
+    window.umami?.track('ready-up-shown')
   }
 
   setButtonsDisabled(dialog, false)

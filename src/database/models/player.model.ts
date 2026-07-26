@@ -23,6 +23,7 @@ export interface PlayerBan {
   start: Date
   end: Date
   reason: string
+  anonymous?: boolean
 }
 
 export interface TwitchTvProfile {
@@ -52,6 +53,7 @@ export interface PlayerModel {
   steamId: SteamId64
   joinedAt: Date
   avatar: PlayerAvatar
+  avatarLastSyncedAt?: Date
   roles: PlayerRole[]
   hasAcceptedRules: boolean
   etf2lProfile?: Etf2lProfile

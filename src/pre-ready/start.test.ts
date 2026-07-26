@@ -22,9 +22,17 @@ vi.mock('../events', () => ({
   },
 }))
 
+vi.mock('../tasks', () => ({
+  tasks: {
+    cancel: vi.fn(),
+    schedule: vi.fn(),
+  },
+}))
+
 import { configuration } from '../configuration'
 import { players } from '../players'
 import { events } from '../events'
+import { tasks } from '../tasks'
 import { start } from './start'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -47,11 +55,21 @@ describe('preReady.start', () => {
     })
   })
 
+  it('schedules the expiry, replacing any previously armed one', async () => {
+    vi.mocked(configuration.get).mockResolvedValue(30_000)
+
+    await start(steamId)
+
+    expect(tasks.cancel).toHaveBeenCalledWith('preReady:cancel', { player: steamId })
+    expect(tasks.schedule).toHaveBeenCalledWith('preReady:cancel', 30_000, { player: steamId })
+  })
+
   it('does not emit player/preReady:updated when timeout is zero', async () => {
     vi.mocked(configuration.get).mockResolvedValue(0)
 
     await start(steamId)
 
     expect(events.emit).not.toHaveBeenCalled()
+    expect(tasks.schedule).not.toHaveBeenCalled()
   })
 })

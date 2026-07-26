@@ -1,7 +1,8 @@
-import type { FastifyRequest } from 'fastify'
+import type { IncomingMessage } from 'node:http'
 
 // Replicates the behavior of @supercharge/request-ip (used by nestjs-real-ip's RealIP decorator).
 // Checks headers in priority order before falling back to the raw socket IP.
+// Accepts both FastifyRequest and the raw IncomingMessage (childLoggerFactory).
 const proxyHeaders = [
   'x-forwarded-for',
   'x-forwarded',
@@ -15,7 +16,7 @@ const proxyHeaders = [
   'x-cluster-client-ip',
 ] as const
 
-export function realIp(req: FastifyRequest): string {
+export function realIp(req: Pick<IncomingMessage, 'headers' | 'socket'> & { ip?: string }): string {
   for (const header of proxyHeaders) {
     const value = req.headers[header]
     if (typeof value === 'string' && value) {
@@ -24,5 +25,5 @@ export function realIp(req: FastifyRequest): string {
       if (first !== undefined) return first.trim()
     }
   }
-  return req.socket.remoteAddress ?? req.ip
+  return req.socket.remoteAddress ?? req.ip ?? ''
 }

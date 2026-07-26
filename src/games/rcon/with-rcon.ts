@@ -5,7 +5,7 @@ import { logger } from '../../logger'
 import { errors } from '../../errors'
 import type { RconCommand } from '../../shared/types/rcon-command'
 
-interface Rcon {
+export interface Rcon {
   send: (command: RconCommand) => Promise<string>
 }
 

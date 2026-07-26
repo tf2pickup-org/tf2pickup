@@ -36,12 +36,14 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { mode, captainMinGames, captainPickTimeout } = request.body
+        const actor = request.user!.player.steamId
         await Promise.all([
-          configuration.set('queue.mode', mode),
-          configuration.set('queue.captain_min_games', captainMinGames),
+          configuration.set('queue.mode', mode, actor),
+          configuration.set('queue.captain_min_games', captainMinGames, actor),
           configuration.set(
             'queue.captain_pick_timeout',
             secondsToMilliseconds(captainPickTimeout),
+            actor,
           ),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })

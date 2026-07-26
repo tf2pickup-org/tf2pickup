@@ -11,6 +11,7 @@ import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { errors } from '../errors'
 import { environment } from '../environment'
 import { events } from '../events'
+import { withLogLevel } from '../utils/with-log-level'
 
 interface UpsertPlayerParams {
   steamID: string
@@ -70,8 +71,12 @@ async function verifyInGameHours(steamId: SteamId64) {
   const reportedHours = await getTf2InGameHours(steamId)
   logger.debug({ steamId, reportedHours, requiredHours }, 'in-game hours verification')
   if (reportedHours < requiredHours) {
-    throw errors.forbidden(
-      `insufficient TF2 in-game hours (steamId: ${steamId}, reported: ${reportedHours}, required: ${requiredHours})`,
+    logger.info({ steamId, reportedHours, requiredHours }, 'insufficient TF2 in-game hours')
+    throw withLogLevel(
+      errors.forbidden(
+        `insufficient TF2 in-game hours (reported: ${reportedHours}, required: ${requiredHours})`,
+      ),
+      'info',
     )
   }
 }
@@ -88,6 +93,7 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
       etf2lProfile.bans &&
       etf2lProfile.bans.filter(ban => ban.end > Date.now() / 1000).length > 0
     ) {
+      logger.warn({ etf2lProfile, player }, 'banned on ETF2L.org')
       throw errors.forbidden(`you are banned on ETF2L.org`)
     }
 
@@ -97,7 +103,8 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
     }
   } catch (error) {
     if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
-      throw errors.forbidden(`ETF2L.org account is required`)
+      logger.info({ player }, 'ETF2L.org account not found')
+      throw withLogLevel(errors.forbidden(`ETF2L.org account is required`), 'info')
     } else {
       throw error
     }
@@ -132,6 +139,7 @@ export async function create({
     },
   })
   const player = (await collections.players.findOne({ _id: insertedId }))!
+  logger.info({ player }, 'player created')
   events.emit('player:created', { steamId: player.steamId })
   return player
 }

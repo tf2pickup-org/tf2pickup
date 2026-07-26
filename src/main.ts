@@ -7,19 +7,30 @@ import { logger, logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
+import { realIp } from './utils/real-ip'
+import { logError } from './utils/log-error'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 
-const app = fastify({ loggerInstance })
+const app = fastify({
+  loggerInstance,
+  trustProxy: environment.TRUST_PROXY,
+  // Bind the client IP into the per-request child logger so every request-scoped
+  // log line (notably fastify's "request completed") is attributable to an IP.
+  childLoggerFactory: (parent, bindings, childLoggerOpts, rawReq) =>
+    parent.child({ ...bindings, 'req.clientIp': realIp(rawReq) }, childLoggerOpts),
+})
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
 
 logger.info(`starting tf2pickup.org ${version}`)
 
-if (process.env['CI'] !== 'true') {
-  await app.register(await import('@fastify/rate-limit'))
+if (!environment.CI) {
+  await app.register(await import('@fastify/rate-limit'), {
+    keyGenerator: req => realIp(req),
+  })
 }
 
 await app.register(await import('@fastify/helmet'), {
@@ -27,12 +38,15 @@ await app.register(await import('@fastify/helmet'), {
     environment.NODE_ENV === 'production'
       ? {
           directives: {
-            'script-src': ["'self'", "'unsafe-eval'"], // unsafe-eval is for hx-on attributes
+            'script-src': ["'self'"],
             'script-src-elem': [
               "'self'",
               "'unsafe-inline'",
               ...(environment.UMAMI_SCRIPT_SRC
                 ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
+                : []),
+              ...(environment.UMAMI_RECORDER_SCRIPT_SRC
+                ? [new URL(environment.UMAMI_RECORDER_SCRIPT_SRC).origin]
                 : []),
             ],
             'script-src-attr': ["'unsafe-inline'"],
@@ -49,6 +63,9 @@ await app.register(await import('@fastify/helmet'), {
               "'self'",
               ...(environment.UMAMI_SCRIPT_SRC
                 ? [new URL(environment.UMAMI_SCRIPT_SRC).origin]
+                : []),
+              ...(environment.UMAMI_RECORDER_SCRIPT_SRC
+                ? [new URL(environment.UMAMI_RECORDER_SCRIPT_SRC).origin]
                 : []),
             ],
           },
@@ -89,9 +106,8 @@ app.addHook('onSend', async (request, reply) => {
 })
 
 app.setErrorHandler((error, request, reply) => {
-  logger.error(error)
-
   if (!(error instanceof Error)) {
+    logger.error(error)
     return
   }
 
@@ -101,6 +117,8 @@ app.setErrorHandler((error, request, reply) => {
     statusCode = error.statusCode
     message = error.message
   }
+
+  logError(error)
 
   const accept = request.accepts()
   switch (accept.type(['json', 'html'])) {
@@ -145,7 +163,7 @@ await app.register(autoload, {
   dir: resolve(import.meta.dirname, 'routes'),
   dirNameRoutePrefix: true,
   scriptPattern: /(?:(?:^.?|\.[^d]|[^.]d|[^.][^d])\.ts|\.js|\.cjs|\.mjs|\.cts|\.mts|\.tsx?)$/,
-  matchFilter: path => !path.includes('/dto/'),
+  matchFilter: path => !path.includes('/dto/') && !path.includes('.test.'),
 })
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })

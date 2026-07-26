@@ -14,18 +14,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7.0.1
         with:
           token: ${{ secrets.RELEASE_TOKEN }}
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v6.0.8
+      - uses: pnpm/action-setup@v6.0.9
         with:
-          version: 11.3.0
+          version: 11.16.0
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7.0.0
         with:
-          node-version: 24.16.0
+          node-version: 24.18.0
           cache: pnpm
 
       - name: Install dependencies

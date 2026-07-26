@@ -190,6 +190,9 @@ export class GameServerSimulator {
 
               socket.write(response.toBuffer())
             }
+
+            // real srcds logs every rcon command (sv_rcon_log)
+            this.log(`rcon from "127.0.0.1:51234": command "${packet.body}"`)
             break
           }
 
@@ -302,6 +305,17 @@ export class GameServerSimulator {
     await delay(this.eventDelay / 2)
   }
 
+  // a tournament match restart logs Round_Start twice in the same second
+  async matchRestarts() {
+    await delay(this.eventDelay / 2)
+    this.log('World triggered "Round_Start"')
+    this.log('World triggered "Round_Start"')
+    this.roundStartTimestamp = Date.now()
+    this.score.blu = 0
+    this.score.red = 0
+    await delay(this.eventDelay / 2)
+  }
+
   async matchEnds() {
     const playersPerTeam = this.addedPlayers.length / 2
     await delay(this.eventDelay / 2)
@@ -322,6 +336,21 @@ export class GameServerSimulator {
     this.log(`Team "Blue" current score "${this.score.blu}" with "${playersPerTeam}" players`)
     this.roundStartTimestamp = Date.now()
     await delay(this.eventDelay / 2)
+  }
+
+  // Feeds raw log lines (as downloaded from logs.tf) through the same pipeline
+  // a real gameserver uses. The leading `L MM/DD/YYYY - HH:MM:SS: ` prefix is
+  // stripped so the simulator can re-stamp each line with its own timestamp,
+  // matching what the server would emit live.
+  async feedLogs(lines: AsyncIterable<string> | Iterable<string>) {
+    for await (const line of lines) {
+      const payload = line.replace(/^L \d{2}\/\d{2}\/\d{4} - \d{2}:\d{2}:\d{2}: /, '').trim()
+      if (!payload) {
+        continue
+      }
+      this.log(payload)
+      await delay(this.eventDelay / 2)
+    }
   }
 
   async sendHeartbeat() {
@@ -347,7 +376,7 @@ export class GameServerSimulator {
     const header = Buffer.from([255, 255, 255, 255, 0x53])
     const logSecret = Buffer.from(this.logSecret ?? '')
     const magicStringEnd = Buffer.from('L ')
-    const timeStamp = format(new Date(), 'dd/MM/yyyy - HH:mm:ss')
+    const timeStamp = format(new Date(), 'MM/dd/yyyy - HH:mm:ss')
     const payloadBuffer = Buffer.from(`${timeStamp}: ${payload}`)
     return Buffer.concat([header, logSecret, magicStringEnd, payloadBuffer, Buffer.from([0, 0])])
   }

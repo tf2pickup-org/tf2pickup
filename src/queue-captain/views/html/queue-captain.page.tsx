@@ -28,6 +28,9 @@ export async function QueueCaptainPage() {
   const state = await getState()
   const allPlayers = await collections.queuePlayers.find({}).toArray()
   const count = allPlayers.length
+  const queueConfig = queueConfigs[environment.QUEUE_CONFIG]
+  const required =
+    queueConfig.teamCount * queueConfig.classes.reduce((sum, cls) => sum + cls.count, 0)
 
   return (
     <Layout
@@ -55,7 +58,7 @@ export async function QueueCaptainPage() {
           </div>
 
           <div class="order-last lg:order-3 lg:row-span-2">
-            <Sidebar user={user} />
+            <Sidebar user={user} required={required} />
           </div>
         </div>
       </Page>

@@ -65,7 +65,10 @@ function init(container: HTMLElement) {
     })
   })
 
-  // Try to restore saved selection, fallback to first tab
+  // Try to restore saved selection, fallback to first visible tab
+  // (a tab button may exist only on some breakpoints, e.g. mobile-only)
+  const isTabVisible = (tab: Element) => tab instanceof HTMLElement && tab.offsetParent !== null
+
   let initialTab: Element | null = null
   if (shouldPersist && storageKey) {
     try {
@@ -83,7 +86,11 @@ function init(container: HTMLElement) {
     }
   }
 
-  selectTab(initialTab ?? tabs.item(0))
+  if (initialTab && !isTabVisible(initialTab)) {
+    initialTab = null
+  }
+
+  selectTab(initialTab ?? Array.from(tabs).find(isTabVisible) ?? tabs.item(0))
 }
 
 onLoadWithAttr('data-tabs', init)

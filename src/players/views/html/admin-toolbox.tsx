@@ -18,6 +18,7 @@ import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { makeSkillSuggestions } from '../../make-skill-suggestions'
+import { PlayerVerifiedCheckbox } from './player-verified-checkbox'
 
 export async function AdminToolbox(props: {
   player: Pick<
@@ -50,29 +51,16 @@ export async function AdminToolbox(props: {
         }
       </script>
 
-      {requireVerification && (
-        <div class="bg-abru-light-5 flex items-center gap-3 rounded-md px-3 py-2">
-          <label for="playerVerified" class="cursor-pointer text-sm select-none">
-            Player verified
-          </label>
-          <input
-            type="checkbox"
-            id="playerVerified"
-            name="verified"
-            value="true"
-            checked={props.player.verified}
-            hx-put={`/players/${player.steamId}/verify`}
-            hx-trigger="change"
-            hx-target="#player-admin-toolbox"
-            hx-swap="outerHTML"
-            hx-include="this"
-          />
-        </div>
-      )}
-
       <div class="player-admin-toolbox">
         <div class="admin-toolbox-header">
+          {requireVerification && <PlayerVerifiedCheckbox player={player} />}
           <BanStatus bans={player.bans} steamId={player.steamId} />
+          <a
+            href={`/admin/activity-log?player=${player.steamId}`}
+            class="text-abru-light-50 hover:text-abru-light-75 shrink-0 text-sm"
+          >
+            Activity log
+          </a>
           <a
             href={`/players/${player.steamId}/edit`}
             class={['button shrink-0', compact && 'compact']}
@@ -86,7 +74,7 @@ export async function AdminToolbox(props: {
 
         <div class="admin-toolbox-divider" />
 
-        <div class="admin-toolbox-body">
+        <div class={['admin-toolbox-body', compact && 'compact']}>
           <div class="admin-toolbox-skill">
             {player.skill === undefined && (
               <div class="flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
@@ -112,8 +100,15 @@ export async function AdminToolbox(props: {
                   </GameClassSkillInput>
                 ))}
 
-                <div class={['skill-buttons', compact && 'compact']}>
-                  <button type="submit" class="button" data-variant="accent" title="Save">
+                <div class="skill-buttons">
+                  <button
+                    type="submit"
+                    class="button"
+                    data-variant="accent"
+                    title="Save"
+                    data-umami-event="save-player-skill"
+                    data-umami-event-player={player.steamId}
+                  >
                     <IconDeviceFloppy size={20} />
                     <span>Save</span>
                   </button>
@@ -122,6 +117,8 @@ export async function AdminToolbox(props: {
                     type="button"
                     class="button"
                     title="Reset"
+                    data-umami-event="reset-player-skill"
+                    data-umami-event-player={player.steamId}
                     hx-delete={`/players/${player.steamId}/edit/skill`}
                     hx-confirm="Are you sure you want to reset this player's skill?"
                     hx-trigger="click"

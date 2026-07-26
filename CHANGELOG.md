@@ -1,5 +1,424 @@
 # Changelog
 
+## [4.22.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.1...4.22.2) (2026-07-25)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/static to v10.1.2 [security] ([e25364a](https://github.com/tf2pickup-org/tf2pickup/commit/e25364a252ff8d724ad1686c633b6f81d1db3aa7))
+* **deps:** update dependency marked to v18.0.7 ([9d7d656](https://github.com/tf2pickup-org/tf2pickup/commit/9d7d656750541142f7a86dc13cfb3db4f9d89f38))
+* **deps:** update dependency postcss to v8.5.21 ([4c9d670](https://github.com/tf2pickup-org/tf2pickup/commit/4c9d670351f410ab3f49841d3c8b20feba2e89e5))
+* **deps:** update dependency postcss to v8.5.22 ([a27514d](https://github.com/tf2pickup-org/tf2pickup/commit/a27514da56d04d52b55c343206e66d6426279367))
+* **games:** revert queue to waiting when game creation fails ([#758](https://github.com/tf2pickup-org/tf2pickup/issues/758)) ([993963a](https://github.com/tf2pickup-org/tf2pickup/commit/993963aadae0737e32fd98f9f04b23adca6acd20)), closes [#757](https://github.com/tf2pickup-org/tf2pickup/issues/757)
+* **queue:** prevent launching the queue with vacated slots ([#757](https://github.com/tf2pickup-org/tf2pickup/issues/757)) ([0ada397](https://github.com/tf2pickup-org/tf2pickup/commit/0ada397c8440a23c0fbe2107847526f7cd90009b))
+
+## [4.22.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.0...4.22.1) (2026-07-23)
+
+
+### Bug Fixes
+
+* **deps:** update dependency postcss to v8.5.20 ([c271df0](https://github.com/tf2pickup-org/tf2pickup/commit/c271df02fadb8c2ab4e97f8ff2d6a43134ec4558))
+* **telemetry:** report games30d instead of per-instance ratios ([#756](https://github.com/tf2pickup-org/tf2pickup/issues/756)) ([2bc0405](https://github.com/tf2pickup-org/tf2pickup/commit/2bc0405fcddf1081b3a027c08cd070a83fdce826))
+
+# [4.22.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.21.0...4.22.0) (2026-07-22)
+
+
+### Bug Fixes
+
+* **games:** make RCON console dialog work without 'unsafe-eval' CSP ([#753](https://github.com/tf2pickup-org/tf2pickup/issues/753)) ([dd10afd](https://github.com/tf2pickup-org/tf2pickup/commit/dd10afd6172047be14d858ea62bcae4be5467fa5)), closes [#735](https://github.com/tf2pickup-org/tf2pickup/issues/735) [#750](https://github.com/tf2pickup-org/tf2pickup/issues/750)
+* **ui:** make admin panel and edit player views usable on mobile ([#751](https://github.com/tf2pickup-org/tf2pickup/issues/751)) ([8b7f7a2](https://github.com/tf2pickup-org/tf2pickup/commit/8b7f7a2cae1f3c3b6f4c2f7b2f50db098d2ad265))
+
+
+### Features
+
+* **players:** add staff page ([#752](https://github.com/tf2pickup-org/tf2pickup/issues/752)) ([b84ef03](https://github.com/tf2pickup-org/tf2pickup/commit/b84ef0357c55faf61f0b20ae38a993f16ecf88ac))
+
+# [4.21.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.6...4.21.0) (2026-07-21)
+
+
+### Features
+
+* **games:** RCON console for admins on the game page ([#735](https://github.com/tf2pickup-org/tf2pickup/issues/735)) ([bfb1bc5](https://github.com/tf2pickup-org/tf2pickup/commit/bfb1bc50a2ee1683e12d86779622e429b5f690bf))
+
+## [4.20.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.5...4.20.6) (2026-07-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/etag to v6.2.0 ([9f607cf](https://github.com/tf2pickup-org/tf2pickup/commit/9f607cf3af0e92d042480378212e9caebb0d396d))
+* **deps:** update dependency discord.js to v14.27.0 ([a823791](https://github.com/tf2pickup-org/tf2pickup/commit/a8237913258f7193039dc418f5640bd693bed647))
+* **deps:** update tailwindcss monorepo to v4.3.3 ([b7f9a97](https://github.com/tf2pickup-org/tf2pickup/commit/b7f9a97db992589c6a1575bfb2273ab1f02494ec))
+* remove 'unsafe-eval' from Content Security Policy ([#750](https://github.com/tf2pickup-org/tf2pickup/issues/750)) ([b5d848e](https://github.com/tf2pickup-org/tf2pickup/commit/b5d848e471ef4c82fa1d0af60bfab9d75bf11bcf))
+
+## [4.20.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.4...4.20.5) (2026-07-18)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/otel to v0.20.1 ([bbe697c](https://github.com/tf2pickup-org/tf2pickup/commit/bbe697c1f2918dcd91246e25bac47c502db8755c))
+* **deps:** update dependency fastify-disablecache to v5.0.1 ([ea3acd6](https://github.com/tf2pickup-org/tf2pickup/commit/ea3acd69692d5bb562f39732dda1f637b2949afc))
+* **deps:** update dependency nanoid to v6 ([#746](https://github.com/tf2pickup-org/tf2pickup/issues/746)) ([dba449a](https://github.com/tf2pickup-org/tf2pickup/commit/dba449af54f82673328ff4ef5744198aaf1412f8))
+* **deps:** update dependency postcss to v8.5.18 ([f41e2c6](https://github.com/tf2pickup-org/tf2pickup/commit/f41e2c61b52b018b2e2b1bb93976687d062a7a0d))
+* **deps:** update dependency postcss to v8.5.19 ([005d156](https://github.com/tf2pickup-org/tf2pickup/commit/005d15624f0537bbaa5158f41e49d0f797a4a903))
+* **deps:** update dependency ws to v8.21.1 ([1bbff7f](https://github.com/tf2pickup-org/tf2pickup/commit/1bbff7fd7cb6272f12eb5709d1c66b9b294d592c))
+* **games:** detect mid-game match restarts and reset the score ([#739](https://github.com/tf2pickup-org/tf2pickup/issues/739)) ([8d7f318](https://github.com/tf2pickup-org/tf2pickup/commit/8d7f31805b1acd755ce665a9df58410d992665db))
+* **telemetry:** track game reinitializations, server reassignments and ELO page renders ([#748](https://github.com/tf2pickup-org/tf2pickup/issues/748)) ([0b325cb](https://github.com/tf2pickup-org/tf2pickup/commit/0b325cb1d2ad7598dae82e7208780b8e9c154eaa))
+
+## [4.20.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.3...4.20.4) (2026-07-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/static to v10 ([#742](https://github.com/tf2pickup-org/tf2pickup/issues/742)) ([5c91c40](https://github.com/tf2pickup-org/tf2pickup/commit/5c91c402712dd53a1618e2208b228c22622826f8))
+* **deps:** update dependency @fastify/websocket to v11.3.0 ([e2f5d28](https://github.com/tf2pickup-org/tf2pickup/commit/e2f5d28658c940c56c095c7fbcb49932361e089b))
+* **deps:** update dependency postcss to v8.5.17 ([9545223](https://github.com/tf2pickup-org/tf2pickup/commit/95452238a59a1cb43dffe7605ed575d0d723c053))
+* player list layout on small screens ([#745](https://github.com/tf2pickup-org/tf2pickup/issues/745)) ([8d1349e](https://github.com/tf2pickup-org/tf2pickup/commit/8d1349e60feb4dcda3c4054db583fe7ae63d581c))
+* verify log transmission before configuring the game server ([#734](https://github.com/tf2pickup-org/tf2pickup/issues/734)) ([eb7ce11](https://github.com/tf2pickup-org/tf2pickup/commit/eb7ce11eafdcc4f924952495a8241daf5b6685a4))
+
+## [4.20.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.2...4.20.3) (2026-07-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency sanitize-html to v2.17.6 ([da521d2](https://github.com/tf2pickup-org/tf2pickup/commit/da521d2d6acd0a8fe7528143897c254fccc4db88))
+* **game-servers:** free static game servers when a game is reassigned ([#740](https://github.com/tf2pickup-org/tf2pickup/issues/740)) ([edf0eda](https://github.com/tf2pickup-org/tf2pickup/commit/edf0eda5df794604890b5c8f2e2fd6c449e17c3b)), closes [#6862](https://github.com/tf2pickup-org/tf2pickup/issues/6862) [#8](https://github.com/tf2pickup-org/tf2pickup/issues/8) [#6](https://github.com/tf2pickup-org/tf2pickup/issues/6) [#02](https://github.com/tf2pickup-org/tf2pickup/issues/02)
+
+## [4.20.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.1...4.20.2) (2026-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency discord.js to v14.26.5 ([6a0e3bd](https://github.com/tf2pickup-org/tf2pickup/commit/6a0e3bd1002f3aca0a9e728c146fce3f090c6046))
+* **queue:** show ready-up dialog after page refresh ([#736](https://github.com/tf2pickup-org/tf2pickup/issues/736)) ([296a340](https://github.com/tf2pickup-org/tf2pickup/commit/296a3402ead4f33801f3ce3a18227a57c0ed21b0))
+
+## [4.20.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.20.0...4.20.1) (2026-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/autoload to v6.4.0 ([715dcf5](https://github.com/tf2pickup-org/tf2pickup/commit/715dcf546434730fe7fd447a61559d29d6b872ba))
+* **deps:** update dependency @fastify/helmet to v13.1.0 ([3d58bac](https://github.com/tf2pickup-org/tf2pickup/commit/3d58bacf7698359f680e47687e271e417574f80d))
+* **deps:** update dependency @fastify/multipart to v10.1.0 ([a00796a](https://github.com/tf2pickup-org/tf2pickup/commit/a00796afee4b35a4cc732176f2900ff9d216b88e))
+* **deps:** update dependency @fastify/otel to v0.20.0 ([#737](https://github.com/tf2pickup-org/tf2pickup/issues/737)) ([e8c508a](https://github.com/tf2pickup-org/tf2pickup/commit/e8c508adfe1ce49935cab86ad4edddf0602995fc))
+* **deps:** update dependency @fastify/static to v9.3.0 ([1ff66ef](https://github.com/tf2pickup-org/tf2pickup/commit/1ff66efdfce5046b375344346a7124f04c606f9d))
+* **deps:** update dependency marked to v18.0.6 ([88c640d](https://github.com/tf2pickup-org/tf2pickup/commit/88c640d5e05a618c2af87a67bb07778c5c756cce))
+* **deps:** update dependency mongodb to v7.5.0 ([a4df013](https://github.com/tf2pickup-org/tf2pickup/commit/a4df0133aeb5e5099ad4f79f2dc36c4837bc7b9e))
+
+# [4.20.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.19.0...4.20.0) (2026-07-09)
+
+
+### Features
+
+* mark 1500 ELO as the balance target and open the ELO view to admins ([#732](https://github.com/tf2pickup-org/tf2pickup/issues/732)) ([8249589](https://github.com/tf2pickup-org/tf2pickup/commit/82495892ed834bf305e8ab365ef6ae3e3a13ee72))
+
+# [4.19.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.3...4.19.0) (2026-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fastify to v5.10.0 ([1bb41fb](https://github.com/tf2pickup-org/tf2pickup/commit/1bb41fbac21f7fb45d7dbb89b3010207ac00c730))
+
+
+### Features
+
+* add ultiduo queue config ([#731](https://github.com/tf2pickup-org/tf2pickup/issues/731)) ([856ee85](https://github.com/tf2pickup-org/tf2pickup/commit/856ee85d23427de87c590160ceadf6b8fddfdd90)), closes [#728](https://github.com/tf2pickup-org/tf2pickup/issues/728)
+* all-time game activity heatmap on the statistics page ([#730](https://github.com/tf2pickup-org/tf2pickup/issues/730)) ([1f35cad](https://github.com/tf2pickup-org/tf2pickup/commit/1f35cad4fe2fc74dff0de20c372b7ba8ee4f2a35))
+
+## [4.18.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.2...4.18.3) (2026-07-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency type-fest to v5.8.0 ([2ae6efa](https://github.com/tf2pickup-org/tf2pickup/commit/2ae6efa2d43d592cff06cef1f68dcd2d65ad0492))
+* **deps:** update opentelemetry-js-contrib monorepo ([ccd9a51](https://github.com/tf2pickup-org/tf2pickup/commit/ccd9a5163be8a2785ef524fc075e81098ad65fde))
+* harden against recon/injection activity from security review ([#728](https://github.com/tf2pickup-org/tf2pickup/issues/728)) ([de59644](https://github.com/tf2pickup-org/tf2pickup/commit/de596445c6fbfa77e0d92a4a6a253653ec4354e1))
+
+## [4.18.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.1...4.18.2) (2026-07-06)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @napi-rs/canvas to v1.0.2 ([28f7af1](https://github.com/tf2pickup-org/tf2pickup/commit/28f7af176b29254e5ee75bb443d78b9526aebf68))
+* **deps:** update dependency country-flag-icons to v1.6.20 ([773af2d](https://github.com/tf2pickup-org/tf2pickup/commit/773af2d8ef68a5dcb83607fcee324729fdaf69d2))
+* **deps:** update dependency csv-parse to v7.0.1 ([0173b2b](https://github.com/tf2pickup-org/tf2pickup/commit/0173b2bf45f76e4221bcf33438fc41d9c4d6ac18))
+* **deps:** update dependency csv-stringify to v6.8.1 ([68d021e](https://github.com/tf2pickup-org/tf2pickup/commit/68d021e6de8ab1c9fabbec593d73658f6b41e7ca))
+* **deps:** update dependency fastify to v5.9.0 ([#723](https://github.com/tf2pickup-org/tf2pickup/issues/723)) ([9d93d1d](https://github.com/tf2pickup-org/tf2pickup/commit/9d93d1d074f14d0b5eb3d2e88dd8a4fee6df0829))
+* **deps:** update dependency motion to v12.42.2 ([209d6ec](https://github.com/tf2pickup-org/tf2pickup/commit/209d6ecee5d8119ca6a2718c76018b45126f9f2f))
+* **deps:** update dependency openid to v2.0.17 ([#724](https://github.com/tf2pickup-org/tf2pickup/issues/724)) ([6d9ad00](https://github.com/tf2pickup-org/tf2pickup/commit/6d9ad008ddee6a195d9c16779626aeeb2def9b4b))
+* **deps:** update tailwindcss monorepo to v4.3.2 ([c109fa2](https://github.com/tf2pickup-org/tf2pickup/commit/c109fa2c1600dc542bb9dfd0da225ba5ee248bde))
+* **html:** revamp mobile UI ([#725](https://github.com/tf2pickup-org/tf2pickup/issues/725)) ([448e9ad](https://github.com/tf2pickup-org/tf2pickup/commit/448e9adcb851803dfa9a79480164863731f476f1))
+
+## [4.18.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.18.0...4.18.1) (2026-07-02)
+
+
+### Bug Fixes
+
+* **deps:** pin dependency @napi-rs/canvas to v1.0.1 ([#721](https://github.com/tf2pickup-org/tf2pickup/issues/721)) ([ff1814c](https://github.com/tf2pickup-org/tf2pickup/commit/ff1814c7828caa71e04019be73cfe43f67981217))
+* **queue:** warn Chrome users when the browser blocks the ready-up sound ([#722](https://github.com/tf2pickup-org/tf2pickup/issues/722)) ([d6cdc86](https://github.com/tf2pickup-org/tf2pickup/commit/d6cdc86770a552b8bd6976f7be1342f42db6d16f))
+
+# [4.18.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.2...4.18.0) (2026-07-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/rate-limit to v11.1.0 ([110f8e5](https://github.com/tf2pickup-org/tf2pickup/commit/110f8e56c0373404ae08d5eb256c263aa25abc55))
+* **deps:** update dependency postcss to v8.5.16 ([0ed0090](https://github.com/tf2pickup-org/tf2pickup/commit/0ed0090b385ef4500f6b88e3821307c5492cf128))
+
+
+### Features
+
+* **atlas:** report 30-day active players ([#720](https://github.com/tf2pickup-org/tf2pickup/issues/720)) ([2879cc7](https://github.com/tf2pickup-org/tf2pickup/commit/2879cc74e8dfea2fa6d065c81c4983bc2af62dee)), closes [tf2pickup-org/atlas#3](https://github.com/tf2pickup-org/atlas/issues/3)
+
+## [4.17.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.1...4.17.2) (2026-06-30)
+
+
+### Bug Fixes
+
+* **games:** prevent htmx from swallowing the join voice link ([#719](https://github.com/tf2pickup-org/tf2pickup/issues/719)) ([b418de7](https://github.com/tf2pickup-org/tf2pickup/commit/b418de71cf05c0e4dfd1482ca9e46f0b03caa8de))
+
+## [4.17.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.17.0...4.17.1) (2026-06-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency mongodb to v7.4.0 ([fc0e408](https://github.com/tf2pickup-org/tf2pickup/commit/fc0e408839ae4d39656f01dcf83d83c59ee20d73))
+
+
+### Performance Improvements
+
+* **players:** speed up player page LCP and dedupe profile query ([#717](https://github.com/tf2pickup-org/tf2pickup/issues/717)) ([547de4c](https://github.com/tf2pickup-org/tf2pickup/commit/547de4c0a5df445967f2907212bd8089d9315bf6))
+
+# [4.17.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.16.1...4.17.0) (2026-06-29)
+
+
+### Features
+
+* **logging:** record real client IP and User-Agent on request logs ([#713](https://github.com/tf2pickup-org/tf2pickup/issues/713)) ([03a8369](https://github.com/tf2pickup-org/tf2pickup/commit/03a8369236ce3110595f9b570bc7a3ae48f08729))
+* **queue:** mark admins in the online player list ([#714](https://github.com/tf2pickup-org/tf2pickup/issues/714)) ([9c154ac](https://github.com/tf2pickup-org/tf2pickup/commit/9c154ac35ad425f8257722ad4f214a8e15ea2b5b))
+* report anonymous instance telemetry ([#702](https://github.com/tf2pickup-org/tf2pickup/issues/702)) ([0e79485](https://github.com/tf2pickup-org/tf2pickup/commit/0e79485341620ef7d4144c538a9453d0cc4571de))
+
+
+### Performance Improvements
+
+* **queue:** debounce online player list broadcasts ([#715](https://github.com/tf2pickup-org/tf2pickup/issues/715)) ([3d910e8](https://github.com/tf2pickup-org/tf2pickup/commit/3d910e8e0160482cbf92c578f539b256d2322b91))
+
+## [4.16.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.16.0...4.16.1) (2026-06-29)
+
+
+### Bug Fixes
+
+* **branding:** standardize favicon resolutions across instances ([#710](https://github.com/tf2pickup-org/tf2pickup/issues/710)) ([a22eeef](https://github.com/tf2pickup-org/tf2pickup/commit/a22eeef3dd78bc02ded8f691cd1c82d9e0111f5f))
+* **deps:** update dependency country-flag-icons to v1.6.19 ([11ea678](https://github.com/tf2pickup-org/tf2pickup/commit/11ea67888589753b89b513c019ffefe0bc4fc3de))
+* **deps:** update dependency es-toolkit to v1.49.0 ([708f096](https://github.com/tf2pickup-org/tf2pickup/commit/708f096bcc74747f33f03a9a8e4387d3d1a524a3))
+* **deps:** update dependency fastify-type-provider-zod to v7 ([#709](https://github.com/tf2pickup-org/tf2pickup/issues/709)) ([c82ddcd](https://github.com/tf2pickup-org/tf2pickup/commit/c82ddcd5b3837c0dcb8a7b355bb41b471dc75678))
+* **deps:** update dependency motion to v12.41.0 ([fe46943](https://github.com/tf2pickup-org/tf2pickup/commit/fe469433afe5aa95a3c80dc65dcaa4532c0474d6))
+* **deps:** update dependency motion to v12.42.0 ([3e2754c](https://github.com/tf2pickup-org/tf2pickup/commit/3e2754c46113a50d547ff922194a147baa52ea7b))
+* **deps:** update dependency nanoid to v5.1.16 ([00905f6](https://github.com/tf2pickup-org/tf2pickup/commit/00905f614d7dd2bcf5a3c8189733884864c94521))
+* **logging:** right-size noisy warn/error logs and guard match end/restart ([#712](https://github.com/tf2pickup-org/tf2pickup/issues/712)) ([fe7676a](https://github.com/tf2pickup-org/tf2pickup/commit/fe7676ae9d66f4a3d69c28863bab6c547444ff09))
+
+# [4.16.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.15.0...4.16.0) (2026-06-26)
+
+
+### Features
+
+* link-preview meta tags and generated OG images ([#707](https://github.com/tf2pickup-org/tf2pickup/issues/707)) ([a502c24](https://github.com/tf2pickup-org/tf2pickup/commit/a502c2432ce717f6b75cb608ccb3aaffe3d23827))
+
+# [4.15.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.14.1...4.15.0) (2026-06-26)
+
+
+### Bug Fixes
+
+* **analytics:** expand umami tracking coverage ([#706](https://github.com/tf2pickup-org/tf2pickup/issues/706)) ([8ecb710](https://github.com/tf2pickup-org/tf2pickup/commit/8ecb710423ec7fa8f5d0d9b3a2c840158bda8230))
+* **deps:** update dependency country-flag-icons to v1.6.18 ([4902750](https://github.com/tf2pickup-org/tf2pickup/commit/4902750795a75aed63480136a58e3ec3d405974a))
+* **deps:** update dependency es-toolkit to v1.48.1 ([96cc070](https://github.com/tf2pickup-org/tf2pickup/commit/96cc07035e41d8e2380ad3a065d81acdaec0e261))
+* **deps:** update dependency nanoid to v5.1.15 ([ed45ac4](https://github.com/tf2pickup-org/tf2pickup/commit/ed45ac4a87922ad9cce35d6fd416ca62233db37f))
+* keep game connect info visible to admins when hidden from spectators ([#699](https://github.com/tf2pickup-org/tf2pickup/issues/699)) ([957b08b](https://github.com/tf2pickup-org/tf2pickup/commit/957b08b46b9b95624f9b221d2e491af5f79837e4)), closes [#697](https://github.com/tf2pickup-org/tf2pickup/issues/697) [#698](https://github.com/tf2pickup-org/tf2pickup/issues/698)
+* **players:** make steam id confirmation input visible ([#701](https://github.com/tf2pickup-org/tf2pickup/issues/701)) ([aea3483](https://github.com/tf2pickup-org/tf2pickup/commit/aea34839da900e23a2efb1f6e10f1e83b4c9d9f9))
+* **queue:** match stream list to Figma design ([#705](https://github.com/tf2pickup-org/tf2pickup/issues/705)) ([bc1e822](https://github.com/tf2pickup-org/tf2pickup/commit/bc1e8225b30c75cc89ff81a01053052479797689))
+* tolerate null tags in Twitch streams response ([#700](https://github.com/tf2pickup-org/tf2pickup/issues/700)) ([d7f240c](https://github.com/tf2pickup-org/tf2pickup/commit/d7f240cc3117a948fdc6569f2947607900e30098))
+
+
+### Features
+
+* **players:** allow super-users to delete player profiles ([#684](https://github.com/tf2pickup-org/tf2pickup/issues/684)) ([4764c32](https://github.com/tf2pickup-org/tf2pickup/commit/4764c325abe35338a954d8d78c859e0adf3023ed))
+* **players:** periodically re-sync player avatars from Steam ([#680](https://github.com/tf2pickup-org/tf2pickup/issues/680)) ([07481c8](https://github.com/tf2pickup-org/tf2pickup/commit/07481c819a214aa0c1a933a96410912c73f51695)), closes [#679](https://github.com/tf2pickup-org/tf2pickup/issues/679) [#679](https://github.com/tf2pickup-org/tf2pickup/issues/679) [#679](https://github.com/tf2pickup-org/tf2pickup/issues/679)
+
+## [4.14.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.14.0...4.14.1) (2026-06-23)
+
+
+### Bug Fixes
+
+* hide game server info from spectators to mitigate DDoS ([#697](https://github.com/tf2pickup-org/tf2pickup/issues/697)) ([c9688ff](https://github.com/tf2pickup-org/tf2pickup/commit/c9688ff27655d8fc7706e5e0743058ce7f624375))
+* key rate limiter on real client IP ([#696](https://github.com/tf2pickup-org/tf2pickup/issues/696)) ([b929f97](https://github.com/tf2pickup-org/tf2pickup/commit/b929f9780e1191b298c61a709b9ff5787a2118f2))
+
+# [4.14.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.13.0...4.14.0) (2026-06-23)
+
+
+### Bug Fixes
+
+* group Cyrillic player names under their own alphabet ([#692](https://github.com/tf2pickup-org/tf2pickup/issues/692)) ([39403da](https://github.com/tf2pickup-org/tf2pickup/commit/39403dac0abc8ea1a44a17ce97e7e0b7d2e866a2))
+* stop logging routine queue and match events as errors ([#694](https://github.com/tf2pickup-org/tf2pickup/issues/694)) ([9e26269](https://github.com/tf2pickup-org/tf2pickup/commit/9e2626934de6152c3ab62d04842a97deb3e8950e)), closes [hi#volume](https://github.com/hi/issues/volume)
+
+
+### Features
+
+* report daily game launch counts to atlas ([#695](https://github.com/tf2pickup-org/tf2pickup/issues/695)) ([d1a3228](https://github.com/tf2pickup-org/tf2pickup/commit/d1a3228be89eb234553ad88edcb127520f85b1ce)), closes [atlas#1](https://github.com/atlas/issues/1) [tf2pickup-org/atlas#1](https://github.com/tf2pickup-org/atlas/issues/1)
+
+
+### Performance Improvements
+
+* serve player list query from a covering index ([#693](https://github.com/tf2pickup-org/tf2pickup/issues/693)) ([c52e59f](https://github.com/tf2pickup-org/tf2pickup/commit/c52e59f8b6b076cb43094b8dcc96b613a17b1846)), closes [#692](https://github.com/tf2pickup-org/tf2pickup/issues/692)
+
+# [4.13.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.3...4.13.0) (2026-06-22)
+
+
+### Features
+
+* **branding:** add tf2pick-up.ru branding ([#691](https://github.com/tf2pickup-org/tf2pickup/issues/691)) ([a0b1034](https://github.com/tf2pickup-org/tf2pickup/commit/a0b10348403d52ce15f9119f7bb4c02890324419))
+
+## [4.12.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.2...4.12.3) (2026-06-22)
+
+
+### Bug Fixes
+
+* **deps:** update dependency nanoid to v5.1.14 ([0c408ba](https://github.com/tf2pickup-org/tf2pickup/commit/0c408babb5f175e1e65756d91bc2f9d365337517))
+* **etf2l:** surface the real cause in scheduled task error logs ([#685](https://github.com/tf2pickup-org/tf2pickup/issues/685)) ([41ca07c](https://github.com/tf2pickup-org/tf2pickup/commit/41ca07cb67d7e6728aa70365e8d5d04d0f6d19e9)), closes [#671](https://github.com/tf2pickup-org/tf2pickup/issues/671)
+
+## [4.12.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.1...4.12.2) (2026-06-18)
+
+
+### Bug Fixes
+
+* await reply.html/send/redirect to prevent double-send errors ([#677](https://github.com/tf2pickup-org/tf2pickup/issues/677)) ([74ca722](https://github.com/tf2pickup-org/tf2pickup/commit/74ca722559f696aae9b83f26f9359d1d1fa620bf))
+* compute correct final score on attack/defend payload maps ([#672](https://github.com/tf2pickup-org/tf2pickup/issues/672)) ([76bc4c1](https://github.com/tf2pickup-org/tf2pickup/commit/76bc4c1470aa671ad9c52c7c57a22c2abe83ebda))
+* **deps:** update dependency @fastify/otel to v0.19.0 ([3efa2bf](https://github.com/tf2pickup-org/tf2pickup/commit/3efa2bfb54b9ef5492b842e69bf962cf3ddf616f))
+* **deps:** update dependency csv-parse to v7 ([#682](https://github.com/tf2pickup-org/tf2pickup/issues/682)) ([a74bc69](https://github.com/tf2pickup-org/tf2pickup/commit/a74bc692ccc61ede56d0a0a33ad5a649c649ee07))
+* **deps:** update dependency csv-stringify to v6.8.0 ([4a14679](https://github.com/tf2pickup-org/tf2pickup/commit/4a1467927da438741418739110aaeb431f34a147))
+* **logger:** use pino-princess as inline stream in dev ([#683](https://github.com/tf2pickup-org/tf2pickup/issues/683)) ([04f4d92](https://github.com/tf2pickup-org/tf2pickup/commit/04f4d921317e8ebcff4460818b64634a02a28265))
+* **players:** fall back to default Steam avatar when avatar is missing ([#679](https://github.com/tf2pickup-org/tf2pickup/issues/679)) ([f51fac8](https://github.com/tf2pickup-org/tf2pickup/commit/f51fac8e9b7dba424217e8ffd257555240b60d1e))
+
+## [4.12.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.12.0...4.12.1) (2026-06-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency es-toolkit to v1.47.1 ([788286e](https://github.com/tf2pickup-org/tf2pickup/commit/788286e5f55e8ea6f57ea32efa2fb325b0513d3c))
+* **deps:** update dependency form-data to v4.0.6 [security] ([506d76f](https://github.com/tf2pickup-org/tf2pickup/commit/506d76fa3b5ba4cc73b61f69fdaec8d07b83fa97))
+* **deps:** update tailwindcss monorepo to v4.3.1 ([20d7bb6](https://github.com/tf2pickup-org/tf2pickup/commit/20d7bb6248cea4531f091aa8ffba8b150aaf4307))
+
+# [4.12.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.11.1...4.12.0) (2026-06-15)
+
+
+### Bug Fixes
+
+* **deps:** update dependency @fastify/rate-limit to v11 ([#662](https://github.com/tf2pickup-org/tf2pickup/issues/662)) ([83ddc6e](https://github.com/tf2pickup-org/tf2pickup/commit/83ddc6e0bda432eacbba3f12ceedc7038b165f89))
+* **deps:** update dependency @fastify/request-context to v7 ([#663](https://github.com/tf2pickup-org/tf2pickup/issues/663)) ([a639568](https://github.com/tf2pickup-org/tf2pickup/commit/a63956807e5ecd4d617613965cd30eefa740fa62))
+* **deps:** update dependency cssnano to v8.0.2 ([5c2c3cc](https://github.com/tf2pickup-org/tf2pickup/commit/5c2c3cc442401b666f7ae0cf1e388a342a54be05))
+* **deps:** update dependency esbuild to v0.28.1 [security] ([#667](https://github.com/tf2pickup-org/tf2pickup/issues/667)) ([66ad51f](https://github.com/tf2pickup-org/tf2pickup/commit/66ad51f1070d6c597a90b8a64c3a18d6873c6d3f))
+* **deps:** update dependency fastify-plugin to v6 ([#664](https://github.com/tf2pickup-org/tf2pickup/issues/664)) ([d8d4680](https://github.com/tf2pickup-org/tf2pickup/commit/d8d4680f3d94a5e699ed8f17cb68b3ddcafc6377))
+* **deps:** update dependency mongodb to v7.3.0 ([f5f3f73](https://github.com/tf2pickup-org/tf2pickup/commit/f5f3f73762b0ff928a7e1b6f13edf5f62872ce69))
+* **deps:** update dependency sanitize-html to v2.17.5 ([5ddc35c](https://github.com/tf2pickup-org/tf2pickup/commit/5ddc35c1c7b024a7934a74bce4486a0ebaac82fe))
+* **deps:** update opentelemetry-js monorepo ([a7aa835](https://github.com/tf2pickup-org/tf2pickup/commit/a7aa835c9de0496887c5deca41db717ced4b87c1))
+* **deps:** update opentelemetry-js-contrib monorepo ([#670](https://github.com/tf2pickup-org/tf2pickup/issues/670)) ([c7f045b](https://github.com/tf2pickup-org/tf2pickup/commit/c7f045b632b8cfec0655b33cae9dd0673925b168))
+* notify on chat mutes and chat mute revokes ([#668](https://github.com/tf2pickup-org/tf2pickup/issues/668)) ([d33ef35](https://github.com/tf2pickup-org/tf2pickup/commit/d33ef3535ea044a1fc0be11ef05dde5bfa51bfab))
+* prevent banned players from taking substitute spots ([#669](https://github.com/tf2pickup-org/tf2pickup/issues/669)) ([0cefef9](https://github.com/tf2pickup-org/tf2pickup/commit/0cefef9cdc2b989b2ede47c22911815384283fbb))
+
+
+### Features
+
+* anonymous bans ([#666](https://github.com/tf2pickup-org/tf2pickup/issues/666)) ([4ca212c](https://github.com/tf2pickup-org/tf2pickup/commit/4ca212c06f9cc54d66ee5634a27492d192c3683b))
+
+## [4.11.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.11.0...4.11.1) (2026-06-12)
+
+
+### Bug Fixes
+
+* **atlas:** report live games count in the heartbeat ([#660](https://github.com/tf2pickup-org/tf2pickup/issues/660)) ([a822101](https://github.com/tf2pickup-org/tf2pickup/commit/a822101097214a4c002399c8246762a29196598d))
+* **deps:** update dependency @tailwindcss/typography to v0.5.20 ([1667e39](https://github.com/tf2pickup-org/tf2pickup/commit/1667e39bb68c3a7ee7b828b267782ca25b81083a))
+
+# [4.11.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.2...4.11.0) (2026-06-10)
+
+
+### Bug Fixes
+
+* **players:** auto verify eligible players ([#657](https://github.com/tf2pickup-org/tf2pickup/issues/657)) ([c45f3fa](https://github.com/tf2pickup-org/tf2pickup/commit/c45f3fab65308b9a0cb77990b29c9e3d52e27ce2))
+
+
+### Features
+
+* register instance on the atlas dashboard ([#658](https://github.com/tf2pickup-org/tf2pickup/issues/658)) ([6a338a4](https://github.com/tf2pickup-org/tf2pickup/commit/6a338a41aa22b83f9d633fa9ecaca0152c7621af))
+* **serveme-tf:** add preferred gameserver configuration ([#659](https://github.com/tf2pickup-org/tf2pickup/issues/659)) ([5785fe0](https://github.com/tf2pickup-org/tf2pickup/commit/5785fe08bcaf99eacc4c29de49dade22b35499d1))
+
+
+### Performance Improvements
+
+* **queue:** narrow down join() critical section ([#656](https://github.com/tf2pickup-org/tf2pickup/issues/656)) ([022e462](https://github.com/tf2pickup-org/tf2pickup/commit/022e46294b5a4363f3e43145f6499fd8c6201cbd))
+
+## [4.10.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.1...4.10.2) (2026-06-09)
+
+
+### Performance Improvements
+
+* **players:** per-player mutex and project out history arrays in update() ([#655](https://github.com/tf2pickup-org/tf2pickup/issues/655)) ([da30387](https://github.com/tf2pickup-org/tf2pickup/commit/da303875a129367a69e885e222d9ea3495e83398))
+
+## [4.10.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.10.0...4.10.1) (2026-06-08)
+
+
+### Bug Fixes
+
+* **players:** fix admin toolbox layout for 9v9 config ([#654](https://github.com/tf2pickup-org/tf2pickup/issues/654)) ([48f6f65](https://github.com/tf2pickup-org/tf2pickup/commit/48f6f65f21deda00d1e957a92d1062f4466d37b0))
+
+# [4.10.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.2...4.10.0) (2026-06-08)
+
+
+### Features
+
+* add admin activity log ([#650](https://github.com/tf2pickup-org/tf2pickup/issues/650)) ([fb0dea7](https://github.com/tf2pickup-org/tf2pickup/commit/fb0dea72bc75dd991db401ae10d46f435c1f2c03))
+
+## [4.9.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.1...4.9.2) (2026-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update dependency marked to v18.0.5 ([a24a263](https://github.com/tf2pickup-org/tf2pickup/commit/a24a263c99930e5c03ea398f7a99c5279fcbead3))
+
+## [4.9.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.9.0...4.9.1) (2026-06-06)
+
+
+### Bug Fixes
+
+* add registration issue log context ([#652](https://github.com/tf2pickup-org/tf2pickup/issues/652)) ([a6b5064](https://github.com/tf2pickup-org/tf2pickup/commit/a6b5064eb2b0978c7a8d6bc49b4a885e330ffcd9))
+* **deps:** update dependency type-fest to v5.7.0 ([d69669b](https://github.com/tf2pickup-org/tf2pickup/commit/d69669bcd68be09b8e03e3c599e64bddfcd809b6))
+
+# [4.9.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.2...4.9.0) (2026-06-03)
+
+
+### Bug Fixes
+
+* show informative page when Steam profile is private ([#648](https://github.com/tf2pickup-org/tf2pickup/issues/648)) ([358132d](https://github.com/tf2pickup-org/tf2pickup/commit/358132daed378956995534073336bd15c82604e1))
+
+
+### Features
+
+* add branding for hl.tf2pickup.eu ([#649](https://github.com/tf2pickup-org/tf2pickup/issues/649)) ([f4bad2a](https://github.com/tf2pickup-org/tf2pickup/commit/f4bad2a587e82a2581c36764c64f752f3f400427))
+
+## [4.8.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.1...4.8.2) (2026-06-02)
+
+
+### Bug Fixes
+
+* address dependabot alerts ([#644](https://github.com/tf2pickup-org/tf2pickup/issues/644)) ([4cb2d28](https://github.com/tf2pickup-org/tf2pickup/commit/4cb2d287a7fcf15fd7f0241f2100a4bc9188e88c))
+* **deps:** update dependency date-fns to v4.4.0 ([fba1b4e](https://github.com/tf2pickup-org/tf2pickup/commit/fba1b4eb9ea95c2d44fd1710d2f69790b6566c85))
+* **players:** move player verified checkbox into admin toolbox header ([#641](https://github.com/tf2pickup-org/tf2pickup/issues/641)) ([92a4f46](https://github.com/tf2pickup-org/tf2pickup/commit/92a4f46c0cd18ce58f2f1bf42b6a53fb5c384caa))
+
+## [4.8.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.8.0...4.8.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update dependency es-toolkit to v1.47.0 ([8fd8393](https://github.com/tf2pickup-org/tf2pickup/commit/8fd83939083c0648c57c374f8109608144d9010d))
+* fix headers sent after reply warning ([#635](https://github.com/tf2pickup-org/tf2pickup/issues/635)) ([e55f9f2](https://github.com/tf2pickup-org/tf2pickup/commit/e55f9f2590abab4b1739a3da87165da758484d00))
+
 # [4.8.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.7.15...4.8.0) (2026-05-28)
 
 

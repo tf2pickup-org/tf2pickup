@@ -16,8 +16,15 @@ vi.mock('../events', () => ({
   },
 }))
 
+vi.mock('../tasks', () => ({
+  tasks: {
+    cancel: vi.fn(),
+  },
+}))
+
 import { players } from '../players'
 import { events } from '../events'
+import { tasks } from '../tasks'
 import { cancel } from './cancel'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -36,5 +43,11 @@ describe('preReady.cancel', () => {
       steamId,
       preReadyUntil: undefined,
     })
+  })
+
+  it('disarms the scheduled expiry', async () => {
+    await cancel(steamId)
+
+    expect(tasks.cancel).toHaveBeenCalledWith('preReady:cancel', { player: steamId })
   })
 })

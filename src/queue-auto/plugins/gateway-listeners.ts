@@ -6,7 +6,7 @@ import { leave } from '../leave'
 import { readyUp } from '../ready-up'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { voteMap } from '../vote-map'
-import { logger } from '../../logger'
+import { logError } from '../../utils/log-error'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../../queue/get-state'
@@ -55,7 +55,10 @@ export default fp(
             })
           },
         ).catch(async (error: unknown) => {
-          logger.error(error)
+          // Same levelling as the HTTP error handler (src/main.ts): client errors
+          // (4xx) — queue races ('slot occupied'), invalid state, unauthorized —
+          // are routine and not logged at error level. See logError.
+          logError(error)
           if (error instanceof Error) {
             const msg = await FlashMessage({
               message: `Error: ${error.message}`,

@@ -10,7 +10,14 @@ import { DemoLink } from './demo-link'
 export function GameSummary(props: {
   game: Pick<
     GameModel,
-    'events' | 'number' | 'map' | 'state' | 'connectString' | 'stvConnectString' | 'slots'
+    | 'events'
+    | 'number'
+    | 'map'
+    | 'state'
+    | 'connectString'
+    | 'stvConnectString'
+    | 'slots'
+    | 'gameServer'
   >
   actor?: SteamId64 | undefined
 }) {

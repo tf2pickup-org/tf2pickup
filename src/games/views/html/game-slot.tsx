@@ -8,13 +8,21 @@ import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
+import { hasActiveBan } from '../../../players/has-active-ban'
 import type { PickDeep } from 'type-fest'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
+import { isDeletedUser } from '../../../shared/types/steam-id-64'
+import { DeletedUser } from '../../../html/components/deleted-user'
 
 export async function GameSlot(props: {
   game: GameModel
   slot: GameSlotModel
   actor: SteamId64 | undefined
 }) {
+  if (isDeletedUser(props.slot.player)) {
+    return <DeletedGameSlot slot={props.slot} />
+  }
+
   const player = await collections.players.findOne<
     PickDeep<PlayerModel, 'steamId' | 'name' | 'avatar.medium'>
   >({ steamId: props.slot.player }, { projection: { steamId: 1, name: 1, 'avatar.medium': 1 } })
@@ -53,10 +61,9 @@ async function GameSlotContent(props: {
   actor: SteamId64 | undefined
 }) {
   const actor = props.actor
-    ? await collections.players.findOne<Pick<PlayerModel, 'roles' | 'steamId' | 'activeGame'>>(
-        { steamId: props.actor },
-        { projection: { roles: 1, steamId: 1, activeGame: 1 } },
-      )
+    ? await collections.players.findOne<
+        Pick<PlayerModel, 'roles' | 'steamId' | 'activeGame' | 'bans'>
+      >({ steamId: props.actor }, { projection: { roles: 1, steamId: 1, activeGame: 1, bans: 1 } })
     : null
   const isAdmin = actor?.roles.includes(PlayerRole.admin)
 
@@ -75,7 +82,7 @@ async function GameSlotContent(props: {
             <GameClassIcon gameClass={props.slot.gameClass} size={32} />
           </div>
           <img
-            src={props.player.avatar.medium}
+            src={playerAvatarUrl(props.player.avatar, 'medium')}
             width="38"
             height="38"
             alt={`${props.player.name}'s avatar`}
@@ -108,7 +115,11 @@ async function GameSlotContent(props: {
       )
 
     case SlotStatus.waitingForSubstitute: {
-      if (actor && (props.slot.player === actor.steamId || actor.activeGame === undefined)) {
+      if (
+        actor &&
+        (props.slot.player === actor.steamId ||
+          (actor.activeGame === undefined && !hasActiveBan(actor)))
+      ) {
         return (
           <button
             class="text-abru-light-60 hover:text-abru-light-70 flex flex-1 justify-center"
@@ -130,6 +141,37 @@ async function GameSlotContent(props: {
       }
     }
   }
+}
+
+function DeletedGameSlot(props: { slot: GameSlotModel }) {
+  return (
+    <form
+      id={`game-slot-${props.slot.id}`}
+      aria-label="deleted user's slot"
+      class={[
+        'slot',
+        {
+          [SlotStatus.active]: 'active',
+          [SlotStatus.waitingForSubstitute]: 'waiting-for-substitute',
+        }[props.slot.status],
+      ]}
+      style={`grid-area: ${camelCase(props.slot.id)}`}
+      data-status={props.slot.status}
+    >
+      <div class="class-icon">
+        <GameClassIcon gameClass={props.slot.gameClass} size={32} />
+      </div>
+      <img
+        src={playerAvatarUrl(undefined, 'medium')}
+        width="38"
+        height="38"
+        alt="deleted user's avatar"
+      />
+      <span class="player-link">
+        <DeletedUser class="text-[20px] font-medium" />
+      </span>
+    </form>
+  )
 }
 
 function RequestSubstituteButton(props: { number: GameNumber }) {

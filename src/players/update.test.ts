@@ -3,9 +3,9 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { PlayerModel } from '../database/models/player.model'
 
 vi.mock('./mutex', () => ({
-  mutex: {
-    runExclusive: vi.fn(),
-  },
+  forPlayer: vi.fn(() => ({
+    runExclusive: vi.fn((fn: () => unknown) => fn()),
+  })),
 }))
 
 vi.mock('../database/collections', () => ({
@@ -30,7 +30,6 @@ vi.mock('../errors', () => ({
 }))
 
 import { update } from './update'
-import { mutex } from './mutex'
 import { collections } from '../database/collections'
 import { events } from '../events'
 
@@ -41,8 +40,7 @@ const mockAfter = { steamId, name: 'NewName', cooldownLevel: 1 } as PlayerModel
 
 describe('update', () => {
   beforeEach(() => {
-    vi.resetAllMocks()
-    vi.mocked(mutex.runExclusive).mockImplementation(fn => fn())
+    vi.clearAllMocks()
     vi.mocked(collections.players.findOne).mockResolvedValue(mockBefore)
     vi.mocked(collections.players.findOneAndUpdate).mockResolvedValue(mockAfter)
   })

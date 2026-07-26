@@ -23,7 +23,7 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId } = request.params
-        reply.status(200).html(await AddBanPage({ steamId }))
+        await reply.status(200).html(AddBanPage({ steamId }))
       },
     )
     .post(
@@ -40,6 +40,9 @@ export default routes(async app => {
             banExpiryFormSchema,
             z.object({
               reason: z.string(),
+              // When the checkbox is unchecked, browsers omit it from the request body entirely.
+              // The default(false) here handles that case.
+              anonymous: z.coerce.boolean().default(false),
             }),
           ),
         },
@@ -50,9 +53,10 @@ export default routes(async app => {
           admin: request.user!.player.steamId,
           end: players.getBanExpiryDate(request.body),
           reason: request.body.reason,
+          anonymous: request.body.anonymous,
         })
         request.flash('success', `Player ban added`)
-        reply.redirect(`/players/${request.params.steamId}/edit/bans`)
+        await reply.redirect(`/players/${request.params.steamId}/edit/bans`)
       },
     )
 })

@@ -1,11 +1,26 @@
 import type { Children } from '@kitajs/html'
 
 export function AdminPanel(props?: { children?: Children }) {
-  return <div class="container mx-auto grid grid-cols-5 gap-8">{props?.children}</div>
+  return (
+    <div class="container mx-auto grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8">
+      {props?.children}
+    </div>
+  )
 }
 
 export function AdminPanelSidebar(props?: { children?: Children }) {
-  return <div class="flex flex-col gap-y-1">{props?.children}</div>
+  return (
+    <div class="flex gap-1 max-lg:[scrollbar-width:none] max-lg:overflow-x-auto lg:flex-col">
+      {props?.children}
+      <script>{`
+        if (!window.matchMedia('(min-width: 64rem)').matches) {
+          document.currentScript.parentElement
+            .querySelector('.admin-panel-link.active')
+            ?.scrollIntoView({ block: 'nearest', inline: 'center' });
+        }
+      `}</script>
+    </div>
+  )
 }
 
 export function AdminPanelSection(props: { children: Children }) {
@@ -21,7 +36,7 @@ export function AdminPanelLink(props: { href: string; active?: boolean; children
 }
 
 export function AdminPanelBody(props?: { children?: Children }) {
-  return <div class="col-span-4">{props?.children}</div>
+  return <div class="lg:col-span-4">{props?.children}</div>
 }
 
 export function AdminPanelHeader(props?: { children?: Children }) {

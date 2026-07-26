@@ -10,15 +10,19 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
     <dialog
       id="choose-game-server-dialog"
       class="bg-abru-dark-29 text-abru-light-75 rounded-xl p-10 shadow-xl xl:min-w-[480px]"
-      hx-on-open="document.getElementById('choose-game-server-dialog').showModal()"
-      hx-on-close="document.getElementById('choose-game-server-dialog').close()"
+      data-dialog-events
     >
       <form hx-put={`/games/${props.gameNumber}/reassign-gameserver`} class="flex flex-col">
         <header class="font-bold">Choose game server</header>
         <StaticGameServerList name="gameServer" />
         {servemeTf.isEnabled && <ServemeTfServerList />}
         {tf2QuickServer.isEnabled && <Tf2QuickServerList gameNumber={props.gameNumber} />}
-        <button class="button mt-8 self-center" data-variant="accent">
+        <button
+          class="button mt-8 self-center"
+          data-variant="accent"
+          data-umami-event="reassign-game-server"
+          data-umami-event-game-number={props.gameNumber}
+        >
           Select
         </button>
       </form>

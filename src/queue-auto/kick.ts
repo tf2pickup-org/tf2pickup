@@ -9,13 +9,14 @@ import { getState } from '../queue/get-state'
 import { withQueueLock } from '../queue/with-queue-lock'
 import { preReady } from '../pre-ready'
 import { errors } from '../errors'
+import { withLogLevel } from '../utils/with-log-level'
 
 export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
   return await withQueueLock('kick', async () => {
     logger.trace({ steamIds }, 'queue.kick()')
     const state = await getState()
     if (state === QueueState.launching) {
-      throw errors.badRequest('invalid queue state')
+      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
 
     const slots: QueueSlotModel[] = []

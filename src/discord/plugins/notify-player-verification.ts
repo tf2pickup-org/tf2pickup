@@ -6,6 +6,7 @@ import { players } from '../../players'
 import { environment } from '../../environment'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -33,11 +34,11 @@ export default fp(
               .setColor(isVerified ? '#33dc7f' : '#ff953e')
               .setAuthor({
                 name: admin.name,
-                iconURL: admin.avatar.medium,
+                iconURL: playerAvatarUrl(admin.avatar, 'medium'),
                 url: `${environment.WEBSITE_URL}/players/${admin.steamId}`,
               })
               .setTitle(isVerified ? 'Player verified' : 'Player verification revoked')
-              .setThumbnail(after.avatar.large)
+              .setThumbnail(playerAvatarUrl(after.avatar, 'large'))
               .setDescription(
                 `Player: **[${after.name}](${environment.WEBSITE_URL}/players/${after.steamId})**`,
               )

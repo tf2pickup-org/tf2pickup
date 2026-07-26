@@ -35,33 +35,6 @@
       &:hover {
         background-color: color-mix(in srgb, var(--color-abru-light-5) 40%, transparent);
       }
-
-      &.is-1st,
-      &.is-2nd,
-      &.is-3rd {
-        padding: 10px 8px 10px 10px;
-      }
-
-      &.is-1st {
-        background-color: var(--color-abru-light-15);
-        &:hover {
-          background-color: color-mix(in hsl, var(--color-abru-light-15), black 2%);
-        }
-      }
-
-      &.is-2nd {
-        background-color: var(--color-abru-light-10);
-        &:hover {
-          background-color: color-mix(in hsl, var(--color-abru-light-10), black 2%);
-        }
-      }
-
-      &.is-3rd {
-        background-color: var(--color-abru-light-5);
-        &:hover {
-          background-color: color-mix(in hsl, var(--color-abru-light-5), black 2%);
-        }
-      }
     }
   }
 }

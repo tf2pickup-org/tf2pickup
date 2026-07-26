@@ -1,13 +1,20 @@
 import type { User } from '../../../auth/types/user'
 import { IconMessageCircle, IconUserCircle } from '../../../html/components/icons'
 import { Chat } from './chat'
+import { CurrentPlayerCount } from './current-player-count'
 import { OnlinePlayerCount } from './online-player-count'
 import { OnlinePlayerList } from './online-player-list'
 
-export function Sidebar(props: { user?: User | undefined }) {
+export function Sidebar(props: { user?: User | undefined; required: number }) {
   return (
     <div class="queue-sidebar">
       <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
+        <button class="tab-link lg:hidden" data-tabs-select="queue-content">
+          <span>
+            Queue (<CurrentPlayerCount />/{props.required})
+          </span>
+        </button>
+
         <button class="tab-link" data-tabs-select="tab-online-player-list">
           <IconUserCircle size={18} />
           <OnlinePlayerCount />

@@ -167,7 +167,7 @@ describe('clear()', () => {
     expect(collections.gameLogs.deleteOne).toHaveBeenCalledWith({ logSecret: 'my-secret' })
   })
 
-  it('should detach from the pending queue so subsequent pushes start a fresh chain', async () => {
+  it('should serialize deletion between pre- and post-clear writes', async () => {
     const results: number[] = []
     let resolveFirst!: () => void
     const promiseFirst = new Promise<void>(r => {
@@ -184,19 +184,20 @@ describe('clear()', () => {
         results.push(2)
         return null
       })
+    vi.mocked(collections.gameLogs.deleteOne).mockImplementationOnce(async () => {
+      results.push(0)
+      return { acknowledged: true, deletedCount: 1 }
+    })
 
     gameLogSink.push({ payload: 'first', password: 'clear-chain' })
-    await gameLogSink.clear('clear-chain')
-
-    // Fresh push after clear should not wait for the still-pending first message
+    const clear = gameLogSink.clear('clear-chain')
     gameLogSink.push({ payload: 'second', password: 'clear-chain' })
+
+    resolveFirst()
+    await clear
+
     await gameLogSink.waitForCompletion('clear-chain')
 
-    expect(results).toEqual([2])
-
-    // Resolve the original and confirm it still completes independently
-    resolveFirst()
-    await Promise.resolve()
-    expect(results).toEqual([2, 1])
+    expect(results).toEqual([1, 0, 2])
   })
 })

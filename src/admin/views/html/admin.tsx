@@ -14,6 +14,7 @@ import {
   IconArrowsShuffle,
   IconBrandDiscord,
   IconHeadset,
+  IconHistory,
   IconLogs,
   IconMapPinCog,
   IconMoodNerd,
@@ -21,6 +22,7 @@ import {
   IconServer,
   IconSpy,
   IconTable,
+  IconTrash,
   IconUserExclamation,
   IconUserPlus,
   IconUserScan,
@@ -85,6 +87,11 @@ const adminPages = {
     icon: IconMoodNerd,
     section: 'Configuration',
   },
+  'activity-log': {
+    title: 'Activity log',
+    icon: IconHistory,
+    section: 'Configuration',
+  },
   'scramble-maps': {
     title: 'Scramble maps',
     icon: IconArrowsShuffle,
@@ -117,6 +124,11 @@ const superUserPages = {
     title: 'Player action logs',
     icon: IconLogs,
     section: 'Configuration',
+  },
+  'delete-player': {
+    title: 'Delete player',
+    icon: IconTrash,
+    section: 'Actions',
   },
 } as const
 

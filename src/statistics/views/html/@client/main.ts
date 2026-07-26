@@ -5,6 +5,7 @@ export function makePlayedMapsCountChart(element: HTMLCanvasElement, data: Chart
     type: 'pie',
     data,
     options: {
+      aspectRatio: 1.5,
       plugins: {
         legend: {
           position: 'right',
@@ -15,7 +16,7 @@ export function makePlayedMapsCountChart(element: HTMLCanvasElement, data: Chart
               size: 14,
             },
             color: '#C7C4C7',
-            padding: 16,
+            padding: 12,
           },
         },
       },
@@ -29,7 +30,7 @@ export function makeGameLaunchTimeSpansChart(element: HTMLCanvasElement, data: C
     data,
     options: {
       indexAxis: 'y',
-      aspectRatio: 3,
+      aspectRatio: 2,
       scales: {
         y: {
           stacked: true,
@@ -47,40 +48,6 @@ export function makeGameLaunchTimeSpansChart(element: HTMLCanvasElement, data: C
           grid: {
             color: 'rgba(217, 217, 217, 0.2)',
           },
-          ticks: {
-            color: '#C7C4C7',
-          },
-        },
-      },
-    },
-  })
-}
-
-export function makeGameLaunchesPerDayChart(element: HTMLCanvasElement, data: ChartData<'line'>) {
-  new Chart(element, {
-    type: 'line',
-    data,
-    options: {
-      spanGaps: true,
-      aspectRatio: 3,
-      plugins: {
-        legend: {
-          display: false,
-        },
-      },
-      scales: {
-        x: {
-          border: {
-            color: '#D9D9D9',
-          },
-          grid: {
-            color: 'rgba(217, 217, 217, 0.2)',
-          },
-          ticks: {
-            color: '#C7C4C7',
-          },
-        },
-        y: {
           ticks: {
             color: '#C7C4C7',
           },

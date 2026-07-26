@@ -6,6 +6,7 @@ import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
+import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -27,7 +28,7 @@ export default fp(
                 name: 'Name',
                 value: player.name,
               })
-              .setThumbnail(player.avatar.large)
+              .setThumbnail(playerAvatarUrl(player.avatar, 'large'))
               .setURL(`${environment.WEBSITE_URL}/players/${player.steamId}`)
               .setFooter({
                 text: environment.WEBSITE_NAME,

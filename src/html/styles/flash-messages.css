@@ -1,6 +1,5 @@
 @layer components {
-  .flash-message-list,
-  .flash-messages {
+  .flash-message-list {
     position: fixed;
     bottom: 48px;
     left: 50%;

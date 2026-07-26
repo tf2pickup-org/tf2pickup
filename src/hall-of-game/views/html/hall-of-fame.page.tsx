@@ -6,6 +6,7 @@ import { Footer } from '../../../html/components/footer'
 import { collections } from '../../../database/collections'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PlayerModel } from '../../../database/models/player.model'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { IconAwardFilled } from '../../../html/components/icons'
 import { makeTitle } from '../../../html/make-title'
 
@@ -50,7 +51,7 @@ function Board(props: { title: string; entries: HallOfFameEntry[] }) {
         <a class="hof-record" href={`/players/${record.player.steamId}`} preload="mousedown">
           <MaybeAward i={i} />
           <img
-            src={record.player.avatar.medium}
+            src={playerAvatarUrl(record.player.avatar, 'medium')}
             width="64"
             height="64"
             class="h-[38px] w-[38px]"

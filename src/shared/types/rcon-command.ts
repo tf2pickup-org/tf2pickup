@@ -4,8 +4,10 @@ export type RconCommand =
   | `sm_game_player_delall`
   | `sm_game_player_del ${string}`
   | `sm_game_player_whitelist ${0 | 1}`
+  | `echo ${string}`
   | `exec ${string}`
   | `kickall`
+  | `log on`
   | `sv_logsecret ${string}`
   | `logaddress_add ${string}`
   | `logaddress_del ${string}`

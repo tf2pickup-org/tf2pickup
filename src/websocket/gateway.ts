@@ -25,6 +25,7 @@ export interface ClientToServerEvents {
   'captain:joinClass': (gameClass: string) => void
   'captain:leaveClass': (gameClass: string) => void
   'captain:toggleCaptain': (wantsCaptain: boolean) => void
+  'queue:audiostatus': (audioReady: boolean) => void
 }
 
 type GatewayEvents = ClientToServerEvents
@@ -99,6 +100,11 @@ const captainBanMap = z.object({
   HEADERS: htmxHeaders,
 })
 
+const audioStatus = z.object({
+  audioReady: z.boolean(),
+  HEADERS: htmxHeaders.optional(),
+})
+
 const clientMessage = z.union([
   joinQueue,
   leaveQueue,
@@ -112,6 +118,7 @@ const clientMessage = z.union([
   captainToggle,
   captainPick,
   captainBanMap,
+  audioStatus,
 ])
 
 type MessageFn = (
@@ -320,6 +327,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:pick', socket, parsed.captainPick, parsed.gameClass)
       } else if ('captainBanMap' in parsed) {
         this.emit('queue:banMap', socket, parsed.captainBanMap)
+      } else if ('audioReady' in parsed) {
+        this.emit('queue:audiostatus', socket, parsed.audioReady)
       }
     } catch (error) {
       logger.error({ error }, `failed to parse message: ${message}`)

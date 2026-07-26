@@ -27,12 +27,12 @@
 @layer components {
   .game-list {
     display: grid;
-    column-gap: 8px;
-    row-gap: 10px;
-
-    grid-template-columns: 22px auto 1fr 1fr auto;
+    row-gap: 16px;
+    grid-template-columns: 1fr;
 
     @media (width >= theme(--breakpoint-sm)) {
+      column-gap: 8px;
+      row-gap: 10px;
       grid-template-columns: 22px repeat(4, auto) 1fr 1fr;
     }
 
@@ -44,30 +44,38 @@
       @apply transition-colors;
       @apply duration-75;
 
-      display: grid;
-      grid-template-columns: subgrid;
-      grid-template-rows: subgrid;
       position: relative;
-      @apply col-span-5;
-      @apply row-span-3;
-      place-items: center;
-
-      padding: 8px;
+      display: grid;
+      overflow: hidden;
+      border-radius: 8px;
 
       color: var(--color-abru-light-75);
       font-weight: 500;
 
-      background: --alpha(var(--color-abru-light-15) / 50%);
-
-      overflow: hidden;
-      border-radius: 8px;
+      /* mobile: self-contained card with the map thumbnail fading in from the right */
+      grid-template-columns: repeat(3, auto) 1fr auto auto;
+      align-items: center;
+      row-gap: 24px;
+      padding: 16px;
+      background: linear-gradient(
+        90deg,
+        var(--color-abru-light-15) 45%,
+        --alpha(var(--color-abru-light-15) / 35%) 100%
+      );
 
       @media (width >= theme(--breakpoint-sm)) {
+        grid-template-columns: subgrid;
         @apply col-span-7;
-        @apply row-span-1;
+        place-items: center;
 
-        grid-template-rows: initial;
+        row-gap: 0;
         height: 60px;
+        padding: 8px;
+        background: --alpha(var(--color-abru-light-15) / 50%);
+
+        &:hover {
+          background: --alpha(var(--color-abru-light-15) / 90%);
+        }
       }
 
       @media (width >= theme(--breakpoint-xl)) {
@@ -75,12 +83,8 @@
 
         background: var(--color-abru-light-15);
         background: linear-gradient(90deg, var(--color-abru-light-15) 35%, transparent 90%);
-      }
 
-      &:hover {
-        background: --alpha(var(--color-abru-light-15) / 90%);
-
-        @media (width >= theme(--breakpoint-xl)) {
+        &:hover {
           background: linear-gradient(
             90deg,
             color-mix(in hsl, var(--color-abru-light-15), white 3%) 35%,
@@ -90,46 +94,32 @@
       }
 
       .live-indicator {
-        @apply row-span-3;
         order: 0;
-
-        @media (width >= theme(--breakpoint-sm)) {
-          @apply row-span-1;
-        }
       }
 
       .game-number {
-        @apply row-span-3;
         order: 1;
 
         font-size: 24px;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
-
-        @media (width >= theme(--breakpoint-sm)) {
-          @apply row-span-1;
-        }
       }
 
       .game-class-icon {
-        @apply row-span-3;
         order: 3;
         margin: 0 8px;
 
         @media (width >= theme(--breakpoint-sm)) {
-          @apply row-span-1;
           order: 2;
         }
       }
 
       .map-name {
-        @apply col-span-2;
         order: 2;
         white-space: nowrap;
 
         @media (width >= theme(--breakpoint-sm)) {
-          @apply col-span-1;
           order: 5;
         }
 
@@ -140,12 +130,10 @@
       }
 
       .launched-at {
-        @apply col-span-2;
         order: 4;
         white-space: nowrap;
 
         @media (width >= theme(--breakpoint-sm)) {
-          @apply col-span-1;
           order: 6;
         }
 
@@ -154,8 +142,7 @@
         }
       }
 
-      .game-list-label,
-      .label {
+      .game-list-label {
         border-radius: 3px;
         padding: 0 13px;
         text-align: center;
@@ -197,6 +184,56 @@
           background-color: var(--color-alert);
           color: var(--color-abru-light-3);
           justify-self: stretch;
+        }
+      }
+
+      @media (width < theme(--breakpoint-sm)) {
+        .live-indicator {
+          grid-area: 1 / 1;
+
+          &:not(:empty) {
+            margin-right: 8px;
+          }
+        }
+
+        .game-number {
+          grid-area: 1 / 2;
+          color: var(--color-ash);
+        }
+
+        .game-class-icon {
+          grid-area: 1 / 3;
+        }
+
+        .map-name {
+          grid-area: 2 / 1 / 3 / 4;
+          justify-self: start;
+        }
+
+        .launched-at {
+          grid-area: 2 / 4 / 3 / 7;
+          justify-self: end;
+          font-size: 12px;
+        }
+
+        .game-list-label {
+          font-size: 12px;
+          font-weight: 700;
+          padding: 2px 8px;
+
+          &[data-team='blu'] {
+            grid-area: 1 / 5;
+          }
+
+          &[data-team='red'] {
+            grid-area: 1 / 6;
+            margin-left: 8px;
+          }
+
+          &[data-state='interrupted'],
+          &[data-state='launching'] {
+            grid-area: 1 / 5 / 2 / 7;
+          }
         }
       }
     }

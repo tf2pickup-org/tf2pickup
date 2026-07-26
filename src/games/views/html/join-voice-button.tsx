@@ -35,6 +35,7 @@ async function JoinVoiceButtonContent(props: {
     <a
       href={slot.voiceServerUrl}
       class="button"
+      hx-boost="false"
       data-umami-event="join-voice"
       data-umami-event-game-number={props.game.number}
       data-umami-event-game-state={props.game.state}

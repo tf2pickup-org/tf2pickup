@@ -2,15 +2,7 @@ import { expect, type Locator, type Page } from '@playwright/test'
 import { minutesToMilliseconds } from 'date-fns'
 
 export type Tf2ClassName =
-  | 'scout'
-  | 'soldier'
-  | 'demoman'
-  | 'medic'
-  | 'pyro'
-  | 'heavy'
-  | 'engineer'
-  | 'sniper'
-  | 'spy'
+  'scout' | 'soldier' | 'demoman' | 'medic' | 'pyro' | 'heavy' | 'engineer' | 'sniper' | 'spy'
 
 class CaptainClassColumn {
   constructor(

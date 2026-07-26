@@ -2,6 +2,7 @@ import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { queue } from '../../../queue-auto'
@@ -23,35 +24,38 @@ import { makeTitle } from '../../../html/make-title'
 import { environment } from '../../../environment'
 import { AdminToolbox } from './admin-toolbox'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import { players } from '../..'
 import type { PickDeep } from 'type-fest'
 import type { GameModel } from '../../../database/models/game.model'
 import { requestContext } from '@fastify/request-context'
 
 const gamesPerPage = 5
 
-export async function PlayerPage(props: { steamId: SteamId64; page: number }) {
-  const player = await players.bySteamId(props.steamId, [
-    'steamId',
-    'name',
-    'joinedAt',
-    'roles',
-    'etf2lProfile',
-    'twitchTvProfile',
-    'avatar.large',
-    'stats',
-    'skill',
-    'skillHistory',
-    'verified',
-    'bans',
-    'elo',
-  ])
+export type PlayerPageData = PickDeep<
+  PlayerModel,
+  | 'steamId'
+  | 'name'
+  | 'joinedAt'
+  | 'roles'
+  | 'etf2lProfile'
+  | 'twitchTvProfile'
+  | 'avatar.large'
+  | 'stats'
+  | 'skill'
+  | 'skillHistory'
+  | 'verified'
+  | 'bans'
+  | 'elo'
+>
+
+export async function PlayerPage(props: { player: PlayerPageData; page: number }) {
+  const { player } = props
   const user = requestContext.get('user')
 
   return (
     <Layout
       title={makeTitle(player.name)}
-      description={`${player.name}'s profile on ${environment.WEBSITE_NAME}`}
+      description={`${player.name} · ${player.stats.totalGames} games played on ${environment.WEBSITE_NAME} · member since ${format(player.joinedAt, 'MMMM yyyy')}`}
+      image={`/players/${player.steamId}/og-image.png`}
       canonical={`/players/${player.steamId}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
@@ -150,11 +154,12 @@ function PlayerPresentation(props: {
   return (
     <div class="player-presentation">
       <img
-        src={props.player.avatar.large}
+        src={playerAvatarUrl(props.player.avatar, 'large')}
         width="184"
         height="184"
         class="player-avatar"
         alt={`${props.player.name}'s avatar`}
+        fetchpriority="high"
       />
 
       <div class="flex flex-row items-center gap-[10px]">
@@ -207,6 +212,8 @@ function PlayerPresentation(props: {
           rel="noreferrer"
           class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
           title="Steam"
+          data-umami-event="open-external-profile"
+          data-umami-event-target="steam"
         >
           <IconBrandSteam />
           <span>steam</span>
@@ -218,6 +225,8 @@ function PlayerPresentation(props: {
           rel="noreferrer"
           class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
           title="Logs"
+          data-umami-event="open-external-profile"
+          data-umami-event-target="logs"
         >
           <IconAlignBoxBottomRight />
           <span>logs</span>
@@ -230,6 +239,8 @@ function PlayerPresentation(props: {
             rel="noreferrer"
             class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
             title="ETF2L"
+            data-umami-event="open-external-profile"
+            data-umami-event-target="etf2l"
           >
             <IconStars />
             <span>etf2l</span>
@@ -245,6 +256,8 @@ function PlayerPresentation(props: {
             rel="noreferrer"
             class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
             title="Twitch"
+            data-umami-event="open-external-profile"
+            data-umami-event-target="twitch"
           >
             <IconBrandTwitch />
             <span>twitch</span>

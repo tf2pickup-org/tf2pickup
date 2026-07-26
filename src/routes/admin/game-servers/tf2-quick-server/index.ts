@@ -1,8 +1,8 @@
 import { PlayerRole } from '../../../../database/models/player.model'
 import { z } from 'zod'
 import { RegionSelect } from '../../../../admin/game-servers/views/html/tf2-quick-server-region'
-import { configuration } from '../../../../configuration'
 import { routes } from '../../../../utils/routes'
+import { configuration } from '../../../../configuration'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -31,7 +31,11 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await configuration.set('tf2_quick_server.region', request.body.tf2QuickServerRegion)
+        await configuration.set(
+          'tf2_quick_server.region',
+          request.body.tf2QuickServerRegion,
+          request.user!.player.steamId,
+        )
         return reply.status(200).html(RegionSelect({ saveResult: { success: true } }))
       },
     )

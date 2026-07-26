@@ -7,6 +7,10 @@
     flex-flow: column nowrap;
     overflow: hidden;
 
+    @media (width < theme(--breakpoint-lg)) {
+      height: 60dvh;
+    }
+
     .chat-prompt-container {
       position: relative;
 

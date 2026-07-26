@@ -25,7 +25,7 @@ export default routes(async app => {
       },
       async (req, reply) => {
         const { steamId } = req.params
-        reply.status(200).html(await EditPlayerChatMutesPage({ steamId }))
+        await reply.status(200).html(EditPlayerChatMutesPage({ steamId }))
       },
     )
     .put(
@@ -49,7 +49,7 @@ export default routes(async app => {
           muteStart,
           admin: request.user!.player.steamId,
         })
-        reply.status(200).html(await ChatMuteDetails({ player, chatMute }))
+        await reply.status(200).html(ChatMuteDetails({ player, chatMute }))
       },
     )
 })

@@ -13,7 +13,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: process.env.CI ? 'blob' : 'html',
+  reporter: process.env.CI ? [['blob'], ['github']] : 'html',
   timeout: secondsToMilliseconds(45),
   reportSlowTests: {
     max: 5,
