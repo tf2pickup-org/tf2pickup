@@ -1,5 +1,17 @@
 # Changelog
 
+# [4.23.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.2...4.23.0) (2026-07-27)
+
+
+### Bug Fixes
+
+* **deps:** update opentelemetry-js-contrib monorepo ([c671194](https://github.com/tf2pickup-org/tf2pickup/commit/c6711947461335a8fea73bb7e993d171ced29b0f))
+
+
+### Features
+
+* **admin:** preview game server startup commands on games config page ([#755](https://github.com/tf2pickup-org/tf2pickup/issues/755)) ([0a80057](https://github.com/tf2pickup-org/tf2pickup/commit/0a800571c62ff4e365a59bc8adfdc3e25f215aeb))
+
 ## [4.22.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.1...4.22.2) (2026-07-25)
 
 
