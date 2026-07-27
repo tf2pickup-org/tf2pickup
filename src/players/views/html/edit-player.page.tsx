@@ -28,6 +28,7 @@ import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { queue } from '../../../queue-auto'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
+import { QueueMode } from '../../../shared/types/queue-mode'
 import type { Children } from '@kitajs/html'
 import {
   format,
@@ -238,7 +239,12 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
   )
 }
 
-export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
+const queueModeLabels: Record<QueueMode, string> = {
+  [QueueMode.auto]: 'Auto queue',
+  [QueueMode.captains]: 'Captains',
+}
+
+export async function EditPlayerEloPage(props: { steamId: SteamId64; mode: QueueMode }) {
   const player = await players.bySteamId(props.steamId, ['name', 'steamId', 'elo', 'stats'])
   return (
     <EditPlayer player={player} activePage="/elo">
@@ -250,18 +256,35 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
             away from it suggest unbalanced games.
           </span>
         </p>
+        <div class="mb-4 flex flex-wrap gap-1">
+          {Object.values(QueueMode).map(mode => (
+            <a
+              href={`/players/${props.steamId}/edit/elo?mode=${mode}`}
+              class={[
+                'rounded px-2.5 py-1 text-sm transition-colors',
+                mode === props.mode
+                  ? 'bg-accent-600/20 text-accent-600'
+                  : 'text-abru-light-75 bg-white/5 hover:bg-white/10',
+              ]}
+              preload="mousedown"
+              safe
+            >
+              {queueModeLabels[mode]}
+            </a>
+          ))}
+        </div>
         <table class="w-full text-sm text-white">
           <thead>
             <tr class="text-abru-light-75 border-abru-light-15 border-b text-left font-light">
               <th class="pb-2 font-light">Class</th>
               <th class="pb-2 font-light">ELO</th>
-              <th class="pb-2 font-light">Games</th>
+              <th class="pb-2 font-light">Games (all modes)</th>
               <th class="pb-2 font-light">Status</th>
             </tr>
           </thead>
           <tbody>
             {queue.config.classes.map(({ name: gameClass }) => {
-              const elo = player.elo?.[gameClass]
+              const elo = player.elo?.[props.mode]?.[gameClass]
               const games = player.stats.gamesByClass[gameClass] ?? 0
               const provisional = games < provisionalThreshold
               return (
@@ -288,7 +311,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
             })}
           </tbody>
         </table>
-        <EloHistoryChart steamId={props.steamId} />
+        <EloHistoryChart steamId={props.steamId} mode={props.mode} />
       </div>
     </EditPlayer>
   )
