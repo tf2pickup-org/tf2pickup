@@ -267,6 +267,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64; mode: Queue
                   : 'text-abru-light-75 bg-white/5 hover:bg-white/10',
               ]}
               preload="mousedown"
+              safe
             >
               {queueModeLabels[mode]}
             </a>
