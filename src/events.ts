@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import type { SteamId64 } from './shared/types/steam-id-64'
 import type { UserMetadata } from './shared/types/user-metadata'
 import { logger } from './logger'
+import type { CaptainsPoolEntryModel } from './database/models/captains-pool-entry.model'
 import type { QueueSlotModel } from './database/models/queue-slot.model'
 import { QueueState } from './database/models/queue-state.model'
 import type { GameModel, GameNumber } from './database/models/game.model'
@@ -198,6 +199,13 @@ export interface Events {
     admin: SteamId64
     playerCount: number
   }
+  'queueCaptains/pool:updated': {
+    entries: CaptainsPoolEntryModel[]
+  }
+  'queueCaptains/pool:left': {
+    steamId: SteamId64
+  }
+
   'queue/mapPool:reset': {
     maps: MapPoolEntry[]
   }

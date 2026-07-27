@@ -18,6 +18,7 @@ import type { StatsModel } from './models/stats.model'
 import type { StaticGameServerModel } from './models/static-game-server.model'
 import type { TaskModel } from './models/task.model'
 import type { StreamModel } from './models/stream.model'
+import type { CaptainsPoolEntryModel } from './models/captains-pool-entry.model'
 import type { CertificateModel } from './models/certificate.model'
 import type { ChatMessageModel } from './models/chat-message.model'
 import type { DiscordBotStateModel } from './models/discord-bot-state.model'
@@ -57,6 +58,7 @@ export const collections = {
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
   players: database.collection<PlayerModel>('players'),
+  queueCaptainsPool: database.collection<CaptainsPoolEntryModel>('queue.captains.pool'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),
   queueState: database.collection<QueueStateModel>('queue.state'),

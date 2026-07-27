@@ -6,6 +6,7 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { assertIsError } from '../utils/assert-is-error'
 import { logger } from '../logger'
 import type { QueueSlotId } from '../queue/types/queue-slot-id'
+import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { meter } from '../otel'
 import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from './types'
@@ -20,6 +21,8 @@ export interface ClientToServerEvents {
   'queue:readyup': () => void
   'queue:markasfriend': (steamId: SteamId64 | null) => void
   'queue:togglepreready': () => void
+  'queue:captainsclass': (gameClass: Tf2ClassName) => void
+  'queue:captainsvolunteer': () => void
   'queue:audiostatus': (audioReady: boolean) => void
 }
 
@@ -64,6 +67,16 @@ const preReadyToggle = z.object({
   HEADERS: htmxHeaders,
 })
 
+const captainsClass = z.object({
+  captainsclass: z.enum(Tf2ClassName),
+  HEADERS: htmxHeaders,
+})
+
+const captainsVolunteer = z.object({
+  captainsvolunteer: z.literal(''),
+  HEADERS: htmxHeaders,
+})
+
 const navigated = z.object({
   navigated: z.string(),
   HEADERS: htmxHeaders.optional(),
@@ -81,6 +94,8 @@ const clientMessage = z.union([
   voteMap,
   markAsFriend,
   preReadyToggle,
+  captainsClass,
+  captainsVolunteer,
   navigated,
   audioStatus,
 ])
@@ -279,6 +294,10 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:votemap', socket, parsed.votemap)
       } else if ('markasfriend' in parsed) {
         this.emit('queue:markasfriend', socket, parsed.markasfriend)
+      } else if ('captainsclass' in parsed) {
+        this.emit('queue:captainsclass', socket, parsed.captainsclass)
+      } else if ('captainsvolunteer' in parsed) {
+        this.emit('queue:captainsvolunteer', socket)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
       } else if ('audioReady' in parsed) {
