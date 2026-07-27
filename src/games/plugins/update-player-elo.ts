@@ -6,6 +6,7 @@ import { type PlayerElo } from '../../database/models/player.model'
 import { collections } from '../../database/collections'
 import { players } from '../../players'
 import { safe } from '../../utils/safe'
+import { QueueMode } from '../../shared/types/queue-mode'
 import { calculateEloUpdates, defaultElo as defaultEloValue } from '../calculate-elo-updates'
 
 export default fp(
@@ -14,6 +15,7 @@ export default fp(
     events.on(
       'game:ended',
       safe(async ({ game }) => {
+        const mode = QueueMode.auto
         const eloMap = new Map<SteamId64, Partial<Record<Tf2ClassName, number>>>()
         const gamesByClassMap = new Map<SteamId64, Partial<Record<Tf2ClassName, number>>>()
 
@@ -23,7 +25,7 @@ export default fp(
               { steamId: slot.player },
               { projection: { elo: 1, 'stats.gamesByClass': 1 } },
             )
-            eloMap.set(slot.player, player?.elo ?? {})
+            eloMap.set(slot.player, player?.elo?.[mode] ?? {})
             gamesByClassMap.set(slot.player, player?.stats.gamesByClass ?? {})
           }),
         )
@@ -38,9 +40,9 @@ export default fp(
           updates.map(async ({ steamId, gameClass, newElo, at, game: gameNumber }) => {
             const eloUpdate: PlayerElo = { [gameClass]: newElo }
             await players.update(steamId, before => ({
-              $set: { elo: { ...before.elo, ...eloUpdate } },
+              $set: { elo: { ...before.elo, [mode]: { ...before.elo?.[mode], ...eloUpdate } } },
               $push: {
-                eloHistory: { at, elo: eloUpdate, game: gameNumber },
+                eloHistory: { at, mode, elo: eloUpdate, game: gameNumber },
               },
             }))
           }),
