@@ -3,11 +3,11 @@ import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { GameState } from '../database/models/game.model'
 import { GameEventType } from '../database/models/game-event.model'
-import type { PlayerElo } from '../database/models/player.model'
+import type { UpdateFilter } from 'mongodb'
+import type { PlayerElo, PlayerModel } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { GameNumber } from '../database/models/game.model'
-import { QueueMode } from '../shared/types/queue-mode'
 import { calculateEloUpdates, defaultElo as defaultEloValue } from '../games/calculate-elo-updates'
 
 export async function up() {
@@ -25,10 +25,7 @@ export async function up() {
   // In-memory state: updated as each game is processed in order
   const eloState = new Map<SteamId64, Partial<Record<Tf2ClassName, number>>>()
   const gamesPlayedState = new Map<SteamId64, Partial<Record<Tf2ClassName, number>>>()
-  const eloHistoryState = new Map<
-    SteamId64,
-    { at: Date; mode: QueueMode; elo: PlayerElo; game: GameNumber }[]
-  >()
+  const eloHistoryState = new Map<SteamId64, { at: Date; elo: PlayerElo; game: GameNumber }[]>()
 
   for (const game of games) {
     const updates = calculateEloUpdates(
@@ -44,7 +41,7 @@ export async function up() {
 
       // Append to history
       const history = eloHistoryState.get(steamId) ?? []
-      history.push({ at, mode: QueueMode.auto, elo: { [gameClass]: newElo }, game: game.number })
+      history.push({ at, elo: { [gameClass]: newElo }, game: game.number })
       eloHistoryState.set(steamId, history)
     }
 
@@ -63,13 +60,13 @@ export async function up() {
   // Write results to the database
   let updated = 0
   for (const [steamId, elo] of eloState) {
-    await collections.players.updateOne(
-      { steamId },
-      {
-        $set: { elo: { [QueueMode.auto]: elo } },
-        $push: { eloHistory: { $each: eloHistoryState.get(steamId) ?? [] } },
-      },
-    )
+    // This migration predates splitting ELO per queue mode, and it has already run everywhere, so
+    // it still writes the pre-split shape; 024 converts whatever it left behind. The cast is only
+    // to keep an unchanged, already-executed migration compiling against the current model.
+    await collections.players.updateOne({ steamId }, {
+      $set: { elo },
+      $push: { eloHistory: { $each: eloHistoryState.get(steamId) ?? [] } },
+    } as UpdateFilter<PlayerModel>)
     updated++
   }
 
