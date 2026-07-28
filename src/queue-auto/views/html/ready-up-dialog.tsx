@@ -1,10 +1,18 @@
 import { nanoid } from 'nanoid'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../../../players'
+import { queue } from '../../../queue'
+import { QueueMode } from '../../../shared/types/queue-mode'
 
 const dialogId = 'ready-up-dialog'
 
-export function ReadyUpDialog() {
+// The dialog itself is shared by both queue modes — only the websocket fields its buttons submit
+// differ, since the two modes keep their queued players in different places.
+export async function ReadyUpDialog() {
+  const captains = (await queue.getMode()) === QueueMode.captains
+  const readyField = captains ? 'captainsreadyup' : 'ready'
+  const leaveField = captains ? 'captainsleave' : 'leave'
+
   return (
     <>
       <dialog
@@ -19,7 +27,7 @@ export function ReadyUpDialog() {
 
           <div class="flex flex-col gap-4">
             <button
-              name="ready"
+              name={readyField}
               value=""
               class="bg-accent-600 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50 uppercase"
               autofocus
@@ -29,7 +37,7 @@ export function ReadyUpDialog() {
               I'm ready
             </button>
             <button
-              name="leave"
+              name={leaveField}
               value=""
               class="bg-abru-light-5 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50"
               ws-send

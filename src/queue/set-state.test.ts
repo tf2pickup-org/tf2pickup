@@ -1,4 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { QueueMode } from '../shared/types/queue-mode'
+
+const { mockGetMode } = vi.hoisted(() => ({ mockGetMode: vi.fn() }))
 
 vi.mock('../database/collections', () => ({
   collections: {
@@ -23,6 +26,8 @@ vi.mock('../pre-ready', () => ({
   preReady: { start: vi.fn() },
 }))
 
+vi.mock('./get-mode', () => ({ getMode: mockGetMode }))
+
 vi.mock('./with-queue-lock', () => ({
   withQueueLock: vi.fn(async (_operation: string, fn: () => Promise<unknown>) => await fn()),
 }))
@@ -35,6 +40,7 @@ import { events } from '../events'
 describe('setState()', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockGetMode.mockResolvedValue(QueueMode.auto)
   })
 
   describe('when transitioning to launching', () => {
@@ -61,6 +67,19 @@ describe('setState()', () => {
         state: QueueState.launching,
       })
     })
+  })
+
+  it('skips the slot check in captain mode, which has no slots yet', async () => {
+    mockGetMode.mockResolvedValue(QueueMode.captains)
+    vi.mocked(collections.queueSlots.countDocuments).mockResolvedValue(12)
+
+    await setState(QueueState.launching)
+
+    expect(collections.queueSlots.countDocuments).not.toHaveBeenCalled()
+    expect(collections.queueState.updateOne).toHaveBeenCalledWith(
+      {},
+      { $set: { state: QueueState.launching } },
+    )
   })
 
   it('does not verify slots for other transitions', async () => {

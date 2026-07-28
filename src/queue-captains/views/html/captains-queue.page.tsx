@@ -15,14 +15,16 @@ import { Sidebar } from '../../../queue-auto/views/html/sidebar'
 import { SoundBlockedAlert } from '../../../queue-auto/views/html/sound-blocked-alert'
 import { StreamList } from '../../../queue-auto/views/html/stream-list'
 import { SubstitutionRequests } from '../../../queue-auto/views/html/substitution-requests'
+import { getCurrent } from '../../draft/get-current'
 import { getReadiness } from '../../get-readiness'
 import { ClassPicker } from './class-picker'
+import { DraftBoard } from './draft-board'
 import { PoolList } from './pool-list'
 import { ReadinessMeter } from './readiness-meter'
 
 export async function CaptainsQueuePage() {
   const user = requestContext.get('user')
-  const readiness = await getReadiness()
+  const [readiness, draft] = await Promise.all([getReadiness(), getCurrent()])
 
   return (
     <Layout
@@ -50,9 +52,15 @@ export async function CaptainsQueuePage() {
           <div id="queue-content" class="tab-content lg:contents!">
             <div class="order-3 lg:order-2 lg:col-span-3">
               <div class="flex flex-col gap-6">
-                <ReadinessMeter />
-                <ClassPicker actor={user?.player.steamId} />
-                <PoolList actor={user?.player.steamId} />
+                {draft ? (
+                  <DraftBoard actor={user?.player.steamId} />
+                ) : (
+                  <>
+                    <ReadinessMeter />
+                    <ClassPicker actor={user?.player.steamId} />
+                    <PoolList actor={user?.player.steamId} />
+                  </>
+                )}
               </div>
             </div>
 
