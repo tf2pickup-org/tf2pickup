@@ -8,8 +8,9 @@ export async function PoolList(props: { actor?: SteamId64 | undefined }) {
 
   return (
     <div id="captains-pool-list" class="pool-list">
-      <div class="pool-head">
-        <span class="pool-title">Pool · {pool.length}</span>
+      <div class="pool-heading">
+        <span class="captains-panel-label">Pool</span>
+        <div class="pool-rule"></div>
       </div>
 
       {pool.length === 0 ? (

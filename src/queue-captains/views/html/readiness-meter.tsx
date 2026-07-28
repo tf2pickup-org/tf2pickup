@@ -8,12 +8,17 @@ export async function ReadinessMeter() {
   const captainsShort = readiness.captainVolunteers < readiness.captainsNeeded
 
   return (
-    <div class="readiness-meter" id="readiness-meter" data-full={`${readiness.isFull}`}>
+    <div
+      class="captains-panel readiness-meter"
+      id="readiness-meter"
+      data-full={`${readiness.isFull}`}
+    >
       <div class="readiness-top">
-        <span class="readiness-title">{readiness.isFull ? 'Ready to draft' : 'Filling up'}</span>
-        <span class="readiness-count">
-          {readiness.fillable}
-          <small> / {readiness.required} slots</small>
+        <h3 class="readiness-count">
+          Slots: {readiness.fillable}/{readiness.required}
+        </h3>
+        <span class="readiness-status">
+          {readiness.isFull ? 'Ready to draft' : 'Waiting for players'}
         </span>
       </div>
 
@@ -28,31 +33,28 @@ export async function ReadinessMeter() {
         <span style={`width: ${percent}%`}></span>
       </div>
 
-      <div class="readiness-foot">
+      <div class="readiness-detail">
         <span>
-          <b>{readiness.poolSize}</b> {readiness.poolSize === 1 ? 'player' : 'players'} in pool
+          <b>{readiness.poolSize}</b> {readiness.poolSize === 1 ? 'player' : 'players'} in the pool
         </span>
-        <span class="readiness-sep">·</span>
         <span>
-          <b>{readiness.captainVolunteers}</b>{' '}
-          {readiness.captainVolunteers === 1 ? 'captain' : 'captains'}{' '}
-          {captainsShort ? (
-            <span class="readiness-miss">needs {readiness.captainsNeeded}</span>
-          ) : (
-            <span class="readiness-ok">✓</span>
-          )}
+          <b>{readiness.captainVolunteers}</b> of <b>{readiness.captainsNeeded}</b> captains
         </span>
       </div>
 
-      {readiness.missing.length > 0 && (
+      {(readiness.missing.length > 0 || captainsShort) && (
         <div class="readiness-missing">
-          <span>Still missing</span>
           {missingByClass(readiness.missing).map(([gameClass, count]) => (
             <span class="readiness-need">
-              <GameClassIcon gameClass={gameClass} size={18} />
-              {count}× {gameClass}
+              <GameClassIcon gameClass={gameClass} size={20} />
+              {count} {gameClass}
             </span>
           ))}
+          {captainsShort && (
+            <span class="readiness-need">
+              {readiness.captainsNeeded - readiness.captainVolunteers} more captain
+            </span>
+          )}
         </div>
       )}
     </div>

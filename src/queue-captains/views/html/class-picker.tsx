@@ -23,9 +23,9 @@ export async function ClassPicker(props: { actor?: SteamId64 | undefined }) {
   const eligibility = await canCaptain(player)
 
   return (
-    <div id="class-picker" class="class-picker">
-      <span class="class-picker-title">
-        {selected.size > 0 ? "You're in — playing as" : 'Pick the classes you can play'}
+    <div id="class-picker" class="captains-panel class-picker">
+      <span class="captains-panel-label">
+        {selected.size > 0 ? "You're queued as" : 'Pick the classes you can play'}
       </span>
 
       <form class="class-picker-classes" ws-send data-disable-when-offline>
