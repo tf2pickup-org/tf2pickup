@@ -3,6 +3,7 @@ import type { SteamId64 } from './shared/types/steam-id-64'
 import type { UserMetadata } from './shared/types/user-metadata'
 import { logger } from './logger'
 import type { CaptainsPoolEntryModel } from './database/models/captains-pool-entry.model'
+import type { DraftModel } from './database/models/draft.model'
 import type { QueueSlotModel } from './database/models/queue-slot.model'
 import { QueueState } from './database/models/queue-state.model'
 import type { GameModel, GameNumber } from './database/models/game.model'
@@ -204,6 +205,15 @@ export interface Events {
   }
   'queueCaptains/pool:left': {
     steamId: SteamId64
+  }
+  'queueCaptains/draft:started': {
+    draft: DraftModel
+  }
+  'queueCaptains/draft:updated': {
+    draft: DraftModel
+  }
+  'queueCaptains/draft:completed': {
+    draft: DraftModel
   }
 
   'queue/mapPool:reset': {

@@ -1,6 +1,11 @@
 import fp from 'fastify-plugin'
+import { collections } from '../../database/collections'
+import { QueueState } from '../../database/models/queue-state.model'
 import { events } from '../../events'
 import { queue } from '../../queue'
+import { ReadyUpDialog } from '../../queue-auto/views/html/ready-up-dialog'
+import { getCurrent } from '../draft/get-current'
+import { DraftBoard } from '../views/html/draft-board'
 import { QueueMode } from '../../shared/types/queue-mode'
 import { safe } from '../../utils/safe'
 import type { AppWebSocket } from '../../websocket/types'
@@ -32,9 +37,26 @@ export default fp(
         return
       }
 
+      const actor = socket.player?.steamId
+      if (await getCurrent()) {
+        socket.send(await DraftBoard({ actor }))
+        return
+      }
+
       socket.send(await ReadinessMeter())
-      socket.send(await PoolList({ actor: socket.player?.steamId }))
-      socket.send(await ClassPicker({ actor: socket.player?.steamId }))
+      socket.send(await PoolList({ actor }))
+      socket.send(await ClassPicker({ actor }))
+
+      // a reconnect mid-ready-up should put the dialog back
+      if (actor && (await queue.getState()) === QueueState.ready) {
+        const entry = await collections.queueCaptainsPool.findOne({
+          'player.steamId': actor,
+          ready: false,
+        })
+        if (entry) {
+          socket.send(await ReadyUpDialog.show(actor))
+        }
+      }
     }
 
     app.gateway.on('ready', async socket => {
