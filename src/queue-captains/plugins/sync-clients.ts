@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { getMode } from '../../queue/get-mode'
+import { queue } from '../../queue'
 import { QueueMode } from '../../shared/types/queue-mode'
 import { safe } from '../../utils/safe'
 import type { AppWebSocket } from '../../websocket/types'
@@ -14,7 +14,7 @@ export default fp(
     // The pool is a single list rather than a grid of addressable slots, so it is re-rendered
     // whole. At a couple dozen entries that is cheaper than tracking per-entry diffs.
     const refreshPool = safe(async () => {
-      if ((await getMode()) !== QueueMode.captains) {
+      if ((await queue.getMode()) !== QueueMode.captains) {
         return
       }
 
@@ -28,7 +28,7 @@ export default fp(
     events.on('queueCaptains/pool:left', refreshPool)
 
     async function syncQueuePage(socket: AppWebSocket) {
-      if ((await getMode()) !== QueueMode.captains) {
+      if ((await queue.getMode()) !== QueueMode.captains) {
         return
       }
 

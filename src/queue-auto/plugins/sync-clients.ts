@@ -23,7 +23,7 @@ import type { PlayerModel } from '../../database/models/player.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 import { errors } from '../../errors'
-import { getMode } from '../../queue/get-mode'
+import { queue } from '../../queue'
 import { getState } from '../../queue/get-state'
 import { QueueMode } from '../../shared/types/queue-mode'
 
@@ -52,7 +52,7 @@ export default fp(
 
     async function syncQueuePage(socket: AppWebSocket) {
       // captain mode renders a different page at '/', so none of these targets exist there
-      if ((await getMode()) !== QueueMode.auto) {
+      if ((await queue.getMode()) !== QueueMode.auto) {
         return
       }
 
