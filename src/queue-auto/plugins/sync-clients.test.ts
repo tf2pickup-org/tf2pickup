@@ -27,7 +27,9 @@ vi.mock('../../utils/safe', () => ({ safe: <T>(fn: T): T => fn }))
 vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../errors', () => ({ errors: { notFound: mockNotFound } }))
 vi.mock('../../queue/get-state', () => ({ getState: mockGetState }))
-vi.mock('../../queue/get-mode', () => ({ getMode: mockGetMode }))
+// the plugin imports the shared queue module, so that is what has to be mocked — reaching past
+// it to ./get-mode leaves the real barrel loading set-state, and with it environment.ts
+vi.mock('../../queue', () => ({ queue: { getMode: mockGetMode, getState: mockGetState } }))
 vi.mock('../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },
