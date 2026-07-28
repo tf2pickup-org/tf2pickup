@@ -60,7 +60,7 @@ function TurnBar(props: {
   const { draft, turn } = props
   if (turn === null) {
     return (
-      <div class="turn-bar" data-team="done">
+      <div class="captains-panel turn-bar" data-team="done">
         <div class="turn-bar-top">
           <span class="turn-label">Teams are set</span>
         </div>
@@ -73,12 +73,13 @@ function TurnBar(props: {
   const captain = draft.pool.find(entry => entry.steamId === draft.captains[turn.team])
 
   return (
-    <div class="turn-bar" data-team={turn.team}>
+    <div class="captains-panel turn-bar" data-team={turn.team}>
       <div class="turn-bar-top">
         <div class="turn-who">
-          <span class="turn-label" safe>
-            {props.isMyTurn ? 'Your pick' : `${turn.team.toUpperCase()} is picking`}
+          <span class="turn-team" data-team={turn.team}>
+            {turn.team}
           </span>
+          <span class="turn-label">{props.isMyTurn ? 'Your pick' : 'is picking'}</span>
           <span class="turn-sub">
             {!props.isMyTurn && <span safe>{captain?.name ?? 'captain'} · </span>}
             pick {turn.index + 1} of {turn.total}
@@ -91,7 +92,6 @@ function TurnBar(props: {
       </div>
 
       <div class="turn-order" aria-hidden="true">
-        <b>order</b>
         {order.map((team, index) => (
           <i
             data-team={team}
@@ -113,7 +113,6 @@ function TeamPanel(props: { draft: DraftModel; team: Tf2Team; active: boolean })
   const captain = draft.pool.find(entry => entry.steamId === captainId)
   const picked = draft.picks.filter(pick => pick.team === team)
 
-  // slots this team still has open, which is also what the captain will end up playing one of
   const remaining = teamSlots(config).filter(slot => slot.team === team)
   for (const pick of picked) {
     const index = remaining.findIndex(slot => slot.gameClass === pick.gameClass)
@@ -121,9 +120,14 @@ function TeamPanel(props: { draft: DraftModel; team: Tf2Team; active: boolean })
       remaining.splice(index, 1)
     }
   }
+
+  // One of the remaining slots is the captain's. It has to be one they can actually play, so a
+  // class they cannot play always stays on the board as an open pick.
   const captainClasses = [...new Set(remaining.map(slot => slot.gameClass))].filter(gameClass =>
     captain?.gameClasses.includes(gameClass),
   )
+  const captainSlot = remaining.findIndex(slot => captainClasses.includes(slot.gameClass))
+  const openSlots = remaining.filter((_, index) => index !== captainSlot)
 
   return (
     <div class="draft-team" data-team={team} data-active={`${props.active}`}>
@@ -151,7 +155,7 @@ function TeamPanel(props: { draft: DraftModel; team: Tf2Team; active: boolean })
           )
         })}
 
-        <div class="draft-row draft-row-captain">
+        <div class="draft-row">
           <span class="draft-captain-classes">
             {captainClasses.map(gameClass => (
               <GameClassIcon gameClass={gameClass} size={22} />
@@ -164,9 +168,9 @@ function TeamPanel(props: { draft: DraftModel; team: Tf2Team; active: boolean })
           <span class="draft-flag">{captainClasses.length === 1 ? 'locked in' : 'class TBD'}</span>
         </div>
 
-        {Array.from({ length: Math.max(remaining.length - 1, 0) }, (_, index) => (
+        {openSlots.map(slot => (
           <div class="draft-row draft-row-open">
-            <GameClassIcon gameClass={remaining[index + 1]!.gameClass} size={22} />
+            <GameClassIcon gameClass={slot.gameClass} size={22} />
             <span class="draft-open-label">open</span>
           </div>
         ))}
@@ -192,13 +196,14 @@ function AvailablePool(props: {
   return (
     <div class="draft-available">
       <div class="draft-available-head">
-        <span class="draft-available-title">Available · {available.length}</span>
+        <span class="captains-panel-label">Available · {available.length}</span>
         {sittingOut > 0 && (
           <span class="draft-available-note" safe>
             {sittingOut === 1 ? 'One of these will' : `${sittingOut} of these will`} not play this
             game
           </span>
         )}
+        <div class="draft-rule"></div>
       </div>
 
       <form class="draft-available-grid" ws-send data-disable-when-offline>
