@@ -4,6 +4,7 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
 import { HideServerInfoMode } from '../../shared/types/hide-server-info-mode'
+import { QueueMode } from '../../shared/types/queue-mode'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 
 export const configurationSchema = z.discriminatedUnion('key', [
@@ -214,6 +215,20 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('players.bypass_registration_restrictions'),
     value: z.array(steamId64).default([]),
   }),
+  z
+    .object({
+      key: z.literal('queue.mode'),
+      value: z.enum(QueueMode).default(QueueMode.auto),
+    })
+    .describe(
+      'How teams are formed: "auto" balances them by skill average, "captains" has two captains draft them',
+    ),
+  z
+    .object({
+      key: z.literal('queue.captains.min_games'),
+      value: z.number().min(0).default(100),
+    })
+    .describe('Games a player must have played before they can volunteer to captain'),
   z.object({
     key: z.literal('queue.player_skill_threshold'),
     value: z.number().nullable().default(null),

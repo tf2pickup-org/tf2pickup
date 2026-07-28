@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import type { FastifyInstance } from 'fastify'
+import { QueueMode } from '../../shared/types/queue-mode'
 
 const {
   mockPlayersFind,
@@ -9,6 +10,7 @@ const {
   mockQueueSlotsFindOne,
   mockNotFound,
   mockGetState,
+  mockGetMode,
 } = vi.hoisted(() => ({
   mockPlayersFind: vi.fn(),
   mockPlayersCollectionFindOne: vi.fn(),
@@ -16,6 +18,7 @@ const {
   mockQueueSlotsFindOne: vi.fn(),
   mockNotFound: vi.fn((msg: string) => new Error(msg)),
   mockGetState: vi.fn(),
+  mockGetMode: vi.fn(),
 }))
 
 vi.mock('fastify-plugin', () => ({ default: <T>(fn: T): T => fn }))
@@ -24,6 +27,9 @@ vi.mock('../../utils/safe', () => ({ safe: <T>(fn: T): T => fn }))
 vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../errors', () => ({ errors: { notFound: mockNotFound } }))
 vi.mock('../../queue/get-state', () => ({ getState: mockGetState }))
+// the plugin imports the shared queue module, so that is what has to be mocked — reaching past
+// it to ./get-mode leaves the real barrel loading set-state, and with it environment.ts
+vi.mock('../../queue', () => ({ queue: { getMode: mockGetMode, getState: mockGetState } }))
 vi.mock('../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },
@@ -112,6 +118,7 @@ describe('sync-clients', () => {
   beforeEach(async () => {
     vi.clearAllMocks()
     app = makeApp()
+    mockGetMode.mockResolvedValue(QueueMode.auto)
     mockQueueSlotsFind.mockReturnValue({ toArray: vi.fn().mockResolvedValue([]) })
     mockQueueSlotsFindOne.mockResolvedValue(null)
     mockPlayersCollectionFindOne.mockResolvedValue(null)
