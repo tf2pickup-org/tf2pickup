@@ -45,8 +45,8 @@ importers:
         specifier: 0.20.1
         version: 0.20.1(@opentelemetry/api@1.9.1)(supports-color@8.1.1)
       '@fastify/rate-limit':
-        specifier: 11.1.0
-        version: 11.1.0
+        specifier: 11.2.0
+        version: 11.2.0
       '@fastify/request-context':
         specifier: 7.0.0
         version: 7.0.0
@@ -830,8 +830,8 @@ packages:
   '@fastify/proxy-addr@5.1.0':
     resolution: {integrity: sha512-INS+6gh91cLUjB+PVHfu1UqcB76Sqtpyp7bnL+FYojhjygvOPA9ctiD/JDKsyD9Xgu4hUhCSJBPig/w7duNajw==}
 
-  '@fastify/rate-limit@11.1.0':
-    resolution: {integrity: sha512-BeJ9tizLvmTXGD7deYU5G04OtHhwk5uHxbpEPVp09gKvUBIXmau/4Bshxhu9ci54MvVWfGjCEx4RzvsTntojwA==}
+  '@fastify/rate-limit@11.2.0':
+    resolution: {integrity: sha512-X7osJd4XSvMoejYrnJkSZYYjY1eNYoBqhjlzf1RakC2204qExFqZFTKj5+T7VuzA/iUI9Z3UoSqQRkB2HpG0oQ==}
 
   '@fastify/request-context@7.0.0':
     resolution: {integrity: sha512-SMnQ4VWa1p20qOSONvi+yG32vqyHoZE6LPD4xrIl3RVE11dLrBwiQ7VmK4aTCS7/jB5Tx6fI9JotTNErClPS5A==}
@@ -3480,6 +3480,10 @@ packages:
   inherits@2.0.4:
     resolution: {integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==}
 
+  ip-address@10.4.0:
+    resolution: {integrity: sha512-oSK96Grm3aP6OrS263xVxbNDGVL7rzBtYdpGqlDG8iQdoenDoTs/nkki+DflYbAEE8Xl6o5YxhxlrKvI3nqKXQ==}
+    engines: {node: '>= 12'}
+
   ip-address@9.0.5:
     resolution: {integrity: sha512-zHtQzGojZXTwZTHQqra+ETKd4Sn3vgi7uBmlPoXVWZqYvuKmtI0l/VZTjqGmJY9x88GGOaZ9+G9ES8hC4T4X8g==}
     engines: {node: '>= 12'}
@@ -5713,10 +5717,11 @@ snapshots:
       '@fastify/forwarded': 3.0.1
       ipaddr.js: 2.3.0
 
-  '@fastify/rate-limit@11.1.0':
+  '@fastify/rate-limit@11.2.0':
     dependencies:
       '@lukeed/ms': 2.0.2
       fastify-plugin: 6.0.0
+      ip-address: 10.4.0
       toad-cache: 3.7.0
 
   '@fastify/request-context@7.0.0':
@@ -8730,6 +8735,8 @@ snapshots:
   imurmurhash@0.1.4: {}
 
   inherits@2.0.4: {}
+
+  ip-address@10.4.0: {}
 
   ip-address@9.0.5:
     dependencies:
