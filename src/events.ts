@@ -10,7 +10,6 @@ import type { GameModel, GameNumber } from './database/models/game.model'
 import type { PlayerBan, PlayerModel } from './database/models/player.model'
 import type { MapPoolEntry } from './database/models/map-pool-entry.model'
 import type { StaticGameServerModel } from './database/models/static-game-server.model'
-import type { LogMessage } from './log-receiver/parse-log-message'
 import type { Tf2Team } from './shared/types/tf2-team'
 import type { StreamModel } from './database/models/stream.model'
 import type { Bot } from './shared/types/bot'
@@ -19,9 +18,14 @@ import type { Configuration } from './database/models/configuration-entry.model'
 import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
+import type { LogMessage } from './log-receiver/parse-log-message'
 import type { WithId } from 'mongodb'
 
 export interface Events {
+  'gamelog:message': {
+    message: LogMessage
+  }
+
   'chat:messageDeleted': {
     messageId: string
   }
@@ -76,10 +80,6 @@ export interface Events {
   // a mid-game match restart was detected and the game's score was reset
   'game:restarted': {
     game: GameModel
-  }
-
-  'gamelog:message': {
-    message: LogMessage
   }
 
   'match:started': {
