@@ -7,6 +7,29 @@
     gap: 16px;
   }
 
+  /* 9v9: 18 roster rows would push the pool below the fold, so whatever the captain acts on
+     (the pool or the map bans) goes right under the turn bar, and each roster packs two slots
+     per row to halve its height. */
+  .draft-board[data-large-roster='true'] {
+    > .turn-bar {
+      order: -2;
+    }
+
+    > .draft-available,
+    > .map-bans {
+      order: -1;
+    }
+
+    .draft-team-rows {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+
+      @media (width < theme(--breakpoint-md)) {
+        grid-template-columns: 1fr;
+      }
+    }
+  }
+
   .turn-bar {
     .turn-bar-top {
       display: flex;
