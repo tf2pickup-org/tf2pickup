@@ -25,4 +25,5 @@ export interface GameSlotModel {
   shouldJoinBy?: Date
   voiceServerUrl?: string
   applyCooldown?: boolean // should apply cooldown to player if they get replaced
+  isCaptain?: boolean // drafted this team, in captain mode
 }

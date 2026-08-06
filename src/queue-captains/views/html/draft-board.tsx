@@ -1,6 +1,6 @@
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { IconCrown, IconLock } from '../../../html/components/icons'
-import type { DraftModel } from '../../../database/models/draft.model'
+import { DraftState, type DraftModel } from '../../../database/models/draft.model'
 import { config } from '../../../queue-auto/config'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2Team } from '../../../shared/types/tf2-team'
@@ -9,6 +9,7 @@ import { getCurrent } from '../../draft/get-current'
 import { openSlots } from '../../draft/open-slots'
 import { remainingCandidates } from '../../draft/remaining-candidates'
 import { legalPicks, type LegalPick } from '../../matching/legal-picks'
+import { MapBans } from './map-bans'
 import { pickOrder } from '../../pick-order'
 import { teamSlots } from '../../team-slots'
 
@@ -18,7 +19,8 @@ export async function DraftBoard(props: { actor?: SteamId64 | undefined }) {
     return <div id="draft-board"></div>
   }
 
-  const turn = currentTurn(draft, config)
+  const banning = draft.state === DraftState.banningMaps
+  const turn = banning ? null : currentTurn(draft, config)
   const isMyTurn = turn !== null && draft.captains[turn.team] === props.actor
   const available = openSlots(draft, config)
   const picks =
@@ -32,13 +34,31 @@ export async function DraftBoard(props: { actor?: SteamId64 | undefined }) {
 
   return (
     <div id="draft-board" class="draft-board">
-      <TurnBar draft={draft} turn={turn} isMyTurn={isMyTurn} />
+      {banning ? (
+        <div class="captains-panel turn-bar">
+          <div class="turn-bar-top">
+            <div class="turn-who">
+              <MapBans.heading draft={draft} actor={props.actor} />
+            </div>
+            <span class="turn-clock" data-countdown={banClockMs(draft)} safe>
+              {formatClock(banClockMs(draft))}
+            </span>
+          </div>
+          <div class="turn-timer">
+            <i style={`animation-duration: ${banClockMs(draft)}ms`}></i>
+          </div>
+        </div>
+      ) : (
+        <TurnBar draft={draft} turn={turn} isMyTurn={isMyTurn} />
+      )}
 
       <div class="draft-teams">
         {[Tf2Team.blu, Tf2Team.red].map(team => (
           <TeamPanel draft={draft} team={team} active={turn?.team === team} />
         ))}
       </div>
+
+      {banning && <MapBans draft={draft} actor={props.actor} />}
 
       {turn !== null && (
         <AvailablePool
@@ -252,6 +272,10 @@ function AvailablePool(props: {
       </form>
     </div>
   )
+}
+
+function banClockMs(draft: DraftModel): number {
+  return Math.max((draft.turnEndsAt?.getTime() ?? 0) - Date.now(), 0)
 }
 
 function formatClock(ms: number): string {

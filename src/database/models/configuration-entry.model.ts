@@ -235,6 +235,12 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.number().positive().default(secondsToMilliseconds(30)),
     })
     .describe('Time a captain has to make each draft pick before one is made for them'),
+  z
+    .object({
+      key: z.literal('queue.captains.ban_timeout'),
+      value: z.number().positive().default(secondsToMilliseconds(30)),
+    })
+    .describe('Time a captain has to ban a map before one is banned for them'),
   z.object({
     key: z.literal('queue.player_skill_threshold'),
     value: z.number().nullable().default(null),
