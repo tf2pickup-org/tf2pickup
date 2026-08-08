@@ -32,8 +32,10 @@ export async function DraftBoard(props: { actor?: SteamId64 | undefined }) {
           team: turn.team,
         })
 
+  const teamSize = teamSlots(config).length / 2
+
   return (
-    <div id="draft-board" class="draft-board">
+    <div id="draft-board" class="draft-board" data-large-roster={`${teamSize > 6}`}>
       {banning ? (
         <div class="captains-panel turn-bar">
           <div class="turn-bar-top">
