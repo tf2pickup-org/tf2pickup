@@ -4,7 +4,7 @@ import { SlotStatus, type GameSlotModel } from '../../../database/models/game-sl
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
+import { IconCrown, IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
@@ -88,6 +88,12 @@ async function GameSlotContent(props: {
             alt={`${props.player.name}'s avatar`}
           />
           <a href={`/players/${props.player.steamId}`} class="player-link">
+            {props.slot.isCaptain && (
+              <span class="player-captain" title="Drafted this team">
+                <IconCrown size={16} />
+                <span class="sr-only">captain</span>
+              </span>
+            )}
             <span class="player-name" safe>
               {props.player.name}
             </span>
