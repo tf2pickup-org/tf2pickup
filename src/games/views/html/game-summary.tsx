@@ -18,6 +18,7 @@ export function GameSummary(props: {
     | 'stvConnectString'
     | 'slots'
     | 'gameServer'
+    | 'draft'
   >
   actor?: SteamId64 | undefined
 }) {
@@ -54,6 +55,15 @@ export function GameSummary(props: {
             {format(launchedAt, 'dd.MM.yyyy HH:mm')}
           </span>
         </div>
+
+        {!!props.game.draft && (
+          <div class="game-info">
+            <span class="game-info-label">teams</span>
+            <a class="game-info-value underline" href={`/games/${props.game.number}/draft`}>
+              drafted by captains
+            </a>
+          </div>
+        )}
 
         <ConnectInfo game={props.game} actor={props.actor} />
         <LogsLink game={props.game} />
