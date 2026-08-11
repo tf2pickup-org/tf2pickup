@@ -5,15 +5,14 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { queue } from '../../../queue-auto'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { defaultElo } from '../../../games/calculate-elo-updates'
-import type { QueueMode } from '../../../shared/types/queue-mode'
 import type { EloDataPoint, EloHistoryData, SkillData } from './@client/elo-history-chart'
 
-export async function EloHistoryChart(props: { steamId: SteamId64; mode: QueueMode }) {
+export async function EloHistoryChart(props: { steamId: SteamId64 }) {
   const player = await players.bySteamId(props.steamId, ['eloHistory', 'skillHistory'])
   const mainJs = await bundle(resolve(import.meta.dirname, '@client', 'elo-history-chart.ts'))
 
   const classes = queue.config.classes.map(c => c.name)
-  const data = buildChartData((player.eloHistory ?? []).filter(entry => entry.mode === props.mode))
+  const data = buildChartData(player.eloHistory ?? [])
   const skillData = buildSkillData(data, player.skillHistory ?? [])
 
   return (
