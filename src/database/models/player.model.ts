@@ -1,5 +1,4 @@
 import type { Bot } from '../../shared/types/bot'
-import type { QueueMode } from '../../shared/types/queue-mode'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { GameNumber } from './game.model'
@@ -83,11 +82,9 @@ export interface PlayerModel {
   verified?: boolean
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
-  // ELO is tracked separately per queue mode; the two ladders never mix
-  elo?: Partial<Record<QueueMode, PlayerElo>>
+  elo?: PlayerElo
   eloHistory?: {
     at: Date
-    mode: QueueMode
     elo: PlayerElo
     game: GameNumber
   }[]

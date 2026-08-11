@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
 import { makeSkillSuggestions } from './make-skill-suggestions'
-import { QueueMode } from '../shared/types/queue-mode'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -25,7 +24,7 @@ function makePlayer(
 ) {
   const { elo = {}, gamesByClass = {}, lastSkillChangeGamesByClass = undefined } = overrides
   return {
-    elo: { [QueueMode.auto]: elo },
+    elo,
     stats: { totalGames: 0, gamesByClass },
     skillHistory:
       lastSkillChangeGamesByClass !== undefined
@@ -155,7 +154,7 @@ describe('makeSkillSuggestions()', () => {
 
     it('skips cooldown when last skill change has no gamesByClass snapshot', () => {
       const player = {
-        elo: { [QueueMode.auto]: { [Tf2ClassName.scout]: 1600 } },
+        elo: { [Tf2ClassName.scout]: 1600 },
         stats: { totalGames: 0, gamesByClass: { [Tf2ClassName.scout]: enoughGames } },
         skillHistory: [{ at: new Date(), skill: {}, actor: mockActor }],
       }
