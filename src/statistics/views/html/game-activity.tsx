@@ -33,7 +33,7 @@ export async function GameActivity() {
 
       <div class="flex flex-col gap-2">
         <div class="flex">
-          <div class="grid w-8 shrink-0 grid-rows-7 gap-[3px] pt-[19px] pr-2">
+          <div class="grid w-8 shrink-0 grid-rows-[repeat(7,12px)] gap-[3px] pt-[19px] pr-2">
             {weekdayLabels.map(label => (
               <span class="text-abru-light-50 flex h-3 items-center text-[10px] leading-none">
                 {label}
