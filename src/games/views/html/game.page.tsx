@@ -26,7 +26,6 @@ export async function GamePage(props: { number: GameNumber }) {
     'slots',
     'events',
     'gameServer',
-    'draft',
     'logsUrl',
     'demoUrl',
     'score',
