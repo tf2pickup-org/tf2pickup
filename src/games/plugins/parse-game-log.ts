@@ -38,9 +38,37 @@ export default fp(
       queues.set(logSecret, current)
     }
 
+    // TF2 servers emit many log lines a second (kills, damage, chat), and most
+    // match nothing and don't change the context. Holding the context in memory
+    // and only touching the database when it actually changes keeps this off the
+    // hot path: after warmup there are no reads, and writes happen only on the
+    // handful of lines per round that move the score/round state. The database
+    // remains an up-to-date durable backup for rehydration after a restart.
+    const gameNumbers = new Map<string, GameNumber>() // logSecret -> game number
+    const contexts = new Map<GameNumber, GameContext>()
+
+    async function resolveGameNumber(logSecret: string): Promise<GameNumber | null> {
+      const cached = gameNumbers.get(logSecret)
+      if (cached !== undefined) {
+        return cached
+      }
+      const game = await collections.games.findOne({ logSecret }, { projection: { number: 1 } })
+      if (game === null) {
+        return null
+      }
+      gameNumbers.set(logSecret, game.number)
+      return game.number
+    }
+
     async function loadContext(gameNumber: GameNumber): Promise<GameContext> {
+      const cached = contexts.get(gameNumber)
+      if (cached) {
+        return cached
+      }
       const state = await collections.gamesLogParseState.findOne({ gameNumber })
-      return state?.context ?? createGameContext()
+      const context = state?.context ?? createGameContext()
+      contexts.set(gameNumber, context)
+      return context
     }
 
     async function apply(gameNumber: GameNumber, event: LogEvent): Promise<void> {
@@ -124,32 +152,43 @@ export default fp(
 
     events.on('gamelog:message', ({ message }) => {
       enqueue(message.password, async () => {
-        const game = await collections.games.findOne(
-          { logSecret: message.password },
-          { projection: { number: 1 } },
-        )
-        if (game === null) {
+        const gameNumber = await resolveGameNumber(message.password)
+        if (gameNumber === null) {
           eventCounter.add(1, { 'tf2pickup.games.event.handled': false })
           return
         }
 
-        const context = await loadContext(game.number)
+        const context = await loadContext(gameNumber)
+        const before = JSON.stringify(context)
         const logEvents = analyze(context, message.payload)
-        await collections.gamesLogParseState.updateOne(
-          { gameNumber: game.number },
-          { $set: { context, at: new Date() } },
-          { upsert: true },
-        )
+
+        // persist only when the line actually moved the context
+        if (JSON.stringify(context) !== before) {
+          await collections.gamesLogParseState.updateOne(
+            { gameNumber },
+            { $set: { context, at: new Date() } },
+            { upsert: true },
+          )
+        }
 
         eventCounter.add(1, {
           'tf2pickup.games.event.handled': logEvents.length > 0,
-          'tf2pickup.game.number': game.number,
+          'tf2pickup.game.number': gameNumber,
         })
 
         for (const event of logEvents) {
-          await apply(game.number, event)
+          await apply(gameNumber, event)
         }
       })
+    })
+
+    // free the in-memory caches once a game is over; the database document is
+    // left for the TTL index to sweep
+    events.on('game:ended', ({ game }) => {
+      contexts.delete(game.number)
+      if (game.logSecret) {
+        gameNumbers.delete(game.logSecret)
+      }
     })
   },
   { name: 'parse game log', encapsulate: true },
