@@ -42,10 +42,6 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { 'player.steamId': 1 }, options: { sparse: true } },
     { spec: { id: 1 }, options: { unique: true } },
   ],
-  queueCaptainsDrafts: [
-    { spec: { id: 1 }, options: { unique: true } },
-    { spec: { createdAt: -1 } },
-  ],
   queueCaptainsPool: [
     { spec: { 'player.steamId': 1 }, options: { unique: true } },
     { spec: { joinedAt: 1 } },

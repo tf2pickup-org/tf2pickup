@@ -1,4 +1,5 @@
 import fp from 'fastify-plugin'
+import { collections } from '../../database/collections'
 import { errors } from '../../errors'
 import { FlashMessage } from '../../html/components/flash-message'
 import { queueWsCallDuration } from '../../queue/metrics'
@@ -6,13 +7,8 @@ import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { logError } from '../../utils/log-error'
 import { measureTime } from '../../utils/measure-time'
 import type { AppWebSocket } from '../../websocket/types'
-import { makePick } from '../draft/make-pick'
-import { leave } from '../leave'
-import { readyUp } from '../ready-up'
-import { toggleGameClass } from '../toggle-game-class'
+import { setGameClasses } from '../set-game-classes'
 import { toggleCaptain } from '../toggle-captain'
-import { ReadyUpDialog } from '../../queue-auto/views/html/ready-up-dialog'
-import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -46,44 +42,17 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        await toggleGameClass(socket.player.steamId, gameClass)
-      }),
-    )
-
-    app.gateway.on(
-      'queue:captainspick',
-      wsSafe('captains:pick', async (socket, pick: string) => {
-        if (!socket.player) {
-          throw errors.unauthorized('unauthorized')
+        const entry = await collections.queueCaptainsPool.findOne({
+          'player.steamId': socket.player.steamId,
+        })
+        const current = new Set(entry?.gameClasses ?? [])
+        if (current.has(gameClass)) {
+          current.delete(gameClass)
+        } else {
+          current.add(gameClass)
         }
 
-        const [player, gameClass] = pick.split(':') as [SteamId64, Tf2ClassName]
-        await makePick(socket.player.steamId, player, gameClass)
-      }),
-    )
-
-    app.gateway.on(
-      'queue:captainsreadyup',
-      wsSafe('captains:readyup', async socket => {
-        if (!socket.player) {
-          throw errors.unauthorized('unauthorized')
-        }
-
-        const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
-        app.gateway.to({ player: socket.player.steamId }).send(() => close)
-      }),
-    )
-
-    app.gateway.on(
-      'queue:captainsleave',
-      wsSafe('captains:leave', async socket => {
-        if (!socket.player) {
-          throw errors.unauthorized('unauthorized')
-        }
-
-        const close = await ReadyUpDialog.close()
-        await leave(socket.player.steamId)
-        app.gateway.to({ player: socket.player.steamId }).send(() => close)
+        await setGameClasses(socket.player.steamId, [...current])
       }),
     )
 

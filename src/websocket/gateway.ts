@@ -23,9 +23,6 @@ export interface ClientToServerEvents {
   'queue:togglepreready': () => void
   'queue:captainsclass': (gameClass: Tf2ClassName) => void
   'queue:captainsvolunteer': () => void
-  'queue:captainspick': (pick: string) => void
-  'queue:captainsreadyup': () => void
-  'queue:captainsleave': () => void
   'queue:audiostatus': (audioReady: boolean) => void
 }
 
@@ -80,21 +77,6 @@ const captainsVolunteer = z.object({
   HEADERS: htmxHeaders,
 })
 
-const captainsPick = z.object({
-  captainspick: z.string().regex(/^\d{17}:[a-z]+$/),
-  HEADERS: htmxHeaders,
-})
-
-const captainsReadyUp = z.object({
-  captainsreadyup: z.literal(''),
-  HEADERS: htmxHeaders,
-})
-
-const captainsLeave = z.object({
-  captainsleave: z.literal(''),
-  HEADERS: htmxHeaders,
-})
-
 const navigated = z.object({
   navigated: z.string(),
   HEADERS: htmxHeaders.optional(),
@@ -114,9 +96,6 @@ const clientMessage = z.union([
   preReadyToggle,
   captainsClass,
   captainsVolunteer,
-  captainsPick,
-  captainsReadyUp,
-  captainsLeave,
   navigated,
   audioStatus,
 ])
@@ -319,12 +298,6 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:captainsclass', socket, parsed.captainsclass)
       } else if ('captainsvolunteer' in parsed) {
         this.emit('queue:captainsvolunteer', socket)
-      } else if ('captainspick' in parsed) {
-        this.emit('queue:captainspick', socket, parsed.captainspick)
-      } else if ('captainsreadyup' in parsed) {
-        this.emit('queue:captainsreadyup', socket)
-      } else if ('captainsleave' in parsed) {
-        this.emit('queue:captainsleave', socket)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
       } else if ('audioReady' in parsed) {
