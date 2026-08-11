@@ -672,12 +672,3 @@
     }
   }
 }
-
-@layer components {
-  .player-captain {
-    display: inline-grid;
-    place-items: center;
-    flex: 0 0 auto;
-    color: var(--color-alert);
-  }
-}
