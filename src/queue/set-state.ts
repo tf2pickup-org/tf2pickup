@@ -5,20 +5,14 @@ import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
 import { preReady } from '../pre-ready'
-import { QueueMode } from '../shared/types/queue-mode'
 import { withLogLevel } from '../utils/with-log-level'
-import { getMode } from './get-mode'
 import { withQueueLock } from './with-queue-lock'
 
 export async function setState(state: QueueState) {
   await withQueueLock('set-state', async () => {
     logger.trace({ state }, 'queue.setState()')
 
-    // The state machine is shared, but these two transitions reach into the auto queue's fixed
-    // slots. Captain mode has no slots until the draft, so it does the equivalent work itself.
-    const isAutoQueue = (await getMode()) === QueueMode.auto
-
-    if (isAutoQueue && state === QueueState.launching) {
+    if (state === QueueState.launching) {
       const notReadyCount = await collections.queueSlots.countDocuments({
         $or: [{ player: { $eq: null } }, { ready: { $eq: false } }],
       })
@@ -32,7 +26,7 @@ export async function setState(state: QueueState) {
 
     await collections.queueState.updateOne({}, { $set: { state } })
 
-    if (isAutoQueue && state === QueueState.ready) {
+    if (state === QueueState.ready) {
       const last = (await collections.queueState.findOne())?.last
       if (!last) {
         throw errors.internalServerError('invalid queue state: last undefined')

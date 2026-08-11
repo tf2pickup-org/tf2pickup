@@ -2,7 +2,7 @@ import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
-import { queue } from '../../queue'
+import { queue } from '../../queue-auto'
 import { debounce } from 'es-toolkit'
 import { safe } from '../../utils/safe'
 import { launchGame } from '../launch-game'
@@ -11,30 +11,20 @@ import { configure } from '../rcon/configure'
 import { getOrphanedGames } from '../get-orphaned-games'
 import { collections } from '../../database/collections'
 import { GameState } from '../../database/models/game.model'
-import { QueueMode } from '../../shared/types/queue-mode'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     const launchGameDebounced = debounce(safe(launchGame), 100)
 
-    // Captain mode also parks the queue in `launching` for the duration of the draft, but its
-    // game is built from the draft result once the map is settled — not from the auto queue's
-    // slots, which are empty there.
-    events.on(
-      'queue/state:updated',
-      safe(async ({ state }) => {
-        if (state === QueueState.launching && (await queue.getMode()) === QueueMode.auto) {
-          launchGameDebounced()
-        }
-      }),
-    )
+    events.on('queue/state:updated', ({ state }) => {
+      if (state === QueueState.launching) {
+        launchGameDebounced()
+      }
+    })
 
     app.addHook('onListen', async () => {
-      if (
-        (await queue.getState()) === QueueState.launching &&
-        (await queue.getMode()) === QueueMode.auto
-      ) {
+      if ((await queue.getState()) === QueueState.launching) {
         launchGameDebounced()
       }
 

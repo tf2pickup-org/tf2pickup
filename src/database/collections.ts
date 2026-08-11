@@ -2,7 +2,6 @@ import { database } from './database'
 import type { AnnouncementModel } from './models/announcement.model'
 import type { ConfigurationEntryModel } from './models/configuration-entry.model'
 import type { DocumentModel } from './models/document.model'
-import type { DraftModel } from './models/draft.model'
 import type { GameLogsModel } from './models/game-logs.model'
 import type { GameModel } from './models/game.model'
 import type { KeyModel } from './models/key.model'
@@ -59,7 +58,6 @@ export const collections = {
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
   players: database.collection<PlayerModel>('players'),
-  queueCaptainsDrafts: database.collection<DraftModel>('queue.captains.drafts'),
   queueCaptainsPool: database.collection<CaptainsPoolEntryModel>('queue.captains.pool'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),
   queueSlots: database.collection<QueueSlotModel>('queue.slots'),

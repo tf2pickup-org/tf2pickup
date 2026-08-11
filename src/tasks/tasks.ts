@@ -41,18 +41,6 @@ export const tasksSchema = z.discriminatedUnion('name', [
     }),
   }),
   z.object({
-    name: z.literal('queueCaptains:draftTurnTimeout'),
-    args: z.object({ draftId: z.string(), turn: z.number() }),
-  }),
-  z.object({
-    name: z.literal('queueCaptains:readyUpTimeout'),
-    args: z.object({}),
-  }),
-  z.object({
-    name: z.literal('queueCaptains:unready'),
-    args: z.object({}),
-  }),
-  z.object({
     name: z.literal('queue:readyUpTimeout'),
     args: z.object({}),
   }),
