@@ -1,4 +1,3 @@
-import type { DraftId } from './draft.model'
 import type { GameSlotModel } from './game-slot.model'
 import type { GameCreated, GameEventModel } from './game-event.model'
 import type { Tf2Team } from '../../shared/types/tf2-team'
@@ -64,9 +63,6 @@ export interface GameModel {
 
   slots: GameSlotModel[]
   events: [GameCreated, ...GameEventModel[]]
-
-  // set when the teams came out of a captain draft; its absence means auto-balanced
-  draft?: DraftId
   gameServer?: GameServer
 
   logsUrl?: string

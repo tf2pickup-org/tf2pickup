@@ -6,7 +6,6 @@ import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { logError } from '../../utils/log-error'
 import { measureTime } from '../../utils/measure-time'
 import type { AppWebSocket } from '../../websocket/types'
-import { banMap } from '../draft/ban-map'
 import { makePick } from '../draft/make-pick'
 import { leave } from '../leave'
 import { readyUp } from '../ready-up'
@@ -60,17 +59,6 @@ export default fp(
 
         const [player, gameClass] = pick.split(':') as [SteamId64, Tf2ClassName]
         await makePick(socket.player.steamId, player, gameClass)
-      }),
-    )
-
-    app.gateway.on(
-      'queue:captainsban',
-      wsSafe('captains:ban', async (socket, map: string) => {
-        if (!socket.player) {
-          throw errors.unauthorized('unauthorized')
-        }
-
-        await banMap(socket.player.steamId, map)
       }),
     )
 

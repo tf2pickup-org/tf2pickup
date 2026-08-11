@@ -6,7 +6,6 @@ import { events } from '../../events'
 import { logger } from '../../logger'
 import { config } from '../../queue-auto/config'
 import { setState } from '../../queue/set-state'
-import { resetMapOptions } from '../../maps/reset-options'
 import { getPool } from '../get-pool'
 import { drawCaptains } from './draw-captains'
 import { resolveTurns } from './resolve-turns'
@@ -28,12 +27,6 @@ export async function start(): Promise<DraftModel> {
   try {
     const pool = await getPool()
     const captains = drawCaptains(pool, config)
-    // normally seeded at boot and after every game, but a draft with nothing to ban is not a
-    // draft, so make sure there is something on the table
-    if ((await collections.queueMapOptions.countDocuments()) === 0) {
-      await resetMapOptions()
-    }
-    const mapOptions = (await collections.queueMapOptions.find().toArray()).map(({ name }) => name)
 
     const draft: DraftModel = {
       id: nanoid(),
@@ -47,8 +40,6 @@ export async function start(): Promise<DraftModel> {
         gameClasses,
       })),
       picks: [],
-      mapOptions,
-      mapBans: [],
     }
 
     await collections.queueCaptainsDrafts.insertOne(draft)
