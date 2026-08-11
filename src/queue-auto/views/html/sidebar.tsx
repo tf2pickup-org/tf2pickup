@@ -5,20 +5,14 @@ import { CurrentPlayerCount } from './current-player-count'
 import { OnlinePlayerCount } from './online-player-count'
 import { OnlinePlayerList } from './online-player-list'
 
-// `required` is omitted in captain mode, where a slot count would be misleading — players sign up
-// on several classes at once, so readiness is a matching rather than a headcount.
-export function Sidebar(props: { user?: User | undefined; required?: number | undefined }) {
+export function Sidebar(props: { user?: User | undefined; required: number }) {
   return (
     <div class="queue-sidebar">
       <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
         <button class="tab-link lg:hidden" data-tabs-select="queue-content">
-          {props.required === undefined ? (
-            <span>Queue</span>
-          ) : (
-            <span>
-              Queue (<CurrentPlayerCount />/{props.required})
-            </span>
-          )}
+          <span>
+            Queue (<CurrentPlayerCount />/{props.required})
+          </span>
         </button>
 
         <button class="tab-link" data-tabs-select="tab-online-player-list">
