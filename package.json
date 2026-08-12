@@ -20,7 +20,7 @@
     "@fastify/autoload": "6.5.0",
     "@fastify/etag": "6.2.0",
     "@fastify/flash": "6.0.3",
-    "@fastify/formbody": "8.0.2",
+    "@fastify/formbody": "9.0.0",
     "@fastify/helmet": "13.1.0",
     "@fastify/multipart": "10.1.0",
     "@fastify/otel": "0.20.1",
