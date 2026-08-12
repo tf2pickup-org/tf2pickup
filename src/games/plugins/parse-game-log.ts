@@ -1,22 +1,17 @@
 import fp from 'fastify-plugin'
 import { ValueType } from '@opentelemetry/api'
+import { minutesToMilliseconds } from 'date-fns'
 import { events } from '../../events'
 import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import { meter } from '../../otel'
-import { analyze } from '../../tf2-analyst/analyze'
-import { createGameContext } from '../../tf2-analyst/create-game-context'
-import type { GameContext } from '../../tf2-analyst/game-context'
-import type { LogEvent } from '../../tf2-analyst/log-event'
+import { Tf2GameAnalyzer } from '../../tf2-game-analyzer/tf2-game-analyzer'
+import type { LogEvent } from '../../tf2-game-analyzer/log-event'
 import type { GameNumber } from '../../database/models/game.model'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { GameEventType } from '../../database/models/game-event.model'
 import { update } from '../update'
 
-// Interpret each incoming log line with tf2-analyst and turn the events it
-// produces back into the app's game events. This replaces the old
-// match-event-listener (line → event regexes) and track-match-rounds (round
-// assembly, side-swaps, restart detection), which now live inside the analyst.
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
@@ -26,9 +21,6 @@ export default fp(
       valueType: ValueType.INT,
     })
 
-    // Serialize processing per game so the context read-modify-write never
-    // races. This gives the analyst a single-threaded, ordered stream of lines —
-    // the guarantee that lets its fold replace the old atomic round-commit logic.
     const queues = new Map<string, Promise<void>>()
     function enqueue(logSecret: string, operation: () => Promise<void>): void {
       const previous = queues.get(logSecret) ?? Promise.resolve()
@@ -38,14 +30,8 @@ export default fp(
       queues.set(logSecret, current)
     }
 
-    // TF2 servers emit many log lines a second (kills, damage, chat), and most
-    // match nothing and don't change the context. Holding the context in memory
-    // and only touching the database when it actually changes keeps this off the
-    // hot path: after warmup there are no reads, and writes happen only on the
-    // handful of lines per round that move the score/round state. The database
-    // remains an up-to-date durable backup for rehydration after a restart.
     const gameNumbers = new Map<string, GameNumber>() // logSecret -> game number
-    const contexts = new Map<GameNumber, GameContext>()
+    const analyzers = new Map<GameNumber, Tf2GameAnalyzer>()
 
     async function resolveGameNumber(logSecret: string): Promise<GameNumber | null> {
       const cached = gameNumbers.get(logSecret)
@@ -60,15 +46,15 @@ export default fp(
       return game.number
     }
 
-    async function loadContext(gameNumber: GameNumber): Promise<GameContext> {
-      const cached = contexts.get(gameNumber)
+    async function loadAnalyzer(gameNumber: GameNumber): Promise<Tf2GameAnalyzer> {
+      const cached = analyzers.get(gameNumber)
       if (cached) {
         return cached
       }
       const state = await collections.gamesLogParseState.findOne({ gameNumber })
-      const context = state?.context ?? createGameContext()
-      contexts.set(gameNumber, context)
-      return context
+      const analyzer = new Tf2GameAnalyzer(state?.context)
+      analyzers.set(gameNumber, analyzer)
+      return analyzer
     }
 
     async function apply(gameNumber: GameNumber, event: LogEvent): Promise<void> {
@@ -158,17 +144,16 @@ export default fp(
           return
         }
 
-        const context = await loadContext(gameNumber)
-        const before = JSON.stringify(context)
-        const logEvents = analyze(context, message.payload)
+        const analyzer = await loadAnalyzer(gameNumber)
+        const logEvents = analyzer.parseLine(message.payload)
 
-        // persist only when the line actually moved the context
-        if (JSON.stringify(context) !== before) {
+        if (analyzer.contextDirty()) {
           await collections.gamesLogParseState.updateOne(
             { gameNumber },
-            { $set: { context, at: new Date() } },
+            { $set: { context: analyzer.context, at: new Date() } },
             { upsert: true },
           )
+          analyzer.markPersisted()
         }
 
         eventCounter.add(1, {
@@ -182,13 +167,16 @@ export default fp(
       })
     })
 
-    // free the in-memory caches once a game is over; the database document is
-    // left for the TTL index to sweep
+    // Events keep arriving after a game ends (logs.tf and demos.tf uploads), so
+    // free the in-memory caches only after a grace period; the database document
+    // is left for the TTL index to sweep.
     events.on('game:ended', ({ game }) => {
-      contexts.delete(game.number)
-      if (game.logSecret) {
-        gameNumbers.delete(game.logSecret)
-      }
+      setTimeout(() => {
+        analyzers.delete(game.number)
+        if (game.logSecret) {
+          gameNumbers.delete(game.logSecret)
+        }
+      }, minutesToMilliseconds(10)).unref()
     })
   },
   { name: 'parse game log', encapsulate: true },

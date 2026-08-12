@@ -1,4 +1,4 @@
-// TODO: isolate SteamId64/Tf2Team into the module when tf2-analyst is extracted
+// TODO: isolate SteamId64/Tf2Team into the module when tf2-game-analyzer is extracted
 // to a standalone package; for now we reuse the app's shared types.
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Tf2Team } from '../shared/types/tf2-team'

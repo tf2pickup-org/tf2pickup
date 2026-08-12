@@ -50,7 +50,9 @@ describe('parse-game-log', () => {
     vi.mocked(collections.gamesLogParseState.updateOne).mockResolvedValue({} as never)
 
     await (plugin as unknown as () => Promise<void>)()
-    const call = vi.mocked(events.on).mock.calls.find(([event]) => event === 'gamelog:message')
+    const call = vi
+      .mocked(events.on)
+      .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'gamelog:message')
     onMessage = call![1] as Handler
   })
 

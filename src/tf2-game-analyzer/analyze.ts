@@ -2,7 +2,7 @@ import { differenceInSeconds, parse } from 'date-fns'
 import SteamID from 'steamid'
 import { Tf2Team } from '../shared/types/tf2-team'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-// TODO: move is-stopwatch-round into this module when tf2-analyst is extracted;
+// TODO: move is-stopwatch-round into this module when tf2-game-analyzer is extracted;
 // for now we reuse the app's copy.
 import { isStopwatchRound } from '../games/is-stopwatch-round'
 import type { GameContext } from './game-context'

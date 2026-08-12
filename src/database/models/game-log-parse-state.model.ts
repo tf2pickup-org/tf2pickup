@@ -1,8 +1,8 @@
-import type { GameContext } from '../../tf2-analyst/game-context'
+import type { GameContext } from '../../tf2-game-analyzer/game-context'
 import type { GameNumber } from './game.model'
 
 /**
- * Persisted parse state for a single game's log stream. The tf2-analyst
+ * Persisted parse state for a single game's log stream. The tf2-game-analyzer
  * {@link GameContext} is a plain, serializable blob that the log parser reads,
  * mutates and writes back for every log line. It supersedes the old
  * games.roundprogress document: all in-progress state (round assembly, the
