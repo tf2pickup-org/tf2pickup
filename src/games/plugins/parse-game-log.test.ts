@@ -90,4 +90,11 @@ describe('parse-game-log', () => {
     expect(collections.gamesLogParseState.findOne).not.toHaveBeenCalled()
     expect(collections.gamesLogParseState.updateOne).not.toHaveBeenCalled()
   })
+
+  it('does not re-query the database for a still-unknown game within the retry window', async () => {
+    vi.mocked(collections.games.findOne).mockResolvedValue(null as never)
+    await feed('a log line')
+    await feed('another log line')
+    expect(collections.games.findOne).toHaveBeenCalledTimes(1)
+  })
 })

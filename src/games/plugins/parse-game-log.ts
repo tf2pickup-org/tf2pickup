@@ -31,6 +31,7 @@ export default fp(
     }
 
     const gameNumbers = new Map<string, GameNumber>() // logSecret -> game number
+    const unknownUntil = new Map<string, number>() // logSecret -> epoch ms to retry a miss
     const analyzers = new Map<GameNumber, Tf2GameAnalyzer>()
 
     async function resolveGameNumber(logSecret: string): Promise<GameNumber | null> {
@@ -38,10 +39,16 @@ export default fp(
       if (cached !== undefined) {
         return cached
       }
-      const game = await collections.games.findOne({ logSecret }, { projection: { number: 1 } })
-      if (game === null) {
+      const retryAt = unknownUntil.get(logSecret)
+      if (retryAt !== undefined && retryAt > Date.now()) {
         return null
       }
+      const game = await collections.games.findOne({ logSecret }, { projection: { number: 1 } })
+      if (game === null) {
+        unknownUntil.set(logSecret, Date.now() + minutesToMilliseconds(1))
+        return null
+      }
+      unknownUntil.delete(logSecret)
       gameNumbers.set(logSecret, game.number)
       return game.number
     }
@@ -175,6 +182,7 @@ export default fp(
         analyzers.delete(game.number)
         if (game.logSecret) {
           gameNumbers.delete(game.logSecret)
+          queues.delete(game.logSecret)
         }
       }, minutesToMilliseconds(10)).unref()
     })

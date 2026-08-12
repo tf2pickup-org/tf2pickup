@@ -60,7 +60,6 @@ function maybeRoundEnded(context: GameContext): LogEvent[] {
   // doesn't produce a trailing swap.
   if (isStopwatchRound({ previousScore: context.score, score, captures })) {
     context.swapPending = true
-    context.isStopwatch = true
   }
 
   context.score = { [Tf2Team.red]: score[Tf2Team.red], [Tf2Team.blu]: score[Tf2Team.blu] }
@@ -152,6 +151,7 @@ const matchers: Matcher[] = [
       context.lastRoundStart = undefined
       context.seenRoundStart = false
       context.round = undefined
+      context.swapPending = false
       return [{ event: 'match ended' }]
     },
   },

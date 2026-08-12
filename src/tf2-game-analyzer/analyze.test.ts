@@ -162,6 +162,20 @@ describe('analyze', () => {
       const started = analyze(context, roundStart('07/13/2026 - 17:10:00'))
       expect(names(started)).toEqual(['round started'])
     })
+
+    it('clears a pending swap on Game_Over so the next map does not swap', () => {
+      analyze(context, roundStart('07/13/2026 - 17:00:00'))
+      analyze(context, logSecretLine(at, 'Team "Blue" triggered "pointcaptured" (cp "1")'))
+      analyze(context, logSecretLine(at, 'Team "Blue" triggered "pointcaptured" (cp "2")'))
+      analyze(context, logSecretLine(at, 'World triggered "Round_Win" (winner "Blue")'))
+      analyze(context, logSecretLine(at, 'World triggered "Round_Length" (seconds "120")'))
+      analyze(context, logSecretLine(at, 'Team "Blue" current score "2" with "6" players'))
+      analyze(context, logSecretLine(at, 'Team "Red" current score "0" with "6" players'))
+      analyze(context, logSecretLine(at, 'World triggered "Game_Over" reason "test"'))
+
+      const started = analyze(context, roundStart('07/13/2026 - 18:00:00'))
+      expect(names(started)).toEqual(['round started'])
+    })
   })
 
   describe('idempotency', () => {

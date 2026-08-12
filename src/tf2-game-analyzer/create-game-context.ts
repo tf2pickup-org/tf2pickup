@@ -9,6 +9,5 @@ export function createGameContext(): GameContext {
     score: { [Tf2Team.red]: 0, [Tf2Team.blu]: 0 },
     seenRoundStart: false,
     swapPending: false,
-    isStopwatch: false,
   }
 }

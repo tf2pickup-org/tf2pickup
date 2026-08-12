@@ -31,7 +31,4 @@ export interface GameContext {
   // the teams switch sides at the next Round_Start (stopwatch maps); deferred so
   // the final round produces no trailing swap
   swapPending: boolean
-
-  // sticky: at least one round so far looked like a stopwatch round
-  isStopwatch: boolean
 }
