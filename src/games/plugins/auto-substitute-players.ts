@@ -76,6 +76,10 @@ export default fp(
       'game:playerConnectionStatusUpdated',
       safe(async ({ game, player, playerConnectionStatus }) => {
         if (playerConnectionStatus !== PlayerConnectionStatus.offline) {
+          await tasks.cancel('games:autoSubstitutePlayer', {
+            gameNumber: game.number,
+            player,
+          })
           return
         }
 
