@@ -35,6 +35,7 @@ vi.mock('../logger', () => ({
 
 import { collections } from '../database/collections'
 import { events } from '../events'
+import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus } from '../database/models/game-slot.model'
 import { GameState, type GameModel } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -89,12 +90,21 @@ describe('syncPlayerConnectionStatus', () => {
     })
   })
 
-  it('marks an absent-but-connected player as offline', async () => {
+  it('marks an absent-but-connected player as offline and records the departure', async () => {
     await syncPlayerConnectionStatus()
 
     expect(update).toHaveBeenCalledWith(
       42,
-      { $set: { 'slots.$[element].connectionStatus': PlayerConnectionStatus.offline } },
+      {
+        $set: { 'slots.$[element].connectionStatus': PlayerConnectionStatus.offline },
+        $push: {
+          events: {
+            at: expect.any(Date),
+            event: GameEventType.playerLeftGameServer,
+            player: absent,
+          },
+        },
+      },
       { arrayFilters: [{ 'element.player': { $eq: absent } }] },
     )
     expect(events.emit).toHaveBeenCalledWith('game:playerConnectionStatusUpdated', {
@@ -102,6 +112,23 @@ describe('syncPlayerConnectionStatus', () => {
       player: absent,
       playerConnectionStatus: PlayerConnectionStatus.offline,
     })
+  })
+
+  it('leaves a present player that is still joining untouched', async () => {
+    vi.mocked(collections.games.find).mockReturnValue({
+      toArray: () =>
+        Promise.resolve([
+          {
+            ...fakeGame(),
+            slots: [{ player: present, connectionStatus: PlayerConnectionStatus.joining }],
+          } as unknown as GameModel,
+        ]),
+    } as never)
+
+    await syncPlayerConnectionStatus()
+
+    expect(update).not.toHaveBeenCalled()
+    expect(events.emit).not.toHaveBeenCalled()
   })
 
   it('does not touch slots that are already in sync', async () => {
