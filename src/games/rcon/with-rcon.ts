@@ -10,7 +10,7 @@ export interface Rcon {
 }
 
 export async function withRcon<T>(
-  game: GameModel,
+  game: Pick<GameModel, 'number' | 'gameServer'>,
   callback: (args: { rcon: Rcon }) => Promise<T>,
 ): Promise<T> {
   logger.trace({ gameNumber: game.number }, `withRcon()`)
