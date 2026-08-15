@@ -65,6 +65,7 @@ class CVar {
 class AddedPlayer {
   private static lastUserId = 0
   readonly userId: number
+  connected = false
 
   constructor(
     public readonly steamId64: string,
@@ -172,6 +173,12 @@ export class GameServerSimulator {
               response.id = packet.id
               response.body = packet.body
               socket.write(response.toBuffer())
+            } else if (/^status$/.test(packet.body)) {
+              const response = new RconPacket()
+              response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
+              response.id = packet.id
+              response.body = this.buildStatusOutput()
+              socket.write(response.toBuffer())
             } else {
               const response = new RconPacket()
               response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
@@ -255,6 +262,7 @@ export class GameServerSimulator {
     }
 
     const steamId3 = new SteamID(player.steamId64).steam3()
+    player.connected = true
     await delay(this.eventDelay / 2)
     this.log(
       `"${player.name}<${player.userId}><${steamId3}><>" connected, address "127.0.0.1:27005"`,
@@ -282,6 +290,7 @@ export class GameServerSimulator {
     }
 
     const steamId3 = new SteamID(player.steamId64).steam3()
+    player.connected = false
     await delay(this.eventDelay / 2)
     this.log(
       `"${player.name}<${player.userId}><${steamId3}><Unassigned>" disconnected (reason "Disconnect by user.")`,
@@ -370,6 +379,24 @@ export class GameServerSimulator {
     if (!response.ok) {
       throw new Error(`Failed to send heartbeat: ${response.statusText}`)
     }
+  }
+
+  // Mimics srcds `status` output, listing only currently connected players, so
+  // the app's connection-status sync sees a faithful roster.
+  private buildStatusOutput() {
+    const connected = this.addedPlayers.filter(player => player.connected)
+    const header = [
+      'hostname: tf2pickup.org simulated server',
+      'version : 0000000/00 0000 secure',
+      'map     : cp_process_final at: 0 x, 0 y, 0 z',
+      `players : ${connected.length} humans, 0 bots`,
+      '# userid name                uniqueid            connected ping loss state',
+    ]
+    const playerLines = connected.map(player => {
+      const steamId3 = new SteamID(player.steamId64).steam3()
+      return `#     ${player.userId} "${player.name}" ${steamId3} 00:10 50 0 active`
+    })
+    return [...header, ...playerLines].join('\n')
   }
 
   private prepareMessage(payload: string) {

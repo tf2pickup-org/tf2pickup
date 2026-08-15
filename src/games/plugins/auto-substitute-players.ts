@@ -6,11 +6,26 @@ import { requestSubstitute } from '../request-substitute'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
 import { safe } from '../../utils/safe'
+import { syncPlayerConnectionStatus } from '../sync-player-connection-status'
+import { findOne } from '../find-one'
+import { errors } from '../../errors'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('games:autoSubstitutePlayer', async ({ gameNumber, player }) => {
+      await syncPlayerConnectionStatus(gameNumber)
+
+      const game = await findOne({ number: gameNumber }, ['slots'])
+      const slot = game.slots.find(slot => slot.player === player)
+      if (!slot) {
+        throw errors.badRequest(`player is not a member of game ${gameNumber}`)
+      }
+
+      if (slot.connectionStatus !== PlayerConnectionStatus.offline) {
+        return
+      }
+
       await requestSubstitute({
         number: gameNumber,
         replacee: player,
