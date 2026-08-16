@@ -1,5 +1,47 @@
 # Changelog
 
+## [4.23.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.0...4.23.1) (2026-08-16)
+
+### Bug Fixes
+
+* **games:** verify player connection before auto-substituting ([#793](https://github.com/tf2pickup-org/tf2pickup/issues/793)) ([f2fb868](https://github.com/tf2pickup-org/tf2pickup/commit/f2fb868ebed02a1cc0536f7b0512181f8a77e392))
+* **statistics:** align weekday labels in game activity chart ([#789](https://github.com/tf2pickup-org/tf2pickup/issues/789)) ([e9deec7](https://github.com/tf2pickup-org/tf2pickup/commit/e9deec7cdb2b644cad6be6dca88c722933f45b07))
+
+### Dependencies
+
+* @fastify/autoload to v6.5.0 ([81f9f48](https://github.com/tf2pickup-org/tf2pickup/commit/81f9f482f5c45207f4be173ef25dcd48a07b9dc5))
+* @fastify/flash to v6.0.4 ([268c5fa](https://github.com/tf2pickup-org/tf2pickup/commit/268c5fac4df62e38d5068c95cb0dcba589772ba6))
+* @fastify/formbody to v9 ([#790](https://github.com/tf2pickup-org/tf2pickup/issues/790)) ([ee7132c](https://github.com/tf2pickup-org/tf2pickup/commit/ee7132c8d979110abaf1af249bd95bc588093c70)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* @fastify/rate-limit to v11.2.0 ([f75162c](https://github.com/tf2pickup-org/tf2pickup/commit/f75162c6180dc91c9c9b867b9af5c69a953a18d0))
+* @fastify/sensible to v6.0.5 ([459ee8e](https://github.com/tf2pickup-org/tf2pickup/commit/459ee8e0ec40d7d0da1d00e41b225e1fdb8e8ca2))
+* @fastify/static to v10.1.3 ([5f00d0b](https://github.com/tf2pickup-org/tf2pickup/commit/5f00d0b1b4721f4884183974c42948e8590db345))
+* @napi-rs/canvas to v1.0.3 ([a229f1d](https://github.com/tf2pickup-org/tf2pickup/commit/a229f1d2f29ff2555acb1de095773d3bd6243cb8))
+* @napi-rs/canvas to v1.0.5 ([a9f98e0](https://github.com/tf2pickup-org/tf2pickup/commit/a9f98e07444edd7397d7ac52e1edaea271e65bd7))
+* cssnano to v8.0.3 ([130916f](https://github.com/tf2pickup-org/tf2pickup/commit/130916f15117f7a9f1700ab8911411e5ba7fb4a8))
+* cssnano to v8.0.4 ([b889cf3](https://github.com/tf2pickup-org/tf2pickup/commit/b889cf358349e70f9bad14375d45e90f7af76f2f))
+* cssnano to v8.0.5 ([e28b86a](https://github.com/tf2pickup-org/tf2pickup/commit/e28b86a8f0b32767e4e92af6b18664ea182c7001))
+* csv-parse to v7.0.2 ([95c8be3](https://github.com/tf2pickup-org/tf2pickup/commit/95c8be3316993ea96d1968ce33d76472c8103151))
+* csv-stringify to v6.8.2 ([ecdf25a](https://github.com/tf2pickup-org/tf2pickup/commit/ecdf25a02b0f2aa2d8a528a8ea5719962eee3525))
+* csv-stringify to v6.8.3 ([eafa891](https://github.com/tf2pickup-org/tf2pickup/commit/eafa8913f2811741d666f7fc9dfc242b97ac1048))
+* es-toolkit to v1.50.0 ([#763](https://github.com/tf2pickup-org/tf2pickup/issues/763)) ([402f734](https://github.com/tf2pickup-org/tf2pickup/commit/402f734f837c001139c965768b3815e6a2d63965))
+* esbuild to v0.28.2 ([5f328f2](https://github.com/tf2pickup-org/tf2pickup/commit/5f328f2112a38299e80f2ad5ceee48178823d940))
+* fastify to v5.11.0 ([9d14094](https://github.com/tf2pickup-org/tf2pickup/commit/9d14094d9d4c069df13b9148d4c75d0000d0608d))
+* fastify to v5.11.2 ([#780](https://github.com/tf2pickup-org/tf2pickup/issues/780)) ([2bbdcdd](https://github.com/tf2pickup-org/tf2pickup/commit/2bbdcddfa9ecde5a39a1c9af4605659529809ba5))
+* fastify to v5.11.3 ([63b6997](https://github.com/tf2pickup-org/tf2pickup/commit/63b69971d52d8faaa94a0509510e836369adfba9))
+* marked to v18.0.9 ([#783](https://github.com/tf2pickup-org/tf2pickup/issues/783)) ([96f9905](https://github.com/tf2pickup-org/tf2pickup/commit/96f99050b6c47a757bfef5f67ee26384f5d5e56f))
+* motion to v12.43.0 ([#773](https://github.com/tf2pickup-org/tf2pickup/issues/773)) ([421cf9c](https://github.com/tf2pickup-org/tf2pickup/commit/421cf9cdab0df3a80b0959e21fcfee20c7440983))
+* motion to v13 ([#787](https://github.com/tf2pickup-org/tf2pickup/issues/787)) ([b6ad120](https://github.com/tf2pickup-org/tf2pickup/commit/b6ad12004cf76c2efbf316ae04239fe1ef065453))
+* motion to v13.1.0 ([0c2b2b5](https://github.com/tf2pickup-org/tf2pickup/commit/0c2b2b50e1d2f768be4a2c053bc388f23717fb55))
+* nanoid to v6.0.1 ([#781](https://github.com/tf2pickup-org/tf2pickup/issues/781)) ([a26b8a4](https://github.com/tf2pickup-org/tf2pickup/commit/a26b8a42791eb6616dad6aef4bb43bd0865ed355))
+* postcss to v8.5.23 ([73d50ef](https://github.com/tf2pickup-org/tf2pickup/commit/73d50efaa2ea183086aab58ef7b418c701add59c))
+* postcss to v8.5.24 ([c560796](https://github.com/tf2pickup-org/tf2pickup/commit/c56079623dd9f2a0be626d4cd84aaa2ad1e19105))
+* postcss to v8.5.25 ([91ab5a7](https://github.com/tf2pickup-org/tf2pickup/commit/91ab5a7f7ef667eccf178cb4b9dec7d88f14655e))
+* postcss to v8.5.26 ([cfa80c4](https://github.com/tf2pickup-org/tf2pickup/commit/cfa80c4608aafd5f44fee425fb49f46b9e17188c))
+* postcss-import to v16.2.0 ([292b86c](https://github.com/tf2pickup-org/tf2pickup/commit/292b86c3271497bc095843bc928894a8614b0316))
+* postcss-nested to v8 ([#774](https://github.com/tf2pickup-org/tf2pickup/issues/774)) ([c8f75fa](https://github.com/tf2pickup-org/tf2pickup/commit/c8f75fab044ad94dbccd9034238b868c0389ccf0))
+* ws to v8.21.2 ([#784](https://github.com/tf2pickup-org/tf2pickup/issues/784)) ([3567b36](https://github.com/tf2pickup-org/tf2pickup/commit/3567b36d1983f0c4db74394630e9012670ba76b5))
+* ws to v8.21.3 ([d237327](https://github.com/tf2pickup-org/tf2pickup/commit/d2373275d26878d695c9a8d0de3232937dc52f0b))
+
 # [4.23.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.22.2...4.23.0) (2026-07-27)
 
 
