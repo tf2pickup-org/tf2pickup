@@ -19,7 +19,7 @@
     "@fastify/accepts": "5.0.4",
     "@fastify/autoload": "6.5.0",
     "@fastify/etag": "6.2.0",
-    "@fastify/flash": "6.0.3",
+    "@fastify/flash": "6.0.4",
     "@fastify/formbody": "9.0.0",
     "@fastify/helmet": "13.1.0",
     "@fastify/multipart": "10.1.0",
