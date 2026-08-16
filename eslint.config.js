@@ -60,6 +60,7 @@ export default ts.config(
       'tailwind.config.js',
       'playwright.config.ts',
       'eslint.config.js',
+      '.release-it.js',
     ],
   },
 )
