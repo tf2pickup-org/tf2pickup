@@ -7,9 +7,9 @@ import { get } from './get'
  * @throws {ZodError<MapPoolEntry>}
  */
 export async function set(maps: MapPoolEntry[]): Promise<MapPoolEntry[]> {
-  mapPoolSchema.parse(maps)
+  const parsed = mapPoolSchema.parse(maps)
   await collections.maps.deleteMany()
-  await collections.maps.insertMany(maps)
+  await collections.maps.insertMany(parsed)
   const ret = await get()
   events.emit('queue/mapPool:reset', { maps: ret })
   return ret
