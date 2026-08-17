@@ -11,6 +11,7 @@ import { tf2QuickServer } from '../../../tf2-quick-server'
 import { configuration } from '../../../configuration'
 import { Tf2QuickServerList } from '../../../tf2-quick-server/views/html/tf2-quick-server-list'
 import { logger } from '../../../logger'
+import { FlashMessage } from '../../../html/components/flash-message'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -135,7 +136,16 @@ export default routes(async app => {
       async (request, reply) => {
         const { number } = request.params
         const { gameServer } = request.body
-        await games.assignAndConfigure(number, gameServer, request.user!.player.steamId)
+        try {
+          await games.assignAndConfigure(number, gameServer, request.user!.player.steamId)
+        } catch (error) {
+          logger.error(error)
+          assertIsError(error)
+          await reply
+            .header('HX-Reswap', 'none')
+            .html(<FlashMessage type="error" message={error.message} />)
+          return
+        }
         await reply
           .trigger({ close: { target: '#choose-game-server-dialog' } })
           .status(204)
