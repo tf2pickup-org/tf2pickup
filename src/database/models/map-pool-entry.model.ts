@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const mapPoolEntrySchema = z.object({
-  name: z.string(),
+  name: z.string().trim(),
   execConfig: z.string().optional(),
   cooldown: z.number().optional(),
 })

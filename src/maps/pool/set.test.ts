@@ -53,6 +53,7 @@ describe('set()', () => {
   })
 
   it('should emit event', async () => {
+    vi.mocked(mapPoolSchema).parse.mockImplementation(maps => maps)
     const maps = [{ name: 'cp_process_final' }, { name: 'cp_badlands' }, { name: 'cp_granary' }]
     await set(maps)
     expect(events.emit).toHaveBeenCalledWith('queue/mapPool:reset', { maps })
