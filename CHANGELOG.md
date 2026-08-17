@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.23.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.1...4.23.2) (2026-08-17)
+
+### Bug Fixes
+
+* **games:** surface game server assignment errors in the reassign dialog ([#799](https://github.com/tf2pickup-org/tf2pickup/issues/799)) ([8089eef](https://github.com/tf2pickup-org/tf2pickup/commit/8089eef71220e7d89b5b41ef217686e058611598)), closes [#798](https://github.com/tf2pickup-org/tf2pickup/issues/798)
+* **maps:** trim whitespace from map pool names on save ([#798](https://github.com/tf2pickup-org/tf2pickup/issues/798)) ([ce660cc](https://github.com/tf2pickup-org/tf2pickup/commit/ce660cc987015474d90ea11935a51c43ded901a6))
+
+### Dependencies
+
+* @fastify/flash to v6.0.5 ([268f005](https://github.com/tf2pickup-org/tf2pickup/commit/268f005e9c5b14ddf22d772b4bfbef28639bb743))
+* @napi-rs/canvas to v1.0.6 ([e2f0774](https://github.com/tf2pickup-org/tf2pickup/commit/e2f07749b7ede8611b99da1759f9899fa487dd61))
+* fastify to v5.12.0 ([2b90629](https://github.com/tf2pickup-org/tf2pickup/commit/2b9062976c8f7d862643290e8dd0927c84477dfc))
+* sanitize-html to v2.17.7 ([0dbb5d5](https://github.com/tf2pickup-org/tf2pickup/commit/0dbb5d5b9b0a27fea82d9dbb4d3fcd472a522d1f))
+
 ## [4.23.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.0...4.23.1) (2026-08-16)
 
 ### Bug Fixes
