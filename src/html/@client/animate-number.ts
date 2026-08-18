@@ -1,7 +1,7 @@
 import htmx from './htmx.js'
 
 const attrName = 'data-animate-number'
-const durationMs = 500
+const durationMs = 200
 
 const lastValues = new Map<string, number>()
 const activeFrames = new Map<string, number>()
