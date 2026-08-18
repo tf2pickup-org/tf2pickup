@@ -24,18 +24,32 @@
       );
     }
 
-    &[aria-checked='true'] {
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      top: 0;
+      z-index: 10;
+      border-radius: 8px;
+      border-width: 4px;
+      border-color: var(--color-white);
+      opacity: 0;
+      transform: scale(0.98);
+      transition:
+        opacity 150ms ease-out,
+        transform 150ms ease-out;
+    }
+
+    &[aria-checked='true']::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
       &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: 0;
-        z-index: 10;
-        border-radius: 8px;
-        border-width: 4px;
-        border-color: var(--color-white);
+        transition: none;
       }
     }
   }
