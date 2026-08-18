@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.23.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.2...4.23.3) (2026-08-18)
+
+### Bug Fixes
+
+* **queue:** animate map vote selection border and percentages ([#801](https://github.com/tf2pickup-org/tf2pickup/issues/801)) ([e7a6281](https://github.com/tf2pickup-org/tf2pickup/commit/e7a62813e37411db66092cc1d6b756e7c2c9f589))
+
+### Dependencies
+
+* opentelemetry-js monorepo ([#727](https://github.com/tf2pickup-org/tf2pickup/issues/727)) ([4b64c93](https://github.com/tf2pickup-org/tf2pickup/commit/4b64c93a3a17ab91ca9a3c9db1ed309246880f78)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* postcss-import to v17 ([#800](https://github.com/tf2pickup-org/tf2pickup/issues/800)) ([7c2445d](https://github.com/tf2pickup-org/tf2pickup/commit/7c2445d13be724b7a0a59df401b0022dbc22a9b7))
+
 ## [4.23.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.1...4.23.2) (2026-08-17)
 
 ### Bug Fixes
