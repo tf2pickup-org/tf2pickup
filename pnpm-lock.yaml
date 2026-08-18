@@ -39,8 +39,8 @@ importers:
         specifier: 13.1.0
         version: 13.1.0
       '@fastify/multipart':
-        specifier: 10.1.0
-        version: 10.1.0
+        specifier: 10.1.1
+        version: 10.1.1
       '@fastify/otel':
         specifier: 0.20.1
         version: 0.20.1(@opentelemetry/api@1.9.1)(supports-color@8.1.1)
@@ -819,8 +819,8 @@ packages:
   '@fastify/merge-json-schemas@0.2.1':
     resolution: {integrity: sha512-OA3KGBCy6KtIvLf8DINC5880o5iBlDX4SxzLQS8HorJAbqluzLRn80UXU0bxZn7UOFhFgpRJDasfwn9nG4FG4A==}
 
-  '@fastify/multipart@10.1.0':
-    resolution: {integrity: sha512-b2r6CovmLQvLFJ5HJDtxVigZjcO9TwkRGslhiNQxsGJwilm5B3eqvXPOVLudC44zXMXJITpQ/iEATIE7zoXqcQ==}
+  '@fastify/multipart@10.1.1':
+    resolution: {integrity: sha512-jyRHgnFVdchZRKjJRf6kGPEiDp3Bg4MLo4d6/krt8Z4RutLrqL5IYWihx8a4tnv7Tu7JfuHcyC+dU9zPzTxiSg==}
 
   '@fastify/otel@0.20.1':
     resolution: {integrity: sha512-UG9gQUbqfBWcJNeO0bxj03xkoEE8NGJkIedN/red11elHFeZuVgoHKAx0x+wO4kGedyyQv8NWC62AdpGEvyM6g==}
@@ -5551,7 +5551,7 @@ snapshots:
     dependencies:
       dequal: 2.0.3
 
-  '@fastify/multipart@10.1.0':
+  '@fastify/multipart@10.1.1':
     dependencies:
       '@fastify/busboy': 3.2.0
       '@fastify/deepmerge': 3.2.0
@@ -6046,7 +6046,7 @@ snapshots:
   '@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/semantic-conventions': 1.41.1
+      '@opentelemetry/semantic-conventions': 1.43.0
 
   '@opentelemetry/core@2.9.0(@opentelemetry/api@1.9.1)':
     dependencies:
