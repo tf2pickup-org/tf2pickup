@@ -25,7 +25,11 @@ export function MapResult(props: { results: Record<string, number>; map: string 
   const totalVotes = Object.values(props.results).reduce((acc, votes) => acc + votes, 0)
   const mapVotes = props.results[props.map] ?? 0
   const votePercent = totalVotes === 0 ? 0 : Math.round((mapVotes / totalVotes) * 100)
-  return <span id={`map-result-${props.map}`}>{votePercent}</span>
+  return (
+    <span id={`map-result-${props.map}`} data-animate-number>
+      {votePercent}
+    </span>
+  )
 }
 
 async function MapVoteButton(props: {
@@ -45,7 +49,7 @@ async function MapVoteButton(props: {
       data-umami-event-map={props.map}
     >
       <div class="grow"></div>
-      <div class="text-2xl leading-4 font-bold">
+      <div class="text-2xl leading-4 font-bold tabular-nums">
         <MapResult results={props.results} map={props.map} />%
       </div>
       <span class="text-2xl font-normal" safe>
