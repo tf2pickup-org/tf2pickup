@@ -24,7 +24,7 @@ const sdk = new NodeSDK({
   metricReader: new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter(),
   }),
-  logRecordProcessor: new BatchLogRecordProcessor(new OTLPLogExporter()),
+  logRecordProcessor: new BatchLogRecordProcessor({ exporter: new OTLPLogExporter() }),
   instrumentations: [
     new RuntimeNodeInstrumentation(),
     new HttpInstrumentation(),
