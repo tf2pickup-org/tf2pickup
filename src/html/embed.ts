@@ -23,7 +23,7 @@ async function doEmbed(fileName: string): Promise<string> {
     await postcss([
       postcssNested,
       tailwindcss({ optimize: false }),
-      ...(environment.NODE_ENV === 'production' ? [cssnano] : []),
+      ...(environment.NODE_ENV === 'production' ? [cssnano()] : []),
     ]).process(css, {
       from: fileName,
       to: `${name}.min${ext}`,
