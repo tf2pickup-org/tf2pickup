@@ -29,7 +29,7 @@ import type { FuturePlayerSkillModel } from './models/future-player-skill.model'
 import type { PendingImportModel } from './models/pending-import.model'
 import type { LogsTfLogModel } from './models/logs-tf-log.model'
 import type { DeferredKickModel } from './models/deferred-kick.model'
-import type { GameRoundProgressModel } from './models/game-round-progress.model'
+import type { GameLogParseStateModel } from './models/game-log-parse-state.model'
 import type { TelemetryStatModel } from './models/telemetry-stat.model'
 import { ensureIndexes } from './ensure-indexes'
 
@@ -48,7 +48,7 @@ export const collections = {
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
   gamesDeferredKicks: database.collection<DeferredKickModel>('games.deferredkicks'),
-  gamesRoundProgress: database.collection<GameRoundProgressModel>('games.roundprogress'),
+  gamesLogParseState: database.collection<GameLogParseStateModel>('games.logparsestate'),
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
   logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
