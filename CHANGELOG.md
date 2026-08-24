@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.23.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.3...4.23.4) (2026-08-24)
+
+### Dependencies
+
+* @fastify/helmet to v13.1.1 ([2fc0d5e](https://github.com/tf2pickup-org/tf2pickup/commit/2fc0d5e0bf584bc1882c5291a11400170174af22))
+* @fastify/multipart to v10.1.1 ([a3af4cc](https://github.com/tf2pickup-org/tf2pickup/commit/a3af4cca227fbed0c5b90004faf8c5d43d4ec65b))
+* @napi-rs/canvas to v1.0.7 ([9d2fa2d](https://github.com/tf2pickup-org/tf2pickup/commit/9d2fa2d9185c666bec86c92cbf27dfa53493722f))
+* cssnano to v8.0.6 ([#802](https://github.com/tf2pickup-org/tf2pickup/issues/802)) ([98f9a8e](https://github.com/tf2pickup-org/tf2pickup/commit/98f9a8e4308d7d48d1fe084a84ed879a3c5820a6))
+* cssnano to v8.0.7 ([68245b2](https://github.com/tf2pickup-org/tf2pickup/commit/68245b27fbb29e08e77870108223074977216324))
+* es-toolkit to v1.51.0 ([b20fa7c](https://github.com/tf2pickup-org/tf2pickup/commit/b20fa7ccc4758f336be0378237b6c7c8c1c8d814))
+* fastify to v5.12.1 ([016ead5](https://github.com/tf2pickup-org/tf2pickup/commit/016ead56bd28d2884953837f3c7fb01d41959306))
+* marked to v18.0.10 ([c2f943e](https://github.com/tf2pickup-org/tf2pickup/commit/c2f943ec4eee2d9666bcbc0bd3e3cda5561ca96d))
+* motion to v13.1.1 ([1e06d32](https://github.com/tf2pickup-org/tf2pickup/commit/1e06d328719c068e932041cd11fb6d6ca0fa1540))
+
 ## [4.23.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.2...4.23.3) (2026-08-18)
 
 ### Bug Fixes
