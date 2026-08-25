@@ -484,7 +484,13 @@
     cursor: pointer;
     user-select: none;
 
-    width: 72px;
+    width: 100%;
+    min-height: 48px;
+
+    @media (width >= theme(--breakpoint-lg)) {
+      width: 72px;
+      min-height: 0;
+    }
 
     input[type='checkbox'] {
       appearance: none;
