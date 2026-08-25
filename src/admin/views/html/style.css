@@ -21,4 +21,16 @@
       }
     }
   }
+
+  .cooldown-levels-list {
+    counter-reset: cooldown-level -1;
+  }
+
+  .cooldown-levels-list .cooldown-level-row {
+    counter-increment: cooldown-level;
+  }
+
+  .cooldown-levels-list .cooldown-level-index::before {
+    content: counter(cooldown-level);
+  }
 }
