@@ -66,11 +66,12 @@ function SelectTextChannel(
   const textChannels = Array.from(
     guild.channels.cache.filter(channel => channel instanceof TextChannel).values(),
   ).reduce<Map<string, TextChannel[]>>((prev, curr) => {
-    if (!prev.has(curr.parent!.name)) {
-      prev.set(curr.parent!.name, [])
+    const parentName = curr.parent?.name ?? 'No category'
+    if (!prev.has(parentName)) {
+      prev.set(parentName, [])
     }
 
-    prev.get(curr.parent!.name)!.push(curr)
+    prev.get(parentName)!.push(curr)
     return prev
   }, new Map<string, TextChannel[]>())
 
