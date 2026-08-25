@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.23.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.4...4.23.5) (2026-08-25)
+
+### Bug Fixes
+
+* **discord:** guard null channel parent in admin guild config ([#804](https://github.com/tf2pickup-org/tf2pickup/issues/804)) ([cabc926](https://github.com/tf2pickup-org/tf2pickup/commit/cabc926f38d4eaccbb6a05d5f6d251462b6874d2))
+* **games:** stack the sensitive-data toggle full-width on mobile ([#803](https://github.com/tf2pickup-org/tf2pickup/issues/803)) ([ef19eeb](https://github.com/tf2pickup-org/tf2pickup/commit/ef19eeb9d4e73a5cb9042f2fbfbaae540bf47739))
+
 ## [4.23.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.3...4.23.4) (2026-08-24)
 
 ### Dependencies
