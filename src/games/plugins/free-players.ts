@@ -31,15 +31,6 @@ export default fp(
         }),
       )
     })
-
-    events.on('game:playerReplaced', async ({ game, replacee, replacement }) => {
-      await players.update(replacement, { $set: { activeGame: game.number } })
-      events.emit('player/activeGame:updated', { steamId: replacement, activeGame: game.number })
-      if (replacee !== replacement) {
-        await players.update(replacee, { $unset: { activeGame: 1 } })
-        events.emit('player/activeGame:updated', { steamId: replacee, activeGame: undefined })
-      }
-    })
   },
   {
     name: 'free players',

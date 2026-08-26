@@ -9,6 +9,9 @@ import { GameEventType } from '../database/models/game-event.model'
 import { events } from '../events'
 import { applyCooldown } from './apply-cooldown'
 import { players } from '../players'
+import { queue } from '../queue-auto'
+import { calculateJoinGameserverTimeout } from './calculate-join-gameserver-timeout'
+import { logError } from '../utils/log-error'
 
 const replacePlayerMutex = new Mutex()
 
@@ -87,12 +90,54 @@ export async function replacePlayer({
       gameNumber: newGame.number,
       slotId: slot.id,
     })
-    events.emit('game:playerReplaced', { game: newGame, replacee, replacement, slotId: slot.id })
+    // The player has been substituted. The writes below are best-effort side
+    // effects of that fact: a failure here (e.g. the queue is mid-launch) must
+    // not abort the substitution nor suppress the game:playerReplaced event.
+    try {
+      await players.update(replacement, { $set: { activeGame: newGame.number } })
+      events.emit('player/activeGame:updated', {
+        steamId: replacement,
+        activeGame: newGame.number,
+      })
+      if (replacee !== replacement) {
+        await players.update(replacee, { $unset: { activeGame: 1 } })
+        events.emit('player/activeGame:updated', { steamId: replacee, activeGame: undefined })
+      }
+    } catch (error) {
+      logError(error)
+    }
+
+    try {
+      await queue.kick(replacement)
+    } catch (error) {
+      logError(error)
+    }
+
+    let updatedGame = newGame
+    try {
+      const shouldJoinBy = await calculateJoinGameserverTimeout(newGame, replacement)
+      if (shouldJoinBy) {
+        updatedGame = await update(
+          newGame.number,
+          { $set: { 'slots.$[slot].shouldJoinBy': shouldJoinBy } },
+          { arrayFilters: [{ 'slot.player': replacement }] },
+        )
+      }
+    } catch (error) {
+      logError(error)
+    }
+
+    events.emit('game:playerReplaced', {
+      game: updatedGame,
+      replacee,
+      replacement,
+      slotId: slot.id,
+    })
 
     if (shouldApplyCooldown) {
       await applyCooldown(replacee)
     }
 
-    return game
+    return updatedGame
   })
 }

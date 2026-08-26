@@ -34,20 +34,12 @@ import { events } from '../../events'
 import { players } from '../../players'
 import { tasks } from '../../tasks'
 import plugin from './free-players'
-import type { GameModel, GameNumber } from '../../database/models/game.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 const replacee = '76561198000000001' as SteamId64
-const replacement = '76561198000000002' as SteamId64
-const gameNumber = 7 as GameNumber
 
 describe('free-players', () => {
   let freePlayerTask: (params: { player: SteamId64 }) => Promise<void>
-  let playerReplacedHandler: (params: {
-    game: GameModel
-    replacee: SteamId64
-    replacement: SteamId64
-  }) => Promise<void>
 
   beforeEach(async () => {
     vi.resetAllMocks()
@@ -58,30 +50,11 @@ describe('free-players', () => {
       .mock.calls.find(
         ([name]: [string, ...unknown[]]) => name === 'games.freePlayer',
       )![1] as typeof freePlayerTask
-    const call = vi
-      .mocked(events.on)
-      .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'game:playerReplaced')
-    playerReplacedHandler = call![1] as typeof playerReplacedHandler
   })
 
   it('emits player/activeGame:updated with undefined when freePlayer task runs', async () => {
     await freePlayerTask({ player: replacee })
 
-    expect(events.emit).toHaveBeenCalledWith('player/activeGame:updated', {
-      steamId: replacee,
-      activeGame: undefined,
-    })
-  })
-
-  it('emits player/activeGame:updated for replacement and replacee on game:playerReplaced', async () => {
-    const game = { number: gameNumber } as GameModel
-
-    await playerReplacedHandler({ game, replacee, replacement })
-
-    expect(events.emit).toHaveBeenCalledWith('player/activeGame:updated', {
-      steamId: replacement,
-      activeGame: gameNumber,
-    })
     expect(events.emit).toHaveBeenCalledWith('player/activeGame:updated', {
       steamId: replacee,
       activeGame: undefined,
