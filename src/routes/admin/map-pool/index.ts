@@ -58,7 +58,15 @@ export default routes(async app => {
         await reply.status(200).html(MapPoolPage())
       },
     )
-    .post('/create', async (_request, response) => {
-      return await response.send(await MapPoolEntryCmp({ name: '' }))
-    })
+    .post(
+      '/create',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+      },
+      async (_request, response) => {
+        return await response.send(await MapPoolEntryCmp({ name: '' }))
+      },
+    )
 })
