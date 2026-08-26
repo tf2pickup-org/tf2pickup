@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { PlayerRole } from '../../../../database/models/player.model'
 import { discord } from '../../../../discord'
 import { configuration } from '../../../../configuration'
 import { GuildConfiguration } from '../../../../admin/discord/views/html/guild-configuration'
@@ -10,6 +11,9 @@ export default routes(async app => {
     .post(
       '/',
       {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
         schema: {
           body: z.object({
             adminNotificationsChannel: z.string().optional(),
@@ -71,6 +75,9 @@ export default routes(async app => {
     .put(
       '/toggle',
       {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
         schema: {
           params: z.object({
             guildId: z.string(),
