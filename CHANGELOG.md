@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.23.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.6...4.23.7) (2026-08-26)
+
+### Bug Fixes
+
+* **games:** record game outcome in one owner to order ELO before stats ([#813](https://github.com/tf2pickup-org/tf2pickup/issues/813)) ([82d25c4](https://github.com/tf2pickup-org/tf2pickup/commit/82d25c40aef5943f5552a5a3aa5c9a6eb38dd677))
+
 ## [4.23.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.5...4.23.6) (2026-08-26)
 
 ### Bug Fixes
