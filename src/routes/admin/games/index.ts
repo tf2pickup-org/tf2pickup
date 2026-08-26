@@ -82,7 +82,15 @@ export default routes(async app => {
         await reply.status(200).html(GamesPage())
       },
     )
-    .post('/cooldown-level', async (_request, reply) => {
-      return await reply.send(CooldownLevelEntry({ banLengthMs: 0 }))
-    })
+    .post(
+      '/cooldown-level',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+      },
+      async (_request, reply) => {
+        return await reply.send(CooldownLevelEntry({ banLengthMs: 0 }))
+      },
+    )
 })
