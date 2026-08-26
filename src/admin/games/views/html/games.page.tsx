@@ -1,8 +1,10 @@
 import { millisecondsToSeconds } from 'date-fns'
 import { configuration } from '../../../../configuration'
+import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
+import { durationUnit } from '../../duration-unit'
 import { GameServerCommandPreview } from './game-server-command-preview'
 
 export async function GamesPage() {
@@ -11,6 +13,7 @@ export async function GamesPage() {
   const rejoinGameServerTimeout = await configuration.get('games.rejoin_gameserver_timeout')
   const executeExtraCommands = await configuration.get('games.execute_extra_commands')
   const logsTfUploadMethod = await configuration.get('games.logs_tf_upload_method')
+  const cooldownLevels = await configuration.get('games.cooldown_levels')
 
   const safeExecuteExtraCommands = executeExtraCommands.join('\n')
 
@@ -132,11 +135,73 @@ export async function GamesPage() {
             </dd>
           </dl>
 
+          <dl>
+            <dt>Cooldown levels</dt>
+            <dd class="flex flex-col gap-2">
+              <div class="cooldown-levels-list flex flex-col gap-2" id="cooldownLevelsList">
+                {cooldownLevels.map(({ banLengthMs }) => (
+                  <CooldownLevelEntry banLengthMs={banLengthMs} />
+                ))}
+              </div>
+              <button
+                type="button"
+                class="flex w-fit flex-row items-center gap-2 text-white hover:underline"
+                data-umami-event="add-cooldown-level"
+                hx-post="/admin/games/cooldown-level"
+                hx-trigger="click"
+                hx-target="#cooldownLevelsList"
+                hx-swap="beforeend"
+              >
+                <IconPlus />
+                Add level
+              </button>
+              <span class="text-abru-light-75 text-sm">
+                When a player is subbed out of a game, they receive a ban. The ban length grows with
+                each offence, following the levels above. Levels are applied top to bottom; a player
+                past the last level always gets the last ban length.
+              </span>
+            </dd>
+          </dl>
+
           <p class="mt-2">
             <SaveButton />
           </p>
         </div>
       </form>
     </Admin>
+  )
+}
+
+export function CooldownLevelEntry(props: { banLengthMs: number }) {
+  const { value, unit } = durationUnit.split(props.banLengthMs)
+
+  return (
+    <div class="cooldown-level-row flex flex-row items-center gap-2">
+      <span class="cooldown-level-index text-abru-light-75 w-6 shrink-0 text-end tabular-nums" />
+      <input
+        type="number"
+        name="banLength[]"
+        value={value.toString()}
+        min="0"
+        step="any"
+        required
+        class="w-24 min-w-0"
+      />
+      <select name="banLengthUnit[]" class="w-28 shrink-0">
+        {durationUnit.all.map(u => (
+          <option value={u} selected={u === unit}>
+            {u}
+          </option>
+        ))}
+      </select>
+      <button
+        type="button"
+        class="text-abru-light-75 shrink-0 hover:text-white"
+        aria-label="Remove level"
+        data-remove-closest=".cooldown-level-row"
+      >
+        <IconMinus />
+      </button>
+    </div>
   )
 }
