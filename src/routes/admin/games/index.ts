@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import { GamesPage } from '../../../admin/games/views/html/games.page'
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../../shared/types/logs-tf-upload-method'
@@ -10,23 +9,12 @@ import { configuration } from '../../../configuration'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.status(200).html(GamesPage())
-      },
-    )
+    .get('/', async (_request, reply) => {
+      await reply.status(200).html(GamesPage())
+    })
     .post(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.object({
             whitelistId: z.string(),

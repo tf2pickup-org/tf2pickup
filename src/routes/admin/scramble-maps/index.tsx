@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import { ScrambleMaps } from '../../../admin/scramble-maps/views/html/scramble-maps.page'
 import { queue } from '../../../queue-auto'
 import { MapVoteOptions } from '../../../admin/scramble-maps/views/html/map-vote-options'
@@ -10,18 +9,10 @@ import { activityLog } from '../../../activity-log'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.html(ScrambleMaps())
-      },
-    )
-    .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (request, reply) => {
+    .get('/', async (_request, reply) => {
+      await reply.html(ScrambleMaps())
+    })
+    .put('/scramble', async (request, reply) => {
       await queue.resetMapOptions()
       const newMaps = await collections.queueMapOptions
         .find({}, { projection: { name: 1 } })

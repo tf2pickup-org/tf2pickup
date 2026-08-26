@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import {
   ConfigurationEntryEdit,
   ViewForNerdsPage,
@@ -14,21 +13,12 @@ import { routes } from '../../../utils/routes'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.html(ViewForNerdsPage())
-      },
-    )
+    .get('/', async (_request, reply) => {
+      await reply.html(ViewForNerdsPage())
+    })
     .post(
       '/',
       {
-        config: { authorize: [PlayerRole.admin] },
         schema: {
           body: z
             .object({
@@ -62,9 +52,6 @@ export default routes(async app => {
     .delete(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           querystring: z.object({
             key: z.custom<keyof Configuration>(v =>

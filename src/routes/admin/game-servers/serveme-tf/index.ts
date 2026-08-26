@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../../database/models/player.model'
 import { z } from 'zod'
 import { BannedGameServersList } from '../../../../admin/game-servers/views/html/serveme-tf-ban-gameservers'
 import { RegionList } from '../../../../admin/game-servers/views/html/serveme-tf-preferred-region'
@@ -8,23 +7,12 @@ import { routes } from '../../../../utils/routes'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/preferred-region',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        return reply.status(200).html(RegionList())
-      },
-    )
+    .get('/preferred-region', async (_request, reply) => {
+      return reply.status(200).html(RegionList())
+    })
     .put(
       '/preferred-region',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.object({
             servemeTfPreferredRegion: z.string().transform(val => (val === 'none' ? null : val)),
@@ -43,9 +31,6 @@ export default routes(async app => {
     .post(
       '/ban-gameservers',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.object({
             pattern: z.string().min(1),
@@ -71,9 +56,6 @@ export default routes(async app => {
     .delete(
       '/ban-gameservers/:pattern',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             pattern: z.string(),

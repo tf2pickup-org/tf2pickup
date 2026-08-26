@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import {
   AnnouncementEditForm,
   AnnouncementEntry,
@@ -15,23 +14,12 @@ import { parseMarkdown } from '../../../utils/parse-markdown'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.html(<AnnouncementsPage />)
-      },
-    )
+    .get('/', async (_request, reply) => {
+      await reply.html(<AnnouncementsPage />)
+    })
     .post(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.object({
             body: z.string().min(1),
@@ -62,9 +50,6 @@ export default routes(async app => {
     .get(
       '/:id/edit',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             id: z.string().regex(/^[0-9a-fA-F]{24}$/),
@@ -84,9 +69,6 @@ export default routes(async app => {
     .get(
       '/:id/cancel',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             id: z.string().regex(/^[0-9a-fA-F]{24}$/),
@@ -106,9 +88,6 @@ export default routes(async app => {
     .post(
       '/:id',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             id: z.string().regex(/^[0-9a-fA-F]{24}$/),
@@ -149,9 +128,6 @@ export default routes(async app => {
     .post(
       '/:id/toggle',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             id: z.string().regex(/^[0-9a-fA-F]{24}$/),
@@ -192,9 +168,6 @@ export default routes(async app => {
     .delete(
       '/:id',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             id: z.string().regex(/^[0-9a-fA-F]{24}$/),

@@ -1,5 +1,4 @@
 import z from 'zod'
-import { PlayerRole } from '../../../database/models/player.model'
 import { activityLog } from '../../../activity-log'
 import { ActivityLogPage } from '../../../admin/activity-log/views/html/activity-log.page'
 import { ActivityLogEntryList } from '../../../admin/activity-log/views/html/activity-log-entry-list'
@@ -11,9 +10,6 @@ export default routes(async app => {
   app.get(
     '/',
     {
-      config: {
-        authorize: [PlayerRole.admin],
-      },
       schema: {
         querystring: z.object({
           page: z.coerce.number().int().min(1).default(1),

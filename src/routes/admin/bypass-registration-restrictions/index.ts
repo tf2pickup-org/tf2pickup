@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import { BypassRegistrationRestrictionsPage } from '../../../admin/bypass-registration-restrictions/views/html/bypass-registration-restrictions.page'
 import { z } from 'zod'
 import { collections } from '../../../database/collections'
@@ -11,23 +10,12 @@ import { routes } from '../../../utils/routes'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        return reply.html(BypassRegistrationRestrictionsPage())
-      },
-    )
+    .get('/', async (_request, reply) => {
+      return reply.html(BypassRegistrationRestrictionsPage())
+    })
     .post(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.object({ steamId: steamId64 }),
         },
@@ -59,9 +47,6 @@ export default routes(async app => {
     .delete(
       '/:steamId',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           params: z.object({
             steamId: steamId64,

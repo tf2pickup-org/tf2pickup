@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import { z } from 'zod'
 import { requestContext } from '@fastify/request-context'
 import { MiscellaneousPage } from '../../../admin/miscellaneous/views/html/miscellaneous.page'
@@ -13,23 +12,12 @@ const emptyString = z
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.status(200).html(MiscellaneousPage())
-      },
-    )
+    .get('/', async (_request, reply) => {
+      await reply.status(200).html(MiscellaneousPage())
+    })
     .post(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.object({
             discordInviteLink: emptyString,

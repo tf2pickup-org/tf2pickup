@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
 import { z } from 'zod'
 import { configuration } from '../../../configuration'
@@ -20,23 +19,12 @@ const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEna
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.status(200).html(PlayerRestrictionsPage())
-      },
-    )
+    .get('/', async (_request, reply) => {
+      await reply.status(200).html(PlayerRestrictionsPage())
+    })
     .post(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z.intersection(
             playerSkillThresholdSchema,

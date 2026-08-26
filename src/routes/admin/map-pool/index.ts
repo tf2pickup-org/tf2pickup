@@ -1,4 +1,3 @@
-import { PlayerRole } from '../../../database/models/player.model'
 import {
   MapPoolEntry as MapPoolEntryCmp,
   MapPoolPage,
@@ -13,23 +12,12 @@ import { activityLog } from '../../../activity-log'
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.status(200).html(MapPoolPage())
-      },
-    )
+    .get('/', async (_request, reply) => {
+      await reply.status(200).html(MapPoolPage())
+    })
     .post(
       '/',
       {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
         schema: {
           body: z
             .object({

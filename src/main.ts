@@ -12,6 +12,7 @@ import { logError } from './utils/log-error'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
+import adminAuthorize from './auth/admin-authorize'
 
 const app = fastify({
   loggerInstance,
@@ -159,11 +160,30 @@ await app.register(autoload, {
   },
 })
 
+const routeScriptPattern =
+  /(?:(?:^.?|\.[^d]|[^.]d|[^.][^d])\.ts|\.js|\.cjs|\.mjs|\.cts|\.mts|\.tsx?)$/
+const isRouteFile = (path: string) => !path.includes('/dto/') && !path.includes('.test.')
+
 await app.register(autoload, {
   dir: resolve(import.meta.dirname, 'routes'),
   dirNameRoutePrefix: true,
-  scriptPattern: /(?:(?:^.?|\.[^d]|[^.]d|[^.][^d])\.ts|\.js|\.cjs|\.mjs|\.cts|\.mts|\.tsx?)$/,
-  matchFilter: path => !path.includes('/dto/') && !path.includes('.test.'),
+  scriptPattern: routeScriptPattern,
+  matchFilter: path => isRouteFile(path) && !path.startsWith('/admin/'),
 })
+
+// Admin routes are registered in their own encapsulated context so the
+// admin-authorize guard applies to the whole subtree (deny-by-default).
+await app.register(
+  async admin => {
+    await admin.register(adminAuthorize)
+    await admin.register(autoload, {
+      dir: resolve(import.meta.dirname, 'routes/admin'),
+      dirNameRoutePrefix: true,
+      scriptPattern: routeScriptPattern,
+      matchFilter: isRouteFile,
+    })
+  },
+  { prefix: '/admin' },
+)
 
 await app.listen({ host: environment.APP_HOST, port: environment.APP_PORT })
