@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.23.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.5...4.23.6) (2026-08-26)
+
+### Bug Fixes
+
+* **admin:** require admin role on unprotected admin routes ([#810](https://github.com/tf2pickup-org/tf2pickup/issues/810)) ([59e9d40](https://github.com/tf2pickup-org/tf2pickup/commit/59e9d40f3331c946a1aafcbcd348f4c510d66644))
+* **games:** add a cooldown levels configurator to the admin games page ([#806](https://github.com/tf2pickup-org/tf2pickup/issues/806)) ([a53f7a9](https://github.com/tf2pickup-org/tf2pickup/commit/a53f7a9dd5e60e97559e6def8ba5eb5fd2195887))
+* **players:** drop legacy unique index on players.name ([#811](https://github.com/tf2pickup-org/tf2pickup/issues/811)) ([4e6d104](https://github.com/tf2pickup-org/tf2pickup/commit/4e6d1042c7967a4a1c119ba71ae5ee604c35d05d))
+
+### Dependencies
+
+* cssnano to v8.0.8 ([8101512](https://github.com/tf2pickup-org/tf2pickup/commit/8101512385cdb449bf2e342b2d24707545707f67))
+
 ## [4.23.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.4...4.23.5) (2026-08-25)
 
 ### Bug Fixes
