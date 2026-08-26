@@ -9,6 +9,7 @@ import { resetMapOptions } from '../maps/reset-options'
 import { getFriends } from './get-friends'
 import { getMapVoteResults } from './get-map-vote-results'
 import { unreadyQueue } from './unready-queue'
+import { kick } from './kick'
 
 const slotCount = await collections.queueSlots.countDocuments()
 if (slotCount === 0) {
@@ -23,6 +24,7 @@ export const queue = {
   getMapWinner,
   getSlots,
   getState,
+  kick,
   resetMapOptions,
   unreadyQueue,
 } as const

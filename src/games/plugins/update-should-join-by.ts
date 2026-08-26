@@ -34,32 +34,6 @@ export default fp(
     })
 
     events.on(
-      'game:playerReplaced',
-      safe(async ({ game, replacement }) => {
-        const shouldJoinBy = await calculateJoinGameserverTimeout(game, replacement)
-        if (!shouldJoinBy) {
-          return
-        }
-
-        await update(
-          game.number,
-          {
-            $set: {
-              'slots.$[slot].shouldJoinBy': shouldJoinBy,
-            },
-          },
-          {
-            arrayFilters: [
-              {
-                'slot.player': replacement,
-              },
-            ],
-          },
-        )
-      }),
-    )
-
-    events.on(
       'game:playerConnectionStatusUpdated',
       safe(async ({ game, player, playerConnectionStatus }) => {
         if (playerConnectionStatus !== PlayerConnectionStatus.offline) {
