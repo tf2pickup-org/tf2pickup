@@ -4,6 +4,7 @@ import { GameState, type GameModel, type GameNumber } from '../database/models/g
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { Tf2Team } from '../shared/types/tf2-team'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { Gamemode } from '../shared/types/gamemode'
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { GameEventType } from '../database/models/game-event.model'
 
@@ -34,6 +35,7 @@ describe('calculateJoinGameServerTimeout', () => {
     players.set(steamId, { steamId })
     game = {
       number: 1 as GameNumber,
+      gamemode: Gamemode.sixes,
       state: GameState.created,
       map: 'cp_badlands',
       slots: [

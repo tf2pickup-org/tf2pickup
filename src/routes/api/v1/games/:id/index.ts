@@ -15,6 +15,7 @@ export default routes(async app => {
     async (request, reply) => {
       const game = await games.findOne({ number: request.params.id }, [
         'number',
+        'gamemode',
         'map',
         'state',
         'score',
