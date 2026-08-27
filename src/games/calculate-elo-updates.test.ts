@@ -12,6 +12,7 @@ import { GameState, type GameModel, type GameNumber } from '../database/models/g
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { Tf2Team } from '../shared/types/tf2-team'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { Gamemode } from '../shared/types/gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { GameSlotId } from '../shared/types/game-slot-id'
 
@@ -57,6 +58,7 @@ function makeGame(
 ): GameModel {
   return {
     number: 1 as GameNumber,
+    gamemode: Gamemode.sixes,
     map: 'cp_process_final',
     state: GameState.ended,
     slots: [
