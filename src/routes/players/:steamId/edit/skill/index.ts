@@ -1,4 +1,5 @@
 import { PlayerRole } from '../../../../../database/models/player.model'
+import { environment } from '../../../../../environment'
 import { z } from 'zod'
 import { queue } from '../../../../../queues/auto'
 import type { Tf2ClassName } from '../../../../../shared/types/tf2-class-name'
@@ -67,7 +68,7 @@ export default routes(async app => {
         'stats',
         'skillHistory',
       ])
-      const oldSkill = player.skill ?? {}
+      const oldSkill = player.skill?.[environment.QUEUE_CONFIG] ?? {}
       const skill = Object.entries(request.body)
         .filter(([key]) => key.startsWith('skill.'))
         .reduce<Partial<Record<Tf2ClassName, number>>>(
@@ -76,6 +77,7 @@ export default routes(async app => {
         )
       await players.setSkill({
         steamId: player.steamId,
+        gamemode: environment.QUEUE_CONFIG,
         skill,
         actor: request.user!.player.steamId,
       })
