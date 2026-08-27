@@ -17,6 +17,8 @@ import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../views/html/map-vote-selection'
 import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
+import type { Gamemode } from '../../shared/types/gamemode'
+import { defaultGamemode } from '../../shared/default-gamemode'
 import { players } from '../../players'
 import { queueWsCallDuration } from '../../queue/metrics'
 import { measureTime } from '../../utils/measure-time'
@@ -24,7 +26,7 @@ import { measureTime } from '../../utils/measure-time'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    async function refreshTakenSlots(actorId: SteamId64) {
+    async function refreshTakenSlots(gamemode: Gamemode, actorId: SteamId64) {
       const actor = await players.bySteamId(actorId, [
         'steamId',
         'bans',
@@ -33,7 +35,7 @@ export default fp(
         'verified',
         'roles',
       ])
-      const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
+      const slots = await collections.queueSlots.find({ gamemode, player: { $ne: null } }).toArray()
       app.gateway
         .to({ player: actorId })
         .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
@@ -77,9 +79,9 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        const slots = await join(slotId, socket.player.steamId)
+        const slots = await join(defaultGamemode, slotId, socket.player.steamId)
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
-          await refreshTakenSlots(socket.player.steamId)
+          await refreshTakenSlots(defaultGamemode, socket.player.steamId)
         }
 
         app.gateway
@@ -97,7 +99,7 @@ export default fp(
 
         const slot = await leave(socket.player.steamId)
         if (slot.canMakeFriendsWith?.length) {
-          await refreshTakenSlots(socket.player.steamId)
+          await refreshTakenSlots(slot.gamemode, socket.player.steamId)
         }
 
         app.gateway
@@ -107,7 +109,7 @@ export default fp(
             await MapVoteSelection({ actor: socket.player?.steamId }),
           ])
 
-        const queueState = await getState()
+        const queueState = await getState(slot.gamemode)
         if (queueState === QueueState.ready) {
           const close = await ReadyUpDialog.close()
           app.gateway.to({ player: socket.player.steamId }).send(() => close)

@@ -17,10 +17,11 @@ export async function create(
 ) {
   const playerSlots: PlayerSlot[] = await Promise.all(queueSlots.map(queueSlotToPlayerSlot))
   const slots = pickTeams(playerSlots, { friends })
+  const gamemode = queueSlots[0]?.gamemode ?? defaultGamemode
 
   const { insertedId } = await collections.games.insertOne({
     number: await getNextGameNumber(),
-    gamemode: defaultGamemode,
+    gamemode,
     map,
     state: GameState.created,
     slots: slots.map(slot => ({

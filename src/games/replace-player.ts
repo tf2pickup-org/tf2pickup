@@ -108,7 +108,10 @@ export async function replacePlayer({
     }
 
     try {
-      await queue.kick(replacement)
+      const slot = await collections.queueSlots.findOne({ 'player.steamId': replacement })
+      if (slot) {
+        await queue.kick(slot.gamemode, replacement)
+      }
     } catch (error) {
       logError(error)
     }
