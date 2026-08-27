@@ -1,3 +1,4 @@
+import { defaultGamemode } from '../../shared/default-gamemode'
 import type { ParsedPlayerSkill } from './parse-csv'
 import type { ChangedPlayer, FuturePlayer, ImportAnalysis, InitializedPlayer } from './types'
 export type { ImportAnalysis } from './types'
@@ -45,9 +46,10 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
       continue
     }
 
-    const hasExistingSkill = existing.skill && Object.keys(existing.skill).length > 0
+    const existingSkill = existing.skill?.[defaultGamemode]
+    const hasExistingSkill = existingSkill && Object.keys(existingSkill).length > 0
 
-    if (skillsEqual(existing.skill, parsed.skill)) {
+    if (skillsEqual(existingSkill, parsed.skill)) {
       unaffectedCount++
       continue
     }
@@ -57,7 +59,7 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
         steamId: existing.steamId,
         name: existing.name,
         profileUrl: makeProfileUrl(existing.steamId),
-        oldSkill: existing.skill!,
+        oldSkill: existingSkill,
         newSkill: parsed.skill,
       })
     } else {

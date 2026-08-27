@@ -59,8 +59,9 @@ async function queueSlotToPlayerSlot(queueSlot: QueueSlotModel): Promise<PlayerS
   let skill = defaultPlayerSkill[gameClass]!
 
   const { skill: playerSkill } = await players.bySteamId(player.steamId, ['skill'])
-  if (playerSkill && gameClass in playerSkill) {
-    skill = playerSkill[gameClass]!
+  const gamemodeSkill = playerSkill?.[queueSlot.gamemode]
+  if (gamemodeSkill && gameClass in gamemodeSkill) {
+    skill = gamemodeSkill[gameClass]!
   }
 
   return { player: player.steamId, gameClass, skill }

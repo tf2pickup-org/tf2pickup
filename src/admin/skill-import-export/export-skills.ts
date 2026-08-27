@@ -1,4 +1,5 @@
 import { stringify } from 'csv-stringify/sync'
+import { defaultGamemode } from '../../shared/default-gamemode'
 import { collections } from '../../database/collections'
 import { config } from '../../queue-auto/config'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
@@ -22,7 +23,7 @@ export async function exportSkills(): Promise<string> {
     }
 
     for (const className of classNames) {
-      row[className] = player.skill?.[className] ?? ''
+      row[className] = player.skill?.[defaultGamemode]?.[className] ?? ''
     }
 
     return row

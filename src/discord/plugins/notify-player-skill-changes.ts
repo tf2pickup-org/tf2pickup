@@ -2,8 +2,9 @@ import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { isEqual } from 'es-toolkit'
 import { players } from '../../players'
-import type { PlayerModel } from '../../database/models/player.model'
+import type { PlayerSkill } from '../../database/models/player.model'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import { defaultGamemode } from '../../shared/default-gamemode'
 import { toAdmins } from '../to-admins'
 import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
@@ -12,8 +13,8 @@ import { safe } from '../../utils/safe'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
 function generateChangesText(
-  oldSkill: PlayerModel['skill'],
-  newSkill: PlayerModel['skill'],
+  oldSkill: PlayerSkill | undefined,
+  newSkill: PlayerSkill | undefined,
 ): string {
   const allClasses = new Set([
     ...Object.keys(oldSkill ?? {}),
@@ -40,7 +41,10 @@ export default fp(
       safe(async ({ before, after, adminId }) => {
         if (!isEqual(before.skill, after.skill)) {
           const admin = await players.bySteamId(adminId!, ['name', 'steamId', 'avatar.medium'])
-          const changes = generateChangesText(before.skill, after.skill)
+          const changes = generateChangesText(
+            before.skill?.[defaultGamemode],
+            after.skill?.[defaultGamemode],
+          )
 
           await toAdmins({
             embeds: [
