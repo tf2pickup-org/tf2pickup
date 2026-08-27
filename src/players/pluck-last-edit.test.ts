@@ -2,16 +2,32 @@ import { describe, expect, it } from 'vitest'
 import { pluckLastEdit } from './pluck-last-edit'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { Gamemode } from '../shared/types/gamemode'
 import { sub } from 'date-fns'
 
 const mockActor = '123' as SteamId64
 
 describe('pluckLastEdit()', () => {
   it('should pluck last edit', () => {
-    const lastEdit = { at: new Date(), skill: { scout: 1 }, actor: mockActor }
+    const lastEdit = {
+      at: new Date(),
+      skill: { scout: 1 },
+      actor: mockActor,
+      gamemode: Gamemode.sixes,
+    }
     const previousEdits = [
-      { at: sub(new Date(), { hours: 2 }), skill: { scout: 1 }, actor: mockActor },
-      { at: sub(new Date(), { hours: 1 }), skill: { scout: 2 }, actor: mockActor },
+      {
+        at: sub(new Date(), { hours: 2 }),
+        skill: { scout: 1 },
+        actor: mockActor,
+        gamemode: Gamemode.sixes,
+      },
+      {
+        at: sub(new Date(), { hours: 1 }),
+        skill: { scout: 2 },
+        actor: mockActor,
+        gamemode: Gamemode.sixes,
+      },
     ]
     expect(pluckLastEdit([...previousEdits, lastEdit], Tf2ClassName.scout)).toEqual({
       lastEdit,
@@ -21,7 +37,12 @@ describe('pluckLastEdit()', () => {
 
   describe('when there are no previous edits', () => {
     it('should return unknown', () => {
-      const lastEdit = { at: new Date(), skill: { scout: 1 }, actor: mockActor }
+      const lastEdit = {
+        at: new Date(),
+        skill: { scout: 1 },
+        actor: mockActor,
+        gamemode: Gamemode.sixes,
+      }
       expect(pluckLastEdit([lastEdit], Tf2ClassName.scout)).toEqual({
         lastEdit,
         previousValue: 'unknown',
@@ -35,10 +56,21 @@ describe('pluckLastEdit()', () => {
         at: sub(new Date(), { hours: 1 }),
         skill: { scout: 2, soldier: 5 },
         actor: mockActor,
+        gamemode: Gamemode.sixes,
       }
-      const soldierChange = { at: new Date(), skill: { scout: 2, soldier: 6 }, actor: mockActor }
+      const soldierChange = {
+        at: new Date(),
+        skill: { scout: 2, soldier: 6 },
+        actor: mockActor,
+        gamemode: Gamemode.sixes,
+      }
       const history = [
-        { at: sub(new Date(), { hours: 2 }), skill: { scout: 1, soldier: 5 }, actor: mockActor },
+        {
+          at: sub(new Date(), { hours: 2 }),
+          skill: { scout: 1, soldier: 5 },
+          actor: mockActor,
+          gamemode: Gamemode.sixes,
+        },
         scoutChange,
         soldierChange,
       ]
@@ -49,9 +81,19 @@ describe('pluckLastEdit()', () => {
     })
 
     it('should return unknown when the queried class was never changed', () => {
-      const soldierChange = { at: new Date(), skill: { scout: 1, soldier: 6 }, actor: mockActor }
+      const soldierChange = {
+        at: new Date(),
+        skill: { scout: 1, soldier: 6 },
+        actor: mockActor,
+        gamemode: Gamemode.sixes,
+      }
       const history = [
-        { at: sub(new Date(), { hours: 1 }), skill: { scout: 1, soldier: 5 }, actor: mockActor },
+        {
+          at: sub(new Date(), { hours: 1 }),
+          skill: { scout: 1, soldier: 5 },
+          actor: mockActor,
+          gamemode: Gamemode.sixes,
+        },
         soldierChange,
       ]
       expect(pluckLastEdit(history, Tf2ClassName.scout)).toEqual({
