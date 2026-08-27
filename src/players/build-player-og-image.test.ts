@@ -33,7 +33,7 @@ describe('buildPlayerOgImage', () => {
       joinedAt: new Date('2021-03-01'),
       avatar,
       roles: [],
-      stats: { totalGames: 142, gamesByClass: {} },
+      stats: { totalGames: 142, gamesByGamemode: {}, gamesByClass: {} },
     })
     expect(Buffer.isBuffer(image)).toBe(true)
     expect(isPng(image)).toBe(true)
@@ -45,7 +45,7 @@ describe('buildPlayerOgImage', () => {
       joinedAt: new Date('2019-01-01'),
       avatar,
       roles: [PlayerRole.admin],
-      stats: { totalGames: 0, gamesByClass: {} },
+      stats: { totalGames: 0, gamesByGamemode: {}, gamesByClass: {} },
     })
     expect(isPng(image)).toBe(true)
   })

@@ -14,7 +14,11 @@ const basePlayer: PlayerModel = {
   hasAcceptedRules: true,
   cooldownLevel: 0,
   preferences: {},
-  stats: { totalGames: 42, gamesByClass: { soldier: 30, scout: 12 } },
+  stats: {
+    totalGames: 42,
+    gamesByGamemode: { [Gamemode.sixes]: 42 },
+    gamesByClass: { [Gamemode.sixes]: { soldier: 30, scout: 12 } },
+  },
 }
 
 describe('playerToDto()', () => {
@@ -25,7 +29,11 @@ describe('playerToDto()', () => {
     expect(result.joinedAt).toBe('2024-01-01T00:00:00.000Z')
     expect(result.avatar).toEqual(basePlayer.avatar)
     expect(result.roles).toEqual([])
-    expect(result.stats).toEqual({ totalGames: 42, gamesByClass: { soldier: 30, scout: 12 } })
+    expect(result.stats).toEqual({
+      totalGames: 42,
+      gamesByGamemode: { [Gamemode.sixes]: 42 },
+      gamesByClass: { [Gamemode.sixes]: { soldier: 30, scout: 12 } },
+    })
   })
 
   it('returns null for etf2lProfileId when not set', () => {
