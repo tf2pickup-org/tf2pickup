@@ -18,7 +18,7 @@ function makePlayer(
   const { elo = {}, gamesByClass = {}, lastSkillChangeGamesByClass = undefined } = overrides
   return {
     elo: { [Gamemode.sixes]: elo },
-    stats: { totalGames: 0, gamesByClass },
+    stats: { totalGames: 0, gamesByClass: { [Gamemode.sixes]: gamesByClass } },
     skillHistory:
       lastSkillChangeGamesByClass !== undefined
         ? [
@@ -163,7 +163,10 @@ describe('makeSkillSuggestions()', () => {
     it('skips cooldown when last skill change has no gamesByClass snapshot', () => {
       const player = {
         elo: { [Gamemode.sixes]: { [Tf2ClassName.scout]: 1600 } },
-        stats: { totalGames: 0, gamesByClass: { [Tf2ClassName.scout]: enoughGames } },
+        stats: {
+          totalGames: 0,
+          gamesByClass: { [Gamemode.sixes]: { [Tf2ClassName.scout]: enoughGames } },
+        },
         skillHistory: [{ at: new Date(), gamemode: Gamemode.sixes, skill: {}, actor: mockActor }],
       }
       expect(
@@ -174,7 +177,10 @@ describe('makeSkillSuggestions()', () => {
     it('ignores skill changes made in another gamemode', () => {
       const player = {
         elo: { [Gamemode.sixes]: { [Tf2ClassName.scout]: 1600 } },
-        stats: { totalGames: 0, gamesByClass: { [Tf2ClassName.scout]: enoughGames + 2 } },
+        stats: {
+          totalGames: 0,
+          gamesByClass: { [Gamemode.sixes]: { [Tf2ClassName.scout]: enoughGames + 2 } },
+        },
         skillHistory: [
           {
             at: new Date(),

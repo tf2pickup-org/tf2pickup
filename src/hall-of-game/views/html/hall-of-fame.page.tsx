@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import { Layout } from '../../../html/layout'
+import { environment } from '../../../environment'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
@@ -88,12 +89,12 @@ async function getMostActiveOverall(): Promise<HallOfFameEntry[]> {
 async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
   const players = await collections.players
     .find(
-      { 'stats.gamesByClass.medic': { $gt: 0 } },
-      { sort: { 'stats.gamesByClass.medic': -1 }, limit: 10 },
+      { [`stats.gamesByClass.${environment.QUEUE_CONFIG}.medic`]: { $gt: 0 } },
+      { sort: { [`stats.gamesByClass.${environment.QUEUE_CONFIG}.medic`]: -1 }, limit: 10 },
     )
     .toArray()
   return players.map(player => ({
     player,
-    count: player.stats.gamesByClass[Tf2ClassName.medic] ?? 0,
+    count: player.stats.gamesByClass[environment.QUEUE_CONFIG]?.[Tf2ClassName.medic] ?? 0,
   }))
 }
