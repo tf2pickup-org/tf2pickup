@@ -65,7 +65,7 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
           <PlayerPresentation
             player={player}
             gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass}
+            gameCountOnClasses={player.stats.gamesByClass[environment.QUEUE_CONFIG] ?? {}}
             isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 

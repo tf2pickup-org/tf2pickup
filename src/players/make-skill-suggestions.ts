@@ -18,7 +18,7 @@ export function makeSkillSuggestions({ player, gamemode }: MakeSkillSuggestionsP
   const lastSkillChange = player.skillHistory?.findLast(entry => entry.gamemode === gamemode)
   for (const { name: gameClass } of gamemodeConfigs[gamemode].classes) {
     const elo = player.elo?.[gamemode]?.[gameClass]
-    const gamesOnClass = player.stats.gamesByClass[gameClass] ?? 0
+    const gamesOnClass = player.stats.gamesByClass[gamemode]?.[gameClass] ?? 0
     if (elo === undefined || gamesOnClass < provisionalThreshold) continue
     if (lastSkillChange?.gamesByClass !== undefined) {
       const gamesAtChange = lastSkillChange.gamesByClass[gameClass] ?? 0
