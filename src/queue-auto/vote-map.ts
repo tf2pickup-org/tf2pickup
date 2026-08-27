@@ -2,6 +2,7 @@ import { collections } from '../database/collections'
 import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
+import { defaultGamemode } from '../shared/default-gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { withQueueLock } from '../queue/with-queue-lock'
@@ -24,7 +25,7 @@ export async function voteMap(steamId: SteamId64, map: string): Promise<Record<s
     if (deletedCount === 0) {
       await collections.queueMapVotes.findOneAndUpdate(
         { player: steamId },
-        { $set: { map } },
+        { $set: { map, gamemode: defaultGamemode } },
         { upsert: true },
       )
     }
