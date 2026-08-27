@@ -1,5 +1,6 @@
 import { authUsers, expect } from '../fixtures/auth-users'
 import { users } from '../data'
+import { currentGamemode } from '../gamemodes'
 import { resolve } from 'node:path'
 import { writeFile, unlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -92,7 +93,11 @@ ${targetSteamId},TestPlayer,7,8,9,10`
 
     // Verify database was updated
     const updatedPlayer = await db.collection('players').findOne({ steamId: targetSteamId })
-    expect(updatedPlayer?.['skill']).toMatchObject({
+    // Skill is stored per-gamemode: skill[gamemode][class].
+    const updatedSkill = (updatedPlayer?.['skill'] as Record<string, unknown> | undefined)?.[
+      currentGamemode()
+    ]
+    expect(updatedSkill).toMatchObject({
       scout: 7,
       soldier: 8,
       demoman: 9,
