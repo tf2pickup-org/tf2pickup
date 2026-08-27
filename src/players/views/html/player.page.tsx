@@ -1,5 +1,6 @@
 import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
@@ -65,7 +66,7 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
           <PlayerPresentation
             player={player}
             gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass}
+            gameCountOnClasses={player.stats.gamesByClass[defaultGamemode] ?? {}}
             isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 

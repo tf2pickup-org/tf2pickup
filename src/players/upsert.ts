@@ -135,6 +135,7 @@ export async function create({
     preferences: {},
     stats: {
       totalGames: 0,
+      gamesByGamemode: {},
       gamesByClass: {},
     },
   })

@@ -25,7 +25,7 @@ export async function recordGameOutcome(game: GameModel): Promise<void> {
         { projection: { elo: 1, 'stats.gamesByClass': 1 } },
       )
       eloMap.set(slot.player, player?.elo?.[game.gamemode] ?? {})
-      gamesByClassMap.set(slot.player, player?.stats.gamesByClass ?? {})
+      gamesByClassMap.set(slot.player, player?.stats.gamesByClass[game.gamemode] ?? {})
     }),
   )
 
@@ -52,7 +52,8 @@ export async function recordGameOutcome(game: GameModel): Promise<void> {
       await players.update(slot.player, {
         $inc: {
           'stats.totalGames': 1,
-          [`stats.gamesByClass.${slot.gameClass}`]: 1,
+          [`stats.gamesByGamemode.${game.gamemode}`]: 1,
+          [`stats.gamesByClass.${game.gamemode}.${slot.gameClass}`]: 1,
         },
       })
     }),

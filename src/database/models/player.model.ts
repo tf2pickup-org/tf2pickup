@@ -40,9 +40,13 @@ export interface Etf2lProfile {
   country: string
 }
 
+// Per-class counts/values within a single gamemode.
+export type ClassCount = Partial<Record<Tf2ClassName, number>>
+
 export interface PlayerStats {
   totalGames: number
-  gamesByClass: Partial<Record<Tf2ClassName, number>>
+  gamesByGamemode: Partial<Record<Gamemode, number>>
+  gamesByClass: Partial<Record<Gamemode, ClassCount>>
 }
 
 // A single gamemode's class→skill map.
