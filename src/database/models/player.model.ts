@@ -66,6 +66,8 @@ export interface PlayerMumbleCertificate {
 // The full per-gamemode storage shape on the player document.
 export type PlayerSkillByGamemode = Partial<Record<Gamemode, PlayerSkill>>
 
+export type PlayerEloByGamemode = Partial<Record<Gamemode, PlayerElo>>
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -102,9 +104,10 @@ export interface PlayerModel {
   verified?: boolean
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
-  elo?: PlayerElo
+  elo?: PlayerEloByGamemode
   eloHistory?: {
     at: Date
+    gamemode: Gamemode
     elo: PlayerElo
     game: GameNumber
   }[]
