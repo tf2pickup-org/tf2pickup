@@ -26,6 +26,9 @@ vi.mock('../../meets-skill-threshold', () => ({
   meetsSkillThreshold: vi.fn(),
 }))
 
+// Avoid pulling in the real environment (throws without env, e.g. CI unit job).
+vi.mock('../../../shared/default-gamemode', () => ({ defaultGamemode: '6v6' }))
+
 const actor = {
   steamId: '76561198000000001' as SteamId64,
   bans: [] as PlayerBan[],
@@ -159,7 +162,7 @@ describe('QueueSlot', () => {
     describe('when player has skills set', () => {
       beforeEach(() => {
         vi.mocked(collections.players.findOne).mockResolvedValueOnce({
-          skill: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 },
+          skill: { [Gamemode.sixes]: { [Tf2ClassName.scout]: 4, [Tf2ClassName.soldier]: 3 } },
         })
         vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
         vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
