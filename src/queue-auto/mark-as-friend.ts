@@ -4,7 +4,6 @@ import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
-import { defaultGamemode } from '../shared/default-gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getState } from '../queue/get-state'
 import { withQueueLock } from '../queue/with-queue-lock'
@@ -13,36 +12,41 @@ export async function markAsFriend(
   source: SteamId64,
   target: SteamId64 | null,
 ): Promise<QueueSlotModel | null> {
-  return await withQueueLock('mark-as-friend', async () => {
-    logger.trace({ source, target }, `queue.markAsFriend()`)
+  const sourceSlot = await collections.queueSlots.findOne({ 'player.steamId': source })
+  if (!sourceSlot) {
+    throw errors.notFound(`source slot not found: ${source}`)
+  }
+  const gamemode = sourceSlot.gamemode
 
-    const queueState = await getState()
+  return await withQueueLock(gamemode, 'mark-as-friend', async () => {
+    logger.trace({ gamemode, source, target }, `queue.markAsFriend()`)
+
+    const queueState = await getState(gamemode)
     if (queueState === QueueState.launching) {
       throw errors.badRequest('cannot mark as friend at this stage')
     }
 
-    const sourceSlot = await collections.queueSlots.findOne({ 'player.steamId': source })
-    if (!sourceSlot) {
-      throw errors.notFound(`source slot not found: ${source}`)
-    }
-
     if (target === null) {
-      const friendship = await collections.queueFriends.findOne({ source })
+      const friendship = await collections.queueFriends.findOne({ gamemode, source })
       if (!friendship) {
         throw errors.notFound(`friendship not found: ${source}`)
       }
       const targetSlot = await collections.queueSlots.findOne({
+        gamemode,
         'player.steamId': friendship.target,
       })
-      await collections.queueFriends.deleteOne({ source })
-      events.emit('queue/friendship:removed', { source, target: friendship.target })
+      await collections.queueFriends.deleteOne({ gamemode, source })
+      events.emit('queue/friendship:removed', { gamemode, source, target: friendship.target })
       return targetSlot
     } else {
-      const targetSlot = await collections.queueSlots.findOne({ 'player.steamId': target })
-      const friendship = await collections.queueFriends.findOne({ source })
+      const targetSlot = await collections.queueSlots.findOne({
+        gamemode,
+        'player.steamId': target,
+      })
+      const friendship = await collections.queueFriends.findOne({ gamemode, source })
       const after = await collections.queueFriends.findOneAndUpdate(
-        { source },
-        { $set: { target, gamemode: defaultGamemode } },
+        { gamemode, source },
+        { $set: { target } },
         { upsert: true, returnDocument: 'after' },
       )
       if (!after) {
@@ -50,11 +54,12 @@ export async function markAsFriend(
       }
       if (friendship) {
         events.emit('queue/friendship:updated', {
+          gamemode,
           source,
           target: { before: friendship.target, after: after.target },
         })
       } else {
-        events.emit('queue/friendship:created', { source, target: after.target })
+        events.emit('queue/friendship:created', { gamemode, source, target: after.target })
       }
       return targetSlot
     }

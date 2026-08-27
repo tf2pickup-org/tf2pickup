@@ -2,36 +2,40 @@ import { collections } from '../database/collections'
 import { errors } from '../errors'
 import { events } from '../events'
 import { logger } from '../logger'
-import { defaultGamemode } from '../shared/default-gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { withQueueLock } from '../queue/with-queue-lock'
 import { withLogLevel } from '../utils/with-log-level'
 
 export async function voteMap(steamId: SteamId64, map: string): Promise<Record<string, number>> {
-  return await withQueueLock('vote-map', async () => {
-    logger.trace({ steamId, map }, 'queue.voteMap()')
-    const mapCount = await collections.queueMapOptions.countDocuments({ name: map })
+  const slot = await collections.queueSlots.findOne({ 'player.steamId': steamId })
+  if (!slot) {
+    throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
+  }
+  const gamemode = slot.gamemode
+
+  return await withQueueLock(gamemode, 'vote-map', async () => {
+    logger.trace({ gamemode, steamId, map }, 'queue.voteMap()')
+    const mapCount = await collections.queueMapOptions.countDocuments({ gamemode, name: map })
     if (mapCount === 0) {
       throw errors.notFound('this map not an option in the vote')
     }
 
-    const slotCount = await collections.queueSlots.countDocuments({ 'player.steamId': steamId })
-    if (slotCount === 0) {
-      throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
-    }
-
-    const { deletedCount } = await collections.queueMapVotes.deleteOne({ player: steamId, map })
+    const { deletedCount } = await collections.queueMapVotes.deleteOne({
+      gamemode,
+      player: steamId,
+      map,
+    })
     if (deletedCount === 0) {
       await collections.queueMapVotes.findOneAndUpdate(
-        { player: steamId },
-        { $set: { map, gamemode: defaultGamemode } },
+        { gamemode, player: steamId },
+        { $set: { map } },
         { upsert: true },
       )
     }
 
-    const results = await getMapVoteResults()
-    events.emit('queue/mapVoteResults:updated', { results })
+    const results = await getMapVoteResults(gamemode)
+    events.emit('queue/mapVoteResults:updated', { gamemode, results })
     return results
   })
 }

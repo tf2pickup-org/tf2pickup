@@ -6,6 +6,7 @@ import { routes } from '../../../utils/routes'
 import { FlashMessage } from '../../../html/components/flash-message'
 import { collections } from '../../../database/collections'
 import { activityLog } from '../../../activity-log'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -22,9 +23,9 @@ export default routes(async app => {
       },
     )
     .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (request, reply) => {
-      await queue.resetMapOptions()
+      await queue.resetMapOptions(defaultGamemode)
       const newMaps = await collections.queueMapOptions
-        .find({}, { projection: { name: 1 } })
+        .find({ gamemode: defaultGamemode }, { projection: { name: 1 } })
         .toArray()
       await activityLog.recordMapScramble(
         request.user!.player.steamId,

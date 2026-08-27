@@ -7,6 +7,7 @@ import { queue } from '../../queue-auto'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
 import { queuePromptMutex } from '../queue-prompt-mutex'
+import { defaultGamemode } from '../../shared/default-gamemode'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async app => {
@@ -39,7 +40,7 @@ async function ensurePromptIsVisible() {
       }
 
       const thresholdRatio = config.bumpPlayerThresholdRatio
-      const slots = await queue.getSlots()
+      const slots = await queue.getSlots(defaultGamemode)
       const playerCount = slots.filter(slot => !!slot.player).length
       const requiredPlayerCount = slots.length
 
