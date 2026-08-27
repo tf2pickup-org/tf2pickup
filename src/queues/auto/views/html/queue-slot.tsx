@@ -1,5 +1,6 @@
 import { collections } from '../../../../database/collections'
 import { configuration } from '../../../../configuration'
+import { environment } from '../../../../environment'
 import {
   PlayerRole,
   type PlayerModel,
@@ -98,7 +99,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
       { projection: { skill: 1 } },
     )
     isAdmin = true
-    skill = slotPlayer?.skill
+    skill = slotPlayer?.skill?.[environment.QUEUE_CONFIG]
   }
 
   let slotActionButton: JSX.Element

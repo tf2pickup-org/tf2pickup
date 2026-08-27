@@ -15,14 +15,19 @@ export async function applyImport({ analysis, actor }: ApplyImportParams): Promi
   ]
 
   for (const player of playersToUpdate) {
-    await setSkill({ steamId: player.steamId, skill: player.skill, actor })
+    await setSkill({
+      steamId: player.steamId,
+      gamemode: analysis.gamemode,
+      skill: player.skill,
+      actor,
+    })
   }
 
   if (analysis.futurePlayers.length > 0) {
     const now = new Date()
     const bulkOps = analysis.futurePlayers.map(player => ({
       updateOne: {
-        filter: { steamId: player.steamId },
+        filter: { steamId: player.steamId, gamemode: analysis.gamemode },
         update: {
           $set: {
             skill: player.skill,

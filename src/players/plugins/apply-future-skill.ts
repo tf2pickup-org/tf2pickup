@@ -11,15 +11,12 @@ export default fp(
     events.on(
       'player:created',
       safe(async ({ steamId }) => {
-        const futureSkill = await collections.futurePlayerSkills.findOneAndDelete({ steamId })
-        if (futureSkill) {
-          logger.info({ steamId, skill: futureSkill.skill }, 'applying future skill to new player')
-          await setSkill({
-            steamId,
-            skill: futureSkill.skill,
-            actor: futureSkill.actor,
-          })
+        const futureSkills = await collections.futurePlayerSkills.find({ steamId }).toArray()
+        for (const { gamemode, skill, actor } of futureSkills) {
+          logger.info({ steamId, gamemode, skill }, 'applying future skill to new player')
+          await setSkill({ steamId, gamemode, skill, actor })
         }
+        await collections.futurePlayerSkills.deleteMany({ steamId })
       }),
     )
   },
