@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.23.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.7...4.23.8) (2026-08-27)
+
+### Bug Fixes
+
+* **docker:** add HEALTHCHECK to the production image ([#818](https://github.com/tf2pickup-org/tf2pickup/issues/818)) ([9cea05c](https://github.com/tf2pickup-org/tf2pickup/commit/9cea05c905ef7dadacab2d41546560c3fd6b37b1))
+
+### Dependencies
+
+* @napi-rs/canvas to v1.0.8 ([d899714](https://github.com/tf2pickup-org/tf2pickup/commit/d89971469773fcaf7c571df46186f1433c829d17))
+
 ## [4.23.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.6...4.23.7) (2026-08-26)
 
 ### Bug Fixes
