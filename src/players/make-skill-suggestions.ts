@@ -1,4 +1,5 @@
 import type { PlayerModel } from '../database/models/player.model'
+import { defaultGamemode } from '../shared/default-gamemode'
 import { provisionalThreshold } from '../games/calculate-elo-updates'
 import { queue } from '../queue-auto'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
@@ -15,7 +16,7 @@ export function makeSkillSuggestions({ player }: MakeSkillSuggestionsParams) {
   const suggestions = new Map<Tf2ClassName, 'up' | 'down'>()
   const lastSkillChange = player.skillHistory?.at(-1)
   for (const { name: gameClass } of queue.config.classes) {
-    const elo = player.elo?.[gameClass]
+    const elo = player.elo?.[defaultGamemode]?.[gameClass]
     const gamesOnClass = player.stats.gamesByClass[gameClass] ?? 0
     if (elo === undefined || gamesOnClass < provisionalThreshold) continue
     if (lastSkillChange?.gamesByClass !== undefined) {

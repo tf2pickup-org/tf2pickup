@@ -4,6 +4,9 @@ import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { Gamemode } from '../shared/types/gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
+// Avoid pulling in the real environment (throws without env, e.g. CI unit job).
+vi.mock('../shared/default-gamemode', () => ({ defaultGamemode: '6v6' }))
+
 vi.mock('../queue-auto', () => ({
   queue: {
     config: {
@@ -25,13 +28,14 @@ function makePlayer(
 ) {
   const { elo = {}, gamesByClass = {}, lastSkillChangeGamesByClass = undefined } = overrides
   return {
-    elo,
+    elo: { [Gamemode.sixes]: elo },
     stats: { totalGames: 0, gamesByClass },
     skillHistory:
       lastSkillChangeGamesByClass !== undefined
         ? [
             {
               at: new Date(),
+              gamemode: Gamemode.sixes,
               skill: {},
               actor: mockActor,
               gamesByClass: lastSkillChangeGamesByClass,
@@ -155,7 +159,7 @@ describe('makeSkillSuggestions()', () => {
 
     it('skips cooldown when last skill change has no gamesByClass snapshot', () => {
       const player = {
-        elo: { [Tf2ClassName.scout]: 1600 },
+        elo: { [Gamemode.sixes]: { [Tf2ClassName.scout]: 1600 } },
         stats: { totalGames: 0, gamesByClass: { [Tf2ClassName.scout]: enoughGames } },
         skillHistory: [{ at: new Date(), gamemode: Gamemode.sixes, skill: {}, actor: mockActor }],
       }
