@@ -1,4 +1,5 @@
 import type { Bot } from '../../shared/types/bot'
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { GameNumber } from './game.model'
@@ -44,6 +45,7 @@ export interface PlayerStats {
   gamesByClass: Partial<Record<Tf2ClassName, number>>
 }
 
+// A single gamemode's class→skill map.
 export type PlayerSkill = Partial<Record<Tf2ClassName, number>>
 
 export type PlayerElo = Partial<Record<Tf2ClassName, number>>
@@ -61,6 +63,9 @@ export interface PlayerMumbleCertificate {
   registration?: { server: string; userId: number }
 }
 
+// The full per-gamemode storage shape on the player document.
+export type PlayerSkillByGamemode = Partial<Record<Gamemode, PlayerSkill>>
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -73,9 +78,10 @@ export interface PlayerModel {
   etf2lProfileLastSyncedAt?: Date
   cooldownLevel: number
   activeGame?: GameNumber
-  skill?: PlayerSkill
+  skill?: PlayerSkillByGamemode
   skillHistory?: {
     at: Date
+    gamemode: Gamemode
     skill: PlayerSkill
     actor: SteamId64
     lastGame?: GameNumber | undefined

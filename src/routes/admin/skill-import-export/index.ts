@@ -8,6 +8,7 @@ import { applyImport } from '../../../admin/skill-import-export/apply-import'
 import { requestContext } from '@fastify/request-context'
 import { collections } from '../../../database/collections'
 import { routes } from '../../../utils/routes'
+import { environment } from '../../../environment'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -31,7 +32,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        const csv = await exportSkills()
+        const csv = await exportSkills(environment.QUEUE_CONFIG)
         const filename = `player-skills-${new Date().toISOString().split('T')[0]}.csv`
         void reply
           .status(200)
@@ -59,14 +60,14 @@ export default routes(async app => {
         const content = await data.toBuffer()
         const csvContent = content.toString('utf-8')
 
-        const parseResult = parseCsv(csvContent)
+        const parseResult = parseCsv(csvContent, environment.QUEUE_CONFIG)
         if (!parseResult.success) {
           requestContext.set('messages', { error: [parseResult.error] })
           await reply.status(400).html(SkillImportExportPage())
           return
         }
 
-        const analysis = await analyzeImport(parseResult.players)
+        const analysis = await analyzeImport(parseResult.players, environment.QUEUE_CONFIG)
 
         const user = requestContext.get('user')
         if (!user) {
