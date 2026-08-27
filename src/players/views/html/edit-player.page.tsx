@@ -261,7 +261,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
           </thead>
           <tbody>
             {queue.config.classes.map(({ name: gameClass }) => {
-              const elo = player.elo?.[gameClass]
+              const elo = player.elo?.[environment.QUEUE_CONFIG]?.[gameClass]
               const games = player.stats.gamesByClass[gameClass] ?? 0
               const provisional = games < provisionalThreshold
               return (

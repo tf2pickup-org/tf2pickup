@@ -32,7 +32,7 @@ export async function AdminToolbox(props: {
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
   const skillSuggestions = (await configuration.get('games.skill_suggestions'))
-    ? makeSkillSuggestions({ player })
+    ? makeSkillSuggestions({ player, gamemode: environment.QUEUE_CONFIG })
     : undefined
   const compact = queue.config.classes.length > 4
 

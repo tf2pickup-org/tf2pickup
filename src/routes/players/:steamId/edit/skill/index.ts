@@ -81,7 +81,14 @@ export default routes(async app => {
         skill,
         actor: request.user!.player.steamId,
       })
-      safe(() => recordSkillSuggestionUsage({ player, oldSkill, newSkill: skill }))()
+      safe(() =>
+        recordSkillSuggestionUsage({
+          player,
+          gamemode: environment.QUEUE_CONFIG,
+          oldSkill,
+          newSkill: skill,
+        }),
+      )()
       request.flash('success', `Player skill updated`)
       await reply.redirect(`/players/${steamId}`)
     },
