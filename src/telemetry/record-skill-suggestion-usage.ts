@@ -1,11 +1,13 @@
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import type { PlayerModel, PlayerSkill } from '../database/models/player.model'
+import type { Gamemode } from '../shared/types/gamemode'
 import { makeSkillSuggestions } from '../players/make-skill-suggestions'
 import { utcDayKey } from './utc-day-key'
 
 interface RecordSkillSuggestionUsageParams {
   player: Pick<PlayerModel, 'elo' | 'stats' | 'skillHistory'>
+  gamemode: Gamemode
   oldSkill: PlayerSkill
   newSkill: PlayerSkill
 }
@@ -18,6 +20,7 @@ interface RecordSkillSuggestionUsageParams {
  */
 export async function recordSkillSuggestionUsage({
   player,
+  gamemode,
   oldSkill,
   newSkill,
 }: RecordSkillSuggestionUsageParams) {
@@ -26,7 +29,7 @@ export async function recordSkillSuggestionUsage({
   }
 
   const defaultSkill = await configuration.get('games.default_player_skill')
-  const suggestions = makeSkillSuggestions({ player })
+  const suggestions = makeSkillSuggestions({ player, gamemode })
 
   const followed = [...suggestions.entries()].some(([gameClass, direction]) => {
     const before = oldSkill[gameClass] ?? defaultSkill[gameClass] ?? 0

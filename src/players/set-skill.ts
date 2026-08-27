@@ -15,12 +15,7 @@ interface SetSkillParams {
   gamemode: Gamemode
 }
 
-export async function setSkill({
-  steamId,
-  skill,
-  actor,
-  gamemode,
-}: SetSkillParams) {
+export async function setSkill({ steamId, skill, actor, gamemode }: SetSkillParams) {
   const [lastGame, gamesByClass, player] = await Promise.all([
     getLastGameNumber(),
     getGamesByClass(steamId),
