@@ -7,13 +7,11 @@ import { replacePlayer } from './replace-player'
 const mockGamesFindOne = vi.hoisted(() => vi.fn())
 const mockPlayersFindOne = vi.hoisted(() => vi.fn())
 const mockDeleteOne = vi.hoisted(() => vi.fn())
-const mockQueueSlotsFindOne = vi.hoisted(() => vi.fn())
 vi.mock('../database/collections', () => ({
   collections: {
     games: { findOne: mockGamesFindOne },
     players: { findOne: mockPlayersFindOne },
     gamesSubstituteRequests: { deleteOne: mockDeleteOne },
-    queueSlots: { findOne: mockQueueSlotsFindOne },
   },
 }))
 
@@ -66,7 +64,6 @@ beforeEach(() => {
   vi.clearAllMocks()
   mockGamesFindOne.mockResolvedValue(game())
   mockPlayersFindOne.mockResolvedValue({ steamId: replacement, activeGame: undefined, bans: [] })
-  mockQueueSlotsFindOne.mockResolvedValue({ gamemode: '6v6', player: { steamId: replacement } })
   mockHasActiveBan.mockReturnValue(false)
   mockUpdate.mockResolvedValueOnce(newGame).mockResolvedValueOnce(updatedGame)
   mockCalculateJoinGameserverTimeout.mockResolvedValue(new Date('2026-01-01T00:00:00Z'))
@@ -91,7 +88,7 @@ it('commits the whole substitution transition and returns the updated game', asy
   expect(mockPlayersUpdate).toHaveBeenCalledWith(replacee, { $unset: { activeGame: 1 } })
 
   // replacement leaves the queue
-  expect(mockKick).toHaveBeenCalledWith('6v6', replacement)
+  expect(mockKick).toHaveBeenCalledWith(replacement)
 
   // shouldJoinBy written on the replacement's slot
   expect(mockUpdate).toHaveBeenNthCalledWith(

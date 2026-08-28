@@ -56,7 +56,7 @@ export default fp(
           .find({ gamemode, player: { $ne: null }, ready: { $eq: false } })
           .toArray()
       ).map(slot => slot.player!.steamId)
-      await kick(gamemode, ...unreadyPlayers)
+      await kick(...unreadyPlayers)
     }
 
     async function readyUpTimeout({ gamemode }: { gamemode: Gamemode }) {

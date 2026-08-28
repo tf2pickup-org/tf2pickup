@@ -20,7 +20,7 @@ export default routes(async app => {
       const steamIds = slots.flatMap(slot => (slot.player ? [slot.player.steamId] : []))
 
       if (steamIds.length > 0) {
-        await kick(defaultGamemode, ...steamIds)
+        await kick(...steamIds)
         events.emit('queue:cleared', {
           admin: request.user!.player.steamId,
           playerCount: steamIds.length,
