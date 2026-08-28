@@ -25,6 +25,10 @@ vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../errors', () => ({ errors: { notFound: mockNotFound } }))
 vi.mock('../../queue/get-state', () => ({ getState: mockGetState }))
 vi.mock('../../shared/default-gamemode', () => ({ defaultGamemode: '6v6' }))
+vi.mock('../../shared/enabled-gamemodes', () => ({ enabledGamemodes: ['6v6'] }))
+vi.mock('../views/html/gamemode-selector', () => ({
+  GamemodeQueueGauge: vi.fn().mockResolvedValue(''),
+}))
 vi.mock('../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },
@@ -197,6 +201,7 @@ describe('sync-clients', () => {
       await getReadyHandler()(socket)
 
       expect(mockQueueSlotsFindOne).toHaveBeenCalledWith({
+        gamemode: '6v6',
         'player.steamId': steamId1,
         ready: false,
       })
