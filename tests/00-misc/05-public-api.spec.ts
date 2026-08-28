@@ -1,5 +1,6 @@
 import { test, expect, type APIResponse } from '@playwright/test'
 import { users } from '../data'
+import { currentGamemode } from '../gamemodes'
 
 const halJson = 'application/hal+json'
 
@@ -80,6 +81,7 @@ test.describe('GET /api/v1/ @6v6 @9v9', () => {
       players: { href: '/api/v1/players' },
       games: { href: '/api/v1/games' },
       queue: { href: '/api/v1/queue' },
+      gamemodes: { href: '/api/v1/gamemodes' },
       onlinePlayers: { href: '/api/v1/online-players' },
       version: { href: '/api/v1/version' },
     })
@@ -255,6 +257,57 @@ test.describe('GET /api/v1/queue @6v6 @9v9', () => {
     if (slot.player !== null) {
       expect(slot.player).toHaveProperty('steamId')
       expect(slot.player).toHaveProperty('name')
+    }
+  })
+})
+
+interface GamemodesResponse {
+  default: string
+  gamemodes: { name: string; _links: Links }[]
+  _links: Links
+}
+
+test.describe('GET /api/v1/gamemodes @6v6 @9v9', () => {
+  test('lists the enabled gamemodes with queue links', async ({ request }) => {
+    const gamemode = currentGamemode()
+    const body = await json<GamemodesResponse>(await request.get('/api/v1/gamemodes'))
+    expect(body.default).toBe(gamemode)
+    expect(body.gamemodes.map(g => g.name)).toContain(gamemode)
+    const entry = body.gamemodes.find(g => g.name === gamemode)!
+    expect(entry._links['queue']).toEqual({ href: `/api/v1/${gamemode}/queue` })
+    expect(body._links['self']).toEqual({ href: '/api/v1/gamemodes' })
+  })
+})
+
+test.describe('GET /api/v1/:gamemode/queue @6v6 @9v9', () => {
+  test('returns the queue for that gamemode', async ({ request }) => {
+    const gamemode = currentGamemode()
+    const body = await json<QueueResponse & { gamemode: string }>(
+      await request.get(`/api/v1/${gamemode}/queue`),
+    )
+    expect(body.gamemode).toBe(gamemode)
+    expect(['waiting', 'ready', 'launching']).toContain(body.state)
+    expect(Array.isArray(body.slots)).toBe(true)
+    expect(body._links['self']).toEqual({ href: `/api/v1/${gamemode}/queue` })
+  })
+
+  test('returns 404 for a gamemode that is not enabled', async ({ request }) => {
+    const notEnabled = currentGamemode() === '6v6' ? 'ultiduo' : '6v6'
+    const res = await request.get(`/api/v1/${notEnabled}/queue`)
+    expect(res.status()).toBe(404)
+  })
+})
+
+test.describe('multi-gamemode public API @multi', () => {
+  test('lists every enabled gamemode and serves each scoped queue', async ({ request }) => {
+    const body = await json<GamemodesResponse>(await request.get('/api/v1/gamemodes'))
+    expect(body.gamemodes.map(g => g.name).sort()).toEqual(['6v6', '9v9'])
+
+    for (const gamemode of ['6v6', '9v9'] as const) {
+      const queue = await json<QueueResponse & { gamemode: string }>(
+        await request.get(`/api/v1/${gamemode}/queue`),
+      )
+      expect(queue.gamemode).toBe(gamemode)
     }
   })
 })

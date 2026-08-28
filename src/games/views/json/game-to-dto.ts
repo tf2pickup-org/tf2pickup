@@ -5,6 +5,7 @@ import type { PickDeep } from 'type-fest'
 type Game = PickDeep<
   GameModel,
   | 'number'
+  | 'gamemode'
   | 'map'
   | 'state'
   | 'score'
@@ -20,6 +21,7 @@ export function gameToDto(game: Game) {
 
   return {
     id: game.number,
+    gamemode: game.gamemode,
     map: game.map,
     state: game.state,
     score: game.score ?? null,
