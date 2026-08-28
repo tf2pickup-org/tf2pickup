@@ -1,4 +1,5 @@
 import z from 'zod'
+import { collections } from '../../../database/collections'
 import { GamePage } from '../../../games/views/html/game.page'
 import { RconConsoleDialog } from '../../../games/views/html/rcon-console-dialog'
 import { games } from '../../../games'
@@ -23,10 +24,28 @@ export default routes(async app => {
           params: z.object({
             number: games.schemas.gameNumber,
           }),
+          querystring: z.object({
+            // legacy override: the host a merged-in link came from (ADR 0001)
+            i: z.string().optional(),
+          }),
         },
       },
       async (request, reply) => {
         const { number } = request.params
+        // Resolve legacy links to a merged-in instance: an explicit `?i=<host>`
+        // wins, otherwise the request's own host (the old subdomain may still
+        // point here). A hit means this number belongs to that instance and was
+        // renumbered on merge — redirect to its canonical URL. See ADR 0001.
+        const sourceHost = request.query.i ?? request.hostname
+        if (sourceHost) {
+          const remap = await collections.gamesNumberRemap.findOne({
+            sourceHost,
+            oldNumber: number,
+          })
+          if (remap) {
+            return reply.redirect(`/games/${remap.newNumber}`, 301)
+          }
+        }
         await reply.html(GamePage({ number }))
       },
     )
