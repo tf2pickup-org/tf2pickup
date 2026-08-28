@@ -1,5 +1,4 @@
 import fp from 'fastify-plugin'
-import { collections } from '../../database/collections'
 import { events } from '../../events'
 import { safe } from '../../utils/safe'
 import { kick } from '../kick'
@@ -10,11 +9,7 @@ export default fp(
     events.on(
       'player/ban:added',
       safe(async ({ player }) => {
-        const slot = await collections.queueSlots.findOne({ 'player.steamId': player })
-        if (!slot) {
-          return
-        }
-        await kick(slot.gamemode, player)
+        await kick(player)
       }),
     )
   },
