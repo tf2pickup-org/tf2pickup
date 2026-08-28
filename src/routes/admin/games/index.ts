@@ -1,5 +1,6 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { CooldownLevelEntry, GamesPage } from '../../../admin/games/views/html/games.page'
+import { WhitelistId } from '../../../admin/games/views/html/whitelist-id'
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../../shared/types/logs-tf-upload-method'
 import { requestContext } from '@fastify/request-context'
@@ -7,6 +8,8 @@ import { secondsToMilliseconds } from 'date-fns'
 import { routes } from '../../../utils/routes'
 import { configuration } from '../../../configuration'
 import { durationUnit } from '../../../admin/games/duration-unit'
+import { Gamemode } from '../../../shared/types/gamemode'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 
 // A single form field is submitted as a scalar, multiple as an array; normalize both to an array.
 const formArray = <T extends z.ZodType>(schema: T) =>
@@ -29,6 +32,22 @@ export default routes(async app => {
         await reply.status(200).html(GamesPage())
       },
     )
+    .get(
+      '/whitelist-id',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+        schema: {
+          querystring: z.object({
+            gamemode: z.enum(Gamemode).default(defaultGamemode),
+          }),
+        },
+      },
+      async (request, reply) => {
+        await reply.status(200).html(WhitelistId({ gamemode: request.query.gamemode }))
+      },
+    )
     .post(
       '/',
       {
@@ -39,6 +58,7 @@ export default routes(async app => {
           body: z
             .object({
               whitelistId: z.string(),
+              whitelistGamemode: z.enum(Gamemode).default(defaultGamemode),
               joinGameserverTimeout: z.coerce.number(),
               rejoinGameserverTimeout: z.coerce.number(),
               executeExtraCommands: z.string().transform(value => value.split('\n')),
@@ -59,7 +79,12 @@ export default routes(async app => {
           banLengthMs: durationUnit.toMs(value, request.body['banLengthUnit[]'][i]!),
         }))
         await Promise.all([
-          configuration.set('games.whitelist_id', request.body.whitelistId, actor),
+          configuration.set(
+            'games.whitelist_id',
+            request.body.whitelistId,
+            actor,
+            request.body.whitelistGamemode,
+          ),
           configuration.set(
             'games.join_gameserver_timeout',
             secondsToMilliseconds(request.body.joinGameserverTimeout),
