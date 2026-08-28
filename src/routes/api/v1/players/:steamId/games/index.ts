@@ -38,6 +38,7 @@ export default routes(async app => {
         .find(filter, {
           projection: {
             number: 1,
+            gamemode: 1,
             map: 1,
             state: 1,
             score: 1,
