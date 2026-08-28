@@ -6,9 +6,13 @@ import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 import { durationUnit } from '../../duration-unit'
 import { GameServerCommandPreview } from './game-server-command-preview'
+import { WhitelistId } from './whitelist-id'
+import { defaultGamemode } from '../../../../shared/default-gamemode'
+import type { Gamemode } from '../../../../shared/types/gamemode'
 
-export async function GamesPage() {
-  const whitelistId = await configuration.get('games.whitelist_id')
+export async function GamesPage(props?: { gamemode?: Gamemode }) {
+  const gamemode = props?.gamemode ?? defaultGamemode
+  const whitelistId = await configuration.get('games.whitelist_id', gamemode)
   const joinGameServerTimeout = await configuration.get('games.join_gameserver_timeout')
   const rejoinGameServerTimeout = await configuration.get('games.rejoin_gameserver_timeout')
   const executeExtraCommands = await configuration.get('games.execute_extra_commands')
@@ -21,20 +25,7 @@ export async function GamesPage() {
     <Admin activePage="games">
       <form action="" method="post">
         <div class="admin-panel-set flex flex-col gap-4">
-          <dl>
-            <dt>
-              <label for="whitelistId">Whitelist ID</label>
-            </dt>
-            <dd>
-              <input
-                type="text"
-                name="whitelistId"
-                value={whitelistId ?? ''}
-                id="whitelistId"
-                class="col-span-3"
-              />
-            </dd>
-          </dl>
+          <WhitelistId gamemode={gamemode} />
 
           <dl>
             <dt>
