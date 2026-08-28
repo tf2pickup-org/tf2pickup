@@ -1,11 +1,11 @@
 // Single source of truth for gamemode-specific knowledge in the e2e suite.
 //
-// Today an instance serves exactly one gamemode, chosen at boot via QUEUE_CONFIG,
-// and every queue lives at `/`. This module centralises the per-gamemode facts
-// (slot layout, player count, grep tag, queue path) behind one seam so the
-// upcoming multi-gamemode migration only has to widen it — swapping the env-driven
-// `currentGamemode()` for a per-path selection and giving each gamemode its own
-// `path` — instead of touching every spec and page object.
+// An instance serves one or more gamemodes, chosen at boot via ENABLED_GAMEMODES
+// (falling back to the legacy single QUEUE_CONFIG). The first enabled gamemode is
+// the instance default and is served at `/`; every other enabled gamemode gets its
+// own `/<gamemode>` path. This module centralises the per-gamemode facts (slot
+// layout, player count, grep tag, queue path) behind one seam so specs and page
+// objects never hard-code them.
 
 type SlotId6v6 = `${'scout' | 'soldier'}-${1 | 2 | 3 | 4}` | `${'demoman' | 'medic'}-${1 | 2}`
 
@@ -24,9 +24,6 @@ interface GameClass {
 
 interface GamemodeDefinition {
   classes: GameClass[]
-  // path the queue page is served at — `/` for every gamemode today, distinct
-  // per-gamemode paths (`/6v6`, `/9v9`, …) once the app serves several at once
-  path: string
   // Playwright grep tag used by the CI matrix to run the suite per gamemode
   tag: `@${Gamemode}`
 }
@@ -39,7 +36,6 @@ export const gamemodes: Record<Gamemode, GamemodeDefinition> = {
       { name: 'demoman', count: 2 },
       { name: 'medic', count: 2 },
     ],
-    path: '/',
     tag: '@6v6',
   },
   '9v9': {
@@ -54,15 +50,29 @@ export const gamemodes: Record<Gamemode, GamemodeDefinition> = {
       { name: 'sniper', count: 2 },
       { name: 'spy', count: 2 },
     ],
-    path: '/',
     tag: '@9v9',
   },
 }
 
-// The gamemode the app under test is currently serving. Env-driven today; the
-// multi-gamemode migration replaces this with a per-page/per-path selection.
+// The gamemodes the app under test is serving, in configured order. Mirrors the
+// app's own ENABLED_GAMEMODES parsing (with the legacy QUEUE_CONFIG fallback).
+export function enabledGamemodes(): Gamemode[] {
+  const raw = process.env['ENABLED_GAMEMODES'] ?? process.env['QUEUE_CONFIG'] ?? '6v6'
+  return raw
+    .split(',')
+    .map(value => value.trim())
+    .filter((value): value is Gamemode => value === '6v6' || value === '9v9')
+}
+
+// The instance default gamemode (the first enabled one), served at `/`.
 export function currentGamemode(): Gamemode {
-  return process.env['QUEUE_CONFIG'] === '9v9' ? '9v9' : '6v6'
+  return enabledGamemodes()[0] ?? '6v6'
+}
+
+// The path a gamemode's queue page is served at — the mirror of the app's
+// `queuePageUrl`: `/` for the default gamemode, `/<gamemode>` for the rest.
+export function queuePath(gamemode: Gamemode): string {
+  return gamemode === currentGamemode() ? '/' : `/${gamemode}`
 }
 
 export function* queueSlots(gamemode: Gamemode = currentGamemode()): Generator<SlotId> {
