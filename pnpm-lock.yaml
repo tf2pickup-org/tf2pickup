@@ -135,8 +135,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1
       cssnano:
-        specifier: 8.0.9
-        version: 8.0.9(postcss@8.5.26)
+        specifier: 8.0.10
+        version: 8.0.10(postcss@8.5.26)
       csv-parse:
         specifier: 7.0.2
         version: 7.0.2
@@ -2647,8 +2647,8 @@ packages:
     peerDependencies:
       postcss: ^8.5.26
 
-  cssnano@8.0.9:
-    resolution: {integrity: sha512-mHuKiZK6Hhr7Q4A4iirpfMDHXJTtFpavuT2LfIzeWi56W3B87zyvOD8wrsBqJargh+F76jS1/jwEUCmtiUBe3g==}
+  cssnano@8.0.10:
+    resolution: {integrity: sha512-aMlBsvQW5g1b8vfPnkuy5Bk7g/jyRsf5eMpbhe4nKnePx+n2IrC0L6dFqnd3r4/OGNIYGEHfAt09oywi84fWKQ==}
     engines: {node: ^22.11.0 || ^24.11.0 || >=26.0}
     peerDependencies:
       postcss: ^8.5.26
@@ -7589,7 +7589,7 @@ snapshots:
     dependencies:
       postcss: 8.5.26
 
-  cssnano@8.0.9(postcss@8.5.26):
+  cssnano@8.0.10(postcss@8.5.26):
     dependencies:
       cssnano-preset-default: 8.0.10(postcss@8.5.26)
       lilconfig: 3.1.3
