@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.23.9](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.8...4.23.9) (2026-08-31)
+
+### Dependencies
+
+* cssnano to v8.0.10 ([e7a463d](https://github.com/tf2pickup-org/tf2pickup/commit/e7a463de2d64f26ef2479e4de7abb44acd1f2de4))
+* cssnano to v8.0.9 ([14ff1a0](https://github.com/tf2pickup-org/tf2pickup/commit/14ff1a00f9093e804de032af38a051209dfaec24))
+* cssnano to v9 ([#828](https://github.com/tf2pickup-org/tf2pickup/issues/828)) ([e0096af](https://github.com/tf2pickup-org/tf2pickup/commit/e0096afc1b7f78a6703ed95cba22e5156f401cb9))
+* declare the otlp metric exporter and pin pnpm ([#830](https://github.com/tf2pickup-org/tf2pickup/issues/830)) ([f974118](https://github.com/tf2pickup-org/tf2pickup/commit/f97411849f74c00d157a5ed8eea6f6ae681f2501)), closes [#381](https://github.com/tf2pickup-org/tf2pickup/issues/381)
+* es-toolkit to v1.52.0 ([cd4a852](https://github.com/tf2pickup-org/tf2pickup/commit/cd4a85276ad3eadb65f87141e77219faa19b7544))
+* marked to v18.0.11 ([cb13a50](https://github.com/tf2pickup-org/tf2pickup/commit/cb13a50b5e263aa350ff6494da50255d4daae2f5))
+* mongodb to v7.6.0 ([89822e7](https://github.com/tf2pickup-org/tf2pickup/commit/89822e74ba50f5118b1a1d5462bc1b661c026f88))
+
 ## [4.23.8](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.7...4.23.8) (2026-08-27)
 
 ### Bug Fixes
