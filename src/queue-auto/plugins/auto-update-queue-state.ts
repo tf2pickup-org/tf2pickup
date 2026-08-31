@@ -1,26 +1,28 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { safe } from '../../utils/safe'
-import { getState } from '../../queue/get-state'
 import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import { QueueState } from '../../database/models/queue-state.model'
-import { setState } from '../../queue/set-state'
+import { forGamemode } from '../for-gamemode'
 import { kick } from '../kick'
 import { unreadyQueue } from '../unready-queue'
 import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
 import type { Gamemode } from '../../shared/types/gamemode'
 
+type BoundQueue = ReturnType<typeof forGamemode>
+
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     async function maybeUpdateQueueState(gamemode: Gamemode) {
-      const state = await getState(gamemode)
-      const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
-        collections.queueSlots.countDocuments({ gamemode, player: { $ne: null } }),
-        collections.queueSlots.countDocuments({ gamemode, ready: { $eq: true } }),
-        collections.queueSlots.countDocuments({ gamemode }),
+      const q = forGamemode(gamemode)
+      const [state, currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
+        q.state(),
+        q.playerCount(),
+        q.readyCount(),
+        q.size(),
       ])
 
       logger.debug(`${gamemode}: ${currentPlayerCount}/${requiredPlayerCount}`)
@@ -29,7 +31,7 @@ export default fp(
         case QueueState.waiting: {
           if (currentPlayerCount === requiredPlayerCount) {
             logger.info({ gamemode }, 'queue full, wait for players to ready up')
-            await readyUp(gamemode)
+            await readyUp(q)
           }
 
           break
@@ -37,10 +39,10 @@ export default fp(
 
         case QueueState.ready: {
           if (currentPlayerCount === 0) {
-            await unreadyQueue(gamemode)
+            await q.unready()
           } else if (readyPlayerCount === requiredPlayerCount) {
             logger.info({ gamemode }, 'all players ready, queue ready')
-            await setState(gamemode, QueueState.launching)
+            await q.setState(QueueState.launching)
             await tasks.cancel('queue:readyUpTimeout', { gamemode })
             await tasks.cancel('queue:unready', { gamemode })
           }
@@ -75,10 +77,10 @@ export default fp(
       }
     }
 
-    async function readyUp(gamemode: Gamemode) {
-      await setState(gamemode, QueueState.ready)
+    async function readyUp(q: BoundQueue) {
+      await q.setState(QueueState.ready)
       const timeout = await configuration.get('queue.ready_up_timeout')
-      await tasks.schedule('queue:readyUpTimeout', timeout, { gamemode })
+      await tasks.schedule('queue:readyUpTimeout', timeout, { gamemode: q.gamemode })
     }
 
     tasks.register('queue:readyUpTimeout', readyUpTimeout)
