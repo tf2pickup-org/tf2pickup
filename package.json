@@ -121,7 +121,7 @@
     "eslint": "10.9.1",
     "globals": "17.11.0",
     "lorem-ipsum": "3.0.0",
-    "node-html-parser": "9.0.1",
+    "node-html-parser": "9.0.2",
     "pino-princess": "1.6.3",
     "postcss-cli": "11.0.1",
     "prettier": "3.9.6",
