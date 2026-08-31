@@ -1,5 +1,6 @@
 import htmx from './htmx'
 import { Howl, Howler } from 'howler'
+import { shouldPlaySound } from './sound-coordinator'
 
 interface HtmxNodeInternalData {
   sound?: Howl
@@ -26,18 +27,30 @@ async function resumeAndPlay(sound: Howl) {
   sound.play()
 }
 
+async function coordinateAndPlay(element: Element, sound: Howl) {
+  // Only one tab of the browser should actually play; the id keys the cross-tab claim.
+  if (element.id && !(await shouldPlaySound(element.id))) return
+  await resumeAndPlay(sound)
+}
+
 export function playSound(element: Element | null, volume?: number) {
   if (!element) return
   const sound = api.getInternalData(element).sound
   if (!sound) return
   if (volume !== undefined) sound.volume(volume)
-  void resumeAndPlay(sound)
+  void coordinateAndPlay(element, sound)
 }
 
 export function stopSound(element: Element | null) {
   if (!element) return
   api.getInternalData(element).sound?.stop()
 }
+
+// Another tab cleared this sound (e.g. the user started reading chat there); stop it here.
+document.addEventListener('sound:stop', event => {
+  const { soundId } = (event as CustomEvent<{ soundId: string }>).detail
+  stopSound(document.getElementById(soundId))
+})
 
 function maybePlaySound(element: Element) {
   const targetId = element.getAttribute('data-sound-play')

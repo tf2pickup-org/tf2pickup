@@ -1,4 +1,5 @@
 import { playSound, stopSound } from './play-sound'
+import { broadcastStopSound } from './sound-coordinator'
 
 const MENTION_PREFIX = '★ '
 
@@ -43,6 +44,8 @@ function setMention(event: CustomEvent<{ volume: number }>) {
 function clearMention() {
   hasMention = false
   stopSound(document.getElementById('sound-mention'))
+  // The mention may be playing in a different tab; ask it to stop too.
+  broadcastStopSound('sound-mention')
   chatTabButton()?.classList.remove('has-mention')
   clearMentionTitle()
 }
