@@ -1,6 +1,6 @@
 import htmx from './htmx'
 import { Howl, Howler } from 'howler'
-import { shouldPlaySound } from './sound-coordinator'
+import { playExclusively } from './play-exclusively'
 
 interface HtmxNodeInternalData {
   sound?: Howl
@@ -20,37 +20,28 @@ function loadSound(element: Element) {
   internalData.sound = new Howl({ src: [src] })
 }
 
-async function resumeAndPlay(sound: Howl) {
+async function resumeAndPlay(sound: Howl, soundId: string) {
   if (Howler.ctx.state === 'suspended') {
     await Howler.ctx.resume().catch(console.warn)
   }
-  sound.play()
-}
-
-async function coordinateAndPlay(element: Element, sound: Howl) {
-  // Only one tab of the browser should actually play; the id keys the cross-tab claim.
-  if (element.id && !(await shouldPlaySound(element.id))) return
-  await resumeAndPlay(sound)
+  // Resuming first means a tab that cannot unlock its audio context drops out before
+  // racing for the sound, instead of winning it and swallowing the notification.
+  if (Howler.ctx.state !== 'running') return
+  await playExclusively(soundId, () => sound.play())
 }
 
 export function playSound(element: Element | null, volume?: number) {
-  if (!element) return
+  if (!element?.id) return
   const sound = api.getInternalData(element).sound
   if (!sound) return
   if (volume !== undefined) sound.volume(volume)
-  void coordinateAndPlay(element, sound)
+  void resumeAndPlay(sound, element.id)
 }
 
 export function stopSound(element: Element | null) {
   if (!element) return
   api.getInternalData(element).sound?.stop()
 }
-
-// Another tab cleared this sound (e.g. the user started reading chat there); stop it here.
-document.addEventListener('sound:stop', event => {
-  const { soundId } = (event as CustomEvent<{ soundId: string }>).detail
-  stopSound(document.getElementById(soundId))
-})
 
 function maybePlaySound(element: Element) {
   const targetId = element.getAttribute('data-sound-play')

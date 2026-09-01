@@ -1,7 +1,12 @@
 import { playSound, stopSound } from './play-sound'
-import { broadcastStopSound } from './sound-coordinator'
 
 const MENTION_PREFIX = '★ '
+const mentionSoundId = 'sound-mention'
+
+// Only one tab plays the mention sound, and every tab shows the star — so reading the
+// chat in one tab has to clear the others too. It matters most for the sound: that
+// clip is ~6s, where the rest are ~1.5s.
+const channel = 'BroadcastChannel' in globalThis ? new BroadcastChannel('tf2pickup-mention') : null
 
 let hasMention = false
 
@@ -35,7 +40,7 @@ function setMention(event: CustomEvent<{ volume: number }>) {
   }
 
   hasMention = true
-  playSound(document.getElementById('sound-mention'), event.detail.volume)
+  playSound(document.getElementById(mentionSoundId), event.detail.volume)
 
   chatTabButton()?.classList.add('has-mention')
   applyMentionTitle()
@@ -43,9 +48,7 @@ function setMention(event: CustomEvent<{ volume: number }>) {
 
 function clearMention() {
   hasMention = false
-  stopSound(document.getElementById('sound-mention'))
-  // The mention may be playing in a different tab; ask it to stop too.
-  broadcastStopSound('sound-mention')
+  stopSound(document.getElementById(mentionSoundId))
   chatTabButton()?.classList.remove('has-mention')
   clearMentionTitle()
 }
@@ -53,8 +56,12 @@ function clearMention() {
 function maybeClear() {
   if (hasMention && isUserReadingChat()) {
     clearMention()
+    channel?.postMessage('cleared')
   }
 }
+
+// BroadcastChannel does not echo to the sender, so this cannot loop back.
+channel?.addEventListener('message', clearMention)
 
 // Re-apply prefix if SetTitle overwrites document.title while mentioned
 const titleObserver = new MutationObserver(() => {
