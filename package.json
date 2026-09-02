@@ -4,7 +4,7 @@
   "author": "Michał Garapich <garrappachc@gmail.com>",
   "license": "MIT",
   "type": "module",
-  "packageManager": "pnpm@11.24.0",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "dev": "tsx --watch src/main.ts",
     "xss-scan": "xss-scan",
