@@ -1,5 +1,5 @@
 import { type GameModel } from '../../../database/models/game.model'
-import { environment } from '../../../environment'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { queue } from '../../../queue-auto'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -8,7 +8,7 @@ import { GameScore } from './game-score'
 import { GameSlot } from './game-slot'
 
 export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undefined }) {
-  const configClassNames = `config-${environment.QUEUE_CONFIG}`
+  const configClassNames = `config-${defaultGamemode}`
   return (
     <>
       <div class="score-header team-blu">
