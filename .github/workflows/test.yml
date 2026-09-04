@@ -91,7 +91,7 @@ jobs:
           path: /tmp/image.tar
 
   e2e-tests:
-    name: end to end (${{ matrix.queue-config }})
+    name: end to end (${{ matrix.gamemode.name }})
     needs: [build, changes]
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
@@ -100,7 +100,7 @@ jobs:
       WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
-      QUEUE_CONFIG: ${{ matrix.queue-config }}
+      ENABLED_GAMEMODES: ${{ matrix.gamemode.enabled }}
       THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
       LOG_RELAY_ADDRESS: '127.0.0.1'
       LOG_RELAY_PORT: '9871'
@@ -113,7 +113,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        queue-config: ['6v6', '9v9']
+        gamemode:
+          - name: '6v6'
+            enabled: '6v6'
+            grep: '@6v6'
+          - name: '9v9'
+            enabled: '9v9'
+            grep: '@9v9'
+          - name: 'multi'
+            enabled: '6v6,9v9'
+            grep: '@multi'
         shard: [1, 2, 3, 4, 5, 6, 7, 8]
 
     services:
@@ -183,7 +192,7 @@ jobs:
             -e WEBSITE_URL \
             -e MONGODB_URI \
             -e STEAM_API_KEY \
-            -e QUEUE_CONFIG \
+            -e ENABLED_GAMEMODES \
             -e KEY_STORE_PASSPHRASE \
             -e LOG_RELAY_ADDRESS \
             -e LOG_RELAY_PORT \
@@ -225,7 +234,7 @@ jobs:
         run: docker ps
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
+        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep ${{ matrix.gamemode.grep }} --pass-with-no-tests
         env:
           API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
@@ -248,7 +257,7 @@ jobs:
       - if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7.0.1
         with:
-          name: blob-report-${{ matrix.queue-config }}-${{ matrix.shard }}
+          name: blob-report-${{ matrix.gamemode.name }}-${{ matrix.shard }}
           path: blob-report
           retention-days: 1
 
