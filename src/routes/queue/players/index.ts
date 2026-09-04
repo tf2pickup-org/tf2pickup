@@ -1,9 +1,11 @@
+import { z } from 'zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import { routes } from '../../../utils/routes'
 import { getSlots } from '../../../queue-auto/get-slots'
 import { kick } from '../../../queue-auto/kick'
 import { events } from '../../../events'
 import { activityLog } from '../../../activity-log'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { defaultGamemode } from '../../../shared/default-gamemode'
 
 // eslint-disable-next-line @typescript-eslint/require-await
@@ -14,9 +16,15 @@ export default routes(async app => {
       config: {
         authorize: [PlayerRole.admin],
       },
+      schema: {
+        querystring: z.object({
+          gamemode: z.enum(Gamemode).default(defaultGamemode),
+        }),
+      },
     },
     async (request, reply) => {
-      const slots = await getSlots(defaultGamemode)
+      const { gamemode } = request.query
+      const slots = await getSlots(gamemode)
       const steamIds = slots.flatMap(slot => (slot.player ? [slot.player.steamId] : []))
 
       if (steamIds.length > 0) {

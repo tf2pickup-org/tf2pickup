@@ -107,7 +107,7 @@ async function QueueState(props: {
         </h3>
 
         <div class="flex flex-row gap-2 max-lg:grow">
-          <ClearQueueButton actor={props.actor} />
+          <ClearQueueButton actor={props.actor} gamemode={props.gamemode} />
           <PreReadyUpButton actor={props.actor?.player.steamId} />
         </div>
       </form>
@@ -164,7 +164,7 @@ async function Queue(props: {
   )
 }
 
-export async function ClearQueueButton(props: { actor?: User | undefined }) {
+export async function ClearQueueButton(props: { actor?: User | undefined; gamemode: Gamemode }) {
   if (!props.actor?.player.roles.includes(PlayerRole.admin)) {
     return <></>
   }
@@ -174,7 +174,7 @@ export async function ClearQueueButton(props: { actor?: User | undefined }) {
       class="button max-lg:flex-1 max-lg:px-3 max-lg:text-sm max-lg:whitespace-nowrap"
       data-variant="accent"
       data-umami-event="clear-queue"
-      hx-delete="/queue/players"
+      hx-delete={`/queue/players?gamemode=${props.gamemode}`}
       hx-confirm="Are you sure you want to kick everyone from the queue?"
     >
       <IconEraser />
