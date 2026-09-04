@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 import { GameState, type GameModel } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { Gamemode } from '../shared/types/gamemode'
 import { recordGameOutcome } from './record-game-outcome'
 
 const mockFindOne = vi.hoisted(() => vi.fn())
@@ -23,6 +24,7 @@ const p2 = 'P2' as SteamId64
 function endedGame(): GameModel {
   return {
     number: 5,
+    gamemode: Gamemode.sixes,
     state: GameState.ended,
     slots: [
       { player: p1, gameClass: 'scout' },
@@ -33,7 +35,10 @@ function endedGame(): GameModel {
 
 beforeEach(() => {
   vi.clearAllMocks()
-  mockFindOne.mockResolvedValue({ elo: { scout: 1500 }, stats: { gamesByClass: { scout: 9 } } })
+  mockFindOne.mockResolvedValue({
+    elo: { [Gamemode.sixes]: { scout: 1500 } },
+    stats: { gamesByClass: { [Gamemode.sixes]: { scout: 9 } } },
+  })
   mockPlayersUpdate.mockResolvedValue({} as never)
   mockCalculateEloUpdates.mockReturnValue([
     { steamId: p1, gameClass: 'scout', newElo: 1520, at: new Date('2026-01-01'), game: 5 },
@@ -44,7 +49,10 @@ it('reads counts and persists ELO before incrementing stats', async () => {
   const order: string[] = []
   mockFindOne.mockImplementation(async () => {
     order.push('read')
-    return { elo: { scout: 1500 }, stats: { gamesByClass: { scout: 9 } } }
+    return {
+      elo: { [Gamemode.sixes]: { scout: 1500 } },
+      stats: { gamesByClass: { [Gamemode.sixes]: { scout: 9 } } },
+    }
   })
   mockPlayersUpdate.mockImplementation(async (_steamId: SteamId64, update: unknown) => {
     order.push(typeof update === 'function' ? 'elo' : 'stats')
@@ -69,10 +77,18 @@ it('increments totalGames and gamesByClass once per slot', async () => {
   await recordGameOutcome(endedGame())
 
   expect(mockPlayersUpdate).toHaveBeenCalledWith(p1, {
-    $inc: { 'stats.totalGames': 1, 'stats.gamesByClass.scout': 1 },
+    $inc: {
+      'stats.totalGames': 1,
+      'stats.gamesByGamemode.6v6': 1,
+      'stats.gamesByClass.6v6.scout': 1,
+    },
   })
   expect(mockPlayersUpdate).toHaveBeenCalledWith(p2, {
-    $inc: { 'stats.totalGames': 1, 'stats.gamesByClass.soldier': 1 },
+    $inc: {
+      'stats.totalGames': 1,
+      'stats.gamesByGamemode.6v6': 1,
+      'stats.gamesByClass.6v6.soldier': 1,
+    },
   })
 })
 

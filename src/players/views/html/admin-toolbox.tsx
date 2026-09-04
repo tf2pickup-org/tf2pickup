@@ -1,4 +1,5 @@
 import { configuration } from '../../../configuration'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
 import {
   IconBan,
@@ -89,7 +90,11 @@ export async function AdminToolbox(props: {
                   <GameClassSkillInput
                     gameClass={gameClass.name}
                     name={`skill.${gameClass.name}`}
-                    value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
+                    value={
+                      player.skill?.[defaultGamemode]?.[gameClass.name] ??
+                      defaultSkill[gameClass.name] ??
+                      0
+                    }
                     step={skillStep}
                   >
                     <SkillLastUpdated

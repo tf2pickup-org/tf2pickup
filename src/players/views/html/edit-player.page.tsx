@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import { PlayerRole, type PlayerBan, type PlayerModel } from '../../../database/models/player.model'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
@@ -261,8 +262,8 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
           </thead>
           <tbody>
             {queue.config.classes.map(({ name: gameClass }) => {
-              const elo = player.elo?.[gameClass]
-              const games = player.stats.gamesByClass[gameClass] ?? 0
+              const elo = player.elo?.[defaultGamemode]?.[gameClass]
+              const games = player.stats.gamesByClass[defaultGamemode]?.[gameClass] ?? 0
               const provisional = games < provisionalThreshold
               return (
                 <tr class="border-abru-light-10 border-b last:border-0">
