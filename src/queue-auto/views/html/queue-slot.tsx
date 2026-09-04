@@ -1,6 +1,5 @@
 import { collections } from '../../../database/collections'
 import { configuration } from '../../../configuration'
-import { defaultGamemode } from '../../../shared/default-gamemode'
 import {
   PlayerRole,
   type PlayerModel,
@@ -99,7 +98,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
       { projection: { skill: 1 } },
     )
     isAdmin = true
-    skill = slotPlayer?.skill?.[defaultGamemode]
+    skill = slotPlayer?.skill?.[props.slot.gamemode]
   }
 
   let slotActionButton: JSX.Element

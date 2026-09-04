@@ -1,10 +1,11 @@
 import { collections } from '../../../database/collections'
 import { environment } from '../../../environment'
+import type { Gamemode } from '../../../shared/types/gamemode'
 
-export async function SetTitle() {
+export async function SetTitle(props: { gamemode: Gamemode }) {
   const [current, required] = await Promise.all([
-    collections.queueSlots.countDocuments({ player: { $ne: null } }),
-    collections.queueSlots.countDocuments(),
+    collections.queueSlots.countDocuments({ gamemode: props.gamemode, player: { $ne: null } }),
+    collections.queueSlots.countDocuments({ gamemode: props.gamemode }),
   ])
   return (
     <div id="queue-notify-container" hx-swap-oob="beforeend">
