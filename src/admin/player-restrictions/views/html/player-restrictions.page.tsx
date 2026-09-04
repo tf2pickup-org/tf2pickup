@@ -1,11 +1,14 @@
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
-import { queue } from '../../../../queue-auto'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
-import { GameClassSkillInput } from '../../../../html/components/game-class-skill-input'
+import { PlayerSkillThreshold } from './player-skill-threshold'
+import { DefaultPlayerSkill } from './default-player-skill'
+import { defaultGamemode } from '../../../../shared/default-gamemode'
+import type { Gamemode } from '../../../../shared/types/gamemode'
 
-export async function PlayerRestrictionsPage() {
+export async function PlayerRestrictionsPage(props?: { gamemode?: Gamemode }) {
+  const gamemode = props?.gamemode ?? defaultGamemode
   return (
     <Admin activePage="player-restrictions">
       <form action="" method="post" id="playerRestrictionsForm">
@@ -13,10 +16,10 @@ export async function PlayerRestrictionsPage() {
           <RequireEtf2lAccount />
           <MinimumTf2InGameHours />
           <RequirePlayerVerification />
-          <PlayerSkillThreshold />
+          <PlayerSkillThreshold gamemode={gamemode} />
           <SkillStep />
           <SkillSuggestions />
-          <DefaultPlayerSkill />
+          <DefaultPlayerSkill gamemode={gamemode} />
 
           <p>
             <SaveButton />
@@ -100,48 +103,6 @@ async function RequirePlayerVerification() {
   )
 }
 
-async function PlayerSkillThreshold() {
-  const playerSkillThreshold = await configuration.get('queue.player_skill_threshold')
-  const playerSkillThresholdEnabled = playerSkillThreshold !== null
-
-  return (
-    <dl>
-      <dt class="group flex flex-row gap-2">
-        <label for="playerSkillThresholdEnabled">Player skill threshold</label>
-        <input
-          type="checkbox"
-          id="playerSkillThresholdEnabled"
-          name="playerSkillThresholdEnabled"
-          value="enabled"
-          checked={playerSkillThresholdEnabled}
-        />
-        <span class="hidden group-has-checked:inline-block">enabled</span>
-        <span class="group-has-checked:hidden">disabled</span>
-      </dt>
-      <dd class="flex flex-col">
-        <div>
-          <label for="playerSkillThreshold" class="sr-only">
-            Player skill threshold value
-          </label>
-          <input
-            type="number"
-            id="playerSkillThreshold"
-            name="playerSkillThreshold"
-            value={playerSkillThreshold?.toString()}
-            disabled={!playerSkillThresholdEnabled}
-            data-toggle-disabled-form="#playerRestrictionsForm"
-            data-toggle-disabled-control="playerSkillThresholdEnabled"
-            data-toggle-disabled-checked="true"
-          />
-        </div>
-        <p class="text-abru-light-75 text-sm">
-          Players will be able to join queue only on classes that meet the given criteria.
-        </p>
-      </dd>
-    </dl>
-  )
-}
-
 async function SkillStep() {
   const skillStep = await configuration.get('games.skill_step')
   return (
@@ -188,35 +149,5 @@ async function SkillSuggestions() {
       </dl>
       <Switch id="skillSuggestions" checked={skillSuggestions} name="skillSuggestions" />
     </div>
-  )
-}
-
-async function DefaultPlayerSkill() {
-  const defaultPlayerSkill = await configuration.get('games.default_player_skill')
-  const skillStep = await configuration.get('games.skill_step')
-  const classes = queue.config.classes.map(({ name }) => name)
-
-  return (
-    <dl>
-      <dt>
-        <span class="text-abru-light-75 font-bold">Default player skill</span>
-      </dt>
-      <dd class="flex flex-col">
-        <div class="flex flex-row flex-wrap gap-2">
-          {classes.map(gameClass => (
-            <GameClassSkillInput
-              gameClass={gameClass}
-              name={`defaultPlayerSkill.${gameClass}`}
-              value={defaultPlayerSkill[gameClass] ?? 1}
-              step={skillStep}
-            />
-          ))}
-        </div>
-        <p class="text-abru-light-75 text-sm">
-          If a player starts a game without skill assigned for them, the game balance system will
-          use this fallback value.
-        </p>
-      </dd>
-    </dl>
   )
 }

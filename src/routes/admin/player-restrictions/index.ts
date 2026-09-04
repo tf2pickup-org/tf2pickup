@@ -1,11 +1,15 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
+import { PlayerSkillThreshold } from '../../../admin/player-restrictions/views/html/player-skill-threshold'
+import { DefaultPlayerSkill } from '../../../admin/player-restrictions/views/html/default-player-skill'
 import { z } from 'zod'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
-import { queue } from '../../../queue-auto'
-import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { getQueueConfig } from '../../../queue-auto/configs'
+import { Gamemode } from '../../../shared/types/gamemode'
+import { defaultGamemode } from '../../../shared/default-gamemode'
+import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 
 const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEnabled', [
   z.object({
@@ -31,6 +35,38 @@ export default routes(async app => {
         await reply.status(200).html(PlayerRestrictionsPage())
       },
     )
+    .get(
+      '/player-skill-threshold',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+        schema: {
+          querystring: z.object({
+            gamemode: z.enum(Gamemode).default(defaultGamemode),
+          }),
+        },
+      },
+      async (request, reply) => {
+        await reply.status(200).html(PlayerSkillThreshold({ gamemode: request.query.gamemode }))
+      },
+    )
+    .get(
+      '/default-player-skill',
+      {
+        config: {
+          authorize: [PlayerRole.admin],
+        },
+        schema: {
+          querystring: z.object({
+            gamemode: z.enum(Gamemode).default(defaultGamemode),
+          }),
+        },
+      },
+      async (request, reply) => {
+        await reply.status(200).html(DefaultPlayerSkill({ gamemode: request.query.gamemode }))
+      },
+    )
     .post(
       '/',
       {
@@ -46,12 +82,17 @@ export default routes(async app => {
               requirePlayerVerification: z.coerce.boolean().default(false),
               skillSuggestions: z.coerce.boolean().default(false),
               skillStep: z.coerce.number().positive(),
-              ...queue.config.classes
-                .map(({ name }) => name)
-                .reduce<Partial<Record<`defaultPlayerSkill.${Tf2ClassName}`, z.ZodNumber>>>(
-                  (acc, key) => ({ ...acc, [`defaultPlayerSkill.${key}`]: z.coerce.number() }),
-                  {},
-                ),
+              playerSkillThresholdGamemode: z.enum(Gamemode).default(defaultGamemode),
+              defaultPlayerSkillGamemode: z.enum(Gamemode).default(defaultGamemode),
+              ...Object.values(Tf2ClassName).reduce<
+                Partial<Record<`defaultPlayerSkill.${Tf2ClassName}`, z.ZodOptional<z.ZodNumber>>>
+              >(
+                (acc, key) => ({
+                  ...acc,
+                  [`defaultPlayerSkill.${key}`]: z.coerce.number().optional(),
+                }),
+                {},
+              ),
             }),
           ),
         },
@@ -64,11 +105,19 @@ export default routes(async app => {
           playerSkillThresholdEnabled,
           skillSuggestions,
           skillStep,
+          playerSkillThresholdGamemode,
+          defaultPlayerSkillGamemode,
         } = request.body
+
+        const classes = new Set<string>(
+          getQueueConfig(defaultPlayerSkillGamemode).classes.map(({ name }) => name),
+        )
         const defaultPlayerSkill = Object.entries(request.body)
           .filter(([key]) => key.startsWith('defaultPlayerSkill.'))
+          .map(([key, value]) => [key.split('.')[1]!, value] as const)
+          .filter(([className, value]) => classes.has(className) && typeof value === 'number')
           .reduce<Partial<Record<Tf2ClassName, number>>>(
-            (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
+            (acc, [className, value]) => ({ ...acc, [className as Tf2ClassName]: value as number }),
             {},
           )
 
@@ -81,8 +130,14 @@ export default routes(async app => {
             'queue.player_skill_threshold',
             playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,
             actor,
+            playerSkillThresholdGamemode,
           ),
-          configuration.set('games.default_player_skill', defaultPlayerSkill, actor),
+          configuration.set(
+            'games.default_player_skill',
+            defaultPlayerSkill,
+            actor,
+            defaultPlayerSkillGamemode,
+          ),
           configuration.set('games.skill_step', skillStep, actor),
           configuration.set('games.skill_suggestions', skillSuggestions, actor),
         ])
