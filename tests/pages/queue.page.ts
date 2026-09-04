@@ -1,6 +1,6 @@
 import { errors, expect, type Locator, type Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { queueSlots, type SlotId } from '../queue-slots'
+import { currentGamemode, gamemodes, queueSlots, type SlotId } from '../gamemodes'
 
 class QueueSlot {
   readonly locator: Locator
@@ -80,7 +80,7 @@ export class QueuePage {
   constructor(public readonly page: Page) {}
 
   async goto() {
-    await this.page.goto('/')
+    await this.page.goto(gamemodes[currentGamemode()].path)
   }
 
   async joinQueue(slot: SlotId) {
