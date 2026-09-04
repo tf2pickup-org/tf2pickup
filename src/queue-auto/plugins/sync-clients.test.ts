@@ -24,6 +24,7 @@ vi.mock('../../utils/safe', () => ({ safe: <T>(fn: T): T => fn }))
 vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../errors', () => ({ errors: { notFound: mockNotFound } }))
 vi.mock('../../queue/get-state', () => ({ getState: mockGetState }))
+vi.mock('../../shared/default-gamemode', () => ({ defaultGamemode: '6v6' }))
 vi.mock('../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },

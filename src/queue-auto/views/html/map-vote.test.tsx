@@ -16,6 +16,10 @@ vi.mock('../../get-map-vote-results', () => ({
   getMapVoteResults: vi.fn(),
 }))
 
+vi.mock('../../../shared/default-gamemode', () => ({
+  defaultGamemode: '6v6',
+}))
+
 vi.mock('../../../html/components/map-thumbnail', () => ({
   MapThumbnail: () => '',
 }))
