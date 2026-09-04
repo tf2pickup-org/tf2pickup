@@ -5,7 +5,7 @@ import type { DocumentModel } from './models/document.model'
 import type { GameLogsModel } from './models/game-logs.model'
 import type { GameModel } from './models/game.model'
 import type { KeyModel } from './models/key.model'
-import type { MapPoolEntry } from './models/map-pool-entry.model'
+import type { MapPoolEntryModel } from './models/map-pool-entry.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
 import type { PlayerModel } from './models/player.model'
 import type { QueueFriendshipModel } from './models/queue-friendship.model'
@@ -52,7 +52,7 @@ export const collections = {
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),
   keys: database.collection<KeyModel>('keys'),
   logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
-  maps: database.collection<MapPoolEntry>('maps'),
+  maps: database.collection<MapPoolEntryModel>('maps'),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),

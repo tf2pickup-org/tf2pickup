@@ -6,6 +6,7 @@ import { GameState, type GameNumber } from '../database/models/game.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
 import { players } from '../players'
+import { defaultGamemode } from '../shared/default-gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { pickTeams, type PlayerSlot } from './pick-teams'
 
@@ -19,6 +20,7 @@ export async function create(
 
   const { insertedId } = await collections.games.insertOne({
     number: await getNextGameNumber(),
+    gamemode: defaultGamemode,
     map,
     state: GameState.created,
     slots: slots.map(slot => ({

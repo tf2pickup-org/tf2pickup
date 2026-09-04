@@ -1,3 +1,4 @@
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export enum QueueState {
@@ -12,6 +13,7 @@ export enum QueueState {
 }
 
 export interface QueueStateModel {
+  gamemode: Gamemode
   state: QueueState
   last?: SteamId64
 }
