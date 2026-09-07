@@ -118,7 +118,7 @@
     "@types/ws": "8.18.1",
     "cpy-cli": "7.0.0",
     "cssnano": "9.0.2",
-    "eslint": "10.9.1",
+    "eslint": "10.10.0",
     "globals": "17.12.0",
     "lorem-ipsum": "3.0.0",
     "node-html-parser": "9.0.3",
