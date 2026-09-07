@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.23.10](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.9...4.23.10) (2026-09-07)
+
+### Dependencies
+
+* cssnano to v9.0.1 ([a042e78](https://github.com/tf2pickup-org/tf2pickup/commit/a042e7898ae1a57ee7176bd10424cb12d441848a))
+* cssnano to v9.0.2 ([4b42afa](https://github.com/tf2pickup-org/tf2pickup/commit/4b42afae0010291afa345cd364b342dc5979f269))
+* motion to v13.2.0 ([#835](https://github.com/tf2pickup-org/tf2pickup/issues/835)) ([8341838](https://github.com/tf2pickup-org/tf2pickup/commit/83418380f571eba9a8c574f8ff8456634f5d6c03))
+* opentelemetry-js monorepo ([97eb301](https://github.com/tf2pickup-org/tf2pickup/commit/97eb30181fcb643a817db3352557477691b0a8f7))
+* opentelemetry-js-contrib monorepo ([#833](https://github.com/tf2pickup-org/tf2pickup/issues/833)) ([4fa0708](https://github.com/tf2pickup-org/tf2pickup/commit/4fa0708e076dafac6d4218842066ea25bf1da783)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203) [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* postcss to v8.5.28 ([a47ec20](https://github.com/tf2pickup-org/tf2pickup/commit/a47ec20a9f30e0004fc097c61ab642a6a542568e))
+* type-fest to v5.9.0 ([9599f2a](https://github.com/tf2pickup-org/tf2pickup/commit/9599f2a8f96b311219516224c549388a756332d4))
+* zod to v4.5.2 ([e2f54fc](https://github.com/tf2pickup-org/tf2pickup/commit/e2f54fc02ada50fdc1bdb06dd764a190a3a76ba9))
+* zod to v4.5.4 ([f4905ce](https://github.com/tf2pickup-org/tf2pickup/commit/f4905ceb09eb6795bd0bef0ce9acc66c8e746a16))
+
 ## [4.23.9](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.8...4.23.9) (2026-08-31)
 
 ### Dependencies
