@@ -123,7 +123,7 @@
     "lorem-ipsum": "3.0.0",
     "node-html-parser": "9.0.3",
     "pino-princess": "1.6.3",
-    "postcss-cli": "11.0.1",
+    "postcss-cli": "12.0.0",
     "prettier": "3.9.6",
     "prettier-plugin-tailwindcss": "0.8.1",
     "release-it": "21.0.2",
