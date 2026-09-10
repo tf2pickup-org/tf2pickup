@@ -18,6 +18,7 @@ export default fp(
           'games.voice_server.mumble.port',
           'games.voice_server.mumble.channel_name',
           'games.voice_server.mumble.password',
+          'games.voice_server.mumble.username',
         ].includes(key)
       ) {
         return

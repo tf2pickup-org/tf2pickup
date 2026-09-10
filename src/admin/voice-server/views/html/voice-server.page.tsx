@@ -7,14 +7,21 @@ import { MumbleClientStatus } from './mumble-client-status'
 export async function VoiceServerPage() {
   const type = await configuration.get('games.voice_server_type')
   const staticLink = await configuration.get('games.voice_server.static_link')
-  const [mumbleUrl, mumbleInternalUrl, mumblePort, mumblePassword, mumbleChannelName] =
-    await Promise.all([
-      configuration.get('games.voice_server.mumble.url'),
-      configuration.get('games.voice_server.mumble.internal_url'),
-      configuration.get('games.voice_server.mumble.port'),
-      configuration.get('games.voice_server.mumble.password'),
-      configuration.get('games.voice_server.mumble.channel_name'),
-    ])
+  const [
+    mumbleUrl,
+    mumbleInternalUrl,
+    mumblePort,
+    mumblePassword,
+    mumbleChannelName,
+    mumbleUsername,
+  ] = await Promise.all([
+    configuration.get('games.voice_server.mumble.url'),
+    configuration.get('games.voice_server.mumble.internal_url'),
+    configuration.get('games.voice_server.mumble.port'),
+    configuration.get('games.voice_server.mumble.password'),
+    configuration.get('games.voice_server.mumble.channel_name'),
+    configuration.get('games.voice_server.mumble.username'),
+  ])
 
   return (
     <Admin activePage="voice-server">
@@ -154,6 +161,26 @@ export async function VoiceServerPage() {
                   name="mumbleChannelName"
                   value={mumbleChannelName ?? ''}
                 />
+              </dd>
+            </dl>
+
+            <dl>
+              <dt>
+                <label for="mumble-username" class="font-medium">
+                  Bot username
+                </label>
+              </dt>
+              <dd>
+                <input
+                  type="text"
+                  id="mumble-username"
+                  name="mumbleUsername"
+                  value={mumbleUsername}
+                  aria-describedby="mumble-username-desc"
+                />
+                <p class="description" id="mumble-username-desc">
+                  Name the bot uses when connecting to the mumble server
+                </p>
               </dd>
             </dl>
 
