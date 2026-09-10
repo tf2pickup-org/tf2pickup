@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.23.11](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.10...4.23.11) (2026-09-10)
+
+### Bug Fixes
+
+* make the mumble bot username configurable ([#841](https://github.com/tf2pickup-org/tf2pickup/issues/841)) ([34a9512](https://github.com/tf2pickup-org/tf2pickup/commit/34a95123b0b80167cb3499513310a90a36cd37c5))
+
+### Dependencies
+
+* @fastify/accepts to v5.0.5 ([#838](https://github.com/tf2pickup-org/tf2pickup/issues/838)) ([2850470](https://github.com/tf2pickup-org/tf2pickup/commit/2850470df4a26e59b37b34ab9b0cc3d3735879cd)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* @fastify/otel to v0.21.0 ([218d9f6](https://github.com/tf2pickup-org/tf2pickup/commit/218d9f6adf812bbff5c34b324510104395bbec4f))
+* cssnano to v9.0.3 ([d341661](https://github.com/tf2pickup-org/tf2pickup/commit/d34166106d3f5430c18a825a47fae9660c06f480))
+* fastify to v5.12.3 ([#837](https://github.com/tf2pickup-org/tf2pickup/issues/837)) ([499f9bf](https://github.com/tf2pickup-org/tf2pickup/commit/499f9bfb6d97f25708d34c6b99e8b927e0c84439))
+
 ## [4.23.10](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.9...4.23.10) (2026-09-07)
 
 ### Dependencies
