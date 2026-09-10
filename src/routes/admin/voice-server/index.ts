@@ -11,6 +11,8 @@ const emptyString = z
   .nullable()
   .default(null)
 
+const mumbleUsernameDefault = configuration.getDefault('games.voice_server.mumble.username')
+
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
@@ -40,6 +42,9 @@ export default routes(async app => {
             mumblePort: z.coerce.number().gte(0).lte(65535).optional().default(64738),
             mumblePassword: emptyString,
             mumbleChannelName: emptyString,
+            mumbleUsername: z
+              .union([z.literal('').transform(() => mumbleUsernameDefault), z.string()])
+              .default(mumbleUsernameDefault),
           }),
         },
       },
@@ -52,6 +57,7 @@ export default routes(async app => {
           mumblePort,
           mumblePassword,
           mumbleChannelName,
+          mumbleUsername,
         } = request.body
         const actor = request.user!.player.steamId
         await configuration.set('games.voice_server_type', type, actor)
@@ -64,6 +70,7 @@ export default routes(async app => {
             configuration.set('games.voice_server.mumble.port', mumblePort, actor),
             configuration.set('games.voice_server.mumble.password', mumblePassword, actor),
             configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName, actor),
+            configuration.set('games.voice_server.mumble.username', mumbleUsername, actor),
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })

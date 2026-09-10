@@ -158,6 +158,12 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('games.voice_server.mumble.password'),
     value: z.string().nullable().default(null),
   }),
+  z
+    .object({
+      key: z.literal('games.voice_server.mumble.username'),
+      value: z.string().min(1).default('tf2pickup.org bot'),
+    })
+    .describe('Name of the bot user that connects to the mumble server'),
   z.object({
     key: z.literal('games.join_queue_cooldown'),
     value: z
