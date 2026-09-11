@@ -18,7 +18,7 @@ import { MapVoteSelection } from '../views/html/map-vote-selection'
 import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
 import type { Gamemode } from '../../shared/types/gamemode'
-import { defaultGamemode } from '../../shared/default-gamemode'
+import { queuePageGamemode } from '../queue-page-gamemode'
 import { players } from '../../players'
 import { queueWsCallDuration } from '../../queue/metrics'
 import { measureTime } from '../../utils/measure-time'
@@ -79,9 +79,14 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        const slots = await join(defaultGamemode, slotId, socket.player.steamId)
+        const gamemode = socket.currentUrl ? queuePageGamemode(socket.currentUrl) : undefined
+        if (!gamemode) {
+          throw errors.badRequest('not on a queue page')
+        }
+
+        const slots = await join(gamemode, slotId, socket.player.steamId)
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
-          await refreshTakenSlots(defaultGamemode, socket.player.steamId)
+          await refreshTakenSlots(gamemode, socket.player.steamId)
         }
 
         app.gateway

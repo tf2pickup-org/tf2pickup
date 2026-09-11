@@ -3,6 +3,7 @@ import { parse } from 'node-html-parser'
 import { MapResult, MapVote } from './map-vote'
 import { collections } from '../../../database/collections'
 import { getMapVoteResults } from '../../get-map-vote-results'
+import { Gamemode } from '../../../shared/types/gamemode'
 
 vi.mock('../../../database/collections', () => ({
   collections: {
@@ -14,10 +15,6 @@ vi.mock('../../../database/collections', () => ({
 
 vi.mock('../../get-map-vote-results', () => ({
   getMapVoteResults: vi.fn(),
-}))
-
-vi.mock('../../../shared/default-gamemode', () => ({
-  defaultGamemode: '6v6',
 }))
 
 vi.mock('../../../html/components/map-thumbnail', () => ({
@@ -66,14 +63,14 @@ describe('MapVote', () => {
   })
 
   it('renders one vote button per map option', async () => {
-    const html = await MapVote({})
+    const html = await MapVote({ gamemode: Gamemode.sixes })
     const root = parse(html)
     const buttons = root.querySelectorAll('.map-vote-button')
     expect(buttons).toHaveLength(2)
   })
 
   it('renders vote buttons with the correct map names', async () => {
-    const html = await MapVote({})
+    const html = await MapVote({ gamemode: Gamemode.sixes })
     const root = parse(html)
     const buttons = root.querySelectorAll('.map-vote-button')
     expect(buttons[0]?.getAttribute('value')).toBe('cp_badlands')
