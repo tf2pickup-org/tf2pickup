@@ -2,10 +2,11 @@ import { collections } from '../../../database/collections'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { getMapVoteResults } from '../../get-map-vote-results'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 
 export async function MapVote(props: { actor?: SteamId64 | undefined }) {
-  const mapOptions = await collections.queueMapOptions.find().toArray()
-  const results = await getMapVoteResults()
+  const mapOptions = await collections.queueMapOptions.find({ gamemode: defaultGamemode }).toArray()
+  const results = await getMapVoteResults(defaultGamemode)
 
   return (
     <form

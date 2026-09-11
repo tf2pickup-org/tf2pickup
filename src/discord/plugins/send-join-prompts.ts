@@ -13,6 +13,7 @@ import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { collections } from '../../database/collections'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
+import { defaultGamemode } from '../../shared/default-gamemode'
 import { getMessage } from '../get-message'
 import { safe } from '../../utils/safe'
 import { queuePromptMutex } from '../queue-prompt-mutex'
@@ -31,10 +32,10 @@ const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
 
 async function refreshPrompt() {
   await queuePromptMutex.runExclusive(async () => {
-    const slots = await queue.getSlots()
+    const slots = await queue.getSlots(defaultGamemode)
     const playerCount = slots.filter(slot => !!slot.player).length
     const requiredPlayerCount = slots.length
-    const mapVoteResults = await queue.getMapVoteResults()
+    const mapVoteResults = await queue.getMapVoteResults(defaultGamemode)
     await forEachEnabledChannel('queuePrompts', async channel => {
       const embed = queuePreview({
         playerCount,

@@ -36,14 +36,14 @@ export default fp(
     })
     events.on(
       'queue/state:updated',
-      safe(async ({ state }) => {
+      safe(async ({ gamemode, state }) => {
         if (state !== QueueState.ready) {
           return
         }
 
         const recipients = (
           await collections.queueSlots
-            .find({ player: { $ne: null }, ready: { $eq: false } })
+            .find({ gamemode, player: { $ne: null }, ready: { $eq: false } })
             .toArray()
         ).map(slot => slot.player!.steamId)
         const clients = [...app.websocketServer.clients].map(client => client as AppWebSocket)

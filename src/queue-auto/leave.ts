@@ -12,15 +12,22 @@ import { errors } from '../errors'
 import { withLogLevel } from '../utils/with-log-level'
 
 export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
-  return await withQueueLock('leave', async () => {
-    logger.trace({ steamId }, 'queue.leave()')
-    const state = await getState()
+  logger.trace({ steamId }, 'queue.leave()')
+  const current = await collections.queueSlots.findOne({ 'player.steamId': steamId })
+  if (!current) {
+    throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
+  }
+  const gamemode = current.gamemode
+
+  return await withQueueLock(gamemode, 'leave', async () => {
+    const state = await getState(gamemode)
     if (state === QueueState.launching) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
 
     const slot = await collections.queueSlots.findOneAndUpdate(
       {
+        gamemode,
         'player.steamId': steamId,
       },
       {
@@ -34,11 +41,17 @@ export async function leave(steamId: SteamId64): Promise<QueueSlotModel> {
     if (!slot) {
       throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
     }
-    events.emit('queue/slots:updated', { slots: [slot] })
+    events.emit('queue/slots:updated', { gamemode, slots: [slot] })
 
-    const { deletedCount } = await collections.queueMapVotes.deleteMany({ player: steamId })
+    const { deletedCount } = await collections.queueMapVotes.deleteMany({
+      gamemode,
+      player: steamId,
+    })
     if (deletedCount > 0) {
-      events.emit('queue/mapVoteResults:updated', { results: await getMapVoteResults() })
+      events.emit('queue/mapVoteResults:updated', {
+        gamemode,
+        results: await getMapVoteResults(gamemode),
+      })
     }
 
     await preReady.cancel(steamId)

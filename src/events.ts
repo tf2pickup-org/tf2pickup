@@ -17,6 +17,7 @@ import type { Configuration } from './database/models/configuration-entry.model'
 import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
+import type { Gamemode } from './shared/types/gamemode'
 import type { WithId } from 'mongodb'
 
 export interface Events {
@@ -202,22 +203,28 @@ export interface Events {
     maps: MapPoolEntry[]
   }
   'queue/slots:updated': {
+    gamemode: Gamemode
     slots: QueueSlotModel[]
   }
   'queue/state:updated': {
+    gamemode: Gamemode
     state: QueueState
   }
   'queue/mapOptions:reset': {
+    gamemode: Gamemode
     mapOptions: string[]
   }
   'queue/mapVoteResults:updated': {
+    gamemode: Gamemode
     results: Record<string, number>
   }
   'queue/friendship:created': {
+    gamemode: Gamemode
     source: SteamId64
     target: SteamId64
   }
   'queue/friendship:updated': {
+    gamemode: Gamemode
     source: SteamId64
     target: {
       before: SteamId64
@@ -225,6 +232,7 @@ export interface Events {
     }
   }
   'queue/friendship:removed': {
+    gamemode: Gamemode
     source: SteamId64
     target: SteamId64
   }

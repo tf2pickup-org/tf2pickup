@@ -10,15 +10,21 @@ import { preReady } from '../pre-ready'
 import { errors } from '../errors'
 
 export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
-  return await withQueueLock('ready-up', async () => {
-    logger.trace({ steamId }, 'queue.readyUp()')
-    const state = await getState()
+  logger.trace({ steamId }, 'queue.readyUp()')
+  const current = await collections.queueSlots.findOne({ 'player.steamId': steamId })
+  if (!current) {
+    throw errors.badRequest(`player not in queue: ${steamId}`)
+  }
+  const gamemode = current.gamemode
+
+  return await withQueueLock(gamemode, 'ready-up', async () => {
+    const state = await getState(gamemode)
     if (state !== QueueState.ready) {
       throw errors.badRequest('wrong queue state')
     }
 
     const slot = await collections.queueSlots.findOneAndUpdate(
-      { 'player.steamId': steamId },
+      { gamemode, 'player.steamId': steamId },
       { $set: { ready: true } },
       { returnDocument: 'after' },
     )
@@ -26,7 +32,7 @@ export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
       throw errors.badRequest(`player not in queue: ${steamId}`)
     }
 
-    events.emit('queue/slots:updated', { slots: [slot] })
+    events.emit('queue/slots:updated', { gamemode, slots: [slot] })
     await preReady.start(steamId)
     return slot
   })
