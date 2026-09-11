@@ -241,7 +241,7 @@ async function* compileConfig(game: GameModel, password: string): AsyncGenerator
     yield `exec ${map.execConfig}`
   }
 
-  const whitelistId = await configuration.get('games.whitelist_id')
+  const whitelistId = await configuration.get('games.whitelist_id', game.gamemode)
   if (whitelistId !== null) {
     yield `tftrue_whitelist_id ${whitelistId}`
   }
