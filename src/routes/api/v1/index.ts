@@ -12,6 +12,7 @@ export default routes(async app => {
           players: { href: '/api/v1/players' },
           games: { href: '/api/v1/games' },
           queue: { href: '/api/v1/queue' },
+          gamemodes: { href: '/api/v1/gamemodes' },
           onlinePlayers: { href: '/api/v1/online-players' },
           version: { href: '/api/v1/version' },
         },
