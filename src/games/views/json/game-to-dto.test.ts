@@ -4,12 +4,14 @@ import type { GameModel, GameNumber } from '../../../database/models/game.model'
 import { GameState, GameServerProvider } from '../../../database/models/game.model'
 import { GameEventType, GameEndedReason } from '../../../database/models/game-event.model'
 import { Tf2Team } from '../../../shared/types/tf2-team'
+import { Gamemode } from '../../../shared/types/gamemode'
 
 const createdAt = new Date('2024-01-01T00:00:00.000Z')
 const endedAt = new Date('2024-01-01T01:00:00.000Z')
 
 const baseGame: GameModel = {
   number: 1234 as GameNumber,
+  gamemode: Gamemode.sixes,
   map: 'cp_process_final',
   state: GameState.ended,
   slots: [],

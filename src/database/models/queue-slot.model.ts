@@ -1,9 +1,11 @@
 import type { QueueSlotId } from '../../queue/types/queue-slot-id'
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
 export interface QueueSlotModel {
   id: QueueSlotId
+  gamemode: Gamemode
   gameClass: Tf2ClassName
   player: null | {
     steamId: SteamId64
