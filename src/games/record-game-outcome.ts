@@ -24,8 +24,8 @@ export async function recordGameOutcome(game: GameModel): Promise<void> {
         { steamId: slot.player },
         { projection: { elo: 1, 'stats.gamesByClass': 1 } },
       )
-      eloMap.set(slot.player, player?.elo ?? {})
-      gamesByClassMap.set(slot.player, player?.stats.gamesByClass ?? {})
+      eloMap.set(slot.player, player?.elo?.[game.gamemode] ?? {})
+      gamesByClassMap.set(slot.player, player?.stats.gamesByClass[game.gamemode] ?? {})
     }),
   )
 
@@ -39,9 +39,9 @@ export async function recordGameOutcome(game: GameModel): Promise<void> {
     updates.map(async ({ steamId, gameClass, newElo, at, game: gameNumber }) => {
       const eloUpdate: PlayerElo = { [gameClass]: newElo }
       await players.update(steamId, before => ({
-        $set: { elo: { ...before.elo, ...eloUpdate } },
+        $set: { [`elo.${game.gamemode}`]: { ...before.elo?.[game.gamemode], ...eloUpdate } },
         $push: {
-          eloHistory: { at, elo: eloUpdate, game: gameNumber },
+          eloHistory: { at, gamemode: game.gamemode, elo: eloUpdate, game: gameNumber },
         },
       }))
     }),
@@ -52,7 +52,8 @@ export async function recordGameOutcome(game: GameModel): Promise<void> {
       await players.update(slot.player, {
         $inc: {
           'stats.totalGames': 1,
-          [`stats.gamesByClass.${slot.gameClass}`]: 1,
+          [`stats.gamesByGamemode.${game.gamemode}`]: 1,
+          [`stats.gamesByClass.${game.gamemode}.${slot.gameClass}`]: 1,
         },
       })
     }),

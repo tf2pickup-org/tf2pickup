@@ -1,5 +1,6 @@
 import { resolve } from 'node:path'
 import { Layout } from '../../../html/layout'
+import { defaultGamemode } from '../../../shared/default-gamemode'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
@@ -94,6 +95,6 @@ async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
     .toArray()
   return players.map(player => ({
     player,
-    count: player.stats.gamesByClass[Tf2ClassName.medic] ?? 0,
+    count: player.stats.gamesByClass[defaultGamemode]?.[Tf2ClassName.medic] ?? 0,
   }))
 }
