@@ -11,6 +11,7 @@ import { getMapVoteResults } from './get-map-vote-results'
 import { unreadyQueue } from './unready-queue'
 import { kick } from './kick'
 import { enabledGamemodes } from '../shared/enabled-gamemodes'
+import { forGamemode } from './for-gamemode'
 
 for (const gamemode of enabledGamemodes) {
   const slotCount = await collections.queueSlots.countDocuments({ gamemode })
@@ -22,6 +23,7 @@ for (const gamemode of enabledGamemodes) {
 
 export const queue = {
   config,
+  for: forGamemode,
   getFriends,
   getMapVoteResults,
   getMapWinner,

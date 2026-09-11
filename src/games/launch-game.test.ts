@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+const boundQueue = vi.hoisted(() => ({
+  slots: vi.fn().mockResolvedValue([]),
+  mapWinner: vi.fn().mockResolvedValue('cp_badlands'),
+  friends: vi.fn().mockResolvedValue([]),
+  unready: vi.fn().mockResolvedValue(undefined),
+}))
+
 vi.mock('../queue-auto', () => ({
   queue: {
-    getSlots: vi.fn().mockResolvedValue([]),
-    getMapWinner: vi.fn().mockResolvedValue('cp_badlands'),
-    getFriends: vi.fn().mockResolvedValue([]),
-    unreadyQueue: vi.fn().mockResolvedValue(),
+    for: () => boundQueue,
   },
 }))
 
@@ -28,7 +32,6 @@ vi.mock('../logger', () => ({
 import { launchGame } from './launch-game'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
-import { queue } from '../queue-auto'
 import { Gamemode } from '../shared/types/gamemode'
 
 describe('launchGame()', () => {
@@ -43,7 +46,7 @@ describe('launchGame()', () => {
     await launchGame(Gamemode.sixes)
 
     expect(assignGameServer).toHaveBeenCalledWith(42, { retries: 3 })
-    expect(queue.unreadyQueue).not.toHaveBeenCalled()
+    expect(boundQueue.unready).not.toHaveBeenCalled()
   })
 
   it('reverts the queue when game creation fails', async () => {
@@ -51,7 +54,7 @@ describe('launchGame()', () => {
 
     await launchGame(Gamemode.sixes)
 
-    expect(queue.unreadyQueue).toHaveBeenCalled()
+    expect(boundQueue.unready).toHaveBeenCalled()
     expect(assignGameServer).not.toHaveBeenCalled()
   })
 })

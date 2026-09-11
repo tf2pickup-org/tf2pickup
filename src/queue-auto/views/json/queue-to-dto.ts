@@ -1,14 +1,13 @@
-import { getState } from '../../../queue/get-state'
-import { getSlots } from '../../get-slots'
-import { getMapVoteResults } from '../../get-map-vote-results'
+import { forGamemode } from '../../for-gamemode'
 import { getQueueConfig } from '../../configs'
 import type { Gamemode } from '../../../shared/types/gamemode'
 
 export async function queueToDto(gamemode: Gamemode, selfHref: string) {
+  const q = forGamemode(gamemode)
   const [state, slots, mapVoteResults] = await Promise.all([
-    getState(gamemode),
-    getSlots(gamemode),
-    getMapVoteResults(gamemode),
+    q.state(),
+    q.slots(),
+    q.mapVoteResults(),
   ])
 
   const config = getQueueConfig(gamemode)

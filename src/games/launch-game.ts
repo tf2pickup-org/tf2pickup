@@ -9,16 +9,18 @@ import { configure } from './rcon/configure'
 export async function launchGame(gamemode: Gamemode) {
   logger.info({ gamemode }, 'launching game')
 
+  const q = queue.for(gamemode)
+
   let game: GameModel
   try {
-    const slots = await queue.getSlots(gamemode)
-    const map = await queue.getMapWinner(gamemode)
-    const friends = await queue.getFriends(gamemode)
+    const slots = await q.slots()
+    const map = await q.mapWinner()
+    const friends = await q.friends()
     logger.trace({ gamemode, slots, map, friends }, 'launchGame()')
     game = await create(slots, map, friends)
   } catch (error) {
     logger.error({ error }, 'failed to launch game; reverting queue')
-    await queue.unreadyQueue(gamemode)
+    await q.unready()
     return
   }
 
