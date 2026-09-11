@@ -4,6 +4,7 @@ import type { ConfigurationEntryModel } from './models/configuration-entry.model
 import type { DocumentModel } from './models/document.model'
 import type { GameLogsModel } from './models/game-logs.model'
 import type { GameModel } from './models/game.model'
+import type { GameNumberRemapModel } from './models/game-number-remap.model'
 import type { KeyModel } from './models/key.model'
 import type { MapPoolEntryModel } from './models/map-pool-entry.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
@@ -47,6 +48,7 @@ export const collections = {
   futurePlayerSkills: database.collection<FuturePlayerSkillModel>('futureplayerskills'),
   gameLogs: database.collection<GameLogsModel>('gamelogs'),
   games: database.collection<GameModel>('games'),
+  gamesNumberRemap: database.collection<GameNumberRemapModel>('games.numberremap'),
   gamesDeferredKicks: database.collection<DeferredKickModel>('games.deferredkicks'),
   gamesRoundProgress: database.collection<GameRoundProgressModel>('games.roundprogress'),
   gamesSubstituteRequests: database.collection<SubstituteRequestModel>('games.substituterequests'),

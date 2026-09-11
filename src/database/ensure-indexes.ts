@@ -68,6 +68,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { gameNumber: 1, replacement: 1 } },
   ],
   gamesRoundProgress: [{ spec: { gameNumber: 1 }, options: { unique: true } }],
+  gamesNumberRemap: [{ spec: { sourceHost: 1, oldNumber: 1 }, options: { unique: true } }],
   futurePlayerSkills: [{ spec: { steamId: 1 }, options: { unique: true } }],
   pendingImports: [{ spec: { actor: 1 }, options: { unique: true } }],
   logsTfLogs: [
