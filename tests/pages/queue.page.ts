@@ -1,6 +1,6 @@
 import { errors, expect, type Locator, type Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { currentGamemode, gamemodes, queueSlots, type SlotId } from '../gamemodes'
+import { currentGamemode, queuePath, queueSlots, type Gamemode, type SlotId } from '../gamemodes'
 
 class QueueSlot {
   readonly locator: Locator
@@ -77,10 +77,13 @@ class ReadyUpDialog {
 }
 
 export class QueuePage {
-  constructor(public readonly page: Page) {}
+  constructor(
+    public readonly page: Page,
+    public readonly gamemode: Gamemode = currentGamemode(),
+  ) {}
 
   async goto() {
-    await this.page.goto(gamemodes[currentGamemode()].path)
+    await this.page.goto(queuePath(this.gamemode))
   }
 
   async joinQueue(slot: SlotId) {
@@ -93,6 +96,14 @@ export class QueuePage {
 
   header() {
     return this.page.getByRole('heading', { name: /Players: \d+\/\d+/ })
+  }
+
+  gamemodeSwitcher() {
+    return this.page.getByRole('tablist', { name: 'Gamemode' })
+  }
+
+  gamemodeTab(name: string) {
+    return this.page.getByRole('tab', { name: `${name} queue` })
   }
 
   slot(slot: SlotId) {
@@ -127,7 +138,7 @@ export class QueuePage {
 
   async waitToBeEmpty(options?: { timeout?: number }) {
     await Promise.all(
-      Array.from(queueSlots()).map(async i => {
+      Array.from(queueSlots(this.gamemode)).map(async i => {
         await this.slot(i).waitToBeFree(options)
       }),
     )
