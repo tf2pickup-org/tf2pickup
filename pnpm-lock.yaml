@@ -330,7 +330,7 @@ importers:
         version: 6.0.0
       fastify-type-provider-zod:
         specifier: 7.0.0
-        version: 7.0.0(@fastify/swagger@9.5.1(supports-color@8.1.1))(fastify@5.12.3)(openapi-types@12.1.3)(zod@4.5.4)
+        version: 7.0.0(@fastify/swagger@9.5.1(supports-color@8.1.1))(fastify@5.12.3)(openapi-types@12.1.3)(zod@4.6.1)
       form-data:
         specifier: 4.0.6
         version: 4.0.6
@@ -425,8 +425,8 @@ importers:
         specifier: 8.21.3
         version: 8.21.3
       zod:
-        specifier: 4.5.4
-        version: 4.5.4
+        specifier: 4.6.1
+        version: 4.6.1
     devDependencies:
       '@eslint/js':
         specifier: 10.0.1
@@ -5350,8 +5350,8 @@ packages:
     engines: {node: '>=8.0.0'}
     hasBin: true
 
-  zod@4.5.4:
-    resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
+  zod@4.6.1:
+    resolution: {integrity: sha512-341aRWQsve0rvronKNTqZpjmzdbUDlFuzHaI/XLg/Ej82qffDJRRfBTCuv7+9q/rMjB6LSLyEBnW4InJeMtt/Q==}
 
 snapshots:
 
@@ -8147,13 +8147,13 @@ snapshots:
 
   fastify-plugin@6.0.0: {}
 
-  fastify-type-provider-zod@7.0.0(@fastify/swagger@9.5.1(supports-color@8.1.1))(fastify@5.12.3)(openapi-types@12.1.3)(zod@4.5.4):
+  fastify-type-provider-zod@7.0.0(@fastify/swagger@9.5.1(supports-color@8.1.1))(fastify@5.12.3)(openapi-types@12.1.3)(zod@4.6.1):
     dependencies:
       '@fastify/error': 4.2.0
       '@fastify/swagger': 9.5.1(supports-color@8.1.1)
       fastify: 5.12.3
       openapi-types: 12.1.3
-      zod: 4.5.4
+      zod: 4.6.1
 
   fastify@5.12.3:
     dependencies:
@@ -10160,4 +10160,4 @@ snapshots:
     optionalDependencies:
       commander: 9.5.0
 
-  zod@4.5.4: {}
+  zod@4.6.1: {}
