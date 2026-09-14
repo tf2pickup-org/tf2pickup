@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.23.12](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.11...4.23.12) (2026-09-14)
+
+### Dependencies
+
+* @fastify/accepts to v5.0.6 ([6e8732f](https://github.com/tf2pickup-org/tf2pickup/commit/6e8732ffd0bb22dd555dc8603df19b637065586e))
+* @napi-rs/canvas to v1.0.9 ([8e840a5](https://github.com/tf2pickup-org/tf2pickup/commit/8e840a559e971fa1a5fde01f8f1c69526a287c25))
+* cssnano to v9.0.4 ([fb5a5c6](https://github.com/tf2pickup-org/tf2pickup/commit/fb5a5c6613ef4d248b56f3d4b049e4a73c1f5002))
+* fastify to v5.12.4 ([4123003](https://github.com/tf2pickup-org/tf2pickup/commit/412300324da2e3d77af0b72502f660b0ff964659))
+* marked to v18.0.12 ([aa128d6](https://github.com/tf2pickup-org/tf2pickup/commit/aa128d64b9616c7c420d14b284e5721cd7faf6d4))
+* openid to v2.0.18 ([#843](https://github.com/tf2pickup-org/tf2pickup/issues/843)) ([bcbe6f1](https://github.com/tf2pickup-org/tf2pickup/commit/bcbe6f199d127dfcd2d99ebcf366cefc0de508e2))
+* zod to v4.6.1 ([77cb546](https://github.com/tf2pickup-org/tf2pickup/commit/77cb5466a52da2940fd1508af4a902f6eff19a14))
+
 ## [4.23.11](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.10...4.23.11) (2026-09-10)
 
 ### Bug Fixes
