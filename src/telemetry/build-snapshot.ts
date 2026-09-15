@@ -3,6 +3,7 @@ import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { environment } from '../environment'
 import { mapPool } from '../maps/pool'
+import { defaultGamemode } from '../shared/default-gamemode'
 import { getPlayedMapsCount } from '../statistics/get-played-maps-count'
 import { version } from '../version'
 import { getUsageCounters } from './get-usage-counters'
@@ -254,7 +255,7 @@ export async function buildSnapshot() {
   return {
     instanceId,
     version,
-    queueConfig: environment.QUEUE_CONFIG,
+    queueConfig: defaultGamemode,
     features: Object.fromEntries(featureEntries.map(({ key, value }) => [key, value])),
     integrations: Object.fromEntries(integrationEntries.map(({ key, value }) => [key, value])),
     usage: Object.fromEntries(usageEntries.map(({ key, value }) => [key, value])),

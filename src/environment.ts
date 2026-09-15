@@ -24,7 +24,13 @@ const environmentSchema = z.object({
   MONGODB_URI: z.url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),
+  // @deprecated — use ENABLED_GAMEMODES. Kept as the fallback default when
+  // ENABLED_GAMEMODES is unset so existing single-gamemode deployments upgrade
+  // with no env change.
   QUEUE_CONFIG: z.enum(['6v6', '9v9', 'ultiduo']).default('6v6'),
+  // Comma-separated set of gamemodes this instance serves (e.g. `6v6,9v9`).
+  // The first entry is the instance default. Falls back to QUEUE_CONFIG.
+  ENABLED_GAMEMODES: z.string().optional(),
   KEY_STORE_PASSPHRASE: z.string(),
   LOG_RELAY_ADDRESS: z.string(),
   LOG_RELAY_PORT: z.coerce.number(),
