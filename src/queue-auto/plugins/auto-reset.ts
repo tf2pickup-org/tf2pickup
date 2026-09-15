@@ -8,7 +8,7 @@ export default fp(
   async () => {
     events.on('game:created', async ({ game }) => {
       await applyMapCooldown(game.map)
-      await reset()
+      await reset(game.gamemode)
     })
   },
   {

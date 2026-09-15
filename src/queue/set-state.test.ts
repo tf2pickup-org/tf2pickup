@@ -24,13 +24,18 @@ vi.mock('../pre-ready', () => ({
 }))
 
 vi.mock('./with-queue-lock', () => ({
-  withQueueLock: vi.fn(async (_operation: string, fn: () => Promise<unknown>) => await fn()),
+  withQueueLock: vi.fn(
+    async (_gamemode: string, _operation: string, fn: () => Promise<unknown>) => await fn(),
+  ),
 }))
 
 import { setState } from './set-state'
 import { QueueState } from '../database/models/queue-state.model'
+import { Gamemode } from '../shared/types/gamemode'
 import { collections } from '../database/collections'
 import { events } from '../events'
+
+const gamemode = Gamemode.sixes
 
 describe('setState()', () => {
   beforeEach(() => {
@@ -41,7 +46,7 @@ describe('setState()', () => {
     it('rejects when a queue slot is empty or unready', async () => {
       vi.mocked(collections.queueSlots.countDocuments).mockResolvedValue(1)
 
-      await expect(setState(QueueState.launching)).rejects.toThrow(
+      await expect(setState(gamemode, QueueState.launching)).rejects.toThrow(
         'cannot launch: queue is no longer full and ready',
       )
       expect(collections.queueState.updateOne).not.toHaveBeenCalled()
@@ -51,24 +56,25 @@ describe('setState()', () => {
     it('proceeds when every slot is taken and ready', async () => {
       vi.mocked(collections.queueSlots.countDocuments).mockResolvedValue(0)
 
-      await setState(QueueState.launching)
+      await setState(gamemode, QueueState.launching)
 
       expect(collections.queueState.updateOne).toHaveBeenCalledWith(
-        {},
+        { gamemode },
         { $set: { state: QueueState.launching } },
       )
       expect(events.emit).toHaveBeenCalledWith('queue/state:updated', {
+        gamemode,
         state: QueueState.launching,
       })
     })
   })
 
   it('does not verify slots for other transitions', async () => {
-    await setState(QueueState.waiting)
+    await setState(gamemode, QueueState.waiting)
 
     expect(collections.queueSlots.countDocuments).not.toHaveBeenCalled()
     expect(collections.queueState.updateOne).toHaveBeenCalledWith(
-      {},
+      { gamemode },
       { $set: { state: QueueState.waiting } },
     )
   })

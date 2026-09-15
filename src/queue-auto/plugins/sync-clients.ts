@@ -24,6 +24,7 @@ import type { AppWebSocket } from '../../websocket/types'
 import { players } from '../../players'
 import { errors } from '../../errors'
 import { getState } from '../../queue/get-state'
+import { defaultGamemode } from '../../shared/default-gamemode'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -81,7 +82,7 @@ export default fp(
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
 
-        if ((await getState()) === QueueState.ready) {
+        if ((await getState(defaultGamemode)) === QueueState.ready) {
           const slot = await collections.queueSlots.findOne({
             'player.steamId': socket.player.steamId,
             ready: false,
