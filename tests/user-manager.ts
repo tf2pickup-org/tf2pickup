@@ -2,6 +2,7 @@ import { QueuePage } from './pages/queue.page'
 import { GamePage } from './pages/game.page'
 import { users } from './data'
 import { AdminPage } from './pages/admin.page'
+import type { Gamemode } from './gamemodes'
 import type { BrowserContext, Page } from '@playwright/test'
 
 // https://stackoverflow.com/questions/52489261/can-i-define-an-n-length-tuple-type
@@ -62,8 +63,8 @@ export class UserContext {
     return gamePage
   }
 
-  async queuePage() {
-    return new QueuePage(await this.page())
+  async queuePage(gamemode?: Gamemode) {
+    return new QueuePage(await this.page(), gamemode)
   }
 
   async dispose() {
