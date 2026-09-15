@@ -1,3 +1,4 @@
+import type { Children } from '@kitajs/html'
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
 import { queue } from '../../../../queue-auto'
@@ -8,22 +9,37 @@ import { GameClassSkillInput } from '../../../../html/components/game-class-skil
 export async function PlayerRestrictionsPage() {
   return (
     <Admin activePage="player-restrictions">
-      <form action="" method="post" id="playerRestrictionsForm">
-        <div class="admin-panel-set flex flex-col gap-4">
+      <form action="" method="post" id="playerRestrictionsForm" class="flex flex-col gap-4">
+        <Section title="Registration">
           <RequireEtf2lAccount />
           <MinimumTf2InGameHours />
+        </Section>
+
+        <Section title="Join queue">
           <RequirePlayerVerification />
           <PlayerSkillThreshold />
+        </Section>
+
+        <Section title="Skill">
           <SkillStep />
           <SkillSuggestions />
           <DefaultPlayerSkill />
+        </Section>
 
-          <p>
-            <SaveButton />
-          </p>
-        </div>
+        <p>
+          <SaveButton />
+        </p>
       </form>
     </Admin>
+  )
+}
+
+function Section(props: { title: string; children: Children }) {
+  return (
+    <div>
+      <h2 class="text-abru-light-75 mb-2 text-xl font-bold">{props.title}</h2>
+      <div class="admin-panel-set flex flex-col gap-4">{props.children}</div>
+    </div>
   )
 }
 
@@ -135,7 +151,8 @@ async function PlayerSkillThreshold() {
           />
         </div>
         <p class="text-abru-light-75 text-sm">
-          Players will be able to join queue only on classes that meet the given criteria.
+          Players can join the queue on a given class only if their skill rating for that class is
+          at or above this value.
         </p>
       </dd>
     </dl>
@@ -213,8 +230,8 @@ async function DefaultPlayerSkill() {
           ))}
         </div>
         <p class="text-abru-light-75 text-sm">
-          If a player starts a game without skill assigned for them, the game balance system will
-          use this fallback value.
+          Fallback skill rating for a player who has no skill set for a class yet — used both for
+          team balancing and for the skill-threshold check.
         </p>
       </dd>
     </dl>
