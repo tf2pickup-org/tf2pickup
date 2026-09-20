@@ -24,7 +24,7 @@ test('player is late for ready up @6v6', async ({ players, desiredSlots, users, 
       .filter(player => player.playerName !== 'MoonMan')
       .map(async player => {
         const page = await player.queuePage()
-        await page.readyUpDialog().readyUp()
+        await page.readyUp(desiredSlots.get(player.playerName)!)
       }),
   )
 

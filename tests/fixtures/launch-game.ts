@@ -106,9 +106,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
             const page = await user.page()
             const slot = desiredSlots.get(user.playerName)!
 
-            if (!/games\/(\d+)/.test(page.url()) && !(await queuePage.slot(slot).isReady())) {
-              await queuePage.readyUpDialog().readyUp()
-            }
+            await queuePage.readyUp(slot)
             await page.waitForURL(/games\/(\d+)/)
           }),
         )

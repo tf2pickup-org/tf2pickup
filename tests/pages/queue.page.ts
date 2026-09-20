@@ -120,6 +120,13 @@ export class QueuePage {
     return new ReadyUpDialog(this.page)
   }
 
+  async readyUp(slot: SlotId) {
+    if (/games\/(\d+)/.test(this.page.url()) || (await this.slot(slot).isReady())) {
+      return
+    }
+    await this.readyUpDialog().readyUp()
+  }
+
   goBackToGameLink() {
     return this.page.getByRole('link', { name: 'Go back to the game' })
   }
