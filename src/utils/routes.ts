@@ -13,7 +13,7 @@ import type {
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 
 export function routes<
-  Options extends FastifyPluginOptions = Record<never, never>,
+  Options extends FastifyPluginOptions = FastifyPluginOptions,
   RawServer extends RawServerBase = RawServerDefault,
   TypeProvider extends FastifyTypeProvider = FastifyTypeProviderDefault,
   Logger extends FastifyBaseLogger = FastifyBaseLogger,
