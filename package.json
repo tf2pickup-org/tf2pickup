@@ -124,7 +124,7 @@
     "node-html-parser": "9.0.4",
     "pino-princess": "1.6.3",
     "postcss-cli": "12.0.0",
-    "prettier": "3.9.7",
+    "prettier": "3.9.8",
     "prettier-plugin-tailwindcss": "0.8.1",
     "release-it": "21.0.3",
     "rimraf": "6.1.3",
