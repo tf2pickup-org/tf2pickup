@@ -45,6 +45,7 @@ it('does not wait for a game server status check during startup', async () => {
 
   expect(hookName).toBe('onListen')
   expect(onListen()).toBeUndefined()
+  expect(mockFind).toHaveBeenCalledTimes(0)
 
   await vi.waitFor(() => expect(mockSyncPlayerConnectionStatus).toHaveBeenCalledWith(42))
   expect(mockFind).toHaveBeenCalledWith(
