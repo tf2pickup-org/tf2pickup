@@ -10,6 +10,7 @@ dotenv.config()
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
+  failOnFlakyTests: !!process.env.CI,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: 1,

@@ -4,7 +4,7 @@ import { simulateGameServer } from './simulate-game-server'
 import type { UserContext, UserName } from '../user-manager'
 import { waitForEmptyQueue } from './wait-for-empty-queue'
 import { GamePage } from '../pages/game.page'
-import { secondsToMilliseconds } from 'date-fns'
+import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { getPlayerCount, getQueueConfig, type SlotId } from '../queue-slots'
 
 export interface LaunchGameOptions {
@@ -79,83 +79,114 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
     const players = Array.from(desiredSlots.keys()).map(name => users.byName(name))
     await use(players)
   },
-  gameNumber: async ({ users, players, gameServer, killGame, desiredSlots, waitForStage }, use) => {
-    await gameServer.sendHeartbeat()
+  gameNumber: [
+    async ({ users, players, gameServer, killGame, desiredSlots, waitForStage }, use) => {
+      let gameNumber: number | undefined
+      let setupCompleted = false
 
-    const batchSize = 6
-    for (let i = 0; i < players.length; i += batchSize) {
-      const batch = players.slice(i, i + batchSize)
-      await Promise.all(
-        batch.map(async user => {
-          const page = await user.queuePage()
-          await page.goto()
-          const slot = desiredSlots.get(user.playerName)!
-          await page.slot(slot).join()
-        }),
-      )
-    }
+      try {
+        await gameServer.sendHeartbeat()
 
-    await Promise.all(
-      players.map(async user => {
-        const page = await user.queuePage()
-        await page.readyUpDialog().readyUp()
-        await (await user.page()).waitForURL(/games\/(\d+)/)
-      }),
-    )
+        const batchSize = 6
+        for (let i = 0; i < players.length; i += batchSize) {
+          const batch = players.slice(i, i + batchSize)
+          await Promise.all(
+            batch.map(async user => {
+              const page = await user.queuePage()
+              await page.goto()
+              const slot = desiredSlots.get(user.playerName)!
+              await page.slot(slot).join()
+            }),
+          )
+        }
 
-    const page = await users.byName('Promenader').page()
-    const matches = /games\/(\d+)/.exec(page.url())
-    if (!matches) {
-      throw new Error('could not launch game')
-    }
+        await Promise.all(
+          players.map(async user => {
+            const queuePage = await user.queuePage()
+            const page = await user.page()
+            const slot = desiredSlots.get(user.playerName)!
 
-    const gameNumber = Number(matches[1])
+            await queuePage.readyUp(slot)
+            await page.waitForURL(/games\/(\d+)/)
+          }),
+        )
 
-    if (['launching', 'started'].includes(waitForStage)) {
-      const gamePage = new GamePage(page, gameNumber)
-      await gamePage.goto()
-      await expect(gamePage.gameEvent('Game server assigned')).toBeVisible()
-      await expect(gamePage.gameEvent('Game server initialized')).toBeVisible({
-        timeout: secondsToMilliseconds(15),
-      })
+        const page = await users.byName('Promenader').page()
+        const matches = /games\/(\d+)/.exec(page.url())
+        if (!matches) {
+          throw new Error('could not launch game')
+        }
 
-      if (waitForStage === 'started') {
-        await gameServer.connectAllPlayers()
-        await gameServer.matchStarts()
+        gameNumber = Number(matches[1])
+
+        if (['launching', 'started'].includes(waitForStage)) {
+          const gamePage = new GamePage(page, gameNumber)
+          await gamePage.goto()
+          await expect(gamePage.gameEvent('Game server assigned')).toBeVisible()
+          await expect(gamePage.gameEvent('Game server initialized')).toBeVisible({
+            timeout: secondsToMilliseconds(45),
+          })
+
+          if (waitForStage === 'started') {
+            await gameServer.connectAllPlayers()
+            await gameServer.matchStarts()
+          }
+        }
+
+        for (const user of players) {
+          await user.dispose()
+        }
+
+        setupCompleted = true
+        await use(gameNumber)
+      } finally {
+        try {
+          const shouldCleanup = [killGame, !setupCompleted].includes(true)
+          if (shouldCleanup && gameNumber === undefined) {
+            for (const user of players) {
+              const page = await user.page()
+              const matches = /games\/(\d+)/.exec(page.url())
+              if (matches) {
+                gameNumber = Number(matches[1])
+                break
+              }
+            }
+          }
+
+          if (shouldCleanup && gameNumber !== undefined) {
+            const gamePage = await users.getAdmin().gamePage(gameNumber)
+            await gamePage.goto()
+            if (await gamePage.isLive()) {
+              if (waitForStage === 'started') {
+                await gameServer.matchEnds()
+              } else {
+                await gamePage.forceEnd()
+              }
+            }
+
+            await expect
+              .poll(() => gameServer.logAddresses.size === 0, {
+                message: 'make sure logaddress is cleared',
+                timeout: secondsToMilliseconds(40),
+              })
+              .toBe(true)
+
+            const adminPage = await users.getAdmin().adminPage()
+            await adminPage.freeStaticGameServer()
+          } else if (shouldCleanup) {
+            const queuePage = await users.getAdmin().queuePage()
+            await queuePage.goto()
+            await queuePage.clearQueue()
+          }
+        } finally {
+          for (const user of players) {
+            await user.dispose()
+          }
+        }
       }
-    }
-
-    for (const user of players) {
-      await user.dispose()
-    }
-
-    await use(gameNumber)
-
-    if (!killGame) {
-      return
-    }
-
-    // kill the game if it's live
-    const gamePage = await users.getAdmin().gamePage(gameNumber)
-    await gamePage.goto()
-    if (await gamePage.isLive()) {
-      if (waitForStage === 'started') {
-        await gameServer.matchEnds()
-      } else {
-        await gamePage.forceEnd()
-      }
-    }
-
-    await expect
-      .poll(() => gameServer.logAddresses.size === 0, {
-        message: 'make sure logaddress is cleared',
-        timeout: secondsToMilliseconds(40),
-      })
-      .toBe(true)
-
-    const adminPage = await users.getAdmin().adminPage()
-    await adminPage.freeStaticGameServer()
-  },
+    },
+    { timeout: minutesToMilliseconds(2) },
+  ],
 })
 
 export { expect } from './simulate-game-server'

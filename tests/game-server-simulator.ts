@@ -199,7 +199,11 @@ export class GameServerSimulator {
             }
 
             // real srcds logs every rcon command (sv_rcon_log)
-            this.log(`rcon from "127.0.0.1:51234": command "${packet.body}"`)
+            void this.log(`rcon from "127.0.0.1:51234": command "${packet.body}"`).catch(
+              (error: unknown) => {
+                console.error(error)
+              },
+            )
             break
           }
 
@@ -231,6 +235,7 @@ export class GameServerSimulator {
   }
 
   async close() {
+    await this.sendMutex.waitForUnlock()
     return new Promise<void>((resolve, reject) => {
       this.server.close(err => {
         if (err) {
@@ -242,17 +247,21 @@ export class GameServerSimulator {
     })
   }
 
-  log(message: string) {
-    this.logAddresses.forEach(async address => {
+  async log(message: string) {
+    for (const address of this.logAddresses) {
       const [host, port] = address.split(':')
-      const release = await this.sendMutex.acquire()
-      this.socket.send(this.prepareMessage(message), Number(port), host, error => {
-        if (error) {
-          console.error(error)
-        }
-        release()
+      await this.sendMutex.runExclusive(async () => {
+        await new Promise<void>((resolve, reject) => {
+          this.socket.send(this.prepareMessage(message), Number(port), host, error => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve()
+            }
+          })
+        })
       })
-    })
+    }
   }
 
   async playerConnects(playerName: string) {
@@ -264,7 +273,7 @@ export class GameServerSimulator {
     const steamId3 = new SteamID(player.steamId64).steam3()
     player.connected = true
     await delay(this.eventDelay / 2)
-    this.log(
+    await this.log(
       `"${player.name}<${player.userId}><${steamId3}><>" connected, address "127.0.0.1:27005"`,
     )
     await delay(this.eventDelay / 2)
@@ -279,7 +288,9 @@ export class GameServerSimulator {
     const team = player.team === 'blu' ? 'Blue' : 'Red'
     const steamId3 = new SteamID(player.steamId64).steam3()
     await delay(this.eventDelay / 2)
-    this.log(`"${player.name}<${player.userId}><${steamId3}><Unassigned>" joined team "${team}"`)
+    await this.log(
+      `"${player.name}<${player.userId}><${steamId3}><Unassigned>" joined team "${team}"`,
+    )
     await delay(this.eventDelay / 2)
   }
 
@@ -292,7 +303,7 @@ export class GameServerSimulator {
     const steamId3 = new SteamID(player.steamId64).steam3()
     player.connected = false
     await delay(this.eventDelay / 2)
-    this.log(
+    await this.log(
       `"${player.name}<${player.userId}><${steamId3}><Unassigned>" disconnected (reason "Disconnect by user.")`,
     )
     await delay(this.eventDelay / 2)
@@ -307,7 +318,7 @@ export class GameServerSimulator {
 
   async matchStarts() {
     await delay(this.eventDelay / 2)
-    this.log('World triggered "Round_Start"')
+    await this.log('World triggered "Round_Start"')
     this.roundStartTimestamp = Date.now()
     this.score.blu = 0
     this.score.red = 0
@@ -317,8 +328,8 @@ export class GameServerSimulator {
   // a tournament match restart logs Round_Start twice in the same second
   async matchRestarts() {
     await delay(this.eventDelay / 2)
-    this.log('World triggered "Round_Start"')
-    this.log('World triggered "Round_Start"')
+    await this.log('World triggered "Round_Start"')
+    await this.log('World triggered "Round_Start"')
     this.roundStartTimestamp = Date.now()
     this.score.blu = 0
     this.score.red = 0
@@ -328,9 +339,9 @@ export class GameServerSimulator {
   async matchEnds() {
     const playersPerTeam = this.addedPlayers.length / 2
     await delay(this.eventDelay / 2)
-    this.log('World triggered "Game_Over" reason "Reached Win Limit"')
-    this.log(`Team "Red" final score "${this.score.red}" with "${playersPerTeam}" players`)
-    this.log(`Team "Blue" final score "${this.score.blu}" with "${playersPerTeam}" players`)
+    await this.log('World triggered "Game_Over" reason "Reached Win Limit"')
+    await this.log(`Team "Red" final score "${this.score.red}" with "${playersPerTeam}" players`)
+    await this.log(`Team "Blue" final score "${this.score.blu}" with "${playersPerTeam}" players`)
     await delay(this.eventDelay / 2)
   }
 
@@ -339,10 +350,10 @@ export class GameServerSimulator {
     await delay(this.eventDelay / 2)
     const lengthMs = Date.now() - this.roundStartTimestamp
     this.score[winner] += 1
-    this.log(`World triggered "Round_Win" (winner "${winner === 'blu' ? 'Blue' : 'Red'}")`)
-    this.log(`World triggered "Round_Length" (seconds "${millisecondsToSeconds(lengthMs)}")`)
-    this.log(`Team "Red" current score "${this.score.red}" with "${playersPerTeam}" players`)
-    this.log(`Team "Blue" current score "${this.score.blu}" with "${playersPerTeam}" players`)
+    await this.log(`World triggered "Round_Win" (winner "${winner === 'blu' ? 'Blue' : 'Red'}")`)
+    await this.log(`World triggered "Round_Length" (seconds "${millisecondsToSeconds(lengthMs)}")`)
+    await this.log(`Team "Red" current score "${this.score.red}" with "${playersPerTeam}" players`)
+    await this.log(`Team "Blue" current score "${this.score.blu}" with "${playersPerTeam}" players`)
     this.roundStartTimestamp = Date.now()
     await delay(this.eventDelay / 2)
   }
@@ -357,7 +368,7 @@ export class GameServerSimulator {
       if (!payload) {
         continue
       }
-      this.log(payload)
+      await this.log(payload)
       await delay(this.eventDelay / 2)
     }
   }

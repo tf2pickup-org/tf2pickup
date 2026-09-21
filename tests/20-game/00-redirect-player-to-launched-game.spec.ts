@@ -23,7 +23,7 @@ test('redirect player to launched game @6v6 @9v9', async ({ users, players, desi
   await Promise.all(
     players.map(async player => {
       const queuePage = await player.queuePage()
-      await queuePage.readyUpDialog().readyUp()
+      await queuePage.readyUp(desiredSlots.get(player.playerName)!)
       await (await player.page()).waitForURL(/games\/(\d+)/)
     }),
   )

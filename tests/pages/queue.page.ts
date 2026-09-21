@@ -51,13 +51,8 @@ class ReadyUpDialog {
 
   async readyUp() {
     const button = this.readyUpButton()
-    try {
-      await button.click({ timeout: secondsToMilliseconds(5) })
-    } catch (error) {
-      if (error instanceof errors.TimeoutError) {
-        return
-      }
-    }
+    await expect(button).toBeVisible({ timeout: secondsToMilliseconds(15) })
+    await button.click()
   }
 
   notReadyButton() {
@@ -91,6 +86,20 @@ export class QueuePage {
     await this.page.getByRole('button', { name: 'Leave queue' }).click({ timeout })
   }
 
+  async clearQueue() {
+    this.page.once('dialog', dialog => dialog.accept())
+    await Promise.all([
+      this.page.waitForResponse(
+        response =>
+          response.url().endsWith('/queue/players') &&
+          response.request().method() === 'DELETE' &&
+          response.status() === 204,
+      ),
+      this.page.getByRole('button', { name: 'Clear queue' }).click(),
+    ])
+    await this.waitToBeEmpty()
+  }
+
   header() {
     return this.page.getByRole('heading', { name: /Players: \d+\/\d+/ })
   }
@@ -109,6 +118,13 @@ export class QueuePage {
 
   readyUpDialog() {
     return new ReadyUpDialog(this.page)
+  }
+
+  async readyUp(slot: SlotId) {
+    if (/games\/(\d+)/.test(this.page.url()) || (await this.slot(slot).isReady())) {
+      return
+    }
+    await this.readyUpDialog().readyUp()
   }
 
   goBackToGameLink() {
