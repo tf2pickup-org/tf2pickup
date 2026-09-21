@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.23.13](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.12...4.23.13) (2026-09-21)
+
+### Bug Fixes
+
+* avoid blocking startup on player connection sync ([#849](https://github.com/tf2pickup-org/tf2pickup/issues/849)) ([bd48661](https://github.com/tf2pickup-org/tf2pickup/commit/bd48661a3e8ede9a16eb558e3111cfc92745d0f5))
+
+### Dependencies
+
+* @fastify/static to v10.1.4 ([bf469ed](https://github.com/tf2pickup-org/tf2pickup/commit/bf469ed8b414b032d868608b4f1ce06e59052d15))
+* cssnano to v9.0.5 ([0f2fa8b](https://github.com/tf2pickup-org/tf2pickup/commit/0f2fa8be937f7b7f3d85592d0d75357d5137cdd7))
+* dotenv to v18 ([#848](https://github.com/tf2pickup-org/tf2pickup/issues/848)) ([cb28f54](https://github.com/tf2pickup-org/tf2pickup/commit/cb28f54004c476133aad19aa2541f78bbbb6c4ab))
+* fastify to v5.12.5 ([#846](https://github.com/tf2pickup-org/tf2pickup/issues/846)) ([f95612d](https://github.com/tf2pickup-org/tf2pickup/commit/f95612de2b51fd55238e158622890f0447c997d8))
+* marked to v18.0.13 ([c3ff7ba](https://github.com/tf2pickup-org/tf2pickup/commit/c3ff7bad0f10cecdec7195b1667f14dd10e5105f))
+* zod to v4.6.2 ([#844](https://github.com/tf2pickup-org/tf2pickup/issues/844)) ([4fb68d4](https://github.com/tf2pickup-org/tf2pickup/commit/4fb68d48e53f28dbe94b663fcf43ad58d1b7067f))
+* zod to v4.6.4 ([#845](https://github.com/tf2pickup-org/tf2pickup/issues/845)) ([d5614a8](https://github.com/tf2pickup-org/tf2pickup/commit/d5614a85520480ff7e2ffadb5ce5fcf4d4483a76))
+
 ## [4.23.12](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.11...4.23.12) (2026-09-14)
 
 ### Dependencies
