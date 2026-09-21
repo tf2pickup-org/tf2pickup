@@ -31,7 +31,6 @@ import { MapVoteSelection } from './map-vote-selection'
 import { requestContext } from '@fastify/request-context'
 import { Announcements } from './announcements'
 import { PlayerRole } from '../../../database/models/player.model'
-import { IconEraser } from '../../../html/components/icons'
 import { players } from '../../../players'
 
 export async function QueuePage(props: { gamemode: Gamemode; partial?: boolean }) {
@@ -61,38 +60,28 @@ export async function QueuePage(props: { gamemode: Gamemode; partial?: boolean }
       canonical={queuePageUrl(gamemode)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar />
+      <NavigationBar queuePage />
       <Page>
         <IsInQueue gamemode={gamemode} actor={user?.player.steamId} />
         <MapVoteSelection gamemode={gamemode} actor={user?.player.steamId} />
-        <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
-          <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
+        <div class="queue-page">
+          <div class="queue-alerts">
             <OfflineAlert />
             {!!user && <RequestNotificationPermissions />}
             {!!user && <SoundBlockedAlert />}
             <BanAlerts actor={user?.player.steamId} />
             <SubstitutionRequests />
             <Announcements />
-            <GamemodeSelector active={gamemode} />
           </div>
-
-          <div class="order-2 lg:order-3 lg:row-span-2">
+          <div class="queue-page-layout">
+            <div class="queue-toolbar">
+              <GamemodeSelector active={gamemode} />
+              <QueueState actor={user} gamemode={gamemode} required={required} />
+            </div>
             <Sidebar user={user} gamemode={gamemode} required={required} />
-          </div>
-
-          <div id="queue-content" class="tab-content lg:contents!">
-            <div class="order-3 lg:order-2 lg:col-span-3">
-              <div class="flex flex-col gap-8">
-                <QueueState actor={user} gamemode={gamemode} required={required} />
-                <Queue slots={slots} gamemode={gamemode} actor={user?.player.steamId} />
-              </div>
-            </div>
-
-            <div class="order-4 lg:col-span-3">
+            <div id="queue-content" class="queue-content tab-content lg:block!">
+              <Queue slots={slots} gamemode={gamemode} actor={user?.player.steamId} />
               <MapVote gamemode={gamemode} actor={user?.player.steamId} />
-            </div>
-
-            <div class="order-5 lg:col-span-4">
               <StreamList />
             </div>
           </div>
@@ -113,18 +102,16 @@ async function QueueState(props: {
   required: number
 }) {
   return (
-    <div id="queue-state" class="flex flex-col gap-2">
-      <form ws-send class="flex flex-row items-center justify-center">
-        <h3 class="text-ash flex-1 text-center text-2xl font-bold max-lg:hidden md:text-start">
-          Players: <CurrentPlayerCount gamemode={props.gamemode} />/{props.required}
-        </h3>
-
-        <div class="flex flex-row gap-2 max-lg:grow">
+    <div id="queue-state" class="queue-state">
+      <form ws-send class="queue-state-form">
+        <h1 class="queue-player-count">
+          Players <CurrentPlayerCount gamemode={props.gamemode} />/{props.required}
+        </h1>
+        <div class="queue-state-actions">
           <ClearQueueButton actor={props.actor} gamemode={props.gamemode} />
           <PreReadyUpButton actor={props.actor?.player.steamId} />
         </div>
       </form>
-      <div class="bg-abru-light-25 h-[2px] rounded-xs max-lg:hidden"></div>
     </div>
   )
 }
@@ -154,18 +141,18 @@ async function Queue(props: {
   return (
     <form
       id="queue"
-      class={['grid grid-cols-1 gap-4 md:grid-cols-2', gridCols]}
+      class={['queue-class-grid grid grid-cols-1 gap-4 md:grid-cols-2', gridCols]}
       ws-send
       data-disable-when-offline
     >
       {config.classes
         .map(gc => gc.name)
         .map(gameClass => (
-          <div class="flex flex-col gap-4">
-            <div class="flex flex-row items-center justify-center gap-2">
+          <div class="queue-class-column">
+            <h2 class="queue-class-heading">
               <GameClassIcon gameClass={gameClass} size={32} />
-              <span class="text-center text-2xl font-bold text-white">{gameClass}</span>
-            </div>
+              <span>{gameClass}</span>
+            </h2>
 
             {props.slots
               .filter(slot => slot.gameClass === gameClass)
@@ -185,13 +172,12 @@ export async function ClearQueueButton(props: { actor?: User | undefined; gamemo
 
   return (
     <button
-      class="button max-lg:flex-1 max-lg:px-3 max-lg:text-sm max-lg:whitespace-nowrap"
+      class="button queue-clear-button max-lg:flex-1 max-lg:px-3 max-lg:text-sm max-lg:whitespace-nowrap"
       data-variant="accent"
       data-umami-event="clear-queue"
       hx-delete={`/queue/players?gamemode=${props.gamemode}`}
       hx-confirm="Are you sure you want to kick everyone from the queue?"
     >
-      <IconEraser />
       <span>Clear queue</span>
     </button>
   )

@@ -17,11 +17,21 @@ import { configuration } from '../../configuration'
 import { environment } from '../../environment'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
-export function NavigationBar() {
+export function NavigationBar(props: { queuePage?: boolean } = {}) {
   const user = requestContext.get('user')
   return (
-    <nav class="relative flex min-h-[64px] flex-row justify-center lg:min-h-[95px]">
-      <div class="container flex flex-row items-center px-2 lg:px-0">
+    <nav
+      class={[
+        'relative flex min-h-[64px] flex-row justify-center lg:min-h-[95px]',
+        props.queuePage ? 'queue-nav' : '',
+      ]}
+    >
+      <div
+        class={[
+          'queue-nav-inner flex flex-row items-center',
+          props.queuePage ? 'w-full px-4' : 'container px-2 lg:px-0',
+        ]}
+      >
         <button
           class="text-abru-light-75 p-3 lg:hidden"
           id="toggle-nav-menu"
@@ -53,7 +63,7 @@ export function NavigationBar() {
           <Menu />
         </div>
 
-        <div class="ml-auto lg:ml-3">
+        <div class={props.queuePage ? 'ml-auto' : 'ml-auto lg:ml-3'}>
           {user ? (
             <>
               <a
@@ -119,7 +129,7 @@ async function Menu() {
         Stats
       </MenuItem>
 
-      <div class="hidden w-8 xl:block" />
+      <div class="nav-menu-spacer hidden w-8 xl:block" />
       <div class="bg-abru-light-10 my-2 h-px lg:hidden" />
 
       <div class="flex flex-row items-center gap-7 p-3 lg:contents">

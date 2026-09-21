@@ -2,172 +2,149 @@
 
 @layer components {
   .queue-slot {
-    background-color: var(--color-abru-light-30);
-    color: var(--color-abru-light-50);
-    height: 58px;
-    border-radius: 8px;
-
     display: flex;
-    flex-flow: row nowrap;
     justify-content: center;
+    min-height: 58px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface-raised);
+
+    &:empty,
+    &:has(> .join-queue-button:disabled) {
+      border-color: transparent;
+      background: repeating-linear-gradient(
+        -45deg,
+        #18181b 0,
+        #18181b 14px,
+        #202023 14px,
+        #202023 28px
+      );
+    }
 
     .join-queue-button {
       display: flex;
-      flex: 1 1 0%;
+      flex: 1;
       align-items: center;
       justify-content: center;
-
-      background-color: var(--color-abru-light-30);
-      color: var(--color-abru-light-30);
-      border-radius: 8px;
-
-      &:has(> svg.icon-tabler-lock) {
-        color: var(--color-abru-light-35);
-      }
+      color: var(--color-abru-light-75);
+      background: linear-gradient(180deg, #3f3f46, #52525b);
 
       &:hover:enabled {
-        background-color: var(--color-abru-light-25);
-        color: var(--color-abru-light-60);
+        background: linear-gradient(180deg, #52525b, #71717a);
+      }
+
+      &:disabled {
+        color: var(--color-text-muted);
+        background: transparent;
       }
     }
 
     .player-info {
-      padding: 8px;
-      flex: 1;
       display: grid;
-      grid-template-columns: 42px 1fr 42px;
+      flex: 1;
+      grid-template-columns: 42px minmax(0, 1fr) 34px;
       align-items: center;
-      background-color: var(--color-abru-light-60);
-      border-radius: 8px;
-      img {
-        border-radius: 4px;
-      }
-
-      .player-name-link {
-        min-width: 0;
-        overflow: hidden;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 4px;
-        margin: 0 4px;
-        color: var(--color-abru-dark-3);
-
-        &:hover .player-name-text {
-          text-decoration: underline;
-        }
-
-        .player-name-text {
-          min-width: 0;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          font-size: 20px;
-          font-weight: 700;
-        }
-      }
+      gap: 8px;
+      min-width: 0;
+      padding: 7px 8px;
+      background: #3f3f46;
+      color: var(--color-ash);
 
       &:has(.leave-queue-button) {
-        background-color: var(--color-abru-light-75);
+        background: #52525b;
       }
 
       &[data-player-ready='true'] {
-        background-color: #0a955b;
+        background: #08785d;
       }
 
-      .player-name-area {
-        min-width: 0;
+      > img {
+        width: 42px;
+        height: 42px;
+        border-radius: 3px;
+        object-fit: cover;
       }
+    }
 
-      .fresh-player-icon {
-        display: flex;
-        align-items: center;
-        color: #16a34a;
-        background-color: #16a34a26;
-        border-radius: 4px;
-        padding: 2px;
-        flex-shrink: 0;
-        overflow: visible;
+    .player-name-area,
+    .player-name-link {
+      min-width: 0;
+    }
 
-        svg {
-          display: block;
-        }
+    .player-name-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      overflow: hidden;
+      color: var(--color-ash);
 
-        .tooltip {
-          text-align: left;
-          min-width: fit-content;
-        }
+      &:hover .player-name-text {
+        text-decoration: underline;
       }
+    }
 
-      .leave-queue-button {
-        @apply transition-colors;
-        @apply duration-75;
+    .player-name-text {
+      overflow: hidden;
+      font-size: 20px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
 
-        display: flex;
-        flex: 1 1 0%;
-        align-items: center;
-        justify-content: center;
+    .fresh-player-icon {
+      display: flex;
+      flex-shrink: 0;
+      align-items: center;
+      padding: 2px;
+      border-radius: 4px;
+      background: #16a34a26;
+      color: #4ade80;
+    }
 
-        height: 34px;
-        width: 34px;
-        border-radius: 4px;
+    .leave-queue-button,
+    .mark-as-friend-button .mark {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 3px;
+      background: var(--color-surface-raised);
+      color: var(--color-ash);
+    }
 
-        background-color: var(--color-abru-light-30);
-        color: var(--color-white);
+    .leave-queue-button:hover,
+    .mark-as-friend-button:hover .mark {
+      background: var(--color-surface-hover);
+    }
 
-        &:hover:enabled {
-          background-color: var(--color-abru-light-35);
-        }
-      }
+    .mark-as-friend-button {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+    }
 
-      .mark-as-friend-button {
-        display: block;
-        position: relative;
-        cursor: pointer;
-        user-select: none;
+    .mark-as-friend-button input {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
 
-        height: 34px;
-        width: 34px;
+    .mark-as-friend-button input:checked ~ .mark {
+      color: var(--color-accent);
+    }
 
-        input[type='checkbox'] {
-          appearance: none;
-          opacity: 0;
-          width: 100%;
-          height: 100%;
-          border-radius: 4px;
-          overflow: hidden;
-        }
+    .mark-as-friend-button input:disabled ~ .mark {
+      color: var(--color-text-muted);
+    }
 
-        .mark {
-          @apply transition-colors;
-          @apply duration-75;
-
-          color: var(--color-abru-dark-20);
-          background-color: var(--color-abru-light-75);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-
-          position: absolute;
-          top: 0;
-          left: 0;
-          height: 100%;
-          width: 100%;
-          border-radius: 4px;
-
-          &:hover {
-            background-color: var(--color-abru-light-70);
-          }
-        }
-
-        input:checked ~ .mark {
-          color: var(--color-accent-600);
-        }
-
-        input:disabled ~ .mark {
-          color: var(--color-abru-light-60);
-        }
-      }
+    .mark-as-friend-button input:focus-visible ~ .mark {
+      outline: 2px solid var(--color-ash);
+      outline-offset: 2px;
     }
   }
 }

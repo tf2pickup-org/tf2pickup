@@ -16,14 +16,14 @@ export function Sidebar(props: { user?: User | undefined; gamemode: Gamemode; re
           </span>
         </button>
 
-        <button class="tab-link" data-tabs-select="tab-online-player-list">
-          <IconUserCircle size={18} />
-          <OnlinePlayerCount />
-        </button>
-
         <button class="tab-link" data-tabs-select="tab-chat">
           <IconMessageCircle size={18} />
           <span>Chat</span>
+        </button>
+
+        <button class="tab-link" data-tabs-select="tab-online-player-list">
+          <IconUserCircle size={18} />
+          <OnlinePlayerCount />
         </button>
       </div>
 

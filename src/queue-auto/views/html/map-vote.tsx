@@ -10,7 +10,7 @@ export async function MapVote(props: { gamemode: Gamemode; actor?: SteamId64 | u
 
   return (
     <form
-      class="grid grid-cols-1 gap-4 md:grid-cols-3"
+      class="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4"
       id="map-vote"
       ws-send
       data-disable-when-offline
@@ -18,6 +18,14 @@ export async function MapVote(props: { gamemode: Gamemode; actor?: SteamId64 | u
       {mapOptions.map(option => (
         <MapVoteButton results={results} map={option.name} actor={props.actor}></MapVoteButton>
       ))}
+      <div class="map-reroll-placeholder">
+        <img class="map-reroll-art" src="/queue/reroll-background.svg" alt="" />
+        <img class="map-reroll-dot" src="/queue/reroll-dot.svg" alt="" />
+        <span class="map-reroll-caption">
+          <span>Reroll maps</span>
+          <span class="map-reroll-status">Unavailable</span>
+        </span>
+      </div>
     </form>
   )
 }
@@ -40,7 +48,7 @@ async function MapVoteButton(props: {
 }) {
   return (
     <button
-      class="map-vote-button text-white"
+      class="map-vote-button"
       name="votemap"
       value={props.map}
       sync-attr:disabled="#isInQueue.value === false"
@@ -49,17 +57,17 @@ async function MapVoteButton(props: {
       data-umami-event="vote-map"
       data-umami-event-map={props.map}
     >
-      <div class="grow"></div>
-      <div class="text-2xl leading-4 font-bold tabular-nums">
-        <MapResult results={props.results} map={props.map} />%
-      </div>
-      <span class="text-2xl font-normal" safe>
-        {props.map}
-      </span>
-
-      <div class="absolute top-0 right-0 bottom-0 left-1/3 -z-10">
+      <div class="map-vote-thumbnail">
         <MapThumbnail map={props.map} />
       </div>
+      <span class="map-vote-copy">
+        <span class="map-vote-percent tabular-nums">
+          <MapResult results={props.results} map={props.map} />%
+        </span>
+        <span class="map-vote-name" safe>
+          {props.map}
+        </span>
+      </span>
     </button>
   )
 }

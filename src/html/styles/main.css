@@ -22,33 +22,39 @@
     Satoshi, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
 
-  --color-abru: #1c1320;
+  --color-abru: #0e0e11;
 
-  --color-abru-light-3: #221d24;
-  --color-abru-light-5: #272129;
-  --color-abru-light-10: #332b36;
-  --color-abru-light-15: #3e3641;
-  --color-abru-light-20: #49424d;
-  --color-abru-light-25: #564d59;
-  --color-abru-light-30: #605b62;
-  --color-abru-light-35: #6b666e;
-  --color-abru-light-50: #8d898f;
-  --color-abru-light-60: #a6a0a6;
-  --color-abru-light-70: #bbb8bc;
-  --color-abru-light-75: #c7c4c7;
-  --color-abru-light-85: #dddcdd;
+  --color-abru-light-3: #18181b;
+  --color-abru-light-5: #202023;
+  --color-abru-light-10: #27272a;
+  --color-abru-light-15: #3f3f46;
+  --color-abru-light-20: #52525b;
+  --color-abru-light-25: #52525b;
+  --color-abru-light-30: #71717a;
+  --color-abru-light-35: #71717a;
+  --color-abru-light-50: #a1a1aa;
+  --color-abru-light-60: #a1a1aa;
+  --color-abru-light-70: #d4d4d8;
+  --color-abru-light-75: #e4e4e7;
+  --color-abru-light-85: #f4f4f5;
 
-  --color-abru-dark-3: #1a161b;
-  --color-abru-dark-6: #19161a;
-  --color-abru-dark-15: #171418;
-  --color-abru-dark-20: #161216;
-  --color-abru-dark-25: #141115;
-  --color-abru-dark-29: #131014;
+  --color-abru-dark-3: #18181b;
+  --color-abru-dark-6: #18181b;
+  --color-abru-dark-15: #141417;
+  --color-abru-dark-20: #141417;
+  --color-abru-dark-25: #0e0e11;
+  --color-abru-dark-29: #0e0e11;
+
+  --color-surface: #18181b;
+  --color-surface-raised: #27272a;
+  --color-surface-hover: #3f3f46;
+  --color-border: #3f3f46;
+  --color-text-muted: #a1a1aa;
 
   --color-accent-600: #f61059;
   --color-accent: #f61059;
 
-  --color-ash: #f4f4ed;
+  --color-ash: #f4f4f5;
   --color-alert: #ff9e1f;
   --color-steam: #6f9f31;
   --color-team-blu: rgb(88 121 138);
@@ -99,18 +105,8 @@
 
 @layer base {
   body {
-    background-color: #221d24;
-    background-image: url('/bg.png');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-  }
-
-  @media only screen and (min-width: 1700px) {
-    body {
-      background-image: url('/bg@2x.png');
-    }
+    background-color: var(--color-abru);
+    color: var(--color-ash);
   }
 
   table,

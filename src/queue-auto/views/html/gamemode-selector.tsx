@@ -19,40 +19,27 @@ export async function GamemodeSelector(props: { active: Gamemode }) {
   }
 
   return (
-    <div id="gamemode-selector" class="flex flex-col gap-1">
-      <span class="text-abru-light-60 text-sm font-bold tracking-wider uppercase">Gamemode</span>
-      <div
-        class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
-        role="tablist"
-        aria-label="Gamemode"
-      >
+    <nav id="gamemode-selector" class="gamemode-selector" aria-label="Gamemode">
+      <div class="gamemode-options">
         {enabledGamemodes.map(gamemode => (
           <a
-            class={[
-              'relative flex flex-row items-baseline justify-between gap-2 rounded-md border p-4 pb-6',
-              gamemode === props.active
-                ? 'border-accent-600 bg-abru-dark-29'
-                : 'bg-abru-dark-25 hover:bg-abru-dark-29 border-transparent',
-            ]}
-            role="tab"
+            class="gamemode-option"
             href={queuePageUrl(gamemode)}
             hx-target={queueTarget}
             hx-select={queueTarget}
             hx-select-oob={queueRelatedTargets}
             hx-swap="outerHTML"
-            aria-selected={gamemode === props.active ? 'true' : 'false'}
+            aria-current={gamemode === props.active ? 'page' : undefined}
             aria-label={`${gamemodeDisplayName(gamemode)} queue`}
             data-umami-event="switch-queue-gamemode"
             data-umami-event-gamemode={gamemode}
           >
-            <span class="font-bold text-white" safe>
-              {gamemodeDisplayName(gamemode)}
-            </span>
+            <span safe>{gamemodeDisplayName(gamemode)}</span>
             <GamemodeQueueGauge gamemode={gamemode} />
           </a>
         ))}
       </div>
-    </div>
+    </nav>
   )
 }
 
@@ -69,18 +56,8 @@ export async function GamemodeQueueGauge(props: { gamemode: Gamemode }) {
 
   return (
     <span id={`gamemode-queue-gauge-${props.gamemode}`} class="contents">
-      {full ? (
-        <span class="text-sm leading-none font-bold text-green-500">READY</span>
-      ) : (
-        <span class="text-ash text-sm">
-          {current}/{capacity}
-        </span>
-      )}
-      <span class="bg-abru-light-15 absolute inset-x-4 bottom-2 h-1 overflow-hidden rounded-xs">
-        <span
-          class="bg-accent-600 absolute inset-y-0 left-0 rounded-xs"
-          style={`width: ${capacity > 0 ? Math.round((current / capacity) * 100).toString() : '0'}%`}
-        ></span>
+      <span class="sr-only" safe>
+        {full ? 'Ready' : `${current}/${capacity} players`}
       </span>
     </span>
   )
