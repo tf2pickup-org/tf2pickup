@@ -256,6 +256,28 @@ jobs:
           path: blob-report
           retention-days: 1
 
+  e2e-required:
+    # Branch protection requires these names, while the test jobs include shard numbers.
+    name: end to end (${{ matrix.queue-config }})
+    if: ${{ always() }}
+    needs: [changes, e2e-tests]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        queue-config: ['6v6', '9v9']
+    steps:
+      - name: Verify end-to-end shard results
+        env:
+          changesResult: ${{ needs.changes.result }}
+          codeChanged: ${{ needs.changes.outputs.code }}
+          e2eResult: ${{ needs.e2e-tests.result }}
+        run: |
+          test "$changesResult" = success
+          if [ "$codeChanged" = true ]; then
+            test "$e2eResult" = success
+          fi
+
   merge-reports:
     if: ${{ !cancelled() }}
     needs: [e2e-tests]

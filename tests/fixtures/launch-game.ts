@@ -87,9 +87,11 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
       try {
         await gameServer.sendHeartbeat()
 
+        const lastPlayer = players.at(-1)!
+        const playersToReadyUp = players.slice(0, -1)
         const batchSize = 6
-        for (let i = 0; i < players.length; i += batchSize) {
-          const batch = players.slice(i, i + batchSize)
+        for (let i = 0; i < playersToReadyUp.length; i += batchSize) {
+          const batch = playersToReadyUp.slice(i, i + batchSize)
           await Promise.all(
             batch.map(async user => {
               const page = await user.queuePage()
@@ -100,13 +102,20 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
           )
         }
 
+        // The player who fills the final slot is automatically readied by the queue.
+        const lastQueuePage = await lastPlayer.queuePage()
+        await lastQueuePage.goto()
+        await lastQueuePage.slot(desiredSlots.get(lastPlayer.playerName)!).join()
+
         await Promise.all(
           players.map(async user => {
             const queuePage = await user.queuePage()
             const page = await user.page()
             const slot = desiredSlots.get(user.playerName)!
 
-            await queuePage.readyUp(slot)
+            if (user !== lastPlayer) {
+              await queuePage.readyUp(slot)
+            }
             await page.waitForURL(/games\/(\d+)/)
           }),
         )
