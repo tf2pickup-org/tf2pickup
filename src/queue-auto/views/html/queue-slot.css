@@ -2,13 +2,19 @@
 
 @layer components {
   .queue-slot {
+    position: relative;
     display: flex;
     justify-content: center;
     min-height: 58px;
-    overflow: hidden;
+    overflow: visible;
     border: 1px solid var(--color-border);
     border-radius: 8px;
     background: var(--color-surface-raised);
+
+    &:hover,
+    &:focus-within {
+      z-index: 2;
+    }
 
     &:has(> .player-info) {
       border-color: var(--color-zinc-600);
@@ -45,6 +51,7 @@
       flex: 1;
       align-items: center;
       justify-content: center;
+      border-radius: 7px;
       color: var(--color-zinc-200);
       background: transparent;
 
@@ -79,6 +86,7 @@
       gap: 8px;
       min-width: 0;
       padding: 7px 8px;
+      border-radius: 7px;
       background: var(--color-zinc-700);
       color: var(--color-zinc-100);
 

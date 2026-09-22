@@ -47,7 +47,7 @@ export function NavigationBar(props: { queuePage?: boolean } = {}) {
           </span>
         </button>
 
-        <a href="/" class="self-center lg:mx-1">
+        <a href="/" class={['self-center', !props.queuePage && 'lg:mx-1']}>
           <img
             alt={`${environment.WEBSITE_NAME} logo`}
             src="/logo.png"

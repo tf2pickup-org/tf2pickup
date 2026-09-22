@@ -10,7 +10,7 @@ export async function MapVote(props: { gamemode: Gamemode; actor?: SteamId64 | u
 
   return (
     <form
-      class="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4"
+      class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4"
       id="map-vote"
       ws-send
       data-disable-when-offline
