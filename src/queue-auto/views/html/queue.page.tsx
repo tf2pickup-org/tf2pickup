@@ -122,6 +122,13 @@ async function Queue(props: {
   actor?: SteamId64 | undefined
 }) {
   const config = getQueueConfig(props.gamemode)
+  const positions = config.classes.flatMap(gameClass =>
+    Array.from({ length: gameClass.count }, (_, classIndex) => ({
+      gameClass: gameClass.name,
+      classIndex,
+      classCount: gameClass.count,
+    })),
+  )
   const gridCols =
     config.classes.length > 4
       ? 'xl:grid-cols-3'
@@ -138,6 +145,47 @@ async function Queue(props: {
         'roles',
       ])
     : undefined
+
+  if (positions.length === 2) {
+    const teamNames = ['BLU', 'RED'] as const
+    const slotsByClass = new Map(
+      config.classes.map(gameClass => [
+        gameClass.name,
+        props.slots.filter(slot => slot.gameClass === gameClass.name),
+      ]),
+    )
+    const teamSlots = teamNames.map((_, teamIndex) =>
+      positions.map(position => {
+        const classSlots = slotsByClass.get(position.gameClass) ?? []
+        return classSlots[teamIndex * position.classCount + position.classIndex]
+      }),
+    )
+
+    return (
+      <form class="queue-compact-grid" ws-send data-disable-when-offline>
+        <div class="queue-team-heading-spacer" aria-hidden="true"></div>
+        {positions.map(position => (
+          <h2 class="queue-class-heading">
+            <GameClassIcon gameClass={position.gameClass} size={32} />
+            <span>{position.gameClass}</span>
+          </h2>
+        ))}
+
+        {teamNames.map((teamName, teamIndex) => (
+          <div class="queue-team-row">
+            <div class="queue-team-summary">
+              <span>{teamName}</span>
+              <span>
+                {teamSlots[teamIndex]?.filter(slot => slot?.player).length ?? 0}/{positions.length}
+              </span>
+            </div>
+            {teamSlots[teamIndex]?.map(slot => slot && <QueueSlot slot={slot} actor={actor} />)}
+          </div>
+        ))}
+      </form>
+    )
+  }
+
   return (
     <form
       id="queue"
