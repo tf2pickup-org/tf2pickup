@@ -60,7 +60,7 @@ export function NavigationBar(props: { queuePage?: boolean } = {}) {
           id="nav-menu"
           class="hidden flex-row items-center gap-5 font-medium max-lg:fixed max-lg:inset-x-0 max-lg:top-16 max-lg:bottom-0 max-lg:z-40 max-lg:flex-col max-lg:items-stretch max-lg:overflow-y-auto max-lg:bg-zinc-950/85 max-lg:py-4 lg:ml-auto lg:flex"
         >
-          <Menu />
+          <Menu queuePage={props.queuePage === true} />
         </div>
 
         <div class={props.queuePage ? 'ml-auto' : 'ml-auto lg:ml-3'}>
@@ -109,12 +109,17 @@ export function NavigationBar(props: { queuePage?: boolean } = {}) {
   )
 }
 
-async function Menu() {
+async function Menu(props: { queuePage: boolean }) {
   const user = requestContext.get('user')
   const discordInvite = await configuration.get('misc.discord_invite_link')
 
   return (
-    <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
+    <div
+      class={[
+        'flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center',
+        props.queuePage ? 'lg:px-[11px]' : 'lg:px-0',
+      ]}
+    >
       <GamesLink />
       <MenuItem href="/players">Players</MenuItem>
       <MenuItem href="/rules">Rules</MenuItem>
