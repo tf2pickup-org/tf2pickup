@@ -13,7 +13,7 @@ test('serves a queue page per enabled gamemode with a switcher @multi', async ({
 
   await expect(sixes.header()).toContainText('0/12')
   await expect(sixes.gamemodeSwitcher()).toBeVisible()
-  await expect(sixes.gamemodeTab('6v6')).toHaveAttribute('aria-selected', 'true')
+  await expect(sixes.gamemodeTab('6v6')).toHaveAttribute('aria-current', 'page')
 
   const sidebar = page.locator('.queue-sidebar')
   const navMenu = page.locator('#nav-menu')
@@ -35,7 +35,7 @@ test('serves a queue page per enabled gamemode with a switcher @multi', async ({
 
   const highlander = new QueuePage(page, '9v9')
   await expect(highlander.header()).toContainText('0/18')
-  await expect(highlander.gamemodeTab('9v9')).toHaveAttribute('aria-selected', 'true')
+  await expect(highlander.gamemodeTab('9v9')).toHaveAttribute('aria-current', 'page')
   await expect(sidebar).toHaveAttribute('data-gamemode-switch-sentinel', 'preserved')
   await expect(navMenu).toHaveAttribute('data-gamemode-switch-sentinel', 'preserved')
 

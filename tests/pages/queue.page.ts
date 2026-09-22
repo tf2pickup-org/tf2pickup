@@ -104,15 +104,15 @@ export class QueuePage {
   }
 
   header() {
-    return this.page.getByRole('heading', { name: /Players: \d+\/\d+/ })
+    return this.page.getByRole('heading', { name: /Players \d+\/\d+/ })
   }
 
   gamemodeSwitcher() {
-    return this.page.getByRole('tablist', { name: 'Gamemode' })
+    return this.page.getByRole('navigation', { name: 'Gamemode' })
   }
 
   gamemodeTab(name: string) {
-    return this.page.getByRole('tab', { name: `${name} queue` })
+    return this.page.getByRole('link', { name: `${name} queue` })
   }
 
   slot(slot: SlotId) {
