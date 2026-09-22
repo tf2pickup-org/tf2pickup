@@ -139,6 +139,17 @@ describe('QueueSlot', () => {
       expect(anotherPlayersSlot.querySelector('.queue-slot-own')).toBeNull()
     })
 
+    it('shows the ready state and keeps the owner’s leave action', async () => {
+      const readySlot = { ...occupiedSlot, ready: true }
+      const ownSlot = parse(await QueueSlot({ slot: readySlot, actor }))
+      const anotherPlayersSlot = parse(await QueueSlot({ slot: readySlot }))
+
+      expect(ownSlot.querySelector('.queue-slot-own.queue-slot-ready')).not.toBeNull()
+      expect(ownSlot.querySelector('.leave-queue-button')).not.toBeNull()
+      expect(anotherPlayersSlot.querySelector('.queue-slot-ready')).not.toBeNull()
+      expect(anotherPlayersSlot.querySelector('.queue-slot-own')).toBeNull()
+    })
+
     it('sets data-player attribute to the player steamId', async () => {
       const html = await QueueSlot({ slot: occupiedSlot })
       const root = parse(html)

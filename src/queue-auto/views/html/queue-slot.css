@@ -10,9 +10,29 @@
     border-radius: 8px;
     background: var(--color-surface-raised);
 
+    &:has(> .player-info) {
+      border-color: #52525b;
+    }
+
     &.queue-slot-own {
+      border-color: #71717a;
+      background: #52525b;
+    }
+
+    &.queue-slot-ready {
       border-color: #059669;
       background: #047857;
+    }
+
+    &:has(> .join-queue-button:disabled) {
+      border-color: transparent;
+      background: repeating-linear-gradient(
+        -45deg,
+        #18181b 0,
+        #18181b 14px,
+        #202023 14px,
+        #202023 28px
+      );
     }
 
     &:has(> .join-queue-button:hover:enabled),
@@ -62,10 +82,6 @@
       background: #3f3f46;
       color: var(--color-ash);
 
-      &[data-player-ready='true'] {
-        background: #08785d;
-      }
-
       > img {
         width: 42px;
         height: 42px;
@@ -75,6 +91,10 @@
     }
 
     &.queue-slot-own .player-info {
+      background: #52525b;
+    }
+
+    &.queue-slot-ready .player-info {
       background: #047857;
     }
 
@@ -131,11 +151,12 @@
       background: var(--color-surface-hover);
     }
 
-    &.queue-slot-own .leave-queue-button {
-      background: #022c22;
+    &.queue-slot-ready .leave-queue-button,
+    &.queue-slot-ready .mark-as-friend-button .mark {
+      background: #064e3b;
 
       &:hover {
-        background: #064e3b;
+        background: #065f46;
       }
     }
 
