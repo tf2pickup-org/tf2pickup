@@ -10,16 +10,14 @@
     border-radius: 8px;
     background: var(--color-surface-raised);
 
-    &:empty,
-    &:has(> .join-queue-button:disabled) {
-      border-color: transparent;
-      background: repeating-linear-gradient(
-        -45deg,
-        #18181b 0,
-        #18181b 14px,
-        #202023 14px,
-        #202023 28px
-      );
+    &.queue-slot-own {
+      border-color: #059669;
+      background: #047857;
+    }
+
+    &:has(> .join-queue-button:hover:enabled),
+    &:has(> .join-queue-button:focus-visible) {
+      border-color: #52525b;
     }
 
     .join-queue-button {
@@ -28,32 +26,41 @@
       align-items: center;
       justify-content: center;
       color: var(--color-abru-light-75);
-      background: linear-gradient(180deg, #3f3f46, #52525b);
+      background: transparent;
 
-      &:hover:enabled {
-        background: linear-gradient(180deg, #52525b, #71717a);
+      > svg {
+        opacity: 0;
+      }
+
+      &:hover:enabled,
+      &:focus-visible {
+        background: linear-gradient(180deg, #3f3f46, #52525b);
+
+        > svg {
+          opacity: 1;
+        }
       }
 
       &:disabled {
         color: var(--color-text-muted);
         background: transparent;
+
+        > svg {
+          opacity: 1;
+        }
       }
     }
 
     .player-info {
       display: grid;
       flex: 1;
-      grid-template-columns: 42px minmax(0, 1fr) 34px;
+      grid-template-columns: 42px minmax(0, 1fr) 42px;
       align-items: center;
       gap: 8px;
       min-width: 0;
       padding: 7px 8px;
       background: #3f3f46;
       color: var(--color-ash);
-
-      &:has(.leave-queue-button) {
-        background: #52525b;
-      }
 
       &[data-player-ready='true'] {
         background: #08785d;
@@ -65,6 +72,10 @@
         border-radius: 3px;
         object-fit: cover;
       }
+    }
+
+    &.queue-slot-own .player-info {
+      background: #047857;
     }
 
     .player-name-area,
@@ -108,8 +119,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 34px;
-      height: 34px;
+      width: 42px;
+      height: 42px;
       border-radius: 3px;
       background: var(--color-surface-raised);
       color: var(--color-ash);
@@ -120,10 +131,18 @@
       background: var(--color-surface-hover);
     }
 
+    &.queue-slot-own .leave-queue-button {
+      background: #022c22;
+
+      &:hover {
+        background: #064e3b;
+      }
+    }
+
     .mark-as-friend-button {
       position: relative;
-      width: 34px;
-      height: 34px;
+      width: 42px;
+      height: 42px;
       cursor: pointer;
     }
 

@@ -30,6 +30,7 @@ type Actor =
   Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'> | undefined
 
 export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) {
+  const isOwnSlot = !!props.actor && props.slot.player?.steamId === props.actor.steamId
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
@@ -54,7 +55,7 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) 
 
   return (
     <div
-      class="queue-slot"
+      class={isOwnSlot ? 'queue-slot queue-slot-own' : 'queue-slot'}
       id={`queue-slot-${props.slot.id}`}
       aria-label={`Queue slot ${props.slot.id}`}
       data-player={props.slot.player?.steamId}
