@@ -44,7 +44,7 @@ function FeaturedStream(props: StreamModel) {
       data-umami-event-streamer={props.userName}
     >
       <img src={thumbnail} alt="stream thumbnail" class="rounded-xs" width="177" height="100" />
-      <div class="text-abru-light-75 flex flex-col justify-center font-medium">
+      <div class="flex flex-col justify-center font-medium text-zinc-200">
         <span class="text-lg" safe>
           {props.userName}
         </span>
@@ -70,10 +70,10 @@ function CompactStream(props: StreamModel) {
       data-umami-event="watch-stream"
       data-umami-event-streamer={props.userName}
     >
-      <span class="text-abru-light-75 truncate text-lg font-medium" safe>
+      <span class="truncate text-lg font-medium text-zinc-200" safe>
         {props.userName}
       </span>
-      <span class="text-abru-light-75 flex shrink-0 flex-row items-center gap-1.5 text-sm font-medium">
+      <span class="flex shrink-0 flex-row items-center gap-1.5 text-sm font-medium text-zinc-200">
         <IconEye size={18} />
         {props.viewerCount}
       </span>

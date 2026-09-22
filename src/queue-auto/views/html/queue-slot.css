@@ -11,33 +11,33 @@
     background: var(--color-surface-raised);
 
     &:has(> .player-info) {
-      border-color: #52525b;
+      border-color: var(--color-zinc-600);
     }
 
     &.queue-slot-own {
-      border-color: #71717a;
-      background: #52525b;
+      border-color: var(--color-zinc-500);
+      background: var(--color-zinc-600);
     }
 
     &.queue-slot-ready {
-      border-color: #059669;
-      background: #047857;
+      border-color: var(--color-emerald-600);
+      background: var(--color-emerald-700);
     }
 
     &:has(> .join-queue-button:disabled) {
       border-color: transparent;
       background: repeating-linear-gradient(
         -45deg,
-        #18181b 0,
-        #18181b 14px,
-        #202023 14px,
-        #202023 28px
+        var(--color-zinc-900) 0,
+        var(--color-zinc-900) 14px,
+        var(--color-zinc-850) 14px,
+        var(--color-zinc-850) 28px
       );
     }
 
     &:has(> .join-queue-button:hover:enabled),
     &:has(> .join-queue-button:focus-visible) {
-      border-color: #52525b;
+      border-color: var(--color-zinc-600);
     }
 
     .join-queue-button {
@@ -45,7 +45,7 @@
       flex: 1;
       align-items: center;
       justify-content: center;
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
       background: transparent;
 
       > svg {
@@ -54,7 +54,7 @@
 
       &:hover:enabled,
       &:focus-visible {
-        background: linear-gradient(180deg, #3f3f46, #52525b);
+        background: linear-gradient(180deg, var(--color-zinc-700), var(--color-zinc-600));
 
         > svg {
           opacity: 1;
@@ -79,8 +79,8 @@
       gap: 8px;
       min-width: 0;
       padding: 7px 8px;
-      background: #3f3f46;
-      color: var(--color-ash);
+      background: var(--color-zinc-700);
+      color: var(--color-zinc-100);
 
       > img {
         width: 42px;
@@ -91,11 +91,11 @@
     }
 
     &.queue-slot-own .player-info {
-      background: #52525b;
+      background: var(--color-zinc-600);
     }
 
     &.queue-slot-ready .player-info {
-      background: #047857;
+      background: var(--color-emerald-700);
     }
 
     .player-name-area,
@@ -109,7 +109,7 @@
       justify-content: center;
       gap: 4px;
       overflow: hidden;
-      color: var(--color-ash);
+      color: var(--color-zinc-100);
 
       &:hover .player-name-text {
         text-decoration: underline;
@@ -143,7 +143,7 @@
       height: 42px;
       border-radius: 3px;
       background: var(--color-surface-raised);
-      color: var(--color-ash);
+      color: var(--color-zinc-100);
     }
 
     .leave-queue-button:hover,
@@ -153,10 +153,10 @@
 
     &.queue-slot-ready .leave-queue-button,
     &.queue-slot-ready .mark-as-friend-button .mark {
-      background: #064e3b;
+      background: var(--color-emerald-900);
 
       &:hover {
-        background: #065f46;
+        background: var(--color-emerald-800);
       }
     }
 
@@ -175,7 +175,7 @@
     }
 
     .mark-as-friend-button input:checked ~ .mark {
-      color: var(--color-accent);
+      color: var(--color-crimson-600);
     }
 
     .mark-as-friend-button input:disabled ~ .mark {
@@ -183,7 +183,7 @@
     }
 
     .mark-as-friend-button input:focus-visible ~ .mark {
-      outline: 2px solid var(--color-ash);
+      outline: 2px solid var(--color-zinc-100);
       outline-offset: 2px;
     }
   }

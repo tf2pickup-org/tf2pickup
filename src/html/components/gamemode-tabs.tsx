@@ -22,7 +22,7 @@ export function GamemodeTabs(props: {
 
   return (
     <div
-      class="border-abru-light-15 bg-abru-dark-25 inline-flex flex-row flex-wrap gap-1 rounded-lg border p-1"
+      class="inline-flex flex-row flex-wrap gap-1 rounded-lg border border-zinc-700 bg-zinc-950 p-1"
       role="tablist"
     >
       {enabledGamemodes.map(tab => {
@@ -30,7 +30,7 @@ export function GamemodeTabs(props: {
         const commonAttrs = {
           class: [
             'rounded-md px-3 py-1.5 text-sm leading-none font-bold whitespace-nowrap',
-            active ? 'bg-accent text-white' : 'text-abru-light-60 hover:text-white',
+            active ? 'bg-crimson-600 text-white' : 'text-zinc-400 hover:text-white',
           ],
           role: 'tab',
           'aria-selected': active ? 'true' : 'false',

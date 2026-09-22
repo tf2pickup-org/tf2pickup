@@ -120,7 +120,7 @@
   .gamemode-option:hover,
   .gamemode-option[aria-current='page'] {
     background: var(--color-surface-raised);
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
   }
 
   .queue-state {
@@ -138,7 +138,7 @@
 
   .queue-player-count {
     padding: 0 18px;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     font-size: 16px;
     font-weight: 500;
     white-space: nowrap;
@@ -158,8 +158,8 @@
   }
 
   .queue-state-actions .queue-clear-button {
-    border: 1px solid var(--color-accent);
-    background: #c00c45;
+    border: 1px solid var(--color-crimson-600);
+    background: var(--color-crimson-700);
   }
 
   .queue-state-actions #pre-ready-up-button {
@@ -195,7 +195,7 @@
     justify-content: center;
     gap: 8px;
     height: 34px;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     font-size: 24px;
     font-weight: 700;
   }

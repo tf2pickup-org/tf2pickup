@@ -26,7 +26,7 @@ export async function PlayerSkillThreshold(props: { gamemode: Gamemode }) {
         />
         <span class="hidden group-has-checked:inline-block">enabled</span>
         <span class="group-has-checked:hidden">disabled</span>
-        <span class="text-abru-light-35 text-sm font-normal" safe>
+        <span class="text-sm font-normal text-zinc-500" safe>
           {gamemodeDisplayName(gamemode)}
         </span>
         <span class="grow"></span>
@@ -54,7 +54,7 @@ export async function PlayerSkillThreshold(props: { gamemode: Gamemode }) {
             data-toggle-disabled-checked="true"
           />
         </div>
-        <p class="text-abru-light-75 text-sm">
+        <p class="text-sm text-zinc-200">
           Players will be able to join queue only on classes that meet the given criteria.
         </p>
       </dd>

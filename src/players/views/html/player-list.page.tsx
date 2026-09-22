@@ -35,7 +35,7 @@ export async function PlayerListPage() {
       <NavigationBar />
       <Page>
         <div class="container mx-auto">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Players</div>
+          <div class="my-9 text-[48px] font-bold text-zinc-200">Players</div>
 
           <div class="player-list-index">
             {groups.map(letter => (

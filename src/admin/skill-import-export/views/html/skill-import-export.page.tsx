@@ -10,7 +10,7 @@ export async function SkillImportExportPage() {
       <div class="admin-panel-set flex flex-col gap-6">
         <section>
           <h2 class="mb-2 text-lg font-bold">Export player skills</h2>
-          <p class="text-abru-light-75 mb-4 text-sm">
+          <p class="mb-4 text-sm text-zinc-200">
             Download a CSV file containing all players' skills. The file will include columns for
             steamId, name, and skill values for: {classNames.join(', ') as 'safe'}.
           </p>
@@ -24,11 +24,11 @@ export async function SkillImportExportPage() {
           </a>
         </section>
 
-        <hr class="border-abru-dark-29" />
+        <hr class="border-zinc-950" />
 
         <section>
           <h2 class="mb-2 text-lg font-bold">Import player skills</h2>
-          <p class="text-abru-light-75 mb-4 text-sm">
+          <p class="mb-4 text-sm text-zinc-200">
             Upload a modified CSV file to update player skills. You'll see a preview of changes
             before applying them.
           </p>
@@ -48,7 +48,7 @@ export async function SkillImportExportPage() {
                 name="file"
                 accept=".csv,text/csv"
                 required
-                class="file:bg-abru-dark-29 hover:file:bg-abru-dark-35 block w-full text-sm file:mr-4 file:rounded file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                class="block w-full text-sm file:mr-4 file:rounded file:border-0 file:bg-zinc-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-zinc-950"
               />
             </div>
             <div>

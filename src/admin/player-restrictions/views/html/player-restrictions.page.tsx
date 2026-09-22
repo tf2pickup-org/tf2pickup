@@ -36,11 +36,11 @@ async function RequireEtf2lAccount() {
     <div class="group flex flex-row items-center justify-between">
       <dl>
         <dt>
-          <label class="text-abru-light-75" for="etf2lAccountRequired">
+          <label class="text-zinc-200" for="etf2lAccountRequired">
             Require ETF2L account
           </label>
         </dt>
-        <dd class="text-abru-light-75">
+        <dd class="text-zinc-200">
           <span class="hidden group-has-checked:inline-block">
             Players that do not have an ETF2L profile will not be able to register
           </span>
@@ -82,11 +82,11 @@ async function RequirePlayerVerification() {
     <div class="group flex flex-row items-center justify-between">
       <dl>
         <dt>
-          <label class="text-abru-light-75" for="requirePlayerVerification">
+          <label class="text-zinc-200" for="requirePlayerVerification">
             Require player verification
           </label>
         </dt>
-        <dd class="text-abru-light-75">
+        <dd class="text-zinc-200">
           <span class="hidden group-has-checked:inline-block">
             Players must be manually verified by an admin before they can join the queue
           </span>
@@ -121,7 +121,7 @@ async function SkillStep() {
             min="0.1"
           />
         </div>
-        <p class="text-abru-light-75 text-sm">
+        <p class="text-sm text-zinc-200">
           Increment/decrement step when adjusting player skill in the admin panel.
         </p>
       </dd>
@@ -135,12 +135,11 @@ async function SkillSuggestions() {
     <div class="group flex flex-row items-center justify-between">
       <dl>
         <dt>
-          <label class="text-abru-light-75" for="skillSuggestions">
-            Skill suggestions{' '}
-            <span class="text-abru-light-35 text-xs font-normal">experimental</span>
+          <label class="text-zinc-200" for="skillSuggestions">
+            Skill suggestions <span class="text-xs font-normal text-zinc-500">experimental</span>
           </label>
         </dt>
-        <dd class="text-abru-light-75">
+        <dd class="text-zinc-200">
           <span class="hidden group-has-checked:inline-block">
             Skill adjustment suggestions are shown in the admin toolbox
           </span>

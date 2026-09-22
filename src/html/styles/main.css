@@ -22,39 +22,20 @@
     Satoshi, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
     'Segoe UI Symbol', 'Noto Color Emoji';
 
-  --color-abru: #0e0e11;
+  /* Figma's page background and two intermediate surfaces sit between zinc shades. */
+  --color-zinc-950: #0e0e11;
+  --color-zinc-925: #141417;
+  --color-zinc-850: #202023;
 
-  --color-abru-light-3: #18181b;
-  --color-abru-light-5: #202023;
-  --color-abru-light-10: #27272a;
-  --color-abru-light-15: #3f3f46;
-  --color-abru-light-20: #52525b;
-  --color-abru-light-25: #52525b;
-  --color-abru-light-30: #71717a;
-  --color-abru-light-35: #71717a;
-  --color-abru-light-50: #a1a1aa;
-  --color-abru-light-60: #a1a1aa;
-  --color-abru-light-70: #d4d4d8;
-  --color-abru-light-75: #e4e4e7;
-  --color-abru-light-85: #f4f4f5;
+  --color-surface: var(--color-zinc-900);
+  --color-surface-raised: var(--color-zinc-800);
+  --color-surface-hover: var(--color-zinc-700);
+  --color-border: var(--color-zinc-700);
+  --color-text-muted: var(--color-zinc-400);
 
-  --color-abru-dark-3: #18181b;
-  --color-abru-dark-6: #18181b;
-  --color-abru-dark-15: #141417;
-  --color-abru-dark-20: #141417;
-  --color-abru-dark-25: #0e0e11;
-  --color-abru-dark-29: #0e0e11;
+  --color-crimson-600: #f61059;
+  --color-crimson-700: #c00c45;
 
-  --color-surface: #18181b;
-  --color-surface-raised: #27272a;
-  --color-surface-hover: #3f3f46;
-  --color-border: #3f3f46;
-  --color-text-muted: #a1a1aa;
-
-  --color-accent-600: #f61059;
-  --color-accent: #f61059;
-
-  --color-ash: #f4f4f5;
   --color-alert: #ff9e1f;
   --color-steam: #6f9f31;
   --color-team-blu: rgb(88 121 138);
@@ -105,15 +86,15 @@
 
 @layer base {
   body {
-    background-color: var(--color-abru);
-    color: var(--color-ash);
+    background-color: var(--color-zinc-950);
+    color: var(--color-zinc-100);
   }
 
   table,
   .table {
     thead,
     .table-header-group {
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
     }
 
     td,
@@ -124,7 +105,7 @@
 
   label {
     font-weight: 600;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
   }
 
   dl {
@@ -138,13 +119,13 @@
   input[type='url'],
   select,
   textarea {
-    background-color: var(--color-abru-light-5);
+    background-color: var(--color-zinc-850);
     border-radius: 4px;
     padding: 4px 8px;
     color: #ffffff;
 
     &:disabled {
-      color: var(--color-abru-light-50);
+      color: var(--color-zinc-400);
     }
   }
 
@@ -174,7 +155,7 @@
       width: 18px;
       margin-top: -5px;
       border-radius: 50%;
-      background-color: var(--color-accent);
+      background-color: var(--color-crimson-600);
       cursor: pointer;
       border: none;
     }
@@ -183,28 +164,28 @@
       height: 18px;
       width: 18px;
       border-radius: 50%;
-      background-color: var(--color-accent);
+      background-color: var(--color-crimson-600);
       cursor: pointer;
       border: none;
     }
 
     &:hover::-webkit-slider-thumb {
-      background-color: color-mix(in hsl, var(--color-accent), black 10%);
+      background-color: color-mix(in hsl, var(--color-crimson-600), black 10%);
     }
 
     &:hover::-moz-range-thumb {
-      background-color: color-mix(in hsl, var(--color-accent), black 10%);
+      background-color: color-mix(in hsl, var(--color-crimson-600), black 10%);
     }
 
     &:focus::-webkit-slider-thumb {
-      border: 1px solid var(--color-accent);
-      outline: 3px solid var(--color-accent);
+      border: 1px solid var(--color-crimson-600);
+      outline: 3px solid var(--color-crimson-600);
       outline-offset: 0.125rem;
     }
 
     &:focus::-moz-range-thumb {
-      border: 1px solid var(--color-accent);
-      outline: 3px solid var(--color-accent);
+      border: 1px solid var(--color-crimson-600);
+      outline: 3px solid var(--color-crimson-600);
       outline-offset: 0.125rem;
     }
 
@@ -212,7 +193,7 @@
       width: 100%;
       height: 8px;
       cursor: pointer;
-      background-color: var(--color-abru-light-5);
+      background-color: var(--color-zinc-850);
       border-radius: 4px;
     }
 
@@ -220,7 +201,7 @@
       width: 100%;
       height: 8px;
       cursor: pointer;
-      background-color: var(--color-abru-light-5);
+      background-color: var(--color-zinc-850);
       border-radius: 4px;
     }
   }

@@ -56,7 +56,7 @@
       border-radius: 8px 8px 0 0;
       margin-top: 16px;
 
-      color: var(--color-ash);
+      color: var(--color-zinc-100);
 
       @media (width >= theme(--breakpoint-xl)) {
         margin-top: 0;
@@ -233,7 +233,7 @@
         padding: 10px;
 
         &.active {
-          background-color: var(--color-abru-light-60);
+          background-color: var(--color-zinc-400);
 
           .class-icon {
             @media (width >= theme(--breakpoint-lg)) {
@@ -290,8 +290,8 @@
         }
 
         &.waiting-for-substitute {
-          background-color: var(--color-abru-light-30);
-          color: var(--color-abru-light-60);
+          background-color: var(--color-zinc-500);
+          color: var(--color-zinc-400);
         }
       }
     }
@@ -308,10 +308,10 @@
   }
 
   .game-summary-caption {
-    background: linear-gradient(180deg, transparent 35%, var(--color-abru-dark-29) 90%);
+    background: linear-gradient(180deg, transparent 35%, var(--color-zinc-950) 90%);
 
     .game-floating-label {
-      background: color-mix(in srgb, var(--color-abru) 90%, transparent);
+      background: color-mix(in srgb, var(--color-zinc-950) 90%, transparent);
       position: absolute;
       height: 28px;
       display: flex;
@@ -336,7 +336,7 @@
     display: flex;
     flex-flow: column nowrap;
 
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
 
     .game-info-label {
       font-weight: 300;
@@ -354,12 +354,12 @@
     gap: 16px;
     border-radius: 4px;
     border-width: 1px;
-    border-color: var(--color-abru-light-25);
-    background-color: var(--color-abru-light-5);
+    border-color: var(--color-zinc-600);
+    background-color: var(--color-zinc-850);
     padding: 10px 12px;
     font-size: 16px;
     font-weight: 500;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     min-width: 0px;
 
     .content {
@@ -371,8 +371,8 @@
       user-select: all;
       overflow: hidden;
       white-space: nowrap;
-      background-color: var(--color-abru-light-5);
-      color: var(--color-abru-light-75);
+      background-color: var(--color-zinc-850);
+      color: var(--color-zinc-200);
     }
   }
 
@@ -391,10 +391,10 @@
     font-weight: 700;
     text-transform: uppercase;
 
-    background-color: var(--color-abru-light-3);
+    background-color: var(--color-zinc-900);
 
     &:hover {
-      background-color: var(--color-abru-light-5);
+      background-color: var(--color-zinc-850);
     }
   }
 
@@ -413,16 +413,16 @@
       gap: 12px;
 
       border-radius: 8px;
-      background-color: var(--color-abru-dark-15);
+      background-color: var(--color-zinc-925);
 
       padding: 10px;
 
       font-size: 16px;
       font-weight: 500;
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
       line-height: normal;
 
-      border: 1px solid var(--color-abru-light-25);
+      border: 1px solid var(--color-zinc-600);
 
       .at {
         font-size: 12px;
@@ -450,7 +450,7 @@
 
   .game-admin-toolbox {
     grid-area: adminToolbox;
-    background-color: var(--color-abru-dark-29);
+    background-color: var(--color-zinc-950);
     border-radius: 8px;
     padding: 10px;
 
@@ -507,8 +507,8 @@
       height: 100%;
       width: 100%;
 
-      color: var(--color-ash);
-      background-color: var(--color-accent);
+      color: var(--color-zinc-100);
+      background-color: var(--color-crimson-600);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -517,7 +517,7 @@
       border-radius: 4px;
 
       &:hover {
-        background-color: color-mix(in hsl, var(--color-accent), black 10%);
+        background-color: color-mix(in hsl, var(--color-crimson-600), black 10%);
       }
     }
 
@@ -554,8 +554,8 @@
     width: min(92vw, 44rem);
     border-radius: 12px;
     overflow: hidden;
-    background-color: var(--color-abru-dark-29);
-    color: var(--color-abru-light-75);
+    background-color: var(--color-zinc-950);
+    color: var(--color-zinc-200);
     padding: 0;
 
     header {
@@ -566,14 +566,14 @@
 
       .title {
         font-weight: 700;
-        color: var(--color-ash);
+        color: var(--color-zinc-100);
       }
 
       .server {
         @apply font-mono;
 
         font-size: 13px;
-        color: var(--color-abru-light-50);
+        color: var(--color-zinc-400);
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -582,10 +582,10 @@
       .close {
         margin-left: auto;
         align-self: center;
-        color: var(--color-abru-light-50);
+        color: var(--color-zinc-400);
 
         &:hover {
-          color: var(--color-ash);
+          color: var(--color-zinc-100);
         }
       }
     }
@@ -597,12 +597,12 @@
       overflow-y: auto;
       overscroll-behavior: contain;
       padding: 12px 16px;
-      background-color: var(--color-abru);
+      background-color: var(--color-zinc-950);
       font-size: 14px;
       line-height: 1.5;
 
       .hint {
-        color: var(--color-abru-light-35);
+        color: var(--color-zinc-500);
       }
 
       .entry {
@@ -611,13 +611,13 @@
         margin-top: 8px;
 
         .command {
-          color: var(--color-ash);
+          color: var(--color-zinc-100);
           font-weight: 500;
           overflow-wrap: anywhere;
 
           &::before {
             content: '] ';
-            color: var(--color-accent-400);
+            color: var(--color-crimson-600);
           }
         }
 
@@ -641,17 +641,17 @@
       align-items: center;
       gap: 10px;
       padding: 8px 16px;
-      background-color: var(--color-abru);
-      border-top: 1px solid var(--color-abru-light-15);
+      background-color: var(--color-zinc-950);
+      border-top: 1px solid var(--color-zinc-700);
 
       &:focus-within {
-        background-color: color-mix(in srgb, var(--color-abru), white 3%);
+        background-color: color-mix(in srgb, var(--color-zinc-950), white 3%);
       }
 
       .prompt {
         @apply font-mono;
 
-        color: var(--color-accent-400);
+        color: var(--color-crimson-600);
         font-weight: 700;
       }
 
@@ -664,15 +664,15 @@
         border-radius: 0;
         background-color: transparent;
         font-size: 14px;
-        color: var(--color-ash);
-        caret-color: var(--color-accent-400);
+        color: var(--color-zinc-100);
+        caret-color: var(--color-crimson-600);
 
         &:focus {
           outline: none;
         }
 
         &::placeholder {
-          color: var(--color-abru-light-30);
+          color: var(--color-zinc-500);
         }
       }
     }

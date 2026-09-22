@@ -42,7 +42,7 @@ export async function GamesPage(props?: { gamemode?: Gamemode }) {
                 />
                 <span class="text-white">seconds</span>
               </div>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-zinc-200">
                 The time a player has to join the gameserver before they are getting subbed
                 automatically. Use 0 to disable.
               </span>
@@ -64,7 +64,7 @@ export async function GamesPage(props?: { gamemode?: Gamemode }) {
                 />
                 <span class="text-white">seconds</span>
               </div>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-zinc-200">
                 The time a player has to come back to the gameserver after they go offline during
                 the match. Use 0 to disable.
               </span>
@@ -79,7 +79,7 @@ export async function GamesPage(props?: { gamemode?: Gamemode }) {
               <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
                 {safeExecuteExtraCommands}
               </textarea>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-zinc-200">
                 Extra commands to execute on the gameserver before the match starts. One command per
                 line.
               </span>
@@ -119,7 +119,7 @@ export async function GamesPage(props?: { gamemode?: Gamemode }) {
                 executeExtraCommands={executeExtraCommands}
                 logsTfUploadMethod={logsTfUploadMethod}
               />
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-zinc-200">
                 Commands executed on the game server when a game starts, in order. Reflects the
                 saved configuration above.
               </span>
@@ -146,7 +146,7 @@ export async function GamesPage(props?: { gamemode?: Gamemode }) {
                 <IconPlus />
                 Add level
               </button>
-              <span class="text-abru-light-75 text-sm">
+              <span class="text-sm text-zinc-200">
                 When a player is subbed out of a game, they receive a ban. The ban length grows with
                 each offence, following the levels above. Levels are applied top to bottom; a player
                 past the last level always gets the last ban length.
@@ -168,7 +168,7 @@ export function CooldownLevelEntry(props: { banLengthMs: number }) {
 
   return (
     <div class="cooldown-level-row flex flex-row items-center gap-2">
-      <span class="cooldown-level-index text-abru-light-75 w-6 shrink-0 text-end tabular-nums" />
+      <span class="cooldown-level-index w-6 shrink-0 text-end text-zinc-200 tabular-nums" />
       <input
         type="number"
         name="banLength[]"
@@ -187,7 +187,7 @@ export function CooldownLevelEntry(props: { banLengthMs: number }) {
       </select>
       <button
         type="button"
-        class="text-abru-light-75 shrink-0 hover:text-white"
+        class="shrink-0 text-zinc-200 hover:text-white"
         aria-label="Remove level"
         data-remove-closest=".cooldown-level-row"
       >

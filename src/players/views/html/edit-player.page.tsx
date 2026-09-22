@@ -145,7 +145,7 @@ export async function EditPlayerBansPage(props: { steamId: SteamId64 }) {
             </div>
           </>
         ) : (
-          <span class="text-abru-light-75 italic">No bans</span>
+          <span class="text-zinc-200 italic">No bans</span>
         )}
       </div>
     </EditPlayer>
@@ -178,7 +178,7 @@ export async function EditPlayerChatMutesPage(props: { steamId: SteamId64 }) {
             ))}
           </div>
         ) : (
-          <span class="text-abru-light-75 italic">No chat mutes</span>
+          <span class="text-zinc-200 italic">No chat mutes</span>
         )}
       </div>
     </EditPlayer>
@@ -244,7 +244,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
   return (
     <EditPlayer player={player} activePage="/elo">
       <div class="admin-panel-content">
-        <p class="bg-abru-dark-25 text-abru-light-75 mb-4 flex items-center gap-2 rounded-lg px-4 py-3 text-sm">
+        <p class="mb-4 flex items-center gap-2 rounded-lg bg-zinc-950 px-4 py-3 text-sm text-zinc-200">
           <IconAlertSquareRounded size={20} />
           <span>
             ELO should aim at {defaultElo} when the games are properly balanced — values drifting
@@ -253,7 +253,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
         </p>
         <table class="w-full text-sm text-white">
           <thead>
-            <tr class="text-abru-light-75 border-abru-light-15 border-b text-left font-light">
+            <tr class="border-b border-zinc-700 text-left font-light text-zinc-200">
               <th class="pb-2 font-light">Class</th>
               <th class="pb-2 font-light">ELO</th>
               <th class="pb-2 font-light">Games</th>
@@ -266,7 +266,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
               const games = player.stats.gamesByClass[defaultGamemode]?.[gameClass] ?? 0
               const provisional = games < provisionalThreshold
               return (
-                <tr class="border-abru-light-10 border-b last:border-0">
+                <tr class="border-b border-zinc-800 last:border-0">
                   <td class="py-2">
                     <div class="flex items-center gap-2">
                       <GameClassIcon gameClass={gameClass} size={20} />
@@ -274,10 +274,10 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
                     </div>
                   </td>
                   <td class="py-2 font-bold">{elo ?? defaultElo}</td>
-                  <td class="text-abru-light-75 py-2">{games}</td>
+                  <td class="py-2 text-zinc-200">{games}</td>
                   <td class="py-2">
                     {games === 0 ? (
-                      <span class="text-abru-light-50">—</span>
+                      <span class="text-zinc-400">—</span>
                     ) : provisional ? (
                       <span class="text-yellow-400">Provisional</span>
                     ) : (
@@ -546,14 +546,14 @@ function NicknameHistoryOverview(props: { nameHistory: NonNullable<PlayerModel['
           {sorted.map(entry => (
             <li class="col-span-2 grid grid-cols-subgrid">
               <span safe>{entry.name}</span>
-              <span class="text-abru-light-75 text-sm" safe>
+              <span class="text-sm text-zinc-200" safe>
                 {format(entry.changedAt, 'yyyy-MM-dd HH:mm')}
               </span>
             </li>
           ))}
         </ul>
       ) : (
-        <p class="text-abru-light-75 italic">No nickname history</p>
+        <p class="text-zinc-200 italic">No nickname history</p>
       )}
     </details>
   )

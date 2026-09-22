@@ -2,7 +2,7 @@
 
 @layer components {
   .activity-cells > div {
-    @apply bg-abru-light-5 size-3 rounded-xs;
+    @apply bg-zinc-850 size-3 rounded-xs;
 
     &[data-activity='1'] {
       background-color: #4c1126;
@@ -17,7 +17,7 @@
     }
 
     &[data-activity='4'] {
-      background-color: var(--color-accent);
+      background-color: var(--color-crimson-600);
     }
   }
 }

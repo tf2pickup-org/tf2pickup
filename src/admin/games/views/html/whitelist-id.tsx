@@ -16,7 +16,7 @@ export async function WhitelistId(props: { gamemode: Gamemode }) {
       <dt class="flex flex-row flex-wrap items-center justify-between gap-2">
         <label for="whitelistId">
           Whitelist ID{' '}
-          <span class="text-abru-light-35 text-sm font-normal" safe>
+          <span class="text-sm font-normal text-zinc-500" safe>
             {gamemodeDisplayName(gamemode)}
           </span>
         </label>

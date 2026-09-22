@@ -92,7 +92,7 @@ async function anonymizeChatMentions(steamId: SteamId64): Promise<void> {
     )
     const body = message.body.replace(
       anchor,
-      '<span class="mention text-abru-light-25 italic">deleted user</span>',
+      '<span class="mention text-zinc-600 italic">deleted user</span>',
     )
     const originalBody = message.originalBody.replaceAll(`@<${steamId}>`, '@deleted user')
 

@@ -49,7 +49,7 @@ export async function EloHistoryChart(props: { steamId: SteamId64 }) {
         </div>
       </div>
 
-      <p id="elo-history-empty" class="text-abru-light-50 text-sm italic" hidden>
+      <p id="elo-history-empty" class="text-sm text-zinc-400 italic" hidden>
         No ELO history for this class yet.
       </p>
       <canvas id="elo-history-canvas"></canvas>
@@ -57,8 +57,8 @@ export async function EloHistoryChart(props: { steamId: SteamId64 }) {
       <style>{`
         .elo-class-tab[data-active="true"],
         [data-elo-xaxis][data-active="true"] {
-          background-color: rgba(246, 16, 89, 0.2);
-          color: #f61059;
+          background-color: color-mix(in srgb, var(--color-crimson-600) 20%, transparent);
+          color: var(--color-crimson-600);
         }
         .elo-class-tab[data-active="false"],
         [data-elo-xaxis][data-active="false"] {

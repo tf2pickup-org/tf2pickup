@@ -17,22 +17,22 @@
 
     text-transform: uppercase;
 
-    color: var(--color-ash);
+    color: var(--color-zinc-100);
 
-    background-color: var(--color-abru-light-15);
+    background-color: var(--color-zinc-700);
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-light-15), black 5%);
+      background-color: color-mix(in hsl, var(--color-zinc-700), black 5%);
     }
 
     &:disabled,
     a&:not([href]) {
-      background-color: var(--color-abru-light-35);
-      color: var(--color-abru-light-60);
+      background-color: var(--color-zinc-500);
+      color: var(--color-zinc-400);
 
       &:hover {
-        background-color: var(--color-abru-light-35);
-        color: var(--color-abru-light-60);
+        background-color: var(--color-zinc-500);
+        color: var(--color-zinc-400);
       }
     }
 
@@ -43,56 +43,56 @@
     }
 
     &[data-variant='accent'] {
-      background-color: var(--color-accent);
+      background-color: var(--color-crimson-600);
 
       &:hover {
-        background-color: color-mix(in hsl, var(--color-accent), black 10%);
+        background-color: color-mix(in hsl, var(--color-crimson-600), black 10%);
       }
 
       &:disabled,
       a&:not([href]) {
-        background-color: var(--color-accent);
-        color: var(--color-ash);
+        background-color: var(--color-crimson-600);
+        color: var(--color-zinc-100);
 
         &:hover {
-          background-color: var(--color-accent);
-          color: var(--color-ash);
+          background-color: var(--color-crimson-600);
+          color: var(--color-zinc-100);
         }
       }
     }
 
     &[data-variant='alert'] {
-      background-color: var(--color-abru);
+      background-color: var(--color-zinc-950);
       color: var(--color-alert);
 
       &:hover {
-        background-color: color-mix(in hsl, var(--color-abru), white 4%);
+        background-color: color-mix(in hsl, var(--color-zinc-950), white 4%);
       }
     }
 
     &[data-variant='darker'] {
-      background-color: var(--color-abru-dark-25);
+      background-color: var(--color-zinc-950);
       &:hover {
-        background-color: color-mix(in hsl, var(--color-abru-dark-25), black 5%);
+        background-color: color-mix(in hsl, var(--color-zinc-950), black 5%);
       }
     }
 
     &[data-variant='lighter'] {
-      background-color: var(--color-abru-light-85);
-      color: var(--color-abru-light-3);
+      background-color: var(--color-zinc-100);
+      color: var(--color-zinc-900);
 
       &:hover {
-        background-color: color-mix(in hsl, var(--color-abru-light-85), black 5%);
+        background-color: color-mix(in hsl, var(--color-zinc-100), black 5%);
       }
 
       &:disabled,
       a&:not([href]) {
-        background-color: var(--color-abru-light-85);
-        color: var(--color-abru-light-60);
+        background-color: var(--color-zinc-100);
+        color: var(--color-zinc-400);
 
         &:hover {
-          background-color: var(--color-abru-light-85);
-          color: var(--color-abru-light-60);
+          background-color: var(--color-zinc-100);
+          color: var(--color-zinc-400);
         }
       }
     }

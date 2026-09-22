@@ -19,9 +19,9 @@ export async function DefaultPlayerSkill(props: { gamemode: Gamemode }) {
   return (
     <dl id="default-player-skill">
       <dt class="flex flex-row flex-wrap items-center justify-between gap-2">
-        <span class="text-abru-light-75 font-bold">
+        <span class="font-bold text-zinc-200">
           Default player skill{' '}
-          <span class="text-abru-light-35 text-sm font-normal" safe>
+          <span class="text-sm font-normal text-zinc-500" safe>
             {gamemodeDisplayName(gamemode)}
           </span>
         </span>
@@ -44,7 +44,7 @@ export async function DefaultPlayerSkill(props: { gamemode: Gamemode }) {
             />
           ))}
         </div>
-        <p class="text-abru-light-75 text-sm">
+        <p class="text-sm text-zinc-200">
           If a player starts a game without skill assigned for them, the game balance system will
           use this fallback value.
         </p>

@@ -14,7 +14,7 @@
     border: 1px solid var(--color-border);
     border-radius: 8px;
     background: var(--color-surface-raised);
-    color: var(--color-ash);
+    color: var(--color-zinc-100);
     text-align: left;
 
     &::before {
@@ -26,16 +26,16 @@
     }
 
     &:hover:enabled {
-      border-color: var(--color-abru-light-50);
+      border-color: var(--color-zinc-400);
     }
 
     &[aria-checked='true'] {
-      border: 3px solid var(--color-abru-light-75);
+      border: 3px solid var(--color-zinc-200);
       padding: 10px;
     }
 
     &:focus-visible {
-      outline: 2px solid var(--color-ash);
+      outline: 2px solid var(--color-zinc-100);
       outline-offset: 2px;
     }
   }
@@ -107,7 +107,7 @@
     align-items: baseline;
     justify-content: space-between;
     gap: 8px;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     font-size: 24px;
     font-weight: 700;
     white-space: nowrap;
