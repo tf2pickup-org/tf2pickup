@@ -66,3 +66,34 @@ test('joining another gamemode leaves the previous queue @multi', async ({ users
   await highlander.goto()
   await highlander.leaveQueue()
 })
+
+test('keeps map voting independent across gamemodes @multi', async ({ users }) => {
+  const user = users.getNext()
+
+  const sixes = await user.queuePage('6v6')
+  await sixes.goto()
+  await sixes.joinQueue('scout-1')
+
+  const sixesMap = sixes.voteForMapButton(0)
+  const mapName = await sixesMap.getAttribute('value')
+  expect(mapName).not.toBeNull()
+  await sixesMap.click()
+  await expect(sixesMap).toHaveAttribute('aria-checked', 'true')
+
+  const highlander = await user.queuePage('9v9')
+  await highlander.goto()
+  await expect(highlander.page.locator('#mapVoteSelection')).toHaveValue('')
+
+  const highlanderMaps = highlander.page.getByRole('button', { name: /^Vote for map / })
+  for (let i = 0; i < (await highlanderMaps.count()); i++) {
+    await expect(highlanderMaps.nth(i)).toBeDisabled()
+    await expect(highlanderMaps.nth(i)).not.toHaveAttribute('aria-checked')
+  }
+
+  await sixes.goto()
+  await expect(sixes.page.getByRole('button', { name: `Vote for map ${mapName}` })).toHaveAttribute(
+    'aria-checked',
+    'true',
+  )
+  await sixes.leaveQueue()
+})
