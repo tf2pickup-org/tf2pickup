@@ -39,7 +39,15 @@ export default fp(
       const slots = await collections.queueSlots.find({ gamemode, player: { $ne: null } }).toArray()
       app.gateway
         .to({ player: actorId })
+        .to({ url: queuePageUrl(gamemode) })
         .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
+    }
+
+    function refreshIsInQueue(gamemode: Gamemode, actorId: SteamId64) {
+      app.gateway
+        .to({ player: actorId })
+        .to({ url: queuePageUrl(gamemode) })
+        .send(actor => IsInQueue({ gamemode, actor }))
     }
 
     function wsSafe<Args extends unknown[]>(
@@ -90,9 +98,9 @@ export default fp(
           await refreshTakenSlots(gamemode, socket.player.steamId)
         }
 
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await IsInQueue({ actor: socket.player?.steamId }))
+        for (const affectedGamemode of new Set(slots.map(slot => slot.gamemode))) {
+          refreshIsInQueue(affectedGamemode, socket.player.steamId)
+        }
       }),
     )
 
@@ -108,9 +116,7 @@ export default fp(
           await refreshTakenSlots(slot.gamemode, socket.player.steamId)
         }
 
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await IsInQueue({ actor: socket.player?.steamId }))
+        refreshIsInQueue(slot.gamemode, socket.player.steamId)
         app.gateway
           .to({ player: socket.player.steamId })
           .to({ url: queuePageUrl(slot.gamemode) })
@@ -149,7 +155,12 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        const { gamemode } = await voteMap(socket.player.steamId, map)
+        const gamemode = socket.currentUrl ? queuePageGamemode(socket.currentUrl) : undefined
+        if (!gamemode) {
+          throw errors.badRequest('not on a queue page')
+        }
+
+        await voteMap(gamemode, socket.player.steamId, map)
         app.gateway
           .to({ player: socket.player.steamId })
           .to({ url: queuePageUrl(gamemode) })

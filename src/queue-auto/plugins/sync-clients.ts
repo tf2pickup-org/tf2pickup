@@ -78,7 +78,7 @@ export default fp(
           socket.send(await GamemodeQueueGauge({ gamemode: g }))
         })
       }
-      socket.send(await IsInQueue({ actor: socket.player?.steamId }))
+      socket.send(await IsInQueue({ gamemode, actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
       socket.send(await CurrentPlayerCount({ gamemode }))
       socket.send(await SetTitle({ gamemode }))

@@ -9,14 +9,17 @@ import { withLogLevel } from '../utils/with-log-level'
 import type { Gamemode } from '../shared/types/gamemode'
 
 export async function voteMap(
+  gamemode: Gamemode,
   steamId: SteamId64,
   map: string,
-): Promise<{ gamemode: Gamemode; results: Record<string, number> }> {
-  const slot = await collections.queueSlots.findOne({ 'player.steamId': steamId })
+): Promise<Record<string, number>> {
+  const slot = await collections.queueSlots.findOne({
+    gamemode,
+    'player.steamId': steamId,
+  })
   if (!slot) {
-    throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
+    throw withLogLevel(errors.badRequest('player not in this queue'), 'debug')
   }
-  const gamemode = slot.gamemode
 
   return await withQueueLock(gamemode, 'vote-map', async () => {
     logger.trace({ gamemode, steamId, map }, 'queue.voteMap()')
@@ -40,6 +43,6 @@ export async function voteMap(
 
     const results = await getMapVoteResults(gamemode)
     events.emit('queue/mapVoteResults:updated', { gamemode, results })
-    return { gamemode, results }
+    return results
   })
 }
