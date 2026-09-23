@@ -51,7 +51,7 @@ export async function QueuePage(props: { gamemode: Gamemode }) {
       <NavigationBar />
       <Page>
         <IsInQueue actor={user?.player.steamId} />
-        <MapVoteSelection actor={user?.player.steamId} />
+        <MapVoteSelection gamemode={gamemode} actor={user?.player.steamId} />
         <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
           <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
             <OfflineAlert />

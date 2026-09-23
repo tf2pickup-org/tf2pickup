@@ -19,6 +19,7 @@ import { FlashMessage } from '../../html/components/flash-message'
 import type { AppWebSocket } from '../../websocket/types'
 import type { Gamemode } from '../../shared/types/gamemode'
 import { queuePageGamemode } from '../queue-page-gamemode'
+import { queuePageUrl } from '../queue-page-url'
 import { players } from '../../players'
 import { queueWsCallDuration } from '../../queue/metrics'
 import { measureTime } from '../../utils/measure-time'
@@ -109,10 +110,17 @@ export default fp(
 
         app.gateway
           .to({ player: socket.player.steamId })
-          .send(async () => [
-            await IsInQueue({ actor: socket.player?.steamId }),
-            await MapVoteSelection({ actor: socket.player?.steamId }),
-          ])
+          .send(async () => await IsInQueue({ actor: socket.player?.steamId }))
+        app.gateway
+          .to({ player: socket.player.steamId })
+          .to({ url: queuePageUrl(slot.gamemode) })
+          .send(
+            async () =>
+              await MapVoteSelection({
+                gamemode: slot.gamemode,
+                actor: socket.player?.steamId,
+              }),
+          )
 
         const queueState = await getState(slot.gamemode)
         if (queueState === QueueState.ready) {
@@ -141,10 +149,11 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        await voteMap(socket.player.steamId, map)
+        const { gamemode } = await voteMap(socket.player.steamId, map)
         app.gateway
           .to({ player: socket.player.steamId })
-          .send(async actor => await MapVoteSelection({ actor }))
+          .to({ url: queuePageUrl(gamemode) })
+          .send(async actor => await MapVoteSelection({ gamemode, actor }))
       }),
     )
 

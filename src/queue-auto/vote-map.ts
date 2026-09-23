@@ -6,8 +6,12 @@ import type { SteamId64 } from '../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { withQueueLock } from '../queue/with-queue-lock'
 import { withLogLevel } from '../utils/with-log-level'
+import type { Gamemode } from '../shared/types/gamemode'
 
-export async function voteMap(steamId: SteamId64, map: string): Promise<Record<string, number>> {
+export async function voteMap(
+  steamId: SteamId64,
+  map: string,
+): Promise<{ gamemode: Gamemode; results: Record<string, number> }> {
   const slot = await collections.queueSlots.findOne({ 'player.steamId': steamId })
   if (!slot) {
     throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
@@ -36,6 +40,6 @@ export async function voteMap(steamId: SteamId64, map: string): Promise<Record<s
 
     const results = await getMapVoteResults(gamemode)
     events.emit('queue/mapVoteResults:updated', { gamemode, results })
-    return results
+    return { gamemode, results }
   })
 }
