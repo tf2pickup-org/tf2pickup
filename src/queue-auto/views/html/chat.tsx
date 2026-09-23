@@ -153,7 +153,7 @@ export function ChatPrompt(props: { isMuted: boolean }) {
         class="m-2 flex flex-row gap-2"
         id="chat-prompt"
         hx-post="/chat"
-        hx-swap="none transition:false"
+        hx-swap="none"
         hx-disabled-elt="find input[type='text'], find button"
         data-reset-on-success="input[type='text']"
         data-disable-when-offline

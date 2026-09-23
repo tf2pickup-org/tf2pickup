@@ -10,14 +10,6 @@
     border: 1px solid var(--color-border);
     border-radius: 8px;
     background: var(--color-surface-raised);
-    transition:
-      border-color 140ms ease-out,
-      background-color 140ms ease-out,
-      box-shadow 140ms ease-out;
-
-    &.queue-slot-updated {
-      animation: queue-slot-update 180ms ease-out both;
-    }
 
     &:hover,
     &:focus-within {
@@ -62,9 +54,6 @@
       border-radius: 7px;
       color: var(--color-zinc-200);
       background: transparent;
-      transition:
-        color 140ms ease-out,
-        background-color 140ms ease-out;
 
       > svg {
         opacity: 0;
@@ -100,7 +89,6 @@
       border-radius: 7px;
       background: var(--color-zinc-700);
       color: var(--color-zinc-100);
-      transition: background-color 140ms ease-out;
 
       > img {
         width: 42px;
@@ -164,9 +152,6 @@
       border-radius: 3px;
       background: var(--color-surface-raised);
       color: var(--color-zinc-100);
-      transition:
-        color 140ms ease-out,
-        background-color 140ms ease-out;
     }
 
     .leave-queue-button:hover,
@@ -208,32 +193,6 @@
     .mark-as-friend-button input:focus-visible ~ .mark {
       outline: 2px solid var(--color-zinc-100);
       outline-offset: 2px;
-    }
-  }
-
-  @keyframes queue-slot-update {
-    from {
-      opacity: 0.72;
-      transform: translateY(2px) scale(0.995);
-    }
-
-    to {
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .queue-slot,
-    .queue-slot .join-queue-button,
-    .queue-slot .player-info,
-    .queue-slot .leave-queue-button,
-    .queue-slot .mark-as-friend-button .mark {
-      transition: none;
-    }
-
-    .queue-slot.queue-slot-updated {
-      animation: none;
     }
   }
 }

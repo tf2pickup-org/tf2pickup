@@ -59,7 +59,6 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) 
       class={['queue-slot', isOwnSlot && 'queue-slot-own', isReadySlot && 'queue-slot-ready']}
       id={`queue-slot-${props.slot.id}`}
       aria-label={`Queue slot ${props.slot.id}`}
-      data-gamemode={props.slot.gamemode}
       data-player={props.slot.player?.steamId}
     >
       {slotContent}
