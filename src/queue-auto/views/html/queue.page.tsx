@@ -126,7 +126,6 @@ async function Queue(props: {
     Array.from({ length: gameClass.count }, (_, classIndex) => ({
       gameClass: gameClass.name,
       classIndex,
-      classCount: gameClass.count,
     })),
   )
   const gridCols =
@@ -157,7 +156,7 @@ async function Queue(props: {
     const teamSlots = teamNames.map((_, teamIndex) =>
       positions.map(position => {
         const classSlots = slotsByClass.get(position.gameClass) ?? []
-        return classSlots[teamIndex * position.classCount + position.classIndex]
+        return classSlots[position.classIndex * config.teamCount + teamIndex]
       }),
     )
 
@@ -173,7 +172,12 @@ async function Queue(props: {
 
         {teamNames.map((teamName, teamIndex) => (
           <div class="queue-team-row">
-            <div class="queue-team-summary">
+            <div
+              class={[
+                'queue-team-summary',
+                teamName === 'BLU' ? 'queue-team-blu' : 'queue-team-red',
+              ]}
+            >
               <span>{teamName}</span>
               <span>
                 {teamSlots[teamIndex]?.filter(slot => slot?.player).length ?? 0}/{positions.length}

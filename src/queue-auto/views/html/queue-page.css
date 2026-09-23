@@ -211,6 +211,15 @@
     color: var(--color-zinc-200);
     font-size: 18px;
     font-weight: 500;
+    border-radius: 8px;
+  }
+
+  .queue-team-blu {
+    background: var(--color-team-blu-dark);
+  }
+
+  .queue-team-red {
+    background: var(--color-team-red-dark);
   }
 
   .queue-class-column {
