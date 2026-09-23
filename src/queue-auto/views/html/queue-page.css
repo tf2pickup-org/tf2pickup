@@ -96,7 +96,6 @@
 
   .gamemode-selector {
     flex: none;
-    view-transition-name: queue-gamemode-selector;
   }
 
   .gamemode-options {
@@ -178,7 +177,6 @@
     grid-column: 1;
     grid-row: 2;
     min-width: 0;
-    view-transition-name: queue-content;
   }
 
   .queue-class-grid {
@@ -335,12 +333,20 @@
       font-size: 14px;
     }
   }
+}
 
-  @media (prefers-reduced-motion: reduce) {
-    .gamemode-selector,
-    .queue-content {
-      view-transition-name: none;
-    }
+html.queue-gamemode-transition .gamemode-selector {
+  view-transition-name: queue-gamemode-selector;
+}
+
+html.queue-gamemode-transition .queue-content {
+  view-transition-name: queue-content;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.queue-gamemode-transition .gamemode-selector,
+  html.queue-gamemode-transition .queue-content {
+    view-transition-name: none;
   }
 }
 

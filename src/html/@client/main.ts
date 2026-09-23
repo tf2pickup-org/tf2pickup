@@ -10,6 +10,7 @@ import './copy-to-clipboard'
 import './countdown'
 import './notifications'
 import './play-sound'
+import './queue-gamemode-transitions'
 import './sync-attribute'
 
 htmx.config.wsReconnectDelay = () => 1000 // 1 second
