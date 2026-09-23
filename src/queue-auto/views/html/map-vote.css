@@ -42,7 +42,7 @@
 
   .map-vote-thumbnail {
     position: absolute;
-    inset: 0 0 0 35%;
+    inset: 0;
   }
 
   .map-vote-thumbnail .map-thumbnail,
