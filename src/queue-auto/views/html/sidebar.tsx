@@ -11,9 +11,7 @@ export function Sidebar(props: { user?: User | undefined; gamemode: Gamemode; re
     <div class="queue-sidebar">
       <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
         <button class="tab-link lg:hidden" data-tabs-select="queue-content">
-          <span>
-            Queue (<CurrentPlayerCount gamemode={props.gamemode} />/{props.required})
-          </span>
+          <Sidebar.QueueTabLabel gamemode={props.gamemode} required={props.required} />
         </button>
 
         <button class="tab-link" data-tabs-select="tab-chat">
@@ -37,3 +35,9 @@ export function Sidebar(props: { user?: User | undefined; gamemode: Gamemode; re
     </div>
   )
 }
+
+Sidebar.QueueTabLabel = (props: { gamemode: Gamemode; required: number }) => (
+  <span id="queue-tab-label">
+    Queue (<CurrentPlayerCount gamemode={props.gamemode} />/{props.required})
+  </span>
+)

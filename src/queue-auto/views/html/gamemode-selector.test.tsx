@@ -27,8 +27,8 @@ describe('GamemodeSelector', () => {
     expect(link?.getAttribute('hx-target')).toBe('#queue')
     expect(link?.getAttribute('hx-select')).toBe('#queue')
     expect(link?.getAttribute('hx-select-oob')).toBe(
-      '#gamemode-selector,#queue-state,#map-vote,#isInQueue,#mapVoteSelection',
+      '#gamemode-selector,#queue-state,#map-vote,#isInQueue,#mapVoteSelection,#queue-tab-label',
     )
-    expect(link?.getAttribute('hx-swap')).toBe('outerHTML')
+    expect(link?.getAttribute('hx-swap')).toBe('outerHTML show:none')
   })
 })

@@ -6,7 +6,8 @@ import { queuePageUrl } from '../../queue-page-url'
 
 const queueTarget = '#queue'
 // Keep the page shell mounted while refreshing the other gamemode-bound controls.
-const queueRelatedTargets = '#gamemode-selector,#queue-state,#map-vote,#isInQueue,#mapVoteSelection'
+const queueRelatedTargets =
+  '#gamemode-selector,#queue-state,#map-vote,#isInQueue,#mapVoteSelection,#queue-tab-label'
 const gamemodeOrder = [Gamemode.sixes, Gamemode.highlander, Gamemode.ultiduo, Gamemode.bball]
 
 /**
@@ -31,7 +32,7 @@ export async function GamemodeSelector(props: { active: Gamemode }) {
             hx-target={queueTarget}
             hx-select={queueTarget}
             hx-select-oob={queueRelatedTargets}
-            hx-swap="outerHTML"
+            hx-swap="outerHTML show:none"
             aria-current={gamemode === props.active ? 'page' : undefined}
             aria-label={`${gamemodeDisplayName(gamemode)} queue`}
             data-umami-event="switch-queue-gamemode"

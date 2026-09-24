@@ -39,23 +39,26 @@ export async function QueuePage(props: { gamemode: Gamemode; partial?: boolean }
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
   const user = requestContext.get('user')
+  const title = `[${current}/${required}] ${environment.WEBSITE_NAME}`
 
   if (props.partial) {
     return (
       <>
+        <title safe>{title}</title>
         <Queue slots={slots} gamemode={gamemode} actor={user?.player.steamId} />
         <GamemodeSelector active={gamemode} />
         <QueueState actor={user} gamemode={gamemode} required={required} />
         <MapVote gamemode={gamemode} actor={user?.player.steamId} />
         <IsInQueue gamemode={gamemode} actor={user?.player.steamId} />
         <MapVoteSelection gamemode={gamemode} actor={user?.player.steamId} />
+        <Sidebar.QueueTabLabel gamemode={gamemode} required={required} />
       </>
     )
   }
 
   return (
     <Layout
-      title={`[${current}/${required}] ${environment.WEBSITE_NAME}`}
+      title={title}
       description={`${gamemode} competitive pick-up games for everyone`}
       canonical={queuePageUrl(gamemode)}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
