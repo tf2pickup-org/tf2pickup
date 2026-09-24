@@ -15,13 +15,37 @@ test('serves a queue page per enabled gamemode with a switcher @multi', async ({
   await expect(sixes.gamemodeSwitcher()).toBeVisible()
   await expect(sixes.gamemodeTab('6v6')).toHaveAttribute('aria-selected', 'true')
 
+  const sidebar = page.locator('.queue-sidebar')
+  const navMenu = page.locator('#nav-menu')
+  await sidebar.evaluate(element => {
+    element.setAttribute('data-gamemode-switch-sentinel', 'preserved')
+  })
+  await navMenu.evaluate(element => {
+    element.setAttribute('data-gamemode-switch-sentinel', 'preserved')
+  })
+  const responsePromise = page.waitForResponse(response => {
+    const request = response.request()
+    return new URL(response.url()).pathname === '/9v9' && request.headers()['hx-target'] === 'queue'
+  })
+
   // the switcher navigates to the 9v9 queue
   await sixes.gamemodeTab('9v9').click()
+  const response = await responsePromise
   await expect(page).toHaveURL(/\/9v9$/)
 
   const highlander = new QueuePage(page, '9v9')
   await expect(highlander.header()).toContainText('0/18')
   await expect(highlander.gamemodeTab('9v9')).toHaveAttribute('aria-selected', 'true')
+  await expect(sidebar).toHaveAttribute('data-gamemode-switch-sentinel', 'preserved')
+  await expect(navMenu).toHaveAttribute('data-gamemode-switch-sentinel', 'preserved')
+
+  const responseHtml = await response.text()
+  expect(responseHtml).toContain('id="queue"')
+  expect(responseHtml).toContain('id="gamemode-selector"')
+  expect(responseHtml).toContain('id="map-vote"')
+  expect(responseHtml).not.toContain('queue-sidebar')
+  expect(responseHtml).not.toContain('id="nav-menu"')
+  expect(responseHtml).not.toContain('<body')
 })
 
 test('keeps queue occupancy independent across gamemodes @multi', async ({ users }) => {
