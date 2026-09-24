@@ -161,7 +161,7 @@ async function Queue(props: {
     )
 
     return (
-      <form class="queue-compact-grid" ws-send data-disable-when-offline>
+      <form id="queue" class="queue-compact-grid" ws-send data-disable-when-offline>
         <div class="queue-team-heading-spacer" aria-hidden="true"></div>
         {positions.map(position => (
           <h2 class="queue-class-heading">
