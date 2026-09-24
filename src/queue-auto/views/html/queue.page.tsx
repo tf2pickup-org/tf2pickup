@@ -100,7 +100,7 @@ async function QueueState(props: {
   required: number
 }) {
   return (
-    <div class="flex flex-col gap-2">
+    <div id="queue-state" class="flex flex-col gap-2">
       <form ws-send class="flex flex-row items-center justify-center">
         <h3 class="text-ash flex-1 text-center text-2xl font-bold max-lg:hidden md:text-start">
           Players: <CurrentPlayerCount gamemode={props.gamemode} />/{props.required}
@@ -140,6 +140,7 @@ async function Queue(props: {
     : undefined
   return (
     <form
+      id="queue"
       class={['grid grid-cols-1 gap-4 md:grid-cols-2', gridCols]}
       ws-send
       data-disable-when-offline

@@ -4,6 +4,10 @@ import { gamemodeDisplayName } from '../../../shared/gamemode-display-name'
 import type { Gamemode } from '../../../shared/types/gamemode'
 import { queuePageUrl } from '../../queue-page-url'
 
+const queueTarget = '#queue'
+// Keep the page shell mounted while refreshing the other gamemode-bound controls.
+const queueRelatedTargets = '#gamemode-selector,#queue-state,#map-vote,#isInQueue,#mapVoteSelection'
+
 /**
  * The gamemode switcher strip on the queue page: one card per enabled
  * gamemode, showing live queue occupancy. Renders nothing on single-gamemode
@@ -15,7 +19,7 @@ export async function GamemodeSelector(props: { active: Gamemode }) {
   }
 
   return (
-    <div class="flex flex-col gap-1">
+    <div id="gamemode-selector" class="flex flex-col gap-1">
       <span class="text-abru-light-60 text-sm font-bold tracking-wider uppercase">Gamemode</span>
       <div
         class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
@@ -32,6 +36,10 @@ export async function GamemodeSelector(props: { active: Gamemode }) {
             ]}
             role="tab"
             href={queuePageUrl(gamemode)}
+            hx-target={queueTarget}
+            hx-select={queueTarget}
+            hx-select-oob={queueRelatedTargets}
+            hx-swap="outerHTML"
             aria-selected={gamemode === props.active ? 'true' : 'false'}
             aria-label={`${gamemodeDisplayName(gamemode)} queue`}
             data-umami-event="switch-queue-gamemode"
