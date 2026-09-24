@@ -82,6 +82,9 @@ import { events } from '../../events'
 import { players } from '../../players'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../database/models/queue-state.model'
+import { ChatMessages } from '../views/html/chat'
+import { IsInQueue } from '../views/html/is-in-queue'
+import { OnlinePlayerList } from '../views/html/online-player-list'
 import plugin from './sync-clients'
 
 const steamId1 = '76561198000000001' as SteamId64
@@ -225,6 +228,40 @@ describe('sync-clients', () => {
       await getReadyHandler()(socket)
 
       expect(vi.mocked(ReadyUpDialog.show)).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('navigated handler', () => {
+    function getNavigatedHandler(): (
+      socket: unknown,
+      url: string,
+      previousUrl: string,
+    ) => Promise<void> {
+      const call = vi
+        .mocked(app.gateway.on)
+        .mock.calls.find(([e]: [unknown, unknown]) => e === 'navigated')
+      if (!call) throw new Error('No gateway handler registered for event: navigated')
+      return call[1] as (socket: unknown, url: string, previousUrl: string) => Promise<void>
+    }
+
+    it('resyncs only the gamemode-bound parts when switching between queue pages', async () => {
+      const socket = { player: { steamId: steamId1 }, currentUrl: '/', send: vi.fn() }
+
+      await getNavigatedHandler()(socket, '/', '/')
+
+      expect(vi.mocked(IsInQueue)).toHaveBeenCalled()
+      expect(vi.mocked(ChatMessages)).not.toHaveBeenCalled()
+      expect(vi.mocked(OnlinePlayerList)).not.toHaveBeenCalled()
+    })
+
+    it('resyncs the whole queue page when arriving from another page', async () => {
+      const socket = { player: { steamId: steamId1 }, currentUrl: '/', send: vi.fn() }
+
+      await getNavigatedHandler()(socket, '/', '/games')
+
+      expect(vi.mocked(IsInQueue)).toHaveBeenCalled()
+      expect(vi.mocked(ChatMessages)).toHaveBeenCalled()
+      expect(vi.mocked(OnlinePlayerList)).toHaveBeenCalled()
     })
   })
 

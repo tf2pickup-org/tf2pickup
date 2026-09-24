@@ -58,7 +58,7 @@ export default fp(
       }
     }
 
-    async function syncQueuePage(socket: AppWebSocket, gamemode: Gamemode) {
+    async function syncGamemode(socket: AppWebSocket, gamemode: Gamemode) {
       const slots = await collections.queueSlots.find({ gamemode }).toArray()
       const actor = socket.player
         ? await players.bySteamId(socket.player.steamId, [
@@ -73,15 +73,30 @@ export default fp(
       slots.forEach(async slot => {
         socket.send(await QueueSlot({ slot, actor }))
       })
+      socket.send(await IsInQueue({ gamemode, actor: socket.player?.steamId }))
+      socket.send(await CurrentPlayerCount({ gamemode }))
+      socket.send(await SetTitle({ gamemode }))
+
+      if (socket.player && (await getState(gamemode)) === QueueState.ready) {
+        const slot = await collections.queueSlots.findOne({
+          gamemode,
+          'player.steamId': socket.player.steamId,
+          ready: false,
+        })
+        if (slot) {
+          socket.send(await ReadyUpDialog.show(socket.player.steamId))
+        }
+      }
+    }
+
+    async function syncQueuePage(socket: AppWebSocket, gamemode: Gamemode) {
+      await syncGamemode(socket, gamemode)
       if (enabledGamemodes.length > 1) {
         enabledGamemodes.forEach(async g => {
           socket.send(await GamemodeQueueGauge({ gamemode: g }))
         })
       }
-      socket.send(await IsInQueue({ gamemode, actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
-      socket.send(await CurrentPlayerCount({ gamemode }))
-      socket.send(await SetTitle({ gamemode }))
       socket.send(await OnlinePlayerCount())
       socket.send(await OnlinePlayerList())
       socket.send(await StreamList())
@@ -95,17 +110,6 @@ export default fp(
         socket.send(await RunningGameSnackbar({ gameNumber: player?.activeGame }))
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
-
-        if ((await getState(gamemode)) === QueueState.ready) {
-          const slot = await collections.queueSlots.findOne({
-            gamemode,
-            'player.steamId': socket.player.steamId,
-            ready: false,
-          })
-          if (slot) {
-            socket.send(await ReadyUpDialog.show(socket.player.steamId))
-          }
-        }
       }
     }
 
@@ -118,13 +122,20 @@ export default fp(
       await syncQueuePage(socket, gamemode)
     })
 
-    app.gateway.on('navigated', async (socket, url) => {
+    app.gateway.on('navigated', async (socket, url, previousUrl) => {
       const gamemode = queuePageGamemode(url)
       if (!gamemode) {
         return
       }
 
-      await syncQueuePage(socket, gamemode)
+      // Switching gamemodes keeps the page shell (chat, online players …) mounted
+      // and it is broadcast to every queue page, so only the gamemode-bound parts
+      // need a resync.
+      if (queuePageGamemode(previousUrl)) {
+        await syncGamemode(socket, gamemode)
+      } else {
+        await syncQueuePage(socket, gamemode)
+      }
     })
 
     const updateOnlinePlayers = debounce(
