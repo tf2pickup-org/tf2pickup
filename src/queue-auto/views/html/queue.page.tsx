@@ -34,12 +34,25 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { IconEraser } from '../../../html/components/icons'
 import { players } from '../../../players'
 
-export async function QueuePage(props: { gamemode: Gamemode }) {
+export async function QueuePage(props: { gamemode: Gamemode; partial?: boolean }) {
   const { gamemode } = props
   const slots = await collections.queueSlots.find({ gamemode }).toArray()
   const current = slots.filter(slots => Boolean(slots.player)).length
   const required = slots.length
   const user = requestContext.get('user')
+
+  if (props.partial) {
+    return (
+      <>
+        <Queue slots={slots} gamemode={gamemode} actor={user?.player.steamId} />
+        <GamemodeSelector active={gamemode} />
+        <QueueState actor={user} gamemode={gamemode} required={required} />
+        <MapVote gamemode={gamemode} actor={user?.player.steamId} />
+        <IsInQueue gamemode={gamemode} actor={user?.player.steamId} />
+        <MapVoteSelection gamemode={gamemode} actor={user?.player.steamId} />
+      </>
+    )
+  }
 
   return (
     <Layout
