@@ -28,7 +28,8 @@ wild":
 
 - Feature-flag states (`games.skill_suggestions`, voice server type, ETF2L requirement, …) — the
   on/off rate of any experimental flag
-- Queue config (6v6/9v9/bball/ultiduo), app version, runtime version bucket
+- Queues (gamemode, launch mode, enabled, skill threshold/verification on or off — never slugs or
+  names), app version, runtime version bucket
 - Integrations enabled (discord, serveme, tf2-quick-server, twitch, logs.tf, umami)
 - Usage counters (skill suggestions acted on, admin skill changes, games launched, static servers)
 - Scale buckets (registered players, map-pool size) and customization signals (docs edited,

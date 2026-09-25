@@ -1,25 +1,10 @@
-import type { Gamemode } from '../../shared/types/gamemode'
-import { queues } from '../../queues'
-import { getSlots } from '../../queues/auto/get-slots'
-import { getMapVoteResults } from '../../queues/auto/get-map-vote-results'
-import { gamemodeConfigs } from '../../gamemodes/configs'
 import { secondsToMilliseconds } from 'date-fns'
-import { debounce, retry } from 'es-toolkit'
+import { debounce } from 'es-toolkit'
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { environment } from '../../environment'
-import { EmbedBuilder, type Emoji } from 'discord.js'
-import { configuration } from '../../configuration'
-import { client } from '../client'
-import { assertClient } from '../assert-client'
-import { logger } from '../../logger'
-import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
-import type { QueueSlotModel } from '../../database/models/queue-slot.model'
-import { collections } from '../../database/collections'
-import { forEachEnabledChannel } from '../for-each-enabled-channel'
-import { getMessage } from '../get-message'
 import { safe } from '../../utils/safe'
-import { queuePromptMutex } from '../queue-prompt-mutex'
+import { client } from '../client'
+import { refreshQueuePrompts } from '../refresh-queue-prompts'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
@@ -27,125 +12,5 @@ export default fp(async () => {
     return
   }
 
-  events.on('queue/slots:updated', debounce(safe(refreshPrompt), secondsToMilliseconds(3)))
+  events.on('queue/slots:updated', debounce(safe(refreshQueuePrompts), secondsToMilliseconds(3)))
 })
-
-const clientName = new URL(environment.WEBSITE_URL).hostname
-const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
-
-async function refreshPrompt() {
-  await queuePromptMutex.runExclusive(async () => {
-    const { _id: queue, gamemode } = await queues.getDefault()
-    const slots = await getSlots(queue)
-    const playerCount = slots.filter(slot => !!slot.player).length
-    const requiredPlayerCount = slots.length
-    const mapVoteResults = await getMapVoteResults(queue)
-    await forEachEnabledChannel('queuePrompts', async channel => {
-      const embed = queuePreview({
-        playerCount,
-        requiredPlayerCount,
-        gameClassData: slotsToGameClassData(channel.guild.id, gamemode, slots),
-        mapVoteResults,
-      })
-
-      const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
-      const config = await configuration.get('discord.guilds')
-      const thresholdRatio = config.find(gc => gc.id === channel.guildId)!.queuePrompts!
-        .bumpPlayerThresholdRatio
-
-      await retry(
-        async () => {
-          const message = await getMessage(channel, state?.promptMessageId)
-          if (message) {
-            await message.edit({ embeds: [embed] })
-            return
-          }
-
-          if (playerCount >= requiredPlayerCount * thresholdRatio) {
-            const sentMessage = await channel.send({ embeds: [embed] })
-            await collections.discordBotState.updateOne(
-              { guildId: channel.guild.id },
-              { $set: { promptMessageId: sentMessage.id } },
-              { upsert: true },
-            )
-          }
-        },
-        { retries: 3 },
-      )
-    })
-  })
-}
-
-interface QueuePreviewGameClassData {
-  gameClass: Tf2ClassName
-  emoji?: Emoji | undefined
-  players: { name: string }[]
-  playersRequired: number
-}
-
-interface QueuePreviewOptions {
-  playerCount: number
-  requiredPlayerCount: number
-  gameClassData: QueuePreviewGameClassData[]
-  mapVoteResults: Record<string, number>
-}
-
-function queuePreview(options: QueuePreviewOptions): EmbedBuilder {
-  return new EmbedBuilder()
-    .setColor('#f9f9f9')
-    .setTitle(`**${options.playerCount}/${options.requiredPlayerCount} players in the queue!**`)
-    .setDescription(`Join [${clientName}](${environment.WEBSITE_URL}) to play the next game!`)
-    .setThumbnail(iconUrl)
-    .addFields([
-      ...options.gameClassData.map(gameClassData => ({
-        name: `${gameClassData.emoji?.toString()} ${gameClassData.gameClass} (${
-          gameClassData.players.length
-        }/${gameClassData.playersRequired})`,
-        value:
-          gameClassData.players.length > 0
-            ? gameClassData.players.map(player => `\u25CF\u2000${player.name}`).join('\n')
-            : '\u200B',
-        inline: true,
-      })),
-      {
-        name: 'map votes',
-        value: Object.entries(options.mapVoteResults)
-          .map(([mapName, count]) => `\u25CF\u2000${mapName}: ${count}`)
-          .join('\n'),
-        inline: false,
-      },
-    ])
-    .setFooter({
-      iconURL: iconUrl,
-      text: clientName,
-    })
-    .setTimestamp()
-}
-
-function slotsToGameClassData(guildId: string, gamemode: Gamemode, slots: QueueSlotModel[]) {
-  const playerData = slots
-    .filter(slot => Boolean(slot.player))
-    .map(slot => ({
-      name: slot.player!.name,
-      gameClass: slot.gameClass,
-    }))
-
-  const config = gamemodeConfigs[gamemode]
-  return config.classes.map(gameClass => {
-    assertClient(client)
-    const emojiName = `tf2${gameClass.name}`
-    const guild = client.guilds.cache.get(guildId)
-    const emoji = guild?.emojis.cache.find(emoji => emoji.name === emojiName)
-
-    if (!emoji) {
-      logger.warn({ emojiName, guildId }, `emoji not found`)
-    }
-
-    return {
-      gameClass: gameClass.name,
-      emoji,
-      playersRequired: gameClass.count * config.teamCount,
-      players: playerData.filter(p => p.gameClass === gameClass.name),
-    }
-  })
-}
