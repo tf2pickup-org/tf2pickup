@@ -11,6 +11,8 @@ import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
 import { activityLog } from '../../../activity-log'
 
+const queueQuery = z.object({ queue: z.string().optional() })
+
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app
@@ -20,9 +22,11 @@ export default routes(async app => {
         config: {
           authorize: [PlayerRole.admin],
         },
+        schema: { querystring: queueQuery },
       },
-      async (_request, reply) => {
-        await reply.status(200).html(MapPoolPage())
+      async (request, reply) => {
+        const queue = await queues.bySlugOrDefault(request.query.queue)
+        await reply.status(200).html(MapPoolPage({ queue }))
       },
     )
     .post(
@@ -32,6 +36,7 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
         schema: {
+          querystring: queueQuery,
           body: z
             .object({
               'name[]': z.array(z.string()),
@@ -53,10 +58,11 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        const newMaps = await mapPool.set((await queues.getDefault())._id, request.body.maps)
+        const queue = await queues.bySlugOrDefault(request.query.queue)
+        const newMaps = await mapPool.set(queue._id, request.body.maps)
         await activityLog.record({ type: 'map pool change', maps: newMaps.map(m => m.name) })
         requestContext.set('messages', { success: ['Configuration saved'] })
-        await reply.status(200).html(MapPoolPage())
+        await reply.status(200).html(MapPoolPage({ queue: await queues.get(queue._id) }))
       },
     )
     .post(
