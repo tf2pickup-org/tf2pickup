@@ -1,5 +1,6 @@
 import { expect, type Page } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
+import { defaultQueueSlug } from '../queue-slots'
 
 export class AdminPage {
   constructor(public readonly page: Page) {}
@@ -108,8 +109,8 @@ export class AdminPage {
     ])
   }
 
-  async configurePlayerSkillThreshold(threshold: number | null) {
-    await this.page.goto('/admin/player-restrictions')
+  async configurePlayerSkillThreshold(threshold: number | null, queue = defaultQueueSlug()) {
+    await this.page.goto(`/admin/queues/${queue}`)
     await this.page
       .getByLabel('Player skill threshold', { exact: true })
       .setChecked(threshold !== null)
@@ -123,9 +124,14 @@ export class AdminPage {
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
 
-  async configureRequirePlayerVerification(enabled: boolean) {
-    await this.page.goto('/admin/player-restrictions')
-    await this.page.getByLabel('Require player verification').setChecked(enabled, { force: true })
+  async configureRequirePlayerVerification(enabled: boolean, queue = defaultQueueSlug()) {
+    await this.page.goto(`/admin/queues/${queue}`)
+    // the checkbox is hidden behind the switch
+    const checkbox = this.page.getByLabel('Require player verification')
+    if ((await checkbox.isChecked()) !== enabled) {
+      await this.page.locator('label.switch', { has: checkbox }).click()
+    }
+    await expect(checkbox).toBeChecked({ checked: enabled })
     await this.page.getByRole('button', { name: 'Save' }).click()
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
@@ -160,13 +166,34 @@ export class AdminPage {
 
   async configureWhitelistId(whitelistId: string) {
     await this.page.goto('/admin/games')
-    await this.page.getByLabel('Whitelist ID').fill(whitelistId)
+    await this.page.getByLabel('Whitelist ID', { exact: true }).fill(whitelistId)
     await this.page.getByRole('button', { name: 'Save' }).click()
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
 
-  async mapPool(): Promise<{ name: string; execConfig: string }[]> {
-    await this.page.goto('/admin/map-pool')
+  async configureDefaultSkill(gamemode: string, gameClass: string, skill: number) {
+    await this.page.goto('/admin/player-restrictions')
+    await this.page.getByLabel(`Default ${gamemode} skill on ${gameClass}`).fill(skill.toString())
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
+  async configureGamemodeWhitelistId(gamemode: string, whitelistId: string) {
+    await this.page.goto('/admin/games')
+    await this.page.getByLabel(`${gamemode} whitelist ID`).fill(whitelistId)
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
+  async configureQueueWhitelistId(whitelistId: string, queue = defaultQueueSlug()) {
+    await this.page.goto(`/admin/queues/${queue}`)
+    await this.page.getByLabel('Whitelist ID', { exact: true }).fill(whitelistId)
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
+  async mapPool(queue = defaultQueueSlug()): Promise<{ name: string; execConfig: string }[]> {
+    await this.page.goto(`/admin/map-pool?queue=${queue}`)
     const names = await this.page.getByLabel('Map name').all()
     const configs = await this.page.getByLabel('Map config').all()
     return await Promise.all(
@@ -177,10 +204,11 @@ export class AdminPage {
     )
   }
 
-  async setMapPool(maps: { name: string; execConfig: string }[]) {
-    await this.page.goto('/admin/map-pool')
-    for (const remove of await this.page.getByRole('button', { name: 'Remove map' }).all()) {
-      await remove.click()
+  async setMapPool(maps: { name: string; execConfig: string }[], queue = defaultQueueSlug()) {
+    await this.page.goto(`/admin/map-pool?queue=${queue}`)
+    const removeButtons = this.page.getByRole('button', { name: 'Remove map' })
+    while ((await removeButtons.count()) > 0) {
+      await removeButtons.first().click()
     }
     for (const [i, { name, execConfig }] of maps.entries()) {
       await this.page.getByRole('button', { name: 'Add map' }).click()

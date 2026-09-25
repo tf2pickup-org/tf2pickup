@@ -4,8 +4,18 @@ import { launchGame as test, expect } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
 import { saveState } from './state'
 import {
+  configureDefaultMedicSkill,
+  configurePlayerSkillThreshold,
+  configureRequirePlayerVerification,
+  setConfiguration,
+  setMapPool,
+  updateSkill,
+} from './legacy'
+import {
   defaultPlayerSkill,
+  mapCooldown,
   mapPool,
+  readyUpTimeoutSeconds,
   playerSkillThreshold,
   skilledPlayer,
   skilledPlayerSkill,
@@ -13,14 +23,9 @@ import {
 
 test.use({ waitForStage: 'started' })
 test('seed a 4.x instance', async ({ users, desiredSlots, gameNumber, gameServer, page }) => {
-  const admin = await users.getAdmin().adminPage()
-  await admin.updateSkill(users.byName(skilledPlayer).steamId, skilledPlayerSkill)
-
   const adminPage = await users.getAdmin().page()
-  await adminPage.goto('/admin/player-restrictions')
-  await adminPage.getByLabel("Player's skill on medic").fill(defaultPlayerSkill.medic.toString())
-  await adminPage.getByRole('button', { name: 'Save' }).click()
-  await expect(adminPage.getByText('Configuration saved')).toBeVisible()
+  await updateSkill(adminPage, users.byName(skilledPlayer).steamId, skilledPlayerSkill)
+  await configureDefaultMedicSkill(adminPage, defaultPlayerSkill.medic)
 
   await gameServer.roundEnds('blu')
   await gameServer.matchEnds()
@@ -40,26 +45,11 @@ test('seed a 4.x instance', async ({ users, desiredSlots, gameNumber, gameServer
   }).toPass()
 
   // after the game, so they don't get in its way
-  await admin.configurePlayerSkillThreshold(playerSkillThreshold)
-  await admin.configureRequirePlayerVerification(true)
-
-  await adminPage.goto('/admin/map-pool')
-  const names = adminPage.locator('input[name="name[]"]')
-  const configs = adminPage.locator('input[name="execConfig[]"]')
-  for (const [i, { name, execConfig }] of mapPool.entries()) {
-    await names.nth(i).fill(name)
-    await configs.nth(i).fill(execConfig)
-  }
-  while ((await names.count()) > mapPool.length) {
-    await adminPage.locator('button[data-remove-closest="tr"]').last().click()
-  }
-  await adminPage.getByRole('button', { name: 'Save' }).click()
-  await expect(adminPage.getByText('Configuration saved')).toBeVisible()
-
-  // a new map pool doesn't change the maps currently up for vote
-  await adminPage.goto('/admin/scramble-maps')
-  await adminPage.getByRole('button', { name: 'Scramble' }).click()
-  await expect(adminPage.getByText('Maps scrambled')).toBeVisible()
+  await configurePlayerSkillThreshold(adminPage, playerSkillThreshold)
+  await configureRequirePlayerVerification(adminPage)
+  await setMapPool(adminPage, mapPool)
+  await setConfiguration(adminPage, 'queue.ready_up_timeout', readyUpTimeoutSeconds * 1000)
+  await setConfiguration(adminPage, 'queue.map_cooldown', mapCooldown)
 
   await saveState({ gameNumber, medic: medic.steamId, medicElo })
 })

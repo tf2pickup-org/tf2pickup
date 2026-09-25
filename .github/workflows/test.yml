@@ -225,7 +225,7 @@ jobs:
         run: docker ps
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --project=chromium --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
+        run: pnpm test:e2e --project=chromium --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep "${{ matrix.queue-config == '6v6' && '@6v6|@multi-queue' || '@9v9' }}"
         env:
           API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
