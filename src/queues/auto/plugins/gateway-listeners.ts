@@ -21,7 +21,7 @@ import type { AppWebSocket } from '../../../websocket/types'
 import { players } from '../../../players'
 import { queueWsCallDuration } from '../../metrics'
 import { measureTime } from '../../../utils/measure-time'
-import { getDefault } from '../../get-default'
+import { byPageUrl } from '../../by-page-url'
 import type { QueueModel } from '../../../database/models/queue.model'
 
 export default fp(
@@ -82,7 +82,10 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        const queue = await getDefault()
+        const queue = await byPageUrl(socket.currentUrl)
+        if (!queue) {
+          throw errors.badRequest('not on a queue page')
+        }
         const slots = await join(queue._id, slotId, socket.player.steamId)
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
           await refreshTakenSlots(queue, socket.player.steamId)
