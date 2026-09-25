@@ -43,11 +43,11 @@ async function GuildToggle(props: { guild: Guild; enabled: boolean }) {
     <div class="flex flex-row">
       <dl class="grow">
         <dt>
-          <label class="text-abru-light-75" for={props.guild.id} safe>
+          <label class="text-zinc-200" for={props.guild.id} safe>
             {props.guild.name}
           </label>
         </dt>
-        <dd class="text-abru-light-75">
+        <dd class="text-zinc-200">
           <span class="hidden group-has-checked:inline-block">Enabled</span>
           <span class="group-has-checked:hidden">Disabled</span>
         </dd>

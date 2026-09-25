@@ -3,81 +3,72 @@
 @layer components {
   .queue-sidebar {
     display: flex;
-    flex-flow: column nowrap;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+    padding: 11px;
 
     @media (width >= theme(--breakpoint-lg)) {
-      height: 100%;
-      max-height: 100%;
-      border-radius: 8px;
-      background-color: var(--color-abru-dark-6);
-      padding: 8px;
-    }
-
-    @media (width < theme(--breakpoint-lg)) {
-      .online-player-list,
-      .chat {
-        flex: none;
-        background-color: var(--color-abru-dark-6);
-        border-radius: 8px;
-        overflow: hidden;
-      }
+      height: 796px;
     }
 
     .tab {
-      margin: 10px;
       display: flex;
       align-items: center;
+      gap: 5px;
+      min-height: 40px;
+      margin-bottom: 12px;
+      padding: 5px;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: var(--color-zinc-950);
+    }
 
-      .tab-link {
-        position: relative;
-        flex: 1;
+    .tab-link {
+      display: flex;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: 30px;
+      border-radius: 2px;
+      color: var(--color-text-muted);
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
 
-        display: flex;
-        flex-flow: row nowrap;
-        justify-content: center;
-        align-items: center;
-        gap: 4px;
-        padding-bottom: 8px;
+      &:hover,
+      &.active {
+        background: var(--color-surface-raised);
+        color: var(--color-zinc-100);
+      }
 
-        color: var(--color-abru-light-75);
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 700;
-        line-height: normal;
+      &.has-mention::after {
+        content: '★';
+        color: var(--color-crimson-600);
+        font-size: 10px;
+      }
+    }
 
-        @media (width < theme(--breakpoint-lg)) {
-          text-transform: uppercase;
+    .online-player-list,
+    .chat {
+      min-height: 0;
+      overflow-y: auto;
+    }
 
-          &.active {
-            color: var(--color-ash);
-          }
-        }
+    @media (width < theme(--breakpoint-lg)) {
+      padding: 8px;
 
-        &.active::after {
-          content: '';
-          display: block;
-          position: absolute;
-          bottom: 0;
-          width: 66px;
-          left: calc(50% - 33px);
-          border-bottom: 2px solid var(--color-accent);
+      .tab {
+        margin-bottom: 0;
+      }
 
-          @media (width < theme(--breakpoint-lg)) {
-            width: auto;
-            left: 8px;
-            right: 8px;
-          }
-        }
-
-        &.has-mention::before {
-          content: '★';
-          position: absolute;
-          top: -4px;
-          right: 4px;
-          font-size: 10px;
-          color: var(--color-accent);
-          line-height: 1;
-        }
+      .online-player-list,
+      .chat {
+        max-height: 60dvh;
       }
     }
   }

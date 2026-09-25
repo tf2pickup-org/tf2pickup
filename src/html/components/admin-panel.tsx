@@ -40,13 +40,13 @@ export function AdminPanelBody(props?: { children?: Children }) {
 }
 
 export function AdminPanelHeader(props?: { children?: Children }) {
-  return <h1 class="text-abru-light-75 mb-4 text-[32px]">{props?.children}</h1>
+  return <h1 class="mb-4 text-[32px] text-zinc-200">{props?.children}</h1>
 }
 
 export function AdminPanelContent(props?: { children?: Children }) {
-  return <div class="bg-abru-dark-25 rounded-2xl p-8">{props?.children}</div>
+  return <div class="rounded-2xl bg-zinc-950 p-8">{props?.children}</div>
 }
 
 export function AdminPanelGroup(props?: { children?: Children }) {
-  return <div class="bg-abru-light-5 rounded-lg">{props?.children}</div>
+  return <div class="bg-zinc-850 rounded-lg">{props?.children}</div>
 }

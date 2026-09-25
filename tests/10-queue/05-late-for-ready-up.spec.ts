@@ -29,7 +29,7 @@ test('player is late for ready up @6v6', async ({ players, desiredSlots, users, 
   )
 
   // player gets kicked
-  await expect(page.getByRole('heading', { name: /^Players:/ })).toHaveText('Players: 11/12', {
+  await expect(page.getByRole('heading', { name: /^Players / })).toHaveText('Players 11/12', {
     timeout: 60000,
   })
 

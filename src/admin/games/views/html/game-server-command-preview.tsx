@@ -9,7 +9,7 @@ export function GameServerCommandPreview(props: {
   logsTfUploadMethod: LogsTfUploadMethod
 }) {
   return (
-    <div class="bg-abru-dark-25 flex flex-col overflow-x-auto rounded-lg p-4 font-mono text-sm whitespace-nowrap text-white">
+    <div class="flex flex-col overflow-x-auto rounded-lg bg-zinc-950 p-4 font-mono text-sm whitespace-nowrap text-white">
       <span>
         logaddress_add{' '}
         {Html.escapeHtml(`${environment.LOG_RELAY_ADDRESS}:${environment.LOG_RELAY_PORT}`)}
@@ -57,12 +57,12 @@ export function GameServerCommandPreview(props: {
 
 function Placeholder(props: { text: string }) {
   return (
-    <span class="text-abru-light-75 italic" safe>
+    <span class="text-zinc-200 italic" safe>
       {`<${props.text}>`}
     </span>
   )
 }
 
 function Comment(props: { text: string }) {
-  return <span class="text-abru-light-75/60 italic" safe>{`// ${props.text}`}</span>
+  return <span class="text-zinc-200/60 italic" safe>{`// ${props.text}`}</span>
 }
