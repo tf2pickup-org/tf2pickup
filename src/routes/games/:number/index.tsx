@@ -1,4 +1,5 @@
 import z from 'zod'
+import { collections } from '../../../database/collections'
 import { GamePage } from '../../../games/views/html/game.page'
 import { RconConsoleDialog } from '../../../games/views/html/rcon-console-dialog'
 import { games } from '../../../games'
@@ -23,10 +24,23 @@ export default routes(async app => {
           params: z.object({
             number: games.schemas.gameNumber,
           }),
+          querystring: z.object({
+            // the instance an old link points at, once its domain no longer reaches us
+            i: z.string().optional(),
+          }),
         },
       },
       async (request, reply) => {
         const { number } = request.params
+        // a game merged in from another instance got a new number (ADR 0001)
+        const remap = await collections.gamesNumberRemap.findOne({
+          sourceHost: request.query.i ?? request.hostname,
+          oldNumber: number,
+        })
+        if (remap) {
+          await reply.redirect(`/games/${remap.newNumber}`, 301)
+          return
+        }
         await reply.html(GamePage({ number }))
       },
     )
