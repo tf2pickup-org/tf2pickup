@@ -13,6 +13,7 @@ import {
   IconAlertSquareRounded,
   IconArrowsShuffle,
   IconBrandDiscord,
+  IconDeviceGamepad,
   IconHeadset,
   IconHistory,
   IconLogs,
@@ -36,6 +37,11 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { requestContext } from '@fastify/request-context'
 
 const adminPages = {
+  queues: {
+    title: 'Queues',
+    icon: IconDeviceGamepad,
+    section: 'Configuration',
+  },
   'player-restrictions': {
     title: 'Player restrictions',
     icon: IconUserExclamation,
