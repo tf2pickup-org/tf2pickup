@@ -194,7 +194,7 @@ export async function VoiceServerPage() {
                     Verify players automatically
                   </label>
                 </dt>
-                <dd class="text-abru-light-75">
+                <dd class="text-zinc-200">
                   <span class="hidden group-has-checked:inline-block">
                     Only a game's players can join its channels. Players are recognized by their
                     Mumble certificate.

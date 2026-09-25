@@ -7,12 +7,9 @@ const dialogId = 'ready-up-dialog'
 export function ReadyUpDialog() {
   return (
     <>
-      <dialog
-        class="bg-abru-dark-29 w-[616px] rounded-xl px-[59px] py-[42px] shadow-xl"
-        id={dialogId}
-      >
+      <dialog class="w-[616px] rounded-xl bg-zinc-950 px-[59px] py-[42px] shadow-xl" id={dialogId}>
         <form class="flex flex-col items-center gap-11" data-disable-on-submit>
-          <div class="text-abru-light-75 flex flex-col items-center text-[32px] font-bold">
+          <div class="flex flex-col items-center text-[32px] font-bold text-zinc-200">
             <span>Game is starting!</span>
             <span>Are you ready to play?</span>
           </div>
@@ -21,7 +18,7 @@ export function ReadyUpDialog() {
             <button
               name="ready"
               value=""
-              class="bg-accent-600 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50 uppercase"
+              class="bg-crimson-600 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50 uppercase"
               autofocus
               ws-send
               data-umami-event="ready-up"
@@ -31,7 +28,7 @@ export function ReadyUpDialog() {
             <button
               name="leave"
               value=""
-              class="bg-abru-light-5 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50"
+              class="bg-zinc-850 w-[242px] rounded-sm py-[12px] text-xl font-bold text-gray-50"
               ws-send
               data-umami-event="not-ready"
             >

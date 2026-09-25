@@ -23,7 +23,7 @@ export async function GameListPage(props: { page: number }) {
       <NavigationBar />
       <Page>
         <div class="container mx-auto">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold">Games</div>
+          <div class="my-9 text-[48px] font-bold text-zinc-200">Games</div>
           <div class="contents" id="gameList">
             <GameList {...props} />
           </div>
@@ -73,6 +73,6 @@ export async function GameList(props: { page: number }) {
       />
     </>
   ) : (
-    <p class="text-abru-light-50">No games yet.</p>
+    <p class="text-zinc-400">No games yet.</p>
   )
 }

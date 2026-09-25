@@ -49,7 +49,7 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
             hx-target="#activity-log-results"
             hx-include="[name='player'],[name='actor'],[name='sort'],[name='page']"
             hx-push-url="true"
-            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+            class="rounded border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200"
           >
             <option value="">All types</option>
             {typeOptions.map(opt => (
@@ -69,7 +69,7 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
             hx-trigger="keyup changed delay:300ms"
             hx-include="[name='type'],[name='actor'],[name='sort'],[name='page']"
             hx-push-url="true"
-            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+            class="rounded border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200"
           />
 
           <input
@@ -82,7 +82,7 @@ export function ActivityLogPage(props: ActivityLogPageProps) {
             hx-trigger="keyup changed delay:300ms"
             hx-include="[name='type'],[name='player'],[name='sort'],[name='page']"
             hx-push-url="true"
-            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+            class="rounded border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200"
           />
         </div>
 

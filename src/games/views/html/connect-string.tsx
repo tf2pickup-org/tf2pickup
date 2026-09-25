@@ -14,7 +14,7 @@ export async function ConnectString(props: {
   if (props.connectString) {
     csBtn = (
       <button
-        class="hover:text-abru-light-85"
+        class="hover:text-zinc-100"
         copy-to-clipboard={props.connectString}
         data-umami-event="copy-connect-string"
         data-umami-event-game-number={props.gameNumber}

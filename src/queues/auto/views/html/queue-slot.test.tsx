@@ -136,6 +136,32 @@ describe('QueueSlot', () => {
       expect(root.querySelector('.player-name-text')?.text).toBe('Test Player')
     })
 
+    it('identifies the viewer’s own slot', async () => {
+      const ownSlot = parse(await QueueSlot({ slot: occupiedSlot, actor }))
+      const anonymousSlot = parse(await QueueSlot({ slot: occupiedSlot }))
+      const anotherPlayersSlot = parse(
+        await QueueSlot({
+          slot: occupiedSlot,
+          actor: { ...actor, steamId: '76561198000000002' as SteamId64 },
+        }),
+      )
+
+      expect(ownSlot.querySelector('.queue-slot-own')).not.toBeNull()
+      expect(anonymousSlot.querySelector('.queue-slot-own')).toBeNull()
+      expect(anotherPlayersSlot.querySelector('.queue-slot-own')).toBeNull()
+    })
+
+    it('shows the ready state and keeps the owner’s leave action', async () => {
+      const readySlot = { ...occupiedSlot, ready: true }
+      const ownSlot = parse(await QueueSlot({ slot: readySlot, actor }))
+      const anotherPlayersSlot = parse(await QueueSlot({ slot: readySlot }))
+
+      expect(ownSlot.querySelector('.queue-slot-own.queue-slot-ready')).not.toBeNull()
+      expect(ownSlot.querySelector('.leave-queue-button')).not.toBeNull()
+      expect(anotherPlayersSlot.querySelector('.queue-slot-ready')).not.toBeNull()
+      expect(anotherPlayersSlot.querySelector('.queue-slot-own')).toBeNull()
+    })
+
     it('sets data-player attribute to the player steamId', async () => {
       const html = await QueueSlot({ queue, slot: occupiedSlot })
       const root = parse(html)

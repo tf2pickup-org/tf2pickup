@@ -122,7 +122,7 @@ async function GameSlotContent(props: {
       ) {
         return (
           <button
-            class="text-abru-light-60 hover:text-abru-light-70 flex flex-1 justify-center"
+            class="flex flex-1 justify-center text-zinc-400 hover:text-zinc-300"
             hx-put={`/games/${props.game.number}/replace-player`}
             hx-trigger="click"
             aria-label="Replace player"
@@ -177,7 +177,7 @@ function DeletedGameSlot(props: { slot: GameSlotModel }) {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="bg-abru-light-85 hover:bg-abru-light-75 rounded-xs p-2 transition-colors duration-75"
+      class="rounded-xs bg-zinc-100 p-2 transition-colors duration-75 hover:bg-zinc-200"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"

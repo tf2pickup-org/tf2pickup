@@ -31,7 +31,7 @@ export async function Chat(props: { user?: User | undefined }) {
 async function ChatLogInPrompt() {
   return (
     <div class="flex flex-1 flex-col items-center">
-      <p class="text-abru-light-50">
+      <p class="text-zinc-400">
         You need to{' '}
         <a href="/auth/steam" hx-boost="false" data-umami-event="login-steam">
           sign in
@@ -81,7 +81,7 @@ export function ChatMessageList(props: { messages: WithId<ChatMessageModel>[] })
         hx-trigger="intersect once"
         hx-swap="outerHTML"
       >
-        <IconLoader3 class="text-abru-light-50 animate-spin" />
+        <IconLoader3 class="animate-spin text-zinc-400" />
       </div>
     )
   }
@@ -167,7 +167,7 @@ export function ChatPrompt(props: { isMuted: boolean }) {
           autofocus
           required
         />
-        <button class="text-abru-light-75" type="submit">
+        <button class="text-zinc-200" type="submit">
           <IconSend2 />
           <span class="sr-only">Send message</span>
         </button>

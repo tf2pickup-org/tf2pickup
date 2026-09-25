@@ -7,7 +7,7 @@
     grid-template-columns: minmax(0, 1fr);
     column-gap: 8px;
     min-height: 120px;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
 
     @media (width >= theme(--breakpoint-lg)) {
       grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -21,7 +21,7 @@
       grid-column: 1 / -1;
       margin-block: 16px;
       height: 2px;
-      background-color: var(--color-abru-light-15);
+      background-color: var(--color-zinc-700);
     }
 
     .section-letter {
@@ -83,7 +83,7 @@
     row-gap: 4px;
     overflow-x: auto;
     scrollbar-width: none;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     font-size: 24px;
     line-height: 32px;
     font-weight: 700;
@@ -101,8 +101,8 @@
     gap: 10px;
     border-radius: 8px;
     padding: 22px;
-    background-color: var(--color-abru-dark-29);
-    color: var(--color-abru-light-75);
+    background-color: var(--color-zinc-950);
+    color: var(--color-zinc-200);
     row-gap: 24px;
 
     @media (width >= theme(--breakpoint-md)) {
@@ -151,8 +151,8 @@
     justify-content: center;
     gap: 8px;
 
-    background-color: var(--color-abru-light-3);
-    color: var(--color-abru-light-75);
+    background-color: var(--color-zinc-900);
+    color: var(--color-zinc-200);
     height: 48px;
     min-width: 200px;
 
@@ -168,7 +168,7 @@
     }
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-light-3), white 2%);
+      background-color: color-mix(in hsl, var(--color-zinc-900), white 2%);
     }
 
     &.compact {
@@ -192,11 +192,11 @@
     align-items: center;
     gap: 8px;
     border-radius: 8px;
-    background: var(--color-abru-dark-29);
+    background: var(--color-zinc-950);
     padding: 10px 16px;
     cursor: pointer;
     user-select: none;
-    color: var(--color-abru-light-50);
+    color: var(--color-zinc-400);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -222,7 +222,7 @@
     flex-direction: column;
     gap: 16px;
     border-radius: 8px;
-    background: var(--color-abru-dark-29);
+    background: var(--color-zinc-950);
     padding: 20px 24px;
 
     @media (width < theme(--breakpoint-sm)) {
@@ -245,7 +245,7 @@
 
     .admin-toolbox-divider {
       height: 1px;
-      background: var(--color-abru-light-10);
+      background: var(--color-zinc-800);
       margin-inline: -24px;
 
       @media (width < theme(--breakpoint-sm)) {
@@ -271,7 +271,7 @@
             display: block;
             width: 1px;
             align-self: stretch;
-            background: var(--color-abru-light-10);
+            background: var(--color-zinc-800);
           }
 
           .admin-toolbox-winloss {
@@ -351,7 +351,7 @@
     .caption {
       font-size: 18px;
       font-weight: 700;
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
     }
 
     .game-result {
@@ -384,10 +384,10 @@
         display: inline-block;
         padding: 4px 8px;
         border-radius: 4px;
-        color: var(--color-ash);
+        color: var(--color-zinc-100);
 
         &.selected {
-          background-color: var(--color-abru-light-5);
+          background-color: var(--color-zinc-850);
         }
       }
     }

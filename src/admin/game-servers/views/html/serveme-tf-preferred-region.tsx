@@ -25,7 +25,7 @@ export function ServemeTfPreferredRegion() {
               <IconLoader3 class="animate-spin" />
             </div>
           </div>
-          <span class="text-abru-light-75 text-sm">
+          <span class="text-sm text-zinc-200">
             If a game server from the preferred region is not available, another one will be picked
             up instead.
           </span>
