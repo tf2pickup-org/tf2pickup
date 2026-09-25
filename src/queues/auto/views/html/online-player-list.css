@@ -7,16 +7,16 @@
 
     li {
       &:nth-child(odd) {
-        background-color: var(--color-abru-dark-6);
+        background-color: var(--color-surface-raised);
       }
 
       &:nth-child(even) {
-        background-color: var(--color-abru-light-5);
+        background-color: var(--color-surface);
       }
     }
 
     a {
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
       border-radius: 2px;
       padding: 4px 8px;
       font-weight: 300;

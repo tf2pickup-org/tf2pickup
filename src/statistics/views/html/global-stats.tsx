@@ -21,11 +21,11 @@ export async function GlobalStats() {
 
 function StatCard(props: { value: string; label: string }) {
   return (
-    <div class="bg-abru-dark-25 flex flex-col gap-1 rounded-lg px-6 py-8">
-      <span safe class="text-abru-light-75 text-[40px] leading-none font-bold">
+    <div class="flex flex-col gap-1 rounded-lg bg-zinc-950 px-6 py-8">
+      <span safe class="text-[40px] leading-none font-bold text-zinc-200">
         {props.value}
       </span>
-      <span safe class="text-abru-light-50 text-sm tracking-wide uppercase">
+      <span safe class="text-sm tracking-wide text-zinc-400 uppercase">
         {props.label}
       </span>
     </div>

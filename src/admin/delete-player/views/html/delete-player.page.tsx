@@ -16,9 +16,9 @@ export function DeletePlayerPage(props: {
   return (
     <Admin activePage="delete-player">
       <div class="admin-panel-set">
-        <div class="bg-abru-dark-6 mb-4 border-l-4 border-red-500 p-4 text-sm">
+        <div class="mb-4 border-l-4 border-red-500 bg-zinc-900 p-4 text-sm">
           <p class="font-bold text-red-400">Warning — this action is irreversible.</p>
-          <p class="text-abru-light-50 mt-1">
+          <p class="mt-1 text-zinc-400">
             Deleting a player permanently removes their profile. The profile page will no longer be
             accessible, and the player will disappear from the player list and the hall of fame.
             Their Steam ID is scrubbed from every game, chat message and the activity log, where
@@ -63,7 +63,7 @@ export function DeletePlayerResults(props: {
   }
 
   if (!props.results || props.results.length === 0) {
-    return <p class="text-abru-light-50 mt-4">No players found.</p>
+    return <p class="mt-4 text-zinc-400">No players found.</p>
   }
 
   return (
@@ -80,7 +80,7 @@ export function DeletePlayerCard(props: { player: DeletePlayerSummary }) {
 
   return (
     <form
-      class="bg-abru-light-5 flex flex-col gap-3 rounded-lg p-4"
+      class="bg-zinc-850 flex flex-col gap-3 rounded-lg p-4"
       id={`delete-player-card-${props.player.steamId}`}
     >
       <div class="flex items-center gap-3">
@@ -95,23 +95,23 @@ export function DeletePlayerCard(props: { player: DeletePlayerSummary }) {
           <a href={`/players/${props.player.steamId}`} class="font-bold" safe>
             {props.player.name}
           </a>
-          <span class="text-abru-light-50 text-sm tabular-nums" safe>
+          <span class="text-sm text-zinc-400 tabular-nums" safe>
             {props.player.steamId}
           </span>
         </div>
       </div>
 
       {isSuperUser ? (
-        <p class="text-abru-light-50 text-sm italic">Super-users cannot be deleted.</p>
+        <p class="text-sm text-zinc-400 italic">Super-users cannot be deleted.</p>
       ) : (
         <>
-          <label class="text-abru-light-50 text-sm">
+          <label class="text-sm text-zinc-400">
             Type the player's nickname or Steam ID to confirm deletion:
             <input
               type="text"
               name="confirmation"
               autocomplete="off"
-              class="bg-abru-dark-6! mt-1 w-full"
+              class="mt-1 w-full bg-zinc-900!"
               required
             />
           </label>
@@ -140,7 +140,7 @@ export function DeletePlayerCard(props: { player: DeletePlayerSummary }) {
 
 export function DeletePlayerDeleted(props: { name: string }) {
   return (
-    <div class="bg-abru-light-5 text-abru-light-50 rounded-lg p-4 text-sm">
+    <div class="bg-zinc-850 rounded-lg p-4 text-sm text-zinc-400">
       Player{' '}
       <span class="font-bold" safe>
         {props.name}

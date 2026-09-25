@@ -29,9 +29,7 @@ export async function HallOfFamePage() {
       <NavigationBar />
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-x-4 gap-y-2 p-2 lg:grid-cols-2 lg:gap-y-0 lg:p-0">
-          <div class="text-abru-light-75 my-9 text-[48px] font-bold lg:col-span-2">
-            Hall of Fame
-          </div>
+          <div class="my-9 text-[48px] font-bold text-zinc-200 lg:col-span-2">Hall of Fame</div>
 
           <Board title="All classes" entries={all} />
           <Board title="Medics" entries={medics} />
