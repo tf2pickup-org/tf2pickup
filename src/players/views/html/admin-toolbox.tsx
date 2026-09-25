@@ -1,8 +1,9 @@
+import { playerGamemodes } from '../../player-gamemodes'
+import type { Gamemode } from '../../../shared/types/gamemode'
 import { queues } from '../../../queues'
 import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { configuration } from '../../../configuration'
-import { environment } from '../../../environment'
-import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
+import type { PlayerBan, PlayerModel, PlayerSkill } from '../../../database/models/player.model'
 import {
   IconBan,
   IconCheck,
@@ -29,14 +30,12 @@ export async function AdminToolbox(props: {
   >
 }) {
   const { player } = props
-  const defaultSkill =
-    (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
+  const gamemodes = await playerGamemodes(player)
+  const defaultSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await queues.anyRequiresVerification()
-  const skillSuggestions = (await configuration.get('games.skill_suggestions'))
-    ? makeSkillSuggestions({ player, gamemode: environment.QUEUE_CONFIG })
-    : undefined
-  const compact = gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4
+  const suggestionsEnabled = await configuration.get('games.skill_suggestions')
+  const compact = gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4)
 
   return (
     <details
@@ -79,66 +78,19 @@ export async function AdminToolbox(props: {
 
         <div class={['admin-toolbox-body', compact && 'compact']}>
           <div class="admin-toolbox-skill">
-            {player.skill === undefined && (
-              <div class="flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
-                <IconClover size={16} />
-                <span>This player has no skill assigned</span>
-              </div>
-            )}
-            <h4 class="caption">Skill</h4>
-            <form method="post" action={`/players/${player.steamId}/edit/skill`}>
-              <div class={['skill-inputs', compact && 'compact']}>
-                {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(gameClass => (
-                  <GameClassSkillInput
-                    gameClass={gameClass.name}
-                    name={`skill.${gameClass.name}`}
-                    value={
-                      player.skill?.[environment.QUEUE_CONFIG]?.[gameClass.name] ??
-                      defaultSkill[gameClass.name] ??
-                      0
-                    }
-                    step={skillStep}
-                  >
-                    <SkillLastUpdated
-                      className={gameClass.name}
-                      skillHistory={player.skillHistory}
-                    />
-                    <SkillSuggestionIndicator direction={skillSuggestions?.get(gameClass.name)} />
-                  </GameClassSkillInput>
-                ))}
-
-                <div class="skill-buttons">
-                  <button
-                    type="submit"
-                    class="button"
-                    data-variant="accent"
-                    title="Save"
-                    data-umami-event="save-player-skill"
-                    data-umami-event-player={player.steamId}
-                  >
-                    <IconDeviceFloppy size={20} />
-                    <span>Save</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    class="button"
-                    title="Reset"
-                    data-umami-event="reset-player-skill"
-                    data-umami-event-player={player.steamId}
-                    hx-delete={`/players/${player.steamId}/edit/skill`}
-                    hx-confirm="Are you sure you want to reset this player's skill?"
-                    hx-trigger="click"
-                    hx-disabled-elt="this"
-                    hx-target="#player-admin-toolbox"
-                    hx-swap="outerHTML"
-                  >
-                    <IconInputX size={20} />
-                    <span>Reset</span>
-                  </button>
-                </div>
-              </div>
-            </form>
+            {gamemodes.map(gamemode => (
+              <SkillForm
+                player={player}
+                gamemode={gamemode}
+                labelled={gamemodes.length > 1}
+                defaultSkill={defaultSkill[gamemode] ?? {}}
+                skillStep={skillStep}
+                suggestions={
+                  suggestionsEnabled ? makeSkillSuggestions({ player, gamemode }) : undefined
+                }
+                compact={compact}
+              />
+            ))}
           </div>
 
           <div class="admin-toolbox-sep" />
@@ -150,6 +102,89 @@ export async function AdminToolbox(props: {
         </div>
       </div>
     </details>
+  )
+}
+
+async function SkillForm(props: {
+  player: Pick<PlayerModel, 'steamId' | 'skill' | 'skillHistory'>
+  gamemode: Gamemode
+  // name the gamemode when there's more than one form
+  labelled: boolean
+  defaultSkill: PlayerSkill
+  skillStep: number
+  suggestions: Map<Tf2ClassName, 'up' | 'down'> | undefined
+  compact: boolean
+}) {
+  const { player, gamemode } = props
+  const skillHistory = player.skillHistory?.filter(entry => entry.gamemode === gamemode)
+  return (
+    <>
+      {player.skill?.[gamemode] === undefined && (
+        <div class="flex items-center gap-2 rounded-md bg-green-800/30 px-3 py-2 text-sm text-green-400">
+          <IconClover size={16} />
+          <span>This player has no {props.labelled ? `${gamemode} ` : ''}skill assigned</span>
+        </div>
+      )}
+      <h4 class="caption">{props.labelled ? `Skill (${gamemode})` : 'Skill'}</h4>
+      <form method="post" action={`/players/${player.steamId}/edit/skill`}>
+        <input type="hidden" name="gamemode" value={gamemode} />
+        <div class={['skill-inputs', props.compact && 'compact']}>
+          {gamemodeConfigs[gamemode].classes.map(gameClass => (
+            <GameClassSkillInput
+              gameClass={gameClass.name}
+              id={`playerSkill-${gamemode}-${gameClass.name}`}
+              label={
+                props.labelled
+                  ? `Player's ${gamemode} skill on ${gameClass.name}`
+                  : `Player's skill on ${gameClass.name}`
+              }
+              name={`skill.${gameClass.name}`}
+              value={
+                player.skill?.[gamemode]?.[gameClass.name] ??
+                props.defaultSkill[gameClass.name] ??
+                0
+              }
+              step={props.skillStep}
+            >
+              <SkillLastUpdated className={gameClass.name} skillHistory={skillHistory} />
+              <SkillSuggestionIndicator direction={props.suggestions?.get(gameClass.name)} />
+            </GameClassSkillInput>
+          ))}
+
+          <div class="skill-buttons">
+            <button
+              type="submit"
+              class="button"
+              data-variant="accent"
+              title="Save"
+              data-umami-event="save-player-skill"
+              data-umami-event-player={player.steamId}
+            >
+              <IconDeviceFloppy size={20} />
+              <span>Save</span>
+            </button>
+
+            <button
+              type="button"
+              class="button"
+              title="Reset"
+              data-umami-event="reset-player-skill"
+              data-umami-event-player={player.steamId}
+              hx-delete={`/players/${player.steamId}/edit/skill?gamemode=${gamemode}`}
+              hx-params="none"
+              hx-confirm={`Are you sure you want to reset this player's ${gamemode} skill?`}
+              hx-trigger="click"
+              hx-disabled-elt="this"
+              hx-target="#player-admin-toolbox"
+              hx-swap="outerHTML"
+            >
+              <IconInputX size={20} />
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </>
   )
 }
 

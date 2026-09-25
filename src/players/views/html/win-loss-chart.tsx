@@ -1,4 +1,5 @@
-import { environment } from '../../../environment'
+import { players } from '../..'
+import { playerGamemodes } from '../../player-gamemodes'
 import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { collections } from '../../../database/collections'
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
@@ -21,10 +22,14 @@ export type ChartSelection = Tf2ClassName | 'all'
 
 export async function WinLossChart(props: { steamId: SteamId64; selection?: ChartSelection }) {
   const selection = props.selection ?? 'all'
-  const limit =
-    gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > config6v6Threshold
-      ? config9v9Limit
-      : defaultLimit
+  const player = await players.bySteamId(props.steamId, ['skill', 'stats'])
+  const configs = (await playerGamemodes(player)).map(gamemode => gamemodeConfigs[gamemode])
+  const classes = Object.values(Tf2ClassName).filter(gameClass =>
+    configs.some(({ classes }) => classes.some(({ name }) => name === gameClass)),
+  )
+  const limit = configs.some(({ classes }) => classes.length > config6v6Threshold)
+    ? config9v9Limit
+    : defaultLimit
   const games: GameResult[] = (
     await collections.games
       .find(
@@ -68,7 +73,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
             All
           </button>
 
-          {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name }) => (
+          {classes.map(name => (
             <button
               type="button"
               hx-get={`/players/${props.steamId}/win-loss-chart/${name}`}

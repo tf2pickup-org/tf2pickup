@@ -8,7 +8,15 @@ import { applyImport } from '../../../admin/skill-import-export/apply-import'
 import { requestContext } from '@fastify/request-context'
 import { collections } from '../../../database/collections'
 import { routes } from '../../../utils/routes'
-import { environment } from '../../../environment'
+import { queues } from '../../../queues'
+import { Gamemode } from '../../../shared/types/gamemode'
+import { z } from 'zod'
+
+const gamemodeQuery = z.object({ gamemode: z.enum(Gamemode).optional() })
+
+async function selectedGamemode(gamemode: Gamemode | undefined): Promise<Gamemode> {
+  return gamemode ?? (await queues.gamemodesInUse())[0]!
+}
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -19,9 +27,11 @@ export default routes(async app => {
         config: {
           authorize: [PlayerRole.admin],
         },
+        schema: { querystring: gamemodeQuery },
       },
-      async (_request, reply) => {
-        await reply.status(200).html(SkillImportExportPage())
+      async (request, reply) => {
+        const gamemode = await selectedGamemode(request.query.gamemode)
+        await reply.status(200).html(SkillImportExportPage({ gamemode }))
       },
     )
     .get(
@@ -30,10 +40,12 @@ export default routes(async app => {
         config: {
           authorize: [PlayerRole.admin],
         },
+        schema: { querystring: gamemodeQuery },
       },
-      async (_request, reply) => {
-        const csv = await exportSkills(environment.QUEUE_CONFIG)
-        const filename = `player-skills-${new Date().toISOString().split('T')[0]}.csv`
+      async (request, reply) => {
+        const gamemode = await selectedGamemode(request.query.gamemode)
+        const csv = await exportSkills(gamemode)
+        const filename = `player-skills-${gamemode}-${new Date().toISOString().split('T')[0]}.csv`
         void reply
           .status(200)
           .header('Content-Type', 'text/csv; charset=utf-8')
@@ -48,26 +60,28 @@ export default routes(async app => {
         config: {
           authorize: [PlayerRole.admin],
         },
+        schema: { querystring: gamemodeQuery },
       },
       async (request, reply) => {
+        const gamemode = await selectedGamemode(request.query.gamemode)
         const data = await request.file()
         if (!data) {
           requestContext.set('messages', { error: ['No file uploaded'] })
-          await reply.status(400).html(SkillImportExportPage())
+          await reply.status(400).html(SkillImportExportPage({ gamemode }))
           return
         }
 
         const content = await data.toBuffer()
         const csvContent = content.toString('utf-8')
 
-        const parseResult = parseCsv(csvContent, environment.QUEUE_CONFIG)
+        const parseResult = parseCsv(csvContent, gamemode)
         if (!parseResult.success) {
           requestContext.set('messages', { error: [parseResult.error] })
-          await reply.status(400).html(SkillImportExportPage())
+          await reply.status(400).html(SkillImportExportPage({ gamemode }))
           return
         }
 
-        const analysis = await analyzeImport(parseResult.players, environment.QUEUE_CONFIG)
+        const analysis = await analyzeImport(parseResult.players, gamemode)
 
         const user = requestContext.get('user')
         if (!user) {
@@ -121,7 +135,7 @@ export default routes(async app => {
             `Successfully applied ${totalChanges} skill change${totalChanges !== 1 ? 's' : ''}`,
           ],
         })
-        await reply.status(200).html(SkillImportExportPage())
+        await reply.status(200).html(SkillImportExportPage({ gamemode: pending.analysis.gamemode }))
       },
     )
 })
