@@ -3,18 +3,19 @@ import { getState } from '../../../../queues/get-state'
 import { getSlots } from '../../../../queues/auto/get-slots'
 import { getMapVoteResults } from '../../../../queues/auto/get-map-vote-results'
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
-import { environment } from '../../../../environment'
+import { queues } from '../../../../queues'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.get('/', async (_req, reply) => {
+    const queue = await queues.getDefault()
     const [state, slots, mapVoteResults] = await Promise.all([
-      getState(),
-      getSlots(),
-      getMapVoteResults(),
+      getState(queue._id),
+      getSlots(queue._id),
+      getMapVoteResults(queue._id),
     ])
 
-    const config = gamemodeConfigs[environment.QUEUE_CONFIG]
+    const config = gamemodeConfigs[queue.gamemode]
 
     return reply
       .type('application/hal+json')

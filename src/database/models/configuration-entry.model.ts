@@ -106,6 +106,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
   }),
   z
     .object({
+      key: z.literal('games.gamemode_whitelist_ids'),
+      value: z.partialRecord(z.enum(Gamemode), z.string().trim().min(1)).default({}),
+    })
+    .describe(
+      'Whitelist per gamemode, for queues without a whitelist of their own. Falls back to games.whitelist_id',
+    ),
+  z
+    .object({
       key: z.literal('games.join_gameserver_timeout'),
       value: z.number().default(minutesToMilliseconds(5)),
     })
@@ -225,34 +233,6 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
     key: z.literal('players.bypass_registration_restrictions'),
     value: z.array(steamId64).default([]),
-  }),
-  z.object({
-    key: z.literal('queue.player_skill_threshold'),
-    value: z.number().nullable().default(null),
-  }),
-  z
-    .object({
-      key: z.literal('queue.ready_up_timeout'),
-      value: z.number().default(secondsToMilliseconds(40)),
-    })
-    .describe('Time players have to ready up before they are kicked out of the queue'),
-  z
-    .object({
-      key: z.literal('queue.ready_state_timeout'),
-      value: z.number().default(secondsToMilliseconds(60)),
-    })
-    .describe(
-      'Time the queue stays in the ready-up state before going back to the waiting state, unless all players ready up',
-    ),
-  z
-    .object({
-      key: z.literal('queue.map_cooldown'),
-      value: z.number().positive().default(2),
-    })
-    .describe('How many times the last played map cannot be an option to vote for'),
-  z.object({
-    key: z.literal('queue.require_player_verification'),
-    value: z.boolean().default(false),
   }),
   z.object({
     key: z.literal('queue.pre_ready_up_timeout'),

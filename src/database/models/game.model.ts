@@ -2,6 +2,7 @@ import type { GameSlotModel } from './game-slot.model'
 import type { GameCreated, GameEventModel } from './game-event.model'
 import type { Tf2Team } from '../../shared/types/tf2-team'
 import type { Gamemode } from '../../shared/types/gamemode'
+import type { QueueId } from './queue.model'
 
 declare const _gameNumber: unique symbol
 export type GameNumber = number & { [_gameNumber]: never }
@@ -60,7 +61,13 @@ export interface GameServer {
 export interface GameModel {
   number: GameNumber
   gamemode: Gamemode
+  // the queue the game was launched from; for reference only
+  queue?: QueueId
   map: string
+  // resolved when the game is launched, so the game server is configured the same way for the
+  // whole game
+  execConfig?: string
+  whitelistId?: string
   state: GameState
 
   slots: GameSlotModel[]

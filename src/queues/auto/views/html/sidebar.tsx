@@ -1,3 +1,4 @@
+import type { QueueId } from '../../../../database/models/queue.model'
 import type { User } from '../../../../auth/types/user'
 import { IconMessageCircle, IconUserCircle } from '../../../../html/components/icons'
 import { Chat } from './chat'
@@ -5,13 +6,13 @@ import { CurrentPlayerCount } from './current-player-count'
 import { OnlinePlayerCount } from './online-player-count'
 import { OnlinePlayerList } from './online-player-list'
 
-export function Sidebar(props: { user?: User | undefined; required: number }) {
+export function Sidebar(props: { queue: QueueId; user?: User | undefined; required: number }) {
   return (
     <div class="queue-sidebar">
       <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
         <button class="tab-link lg:hidden" data-tabs-select="queue-content">
           <span>
-            Queue (<CurrentPlayerCount />/{props.required})
+            Queue (<CurrentPlayerCount queue={props.queue} />/{props.required})
           </span>
         </button>
 
