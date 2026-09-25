@@ -1,7 +1,7 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { routes } from '../../../utils/routes'
-import { getSlots } from '../../../queue-auto/get-slots'
-import { kick } from '../../../queue-auto/kick'
+import { getSlots } from '../../../queues/auto/get-slots'
+import { kick } from '../../../queues/auto/kick'
 import { events } from '../../../events'
 import { activityLog } from '../../../activity-log'
 

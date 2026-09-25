@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('../queue-auto', () => ({
+vi.mock('../queues/auto', () => ({
   queue: {
     getSlots: vi.fn().mockResolvedValue([]),
     getMapWinner: vi.fn().mockResolvedValue('cp_badlands'),
@@ -28,7 +28,7 @@ vi.mock('../logger', () => ({
 import { launchGame } from './launch-game'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
-import { queue } from '../queue-auto'
+import { queue } from '../queues/auto'
 
 describe('launchGame()', () => {
   beforeEach(() => {
