@@ -79,7 +79,7 @@
     "jsonwebtoken": "9.0.3",
     "linkify-html": "4.3.3",
     "linkifyjs": "4.3.3",
-    "marked": "18.0.13",
+    "marked": "18.0.14",
     "mime": "4.1.0",
     "mongodb": "7.6.0",
     "motion": "13.4.0",
