@@ -5,7 +5,6 @@ import 'htmx-ext-head-support'
 import 'htmx-ext-remove-me'
 
 // internal htmx extensions
-import './animate-number'
 import './copy-to-clipboard'
 import './countdown'
 import './notifications'

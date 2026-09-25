@@ -67,7 +67,7 @@ export function ConfigurationEntryEdit(props: {
   if (!isDefault) {
     resetButton = (
       <button
-        class="text-abru-light-60 align-middle"
+        class="align-middle text-zinc-400"
         type="button"
         hx-delete={url}
         hx-trigger="click"
@@ -83,12 +83,12 @@ export function ConfigurationEntryEdit(props: {
 
   return (
     <form
-      class="hover:bg-abru-dark-15 table-row max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:items-center max-lg:gap-x-2"
+      class="hover:bg-zinc-925 table-row max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:items-center max-lg:gap-x-2"
       hx-post={url}
       hx-swap="outerHTML"
     >
       <input type="hidden" name="key" value={props._key} />
-      <div class="text-abru-light-75 table-cell max-lg:col-span-2 max-lg:[overflow-wrap:anywhere]">
+      <div class="table-cell text-zinc-200 max-lg:col-span-2 max-lg:[overflow-wrap:anywhere]">
         <label for={`${props._key}-edit`} class={[isDefault && 'font-normal']} safe>
           {props._key}
         </label>

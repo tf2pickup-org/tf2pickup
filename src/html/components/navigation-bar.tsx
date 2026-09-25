@@ -17,13 +17,23 @@ import { configuration } from '../../configuration'
 import { environment } from '../../environment'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
-export function NavigationBar() {
+export function NavigationBar(props: { queuePage?: boolean } = {}) {
   const user = requestContext.get('user')
   return (
-    <nav class="relative flex min-h-[64px] flex-row justify-center lg:min-h-[95px]">
-      <div class="container flex flex-row items-center px-2 lg:px-0">
+    <nav
+      class={[
+        'relative flex min-h-[64px] flex-row justify-center lg:min-h-[95px]',
+        props.queuePage ? 'queue-nav' : '',
+      ]}
+    >
+      <div
+        class={[
+          'queue-nav-inner flex flex-row items-center',
+          props.queuePage ? 'w-full px-4' : 'container px-2 lg:px-0',
+        ]}
+      >
         <button
-          class="text-abru-light-75 p-3 lg:hidden"
+          class="p-3 text-zinc-200 lg:hidden"
           id="toggle-nav-menu"
           aria-label="Toggle menu"
           aria-controls="nav-menu"
@@ -37,7 +47,7 @@ export function NavigationBar() {
           </span>
         </button>
 
-        <a href="/" class="self-center lg:mx-1">
+        <a href="/" class={['self-center', !props.queuePage && 'lg:mx-1']}>
           <img
             alt={`${environment.WEBSITE_NAME} logo`}
             src="/logo.png"
@@ -48,12 +58,12 @@ export function NavigationBar() {
 
         <div
           id="nav-menu"
-          class="max-lg:bg-abru/85 hidden flex-row items-center gap-5 font-medium max-lg:fixed max-lg:inset-x-0 max-lg:top-16 max-lg:bottom-0 max-lg:z-40 max-lg:flex-col max-lg:items-stretch max-lg:overflow-y-auto max-lg:py-4 lg:ml-auto lg:flex"
+          class="hidden flex-row items-center gap-5 font-medium max-lg:fixed max-lg:inset-x-0 max-lg:top-16 max-lg:bottom-0 max-lg:z-40 max-lg:flex-col max-lg:items-stretch max-lg:overflow-y-auto max-lg:bg-zinc-950/85 max-lg:py-4 lg:ml-auto lg:flex"
         >
-          <Menu />
+          <Menu queuePage={props.queuePage === true} />
         </div>
 
-        <div class="ml-auto lg:ml-3">
+        <div class={props.queuePage ? 'ml-auto' : 'ml-auto lg:ml-3'}>
           {user ? (
             <>
               <a
@@ -91,7 +101,7 @@ export function NavigationBar() {
             button.setAttribute('aria-expanded', String(!open));
             openIcon.classList.toggle('hidden', !open);
             closeIcon.classList.toggle('hidden', open);
-            nav.classList.toggle('max-lg:bg-abru/85', !open);
+            nav.classList.toggle('max-lg:bg-zinc-950/85', !open);
           });
         }
       `}</script>
@@ -99,12 +109,17 @@ export function NavigationBar() {
   )
 }
 
-async function Menu() {
+async function Menu(props: { queuePage: boolean }) {
   const user = requestContext.get('user')
   const discordInvite = await configuration.get('misc.discord_invite_link')
 
   return (
-    <div class="flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center lg:px-0">
+    <div
+      class={[
+        'flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center',
+        props.queuePage ? 'lg:px-[11px]' : 'lg:px-0',
+      ]}
+    >
       <GamesLink />
       <MenuItem href="/players">Players</MenuItem>
       <MenuItem href="/rules">Rules</MenuItem>
@@ -119,14 +134,14 @@ async function Menu() {
         Stats
       </MenuItem>
 
-      <div class="hidden w-8 xl:block" />
-      <div class="bg-abru-light-10 my-2 h-px lg:hidden" />
+      <div class="nav-menu-spacer hidden w-8 xl:block" />
+      <div class="my-2 h-px bg-zinc-800 lg:hidden" />
 
       <div class="flex flex-row items-center gap-7 p-3 lg:contents">
         {discordInvite !== null && (
           <a
             href={discordInvite}
-            class="text-abru-light-75 hover:text-slate-200 lg:hidden xl:inline-block"
+            class="text-zinc-200 hover:text-slate-200 lg:hidden xl:inline-block"
             target="_blank"
             data-umami-event="social-discord"
           >
@@ -139,7 +154,7 @@ async function Menu() {
 
         <a
           href="https://ko-fi.com/tf2pickuporg"
-          class="text-abru-light-75 hover:text-slate-200 lg:hidden xl:inline-block"
+          class="text-zinc-200 hover:text-slate-200 lg:hidden xl:inline-block"
           target="_blank"
           data-umami-event="social-kofi"
         >
@@ -151,12 +166,12 @@ async function Menu() {
 
         {!!user && (
           <>
-            <a href="/settings" class="text-abru-light-75 lg:hidden" aria-label="Settings">
+            <a href="/settings" class="text-zinc-200 lg:hidden" aria-label="Settings">
               <IconSettings size={24} />
             </a>
             <a
               href="/auth/sign-out"
-              class="text-accent-600 lg:hidden"
+              class="text-crimson-600 lg:hidden"
               aria-label="Sign out"
               data-umami-event="logout"
               hx-boost="false"

@@ -19,8 +19,8 @@ export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
               class={[
                 'rounded-md px-3 py-1.5 text-sm font-bold',
                 tab === gamemode
-                  ? 'bg-accent text-white'
-                  : 'bg-abru-light-10 text-abru-light-75 hover:text-white',
+                  ? 'bg-crimson-600 text-white'
+                  : 'bg-zinc-800 text-zinc-200 hover:text-white',
               ]}
               aria-current={tab === gamemode ? 'page' : undefined}
             >
@@ -32,7 +32,7 @@ export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
       <div class="admin-panel-set flex flex-col gap-6">
         <section>
           <h2 class="mb-2 text-lg font-bold">Export player skills</h2>
-          <p class="text-abru-light-75 mb-4 text-sm">
+          <p class="mb-4 text-sm text-zinc-200">
             Download a CSV file containing all players' {gamemode} skills. The file will include
             columns for steamId, name, and skill values for: {classNames.join(', ') as 'safe'}.
           </p>
@@ -46,11 +46,11 @@ export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
           </a>
         </section>
 
-        <hr class="border-abru-dark-29" />
+        <hr class="border-zinc-950" />
 
         <section>
           <h2 class="mb-2 text-lg font-bold">Import player skills</h2>
-          <p class="text-abru-light-75 mb-4 text-sm">
+          <p class="mb-4 text-sm text-zinc-200">
             Upload a modified CSV file to update players' {gamemode} skills. You'll see a preview of
             changes before applying them.
           </p>
@@ -70,7 +70,7 @@ export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
                 name="file"
                 accept=".csv,text/csv"
                 required
-                class="file:bg-abru-dark-29 hover:file:bg-abru-dark-35 block w-full text-sm file:mr-4 file:rounded file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white"
+                class="block w-full text-sm file:mr-4 file:rounded file:border-0 file:bg-zinc-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-zinc-950"
               />
             </div>
             <div>

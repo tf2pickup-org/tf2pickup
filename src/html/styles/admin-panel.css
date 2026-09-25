@@ -1,7 +1,7 @@
 @layer components {
   .admin-panel-section {
     font-size: 14px;
-    color: var(--color-abru-light-50);
+    color: var(--color-zinc-400);
     font-weight: 500;
     padding: 8px 12px;
 
@@ -12,13 +12,13 @@
     }
 
     &:not(:first-child) {
-      border-top: 1px solid var(--color-abru-light-25);
+      border-top: 1px solid var(--color-zinc-600);
       padding-top: 16px;
       margin-top: 8px;
 
       @media (width < theme(--breakpoint-lg)) {
         border-top: none;
-        border-left: 1px solid var(--color-abru-light-25);
+        border-left: 1px solid var(--color-zinc-600);
         padding: 8px 12px 8px 16px;
         margin-top: 0;
         margin-left: 4px;
@@ -33,7 +33,7 @@
 
     h1 {
       font-size: 32px;
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
     }
   }
 
@@ -54,7 +54,7 @@
     flex-flow: flex nowrap;
     align-items: center;
     gap: 8px;
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     font-weight: 500;
     font-size: 18px;
     border-radius: 4px;
@@ -67,11 +67,11 @@
     }
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-dark-25), transparent 80%);
+      background-color: color-mix(in hsl, var(--color-zinc-950), transparent 80%);
     }
 
     &.active {
-      background-color: var(--color-abru-dark-25);
+      background-color: var(--color-zinc-950);
 
       &:before {
         position: absolute;
@@ -80,7 +80,7 @@
         content: '';
         width: 4px;
         height: calc(100% - 8px);
-        background-color: var(--color-accent);
+        background-color: var(--color-crimson-600);
         border-radius: 2px;
 
         @media (width < theme(--breakpoint-lg)) {
@@ -94,7 +94,7 @@
   }
 
   .admin-panel-content {
-    background-color: var(--color-abru-dark-25);
+    background-color: var(--color-zinc-950);
     border-radius: 16px;
     padding: 32px;
     display: flex;
@@ -102,16 +102,16 @@
     gap: 16px;
 
     .group {
-      background-color: var(--color-abru-light-5);
+      background-color: var(--color-zinc-850);
       border-radius: 8px;
       padding: 16px;
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
       font-size: 18px;
 
       input[type='text'],
       input[type='number'],
       input[type='url'] {
-        background-color: var(--color-abru-dark-25);
+        background-color: var(--color-zinc-950);
         color: var(--color-white);
         border-radius: 8px;
         padding: 8px;
@@ -125,7 +125,7 @@
         gap: 4px;
 
         .form-label {
-          color: var(--color-abru-light-50);
+          color: var(--color-zinc-400);
           font-size: 16px;
           font-weight: 500;
         }
