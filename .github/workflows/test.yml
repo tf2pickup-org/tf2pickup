@@ -284,6 +284,7 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
     env:
+      API_URL: 'http://127.0.0.1:3000'
       WEBSITE_URL: 'https://www.localhost'
       MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
       STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
