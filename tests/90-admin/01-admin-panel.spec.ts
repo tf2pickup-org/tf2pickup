@@ -1,5 +1,6 @@
 import { authUsers as test } from '../fixtures/auth-users'
 import { expect } from '../fixtures/expect'
+import { defaultQueueSlug } from '../queue-slots'
 
 test('admin panel is visible & accessible @6v6 @9v9', async ({ users }) => {
   const adminsPage = await users.getAdmin().page()
@@ -29,6 +30,8 @@ test('admin panel is not visible for anonymous users @6v6 @9v9', async ({ page }
   await expect(page.getByRole('link', { name: 'Go back home' })).toBeVisible()
 })
 ;[
+  '/admin/queues',
+  `/admin/queues/${defaultQueueSlug()}`,
   '/admin/player-restrictions',
   '/admin/games',
   '/admin/map-pool',

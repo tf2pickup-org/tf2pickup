@@ -6,7 +6,10 @@ import { users } from '../data'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-const moonManSteamId = users.find(({ name }) => name === 'MoonMan')!.steamId
+// GhostWalker never plays in the launched games and has no skill, so enabling verification
+// doesn't auto-verify them.
+const playerName = 'GhostWalker'
+const playerSteamId = users.find(({ name }) => name === playerName)!.steamId
 
 test.describe('when player verification is required @6v6 @9v9', () => {
   test.beforeAll(async ({ users }) => {
@@ -18,12 +21,12 @@ test.describe('when player verification is required @6v6 @9v9', () => {
     const admin = await users.getAdmin().adminPage()
     // Un-verify before disabling the feature: setPlayerVerified is a no-op when the
     // feature is off (checkbox not rendered), so order matters here.
-    await admin.setPlayerVerified(moonManSteamId, false)
+    await admin.setPlayerVerified(playerSteamId, false)
     await admin.configureRequirePlayerVerification(false)
   })
 
   test('unverified player cannot join the queue', async ({ users }) => {
-    const page = await users.byName('MoonMan').queuePage()
+    const page = await users.byName(playerName).queuePage()
     await page.goto()
 
     await expect(page.slot('scout-1').joinButton()).toBeDisabled()
@@ -35,16 +38,16 @@ test.describe('when player verification is required @6v6 @9v9', () => {
   test.describe('and the player is verified', () => {
     test.beforeEach(async ({ users }) => {
       const admin = await users.getAdmin().adminPage()
-      await admin.setPlayerVerified(moonManSteamId, true)
+      await admin.setPlayerVerified(playerSteamId, true)
     })
 
     test.afterEach(async ({ users }) => {
       const admin = await users.getAdmin().adminPage()
-      await admin.setPlayerVerified(moonManSteamId, false)
+      await admin.setPlayerVerified(playerSteamId, false)
     })
 
     test('verified player can join the queue', async ({ users }) => {
-      const page = await users.byName('MoonMan').queuePage()
+      const page = await users.byName(playerName).queuePage()
       await page.goto()
 
       await expect(page.slot('scout-1').joinButton()).not.toBeDisabled()
@@ -60,7 +63,7 @@ test.describe('when player verification is required @6v6 @9v9', () => {
 
 test.describe('when player verification is not required @6v6 @9v9', () => {
   test('unverified player can join the queue freely', async ({ users }) => {
-    const page = await users.byName('MoonMan').queuePage()
+    const page = await users.byName(playerName).queuePage()
     await page.goto()
 
     await expect(page.slot('scout-1').joinButton()).not.toBeDisabled()
