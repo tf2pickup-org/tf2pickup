@@ -28,7 +28,7 @@ vi.mock('../players', () => ({
 }))
 
 const mockKick = vi.hoisted(() => vi.fn())
-vi.mock('../queue-auto', () => ({ queue: { kick: mockKick } }))
+vi.mock('../queues/auto', () => ({ queue: { kick: mockKick } }))
 
 const mockApplyCooldown = vi.hoisted(() => vi.fn())
 vi.mock('./apply-cooldown', () => ({ applyCooldown: mockApplyCooldown }))
