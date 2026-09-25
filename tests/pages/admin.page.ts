@@ -158,6 +158,39 @@ export class AdminPage {
     await expect(this.page.getByText('connected', { exact: true })).toBeVisible()
   }
 
+  async configureWhitelistId(whitelistId: string) {
+    await this.page.goto('/admin/games')
+    await this.page.getByLabel('Whitelist ID').fill(whitelistId)
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
+  async mapPool(): Promise<{ name: string; execConfig: string }[]> {
+    await this.page.goto('/admin/map-pool')
+    const names = await this.page.getByLabel('Map name').all()
+    const configs = await this.page.getByLabel('Map config').all()
+    return await Promise.all(
+      names.map(async (name, i) => ({
+        name: await name.inputValue(),
+        execConfig: await configs[i]!.inputValue(),
+      })),
+    )
+  }
+
+  async setMapPool(maps: { name: string; execConfig: string }[]) {
+    await this.page.goto('/admin/map-pool')
+    for (const remove of await this.page.getByRole('button', { name: 'Remove map' }).all()) {
+      await remove.click()
+    }
+    for (const [i, { name, execConfig }] of maps.entries()) {
+      await this.page.getByRole('button', { name: 'Add map' }).click()
+      await this.page.getByLabel('Map name').nth(i).fill(name)
+      await this.page.getByLabel('Map config').nth(i).fill(execConfig)
+    }
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
+  }
+
   async configureGames(config: {
     joinGameServerTimeout?: number
     rejoinGameServerTimeout?: number
