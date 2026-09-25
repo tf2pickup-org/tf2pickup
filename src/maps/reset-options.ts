@@ -1,36 +1,20 @@
+import { sampleSize } from 'es-toolkit'
 import { collections } from '../database/collections'
-import type { MapPoolEntry } from '../database/models/map-pool-entry.model'
+import type { QueueId } from '../database/models/queue.model'
 import { events } from '../events'
-import { mapPool } from './pool'
+import { get } from '../queues/get'
 
-export async function resetMapOptions() {
-  if ((await collections.maps.countDocuments()) === 0) {
-    await mapPool.reset()
+export async function resetMapOptions(queue: QueueId) {
+  const { maps } = await get(queue)
+  const choices = sampleSize(
+    maps.filter(({ cooldown }) => !cooldown),
+    3,
+  ).map(({ name }) => name)
+
+  await collections.queueMapOptions.deleteMany({ queue })
+  if (choices.length > 0) {
+    await collections.queueMapOptions.insertMany(choices.map(name => ({ queue, name })))
   }
-
-  const choices = await collections.maps
-    .aggregate<MapPoolEntry>([
-      {
-        $match: {
-          $or: [
-            {
-              cooldown: {
-                $eq: 0,
-              },
-            },
-            {
-              cooldown: {
-                $exists: false,
-              },
-            },
-          ],
-        },
-      },
-      { $sample: { size: 3 } },
-    ])
-    .toArray()
-  await collections.queueMapOptions.deleteMany({})
-  await collections.queueMapOptions.insertMany(choices.map(({ name }) => ({ name })))
-  await collections.queueMapVotes.deleteMany({})
-  events.emit('queue/mapOptions:reset', { mapOptions: choices.map(({ name }) => name) })
+  await collections.queueMapVotes.deleteMany({ queue })
+  events.emit('queue/mapOptions:reset', { queue, mapOptions: choices })
 }

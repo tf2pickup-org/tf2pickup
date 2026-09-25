@@ -1,11 +1,10 @@
 import { collections } from '../../../../database/collections'
-import { configuration } from '../../../../configuration'
-import { environment } from '../../../../environment'
 import {
   PlayerRole,
   type PlayerModel,
   type PlayerSkill,
 } from '../../../../database/models/player.model'
+import type { QueueModel } from '../../../../database/models/queue.model'
 import type { QueueSlotModel } from '../../../../database/models/queue-slot.model'
 import {
   IconClover,
@@ -30,7 +29,9 @@ const enum MarkAsFriendButtonState {
 type Actor =
   Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'> | undefined
 
-export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) {
+type Queue = Pick<QueueModel, 'skillThreshold' | 'requireVerification' | 'gamemode'>
+
+export async function QueueSlot(props: { queue: Queue; slot: QueueSlotModel; actor?: Actor }) {
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
@@ -42,12 +43,9 @@ export async function QueueSlot(props: { slot: QueueSlotModel; actor?: Actor }) 
       disabled = 'You have active bans'
     } else if (props.actor.activeGame) {
       disabled = 'You are already in a game'
-    } else if (!(await meetsSkillThreshold(props.actor, props.slot))) {
+    } else if (!(await meetsSkillThreshold(props.actor, props.slot, props.queue))) {
       disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
-    } else if (
-      (await configuration.get('queue.require_player_verification')) &&
-      !props.actor.verified
-    ) {
+    } else if (props.queue.requireVerification && !props.actor.verified) {
       disabled = 'You are not verified to join the queue'
     }
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
@@ -86,7 +84,7 @@ function JoinButton(props: { slotId: QueueSlotId; disabled: string | undefined }
   )
 }
 
-async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
+async function PlayerInfo(props: { queue: Queue; slot: QueueSlotModel; actor?: Actor }) {
   if (!props.slot.player) {
     return <></>
   }
@@ -99,7 +97,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
       { projection: { skill: 1 } },
     )
     isAdmin = true
-    skill = slotPlayer?.skill?.[environment.QUEUE_CONFIG]
+    skill = slotPlayer?.skill?.[props.queue.gamemode]
   }
 
   let slotActionButton: JSX.Element
@@ -207,9 +205,13 @@ async function determineMarkAsFriendButtonState(
     return MarkAsFriendButtonState.none
   }
 
-  const actorsSlot = await collections.queueSlots.findOne({ 'player.steamId': actor.steamId })
+  const actorsSlot = await collections.queueSlots.findOne({
+    queue: slot.queue,
+    'player.steamId': actor.steamId,
+  })
   if (actorsSlot?.canMakeFriendsWith?.includes(slot.gameClass)) {
     const friendship = await collections.queueFriends.findOne({
+      queue: slot.queue,
       target: slot.player.steamId,
     })
     if (friendship === null) {

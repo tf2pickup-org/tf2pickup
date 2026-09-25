@@ -14,6 +14,12 @@ vi.mock('../environment', () => ({
   },
 }))
 
+vi.mock('../queues', () => ({
+  queues: {
+    getDefault: vi.fn().mockResolvedValue({ _id: 'queue-id', gamemode: '6v6' }),
+  },
+}))
+
 vi.mock('../version', () => ({
   version: '1.2.3',
 }))
@@ -44,8 +50,8 @@ const fetchMock = vi.fn()
 beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock)
   fetchMock.mockResolvedValue({ ok: true, status: 204 })
-  vi.mocked(collections.queueSlots.countDocuments).mockImplementation(async (filter?: unknown) =>
-    filter ? 7 : 12,
+  vi.mocked(collections.queueSlots.countDocuments).mockImplementation(async (filter?: object) =>
+    filter && 'player' in filter ? 7 : 12,
   )
   vi.mocked(collections.onlinePlayers.countDocuments).mockResolvedValue(23)
   vi.mocked(collections.games.countDocuments).mockResolvedValue(2)
