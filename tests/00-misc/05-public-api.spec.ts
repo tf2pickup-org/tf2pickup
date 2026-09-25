@@ -1,5 +1,6 @@
 import { test, expect, type APIResponse } from '@playwright/test'
 import { users } from '../data'
+import { defaultQueueSlug, getPlayerCount, getQueueConfig } from '../queue-slots'
 
 const halJson = 'application/hal+json'
 
@@ -52,11 +53,19 @@ interface QueueSlot {
   player: { steamId: string; name: string } | null
 }
 interface QueueResponse {
+  slug: string
+  name: string
+  gamemode: string
+  launchMode: string
   state: string
   slots: QueueSlot[]
   mapVoteResults: Record<string, number>
   config: { teamCount: number; classes: { name: string; count: number }[] }
   _links: Links
+}
+interface QueueListResponse {
+  _links: Links
+  _embedded: { queues: QueueResponse[] }
 }
 interface OnlinePlayersResponse {
   count: number
@@ -80,6 +89,7 @@ test.describe('GET /api/v1/ @6v6 @9v9', () => {
       players: { href: '/api/v1/players' },
       games: { href: '/api/v1/games' },
       queue: { href: '/api/v1/queue' },
+      queues: { href: '/api/v1/queues' },
       onlinePlayers: { href: '/api/v1/online-players' },
       version: { href: '/api/v1/version' },
     })
@@ -256,6 +266,43 @@ test.describe('GET /api/v1/queue @6v6 @9v9', () => {
       expect(slot.player).toHaveProperty('steamId')
       expect(slot.player).toHaveProperty('name')
     }
+  })
+})
+
+test.describe('GET /api/v1/queue @6v6 @9v9', () => {
+  test('is the default queue', async ({ request }) => {
+    const body = await json<QueueResponse>(await request.get('/api/v1/queue'))
+    expect(body).toMatchObject({
+      slug: defaultQueueSlug(),
+      gamemode: getQueueConfig(),
+      launchMode: 'auto',
+    })
+    expect(body._links['page']).toEqual({ href: `/q/${defaultQueueSlug()}` })
+  })
+})
+
+test.describe('GET /api/v1/queues @6v6 @9v9', () => {
+  test('lists the enabled queues', async ({ request }) => {
+    const res = await request.get('/api/v1/queues')
+    expect(res.status()).toBe(200)
+    expect(res.headers()['content-type']).toContain(halJson)
+    const body = await json<QueueListResponse>(res)
+    expect(body._links['self']).toEqual({ href: '/api/v1/queues' })
+    expect(body._embedded.queues.map(q => q.slug)).toContain(defaultQueueSlug())
+  })
+
+  test('returns one queue by its slug', async ({ request }) => {
+    const res = await request.get(`/api/v1/queues/${defaultQueueSlug()}`)
+    expect(res.status()).toBe(200)
+    const body = await json<QueueResponse>(res)
+    expect(body.slug).toBe(defaultQueueSlug())
+    expect(body.slots).toHaveLength(getPlayerCount())
+    expect(body._links['self']).toEqual({ href: `/api/v1/queues/${defaultQueueSlug()}` })
+  })
+
+  test('returns 404 for an unknown queue', async ({ request }) => {
+    const res = await request.get('/api/v1/queues/no-such-queue')
+    expect(res.status()).toBe(404)
   })
 })
 

@@ -63,6 +63,7 @@ export async function buildSnapshot() {
     usage,
     playedMaps,
     defaultQueue,
+    allQueues,
   ] = await Promise.all([
     collections.announcements.countDocuments({ enabled: true }),
     collections.players.estimatedDocumentCount(),
@@ -72,6 +73,7 @@ export async function buildSnapshot() {
     getUsageCounters(),
     getPlayedMapsCount(),
     queues.getDefault(),
+    queues.list(),
   ])
   const {
     skillThreshold: playerSkillThreshold,
@@ -144,6 +146,12 @@ export async function buildSnapshot() {
       group: 'Queue',
     },
     { key: 'queue.map_cooldown', value: mapCooldown, label: 'Map cooldown', group: 'Queue' },
+    {
+      key: 'queues.enabled_count',
+      value: allQueues.filter(queue => queue.enabled).length,
+      label: 'Enabled queues',
+      group: 'Queue',
+    },
     {
       key: 'serveme_tf.preferred_region',
       value: servemePreferredRegion,
@@ -260,6 +268,14 @@ export async function buildSnapshot() {
     usage: Object.fromEntries(usageEntries.map(({ key, value }) => [key, value])),
     maps,
     mapPool: pool.map(entry => entry.name).slice(0, maxMapPoolReported),
+    // slugs and names are admin-chosen text, so they're left out
+    queues: allQueues.map(queue => ({
+      gamemode: queue.gamemode,
+      launchMode: queue.launchMode,
+      enabled: queue.enabled,
+      hasSkillThreshold: queue.skillThreshold !== null,
+      requireVerification: queue.requireVerification,
+    })),
     meta: {
       features: featureEntries.map(({ key, label, group }) => ({ key, label, group })),
       integrations: integrationEntries.map(({ key, label }) => ({ key, label })),
