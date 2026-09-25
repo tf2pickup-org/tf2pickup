@@ -36,6 +36,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { 'events.0.at': -1 } },
     { spec: { state: 1 } },
   ],
+  gamesNumberRemap: [{ spec: { sourceHost: 1, oldNumber: 1 }, options: { unique: true } }],
   gameLogs: [{ spec: { logSecret: 1 }, options: { unique: true, sparse: true } }],
   queues: [{ spec: { slug: 1 }, options: { unique: true } }, { spec: { position: 1 } }],
   queueSlots: [
