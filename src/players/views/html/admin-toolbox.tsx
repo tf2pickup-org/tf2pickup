@@ -28,7 +28,8 @@ export async function AdminToolbox(props: {
   >
 }) {
   const { player } = props
-  const defaultSkill = await configuration.get('games.default_player_skill')
+  const defaultSkill =
+    (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
   const skillSuggestions = (await configuration.get('games.skill_suggestions'))

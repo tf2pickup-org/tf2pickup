@@ -12,7 +12,13 @@ export async function up() {
       'stats.gamesByClass': { $type: 'object' },
       $nor: Object.values(Gamemode).map(g => ({ [`stats.gamesByClass.${g}`]: { $exists: true } })),
     },
-    [{ $set: { 'stats.gamesByClass': { [gamemode]: '$stats.gamesByClass' } } }],
+    [
+      {
+        $set: {
+          'stats.gamesByClass': { $arrayToObject: [[{ k: gamemode, v: '$stats.gamesByClass' }]] },
+        },
+      },
+    ],
   )
 
   try {

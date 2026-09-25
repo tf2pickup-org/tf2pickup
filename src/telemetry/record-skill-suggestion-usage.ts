@@ -28,7 +28,7 @@ export async function recordSkillSuggestionUsage({
     return
   }
 
-  const defaultSkill = await configuration.get('games.default_player_skill')
+  const defaultSkill = (await configuration.get('games.default_player_skill'))[gamemode] ?? {}
   const suggestions = makeSkillSuggestions({ player, gamemode })
 
   const followed = [...suggestions.entries()].some(([gameClass, direction]) => {
