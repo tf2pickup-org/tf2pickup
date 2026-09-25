@@ -6,10 +6,8 @@ import { get } from '../queues/get'
 
 export async function resetMapOptions(queue: QueueId) {
   const { maps } = await get(queue)
-  const choices = sampleSize(
-    maps.filter(({ cooldown }) => !cooldown),
-    3,
-  ).map(({ name }) => name)
+  const eligible = maps.filter(({ cooldown }) => !cooldown)
+  const choices = sampleSize(eligible, Math.min(3, eligible.length)).map(({ name }) => name)
 
   await collections.queueMapOptions.deleteMany({ queue })
   if (choices.length > 0) {
