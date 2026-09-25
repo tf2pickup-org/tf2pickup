@@ -1,7 +1,7 @@
+import { gamemodeConfigs } from '../../../../../gamemodes/configs'
 import { PlayerRole } from '../../../../../database/models/player.model'
 import { environment } from '../../../../../environment'
 import { z } from 'zod'
-import { queue } from '../../../../../queues/auto'
 import type { Tf2ClassName } from '../../../../../shared/types/tf2-class-name'
 import { players } from '../../../../../players'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
@@ -50,7 +50,7 @@ export default routes(async app => {
           steamId: steamId64,
         }),
         body: z.object({
-          ...queue.config.classes
+          ...gamemodeConfigs[environment.QUEUE_CONFIG].classes
             .map(({ name }) => name)
             .reduce<Partial<Record<`skill.${Tf2ClassName}`, z.ZodNumber>>>(
               (acc, key) => ({ ...acc, [`skill.${key}`]: z.coerce.number() }),
@@ -70,7 +70,10 @@ export default routes(async app => {
       ])
       const oldSkill = player.skill?.[environment.QUEUE_CONFIG] ?? {}
       const skill = Object.fromEntries(
-        queue.config.classes.map(({ name }) => [name, request.body[`skill.${name}`]]),
+        gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name }) => [
+          name,
+          request.body[`skill.${name}`],
+        ]),
       )
       await players.setSkill({
         steamId: player.steamId,

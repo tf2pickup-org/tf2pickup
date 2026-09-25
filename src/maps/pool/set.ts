@@ -1,16 +1,14 @@
 import { collections } from '../../database/collections'
 import { mapPoolSchema, type MapPoolEntry } from '../../database/models/map-pool-entry.model'
+import type { QueueId } from '../../database/models/queue.model'
 import { events } from '../../events'
-import { get } from './get'
 
 /**
  * @throws {ZodError<MapPoolEntry>}
  */
-export async function set(maps: MapPoolEntry[]): Promise<MapPoolEntry[]> {
+export async function set(queue: QueueId, maps: MapPoolEntry[]): Promise<MapPoolEntry[]> {
   const parsed = mapPoolSchema.parse(maps)
-  await collections.maps.deleteMany()
-  await collections.maps.insertMany(parsed)
-  const ret = await get()
-  events.emit('queue/mapPool:reset', { maps: ret })
-  return ret
+  await collections.queues.updateOne({ _id: queue }, { $set: { maps: parsed } })
+  events.emit('queue/mapPool:reset', { queue, maps: parsed })
+  return parsed
 }
