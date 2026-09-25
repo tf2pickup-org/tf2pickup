@@ -59,6 +59,10 @@ export default fp(
     }
 
     async function readyUpTimeout() {
+      if ((await getState()) !== QueueState.ready) {
+        return
+      }
+
       logger.info('ready up timeout, kick players that are not ready')
       await kickUnreadyPlayers()
 
@@ -81,7 +85,11 @@ export default fp(
     }
 
     tasks.register('queue:readyUpTimeout', readyUpTimeout)
-    tasks.register('queue:unready', unreadyQueue)
+    tasks.register('queue:unready', async () => {
+      if ((await getState()) === QueueState.ready) {
+        await unreadyQueue()
+      }
+    })
 
     events.on('queue/slots:updated', safe(maybeUpdateQueueState))
   },
