@@ -10,3 +10,4 @@ dist
 /playwright/.cache/
 /tests/.auth/*
 !/tests/.auth/.gitkeep
+/tests/upgrade/.state.json
