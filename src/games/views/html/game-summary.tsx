@@ -26,7 +26,7 @@ export function GameSummary(props: {
   return (
     <div
       id={`game-${props.game.number}-summary`}
-      class="text-abru-light-75 flex flex-col overflow-hidden rounded-lg xl:mr-4"
+      class="flex flex-col overflow-hidden rounded-lg text-zinc-200 xl:mr-4"
       style="grid-area: gameSummary"
     >
       <div class="game-summary-caption relative flex min-h-[200px] flex-1 flex-col justify-end px-[10px]">
@@ -34,7 +34,7 @@ export function GameSummary(props: {
           <MapThumbnail map={props.game.map} />
         </div>
 
-        <div class="game-floating-label text-abru-light-75 top-[10px] left-[10px] tabular-nums">
+        <div class="game-floating-label top-[10px] left-[10px] text-zinc-200 tabular-nums">
           <span safe>#{props.game.number}</span>
         </div>
 
@@ -48,7 +48,7 @@ export function GameSummary(props: {
         </div>
       </div>
 
-      <div class="bg-abru-dark-29 flex flex-col gap-[8px] p-[10px]">
+      <div class="flex flex-col gap-[8px] bg-zinc-950 p-[10px]">
         <div class="game-info">
           <span class="game-info-label">launched</span>
           <span class="game-info-value" safe>

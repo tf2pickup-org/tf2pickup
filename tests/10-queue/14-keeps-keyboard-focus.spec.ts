@@ -24,6 +24,7 @@ test('keeps focus on an online player link when the list re-renders @6v6 @9v9', 
   const [watcher, newcomer] = users.getMany(2)
   const queuePage = await watcher.queuePage()
   await queuePage.goto()
+  await queuePage.page.getByRole('button', { name: /Online/ }).click()
 
   const onlinePlayerList = queuePage.page.locator('#online-player-list')
   const newcomerLink = onlinePlayerList.getByRole('link', {

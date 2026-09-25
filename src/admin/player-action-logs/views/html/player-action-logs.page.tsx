@@ -26,7 +26,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
             hx-get="/admin/player-action-logs"
             hx-target="#log-results"
             hx-include="[name='player'],[name='ip'],[name='sort'],[name='page']"
-            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+            class="rounded border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200"
           >
             <option value="">All actions</option>
             <option value="went online" selected={props.action === 'went online'}>
@@ -52,7 +52,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
             hx-target="#log-results"
             hx-trigger="keyup changed delay:300ms"
             hx-include="[name='action'],[name='ip'],[name='sort'],[name='page']"
-            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+            class="rounded border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200"
           />
 
           <input
@@ -64,7 +64,7 @@ export function PlayerActionLogsPage(props: PlayerActionLogsPageProps) {
             hx-target="#log-results"
             hx-trigger="keyup changed delay:300ms"
             hx-include="[name='action'],[name='player'],[name='sort'],[name='page']"
-            class="border-abru-light-25 bg-abru-dark-6 text-abru-light-75 rounded border px-3 py-1.5 text-sm"
+            class="rounded border border-zinc-600 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-200"
           />
         </div>
 

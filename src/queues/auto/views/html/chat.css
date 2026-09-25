@@ -21,8 +21,8 @@
         right: 0;
         max-height: 200px;
         overflow-y: auto;
-        background-color: var(--color-abru-dark-25);
-        border: 1px solid var(--color-abru-light-25);
+        background-color: var(--color-zinc-950);
+        border: 1px solid var(--color-zinc-600);
         border-radius: 6px;
         margin: 0 8px 4px;
         z-index: 10;
@@ -39,15 +39,15 @@
             padding: 6px 8px;
             border-radius: 4px;
             cursor: pointer;
-            color: var(--color-abru-light-75);
+            color: var(--color-zinc-200);
 
             &[aria-selected='true'] {
-              background-color: var(--color-abru-light-25);
+              background-color: var(--color-zinc-600);
               color: var(--color-white);
             }
 
             &:hover {
-              background-color: var(--color-abru-light-25);
+              background-color: var(--color-zinc-600);
               color: var(--color-white);
             }
 
@@ -73,7 +73,7 @@
         align-items: center;
         justify-content: center;
         margin: 8px 0;
-        color: var(--color-abru-light-50);
+        color: var(--color-zinc-400);
         font-size: 12px;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -82,7 +82,7 @@
         &::after {
           content: '';
           flex: 1 1 0%;
-          border-bottom: 1px solid var(--color-abru-light-50);
+          border-bottom: 1px solid var(--color-zinc-400);
           margin: 0 8px;
         }
 
@@ -101,7 +101,7 @@
         margin: 0 -4px;
 
         &:hover {
-          background-color: color-mix(in srgb, var(--color-abru-light-25) 10%, transparent);
+          background-color: color-mix(in srgb, var(--color-zinc-600) 10%, transparent);
         }
 
         .message-text {
@@ -112,7 +112,7 @@
         .at {
           white-space: nowrap;
           font-size: 12px;
-          color: var(--color-abru-light-50);
+          color: var(--color-zinc-400);
         }
 
         a.author {
@@ -133,14 +133,14 @@
           }
 
           a.mention {
-            background-color: color-mix(in srgb, var(--color-abru-light-75) 25%, transparent);
+            background-color: color-mix(in srgb, var(--color-zinc-200) 25%, transparent);
             border-radius: 4px;
             padding: 1px 4px;
             text-decoration: none;
 
             &:hover {
               text-decoration: none;
-              background-color: color-mix(in srgb, var(--color-abru-light-75) 40%, transparent);
+              background-color: color-mix(in srgb, var(--color-zinc-200) 40%, transparent);
             }
           }
         }
@@ -156,7 +156,7 @@
           border: none;
           padding: 0 2px;
           cursor: pointer;
-          color: var(--color-abru-light-50);
+          color: var(--color-zinc-400);
 
           &:hover {
             color: var(--color-alert);

@@ -29,8 +29,8 @@ export async function MumbleVerificationPage(props: { steamId: SteamId64 }) {
     <Layout title={makeTitle('Mumble verification')}>
       <NavigationBar />
       <Page>
-        <div class="text-abru-light-75 container mx-auto flex max-w-3xl flex-col gap-8">
-          <section class="bg-abru-dark-25 flex flex-col gap-4 rounded-lg p-[24px]">
+        <div class="container mx-auto flex max-w-3xl flex-col gap-8 text-zinc-200">
+          <section class="flex flex-col gap-4 rounded-lg bg-zinc-950 p-[24px]">
             <h4 class="text-[24px] font-bold">Mumble verification</h4>
             <p>
               Game channels on our Mumble server are open only to that game's players. The bot
@@ -53,7 +53,7 @@ export async function MumbleVerificationPage(props: { steamId: SteamId64 }) {
             )}
           </section>
 
-          <section class="bg-abru-dark-25 flex flex-col gap-4 rounded-lg p-[24px]">
+          <section class="flex flex-col gap-4 rounded-lg bg-zinc-950 p-[24px]">
             <h4 class="text-[24px] font-bold">
               {player.mumbleCertificate ? 'Verify again' : 'Link your certificate'}
             </h4>
@@ -73,10 +73,7 @@ export async function MumbleVerificationPage(props: { steamId: SteamId64 }) {
             )}
           </section>
 
-          <section
-            class="bg-abru-dark-25 flex flex-col gap-4 rounded-lg p-[24px]"
-            id="new-certificate"
-          >
+          <section class="flex flex-col gap-4 rounded-lg bg-zinc-950 p-[24px]" id="new-certificate">
             <h4 class="text-[24px] font-bold">Lost your certificate?</h4>
             <p>
               Mumble keeps your certificate on your computer. If you reinstalled Mumble, switched
@@ -112,7 +109,7 @@ async function VerificationSteps(props: {
   return (
     <ol class="flex flex-col gap-6">
       <li class="flex flex-col gap-2">
-        <span class="text-abru-light-85 font-bold">1. Connect to the Mumble server</span>
+        <span class="font-bold text-zinc-100">1. Connect to the Mumble server</span>
         <div class="flex flex-row flex-wrap items-center gap-4">
           <a
             href={props.serverUrl.toString()}
@@ -129,13 +126,13 @@ async function VerificationSteps(props: {
         </div>
       </li>
       <li class="flex flex-col gap-2">
-        <span class="text-abru-light-85 font-bold">2. Send this code to the bot</span>
+        <span class="font-bold text-zinc-100">2. Send this code to the bot</span>
         <span>
           Find <strong safe>{props.botName}</strong> in the channel list, right-click it, choose{' '}
           <strong>Send Message</strong> and send:
         </span>
         <code
-          class="bg-abru-light-5 text-abru-light-85 self-start rounded-sm px-4 py-2 text-2xl tracking-widest"
+          class="bg-zinc-850 self-start rounded-sm px-4 py-2 text-2xl tracking-widest text-zinc-100"
           id="mumble-verification-code"
           safe
         >
@@ -148,7 +145,7 @@ async function VerificationSteps(props: {
         </span>
       </li>
       <li class="flex flex-col gap-2">
-        <span class="text-abru-light-85 font-bold">3. Wait for the bot's reply</span>
+        <span class="font-bold text-zinc-100">3. Wait for the bot's reply</span>
         <span>It tells you as soon as your certificate is linked.</span>
       </li>
     </ol>
