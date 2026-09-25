@@ -1,3 +1,5 @@
+import { queues } from '../../../queues'
+import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { environment } from '../../../environment'
 import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
@@ -5,7 +7,6 @@ import { z } from 'zod'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
-import { queue } from '../../../queues/auto'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 
 const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEnabled', [
@@ -47,7 +48,7 @@ export default routes(async app => {
               requirePlayerVerification: z.coerce.boolean().default(false),
               skillSuggestions: z.coerce.boolean().default(false),
               skillStep: z.coerce.number().positive(),
-              ...queue.config.classes
+              ...gamemodeConfigs[environment.QUEUE_CONFIG].classes
                 .map(({ name }) => name)
                 .reduce<Partial<Record<`defaultPlayerSkill.${Tf2ClassName}`, z.ZodNumber>>>(
                   (acc, key) => ({ ...acc, [`defaultPlayerSkill.${key}`]: z.coerce.number() }),
@@ -77,10 +78,14 @@ export default routes(async app => {
         await Promise.all([
           configuration.set('players.etf2l_account_required', etf2lAccountRequired, actor),
           configuration.set('players.minimum_in_game_hours', minimumInGameHours, actor),
-          configuration.set('queue.require_player_verification', requirePlayerVerification, actor),
-          configuration.set(
-            'queue.player_skill_threshold',
-            playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,
+          queues.update(
+            (await queues.getDefault())._id,
+            {
+              requireVerification: requirePlayerVerification,
+              skillThreshold: playerSkillThresholdEnabled
+                ? request.body.playerSkillThreshold
+                : null,
+            },
             actor,
           ),
           configuration.set(

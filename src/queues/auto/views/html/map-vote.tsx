@@ -1,11 +1,12 @@
 import { collections } from '../../../../database/collections'
+import type { QueueId } from '../../../../database/models/queue.model'
 import { MapThumbnail } from '../../../../html/components/map-thumbnail'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import { getMapVoteResults } from '../../get-map-vote-results'
 
-export async function MapVote(props: { actor?: SteamId64 | undefined }) {
-  const mapOptions = await collections.queueMapOptions.find().toArray()
-  const results = await getMapVoteResults()
+export async function MapVote(props: { queue: QueueId; actor?: SteamId64 | undefined }) {
+  const mapOptions = await collections.queueMapOptions.find({ queue: props.queue }).toArray()
+  const results = await getMapVoteResults(props.queue)
 
   return (
     <form
