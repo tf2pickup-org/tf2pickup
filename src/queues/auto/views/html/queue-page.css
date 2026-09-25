@@ -1,0 +1,346 @@
+@reference '../../../../html/styles/main.css';
+
+@layer components {
+  .queue-nav .queue-nav-inner {
+    max-width: 1920px;
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  @media (width >= 1024px) {
+    .queue-nav #nav-menu > div {
+      gap: 10px;
+      padding: 7px 11px;
+      border: 1px solid var(--color-surface-raised);
+      border-radius: 10px;
+      background: var(--color-surface);
+    }
+
+    .queue-nav .nav-menu-item {
+      padding: 4px 8px;
+      font-size: 18px;
+    }
+
+    .queue-nav .nav-profile-button {
+      padding: 10px;
+      border: 1px solid var(--color-surface-raised);
+      background: var(--color-surface);
+    }
+  }
+
+  @media (width >= 1600px) {
+    .queue-nav #nav-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin: 0;
+      transform: translate(-50%, -50%);
+    }
+
+    .queue-nav #nav-menu > div {
+      position: relative;
+    }
+
+    .queue-nav .nav-menu-spacer {
+      display: none !important;
+    }
+
+    .queue-nav #nav-menu > div > div:last-child {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 280px);
+      display: flex !important;
+      padding: 0;
+      transform: translateY(-50%);
+    }
+  }
+
+  .queue-page {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding: 33px 16px 16px;
+  }
+
+  .queue-alerts {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .queue-page-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 381px;
+    grid-template-rows: auto minmax(0, 1fr);
+    column-gap: 16px;
+    row-gap: 22px;
+  }
+
+  .queue-toolbar {
+    display: flex;
+    align-items: stretch;
+    gap: 16px;
+    min-width: 0;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .queue-switcher,
+  .queue-state {
+    min-height: 54px;
+    padding: 7px;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    background: var(--color-surface);
+  }
+
+  .queue-switcher {
+    flex: none;
+  }
+
+  .queue-switcher-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+  }
+
+  .queue-switcher-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 6px 14px;
+    border-radius: 5px;
+    color: var(--color-text-muted);
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .queue-switcher-option {
+    gap: 8px;
+  }
+
+  .queue-switcher-count {
+    color: var(--color-zinc-500);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .queue-switcher-option:hover,
+  .queue-switcher-option[aria-current='page'] {
+    background: var(--color-surface-raised);
+    color: var(--color-zinc-200);
+  }
+
+  .queue-state {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .queue-state-form {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: 100%;
+  }
+
+  .queue-player-count {
+    padding: 0 18px;
+    color: var(--color-zinc-200);
+    font-size: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .queue-state-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .queue-state-actions .button {
+    min-height: 39px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    line-height: 16px;
+  }
+
+  .queue-state-actions .queue-clear-button {
+    border: 1px solid var(--color-crimson-600);
+    background: var(--color-crimson-700);
+  }
+
+  .queue-state-actions #pre-ready-up-button {
+    min-width: 183px;
+  }
+
+  .queue-page-layout > .queue-sidebar {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+
+  .queue-content {
+    display: block;
+    grid-column: 1;
+    grid-row: 2;
+    min-width: 0;
+  }
+
+  .queue-class-grid {
+    gap: 16px;
+  }
+
+  .queue-compact-grid {
+    display: grid;
+    grid-template-rows: 42px repeat(2, 58px);
+    grid-template-columns: 222px repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    align-content: start;
+    min-height: 331px;
+    padding-inline: clamp(0px, calc((100% - 1333px) / 2), 79px);
+  }
+
+  .queue-compact-grid > .queue-class-heading {
+    align-self: start;
+    margin-top: 2px;
+  }
+
+  .queue-team-row {
+    display: contents;
+  }
+
+  .queue-team-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-width: 0;
+    padding: 0 24px;
+    color: var(--color-zinc-200);
+    font-size: 18px;
+    font-weight: 500;
+    border-radius: 8px;
+  }
+
+  .queue-team-blu {
+    background: var(--color-team-blu-dark);
+  }
+
+  .queue-team-red {
+    background: var(--color-team-red-dark);
+  }
+
+  .queue-class-column {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .queue-class-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 34px;
+    color: var(--color-zinc-200);
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  .queue-content #map-vote {
+    margin-top: 48px;
+  }
+
+  .queue-content #stream-list {
+    margin-top: 48px;
+  }
+
+  @media (width < 1280px) {
+    .queue-page-layout {
+      grid-template-columns: minmax(0, 1fr) 320px;
+    }
+
+    .queue-toolbar {
+      flex-wrap: wrap;
+    }
+
+    .queue-switcher,
+    .queue-state {
+      width: 100%;
+    }
+  }
+
+  @media (width < 1024px) {
+    .queue-page-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .queue-toolbar {
+      display: flex;
+      gap: 8px;
+    }
+
+    .queue-page-layout > .queue-sidebar {
+      order: 2;
+    }
+
+    .queue-content {
+      order: 3;
+    }
+  }
+
+  @media (width < 640px) {
+    .queue-page {
+      padding: 8px;
+    }
+
+    .queue-switcher-options {
+      gap: 2px;
+      justify-content: space-between;
+    }
+
+    .queue-switcher-option {
+      padding: 6px 8px;
+      font-size: 14px;
+    }
+
+    .queue-state-form {
+      flex-wrap: wrap;
+    }
+
+    .queue-state-actions {
+      width: 100%;
+    }
+
+    .queue-state-actions .button {
+      flex: 1;
+    }
+
+    .queue-class-heading {
+      font-size: 20px;
+    }
+
+    .queue-compact-grid {
+      grid-template-rows: 42px repeat(2, 58px);
+      grid-template-columns: 80px repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      min-height: 257px;
+      padding-inline: 0;
+    }
+
+    .queue-compact-grid .queue-class-heading {
+      gap: 4px;
+      font-size: 16px;
+    }
+
+    .queue-team-summary {
+      padding: 0 8px;
+      font-size: 14px;
+    }
+  }
+}

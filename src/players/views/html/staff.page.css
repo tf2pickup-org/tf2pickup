@@ -17,15 +17,15 @@
     padding: 14px;
 
     background-color: rgba(19, 16, 20, 0.5);
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     border-radius: 8px;
 
     &:hover {
-      background-color: color-mix(in srgb, var(--color-abru-light-5) 70%, transparent);
+      background-color: color-mix(in srgb, var(--color-zinc-850) 70%, transparent);
     }
 
     &.staff-card--super-user {
-      --role-color: var(--color-accent);
+      --role-color: var(--color-crimson-600);
     }
 
     &.staff-card--admin {
@@ -47,7 +47,7 @@
       height: 14px;
       border-radius: 50%;
       background-color: var(--color-game-result-win);
-      border: 3px solid var(--color-abru-dark-29);
+      border: 3px solid var(--color-zinc-950);
     }
   }
 }

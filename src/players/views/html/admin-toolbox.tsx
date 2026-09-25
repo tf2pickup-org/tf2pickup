@@ -59,7 +59,7 @@ export async function AdminToolbox(props: {
           <BanStatus bans={player.bans} steamId={player.steamId} />
           <a
             href={`/admin/activity-log?player=${player.steamId}`}
-            class="text-abru-light-50 hover:text-abru-light-75 shrink-0 text-sm"
+            class="shrink-0 text-sm text-zinc-400 hover:text-zinc-200"
           >
             Activity log
           </a>
@@ -217,12 +217,12 @@ function BanStatus(props: { bans: PlayerBan[] | undefined; steamId: SteamId64 })
   }
 
   return (
-    <div class="bg-abru-light-5 text-abru-light-50 flex flex-1 items-center gap-3 rounded-md px-3 py-2 text-sm">
+    <div class="bg-zinc-850 flex flex-1 items-center gap-3 rounded-md px-3 py-2 text-sm text-zinc-400">
       <IconCheck size={16} class="shrink-0" />
       <span>No active ban</span>
       <a
         href={`/players/${props.steamId}/edit/bans`}
-        class="text-abru-light-50 hover:text-abru-light-75 ml-auto text-xs underline"
+        class="ml-auto text-xs text-zinc-400 underline hover:text-zinc-200"
       >
         Manage bans
       </a>

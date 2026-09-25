@@ -104,7 +104,7 @@ export async function WinLossChart(props: { steamId: SteamId64; selection?: Char
               <span safe>#{game.gameNumber}</span>
               <div>
                 <span class="text-team-blu">{game.score[Tf2Team.blu]}</span>{' '}
-                <span class="text-ash">:</span>{' '}
+                <span class="text-zinc-100">:</span>{' '}
                 <span class="text-team-red">{game.score[Tf2Team.red]}</span>
               </div>
             </div>
