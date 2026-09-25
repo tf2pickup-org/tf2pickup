@@ -1,6 +1,7 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { expect, launchGame as test } from '../fixtures/launch-game'
 import { QueuePage } from '../pages/queue.page'
+import { defaultQueueSlug } from '../queue-slots'
 
 test('redirect player to launched game @6v6 @9v9', async ({
   users,
@@ -50,7 +51,7 @@ test('redirect player to launched game @6v6 @9v9', async ({
   const gameNumber = Number(matches[1])
 
   await redirectedQueuePage.page.goBack()
-  await redirectedQueuePage.page.waitForURL('/')
+  await redirectedQueuePage.page.waitForURL(`/q/${defaultQueueSlug()}`)
   await expect(redirectedQueuePage.goBackToGameLink()).toBeVisible()
 
   // kill the game and free the game server, as the gameNumber fixture does
