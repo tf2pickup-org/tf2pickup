@@ -34,7 +34,7 @@ export default defineConfig({
     },
     {
       name: 'chromium',
-      testIgnore: /upgrade\//,
+      testIgnore: /(upgrade|merge)\//,
       use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
       dependencies: ['setup'],
     },
@@ -50,6 +50,26 @@ export default defineConfig({
     {
       name: 'upgrade-after',
       testMatch: /upgrade\/after\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
+    },
+    // Merge test: merge-primary and merge-incoming each seed an instance, the merge script folds
+    // the incoming database into the primary one, and merge-verify checks the result on the
+    // primary. merge-verify must not depend on setup, which resets players.
+    {
+      name: 'merge-primary',
+      testMatch: /merge\/primary\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'merge-incoming',
+      testMatch: /merge\/incoming\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'merge-verify',
+      testMatch: /merge\/verify\.spec\.ts/,
       use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
     },
     // {

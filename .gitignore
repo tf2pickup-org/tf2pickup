@@ -11,3 +11,4 @@ dist
 /tests/.auth/*
 !/tests/.auth/.gitkeep
 /tests/upgrade/.state.json
+/tests/merge/.state.json
