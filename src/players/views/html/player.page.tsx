@@ -200,7 +200,9 @@ function PlayerPresentation(props: {
         {queue.config.classes.map(({ name: gameClass }) => (
           <>
             <GameClassIcon gameClass={gameClass} size={32} />
-            <span class="text-2xl font-bold">{props.gameCountOnClasses[gameClass] ?? 0}</span>
+            <span class="text-2xl font-bold" aria-label={`Games played as ${gameClass}`}>
+              {props.gameCountOnClasses[gameClass] ?? 0}
+            </span>
           </>
         ))}
       </div>
