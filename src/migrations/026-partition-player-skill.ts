@@ -12,7 +12,7 @@ export async function up() {
       skill: { $type: 'object' },
       $nor: Object.values(Gamemode).map(g => ({ [`skill.${g}`]: { $exists: true } })),
     },
-    [{ $set: { skill: { [gamemode]: '$skill' } } }],
+    [{ $set: { skill: { $arrayToObject: [[{ k: gamemode, v: '$skill' }]] } } }],
   )
   await collections.players.updateMany({ 'skillHistory.0': { $exists: true } }, [
     {

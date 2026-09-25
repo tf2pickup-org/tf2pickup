@@ -14,7 +14,9 @@ export async function meetsSkillThreshold(
 
   const skill =
     player.skill?.[environment.QUEUE_CONFIG]?.[slot.gameClass] ??
-    (await configuration.get('games.default_player_skill'))[slot.gameClass] ??
+    (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG]?.[
+      slot.gameClass
+    ] ??
     0
   return skill >= skillThreshold
 }
