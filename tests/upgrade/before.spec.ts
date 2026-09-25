@@ -56,5 +56,10 @@ test('seed a 4.x instance', async ({ users, desiredSlots, gameNumber, gameServer
   await adminPage.getByRole('button', { name: 'Save' }).click()
   await expect(adminPage.getByText('Configuration saved')).toBeVisible()
 
+  // a new map pool doesn't change the maps currently up for vote
+  await adminPage.goto('/admin/scramble-maps')
+  await adminPage.getByRole('button', { name: 'Scramble' }).click()
+  await expect(adminPage.getByText('Maps scrambled')).toBeVisible()
+
   await saveState({ gameNumber, medic: medic.steamId, medicElo })
 })
