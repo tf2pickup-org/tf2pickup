@@ -11,7 +11,7 @@ export async function up() {
       elo: { $type: 'object' },
       $nor: Object.values(Gamemode).map(g => ({ [`elo.${g}`]: { $exists: true } })),
     },
-    [{ $set: { elo: { [gamemode]: '$elo' } } }],
+    [{ $set: { elo: { $arrayToObject: [[{ k: gamemode, v: '$elo' }]] } } }],
   )
   await collections.players.updateMany({ 'eloHistory.0': { $exists: true } }, [
     {
