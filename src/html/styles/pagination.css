@@ -12,16 +12,16 @@
     cursor: pointer;
 
     &:hover {
-      background-color: var(--color-abru-light-10);
+      background-color: var(--color-zinc-800);
     }
   }
 
   .pagination-page[aria-current='page'] {
-    background-color: var(--color-abru-light-15);
+    background-color: var(--color-zinc-700);
   }
 
   .pagination-page[aria-disabled='true'] {
-    color: var(--color-abru-light-15);
+    color: var(--color-zinc-700);
     cursor: default;
 
     &:hover {

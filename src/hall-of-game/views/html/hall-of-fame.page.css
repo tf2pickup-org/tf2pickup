@@ -10,7 +10,7 @@
     padding: 10px 14px;
 
     background-color: rgba(19, 16, 20, 0.5);
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
     border-radius: 8px;
 
     font-size: 20px;
@@ -33,7 +33,7 @@
       padding: 0px 8px 0px 0px;
 
       &:hover {
-        background-color: color-mix(in srgb, var(--color-abru-light-5) 40%, transparent);
+        background-color: color-mix(in srgb, var(--color-zinc-850) 40%, transparent);
       }
     }
   }

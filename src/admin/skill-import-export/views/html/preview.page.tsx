@@ -19,7 +19,7 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
       <div class="admin-panel-set flex flex-col gap-6">
         <header class="flex flex-row items-center justify-between">
           <h2 class="text-lg font-bold">Import preview</h2>
-          <span class="text-abru-light-75">{analysis.gamemode} skill</span>
+          <span class="text-zinc-200">{analysis.gamemode} skill</span>
           <a
             href={`/admin/skill-import-export?gamemode=${analysis.gamemode}`}
             class="button"
@@ -30,32 +30,30 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
         </header>
 
         <div class="grid grid-cols-4 gap-4 text-center">
-          <div class="bg-abru-dark-29 rounded p-4">
+          <div class="rounded bg-zinc-950 p-4">
             <div class="text-2xl font-bold text-yellow-400">{analysis.changedPlayers.length}</div>
-            <div class="text-abru-light-75 text-sm">Changed</div>
+            <div class="text-sm text-zinc-200">Changed</div>
           </div>
-          <div class="bg-abru-dark-29 rounded p-4">
+          <div class="rounded bg-zinc-950 p-4">
             <div class="text-2xl font-bold text-green-400">
               {analysis.initializedPlayers.length}
             </div>
-            <div class="text-abru-light-75 text-sm">Initialized</div>
+            <div class="text-sm text-zinc-200">Initialized</div>
           </div>
-          <div class="bg-abru-dark-29 rounded p-4">
-            <div class="text-abru-light-75 text-2xl font-bold">{analysis.unaffectedCount}</div>
-            <div class="text-abru-light-75 text-sm">Unaffected</div>
+          <div class="rounded bg-zinc-950 p-4">
+            <div class="text-2xl font-bold text-zinc-200">{analysis.unaffectedCount}</div>
+            <div class="text-sm text-zinc-200">Unaffected</div>
           </div>
-          <div class="bg-abru-dark-29 rounded p-4">
+          <div class="rounded bg-zinc-950 p-4">
             <div class="text-2xl font-bold text-blue-400">{analysis.futurePlayers.length}</div>
-            <div class="text-abru-light-75 text-sm">Future</div>
+            <div class="text-sm text-zinc-200">Future</div>
           </div>
         </div>
 
         {analysis.changedPlayers.length > 0 && (
           <section>
             <h3 class="text-md mb-2 font-bold text-yellow-400">Changed players</h3>
-            <p class="text-abru-light-75 mb-2 text-sm">
-              These players will have their skills updated.
-            </p>
+            <p class="mb-2 text-sm text-zinc-200">These players will have their skills updated.</p>
             <PlayerSkillTable
               players={analysis.changedPlayers.map(p => ({
                 steamId: p.steamId,
@@ -73,7 +71,7 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
         {analysis.initializedPlayers.length > 0 && (
           <section>
             <h3 class="text-md mb-2 font-bold text-green-400">Initialized players</h3>
-            <p class="text-abru-light-75 mb-2 text-sm">
+            <p class="mb-2 text-sm text-zinc-200">
               These players don't have skills yet and will be initialized.
             </p>
             <PlayerSkillTable
@@ -92,13 +90,13 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
         {analysis.futurePlayers.length > 0 && (
           <section>
             <h3 class="text-md mb-2 font-bold text-blue-400">Future players</h3>
-            <p class="text-abru-light-75 mb-2 text-sm">
+            <p class="mb-2 text-sm text-zinc-200">
               These players aren't registered yet. Their skills will be saved and applied when they
               register.
             </p>
             <table class="w-full text-sm">
               <thead>
-                <tr class="border-abru-dark-29 border-b">
+                <tr class="border-b border-zinc-950">
                   <th class="p-2 text-left">Steam ID</th>
                   <th class="p-2 text-left">Name (from CSV)</th>
                   {classNames.map(c => (
@@ -108,21 +106,17 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
               </thead>
               <tbody>
                 {analysis.futurePlayers.map(p => (
-                  <tr class="border-abru-dark-29 border-b">
+                  <tr class="border-b border-zinc-950">
                     <td class="p-2 font-mono text-xs">{p.steamId as 'safe'}</td>
                     <td class="p-2">
-                      {p.name ? (
-                        <span safe>{p.name}</span>
-                      ) : (
-                        <span class="text-abru-light-50">-</span>
-                      )}
+                      {p.name ? <span safe>{p.name}</span> : <span class="text-zinc-400">-</span>}
                     </td>
                     {classNames.map(c => (
                       <td class="p-2 text-center">
                         {p.skill[c] !== undefined ? (
                           <span class="text-blue-400">{p.skill[c]}</span>
                         ) : (
-                          <span class="text-abru-light-50">-</span>
+                          <span class="text-zinc-400">-</span>
                         )}
                       </td>
                     ))}
@@ -140,7 +134,7 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
             </button>
           </form>
         ) : (
-          <p class="text-abru-light-75">No changes to apply.</p>
+          <p class="text-zinc-200">No changes to apply.</p>
         )}
       </div>
     </Admin>
@@ -165,7 +159,7 @@ function PlayerSkillTable({ players, classNames, showOldSkill }: PlayerSkillTabl
   return (
     <table class="w-full text-sm">
       <thead>
-        <tr class="border-abru-dark-29 border-b">
+        <tr class="border-b border-zinc-950">
           <th class="p-2 text-left">Player</th>
           {classNames.map(c => (
             <th class="p-2 text-center capitalize">{c as 'safe'}</th>
@@ -174,9 +168,9 @@ function PlayerSkillTable({ players, classNames, showOldSkill }: PlayerSkillTabl
       </thead>
       <tbody>
         {players.map(p => (
-          <tr class="border-abru-dark-29 border-b">
+          <tr class="border-b border-zinc-950">
             <td class="p-2">
-              <a href={p.profileUrl} class="text-accent hover:underline" safe>
+              <a href={p.profileUrl} class="text-crimson-600 hover:underline" safe>
                 {p.name}
               </a>
             </td>
@@ -196,7 +190,7 @@ function PlayerSkillTable({ players, classNames, showOldSkill }: PlayerSkillTabl
                   ) : newVal !== undefined ? (
                     <span>{newVal}</span>
                   ) : (
-                    <span class="text-abru-light-50">-</span>
+                    <span class="text-zinc-400">-</span>
                   )}
                 </td>
               )

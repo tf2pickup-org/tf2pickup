@@ -9,7 +9,7 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
   return (
     <dialog
       id="choose-game-server-dialog"
-      class="bg-abru-dark-29 text-abru-light-75 rounded-xl p-10 shadow-xl xl:min-w-[480px]"
+      class="rounded-xl bg-zinc-950 p-10 text-zinc-200 shadow-xl xl:min-w-[480px]"
       data-dialog-events
     >
       <form hx-put={`/games/${props.gameNumber}/reassign-gameserver`} class="flex flex-col">

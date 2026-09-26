@@ -14,8 +14,8 @@ export function QueueTabs(props: {
           class={[
             'rounded-md px-3 py-1.5 text-sm font-bold whitespace-nowrap',
             slug === props.active
-              ? 'bg-accent text-white'
-              : 'bg-abru-light-10 text-abru-light-75 hover:text-white',
+              ? 'bg-crimson-600 text-white'
+              : 'bg-zinc-800 text-zinc-200 hover:text-white',
             !enabled && 'italic',
           ]}
           aria-current={slug === props.active ? 'page' : undefined}

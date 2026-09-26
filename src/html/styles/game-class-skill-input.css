@@ -2,7 +2,7 @@
   .game-class-skill-input {
     display: flex;
     flex-flow: row nowrap;
-    background-color: var(--color-abru-light-5);
+    background-color: var(--color-zinc-850);
     border-radius: 4px;
     height: 48px;
     align-items: center;
@@ -17,13 +17,13 @@
       cursor: pointer;
       padding: 0 6px;
       font-size: 18px;
-      color: var(--color-abru-light-35);
+      color: var(--color-zinc-500);
       height: 100%;
       display: flex;
       align-items: center;
 
       &:hover {
-        color: var(--color-abru-light-75);
+        color: var(--color-zinc-200);
       }
 
       &:active {
@@ -36,7 +36,7 @@
       text-align: center;
       font-size: 14px;
       user-select: none;
-      color: var(--color-ash);
+      color: var(--color-zinc-100);
     }
   }
 }

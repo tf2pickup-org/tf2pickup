@@ -32,6 +32,8 @@ type Actor =
 type Queue = Pick<QueueModel, 'skillThreshold' | 'requireVerification' | 'gamemode'>
 
 export async function QueueSlot(props: { queue: Queue; slot: QueueSlotModel; actor?: Actor }) {
+  const isOwnSlot = !!props.actor && props.slot.player?.steamId === props.actor.steamId
+  const isReadySlot = !!props.slot.player && props.slot.ready
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
@@ -53,7 +55,7 @@ export async function QueueSlot(props: { queue: Queue; slot: QueueSlotModel; act
 
   return (
     <div
-      class="queue-slot"
+      class={['queue-slot', isOwnSlot && 'queue-slot-own', isReadySlot && 'queue-slot-ready']}
       id={`queue-slot-${props.slot.id}`}
       aria-label={`Queue slot ${props.slot.id}`}
       data-player={props.slot.player?.steamId}
@@ -101,7 +103,7 @@ async function PlayerInfo(props: { queue: Queue; slot: QueueSlotModel; actor?: A
   }
 
   let slotActionButton: JSX.Element
-  if (props.actor?.steamId === props.slot.player.steamId && !props.slot.ready) {
+  if (props.actor?.steamId === props.slot.player.steamId) {
     slotActionButton = (
       <button class="leave-queue-button" name="leave" value="" data-umami-event="leave-queue">
         <IconMinus />

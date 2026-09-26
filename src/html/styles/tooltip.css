@@ -10,8 +10,8 @@
     }
     visibility: hidden;
     min-width: 120px;
-    background-color: var(--color-abru-dark-6);
-    color: var(--color-abru-light-75);
+    background-color: var(--color-zinc-900);
+    color: var(--color-zinc-200);
     text-align: center;
     padding: 5px 8px;
     border-radius: 6px;
@@ -36,7 +36,7 @@
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: var(--color-abru-dark-6) transparent transparent transparent;
+      border-color: var(--color-zinc-900) transparent transparent transparent;
     }
 
     &[data-placement='bottom'] {
@@ -46,7 +46,7 @@
       &::after {
         top: auto;
         bottom: 100%;
-        border-color: transparent transparent var(--color-abru-dark-6) transparent;
+        border-color: transparent transparent var(--color-zinc-900) transparent;
       }
     }
   }
