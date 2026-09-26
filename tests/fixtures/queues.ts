@@ -42,6 +42,7 @@ export const queues = mergeTests(authUsers, waitForEmptyQueue).extend<{
     for (const slug of created.reverse()) {
       if (await admin.isEnabled(slug)) {
         await admin.disable(slug)
+        await admin.expectFlash(`Queue ${slug} disabled`)
       }
       await admin.delete(slug)
     }

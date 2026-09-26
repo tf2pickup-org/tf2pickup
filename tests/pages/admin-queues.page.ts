@@ -43,6 +43,7 @@ export class AdminQueuesPage {
     await this.row(slug)
       .getByRole('button', { name: `Delete queue ${slug}` })
       .click()
+    await expect(this.row(slug)).toHaveCount(0)
   }
 
   async move(slug: string, direction: 'up' | 'down') {
