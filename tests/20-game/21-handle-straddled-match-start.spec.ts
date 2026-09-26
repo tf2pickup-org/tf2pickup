@@ -21,6 +21,10 @@ launchGame(
 
     await expect(gamePage.page.getByLabel('red team score')).toHaveText('5')
     await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
+
+    // the replay starts before the page's live updates connect, so read the recorded events
+    await gamePage.goto()
+    await expect(gamePage.gameEvent('Game ended')).toBeVisible()
     await expect(gamePage.gameEvent('Game restarted')).not.toBeVisible()
     await expect(gamePage.gameEvent('Game started')).toHaveCount(1)
   },
