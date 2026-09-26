@@ -1,8 +1,12 @@
+import type { Gamemode } from '../../shared/types/gamemode'
+import { queues } from '../../queues'
+import { getSlots } from '../../queues/auto/get-slots'
+import { getMapVoteResults } from '../../queues/auto/get-map-vote-results'
+import { gamemodeConfigs } from '../../gamemodes/configs'
 import { secondsToMilliseconds } from 'date-fns'
 import { debounce, retry } from 'es-toolkit'
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { queue } from '../../queues/auto'
 import { environment } from '../../environment'
 import { EmbedBuilder, type Emoji } from 'discord.js'
 import { configuration } from '../../configuration'
@@ -31,15 +35,16 @@ const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
 
 async function refreshPrompt() {
   await queuePromptMutex.runExclusive(async () => {
-    const slots = await queue.getSlots()
+    const { _id: queue, gamemode } = await queues.getDefault()
+    const slots = await getSlots(queue)
     const playerCount = slots.filter(slot => !!slot.player).length
     const requiredPlayerCount = slots.length
-    const mapVoteResults = await queue.getMapVoteResults()
+    const mapVoteResults = await getMapVoteResults(queue)
     await forEachEnabledChannel('queuePrompts', async channel => {
       const embed = queuePreview({
         playerCount,
         requiredPlayerCount,
-        gameClassData: slotsToGameClassData(channel.guild.id, slots),
+        gameClassData: slotsToGameClassData(channel.guild.id, gamemode, slots),
         mapVoteResults,
       })
 
@@ -117,7 +122,7 @@ function queuePreview(options: QueuePreviewOptions): EmbedBuilder {
     .setTimestamp()
 }
 
-function slotsToGameClassData(guildId: string, slots: QueueSlotModel[]) {
+function slotsToGameClassData(guildId: string, gamemode: Gamemode, slots: QueueSlotModel[]) {
   const playerData = slots
     .filter(slot => Boolean(slot.player))
     .map(slot => ({
@@ -125,7 +130,8 @@ function slotsToGameClassData(guildId: string, slots: QueueSlotModel[]) {
       gameClass: slot.gameClass,
     }))
 
-  return queue.config.classes.map(gameClass => {
+  const config = gamemodeConfigs[gamemode]
+  return config.classes.map(gameClass => {
     assertClient(client)
     const emojiName = `tf2${gameClass.name}`
     const guild = client.guilds.cache.get(guildId)
@@ -138,7 +144,7 @@ function slotsToGameClassData(guildId: string, slots: QueueSlotModel[]) {
     return {
       gameClass: gameClass.name,
       emoji,
-      playersRequired: gameClass.count * queue.config.teamCount,
+      playersRequired: gameClass.count * config.teamCount,
       players: playerData.filter(p => p.gameClass === gameClass.name),
     }
   })

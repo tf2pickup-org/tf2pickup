@@ -3,32 +3,33 @@ import { events } from '../../../events'
 import { safe } from '../../../utils/safe'
 import { getState } from '../../get-state'
 import { collections } from '../../../database/collections'
+import type { QueueId } from '../../../database/models/queue.model'
 import { logger } from '../../../logger'
 import { QueueState } from '../../../database/models/queue-state.model'
 import { setState } from '../../set-state'
+import { get } from '../../get'
 import { kick } from '../kick'
 import { unreadyQueue } from '../unready-queue'
-import { configuration } from '../../../configuration'
 import { tasks } from '../../../tasks'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    async function maybeUpdateQueueState() {
-      const state = await getState()
+    async function maybeUpdateQueueState({ queue }: { queue: QueueId }) {
+      const state = await getState(queue)
       const [currentPlayerCount, readyPlayerCount, requiredPlayerCount] = await Promise.all([
-        collections.queueSlots.countDocuments({ player: { $ne: null } }),
-        collections.queueSlots.countDocuments({ ready: { $eq: true } }),
-        collections.queueSlots.countDocuments(),
+        collections.queueSlots.countDocuments({ queue, player: { $ne: null } }),
+        collections.queueSlots.countDocuments({ queue, ready: { $eq: true } }),
+        collections.queueSlots.countDocuments({ queue }),
       ])
 
-      logger.debug(`${currentPlayerCount}/${requiredPlayerCount}`)
+      logger.debug({ queue }, `${currentPlayerCount}/${requiredPlayerCount}`)
 
       switch (state) {
         case QueueState.waiting: {
           if (currentPlayerCount === requiredPlayerCount) {
-            logger.info('queue full, wait for players to ready up')
-            await readyUp()
+            logger.info({ queue }, 'queue full, wait for players to ready up')
+            await readyUp(queue)
           }
 
           break
@@ -36,12 +37,12 @@ export default fp(
 
         case QueueState.ready: {
           if (currentPlayerCount === 0) {
-            await unreadyQueue()
+            await unreadyQueue(queue)
           } else if (readyPlayerCount === requiredPlayerCount) {
-            logger.info('all players ready, queue ready')
-            await setState(QueueState.launching)
-            await tasks.cancelAll('queue:readyUpTimeout')
-            await tasks.cancelAll('queue:unready')
+            logger.info({ queue }, 'all players ready, queue ready')
+            await setState(queue, QueueState.launching)
+            await tasks.cancel('queue:readyUpTimeout', { queue })
+            await tasks.cancel('queue:unready', { queue })
           }
 
           break
@@ -49,45 +50,43 @@ export default fp(
       }
     }
 
-    async function kickUnreadyPlayers() {
+    async function kickUnreadyPlayers(queue: QueueId) {
       const unreadyPlayers = (
         await collections.queueSlots
-          .find({ player: { $ne: null }, ready: { $eq: false } })
+          .find({ queue, player: { $ne: null }, ready: { $eq: false } })
           .toArray()
       ).map(slot => slot.player!.steamId)
       await kick(...unreadyPlayers)
     }
 
-    async function readyUpTimeout() {
-      if ((await getState()) !== QueueState.ready) {
+    async function readyUpTimeout({ queue }: { queue: QueueId }) {
+      if ((await getState(queue)) !== QueueState.ready) {
         return
       }
 
-      logger.info('ready up timeout, kick players that are not ready')
-      await kickUnreadyPlayers()
+      logger.info({ queue }, 'ready up timeout, kick players that are not ready')
+      await kickUnreadyPlayers(queue)
 
-      const readyStateTimeout = await configuration.get('queue.ready_state_timeout')
-      const readyUpTimeout = await configuration.get('queue.ready_up_timeout')
-
+      const { readyStateTimeout, readyUpTimeout } = await get(queue)
       const nextTimeout = readyStateTimeout - readyUpTimeout
 
       if (nextTimeout > 0) {
-        await tasks.schedule('queue:unready', nextTimeout)
+        await tasks.schedule('queue:unready', nextTimeout, { queue })
       } else {
-        await unreadyQueue()
+        await unreadyQueue(queue)
       }
     }
 
-    async function readyUp() {
-      await setState(QueueState.ready)
-      const timeout = await configuration.get('queue.ready_up_timeout')
-      await tasks.schedule('queue:readyUpTimeout', timeout)
+    async function readyUp(queue: QueueId) {
+      await setState(queue, QueueState.ready)
+      const { readyUpTimeout } = await get(queue)
+      await tasks.schedule('queue:readyUpTimeout', readyUpTimeout, { queue })
     }
 
     tasks.register('queue:readyUpTimeout', readyUpTimeout)
-    tasks.register('queue:unready', async () => {
-      if ((await getState()) === QueueState.ready) {
-        await unreadyQueue()
+    tasks.register('queue:unready', async ({ queue }) => {
+      if ((await getState(queue)) === QueueState.ready) {
+        await unreadyQueue(queue)
       }
     })
 

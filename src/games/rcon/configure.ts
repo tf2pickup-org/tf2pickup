@@ -236,14 +236,12 @@ async function* compileConfig(game: GameModel, password: string): AsyncGenerator
     yield `changelevel ${game.map}`
   }
 
-  const map = await collections.maps.findOne({ name: game.map })
-  if (map?.execConfig) {
-    yield `exec ${map.execConfig}`
+  if (game.execConfig) {
+    yield `exec ${game.execConfig}`
   }
 
-  const whitelistId = await configuration.get('games.whitelist_id')
-  if (whitelistId !== null) {
-    yield `tftrue_whitelist_id ${whitelistId}`
+  if (game.whitelistId) {
+    yield `tftrue_whitelist_id ${game.whitelistId}`
   }
 
   yield `sv_password ${password}`

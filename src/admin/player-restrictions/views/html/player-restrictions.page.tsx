@@ -1,7 +1,8 @@
+import { queues } from '../../../../queues'
+import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import { environment } from '../../../../environment'
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
-import { queue } from '../../../../queues/auto'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 import { GameClassSkillInput } from '../../../../html/components/game-class-skill-input'
@@ -75,7 +76,7 @@ async function MinimumTf2InGameHours() {
 }
 
 async function RequirePlayerVerification() {
-  const requirePlayerVerification = await configuration.get('queue.require_player_verification')
+  const { requireVerification: requirePlayerVerification } = await queues.getDefault()
   return (
     <div class="group flex flex-row items-center justify-between">
       <dl>
@@ -102,7 +103,7 @@ async function RequirePlayerVerification() {
 }
 
 async function PlayerSkillThreshold() {
-  const playerSkillThreshold = await configuration.get('queue.player_skill_threshold')
+  const { skillThreshold: playerSkillThreshold } = await queues.getDefault()
   const playerSkillThresholdEnabled = playerSkillThreshold !== null
 
   return (
@@ -196,7 +197,7 @@ async function DefaultPlayerSkill() {
   const defaultPlayerSkill =
     (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
   const skillStep = await configuration.get('games.skill_step')
-  const classes = queue.config.classes.map(({ name }) => name)
+  const classes = gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name }) => name)
 
   return (
     <dl>

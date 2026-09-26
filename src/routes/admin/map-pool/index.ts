@@ -1,3 +1,4 @@
+import { queues } from '../../../queues'
 import { PlayerRole } from '../../../database/models/player.model'
 import {
   MapPoolEntry as MapPoolEntryCmp,
@@ -52,7 +53,7 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        const newMaps = await mapPool.set(request.body.maps)
+        const newMaps = await mapPool.set((await queues.getDefault())._id, request.body.maps)
         await activityLog.record({ type: 'map pool change', maps: newMaps.map(m => m.name) })
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(MapPoolPage())

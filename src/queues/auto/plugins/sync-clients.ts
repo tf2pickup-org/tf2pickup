@@ -24,13 +24,23 @@ import type { AppWebSocket } from '../../../websocket/types'
 import { players } from '../../../players'
 import { errors } from '../../../errors'
 import { getState } from '../../get-state'
+import { getDefault } from '../../get-default'
+import type { QueueId, QueueModel } from '../../../database/models/queue.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    // ponytail: `/` shows the default queue, the only one reachable; queue pages get their own
+    // rooms once every queue has its own URL
+    async function shownQueue(queue: QueueId): Promise<QueueModel | undefined> {
+      const shown = await getDefault()
+      return shown._id.equals(queue) ? shown : undefined
+    }
+
     async function syncAllSlots(...clients: SteamId64[]) {
+      const queue = await getDefault()
       const [slots, actorMap] = await Promise.all([
-        collections.queueSlots.find().toArray(),
+        collections.queueSlots.find({ queue: queue._id }).toArray(),
         fetchActorMap(clients),
       ])
       for (const client of clients) {
@@ -43,13 +53,16 @@ export default fp(
           .to({ players: [actor.steamId] })
           .to({ url: '/' })
           .send(() =>
-            Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(arr => arr.join()),
+            Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))).then(arr =>
+              arr.join(),
+            ),
           )
       }
     }
 
     async function syncQueuePage(socket: AppWebSocket) {
-      const slots = await collections.queueSlots.find().toArray()
+      const queue = await getDefault()
+      const slots = await collections.queueSlots.find({ queue: queue._id }).toArray()
       const actor = socket.player
         ? await players.bySteamId(socket.player.steamId, [
             'steamId',
@@ -61,12 +74,12 @@ export default fp(
           ])
         : undefined
       slots.forEach(async slot => {
-        socket.send(await QueueSlot({ slot, actor }))
+        socket.send(await QueueSlot({ queue, slot, actor }))
       })
-      socket.send(await IsInQueue({ actor: socket.player?.steamId }))
+      socket.send(await IsInQueue({ queue: queue._id, actor: socket.player?.steamId }))
       socket.send(await SubstitutionRequests())
-      socket.send(await CurrentPlayerCount())
-      socket.send(await SetTitle())
+      socket.send(await CurrentPlayerCount({ queue: queue._id }))
+      socket.send(await SetTitle({ queue: queue._id }))
       socket.send(await OnlinePlayerCount())
       socket.send(await OnlinePlayerList())
       socket.send(await StreamList())
@@ -81,8 +94,9 @@ export default fp(
         socket.send(await PreReadyUpButton({ actor: socket.player.steamId }))
         socket.send(await BanAlerts({ actor: socket.player.steamId }))
 
-        if ((await getState()) === QueueState.ready) {
+        if ((await getState(queue._id)) === QueueState.ready) {
           const slot = await collections.queueSlots.findOne({
+            queue: queue._id,
             'player.steamId': socket.player.steamId,
             ready: false,
           })
@@ -146,35 +160,40 @@ export default fp(
 
     events.on(
       'queue/slots:updated',
-      safe(async ({ slots }) => {
+      safe(async ({ queue: queueId, slots }) => {
+        const queue = await shownQueue(queueId)
+        if (!queue) {
+          return
+        }
+
         const connectedPlayers = [...(app.websocketServer.clients as Set<AppWebSocket>)]
           .map(c => c.player?.steamId)
           .filter((id): id is SteamId64 => id !== undefined)
 
         const [playerCount, actorMap] = await Promise.all([
-          CurrentPlayerCount(),
+          CurrentPlayerCount({ queue: queueId }),
           fetchActorMap(connectedPlayers),
         ])
 
         app.gateway.broadcast(player => {
           const actor = player ? actorMap.get(player) : undefined
-          return Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(items => [
+          return Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))).then(items => [
             ...items,
             playerCount,
           ])
         })
 
-        app.gateway.broadcast(() => SetTitle())
+        app.gateway.broadcast(() => SetTitle({ queue: queueId }))
       }),
     )
 
     events.on(
       'queue/state:updated',
-      safe(async ({ state }) => {
+      safe(async ({ queue, state }) => {
         if (state === QueueState.ready) {
           const players = (
             await collections.queueSlots
-              .find({ player: { $ne: null }, ready: { $eq: false } })
+              .find({ queue, player: { $ne: null }, ready: { $eq: false } })
               .toArray()
           ).map(s => s.player!.steamId)
 
@@ -183,14 +202,23 @@ export default fp(
       }),
     )
 
-    events.on('queue/mapOptions:reset', () => {
-      app.gateway.to({ url: '/' }).send(actor => MapVote({ actor }))
-    })
+    events.on(
+      'queue/mapOptions:reset',
+      safe(async ({ queue }) => {
+        if (!(await shownQueue(queue))) {
+          return
+        }
+        app.gateway.to({ url: '/' }).send(actor => MapVote({ queue, actor }))
+      }),
+    )
 
     events.on(
       'queue/mapVoteResults:updated',
-      safe(async ({ results }) => {
-        const mapOptions = await collections.queueMapOptions.find().toArray()
+      safe(async ({ queue, results }) => {
+        if (!(await shownQueue(queue))) {
+          return
+        }
+        const mapOptions = await collections.queueMapOptions.find({ queue }).toArray()
         for (const map of mapOptions.map(option => option.name)) {
           app.gateway.to({ url: '/' }).send(() => MapResult({ results, map }))
         }
@@ -220,32 +248,48 @@ export default fp(
 
     events.on(
       'queue/friendship:created',
-      safe(async ({ target }) => {
-        const slot = await collections.queueSlots.findOne({ 'player.steamId': target })
-        if (!slot) {
+      safe(async ({ queue: queueId, target }) => {
+        const queue = await shownQueue(queueId)
+        const slot = await collections.queueSlots.findOne({
+          queue: queueId,
+          'player.steamId': target,
+        })
+        if (!queue || !slot) {
           return
         }
         const recipientIds = (
           await collections.queueSlots
-            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .find({
+              queue: queueId,
+              'canMakeFriendsWith.0': { $exists: true },
+              player: { $ne: null },
+            })
             .toArray()
         ).map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipientIds)
         app.gateway
           .to({ players: recipientIds })
-          .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
+          .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!) }))
       }),
     )
 
     events.on(
       'queue/friendship:updated',
-      safe(async ({ target }) => {
+      safe(async ({ queue: queueId, target }) => {
+        const queue = await shownQueue(queueId)
+        if (!queue) {
+          return
+        }
         const [slots, friendshipSlots] = await Promise.all([
           collections.queueSlots
-            .find({ 'player.steamId': { $in: [target.before, target.after] } })
+            .find({ queue: queueId, 'player.steamId': { $in: [target.before, target.after] } })
             .toArray(),
           collections.queueSlots
-            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .find({
+              queue: queueId,
+              'canMakeFriendsWith.0': { $exists: true },
+              player: { $ne: null },
+            })
             .toArray(),
         ])
         const recipients = friendshipSlots.map(({ player }) => player!.steamId)
@@ -253,27 +297,35 @@ export default fp(
         for (const slot of slots) {
           app.gateway
             .to({ players: recipients })
-            .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
+            .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!) }))
         }
       }),
     )
 
     events.on(
       'queue/friendship:removed',
-      safe(async ({ target }) => {
-        const slot = await collections.queueSlots.findOne({ 'player.steamId': target })
-        if (!slot) {
+      safe(async ({ queue: queueId, target }) => {
+        const queue = await shownQueue(queueId)
+        const slot = await collections.queueSlots.findOne({
+          queue: queueId,
+          'player.steamId': target,
+        })
+        if (!queue || !slot) {
           return
         }
         const recipientIds = (
           await collections.queueSlots
-            .find({ 'canMakeFriendsWith.0': { $exists: true }, player: { $ne: null } })
+            .find({
+              queue: queueId,
+              'canMakeFriendsWith.0': { $exists: true },
+              player: { $ne: null },
+            })
             .toArray()
         ).map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipientIds)
         app.gateway
           .to({ players: recipientIds })
-          .send(actor => QueueSlot({ slot, actor: actorMap.get(actor!) }))
+          .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!) }))
       }),
     )
 

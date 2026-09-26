@@ -1,3 +1,4 @@
+import { queues } from '../queues'
 import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../database/collections'
 import { GameState } from '../database/models/game.model'
@@ -10,9 +11,11 @@ export async function sendHeartbeat() {
     return
   }
 
+  // ponytail: atlas knows one queue per instance, so it gets the default one
+  const queue = await queues.getDefault()
   const [occupied, capacity, onlinePlayers, liveGames] = await Promise.all([
-    collections.queueSlots.countDocuments({ player: { $ne: null } }),
-    collections.queueSlots.countDocuments(),
+    collections.queueSlots.countDocuments({ queue: queue._id, player: { $ne: null } }),
+    collections.queueSlots.countDocuments({ queue: queue._id }),
     collections.onlinePlayers.countDocuments(),
     collections.games.countDocuments({
       state: {
@@ -32,7 +35,7 @@ export async function sendHeartbeat() {
       name: environment.WEBSITE_NAME,
       version,
       queue: {
-        config: environment.QUEUE_CONFIG,
+        config: queue.gamemode,
         occupied,
         capacity,
       },
