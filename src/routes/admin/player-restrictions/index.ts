@@ -1,23 +1,11 @@
-import { queues } from '../../../queues'
-import { gamemodeConfigs } from '../../../gamemodes/configs'
-import { environment } from '../../../environment'
 import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
 import { z } from 'zod'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
-import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-
-const playerSkillThresholdSchema = z.discriminatedUnion('playerSkillThresholdEnabled', [
-  z.object({
-    playerSkillThresholdEnabled: z.literal(false).optional(),
-  }),
-  z.object({
-    playerSkillThresholdEnabled: z.literal('enabled'),
-    playerSkillThreshold: z.coerce.number(),
-  }),
-])
+import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { Gamemode } from '../../../shared/types/gamemode'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -40,62 +28,35 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
         schema: {
-          body: z.intersection(
-            playerSkillThresholdSchema,
-            z.object({
-              etf2lAccountRequired: z.coerce.boolean().default(false),
-              minimumInGameHours: z.coerce.number(),
-              requirePlayerVerification: z.coerce.boolean().default(false),
-              skillSuggestions: z.coerce.boolean().default(false),
-              skillStep: z.coerce.number().positive(),
-              ...gamemodeConfigs[environment.QUEUE_CONFIG].classes
-                .map(({ name }) => name)
-                .reduce<Partial<Record<`defaultPlayerSkill.${Tf2ClassName}`, z.ZodNumber>>>(
-                  (acc, key) => ({ ...acc, [`defaultPlayerSkill.${key}`]: z.coerce.number() }),
-                  {},
-                ),
-            }),
-          ),
+          body: z.looseObject({
+            etf2lAccountRequired: z.coerce.boolean().default(false),
+            minimumInGameHours: z.coerce.number(),
+            skillSuggestions: z.coerce.boolean().default(false),
+            skillStep: z.coerce.number().positive(),
+          }),
         },
       },
       async (request, reply) => {
-        const {
-          etf2lAccountRequired,
-          minimumInGameHours,
-          requirePlayerVerification,
-          playerSkillThresholdEnabled,
-          skillSuggestions,
-          skillStep,
-        } = request.body
-        const defaultPlayerSkill = Object.entries(request.body)
-          .filter(([key]) => key.startsWith('defaultPlayerSkill.'))
-          .reduce<Partial<Record<Tf2ClassName, number>>>(
-            (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
-            {},
-          )
+        const { etf2lAccountRequired, minimumInGameHours, skillSuggestions, skillStep } =
+          request.body
+        const defaultPlayerSkill = await configuration.get('games.default_player_skill')
+        for (const [key, value] of Object.entries(request.body)) {
+          const [, gamemode, gameClass] = /^defaultPlayerSkill\.([^.]+)\.([^.]+)$/.exec(key) ?? []
+          const gamemodeSkill = z.enum(Gamemode).safeParse(gamemode)
+          const skillClass = z.enum(Tf2ClassName).safeParse(gameClass)
+          if (gamemodeSkill.success && skillClass.success) {
+            defaultPlayerSkill[gamemodeSkill.data] = {
+              ...defaultPlayerSkill[gamemodeSkill.data],
+              [skillClass.data]: z.coerce.number().parse(value),
+            }
+          }
+        }
 
         const actor = request.user!.player.steamId
         await Promise.all([
           configuration.set('players.etf2l_account_required', etf2lAccountRequired, actor),
           configuration.set('players.minimum_in_game_hours', minimumInGameHours, actor),
-          queues.update(
-            (await queues.getDefault())._id,
-            {
-              requireVerification: requirePlayerVerification,
-              skillThreshold: playerSkillThresholdEnabled
-                ? request.body.playerSkillThreshold
-                : null,
-            },
-            actor,
-          ),
-          configuration.set(
-            'games.default_player_skill',
-            {
-              ...(await configuration.get('games.default_player_skill')),
-              [environment.QUEUE_CONFIG]: defaultPlayerSkill,
-            },
-            actor,
-          ),
+          configuration.set('games.default_player_skill', defaultPlayerSkill, actor),
           configuration.set('games.skill_step', skillStep, actor),
           configuration.set('games.skill_suggestions', skillSuggestions, actor),
         ])

@@ -42,3 +42,8 @@ export function getPlayerCount(): number {
 export function getQueueConfig(): '6v6' | '9v9' {
   return queueConfig as '6v6' | '9v9'
 }
+
+// The queue a fresh instance runs, enabled by migration 030 from QUEUE_CONFIG.
+export function defaultQueueSlug() {
+  return `auto-${getQueueConfig()}`
+}
