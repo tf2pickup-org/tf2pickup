@@ -1,0 +1,177 @@
+@reference '../../../../html/styles/main.css';
+
+@layer components {
+  .chat {
+    flex: 1 1 0;
+    display: flex;
+    flex-flow: column nowrap;
+    overflow: hidden;
+
+    @media (width < theme(--breakpoint-lg)) {
+      height: 60dvh;
+    }
+
+    .chat-prompt-container {
+      position: relative;
+
+      .mention-completion {
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        right: 0;
+        max-height: 200px;
+        overflow-y: auto;
+        background-color: var(--color-abru-dark-25);
+        border: 1px solid var(--color-abru-light-25);
+        border-radius: 6px;
+        margin: 0 8px 4px;
+        z-index: 10;
+
+        .mention-list {
+          list-style: none;
+          margin: 0;
+          padding: 4px;
+
+          li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--color-abru-light-75);
+
+            &[aria-selected='true'] {
+              background-color: var(--color-abru-light-25);
+              color: var(--color-white);
+            }
+
+            &:hover {
+              background-color: var(--color-abru-light-25);
+              color: var(--color-white);
+            }
+
+            span {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
+    }
+
+    .message-list {
+      flex: 1 1 0%;
+      display: flex;
+      flex-direction: column-reverse;
+      overflow-y: scroll;
+      padding: 8px;
+
+      .chat-date-separator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 8px 0;
+        color: var(--color-abru-light-50);
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+
+        &::before,
+        &::after {
+          content: '';
+          flex: 1 1 0%;
+          border-bottom: 1px solid var(--color-abru-light-50);
+          margin: 0 8px;
+        }
+
+        span {
+          white-space: nowrap;
+        }
+      }
+
+      p {
+        color: var(--color-white);
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+        border-radius: 4px;
+        padding: 0 4px;
+        margin: 0 -4px;
+
+        &:hover {
+          background-color: color-mix(in srgb, var(--color-abru-light-25) 10%, transparent);
+        }
+
+        .message-text {
+          flex: 1;
+          min-width: 0;
+        }
+
+        .at {
+          white-space: nowrap;
+          font-size: 12px;
+          color: var(--color-abru-light-50);
+        }
+
+        a.author {
+          font-weight: bold;
+
+          &.admin {
+            color: var(--color-alert);
+          }
+        }
+
+        .body {
+          a {
+            text-decoration: underline dotted 1px;
+
+            &:hover {
+              text-decoration: underline solid 1px;
+            }
+          }
+
+          a.mention {
+            background-color: color-mix(in srgb, var(--color-abru-light-75) 25%, transparent);
+            border-radius: 4px;
+            padding: 1px 4px;
+            text-decoration: none;
+
+            &:hover {
+              text-decoration: none;
+              background-color: color-mix(in srgb, var(--color-abru-light-75) 40%, transparent);
+            }
+          }
+        }
+
+        .delete-btn {
+          visibility: hidden;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          height: calc(1em * 1.5);
+          height: 1lh;
+          background: none;
+          border: none;
+          padding: 0 2px;
+          cursor: pointer;
+          color: var(--color-abru-light-50);
+
+          &:hover {
+            color: var(--color-alert);
+          }
+
+          svg {
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+    }
+
+    &[data-is-admin] .message-list p.chat-message:hover .delete-btn {
+      visibility: visible;
+    }
+  }
+}

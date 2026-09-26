@@ -1,6 +1,6 @@
 import { PlayerRole } from '../../../../../database/models/player.model'
 import { z } from 'zod'
-import { queue } from '../../../../../queue-auto'
+import { queue } from '../../../../../queues/auto'
 import type { Tf2ClassName } from '../../../../../shared/types/tf2-class-name'
 import { players } from '../../../../../players'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
