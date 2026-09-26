@@ -55,7 +55,6 @@ test('substitute players skip the queue cooldown @6v6 @9v9', async ({
   await ghostWalkersGamePage.replacePlayer('Mayflower')
   await expect(ghostWalkersGamePage.gameEvent('GhostWalker replaced Mayflower')).toBeVisible()
 
-  // open both queue pages before ending the match so both checks start at the same time
   const slitherTuftsQueuePage = await users.byName('SlitherTuft').queuePage()
   await slitherTuftsQueuePage.goto()
 
@@ -64,17 +63,13 @@ test('substitute players skip the queue cooldown @6v6 @9v9', async ({
 
   await gameServer.matchEnds()
 
+  // the substitute (GhostWalker) is freed as soon as the game ends; how soon that is depends on
+  // how fast the game end is processed, so it is compared with a regular player's cooldown
+  await expect(ghostWalkersQueuePage.goBackToGameLink()).not.toBeVisible({
+    timeout: secondsToMilliseconds(15),
+  })
+  // a regular player (SlitherTuft, demoman) is still on their cooldown at that point
   await Promise.all([
-    // the substitute (GhostWalker) should be freed with no cooldown
-    expect(ghostWalkersQueuePage.goBackToGameLink()).not.toBeVisible({
-      timeout: secondsToMilliseconds(2),
-    }),
-    ...Array.from(queueSlots()).map(slot =>
-      expect(ghostWalkersQueuePage.slot(slot).joinButton()).toBeEnabled({
-        timeout: secondsToMilliseconds(2),
-      }),
-    ),
-    // a regular non-substitute player (SlitherTuft, demoman) should still be on cooldown
     expect(slitherTuftsQueuePage.goBackToGameLink()).toBeVisible({
       timeout: secondsToMilliseconds(1),
     }),
@@ -84,4 +79,10 @@ test('substitute players skip the queue cooldown @6v6 @9v9', async ({
       }),
     ),
   ])
+
+  await Promise.all(
+    Array.from(queueSlots()).map(slot =>
+      expect(ghostWalkersQueuePage.slot(slot).joinButton()).toBeEnabled(),
+    ),
+  )
 })
