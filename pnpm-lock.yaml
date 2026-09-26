@@ -209,8 +209,8 @@ importers:
         specifier: 7.0.0
         version: 7.0.0
       '@fastify/secure-session':
-        specifier: 8.3.0
-        version: 8.3.0
+        specifier: 8.4.0
+        version: 8.4.0
       '@fastify/sensible':
         specifier: 6.0.5
         version: 6.0.5
@@ -1019,8 +1019,8 @@ packages:
   '@fastify/request-context@7.0.0':
     resolution: {integrity: sha512-SMnQ4VWa1p20qOSONvi+yG32vqyHoZE6LPD4xrIl3RVE11dLrBwiQ7VmK4aTCS7/jB5Tx6fI9JotTNErClPS5A==}
 
-  '@fastify/secure-session@8.3.0':
-    resolution: {integrity: sha512-jyXbYWAp5MCaCA+7idsV+Op3kMN/oDtskZ0SE3QPl53Lo0GFF7p/lk1UEliGaT0OSX+RGSrd2gQlUu1ta1t7yQ==}
+  '@fastify/secure-session@8.4.0':
+    resolution: {integrity: sha512-S1fv1OF0lprcFB/c17k/T2BXElv2r5rlwPfWtPr4Tb7Evp4Z9Azegi0AnMrWnNNgUZsqJ1FWkFtU1r9ySuRFAg==}
     hasBin: true
 
   '@fastify/send@4.0.0':
@@ -2739,10 +2739,6 @@ packages:
     resolution: {integrity: sha512-HTNG3kEZXOOfKwrEx54ljURU9bG4nVPQzXMyCSeUcA/PE8EpNpQNujSrbXNBI8QZyN35zM+pVw+FuQk4KqHSHg==}
     engines: {node: '>=22'}
     hasBin: true
-
-  cookie@1.0.0:
-    resolution: {integrity: sha512-bsSztFoaR8bw9MlFCrTHzc1wOKCUKOBsbgFdoDilZDkETAOOjKSqV7L+EQLbTaylwvZasd9vM4MGKotJaUfSpA==}
-    engines: {node: '>=18'}
 
   cookie@1.1.1:
     resolution: {integrity: sha512-ei8Aos7ja0weRpFzJnEA9UHJ/7XQmqglbRwnf2ATjcB9Wq874VKH9kfjjirM6UhU2/E5fFYadylyhFldcqSidQ==}
@@ -5720,7 +5716,7 @@ snapshots:
 
   '@fastify/cookie@11.0.2':
     dependencies:
-      cookie: 1.0.0
+      cookie: 1.1.1
       fastify-plugin: 5.1.0
 
   '@fastify/deepmerge@3.2.0': {}
@@ -5789,10 +5785,10 @@ snapshots:
     dependencies:
       fastify-plugin: 5.1.0
 
-  '@fastify/secure-session@8.3.0':
+  '@fastify/secure-session@8.4.0':
     dependencies:
       '@fastify/cookie': 11.0.2
-      fastify-plugin: 5.1.0
+      fastify-plugin: 6.0.0
       sodium-native: 5.0.10
     transitivePeerDependencies:
       - bare-url
@@ -7666,8 +7662,6 @@ snapshots:
       conventional-changelog-preset-loader: 6.0.1
       conventional-commits-filter: 6.0.1
       conventional-commits-parser: 7.1.1
-
-  cookie@1.0.0: {}
 
   cookie@1.1.1: {}
 
