@@ -1,7 +1,17 @@
-import { launchGame as test } from '../fixtures/launch-game'
+import { secondsToMilliseconds } from 'date-fns'
+import { expect, launchGame as test } from '../fixtures/launch-game'
 import { QueuePage } from '../pages/queue.page'
 
-test('redirect player to launched game @6v6 @9v9', async ({ users, players, desiredSlots }) => {
+test('redirect player to launched game @6v6 @9v9', async ({
+  users,
+  players,
+  desiredSlots,
+  gameServer,
+}) => {
+  // this spec launches its own game rather than using the gameNumber fixture, so it has to make
+  // the game server available itself
+  await gameServer.sendHeartbeat()
+
   let redirectedQueuePage: QueuePage | undefined
 
   const batchSize = 6
@@ -41,10 +51,17 @@ test('redirect player to launched game @6v6 @9v9', async ({ users, players, desi
 
   await redirectedQueuePage.page.goBack()
   await redirectedQueuePage.page.waitForURL('/')
-  await test.expect(redirectedQueuePage.goBackToGameLink()).toBeVisible()
+  await expect(redirectedQueuePage.goBackToGameLink()).toBeVisible()
 
-  // kill the game
+  // kill the game and free the game server, as the gameNumber fixture does
   const gamePage = await users.getAdmin().gamePage(gameNumber)
   await gamePage.goto()
   await gamePage.forceEnd()
+  await expect
+    .poll(() => gameServer.logAddresses.size === 0, {
+      message: 'make sure logaddress is cleared',
+      timeout: secondsToMilliseconds(40),
+    })
+    .toBe(true)
+  await (await users.getAdmin().adminPage()).freeStaticGameServer()
 })
