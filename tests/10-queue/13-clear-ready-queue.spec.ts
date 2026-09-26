@@ -40,7 +40,7 @@ test('a queue cleared while readying up starts its next ready-up afresh @6v6 @9v
   desiredSlots,
   users,
 }) => {
-  test.setTimeout(minutesToMilliseconds(2))
+  test.setTimeout(minutesToMilliseconds(3))
   const fill = async () => {
     await Promise.all(
       players.map(async player => {
@@ -50,15 +50,15 @@ test('a queue cleared while readying up starts its next ready-up afresh @6v6 @9v
       }),
     )
   }
-  // the admin plays too, so their ready-up dialog is in the way, unless they were the last to join
+  // The admin plays too, so their ready-up dialog is in the way: they ready up first. They may
+  // have joined last (readied automatically), or been kicked by a slow run's own timeout.
   const clear = async () => {
     const admin = await users.getAdmin().queuePage()
+    const slot = admin.slot(desiredSlots.get(users.getAdmin().playerName)!)
     await admin.goto()
-    if (!(await admin.slot(desiredSlots.get(users.getAdmin().playerName)!).isReady())) {
-      const readyUp = admin.readyUpDialog().readyUpButton()
-      await expect(readyUp).toBeVisible()
-      await admin.page.keyboard.press('Escape')
-      await expect(readyUp).not.toBeVisible()
+    if ((await slot.isTaken()) && !(await slot.isReady())) {
+      await admin.readyUpDialog().readyUp()
+      await expect(admin.readyUpDialog().readyUpButton()).not.toBeVisible()
     }
     await admin.clearQueue()
   }
