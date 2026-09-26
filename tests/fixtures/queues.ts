@@ -19,7 +19,8 @@ export const queues = mergeTests(authUsers, waitForEmptyQueue).extend<{
   queues: { create: (options?: CreateQueueOptions) => Promise<QueueHandle> }
 }>({
   queues: async ({ users }, use, testInfo) => {
-    const admin = new AdminQueuesPage(await users.getAdmin().page())
+    // other fixtures may close the admin's page (launchGame disposes its players)
+    const admin = async () => new AdminQueuesPage(await users.getAdmin().page())
     const created: string[] = []
 
     await use({
@@ -27,24 +28,26 @@ export const queues = mergeTests(authUsers, waitForEmptyQueue).extend<{
         const slug = `e2e-${testInfo.testId
           .toLowerCase()
           .replace(/[^a-z0-9]/g, '')
-          .slice(0, 8)}-${created.length}`
-        await admin.create({ slug, name: slug, template, gamemode })
-        await admin.expectFlash(`Queue ${slug} added`)
+          .slice(-8)}-${testInfo.retry}-${created.length}`
+        const page = await admin()
+        await page.create({ slug, name: slug, template, gamemode })
+        await page.expectFlash(`Queue ${slug} added`)
         created.push(slug)
         if (enable) {
-          await admin.enable(slug)
-          await admin.expectFlash(`Queue ${slug} enabled`)
+          await page.enable(slug)
+          await page.expectFlash(`Queue ${slug} enabled`)
         }
         return { slug }
       },
     })
 
     for (const slug of created.reverse()) {
-      if (await admin.isEnabled(slug)) {
-        await admin.disable(slug)
-        await admin.expectFlash(`Queue ${slug} disabled`)
+      const page = await admin()
+      if (await page.isEnabled(slug)) {
+        await page.disable(slug)
+        await page.expectFlash(`Queue ${slug} disabled`)
       }
-      await admin.delete(slug)
+      await page.delete(slug)
     }
   },
 })
