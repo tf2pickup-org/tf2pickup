@@ -1,15 +1,8 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { makeSkillSuggestions } from './make-skill-suggestions'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { Gamemode } from '../shared/types/gamemode'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-
-vi.mock('../queues/auto', () => ({
-  queue: {
-    config: {
-      classes: [{ name: 'scout' }, { name: 'soldier' }],
-    },
-  },
-}))
 
 const mockActor = '76561198000000000' as SteamId64
 
@@ -24,13 +17,14 @@ function makePlayer(
 ) {
   const { elo = {}, gamesByClass = {}, lastSkillChangeGamesByClass = undefined } = overrides
   return {
-    elo,
-    stats: { totalGames: 0, gamesByClass },
+    elo: { [Gamemode.sixes]: elo },
+    stats: { totalGames: 0, gamesByClass: { [Gamemode.sixes]: gamesByClass } },
     skillHistory:
       lastSkillChangeGamesByClass !== undefined
         ? [
             {
               at: new Date(),
+              gamemode: Gamemode.sixes,
               skill: {},
               actor: mockActor,
               gamesByClass: lastSkillChangeGamesByClass,
@@ -47,7 +41,7 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1551 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      const result = makeSkillSuggestions({ player })
+      const result = makeSkillSuggestions({ player, gamemode: Gamemode.sixes })
       expect(result.get(Tf2ClassName.scout)).toBe('up')
     })
   })
@@ -58,7 +52,7 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1449 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      const result = makeSkillSuggestions({ player })
+      const result = makeSkillSuggestions({ player, gamemode: Gamemode.sixes })
       expect(result.get(Tf2ClassName.scout)).toBe('down')
     })
   })
@@ -69,7 +63,9 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1550 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBeUndefined()
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBeUndefined()
     })
   })
 
@@ -79,7 +75,9 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1450 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBeUndefined()
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBeUndefined()
     })
   })
 
@@ -89,7 +87,9 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1500 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBeUndefined()
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBeUndefined()
     })
   })
 
@@ -99,7 +99,9 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1600 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames - 1 },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBeUndefined()
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBeUndefined()
     })
   })
 
@@ -109,7 +111,9 @@ describe('makeSkillSuggestions()', () => {
         elo: {},
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBeUndefined()
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBeUndefined()
     })
   })
 
@@ -120,7 +124,9 @@ describe('makeSkillSuggestions()', () => {
         gamesByClass: { [Tf2ClassName.scout]: enoughGames + 2 },
         lastSkillChangeGamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBeUndefined()
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBeUndefined()
     })
 
     it('shows suggestion after cooldown has passed', () => {
@@ -129,7 +135,9 @@ describe('makeSkillSuggestions()', () => {
         gamesByClass: { [Tf2ClassName.scout]: enoughGames + 3 },
         lastSkillChangeGamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBe('up')
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBe('up')
     })
 
     it('applies cooldown per class independently', () => {
@@ -147,18 +155,45 @@ describe('makeSkillSuggestions()', () => {
           [Tf2ClassName.soldier]: enoughGames,
         },
       })
-      const result = makeSkillSuggestions({ player })
+      const result = makeSkillSuggestions({ player, gamemode: Gamemode.sixes })
       expect(result.get(Tf2ClassName.scout)).toBeUndefined()
       expect(result.get(Tf2ClassName.soldier)).toBe('up')
     })
 
     it('skips cooldown when last skill change has no gamesByClass snapshot', () => {
       const player = {
-        elo: { [Tf2ClassName.scout]: 1600 },
-        stats: { totalGames: 0, gamesByClass: { [Tf2ClassName.scout]: enoughGames } },
-        skillHistory: [{ at: new Date(), skill: {}, actor: mockActor }],
+        elo: { [Gamemode.sixes]: { [Tf2ClassName.scout]: 1600 } },
+        stats: {
+          totalGames: 0,
+          gamesByClass: { [Gamemode.sixes]: { [Tf2ClassName.scout]: enoughGames } },
+        },
+        skillHistory: [{ at: new Date(), gamemode: Gamemode.sixes, skill: {}, actor: mockActor }],
       }
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBe('up')
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBe('up')
+    })
+
+    it('ignores skill changes made in another gamemode', () => {
+      const player = {
+        elo: { [Gamemode.sixes]: { [Tf2ClassName.scout]: 1600 } },
+        stats: {
+          totalGames: 0,
+          gamesByClass: { [Gamemode.sixes]: { [Tf2ClassName.scout]: enoughGames + 2 } },
+        },
+        skillHistory: [
+          {
+            at: new Date(),
+            gamemode: Gamemode.highlander,
+            skill: {},
+            actor: mockActor,
+            gamesByClass: { [Tf2ClassName.scout]: enoughGames },
+          },
+        ],
+      }
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBe('up')
     })
   })
 
@@ -168,7 +203,9 @@ describe('makeSkillSuggestions()', () => {
         elo: { [Tf2ClassName.scout]: 1600 },
         gamesByClass: { [Tf2ClassName.scout]: enoughGames },
       })
-      expect(makeSkillSuggestions({ player }).get(Tf2ClassName.scout)).toBe('up')
+      expect(
+        makeSkillSuggestions({ player, gamemode: Gamemode.sixes }).get(Tf2ClassName.scout),
+      ).toBe('up')
     })
   })
 
@@ -183,7 +220,7 @@ describe('makeSkillSuggestions()', () => {
         [Tf2ClassName.soldier]: enoughGames,
       },
     })
-    const result = makeSkillSuggestions({ player })
+    const result = makeSkillSuggestions({ player, gamemode: Gamemode.sixes })
     expect(result.get(Tf2ClassName.scout)).toBe('up')
     expect(result.get(Tf2ClassName.soldier)).toBe('down')
   })

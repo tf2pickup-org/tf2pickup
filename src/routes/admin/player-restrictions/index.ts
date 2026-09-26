@@ -1,3 +1,4 @@
+import { environment } from '../../../environment'
 import { PlayerRole } from '../../../database/models/player.model'
 import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views/html/player-restrictions.page'
 import { z } from 'zod'
@@ -82,7 +83,14 @@ export default routes(async app => {
             playerSkillThresholdEnabled ? request.body.playerSkillThreshold : null,
             actor,
           ),
-          configuration.set('games.default_player_skill', defaultPlayerSkill, actor),
+          configuration.set(
+            'games.default_player_skill',
+            {
+              ...(await configuration.get('games.default_player_skill')),
+              [environment.QUEUE_CONFIG]: defaultPlayerSkill,
+            },
+            actor,
+          ),
           configuration.set('games.skill_step', skillStep, actor),
           configuration.set('games.skill_suggestions', skillSuggestions, actor),
         ])

@@ -1,6 +1,7 @@
 import { stringify } from 'csv-stringify/sync'
 import { collections } from '../../database/collections'
-import { config } from '../../queues/auto/config'
+import { gamemodeConfigs } from '../../gamemodes/configs'
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
 interface ExportedPlayerSkill extends Partial<Record<Tf2ClassName, string | number>> {
@@ -8,11 +9,14 @@ interface ExportedPlayerSkill extends Partial<Record<Tf2ClassName, string | numb
   name: string
 }
 
-export async function exportSkills(): Promise<string> {
-  const classNames = config.classes.map(c => c.name)
+export async function exportSkills(gamemode: Gamemode): Promise<string> {
+  const classNames = gamemodeConfigs[gamemode].classes.map(c => c.name)
 
   const players = await collections.players
-    .find({ skill: { $exists: true, $ne: {} } }, { projection: { steamId: 1, name: 1, skill: 1 } })
+    .find(
+      { [`skill.${gamemode}`]: { $exists: true, $ne: {} } },
+      { projection: { steamId: 1, name: 1, skill: 1 } },
+    )
     .toArray()
 
   const rows = players.map(player => {
@@ -22,7 +26,7 @@ export async function exportSkills(): Promise<string> {
     }
 
     for (const className of classNames) {
-      row[className] = player.skill?.[className] ?? ''
+      row[className] = player.skill?.[gamemode]?.[className] ?? ''
     }
 
     return row

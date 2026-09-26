@@ -7,6 +7,7 @@ import { PlayerConnectionStatus, SlotStatus } from '../../../database/models/gam
 import type { GameSlotId } from '../../../shared/types/game-slot-id'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Tf2Team } from '../../../shared/types/tf2-team'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { PlayerRole } from '../../../database/models/player.model'
 import { collections } from '../../../database/collections'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
@@ -37,6 +38,7 @@ const baseSlot = {
 
 const baseGame = {
   number: 1 as GameNumber,
+  gamemode: Gamemode.sixes,
   map: 'cp_badlands',
   state: GameState.launching,
   slots: [baseSlot],
