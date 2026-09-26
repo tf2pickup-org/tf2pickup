@@ -14,9 +14,13 @@ test('redirect player to launched game @6v6 @9v9', async ({
 
   let redirectedQueuePage: QueuePage | undefined
 
+  // the player who fills the final slot is readied automatically, so only the others ready up
+  const lastPlayer = players.at(-1)!
+  const others = players.slice(0, -1)
+
   const batchSize = 6
-  for (let i = 0; i < players.length; i += batchSize) {
-    const batch = players.slice(i, i + batchSize)
+  for (let i = 0; i < others.length; i += batchSize) {
+    const batch = others.slice(i, i + batchSize)
     await Promise.all(
       batch.map(async (player, batchIndex) => {
         const queuePage = await player.queuePage()
@@ -30,10 +34,15 @@ test('redirect player to launched game @6v6 @9v9', async ({
     )
   }
 
+  const lastQueuePage = await lastPlayer.queuePage()
+  await lastQueuePage.goto()
+  await lastQueuePage.slot(desiredSlots.get(lastPlayer.playerName)!).join()
+
   await Promise.all(
     players.map(async player => {
-      const queuePage = await player.queuePage()
-      await queuePage.readyUp(desiredSlots.get(player.playerName)!)
+      if (player !== lastPlayer) {
+        await (await player.queuePage()).readyUp(desiredSlots.get(player.playerName)!)
+      }
       await (await player.page()).waitForURL(/games\/(\d+)/)
     }),
   )
