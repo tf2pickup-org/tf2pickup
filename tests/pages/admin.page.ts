@@ -11,11 +11,15 @@ export class AdminPage {
     }
   }
 
+  // Edit player and its tabs are boosted links: clicking on before a navigation lands lets its
+  // response replace the page the next click opened, so each one is awaited.
   async banPlayer(steamId: string, { reason, anonymous }: { reason: string; anonymous?: boolean }) {
     await this.page.goto(`/players/${steamId}`)
     await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/profile$/)
     await this.page.getByRole('link', { name: 'Bans' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/bans$/)
     await this.page.getByRole('link', { name: 'Add ban' }).click()
     await this.page.getByLabel('Reason').fill(reason)
     if (anonymous) {
@@ -28,6 +32,7 @@ export class AdminPage {
     await this.page.goto(`/players/${steamId}`)
     await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/profile$/)
     await this.page.getByRole('link', { name: 'Bans' }).click()
     await this.page.waitForURL(/\/players\/[^/]+\/edit\/bans$/)
 
@@ -40,7 +45,9 @@ export class AdminPage {
     await this.page.goto(`/players/${steamId}`)
     await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/profile$/)
     await this.page.getByRole('link', { name: 'Chat mutes' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
     await this.page.getByRole('link', { name: 'Add mute' }).click()
     await this.page.getByLabel('Reason').fill(reason)
     await this.page.getByRole('button', { name: 'Save' }).click()
@@ -50,6 +57,7 @@ export class AdminPage {
     await this.page.goto(`/players/${steamId}`)
     await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/profile$/)
     await this.page.getByRole('link', { name: 'Chat mutes' }).click()
     await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
 
@@ -76,6 +84,7 @@ export class AdminPage {
     await this.page.goto(`/players/${steamId}`)
     await this.openToolbox()
     await this.page.getByRole('link', { name: 'Edit player' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/profile$/)
     return this.page.getByLabel('Cooldown level')
   }
 
