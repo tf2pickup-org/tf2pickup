@@ -15,6 +15,10 @@ test('records the game under its gamemode @6v6 @9v9', async ({
   expect(res.status()).toBe(200)
   expect(((await res.json()) as { gamemode: string }).gamemode).toBe(getQueueConfig())
 
+  // teams are balanced by skill, so every player is assigned one
+  await page.goto(`/games/${gameNumber}`)
+  await expect(page.locator('.player-assigned-skill')).toHaveCount(desiredSlots.size)
+
   const [medicName] = [...desiredSlots.entries()].find(([, slot]) => slot === 'medic-1')!
   const medic = users.byName(medicName)
   const medicGameCount = page.getByLabel('Games played as medic')

@@ -9,6 +9,13 @@ import { AdminToolbox } from '../../../../../players/views/html/admin-toolbox'
 import { recordSkillSuggestionUsage } from '../../../../../telemetry/record-skill-suggestion-usage'
 import { safe } from '../../../../../utils/safe'
 
+const autoBalancedGamemode = z
+  .enum(Gamemode)
+  .refine(
+    gamemode => gamemodeConfigs[gamemode].autoBalance,
+    'players have no skill in this gamemode',
+  )
+
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.delete(
@@ -21,7 +28,7 @@ export default routes(async app => {
         params: z.object({
           steamId: steamId64,
         }),
-        querystring: z.object({ gamemode: z.enum(Gamemode) }),
+        querystring: z.object({ gamemode: autoBalancedGamemode }),
       },
     },
     async (request, reply) => {
@@ -54,7 +61,7 @@ export default routes(async app => {
         params: z.object({
           steamId: steamId64,
         }),
-        body: z.looseObject({ gamemode: z.enum(Gamemode) }),
+        body: z.looseObject({ gamemode: autoBalancedGamemode }),
       },
     },
     async (request, reply) => {
