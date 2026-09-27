@@ -1,3 +1,4 @@
+import { shuffle } from 'es-toolkit'
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
@@ -6,6 +7,7 @@ import { GameState, type GameNumber } from '../database/models/game.model'
 import type { QueueModel } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
+import { gamemodeConfigs } from '../gamemodes/configs'
 import { players } from '../players'
 import type { Gamemode } from '../shared/types/gamemode'
 import { resolveWhitelistId } from '../queues/resolve-whitelist-id'
@@ -18,9 +20,11 @@ export async function create(
   map: string,
   friends: SteamId64[][] = [],
 ) {
-  const playerSlots: PlayerSlot[] = await Promise.all(
-    queueSlots.map(slot => queueSlotToPlayerSlot(queue.gamemode, slot)),
-  )
+  const { autoBalance } = gamemodeConfigs[queue.gamemode]
+  // without balancing, every lineup is as good as any other, so a shuffle picks a random one
+  const playerSlots: PlayerSlot[] = autoBalance
+    ? await Promise.all(queueSlots.map(slot => queueSlotToPlayerSlot(queue.gamemode, slot)))
+    : shuffle(queueSlots.map(slot => ({ ...toPlayerSlot(slot), skill: 0 })))
   const slots = pickTeams(playerSlots, { friends })
   const execConfig = queue.maps.find(({ name }) => name === map)?.execConfig
   const whitelistId = await resolveWhitelistId(queue)
@@ -40,7 +44,7 @@ export async function create(
       gameClass: slot.gameClass,
       status: SlotStatus.active,
       connectionStatus: PlayerConnectionStatus.offline,
-      skill: slot.skill,
+      ...(autoBalance && { skill: slot.skill }),
     })),
     events: [
       {
@@ -59,25 +63,28 @@ export async function create(
   return game
 }
 
+function toPlayerSlot(queueSlot: QueueSlotModel) {
+  if (!queueSlot.player) {
+    throw new Error(`queue slot ${queueSlot.id} is empty`)
+  }
+  return { player: queueSlot.player.steamId, gameClass: queueSlot.gameClass }
+}
+
 async function queueSlotToPlayerSlot(
   gamemode: Gamemode,
   queueSlot: QueueSlotModel,
 ): Promise<PlayerSlot> {
-  if (!queueSlot.player) {
-    throw new Error(`queue slot ${queueSlot.id} is empty`)
-  }
-
-  const { player, gameClass } = queueSlot
+  const { player, gameClass } = toPlayerSlot(queueSlot)
   const defaultPlayerSkill = await configuration.get('games.default_player_skill')
   let skill = defaultPlayerSkill[gamemode]?.[gameClass] ?? 1
 
-  const { skill: playerSkill } = await players.bySteamId(player.steamId, ['skill'])
+  const { skill: playerSkill } = await players.bySteamId(player, ['skill'])
   const gamemodeSkill = playerSkill?.[gamemode]
   if (gamemodeSkill && gameClass in gamemodeSkill) {
     skill = gamemodeSkill[gameClass]!
   }
 
-  return { player: player.steamId, gameClass, skill }
+  return { player, gameClass, skill }
 }
 
 async function getNextGameNumber(): Promise<GameNumber> {

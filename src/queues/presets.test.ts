@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { mapPoolSchema } from '../database/models/map-pool-entry.model'
 import { createQueueSchema } from '../database/models/queue.model'
+import { gamemodeConfigs } from '../gamemodes/configs'
 import { queuePresets } from './presets'
 
 // https://github.com/ETF2L/gameserver-configs
@@ -16,6 +17,12 @@ const etf2lConfigs = new Set([
 describe.each(queuePresets)('preset $slug', preset => {
   it('is a valid queue', () => {
     expect(() => createQueueSchema.parse(preset)).not.toThrow()
+  })
+
+  it('sets a skill threshold only for an auto-balanced gamemode', () => {
+    if (!gamemodeConfigs[preset.gamemode].autoBalance) {
+      expect(preset.skillThreshold ?? null).toBeNull()
+    }
   })
 
   it('has a valid map pool', () => {
