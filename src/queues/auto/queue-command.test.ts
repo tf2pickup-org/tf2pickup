@@ -118,6 +118,19 @@ describe('queueCommand()', () => {
     expect(enterState).not.toHaveBeenCalled()
   })
 
+  it('re-evaluates the queue state when the command throws after a slot change', async () => {
+    givenQueue(QueueState.ready, 12, 12)
+
+    await expect(
+      queueCommand(queue, 'test', async emit => {
+        emit('queue/slots:updated', { queue, slots: [slot('scout-1', true)] })
+        throw new Error('boom')
+      }),
+    ).rejects.toThrow('boom')
+
+    expect(enterState).toHaveBeenCalledWith(queue, QueueState.launching, expect.any(Function))
+  })
+
   it('still emits what was collected when the command throws', async () => {
     await expect(
       queueCommand(queue, 'test', async emit => {
