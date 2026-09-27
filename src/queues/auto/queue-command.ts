@@ -1,19 +1,24 @@
+import { Mutex } from 'async-mutex'
+import { performance } from 'node:perf_hooks'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { events, type Events } from '../../events'
 import { getState } from '../get-state'
-import { withQueueLock } from '../with-queue-lock'
+import { queueMutexHoldDuration, queueMutexWaitDuration } from '../metrics'
 import { decide } from './decide'
 import { enterState } from './enter-state'
 
 export type Emit = <K extends keyof Events>(event: K, params: Events[K]) => void
 type PendingEvent = { [K in keyof Events]: [K, Events[K]] }[keyof Events]
 
-// Runs fn in the queue's critical section. Any slot change re-evaluates the queue state in the same
-// critical section; events are collected and emitted once the lock is released.
+// ponytail: one lock for every queue (ADR-0002); per-queue locks if the wait metric climbs
+const mutex = new Mutex()
+
+// Runs fn in the queue engine's critical section; fn must not call queueCommand() itself. Every
+// queue whose slots fn changed has its state re-evaluated in the same critical section; events are
+// collected and emitted once the lock is released.
 export async function queueCommand<T>(
-  queue: QueueId,
   operation: string,
   fn: (emit: Emit) => Promise<T>,
 ): Promise<T> {
@@ -22,20 +27,34 @@ export async function queueCommand<T>(
     pending.push([event, params] as PendingEvent)
   }
 
+  const waitStart = performance.now()
   try {
-    return await withQueueLock(queue, operation, async () => {
+    return await mutex.runExclusive(async () => {
+      const holdStart = performance.now()
+      queueMutexWaitDuration.record(holdStart - waitStart, { operation })
       try {
         return await fn(emit)
       } finally {
         // a command that fails midway may have changed slots already
-        if (pending.some(([event]) => event === 'queue/slots:updated')) {
+        for (const queue of changedQueues(pending)) {
           await advance(queue, emit)
         }
+        queueMutexHoldDuration.record(performance.now() - holdStart, { operation })
       }
     })
   } finally {
     flush(pending)
   }
+}
+
+function changedQueues(pending: PendingEvent[]): QueueId[] {
+  const queues = new Map<string, QueueId>()
+  for (const [event, params] of pending) {
+    if (event === 'queue/slots:updated') {
+      queues.set(params.queue.toHexString(), params.queue)
+    }
+  }
+  return [...queues.values()]
 }
 
 async function advance(queue: QueueId, emit: Emit) {
@@ -55,22 +74,29 @@ async function advance(queue: QueueId, emit: Emit) {
   }
 }
 
-// a command's slot updates go out as one event, each slot in its latest version
+// a command's slot updates go out as one event per queue, each slot in its latest version
 function flush(pending: PendingEvent[]) {
-  const slots = new Map<string, QueueSlotModel>()
+  const slots = new Map<string, Map<string, QueueSlotModel>>()
   for (const [event, params] of pending) {
     if (event === 'queue/slots:updated') {
-      params.slots.forEach(slot => slots.set(slot.id, slot))
+      const key = params.queue.toHexString()
+      const queueSlots = slots.get(key) ?? new Map<string, QueueSlotModel>()
+      params.slots.forEach(slot => queueSlots.set(slot.id, slot))
+      slots.set(key, queueSlots)
     }
   }
 
-  let slotsEmitted = false
   for (const [event, params] of pending) {
     if (event !== 'queue/slots:updated') {
       events.emit(event, params)
-    } else if (!slotsEmitted) {
-      slotsEmitted = true
-      events.emit(event, { queue: params.queue, slots: [...slots.values()] })
+      continue
+    }
+
+    const key = params.queue.toHexString()
+    const queueSlots = slots.get(key)
+    if (queueSlots) {
+      slots.delete(key)
+      events.emit(event, { queue: params.queue, slots: [...queueSlots.values()] })
     }
   }
 }
