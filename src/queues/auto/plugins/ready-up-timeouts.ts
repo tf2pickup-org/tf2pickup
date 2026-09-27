@@ -13,7 +13,7 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
     tasks.register('queue:readyUpTimeout', async ({ queue }) => {
-      await queueCommand(queue, 'ready-up-timeout', async emit => {
+      await queueCommand('ready-up-timeout', async emit => {
         if ((await getState(queue)) !== QueueState.ready) {
           return
         }
@@ -37,7 +37,7 @@ export default fp(
     })
 
     tasks.register('queue:unready', async ({ queue }) => {
-      await queueCommand(queue, 'unready-timeout', async emit => {
+      await queueCommand('unready-timeout', async emit => {
         if ((await getState(queue)) === QueueState.ready) {
           await enterState(queue, QueueState.waiting, emit)
         }

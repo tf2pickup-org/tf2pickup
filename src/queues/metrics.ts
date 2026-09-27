@@ -9,3 +9,8 @@ export const queueMutexWaitDuration = meter.createHistogram('tf2pickup.queue.mut
   description: 'Time waiting to acquire the queue mutex',
   unit: 'ms',
 })
+
+export const queueMutexHoldDuration = meter.createHistogram('tf2pickup.queue.mutex_hold.duration', {
+  description: 'Time the queue mutex is held',
+  unit: 'ms',
+})
