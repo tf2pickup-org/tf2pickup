@@ -9,6 +9,7 @@ import {
 } from '../database/models/queue.model'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { assertSkillThresholdAllowed } from './assert-skill-threshold-allowed'
 import { get } from './get'
 
 /**
@@ -25,6 +26,9 @@ export async function update(
   >
   const parsed = queueConfigurationSchema.pick(mask).parse(changes) as Partial<QueueConfiguration>
   const before = await get(id)
+  if (parsed.skillThreshold !== undefined) {
+    assertSkillThresholdAllowed(before.gamemode, parsed.skillThreshold)
+  }
   await collections.queues.updateOne({ _id: id }, { $set: parsed })
 
   for (const [key, value] of Object.entries(parsed)) {

@@ -30,7 +30,9 @@ export async function AdminToolbox(props: {
   >
 }) {
   const { player } = props
-  const gamemodes = await playerGamemodes(player)
+  const gamemodes = (await playerGamemodes(player)).filter(
+    gamemode => gamemodeConfigs[gamemode].autoBalance,
+  )
   const defaultSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await queues.anyRequiresVerification()
@@ -77,23 +79,27 @@ export async function AdminToolbox(props: {
         <div class="admin-toolbox-divider" />
 
         <div class={['admin-toolbox-body', compact && 'compact']}>
-          <div class="admin-toolbox-skill">
-            {gamemodes.map(gamemode => (
-              <SkillForm
-                player={player}
-                gamemode={gamemode}
-                labelled={gamemodes.length > 1}
-                defaultSkill={defaultSkill[gamemode] ?? {}}
-                skillStep={skillStep}
-                suggestions={
-                  suggestionsEnabled ? makeSkillSuggestions({ player, gamemode }) : undefined
-                }
-                compact={compact}
-              />
-            ))}
-          </div>
+          {gamemodes.length > 0 && (
+            <>
+              <div class="admin-toolbox-skill">
+                {gamemodes.map(gamemode => (
+                  <SkillForm
+                    player={player}
+                    gamemode={gamemode}
+                    labelled={gamemodes.length > 1}
+                    defaultSkill={defaultSkill[gamemode] ?? {}}
+                    skillStep={skillStep}
+                    suggestions={
+                      suggestionsEnabled ? makeSkillSuggestions({ player, gamemode }) : undefined
+                    }
+                    compact={compact}
+                  />
+                ))}
+              </div>
 
-          <div class="admin-toolbox-sep" />
+              <div class="admin-toolbox-sep" />
+            </>
+          )}
 
           <div class="admin-toolbox-winloss">
             <h4 class="caption">Win-loss chart</h4>

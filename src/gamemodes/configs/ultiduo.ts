@@ -3,6 +3,7 @@ import type { GamemodeConfig } from '../types/gamemode-config'
 
 export const ultiduo: GamemodeConfig = {
   teamCount: 2,
+  autoBalance: false,
   classes: [
     {
       name: Tf2ClassName.soldier,

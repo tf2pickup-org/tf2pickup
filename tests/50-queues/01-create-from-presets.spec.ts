@@ -1,6 +1,7 @@
 import { expect, queues } from '../fixtures/queues'
 import { AdminQueuesPage } from '../pages/admin-queues.page'
 import { queuePresets } from '../../src/queues/presets'
+import { gamemodeConfigs } from '../../src/gamemodes/configs'
 
 for (const preset of queuePresets) {
   queues(
@@ -16,9 +17,12 @@ for (const preset of queuePresets) {
       await expect(row.getByRole('button', { name: 'Enable' })).toBeVisible()
 
       await page.goto(`/admin/queues/${slug}`)
-      await expect(page.getByLabel('Player skill threshold', { exact: true })).toBeChecked({
-        checked: preset.skillThreshold !== undefined,
-      })
+      const threshold = page.getByLabel('Player skill threshold', { exact: true })
+      if (!gamemodeConfigs[preset.gamemode].autoBalance) {
+        await expect(threshold).toHaveCount(0)
+      } else {
+        await expect(threshold).toBeChecked({ checked: preset.skillThreshold !== undefined })
+      }
       if (preset.skillThreshold !== undefined) {
         await expect(page.getByLabel('Player skill threshold value', { exact: true })).toHaveValue(
           String(preset.skillThreshold),
