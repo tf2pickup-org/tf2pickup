@@ -24,11 +24,14 @@ export async function queueCommand<T>(
 
   try {
     return await withQueueLock(queue, operation, async () => {
-      const result = await fn(emit)
-      if (pending.some(([event]) => event === 'queue/slots:updated')) {
-        await advance(queue, emit)
+      try {
+        return await fn(emit)
+      } finally {
+        // a command that fails midway may have changed slots already
+        if (pending.some(([event]) => event === 'queue/slots:updated')) {
+          await advance(queue, emit)
+        }
       }
-      return result
     })
   } finally {
     flush(pending)
