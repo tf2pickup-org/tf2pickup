@@ -6,40 +6,39 @@ import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
 import { getState } from '../get-state'
-import { queueCommand } from './queue-command'
 import { getMapVoteResults } from './get-map-vote-results'
+import type { Emit } from './queue-command'
 
-export async function vacateSlot(steamId: SteamId64): Promise<QueueSlotModel> {
+// must run inside queueCommand()
+export async function vacateSlot(steamId: SteamId64, emit: Emit): Promise<QueueSlotModel> {
   const current = await collections.queueSlots.findOne({ 'player.steamId': steamId })
   if (!current) {
     throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
   }
 
   const { queue } = current
-  return await queueCommand(queue, 'vacate-slot', async emit => {
-    logger.trace({ queue, steamId }, 'queue.vacateSlot()')
-    if ((await getState(queue)) === QueueState.launching) {
-      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
-    }
+  logger.trace({ queue, steamId }, 'queue.vacateSlot()')
+  if ((await getState(queue)) === QueueState.launching) {
+    throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
+  }
 
-    const slot = await collections.queueSlots.findOneAndUpdate(
-      { queue, 'player.steamId': steamId },
-      { $set: { player: null, ready: false } },
-      { returnDocument: 'after' },
-    )
-    if (!slot) {
-      throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
-    }
-    emit('queue/slots:updated', { queue, slots: [slot] })
+  const slot = await collections.queueSlots.findOneAndUpdate(
+    { queue, 'player.steamId': steamId },
+    { $set: { player: null, ready: false } },
+    { returnDocument: 'after' },
+  )
+  if (!slot) {
+    throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
+  }
+  emit('queue/slots:updated', { queue, slots: [slot] })
 
-    const { deletedCount } = await collections.queueMapVotes.deleteMany({ queue, player: steamId })
-    if (deletedCount > 0) {
-      emit('queue/mapVoteResults:updated', {
-        queue,
-        results: await getMapVoteResults(queue),
-      })
-    }
+  const { deletedCount } = await collections.queueMapVotes.deleteMany({ queue, player: steamId })
+  if (deletedCount > 0) {
+    emit('queue/mapVoteResults:updated', {
+      queue,
+      results: await getMapVoteResults(queue),
+    })
+  }
 
-    return slot
-  })
+  return slot
 }
