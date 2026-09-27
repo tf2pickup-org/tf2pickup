@@ -1,12 +1,9 @@
 import fp from 'fastify-plugin'
 import { events } from '../../events'
-import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
-import type { QueueId } from '../../database/models/queue.model'
-import { getState } from '../../queues/get-state'
-import { debounce } from 'es-toolkit'
 import { safe } from '../../utils/safe'
 import { launchGame } from '../launch-game'
+import { launchFailed } from '../../queues/auto/launch-failed'
 import { assignGameServer } from '../assign-game-server'
 import { configure } from '../rcon/configure'
 import { getOrphanedGames } from '../get-orphaned-games'
@@ -16,35 +13,22 @@ import { GameState } from '../../database/models/game.model'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    const launches = new Map<string, () => void>()
-    function launchGameDebounced(queue: QueueId) {
-      const key = queue.toHexString()
-      let launch = launches.get(key)
-      if (!launch) {
-        launch = debounce(
-          safe(async () => {
-            await launchGame(queue)
-          }),
-          100,
-        )
-        launches.set(key, launch)
-      }
-      launch()
-    }
-
-    events.on('queue/state:updated', ({ queue, state }) => {
-      if (state === QueueState.launching) {
-        launchGameDebounced(queue)
-      }
-    })
+    events.on(
+      'queue:launching',
+      safe(async snapshot => {
+        try {
+          await launchGame(snapshot)
+        } catch (error) {
+          logger.error(
+            { error, queue: snapshot.queue._id },
+            'failed to launch game; reverting queue',
+          )
+          await launchFailed(snapshot.queue._id)
+        }
+      }),
+    )
 
     app.addHook('onListen', async () => {
-      for (const { _id } of await collections.queues.find({ enabled: true }).toArray()) {
-        if ((await getState(_id)) === QueueState.launching) {
-          launchGameDebounced(_id)
-        }
-      }
-
       const orphanedGames = await getOrphanedGames()
       for (const game of orphanedGames) {
         try {
