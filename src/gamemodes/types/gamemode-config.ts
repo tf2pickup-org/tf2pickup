@@ -6,4 +6,7 @@ export interface GamemodeConfig {
 
   /* List of classes that play the given gamemode */
   classes: GameClass[]
+
+  /* Whether teams are balanced by player skill; without it players have no skill in the gamemode */
+  autoBalance: boolean
 }

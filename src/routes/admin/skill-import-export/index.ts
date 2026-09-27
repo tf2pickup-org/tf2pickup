@@ -10,12 +10,23 @@ import { collections } from '../../../database/collections'
 import { routes } from '../../../utils/routes'
 import { queues } from '../../../queues'
 import { Gamemode } from '../../../shared/types/gamemode'
+import { gamemodeConfigs } from '../../../gamemodes/configs'
+import { autoBalancedGamemodes } from '../../../gamemodes/auto-balanced-gamemodes'
 import { z } from 'zod'
 
-const gamemodeQuery = z.object({ gamemode: z.enum(Gamemode).optional() })
+const gamemodeQuery = z.object({
+  gamemode: z
+    .enum(Gamemode)
+    .refine(
+      gamemode => gamemodeConfigs[gamemode].autoBalance,
+      'players have no skill in this gamemode',
+    )
+    .optional(),
+})
 
 async function selectedGamemode(gamemode: Gamemode | undefined): Promise<Gamemode> {
-  return gamemode ?? (await queues.gamemodesInUse())[0]!
+  const inUse = (await queues.gamemodesInUse()).filter(g => gamemodeConfigs[g].autoBalance)
+  return gamemode ?? inUse[0] ?? autoBalancedGamemodes[0]!
 }
 
 // eslint-disable-next-line @typescript-eslint/require-await

@@ -30,6 +30,11 @@ for (const gamemode of ['ultiduo', 'bball']) {
       expect(game.gamemode).toBe(gamemode)
       await expect(gameServer).toHaveCommand(`exec etf2l_${gamemode}`)
 
+      // teams are not balanced by skill, so nobody is assigned one
+      await page.goto(`/games/${gameNumber}`)
+      await expect(page.getByRole('link', { name: players[0]!.playerName })).toBeVisible()
+      await expect(page.locator('.player-assigned-skill')).toHaveCount(0)
+
       const sixes = await players[0]!.queuePage(defaultQueueSlug())
       await sixes.goto()
       for (const slot of queueSlots()) {
