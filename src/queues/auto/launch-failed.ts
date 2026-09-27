@@ -7,7 +7,7 @@ import { enterState } from './enter-state'
 import { queueCommand } from './queue-command'
 
 export async function launchFailed(queue: QueueId) {
-  await queueCommand(queue, 'launch-failed', async emit => {
+  await queueCommand('launch-failed', async emit => {
     if ((await getState(queue)) !== QueueState.launching) {
       return
     }

@@ -8,22 +8,17 @@ import { queueCommand } from './queue-command'
 
 export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
   logger.trace({ steamIds }, 'queue.kick()')
-  const occupied = await collections.queueSlots
-    .find({ 'player.steamId': { $in: steamIds } })
-    .toArray()
-  const byQueue = groupBy(occupied, slot => slot.queue.toHexString())
+  return await queueCommand('kick', async emit => {
+    const occupied = await collections.queueSlots
+      .find({ 'player.steamId': { $in: steamIds } })
+      .toArray()
+    const byQueue = groupBy(occupied, slot => slot.queue.toHexString())
 
-  const kicked: QueueSlotModel[] = []
-  for (const slots of Object.values(byQueue)) {
-    const queue = slots[0]!.queue
-    const players = slots.map(({ player }) => player!.steamId)
-    kicked.push(
-      ...(await queueCommand(
-        queue,
-        'kick',
-        async emit => await kickFromQueue(queue, players, emit),
-      )),
-    )
-  }
-  return kicked
+    const kicked: QueueSlotModel[] = []
+    for (const slots of Object.values(byQueue)) {
+      const players = slots.map(({ player }) => player!.steamId)
+      kicked.push(...(await kickFromQueue(slots[0]!.queue, players, emit)))
+    }
+    return kicked
+  })
 }

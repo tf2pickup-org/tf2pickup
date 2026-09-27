@@ -9,8 +9,7 @@ import { enable } from './enable'
 import { get } from './get'
 import { move } from './move'
 import { remove } from './remove'
-import { reset } from './auto/reset'
-import { kick } from './auto/kick'
+import { queueEngine } from './auto'
 
 vi.mock('../database/collections', () => {
   const collection = () => ({
@@ -35,12 +34,9 @@ vi.mock('../database/collections', () => {
 })
 vi.mock('../activity-log', () => ({ activityLog: { record: vi.fn() } }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
-vi.mock('../tasks', () => ({ tasks: { cancel: vi.fn() } }))
 vi.mock('./get', () => ({ get: vi.fn() }))
-vi.mock('./auto/reset', () => ({ reset: vi.fn() }))
-vi.mock('./auto/kick', () => ({ kick: vi.fn() }))
-vi.mock('./with-queue-lock', () => ({
-  withQueueLock: vi.fn(async (_q: unknown, _op: string, fn: () => Promise<unknown>) => await fn()),
+vi.mock('./auto', () => ({
+  queueEngine: { kick: vi.fn(), reset: vi.fn(), teardown: vi.fn() },
 }))
 
 const id = new ObjectId() as QueueId
@@ -97,13 +93,13 @@ describe('enable()', () => {
       { _id: id },
       { $set: { enabled: true } },
     )
-    expect(reset).toHaveBeenCalledWith(id)
+    expect(queueEngine.reset).toHaveBeenCalledWith(id)
   })
 
   it('refuses a queue with fewer than 3 maps', async () => {
     withQueue({ enabled: false, maps: [{ name: 'a' }] })
     await expect(enable(id, actor)).rejects.toThrow('at least 3 maps')
-    expect(reset).not.toHaveBeenCalled()
+    expect(queueEngine.reset).not.toHaveBeenCalled()
   })
 })
 
@@ -128,16 +124,8 @@ describe('disable()', () => {
       { _id: id },
       { $set: { enabled: false } },
     )
-    expect(kick).toHaveBeenCalledWith(actor)
-    for (const collection of [
-      collections.queueSlots,
-      collections.queueState,
-      collections.queueMapOptions,
-      collections.queueMapVotes,
-      collections.queueFriends,
-    ]) {
-      expect(collection.deleteMany).toHaveBeenCalledWith({ queue: id })
-    }
+    expect(queueEngine.kick).toHaveBeenCalledWith(actor)
+    expect(queueEngine.teardown).toHaveBeenCalledWith(id)
   })
 })
 
