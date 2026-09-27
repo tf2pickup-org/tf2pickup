@@ -9,5 +9,5 @@ Every queue engine command runs under a single in-process lock shared by all que
 
 ## Consequences
 
-- Operations on different queues serialize. Baseline before the switch (SigNoz, 7 days to 2026-09-27, per-queue locks): mutex wait p50 ≈ 2.5 ms, p90 ≈ 4.5 ms, p99 5–14 ms on every production instance; the busiest (br) took ~9.8k locks a week. Compare `tf2pickup.queue.mutex_wait.duration` and `tf2pickup.queue.mutex_hold.duration` against this.
+- Operations on different queues serialize. Baseline before the switch (SigNoz, 7 days to 2026-09-27, per-queue locks): mutex wait p50 ≈ 2.5 ms, p90 ≈ 4.5 ms, p99 5–14 ms on every production instance; the busiest (br) took ~9.8k locks a week. Compare `tf2pickup.queue.mutex_wait.duration` and `tf2pickup.queue.mutex_hold.duration` (both by `operation`; the `queue` attribute is gone with the per-queue locks) against this.
 - If waits climb, go back to per-queue locks with resolve → lock → re-read for commands addressed by player.

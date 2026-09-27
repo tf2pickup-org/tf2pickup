@@ -12,9 +12,7 @@ vi.mock('./take-launch-snapshot', () => ({
   takeLaunchSnapshot: vi.fn().mockResolvedValue('snapshot'),
 }))
 vi.mock('./queue-command', () => ({
-  queueCommand: vi.fn(
-    async (_queue: unknown, _operation: string, fn: (emit: unknown) => unknown) => await fn(emit),
-  ),
+  queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 
 const emit = vi.fn()
