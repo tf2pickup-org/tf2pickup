@@ -58,6 +58,16 @@ export async function join(
   }
 
   return await queueCommand('join', async emit => {
+    const state = await getState(queue)
+    if (![QueueState.waiting, QueueState.ready].includes(state)) {
+      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
+    }
+
+    // checked before leaving another queue, so a taken slot doesn't cost the player theirs
+    if ((await collections.queueSlots.findOne({ _id: slot._id }))?.player) {
+      throw withLogLevel(errors.badRequest('slot occupied'), 'debug')
+    }
+
     // a player is in at most one queue at a time
     if (
       await collections.queueSlots.countDocuments({
@@ -66,11 +76,6 @@ export async function join(
       })
     ) {
       await vacateSlot(steamId, emit)
-    }
-
-    const state = await getState(queue)
-    if (![QueueState.waiting, QueueState.ready].includes(state)) {
-      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
     }
 
     const targetSlot = await collections.queueSlots.findOneAndUpdate(
