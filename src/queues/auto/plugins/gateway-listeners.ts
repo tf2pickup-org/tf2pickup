@@ -23,6 +23,8 @@ import { queueWsCallDuration } from '../../metrics'
 import { measureTime } from '../../../utils/measure-time'
 import { byPageUrl } from '../../by-page-url'
 import type { QueueModel } from '../../../database/models/queue.model'
+import { listEnabled } from '../../list-enabled'
+import { queuePageUrl } from '../../queue-page-url'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -42,6 +44,19 @@ export default fp(
       app.gateway
         .to({ player: actorId })
         .send(() => Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))))
+    }
+
+    // each open queue page shows the membership for its own queue
+    async function refreshMembership(actor: SteamId64) {
+      for (const queue of await listEnabled()) {
+        app.gateway
+          .to({ player: actor })
+          .to({ url: queuePageUrl(queue.slug) })
+          .send(async () => [
+            await IsInQueue({ queue: queue._id, actor }),
+            await MapVoteSelection({ queue: queue._id, actor }),
+          ])
+      }
     }
 
     function wsSafe<Args extends unknown[]>(
@@ -91,9 +106,7 @@ export default fp(
           await refreshTakenSlots(queue, socket.player.steamId)
         }
 
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => await IsInQueue({ queue: queue._id, actor: socket.player?.steamId }))
+        await refreshMembership(socket.player.steamId)
       }),
     )
 
@@ -109,12 +122,7 @@ export default fp(
           await refreshTakenSlots(await get(slot.queue), socket.player.steamId)
         }
 
-        app.gateway
-          .to({ player: socket.player.steamId })
-          .send(async () => [
-            await IsInQueue({ queue: slot.queue, actor: socket.player?.steamId }),
-            await MapVoteSelection({ queue: slot.queue, actor: socket.player?.steamId }),
-          ])
+        await refreshMembership(socket.player.steamId)
 
         const queueState = await getState(slot.queue)
         if (queueState === QueueState.ready) {
@@ -144,8 +152,10 @@ export default fp(
         }
 
         const { queue } = await voteMap(socket.player.steamId, map)
+        const { slug } = await get(queue)
         app.gateway
           .to({ player: socket.player.steamId })
+          .to({ url: queuePageUrl(slug) })
           .send(async actor => await MapVoteSelection({ queue, actor }))
       }),
     )
