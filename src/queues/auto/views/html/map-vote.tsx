@@ -43,7 +43,7 @@ async function MapVoteButton(props: {
       class="map-vote-button text-white"
       name="votemap"
       value={props.map}
-      sync-attr:disabled="#isInQueue.value === false"
+      sync-attr:disabled="#isInCurrentQueue.value === false"
       sync-attr:aria-checked={`#mapVoteSelection.value === ${props.map}`}
       aria-label={`Vote for map ${props.map}`}
       data-umami-event="vote-map"
