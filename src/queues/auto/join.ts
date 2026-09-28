@@ -9,7 +9,7 @@ import { preReady } from '../../pre-ready'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { getState } from '../get-state'
 import { withLogLevel } from '../../utils/with-log-level'
-import { meetsSkillThreshold } from './meets-skill-threshold'
+import { joinBlocker } from './join-blocker'
 import { queueCommand } from './queue-command'
 import type { QueueSlotId } from '../types/queue-slot-id'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
@@ -23,11 +23,9 @@ export async function join(
 ): Promise<QueueSlotModel[]> {
   logger.trace({ queue, steamId, slotId }, `queue.join()`)
   const settings = await get(queue)
-  if (!settings.enabled) {
-    throw errors.badRequest('this queue is disabled')
-  }
   const player = await players.bySteamId(steamId, [
     'hasAcceptedRules',
+    'bans',
     'activeGame',
     'skill',
     'steamId',
@@ -36,25 +34,14 @@ export async function join(
     'verified',
   ])
 
-  if (!player.hasAcceptedRules) {
-    throw errors.badRequest(`player has not accepted rules`)
-  }
-
-  if (player.activeGame) {
-    throw errors.badRequest(`player has active game`)
-  }
-
-  if (settings.requireVerification && !player.verified) {
-    throw errors.badRequest(`player is not verified`)
-  }
-
   const slot = await collections.queueSlots.findOne({ queue, id: slotId })
   if (!slot) {
     throw errors.notFound('no such slot')
   }
 
-  if (!(await meetsSkillThreshold(player, slot, settings))) {
-    throw errors.badRequest(`player does not meet skill threshold`)
+  const blocker = await joinBlocker(player, slot, settings)
+  if (blocker) {
+    throw errors.badRequest(blocker)
   }
 
   return await queueCommand('join', async emit => {
