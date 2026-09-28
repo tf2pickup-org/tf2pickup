@@ -111,3 +111,22 @@ test('chat and online players reach every queue page @multi-queue', async ({ use
     duo.locator('#online-player-list').getByRole('link', { name: 'Polemic' }),
   ).toBeVisible()
 })
+
+test('pre-ready up stays enabled on another queue @multi-queue', async ({ users, ultiduo }) => {
+  const sixes = await users.byName('Shadowhunter').queuePage(defaultQueueSlug())
+  await sixes.goto()
+  await sixes.slot('scout-1').join()
+  await expect(sixes.preReadyUpButton).toBeEnabled()
+
+  await tab(sixes.page, ultiduo).click()
+  await expect(sixes.page).toHaveURL(`/q/${ultiduo}`)
+  await expect(sixes.preReadyUpButton).toBeEnabled()
+
+  const duo = await users.byName('Shadowhunter').queuePage(ultiduo)
+  await duo.goto()
+  await expect(duo.preReadyUpButton).toBeEnabled()
+
+  await sixes.goto()
+  await sixes.leaveQueue()
+  await expect(sixes.preReadyUpButton).toBeDisabled()
+})
