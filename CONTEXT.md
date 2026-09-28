@@ -18,6 +18,9 @@ Where a queue is in its cycle: _waiting_ (filling up), _ready_ (full, players co
 **Ready-up**:
 The confirmation each player gives once the queue is full; players who don't ready up in time are kicked.
 
+**Join blocker**:
+The first reason, in a fixed order, why a player can't take a queue slot (queue disabled, rules not accepted, active ban, already in a game, not verified, skill below the threshold). Enforced by the queue engine and shown in the UI as the tooltip on the locked join button.
+
 **Pre-ready**:
 A player's standing ready-up, applied automatically the next time a queue they're in fills.
 
