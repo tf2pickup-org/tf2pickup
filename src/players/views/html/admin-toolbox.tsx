@@ -21,6 +21,7 @@ import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { pluckLastEdit } from '../../pluck-last-edit'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { makeSkillSuggestions } from '../../make-skill-suggestions'
+import { effectiveSkill } from '../../effective-skill'
 import { PlayerVerifiedCheckbox } from './player-verified-checkbox'
 
 export async function AdminToolbox(props: {
@@ -145,11 +146,7 @@ async function SkillForm(props: {
                   : `Player's skill on ${gameClass.name}`
               }
               name={`skill.${gameClass.name}`}
-              value={
-                player.skill?.[gamemode]?.[gameClass.name] ??
-                props.defaultSkill[gameClass.name] ??
-                0
-              }
+              value={effectiveSkill(player.skill?.[gamemode], props.defaultSkill, gameClass.name)}
               step={props.skillStep}
             >
               <SkillLastUpdated className={gameClass.name} skillHistory={skillHistory} />

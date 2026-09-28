@@ -4,11 +4,13 @@ import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { GameState, type GameNumber } from '../database/models/game.model'
+import type { PlayerSkill } from '../database/models/player.model'
 import type { QueueModel } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
 import { gamemodeConfigs } from '../gamemodes/configs'
 import { players } from '../players'
+import { effectiveSkill } from '../players/effective-skill'
 import type { Gamemode } from '../shared/types/gamemode'
 import { resolveWhitelistId } from '../queues/resolve-whitelist-id'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -22,8 +24,11 @@ export async function create(
 ) {
   const { autoBalance } = gamemodeConfigs[queue.gamemode]
   // without balancing, every lineup is as good as any other, so a shuffle picks a random one
+  const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
   const playerSlots: PlayerSlot[] = autoBalance
-    ? await Promise.all(queueSlots.map(slot => queueSlotToPlayerSlot(queue.gamemode, slot)))
+    ? await Promise.all(
+        queueSlots.map(slot => queueSlotToPlayerSlot(queue.gamemode, defaultSkill, slot)),
+      )
     : shuffle(queueSlots.map(slot => ({ ...toPlayerSlot(slot), skill: 0 })))
   const slots = pickTeams(playerSlots, { friends })
   const execConfig = queue.maps.find(({ name }) => name === map)?.execConfig
@@ -72,19 +77,12 @@ function toPlayerSlot(queueSlot: QueueSlotModel) {
 
 async function queueSlotToPlayerSlot(
   gamemode: Gamemode,
+  defaultSkill: PlayerSkill | undefined,
   queueSlot: QueueSlotModel,
 ): Promise<PlayerSlot> {
   const { player, gameClass } = toPlayerSlot(queueSlot)
-  const defaultPlayerSkill = await configuration.get('games.default_player_skill')
-  let skill = defaultPlayerSkill[gamemode]?.[gameClass] ?? 1
-
-  const { skill: playerSkill } = await players.bySteamId(player, ['skill'])
-  const gamemodeSkill = playerSkill?.[gamemode]
-  if (gamemodeSkill && gameClass in gamemodeSkill) {
-    skill = gamemodeSkill[gameClass]!
-  }
-
-  return { player, gameClass, skill }
+  const { skill } = await players.bySteamId(player, ['skill'])
+  return { player, gameClass, skill: effectiveSkill(skill?.[gamemode], defaultSkill, gameClass) }
 }
 
 async function getNextGameNumber(): Promise<GameNumber> {
