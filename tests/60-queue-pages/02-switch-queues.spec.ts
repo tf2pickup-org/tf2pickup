@@ -130,3 +130,22 @@ test('pre-ready up stays enabled on another queue @multi-queue', async ({ users,
   await sixes.leaveQueue()
   await expect(sixes.preReadyUpButton).toBeDisabled()
 })
+
+test('a tab on another queue keeps its own membership @multi-queue', async ({ users, ultiduo }) => {
+  const user = users.byName('Shadowhunter')
+  const sixes = await user.queuePage(defaultQueueSlug())
+  await sixes.goto()
+  const duo = await user.browserContext.newPage()
+  await duo.goto(`/q/${ultiduo}`)
+  const duoMapVote = duo.getByRole('button', { name: /^Vote for map / }).first()
+  await expect(duoMapVote).toBeDisabled()
+
+  await sixes.slot('scout-1').join()
+  await expect(sixes.page.getByRole('button', { name: /^Vote for map / }).first()).toBeEnabled()
+  await expect(duo.getByRole('button', { name: 'Pre-ready up' })).toBeEnabled()
+  await expect(duoMapVote).toBeDisabled()
+
+  await sixes.leaveQueue()
+  await expect(duo.getByRole('button', { name: 'Pre-ready up' })).toBeDisabled()
+  await duo.close()
+})
