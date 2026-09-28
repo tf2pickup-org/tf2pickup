@@ -113,20 +113,23 @@ test('chat and online players reach every queue page @multi-queue', async ({ use
 })
 
 test('pre-ready up stays enabled on another queue @multi-queue', async ({ users, ultiduo }) => {
-  const sixes = await users.byName('Shadowhunter').queuePage(defaultQueueSlug())
+  const user = users.byName('Shadowhunter')
+  const sixes = await user.queuePage(defaultQueueSlug())
   await sixes.goto()
   await sixes.slot('scout-1').join()
   await expect(sixes.preReadyUpButton).toBeEnabled()
 
+  const duo = await user.browserContext.newPage()
+  await duo.goto(`/q/${ultiduo}`)
+  await expect(duo.getByRole('button', { name: 'Pre-ready up' })).toBeEnabled()
+  await duo.close()
+
   await tab(sixes.page, ultiduo).click()
-  await expect(sixes.page).toHaveURL(`/q/${ultiduo}`)
+  await expect(sixes.page.getByLabel(/^Queue slot /)).toHaveCount(4)
   await expect(sixes.preReadyUpButton).toBeEnabled()
 
-  const duo = await users.byName('Shadowhunter').queuePage(ultiduo)
-  await duo.goto()
-  await expect(duo.preReadyUpButton).toBeEnabled()
-
-  await sixes.goto()
+  await sixes.page.goBack()
+  await expect(sixes.page.getByLabel(/^Queue slot /)).toHaveCount(12)
   await sixes.leaveQueue()
   await expect(sixes.preReadyUpButton).toBeDisabled()
 })
