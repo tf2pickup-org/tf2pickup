@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.23.14](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.13...4.23.14) (2026-09-28)
+
+### Bug Fixes
+
+* **queue:** cancel the ready-up timeouts when the queue is unreadied ([#869](https://github.com/tf2pickup-org/tf2pickup/issues/869)) ([b0de139](https://github.com/tf2pickup-org/tf2pickup/commit/b0de1399e2f8220e42ae97ef489bc46c322d7786)), closes [#868](https://github.com/tf2pickup-org/tf2pickup/issues/868)
+
+### Dependencies
+
+* @fastify/multipart to v10.1.2 ([9b8c000](https://github.com/tf2pickup-org/tf2pickup/commit/9b8c0009ffae4013686c49127da5a52b8cdd5954))
+* @fastify/secure-session to v8.4.0 ([20738b8](https://github.com/tf2pickup-org/tf2pickup/commit/20738b8b4d0a3ef9543d0f9551f072f6cf8271c0))
+* @fastify/websocket to v11.3.1 ([#851](https://github.com/tf2pickup-org/tf2pickup/issues/851)) ([4a6d20f](https://github.com/tf2pickup-org/tf2pickup/commit/4a6d20f7d89399285eecfd977f68eec2daccf521)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* dotenv to v18.0.1 ([#853](https://github.com/tf2pickup-org/tf2pickup/issues/853)) ([163db9f](https://github.com/tf2pickup-org/tf2pickup/commit/163db9f4bf076d4fca2f979e259a08019e995a16))
+* dotenv to v18.0.3 ([dd3b592](https://github.com/tf2pickup-org/tf2pickup/commit/dd3b592a82e4d69d4a80ccf5aef22f25566093cf))
+* htmx.org to v2.0.11 ([3ac4d83](https://github.com/tf2pickup-org/tf2pickup/commit/3ac4d8329b86b2b829bce4a4ba8a105a9f0859fd))
+* marked to v18.0.14 ([e42b232](https://github.com/tf2pickup-org/tf2pickup/commit/e42b2323ee3f149029ef6059e2ae6669e12d2eb8))
+* motion to v13.4.0 ([#857](https://github.com/tf2pickup-org/tf2pickup/issues/857)) ([c371245](https://github.com/tf2pickup-org/tf2pickup/commit/c371245fa73a95de06c4163f5b2298f7006ce9d1))
+* motion to v13.4.1 ([#873](https://github.com/tf2pickup-org/tf2pickup/issues/873)) ([81b150d](https://github.com/tf2pickup-org/tf2pickup/commit/81b150da697fc6292d87bddd4bfa817668ecb2d5))
+* motion to v13.4.2 ([66c776c](https://github.com/tf2pickup-org/tf2pickup/commit/66c776c8551d099ef2ca1e259481c1a279c88bfb))
+* motion to v13.4.3 ([ec46bf8](https://github.com/tf2pickup-org/tf2pickup/commit/ec46bf89364e51958b794cac37f8e64bd5ec9a20))
+* type-fest to v5.10.0 ([0032a18](https://github.com/tf2pickup-org/tf2pickup/commit/0032a188a39bf2aceda2967de8ee878dc6f3bc38))
+
 ## [4.23.13](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.12...4.23.13) (2026-09-21)
 
 ### Bug Fixes
