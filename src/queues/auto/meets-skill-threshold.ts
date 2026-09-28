@@ -1,5 +1,6 @@
 import { configuration } from '../../configuration'
 import { gamemodeConfigs } from '../../gamemodes/configs'
+import { effectiveSkill } from '../../players/effective-skill'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { QueueModel } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
@@ -13,9 +14,10 @@ export async function meetsSkillThreshold(
     return true
   }
 
-  const skill =
-    player.skill?.[queue.gamemode]?.[slot.gameClass] ??
-    (await configuration.get('games.default_player_skill'))[queue.gamemode]?.[slot.gameClass] ??
-    0
+  const skill = effectiveSkill(
+    player.skill?.[queue.gamemode],
+    (await configuration.get('games.default_player_skill'))[queue.gamemode],
+    slot.gameClass,
+  )
   return skill >= queue.skillThreshold
 }
