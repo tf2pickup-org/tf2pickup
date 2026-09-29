@@ -15,7 +15,10 @@ vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn() } }))
 vi.mock('../get', () => ({ get: vi.fn() }))
 vi.mock('../get-state', () => ({ getState: vi.fn() }))
-vi.mock('./join-blocker', () => ({ joinBlocker: vi.fn().mockResolvedValue(null) }))
+vi.mock('../../configuration', () => ({
+  configuration: { get: vi.fn().mockResolvedValue({ '6v6': { scout: 2 } }) },
+}))
+vi.mock('./join-blocker', () => ({ joinBlocker: vi.fn().mockReturnValue(null) }))
 vi.mock('./vacate-slot', () => ({ vacateSlot: vi.fn() }))
 vi.mock('./queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
@@ -52,8 +55,12 @@ const player = {
 describe('join()', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(get).mockResolvedValue({ enabled: true, requireVerification: false } as never)
-    vi.mocked(joinBlocker).mockResolvedValue(null)
+    vi.mocked(get).mockResolvedValue({
+      enabled: true,
+      requireVerification: false,
+      gamemode: '6v6',
+    } as never)
+    vi.mocked(joinBlocker).mockReturnValue(null)
     vi.mocked(players.bySteamId).mockImplementation((async (_: SteamId64, keys: string[]) =>
       Object.fromEntries(
         Object.entries(player).filter(([key]) => keys.some(k => k.split('.')[0] === key)),
@@ -92,14 +99,14 @@ describe('join()', () => {
   })
 
   it('refuses a player with a join blocker and leaves the slots alone', async () => {
-    vi.mocked(joinBlocker).mockResolvedValue('You have active bans')
+    vi.mocked(joinBlocker).mockReturnValue('You have active bans')
 
     await expect(join(queue, slotId, steamId)).rejects.toThrow('You have active bans')
     expect(collections.queueSlots.findOneAndUpdate).not.toHaveBeenCalled()
     expect(vacateSlot).not.toHaveBeenCalled()
   })
 
-  it("hands the player's bans to the join blocker", async () => {
+  it("hands the player's bans and the gamemode's default skill to the join blocker", async () => {
     vi.mocked(collections.queueSlots.findOneAndUpdate).mockResolvedValueOnce({
       ...slot,
       player: { steamId },
@@ -111,6 +118,7 @@ describe('join()', () => {
       expect.objectContaining({ bans: player.bans }),
       slot,
       expect.anything(),
+      { scout: 2 },
     )
   })
 })
