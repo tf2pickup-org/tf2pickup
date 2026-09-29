@@ -28,14 +28,17 @@ import type { QueueModel } from '../../../database/models/queue.model'
 import { queues } from '../..'
 import { QueueSwitcherCount } from '../views/html/queue-switcher-count'
 import { playerCounts } from '../../player-counts'
+import { configuration } from '../../../configuration'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     async function syncAllSlots(...clients: SteamId64[]) {
       const actorMap = await fetchActorMap(clients)
+      const defaultPlayerSkill = await configuration.get('games.default_player_skill')
       for (const queue of await queues.listEnabled()) {
         const slots = await collections.queueSlots.find({ queue: queue._id }).toArray()
+        const defaultSkill = defaultPlayerSkill[queue.gamemode]
         for (const client of clients) {
           const actor = actorMap.get(client)
           if (!actor) {
@@ -46,8 +49,8 @@ export default fp(
             .to({ players: [actor.steamId] })
             .to({ url: queues.queuePageUrl(queue.slug) })
             .send(() =>
-              Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))).then(arr =>
-                arr.join(),
+              Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor, defaultSkill }))).then(
+                arr => arr.join(),
               ),
             )
         }
@@ -68,8 +71,9 @@ export default fp(
             'roles',
           ])
         : undefined
+      const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
       for (const slot of slots) {
-        socket.send(await QueueSlot({ queue, slot, actor }))
+        socket.send(await QueueSlot({ queue, slot, actor, defaultSkill }))
       }
       socket.send(await IsInQueue({ queue: queue._id, actor: socket.player?.steamId }))
       socket.send(await CurrentPlayerCount({ queue: queue._id }))
@@ -174,17 +178,18 @@ export default fp(
           .map(c => c.player?.steamId)
           .filter((id): id is SteamId64 => id !== undefined)
 
-        const [playerCount, actorMap] = await Promise.all([
+        const [playerCount, actorMap, defaultPlayerSkill] = await Promise.all([
           CurrentPlayerCount({ queue: queueId }),
           fetchActorMap(connectedPlayers),
+          configuration.get('games.default_player_skill'),
         ])
+        const defaultSkill = defaultPlayerSkill[queue.gamemode]
 
         app.gateway.to({ url }).send(player => {
           const actor = player ? actorMap.get(player) : undefined
-          return Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))).then(items => [
-            ...items,
-            playerCount,
-          ])
+          return Promise.all(
+            slots.map(slot => QueueSlot({ queue, slot, actor, defaultSkill })),
+          ).then(items => [...items, playerCount])
         })
 
         app.gateway.to({ url }).send(() => SetTitle({ queue: queueId }))
@@ -275,10 +280,11 @@ export default fp(
             .toArray()
         ).map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipientIds)
+        const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
         app.gateway
           .to({ players: recipientIds })
           .to({ url: queues.queuePageUrl(queue.slug) })
-          .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!) }))
+          .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!), defaultSkill }))
       }),
     )
 
@@ -300,11 +306,12 @@ export default fp(
         ])
         const recipients = friendshipSlots.map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipients)
+        const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
         for (const slot of slots) {
           app.gateway
             .to({ players: recipients })
             .to({ url: queues.queuePageUrl(queue.slug) })
-            .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!) }))
+            .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!), defaultSkill }))
         }
       }),
     )
@@ -330,10 +337,11 @@ export default fp(
             .toArray()
         ).map(({ player }) => player!.steamId)
         const actorMap = await fetchActorMap(recipientIds)
+        const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
         app.gateway
           .to({ players: recipientIds })
           .to({ url: queues.queuePageUrl(queue.slug) })
-          .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!) }))
+          .send(actor => QueueSlot({ queue, slot, actor: actorMap.get(actor!), defaultSkill }))
       }),
     )
 
