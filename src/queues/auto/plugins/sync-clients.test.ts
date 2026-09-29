@@ -40,6 +40,9 @@ vi.mock('../..', () => ({
 vi.mock('../../player-counts', () => ({
   playerCounts: vi.fn().mockResolvedValue({ current: 0, required: 12 }),
 }))
+vi.mock('../../../configuration', () => ({
+  configuration: { get: vi.fn().mockResolvedValue({ '6v6': { soldier: 2 } }) },
+}))
 vi.mock('../views/html/queue-switcher-count', () => ({ QueueSwitcherCount: vi.fn() }))
 vi.mock('../../../database/collections', () => ({
   collections: {
@@ -94,6 +97,7 @@ import { events } from '../../../events'
 import { players } from '../../../players'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../../database/models/queue-state.model'
+import { QueueSlot } from '../views/html/queue-slot'
 import plugin from './sync-clients'
 
 const steamId1 = '76561198000000001' as SteamId64
@@ -267,6 +271,19 @@ describe('sync-clients', () => {
 
       expect(app.gateway.to).toHaveBeenCalledWith({ url: '/q/auto-6v6' })
       expect(app.gateway.broadcast).not.toHaveBeenCalled()
+    })
+
+    it("renders the slots with the gamemode's default skill", async () => {
+      const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
+      const slot = { id: 'soldier-0' }
+
+      await handler({ queue: 'shown-queue', slots: [slot] })
+      const send = vi.mocked(app.gateway.to({})).send
+      await vi.mocked(send).mock.calls[0]![0](undefined)
+
+      expect(QueueSlot).toHaveBeenCalledWith(
+        expect.objectContaining({ slot, defaultSkill: { soldier: 2 } }),
+      )
     })
 
     it('does not include unauthenticated clients in the batch query', async () => {
