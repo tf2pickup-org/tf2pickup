@@ -2,6 +2,7 @@
 
 @layer components {
   .queue-nav .queue-nav-inner {
+    position: relative;
     max-width: 1920px;
     padding-right: 16px;
     padding-left: 16px;
@@ -9,16 +10,27 @@
 
   @media (width >= 1024px) {
     .queue-nav #nav-menu > div {
-      gap: 10px;
-      padding: 7px 11px;
+      gap: 4px;
+      padding: 12px 20px 12px 12px;
       border: 1px solid var(--color-surface-raised);
-      border-radius: 10px;
+      border-radius: 47px;
       background: var(--color-surface);
     }
 
     .queue-nav .nav-menu-item {
-      padding: 4px 8px;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 32px;
       font-size: 18px;
+      line-height: 24px;
+    }
+
+    .queue-nav .nav-menu-item[data-accent='true'] {
+      background: var(--color-surface-raised);
+    }
+
+    .queue-nav #navbar-games-link > div {
+      display: none;
     }
 
     .queue-nav .nav-profile-button {
@@ -29,28 +41,23 @@
   }
 
   @media (width >= 1600px) {
-    .queue-nav #nav-menu {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      margin: 0;
-      transform: translate(-50%, -50%);
-    }
-
-    .queue-nav #nav-menu > div {
-      position: relative;
+    .queue-nav .queue-nav-inner {
+      display: grid !important;
+      grid-template-columns: 1fr auto 1fr;
     }
 
     .queue-nav .nav-menu-spacer {
       display: none !important;
     }
 
+    /* the socials sit beside the 300px profile card */
     .queue-nav #nav-menu > div > div:last-child {
       position: absolute;
       top: 50%;
-      left: calc(100% + 280px);
+      right: calc(16px + 300px + 18px);
       display: flex !important;
-      padding: 0;
+      gap: 24px !important;
+      padding: 0 !important;
       transform: translateY(-50%);
     }
   }
