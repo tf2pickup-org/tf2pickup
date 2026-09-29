@@ -2,6 +2,8 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { GamemodeConfig } from '../types/gamemode-config'
 
 export const _9v9: GamemodeConfig = {
+  name: 'HL',
+  shortName: 'HL',
   teamCount: 2,
   autoBalance: true,
   classes: [
