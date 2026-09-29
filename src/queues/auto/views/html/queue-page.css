@@ -151,10 +151,14 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .queue-switcher-option:hover,
-  .queue-switcher-option[aria-current='page'] {
+  .queue-switcher-option:hover {
     border-color: transparent;
     background: var(--color-surface-raised);
+  }
+
+  .queue-switcher-option[aria-current='page'] {
+    border-color: transparent;
+    background: var(--color-zinc-700);
     color: var(--color-zinc-200);
   }
 
