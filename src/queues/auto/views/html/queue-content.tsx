@@ -32,7 +32,7 @@ export async function QueueContent(props: { queue: QueueModel }) {
       <div class="queue-toolbar">
         <IsInQueue queue={queue._id} actor={user?.player.steamId} />
         <MapVoteSelection queue={queue._id} actor={user?.player.steamId} />
-        <QueueSwitcher active={queue} />
+        <QueueSwitcher active={queue} actor={user?.player.steamId} />
         <QueueState queue={queue} actor={user} required={required} />
       </div>
       <div class="queue-content">

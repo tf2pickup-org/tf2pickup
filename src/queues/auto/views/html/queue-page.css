@@ -101,16 +101,19 @@
   .queue-switcher-options {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     height: 100%;
   }
 
   .queue-switcher-option {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
     min-height: 38px;
-    padding: 6px 14px;
+    padding: 8px 13.5px;
+    border: 1px solid transparent;
     border-radius: 5px;
     color: var(--color-text-muted);
     font-size: 16px;
@@ -118,18 +121,32 @@
     white-space: nowrap;
   }
 
-  .queue-switcher-option {
-    gap: 8px;
+  .queue-switcher-option[data-joined] {
+    padding-inline: 19px 8px;
+    border-color: var(--color-zinc-700);
+  }
+
+  .queue-switcher-option[data-joined]::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d9d9d9;
+    translate: 0 -50%;
   }
 
   .queue-switcher-count {
     color: var(--color-zinc-500);
-    font-size: 14px;
+    font-size: 12px;
     font-variant-numeric: tabular-nums;
   }
 
   .queue-switcher-option:hover,
   .queue-switcher-option[aria-current='page'] {
+    border-color: transparent;
     background: var(--color-surface-raised);
     color: var(--color-zinc-200);
   }
@@ -305,7 +322,6 @@
     }
 
     .queue-switcher-option {
-      padding: 6px 8px;
       font-size: 14px;
     }
 
