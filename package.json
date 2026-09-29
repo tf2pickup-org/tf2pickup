@@ -28,7 +28,7 @@
     "@fastify/rate-limit": "11.2.0",
     "@fastify/request-context": "7.0.0",
     "@fastify/secure-session": "8.4.0",
-    "@fastify/sensible": "6.0.5",
+    "@fastify/sensible": "6.0.6",
     "@fastify/static": "10.1.5",
     "@fastify/websocket": "11.3.1",
     "@kitajs/fastify-html-plugin": "4.2.1",
