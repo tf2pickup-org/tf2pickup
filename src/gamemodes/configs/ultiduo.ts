@@ -2,6 +2,8 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { GamemodeConfig } from '../types/gamemode-config'
 
 export const ultiduo: GamemodeConfig = {
+  name: 'Ultiduo',
+  shortName: 'UD',
   teamCount: 2,
   autoBalance: false,
   classes: [
