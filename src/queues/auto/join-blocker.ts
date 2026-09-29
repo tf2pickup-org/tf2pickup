@@ -1,5 +1,4 @@
-import { configuration } from '../../configuration'
-import type { PlayerModel } from '../../database/models/player.model'
+import type { PlayerModel, PlayerSkill } from '../../database/models/player.model'
 import type { QueueModel } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { gamemodeConfigs } from '../../gamemodes/configs'
@@ -11,11 +10,12 @@ export type JoinBlockerPlayer = Pick<
   'hasAcceptedRules' | 'bans' | 'activeGame' | 'verified' | 'skill'
 >
 
-export async function joinBlocker(
+export function joinBlocker(
   player: JoinBlockerPlayer,
   slot: Pick<QueueSlotModel, 'gameClass'>,
   queue: Pick<QueueModel, 'enabled' | 'requireVerification' | 'skillThreshold' | 'gamemode'>,
-): Promise<string | null> {
+  defaultSkill: PlayerSkill | undefined,
+): string | null {
   if (!queue.enabled) {
     return 'This queue is disabled'
   }
@@ -37,11 +37,7 @@ export async function joinBlocker(
   }
 
   if (queue.skillThreshold !== null && gamemodeConfigs[queue.gamemode].autoBalance) {
-    const skill = effectiveSkill(
-      player.skill?.[queue.gamemode],
-      (await configuration.get('games.default_player_skill'))[queue.gamemode],
-      slot.gameClass,
-    )
+    const skill = effectiveSkill(player.skill?.[queue.gamemode], defaultSkill, slot.gameClass)
     if (skill < queue.skillThreshold) {
       return `You do not meet skill requirements to play ${slot.gameClass}`
     }

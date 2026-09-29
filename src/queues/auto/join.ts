@@ -1,3 +1,4 @@
+import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
@@ -39,7 +40,8 @@ export async function join(
     throw errors.notFound('no such slot')
   }
 
-  const blocker = await joinBlocker(player, slot, settings)
+  const defaultSkill = (await configuration.get('games.default_player_skill'))[settings.gamemode]
+  const blocker = joinBlocker(player, slot, settings, defaultSkill)
   if (blocker) {
     throw errors.badRequest(blocker)
   }
