@@ -22,7 +22,7 @@ export async function GameListPage(props: { page: number; gamemode?: Gamemode | 
       canonical="/games"
       embedStyle={resolve(import.meta.dirname, 'game-list.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
         <div class="games-page">
           <div class="games-page-header">
