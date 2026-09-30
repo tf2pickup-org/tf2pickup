@@ -1,5 +1,4 @@
 import { collections } from '../../../database/collections'
-import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { IconChevronDown, IconFilter2 } from '../../../html/components/icons'
 import { Gamemode } from '../../../shared/types/gamemode'
 
@@ -14,7 +13,7 @@ export async function GamesFilter(props: { gamemode?: Gamemode | undefined }) {
           <IconFilter2 />
           <span>Mode:</span>
           {props.gamemode ? (
-            <span safe>{gamemodeConfigs[props.gamemode].name}</span>
+            <span>{props.gamemode}</span>
           ) : (
             <span class="games-filter-placeholder">All</span>
           )}
@@ -27,9 +26,8 @@ export async function GamesFilter(props: { gamemode?: Gamemode | undefined }) {
               aria-current={gamemode === props.gamemode ? 'true' : undefined}
               data-umami-event="filter-games"
               data-umami-event-gamemode={gamemode}
-              safe
             >
-              {gamemodeConfigs[gamemode].name}
+              {gamemode}
             </a>
           ))}
         </div>
