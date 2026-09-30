@@ -141,6 +141,20 @@
     flex-direction: column;
     gap: 16px;
 
+    @media (width >= theme(--breakpoint-sm)) {
+      display: grid;
+      grid-template-columns:
+        [number] auto [gamemode] auto [status] auto [map] auto [date] auto
+        1fr;
+      column-gap: 24px;
+
+      &:has(.game-list-class) {
+        grid-template-columns:
+          [number] auto [gamemode] auto [class] auto [status] auto [map] auto [date] auto
+          1fr;
+      }
+    }
+
     .game-list-item {
       --item-background: var(--color-zinc-800);
 
@@ -158,6 +172,12 @@
       font-size: 16px;
       font-weight: 500;
 
+      @media (width >= theme(--breakpoint-sm)) {
+        display: grid;
+        grid-column: 1 / -1;
+        grid-template-columns: subgrid;
+      }
+
       &[data-live] {
         color: var(--color-zinc-200);
       }
@@ -168,6 +188,34 @@
 
       & > * {
         position: relative;
+      }
+    }
+
+    @media (width >= theme(--breakpoint-sm)) {
+      .game-number {
+        grid-column: number;
+      }
+
+      .game-list-badge {
+        grid-column: gamemode;
+        text-align: center;
+      }
+
+      .game-list-class {
+        grid-column: class;
+      }
+
+      .game-list-status {
+        grid-column: status;
+        justify-self: start;
+      }
+
+      .map-name {
+        grid-column: map;
+      }
+
+      .launched-at {
+        grid-column: date;
       }
     }
 
