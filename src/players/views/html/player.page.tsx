@@ -1,39 +1,34 @@
-import { playerGamemodes } from '../../player-gamemodes'
-import type { Gamemode } from '../../../shared/types/gamemode'
-import { gamemodeConfigs } from '../../../gamemodes/configs'
+import Html from '@kitajs/html'
+import { requestContext } from '@fastify/request-context'
+import { format, formatDistanceToNowStrict } from 'date-fns'
+import { resolve } from 'node:path'
+import type { PickDeep } from 'type-fest'
 import { collections } from '../../../database/collections'
-import { Layout } from '../../../html/layout'
-import { NavigationBar } from '../../../html/components/navigation-bar'
-import {
-  PlayerRole,
-  type PlayerModel,
-  type PlayerStats,
-} from '../../../database/models/player.model'
-import { playerAvatarUrl } from '../../../shared/player-avatar-url'
-import { format } from 'date-fns'
-import { GameClassIcon } from '../../../html/components/game-class-icon'
+import type { GameModel } from '../../../database/models/game.model'
+import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import { environment } from '../../../environment'
+import { gameResult } from '../../../games/game-result'
+import { GameListItem } from '../../../games/views/html/game-list-item'
+import { GamesFilter } from '../../../games/views/html/games-filter'
+import { Footer } from '../../../html/components/footer'
 import {
   IconAlignBoxBottomRight,
   IconBrandSteam,
   IconBrandTwitch,
-  IconClover,
   IconStars,
-  IconSum,
 } from '../../../html/components/icons'
-import { resolve } from 'node:path'
+import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
-import { Footer } from '../../../html/components/footer'
-import { GameListItem } from '../../../games/views/html/game-list-item'
 import { Pagination, paginate } from '../../../html/components/pagination'
+import { Layout } from '../../../html/layout'
 import { makeTitle } from '../../../html/make-title'
-import { environment } from '../../../environment'
-import { AdminToolbox } from './admin-toolbox'
+import { playerAvatarUrl } from '../../../shared/player-avatar-url'
+import { Gamemode } from '../../../shared/types/gamemode'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
-import type { PickDeep } from 'type-fest'
-import type { GameModel } from '../../../database/models/game.model'
-import { requestContext } from '@fastify/request-context'
+import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { AdminToolbox } from './admin-toolbox'
 
-const gamesPerPage = 5
+const gamesPerPage = 9
 
 export type PlayerPageData = PickDeep<
   PlayerModel,
@@ -49,12 +44,27 @@ export type PlayerPageData = PickDeep<
   | 'skillHistory'
   | 'verified'
   | 'bans'
+  | 'chatMutes'
   | 'elo'
 >
 
-export async function PlayerPage(props: { player: PlayerPageData; page: number }) {
+export async function PlayerPage(props: {
+  player: PlayerPageData
+  page: number
+  gamemode?: Gamemode | undefined
+  gameClass?: Tf2ClassName | undefined
+}) {
   const { player } = props
   const user = requestContext.get('user')
+  const gamesByClass = player.stats.gamesByClass
+  const gamemodes = Object.values(Gamemode).filter(
+    gamemode => Object.keys(gamesByClass[gamemode] ?? {}).length > 0,
+  )
+  const gameClasses = Object.values(Tf2ClassName).filter(gameClass =>
+    (props.gamemode ? [props.gamemode] : gamemodes).some(
+      gamemode => (gamesByClass[gamemode]?.[gameClass] ?? 0) > 0,
+    ),
+  )
 
   return (
     <Layout
@@ -64,22 +74,38 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
       canonical={`/players/${player.steamId}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="relative container mx-auto flex flex-col gap-[30px]">
-          <PlayerPresentation
-            player={player}
-            gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass}
-            gamemodes={await shownGamemodes(player)}
-            isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
-          />
+        <div class="player-page">
+          <ProfileCard player={player} />
+
+          <div class="player-page-main">
+            <div class="player-page-toolbar">
+              <nav class="profile-tabs" aria-label="Profile">
+                <a href={`/players/${player.steamId}`} class="profile-tab" aria-current="page">
+                  Game History
+                </a>
+              </nav>
+              <GamesFilter
+                baseUrl={`/players/${player.steamId}`}
+                gamemodes={gamemodes}
+                gamemode={props.gamemode}
+                gameClasses={gameClasses}
+                gameClass={props.gameClass}
+              />
+            </div>
+
+            <div id="gameList" class="contents">
+              <PlayerGameList
+                steamId={player.steamId}
+                page={props.page}
+                gamemode={props.gamemode}
+                gameClass={props.gameClass}
+              />
+            </div>
+          </div>
 
           {user?.player.roles.includes(PlayerRole.admin) && <AdminToolbox player={player} />}
-
-          <div id="gameList" class="contents">
-            <PlayerGameList steamId={player.steamId} page={props.page} />
-          </div>
         </div>
       </Page>
       <Footer />
@@ -87,50 +113,64 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
   )
 }
 
-export async function PlayerGameList(props: { steamId: SteamId64; page: number }) {
+export async function PlayerGameList(props: {
+  steamId: SteamId64
+  page: number
+  gamemode?: Gamemode | undefined
+  gameClass?: Tf2ClassName | undefined
+}) {
+  const { steamId, gamemode, gameClass } = props
   const skip = (props.page - 1) * gamesPerPage
+  const filter = {
+    slots: { $elemMatch: { player: steamId, ...(gameClass && { gameClass }) } },
+    ...(gamemode && { gamemode }),
+  }
   const games = await collections.games
     .find<
       PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'gamemode' | 'slots'>
-    >(
-      { 'slots.player': props.steamId },
-      {
-        limit: gamesPerPage,
-        skip,
-        sort: { 'events.0.at': -1 },
-        projection: {
-          number: 1,
-          state: 1,
-          events: { $slice: 1 },
-          score: 1,
-          map: 1,
-          gamemode: 1,
-          slots: 1,
-        },
+    >(filter, {
+      limit: gamesPerPage,
+      skip,
+      sort: { 'events.0.at': -1 },
+      projection: {
+        number: 1,
+        state: 1,
+        events: { $slice: 1 },
+        score: 1,
+        map: 1,
+        gamemode: 1,
+        slots: 1,
       },
-    )
+    })
     .toArray()
 
   const { last, around } = paginate(
     props.page,
     gamesPerPage,
-    await collections.games.countDocuments({ 'slots.player': props.steamId }),
+    await collections.games.countDocuments(filter),
   )
+
+  const query = (page: number) =>
+    new URLSearchParams({
+      gamespage: String(page),
+      ...(gamemode && { gamemode }),
+      ...(gameClass && { gameClass }),
+    })
 
   return games.length > 0 ? (
     <>
-      <div class="text-center text-2xl font-bold text-zinc-200 md:text-start">Game history</div>
-      <div class="game-list col-span-2" style="view-transition-name: player-game-list">
+      <div class="game-list player-game-list" style="view-transition-name: player-game-list">
         {games.map(game => (
           <GameListItem
             game={game}
-            classPlayed={game.slots.find(s => s.player === props.steamId)!.gameClass}
+            classPlayed={game.slots.find(s => s.player === steamId)!.gameClass}
+            result={gameResult(game, steamId)}
           />
         ))}
       </div>
 
       <Pagination
-        hrefFn={page => `/players/${props.steamId}?gamespage=${page}`}
+        hrefFn={page => `/players/${steamId}?${query(page)}`}
         lastPage={last}
         currentPage={props.page}
         around={around}
@@ -138,188 +178,98 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
       />
     </>
   ) : (
-    <div></div>
+    <p class="text-zinc-400">No games yet.</p>
   )
 }
 
-function PlayerPresentation(props: {
+function ProfileCard(props: {
   player: PickDeep<
     PlayerModel,
     | 'avatar.large'
     | 'name'
-    | 'roles'
     | 'joinedAt'
     | 'etf2lProfile'
     | 'twitchTvProfile'
     | 'steamId'
-    | 'skill'
+    | 'stats.totalGames'
   >
-  gameCount: number
-  gameCountOnClasses: PlayerStats['gamesByClass']
-  gamemodes: Gamemode[]
-  isAdmin: boolean
 }) {
+  const { player } = props
   return (
-    <div class="player-presentation">
+    <div class="profile-card">
       <img
-        src={playerAvatarUrl(props.player.avatar, 'large')}
-        width="184"
-        height="184"
-        class="player-avatar"
-        alt={`${props.player.name}'s avatar`}
+        src={playerAvatarUrl(player.avatar, 'large')}
+        width="130"
+        height="130"
+        class="profile-avatar"
+        alt={`${player.name}'s avatar`}
         fetchpriority="high"
       />
 
-      <div class="flex flex-row items-center gap-[10px]">
-        <span class="-mt-[6px] text-[48px] leading-none font-bold" safe>
-          {props.player.name}
-        </span>
-        {props.player.roles.includes(PlayerRole.admin) ? (
-          <span class="bg-alert rounded-[3px] px-[8px] py-[6px] leading-none font-bold text-zinc-900">
-            admin
+      <div class="profile-facts">
+        <div>
+          <span class="profile-fact-label">Joined</span>
+          <span class="profile-fact-value" title={format(player.joinedAt, 'MMMM dd, yyyy')} safe>
+            {formatDistanceToNowStrict(player.joinedAt, { addSuffix: true })}
           </span>
-        ) : (
-          <></>
-        )}
-        {props.isAdmin && props.player.skill === undefined && (
-          <span class="flex items-center gap-1 rounded-[3px] bg-green-700 px-[8px] py-[6px] leading-none font-bold text-white">
-            <IconClover size={14} />
-            fresh
-          </span>
-        )}
-      </div>
-
-      <div class="flex-col md:justify-self-end">
-        <div class="text-center text-base font-light md:text-start">Joined:</div>
-        <div class="text-2xl font-bold" safe>
-          {format(props.player.joinedAt, 'MMMM dd, yyyy')}
+        </div>
+        <div>
+          <span class="profile-fact-label">Total games played:</span>
+          <span class="profile-fact-value">{player.stats.totalGames}</span>
         </div>
       </div>
 
-      <div class="player-stats">
-        <span class="md:hidden">
-          <IconSum size={32} />
-        </span>
-        <span class="hidden text-base font-light md:inline">Total games played:</span>
-        <span class="justify-self-start text-2xl font-bold">{props.gameCount}</span>
+      <h1 class="profile-name" safe>
+        {player.name}
+      </h1>
 
-        <div class="row-span-2 mx-2 hidden h-[48px] w-[2px] self-center bg-zinc-700 md:block"></div>
-
-        {props.gamemodes.map((gamemode, i) => (
-          <>
-            {props.gamemodes.length > 1 && (
-              <>
-                {i > 0 && (
-                  <div class="row-span-2 mx-2 hidden h-[48px] w-[2px] self-center bg-zinc-700 md:block"></div>
-                )}
-                <span class="text-base font-light md:row-span-2">{gamemode}</span>
-              </>
-            )}
-            {gamemodeConfigs[gamemode].classes.map(({ name: gameClass }) => (
-              <>
-                <GameClassIcon gameClass={gameClass} size={32} />
-                <span
-                  class="text-2xl font-bold"
-                  aria-label={
-                    props.gamemodes.length > 1
-                      ? `${gamemode} games played as ${gameClass}`
-                      : `Games played as ${gameClass}`
-                  }
-                >
-                  {props.gameCountOnClasses[gamemode]?.[gameClass] ?? 0}
-                </span>
-              </>
-            ))}
-          </>
-        ))}
-      </div>
-
-      <div class="grid gap-[10px] md:grid-flow-col md:grid-rows-1 md:justify-items-center md:max-xl:col-span-3 lg:place-content-end">
-        <a
-          href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
-          target="_blank"
-          rel="noreferrer"
-          class={[
-            'player-presentation-link',
-            props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
-              'compact',
-          ]}
-          title="Steam"
-          data-umami-event="open-external-profile"
-          data-umami-event-target="steam"
-        >
-          <IconBrandSteam />
-          <span>steam</span>
-        </a>
-
-        <a
-          href={`https://logs.tf/profile/${props.player.steamId}`}
-          target="_blank"
-          rel="noreferrer"
-          class={[
-            'player-presentation-link',
-            props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
-              'compact',
-          ]}
-          title="Logs"
-          data-umami-event="open-external-profile"
-          data-umami-event-target="logs"
-        >
-          <IconAlignBoxBottomRight />
-          <span>logs</span>
-        </a>
-
-        {props.player.etf2lProfile ? (
-          <a
-            href={`https://etf2l.org/forum/user/${props.player.etf2lProfile.id}`}
-            target="_blank"
-            rel="noreferrer"
-            class={[
-              'player-presentation-link',
-              props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
-                'compact',
-            ]}
-            title="ETF2L"
-            data-umami-event="open-external-profile"
-            data-umami-event-target="etf2l"
-          >
-            <IconStars />
-            <span>etf2l</span>
-          </a>
-        ) : (
-          <></>
-        )}
-
-        {props.player.twitchTvProfile ? (
-          <a
-            href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}/`}
-            target="_blank"
-            rel="noreferrer"
-            class={[
-              'player-presentation-link',
-              props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
-                'compact',
-            ]}
-            title="Twitch"
-            data-umami-event="open-external-profile"
-            data-umami-event-target="twitch"
+      <div class="profile-links">
+        {player.twitchTvProfile ? (
+          <ProfileLink
+            href={`https://www.twitch.tv/${player.twitchTvProfile.login}/`}
+            target="twitch"
           >
             <IconBrandTwitch />
-            <span>twitch</span>
-          </a>
+            <span>Twitch.tv</span>
+          </ProfileLink>
         ) : (
           <></>
         )}
+        {player.etf2lProfile ? (
+          <ProfileLink
+            href={`https://etf2l.org/forum/user/${player.etf2lProfile.id}`}
+            target="etf2l"
+          >
+            <IconStars />
+            <span>ETF2L</span>
+          </ProfileLink>
+        ) : (
+          <></>
+        )}
+        <ProfileLink href={`https://steamcommunity.com/profiles/${player.steamId}`} target="steam">
+          <IconBrandSteam />
+          <span>Steam</span>
+        </ProfileLink>
+        <ProfileLink href={`https://logs.tf/profile/${player.steamId}`} target="logs">
+          <IconAlignBoxBottomRight />
+          <span>Logs.tf</span>
+        </ProfileLink>
       </div>
     </div>
   )
 }
 
-// The gamemodes the player has played, or the instance's first one for a player without games.
-async function shownGamemodes(player: Pick<PlayerModel, 'skill' | 'stats'>): Promise<Gamemode[]> {
-  const gamemodes = await playerGamemodes(player)
-  const played = gamemodes.filter(
-    gamemode => Object.keys(player.stats.gamesByClass[gamemode] ?? {}).length > 0,
+function ProfileLink(props: Html.PropsWithChildren<{ href: string; target: string }>) {
+  return (
+    <a
+      href={props.href}
+      target="_blank"
+      rel="noreferrer"
+      class="profile-link"
+      data-umami-event="open-external-profile"
+      data-umami-event-target={props.target}
+    >
+      {props.children}
+    </a>
   )
-  return played.length > 0 ? played : gamemodes.slice(0, 1)
 }
