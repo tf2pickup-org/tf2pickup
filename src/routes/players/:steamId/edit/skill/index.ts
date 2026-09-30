@@ -44,6 +44,8 @@ export default routes(async app => {
         'skill',
         'skillHistory',
         'verified',
+        'bans',
+        'chatMutes',
         'elo',
         'stats',
       ])
