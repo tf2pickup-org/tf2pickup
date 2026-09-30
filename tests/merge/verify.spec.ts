@@ -60,9 +60,13 @@ authUsers('players keep what they had on both instances', async ({ users }) => {
   }
 
   // Promenader plays scout-1 in both instances' games
-  await admin.goto(`/players/${users.byName('Promenader').steamId}`)
-  await expect(admin.getByLabel('6v6 games played as scout')).toHaveText('1')
-  await expect(admin.getByLabel('9v9 games played as scout')).toHaveText('1')
+  const promenader = users.byName('Promenader').steamId
+  const { stats } = (await (await admin.request.get(`/api/v1/players/${promenader}`)).json()) as {
+    stats: { gamesByClass: Record<string, Record<string, number>> }
+  }
+  expect(stats.gamesByClass['6v6']?.['scout']).toBe(1)
+  expect(stats.gamesByClass['9v9']?.['scout']).toBe(1)
+  await admin.goto(`/players/${promenader}`)
   await expect(
     admin.getByText('Total games played:').locator('xpath=following-sibling::span[1]'),
   ).toHaveText('2')

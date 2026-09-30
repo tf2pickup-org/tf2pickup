@@ -58,6 +58,7 @@
 
   .games-filter {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: 8px;
     color: var(--color-zinc-200);
@@ -66,17 +67,40 @@
   }
 
   .games-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 39px;
+    padding: 0 16px 0 8px;
+    border: 1px solid var(--color-zinc-800);
+    border-radius: 6px;
+    background: var(--color-zinc-900);
+    white-space: nowrap;
+
+    @media (width < theme(--breakpoint-sm)) {
+      gap: 8px;
+      padding-left: 12px;
+
+      > svg {
+        display: none;
+      }
+    }
+  }
+
+  .games-filter-divider {
+    align-self: stretch;
+    width: 1px;
+    background: var(--color-zinc-800);
+  }
+
+  .games-filter-dropdown {
     position: relative;
 
     summary {
       display: flex;
       align-items: center;
       gap: 10px;
-      height: 39px;
-      padding: 0 16px 0 8px;
-      border: 1px solid var(--color-zinc-800);
-      border-radius: 6px;
-      background: var(--color-zinc-900);
+      height: 37px;
       cursor: pointer;
       list-style: none;
 
@@ -96,7 +120,7 @@
 
   .games-filter-menu {
     position: absolute;
-    top: 44px;
+    top: calc(100% + 6px);
     left: 0;
     z-index: 20;
     display: flex;
@@ -148,10 +172,11 @@
         1fr;
       column-gap: 24px;
 
-      &:has(.game-list-class) {
+      &.player-game-list {
         grid-template-columns:
-          [number] auto [gamemode] auto [class] auto [status] auto [map] auto [date] auto
-          1fr;
+          [result] auto [number] auto [gamemode] auto [class] auto [status] auto [map] auto
+          [date] auto 1fr;
+        column-gap: 16px;
       }
     }
 
@@ -176,6 +201,7 @@
         display: grid;
         grid-column: 1 / -1;
         grid-template-columns: subgrid;
+        column-gap: normal;
       }
 
       &[data-live] {
@@ -203,6 +229,10 @@
 
       .game-list-class {
         grid-column: class;
+      }
+
+      .game-list-result {
+        grid-column: result;
       }
 
       .game-list-status {
@@ -268,6 +298,54 @@
         color: var(--color-zinc-300);
         text-transform: uppercase;
       }
+    }
+
+    .game-list-item[data-result] {
+      border-left: 8px solid var(--result-color);
+    }
+
+    [data-result='win'] {
+      --result-color: #047857;
+      --result-text: var(--color-zinc-100);
+    }
+
+    [data-result='loss'] {
+      --result-color: #882a2a;
+      --result-text: var(--color-zinc-100);
+    }
+
+    [data-result='tie'] {
+      --result-color: var(--color-zinc-400);
+      --result-text: var(--color-zinc-900);
+    }
+
+    [data-result='interrupted'] {
+      --result-color: var(--color-zinc-700);
+      --result-text: var(--color-zinc-200);
+    }
+
+    .game-list-result {
+      width: 29px;
+      padding: 6px 0;
+      border-radius: 3px;
+      background: var(--result-color);
+      color: var(--result-text);
+      font-weight: 900;
+      line-height: 1;
+      text-align: center;
+    }
+
+    &.player-game-list .live-indicator:empty {
+      display: none;
+    }
+
+    &.player-game-list .game-list-item,
+    &.player-game-list .game-list-item:not([data-live]) .game-number {
+      color: #c7c4c7;
+    }
+
+    .game-list-class {
+      display: flex;
     }
 
     .game-list-score {

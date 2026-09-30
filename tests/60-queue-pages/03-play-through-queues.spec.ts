@@ -44,20 +44,18 @@ for (const gamemode of ['ultiduo', 'bball']) {
       const [name, slot] = [...desiredSlots.entries()][0]!
       const player = players.find(p => p.playerName === name)!
       const gameClass = slot.split('-')[0]!
-      // the profile prefixes class counts with the gamemode only once the player played two
-      const classCount = page.getByLabel(
-        new RegExp(`^(${gamemode} g|G)ames played as ${gameClass}$`),
-      )
+      const classGames = async () => {
+        const { stats } = (await (
+          await request.get(`/api/v1/players/${player.steamId}`)
+        ).json()) as { stats: { gamesByClass: Record<string, Record<string, number>> } }
+        return stats.gamesByClass[gamemode]?.[gameClass] ?? 0
+      }
       const totalCount = page
         .getByText('Total games played:')
         .locator('xpath=following-sibling::span[1]')
       await page.goto(`/players/${player.steamId}`)
       const totalBefore = Number(await totalCount.innerText())
-      const classBefore = (await page
-        .getByLabel(`${gamemode} games played as ${gameClass}`)
-        .isVisible())
-        ? Number(await page.getByLabel(`${gamemode} games played as ${gameClass}`).innerText())
-        : 0
+      const classBefore = await classGames()
 
       await gameServer.matchEnds()
       const gamePage = new GamePage(page, gameNumber)
@@ -66,7 +64,7 @@ for (const gamemode of ['ultiduo', 'bball']) {
 
       await expect(async () => {
         await page.goto(`/players/${player.steamId}`)
-        await expect(classCount).toHaveText(String(classBefore + 1))
+        expect(await classGames()).toBe(classBefore + 1)
         await expect(totalCount).toHaveText(String(totalBefore + 1))
       }).toPass()
 
