@@ -5,10 +5,20 @@ import { GameLiveIndicator } from '../../../html/components/game-live-indicator'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PickDeep } from 'type-fest'
+import type { GameResult } from '../../game-result'
+
+const resultLetters: Record<GameResult, string> = {
+  win: 'W',
+  loss: 'L',
+  tie: 'T',
+  interrupted: 'X',
+}
 
 export function GameListItem(props: {
   game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'gamemode'>
   classPlayed?: Tf2ClassName
+  // the result for the player whose history this is
+  result?: GameResult | undefined
 }) {
   const { game } = props
   const isRunning = [
@@ -25,10 +35,17 @@ export function GameListItem(props: {
       href={`/games/${game.number}`}
       preload="mousedown"
       data-live={isRunning ? 'true' : undefined}
+      data-result={props.result}
     >
       <div class="game-list-thumbnail">
         <MapThumbnail map={game.map} />
       </div>
+
+      {props.result && (
+        <span class="game-list-result" title={props.result} safe>
+          {resultLetters[props.result]}
+        </span>
+      )}
 
       <span class="game-number">
         <span class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</span>
@@ -41,7 +58,7 @@ export function GameListItem(props: {
 
       {props.classPlayed && (
         <span class="game-list-class">
-          <GameClassIcon gameClass={props.classPlayed} size={32} />
+          <GameClassIcon gameClass={props.classPlayed} size={24} />
         </span>
       )}
 
