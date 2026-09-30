@@ -2,8 +2,6 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import type { GamemodeConfig } from '../types/gamemode-config'
 
 export const _6v6: GamemodeConfig = {
-  name: '6v6',
-  shortName: '6s',
   teamCount: 2,
   autoBalance: true,
   classes: [
