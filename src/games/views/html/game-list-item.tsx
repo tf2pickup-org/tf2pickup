@@ -1,6 +1,5 @@
 import { format } from 'date-fns'
 import { GameState, type GameModel } from '../../../database/models/game.model'
-import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { GameLiveIndicator } from '../../../html/components/game-live-indicator'
 import { MapThumbnail } from '../../../html/components/map-thumbnail'
@@ -38,9 +37,7 @@ export function GameListItem(props: {
         </span>
       </span>
 
-      <span class="game-list-badge" safe>
-        {gamemodeConfigs[game.gamemode].shortName}
-      </span>
+      <span class="game-list-badge">{game.gamemode}</span>
 
       {props.classPlayed && <GameClassIcon gameClass={props.classPlayed} size={32} />}
 
