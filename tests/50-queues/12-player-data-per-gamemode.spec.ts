@@ -32,9 +32,15 @@ async function resetSkill(page: Page, steamId: string, gamemode: string) {
   // the confirm blocks the click until it's answered
   page.once('dialog', dialog => void dialog.accept())
   await page.waitForFunction(() => 'htmx' in window)
+  await selectSkillGamemode(page, gamemode)
   await skillForm(page, gamemode).getByRole('button', { name: 'Reset' }).click()
   expect((await response).ok()).toBe(true)
   await openToolbox(page, steamId)
+}
+
+// each gamemode's skill form has its own tab
+async function selectSkillGamemode(page: Page, gamemode: string) {
+  await page.locator('.admin-area-switch').getByRole('button', { name: gamemode }).click()
 }
 
 function skillForm(page: Page, gamemode: string) {
@@ -49,8 +55,7 @@ test("the admin toolbox edits each gamemode's skill @multi-queue", async ({ user
   const sixesScout = page.getByLabel("Player's 6v6 skill on scout")
   const before = await sixesScout.inputValue()
 
-  // each gamemode's skill form has its own tab
-  await page.locator('.admin-area-switch').getByRole('button', { name: '9v9' }).click()
+  await selectSkillGamemode(page, '9v9')
   await page.getByLabel("Player's 9v9 skill on sniper").fill('7')
   await skillForm(page, '9v9').getByRole('button', { name: 'Save' }).click()
   await expect(page.getByText('Player skill updated')).toBeVisible()
