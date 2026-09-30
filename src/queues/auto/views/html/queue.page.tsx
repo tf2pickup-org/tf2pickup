@@ -39,7 +39,7 @@ export async function QueuePage(props: {
       {props.atRoot && (
         <script>{`history.replaceState(null, '', '${queues.queuePageUrl(queue.slug)}')`}</script>
       )}
-      <NavigationBar queuePage />
+      <NavigationBar wide />
       <Page>
         <div class="queue-page">
           <div class="queue-alerts">
