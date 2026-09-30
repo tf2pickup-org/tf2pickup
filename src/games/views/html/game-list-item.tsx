@@ -39,14 +39,18 @@ export function GameListItem(props: {
 
       <span class="game-list-badge">{game.gamemode}</span>
 
-      {props.classPlayed && <GameClassIcon gameClass={props.classPlayed} size={32} />}
+      {props.classPlayed && (
+        <span class="game-list-class">
+          <GameClassIcon gameClass={props.classPlayed} size={32} />
+        </span>
+      )}
 
       {isCancelled ? (
-        <span class="game-list-badge" data-cancelled>
+        <span class="game-list-badge game-list-status" data-cancelled>
           cancelled
         </span>
       ) : game.score ? (
-        <span class="game-list-score tabular-nums">
+        <span class="game-list-score game-list-status tabular-nums">
           <span data-team="red">{game.score.red}</span>
           <span data-team="blu">{game.score.blu}</span>
         </span>
