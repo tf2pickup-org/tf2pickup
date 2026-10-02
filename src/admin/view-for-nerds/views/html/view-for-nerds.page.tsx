@@ -1,10 +1,13 @@
 import { configuration } from '../../../../configuration'
-import {
-  configurationSchema,
-  type Configuration,
-} from '../../../../database/models/configuration-entry.model'
+import { configurationSchema } from '../../../../database/models/configuration-entry.model'
 import { IconArrowBackUp } from '../../../../html/components/icons'
 import { Admin } from '../../../views/html/admin'
+import {
+  queueConfigurationSchema,
+  type QueueConfiguration,
+} from '../../../../database/models/queue.model'
+import { queues } from '../../../../queues'
+import { queueSettingDefault } from '../../../../queues/queue-setting-default'
 
 export async function ViewForNerdsPage() {
   const entries = await Promise.all(
@@ -13,6 +16,18 @@ export async function ViewForNerdsPage() {
       const defaultValue = option._zod.def.shape.value._zod.def.defaultValue
       const value = await configuration.get(_key)
       return { _key, value, defaultValue }
+    }),
+  )
+  const queueEntries = (await queues.list()).flatMap(queue =>
+    (Object.keys(queueConfigurationSchema.shape) as (keyof QueueConfiguration)[]).map(field => {
+      const defaultValue = queueSettingDefault(field)
+      return {
+        _key: `queues.${queue.slug}.${field}`,
+        value: queue[field],
+        // a setting without a default can't be reset
+        defaultValue: defaultValue === undefined ? queue[field] : defaultValue,
+        url: '/admin/view-for-nerds/queues',
+      }
     }),
   )
 
@@ -28,7 +43,7 @@ export async function ViewForNerdsPage() {
           </div>
 
           <div class="table-row-group max-lg:block max-lg:space-y-4">
-            {entries.map(props => (
+            {[...entries, ...queueEntries].map(props => (
               <ConfigurationEntryEdit {...props} />
             ))}
           </div>
@@ -39,10 +54,12 @@ export async function ViewForNerdsPage() {
 }
 
 export function ConfigurationEntryEdit(props: {
-  _key: keyof Configuration
+  _key: string
   value: unknown
   defaultValue: unknown
+  url?: string
 }) {
+  const url = props.url ?? '/admin/view-for-nerds'
   const valueJson = JSON.stringify(props.value)
   const isDefault = valueJson === JSON.stringify(props.defaultValue)
 
@@ -52,7 +69,7 @@ export function ConfigurationEntryEdit(props: {
       <button
         class="text-abru-light-60 align-middle"
         type="button"
-        hx-delete="/admin/view-for-nerds"
+        hx-delete={url}
         hx-trigger="click"
         hx-target="closest form"
         hx-swap="outerHTML"
@@ -67,12 +84,12 @@ export function ConfigurationEntryEdit(props: {
   return (
     <form
       class="hover:bg-abru-dark-15 table-row max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:items-center max-lg:gap-x-2"
-      hx-post="/admin/view-for-nerds"
+      hx-post={url}
       hx-swap="outerHTML"
     >
       <input type="hidden" name="key" value={props._key} />
       <div class="text-abru-light-75 table-cell max-lg:col-span-2 max-lg:[overflow-wrap:anywhere]">
-        <label for={`${props._key}-edit`} class={[isDefault && 'font-normal']}>
+        <label for={`${props._key}-edit`} class={[isDefault && 'font-normal']} safe>
           {props._key}
         </label>
       </div>
