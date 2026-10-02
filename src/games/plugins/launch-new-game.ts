@@ -3,7 +3,7 @@ import { events } from '../../events'
 import { logger } from '../../logger'
 import { safe } from '../../utils/safe'
 import { launchGame } from '../launch-game'
-import { launchFailed } from '../../queues/auto/launch-failed'
+import { queueEngine } from '../../queues/auto'
 import { assignGameServer } from '../assign-game-server'
 import { configure } from '../rcon/configure'
 import { getOrphanedGames } from '../get-orphaned-games'
@@ -23,7 +23,7 @@ export default fp(
             { error, queue: snapshot.queue._id },
             'failed to launch game; reverting queue',
           )
-          await launchFailed(snapshot.queue._id)
+          await queueEngine.launchFailed(snapshot.queue._id)
         }
       }),
     )
