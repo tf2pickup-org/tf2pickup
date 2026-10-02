@@ -2,10 +2,10 @@
 
 @layer components {
   .admin-panel-set {
-    background: var(--color-abru-dark-25);
+    background: var(--color-zinc-950);
     border-radius: 16px;
     padding: 24px;
-    color: var(--color-abru-light-50);
+    color: var(--color-zinc-400);
 
     .form-checkbox {
       margin-bottom: 16px;
@@ -15,7 +15,7 @@
       }
 
       .description {
-        color: var(--color-abru-light-75);
+        color: var(--color-zinc-200);
         font-size: 12px;
         margin-left: 22px;
       }

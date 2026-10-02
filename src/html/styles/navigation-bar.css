@@ -8,7 +8,7 @@
     align-items: center;
     gap: 4px;
 
-    color: var(--color-abru-light-75);
+    color: var(--color-zinc-200);
 
     font-size: 20px;
     font-weight: 500;
@@ -17,7 +17,7 @@
     padding: 12px;
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-dark-20), transparent 60%);
+      background-color: color-mix(in hsl, var(--color-zinc-925), transparent 60%);
     }
 
     @media (width < theme(--breakpoint-lg)) {
@@ -32,12 +32,12 @@
     }
 
     &[aria-current='page'] {
-      background-color: var(--color-abru-dark-20);
+      background-color: var(--color-zinc-925);
     }
 
     &[data-accent='true'],
     &.accent {
-      color: var(--color-accent);
+      color: var(--color-crimson-600);
     }
   }
 }
@@ -52,15 +52,15 @@
     align-items: center;
     padding: 14px 24px;
     border-radius: 0.5rem /* 8px */;
-    background-color: var(--color-abru-dark-29);
+    background-color: var(--color-zinc-950);
     gap: 0.5rem /* 8px */;
 
     &[data-variant='accent'] {
-      color: var(--color-accent-600);
+      color: var(--color-crimson-600);
     }
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-dark-29), white 2%);
+      background-color: color-mix(in hsl, var(--color-zinc-950), white 2%);
     }
   }
 }
@@ -113,16 +113,16 @@
     border-radius: 10px;
     text-overflow: ellipsis;
 
-    background-color: var(--color-abru-dark-29);
-    color: var(--color-abru-light-75);
+    background-color: var(--color-zinc-950);
+    color: var(--color-zinc-200);
     text-align: left;
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-dark-29), white 2%);
+      background-color: color-mix(in hsl, var(--color-zinc-950), white 2%);
     }
 
     &:active {
-      background-color: var(--color-abru-dark-29);
+      background-color: var(--color-zinc-950);
     }
   }
 }
@@ -132,6 +132,6 @@
     width: 236px;
     height: 1px;
     align-self: center;
-    background-color: var(--color-abru-light-5);
+    background-color: var(--color-zinc-850);
   }
 }

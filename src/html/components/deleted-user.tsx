@@ -1,3 +1,3 @@
 export function DeletedUser(props?: { class?: string | undefined }) {
-  return <span class={['text-abru-light-25 italic', props?.class]}>deleted user</span>
+  return <span class={['text-zinc-600 italic', props?.class]}>deleted user</span>
 }

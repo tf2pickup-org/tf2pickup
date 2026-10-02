@@ -17,7 +17,7 @@ export function HideServerInfoSetting() {
         </dt>
         <dd>
           <HideServerInfoSelect />
-          <span class="text-abru-light-75 text-sm">
+          <span class="text-sm text-zinc-200">
             Hides the game server connect info (including SourceTV) from everyone except match
             participants, to mitigate DDoS attacks. serveme.tf servers have built-in DDoS
             protection, so "auto" leaves them visible.

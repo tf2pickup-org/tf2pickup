@@ -25,8 +25,8 @@ export async function GameActivity() {
   return (
     <div>
       <div class="mb-4 flex items-center gap-4">
-        <span class="text-abru-light-75 text-2xl font-bold">Game activity</span>
-        <span class="text-abru-light-50 text-sm">
+        <span class="text-2xl font-bold text-zinc-200">Game activity</span>
+        <span class="text-sm text-zinc-400">
           {total} games launched since <span safe>{format(firstDay, 'MMMM yyyy')}</span>
         </span>
       </div>
@@ -35,13 +35,13 @@ export async function GameActivity() {
         <div class="flex">
           <div class="grid w-8 shrink-0 grid-rows-[repeat(7,12px)] gap-[3px] pt-[19px] pr-2">
             {weekdayLabels.map(label => (
-              <span class="text-abru-light-50 flex h-3 items-center text-[10px] leading-none">
+              <span class="flex h-3 items-center text-[10px] leading-none text-zinc-400">
                 {label}
               </span>
             ))}
           </div>
 
-          <div class="flex scrollbar-thin [scrollbar-color:var(--color-abru-light-30)_transparent] flex-row-reverse overflow-x-auto pb-1">
+          <div class="flex scrollbar-thin [scrollbar-color:var(--color-zinc-500)_transparent] flex-row-reverse overflow-x-auto pb-1">
             <div>
               <div
                 class="mb-[3px] grid h-4 gap-[3px]"
@@ -57,7 +57,7 @@ export async function GameActivity() {
                   return (
                     <span
                       safe
-                      class={`overflow-visible text-xs leading-4 whitespace-nowrap ${isYearMark ? 'text-abru-light-75 font-bold' : 'text-abru-light-50'}`}
+                      class={`overflow-visible text-xs leading-4 whitespace-nowrap ${isYearMark ? 'font-bold text-zinc-200' : 'text-zinc-400'}`}
                     >
                       {format(last, isYearMark ? 'yyyy' : 'MMM')}
                     </span>
@@ -86,7 +86,7 @@ export async function GameActivity() {
           </div>
         </div>
 
-        <div class="activity-cells text-abru-light-50 flex items-center gap-1 self-end text-xs">
+        <div class="activity-cells flex items-center gap-1 self-end text-xs text-zinc-400">
           Less
           {activityLevels.map(level => (
             <div data-activity={level === 0 ? undefined : `${level}`}></div>

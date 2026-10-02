@@ -50,7 +50,7 @@ export function GameListItem(props: {
   return (
     <a class="game-list-item" href={`/games/${props.game.number}`} preload="mousedown">
       <div class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</div>
-      <span class={['game-number', isRunning && 'text-accent', 'tabular-nums']} safe>
+      <span class={['game-number', isRunning && 'text-crimson-600', 'tabular-nums']} safe>
         #{props.game.number}
       </span>
       <span class="map-name" safe>
