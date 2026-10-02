@@ -123,6 +123,12 @@ async function SkillSuggestions() {
 async function DefaultPlayerSkill() {
   const defaultPlayerSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
+  const gamemodes = (await queues.gamemodesInUse()).filter(
+    gamemode => gamemodeConfigs[gamemode].autoBalance,
+  )
+  if (gamemodes.length === 0) {
+    return <></>
+  }
 
   return (
     <dl>
@@ -130,7 +136,7 @@ async function DefaultPlayerSkill() {
         <span class="font-bold text-zinc-200">Default player skill</span>
       </dt>
       <dd class="flex flex-col gap-2">
-        {(await queues.gamemodesInUse()).map(gamemode => (
+        {gamemodes.map(gamemode => (
           <div class="flex flex-row flex-wrap items-center gap-2">
             <span class="w-16 font-bold">{gamemode}</span>
             {gamemodeConfigs[gamemode].classes.map(({ name: gameClass }) => (
