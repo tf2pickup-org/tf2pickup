@@ -47,3 +47,25 @@ test.describe('when user opens a new tab and then closes it @6v6 @9v9', () => {
     })
   })
 })
+
+test('keeps a queued player in the queue while they reload the page @6v6 @9v9', async ({
+  users,
+}) => {
+  test.setTimeout(secondsToMilliseconds(60))
+  const blacklight = users.byName('Blacklight')
+  const queuePage = await blacklight.queuePage()
+  await queuePage.goto()
+  await queuePage.joinQueue('soldier-1')
+
+  // closing a tab schedules an online check; the reloads keep crossing it
+  const anotherPage = await blacklight.browserContext.newPage()
+  await anotherPage.goto('/')
+  await anotherPage.close()
+  const until = Date.now() + secondsToMilliseconds(12)
+  while (Date.now() < until) {
+    await queuePage.page.reload()
+  }
+
+  await expect(queuePage.slot('soldier-1').locator).toHaveAttribute('data-player')
+  await queuePage.leaveQueue()
+})
