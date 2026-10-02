@@ -18,13 +18,13 @@ vi.mock('../database/models/configuration-entry.model', async () => ({
 describe('when the configuration entry is found', () => {
   beforeEach(() => {
     vi.mocked(collections.configuration.findOne).mockResolvedValue({
-      key: 'queue.ready_up_timeout',
+      key: 'queue.pre_ready_up_timeout',
       value: 45000,
     })
   })
 
   it('should return the value', async () => {
-    const result = await get('queue.ready_up_timeout')
+    const result = await get('queue.pre_ready_up_timeout')
     expect(result).toBe(45000)
   })
 })
@@ -35,7 +35,7 @@ describe('when the configuration entry is not found', () => {
   })
 
   it('should return the default value', async () => {
-    const result = await get('queue.ready_up_timeout')
-    expect(result).toBe(40000)
+    const result = await get('queue.pre_ready_up_timeout')
+    expect(result).toBe(300000)
   })
 })

@@ -2,7 +2,7 @@ import { isEqual } from 'es-toolkit'
 import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { environment } from '../environment'
-import { mapPool } from '../maps/pool'
+import { queues } from '../queues'
 import { getPlayedMapsCount } from '../statistics/get-played-maps-count'
 import { version } from '../version'
 import { getUsageCounters } from './get-usage-counters'
@@ -35,9 +35,6 @@ export async function buildSnapshot() {
     autoForceEndThreshold,
     etf2lAccountRequired,
     minimumInGameHours,
-    playerSkillThreshold,
-    requirePlayerVerification,
-    mapCooldown,
     servemePreferredRegion,
     cooldownLevels,
     defaultPlayerSkill,
@@ -51,9 +48,6 @@ export async function buildSnapshot() {
     configuration.get('games.auto_force_end_threshold'),
     configuration.get('players.etf2l_account_required'),
     configuration.get('players.minimum_in_game_hours'),
-    configuration.get('queue.player_skill_threshold'),
-    configuration.get('queue.require_player_verification'),
-    configuration.get('queue.map_cooldown'),
     configuration.get('serveme_tf.preferred_region'),
     configuration.get('games.cooldown_levels'),
     configuration.get('games.default_player_skill'),
@@ -68,7 +62,7 @@ export async function buildSnapshot() {
     documentsCustomized,
     usage,
     playedMaps,
-    pool,
+    defaultQueue,
   ] = await Promise.all([
     collections.announcements.countDocuments({ enabled: true }),
     collections.players.estimatedDocumentCount(),
@@ -77,8 +71,14 @@ export async function buildSnapshot() {
     isDocumentsCustomized(),
     getUsageCounters(),
     getPlayedMapsCount(),
-    mapPool.get(),
+    queues.getDefault(),
   ])
+  const {
+    skillThreshold: playerSkillThreshold,
+    requireVerification: requirePlayerVerification,
+    mapCooldown,
+    maps: pool,
+  } = defaultQueue
 
   const maps = Object.fromEntries(
     playedMaps
@@ -254,7 +254,7 @@ export async function buildSnapshot() {
   return {
     instanceId,
     version,
-    queueConfig: environment.QUEUE_CONFIG,
+    queueConfig: defaultQueue.gamemode,
     features: Object.fromEntries(featureEntries.map(({ key, value }) => [key, value])),
     integrations: Object.fromEntries(integrationEntries.map(({ key, value }) => [key, value])),
     usage: Object.fromEntries(usageEntries.map(({ key, value }) => [key, value])),
