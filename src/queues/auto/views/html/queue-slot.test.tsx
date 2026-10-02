@@ -7,7 +7,7 @@ import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import { collections } from '../../../../database/collections'
 import { ObjectId } from 'mongodb'
 import type { QueueId } from '../../../../database/models/queue.model'
-import { meetsSkillThreshold } from '../../meets-skill-threshold'
+import { joinBlocker } from '../../join-blocker'
 import type { QueueSlotId } from '../../../types/queue-slot-id'
 import { PlayerRole, type PlayerBan } from '../../../../database/models/player.model'
 
@@ -19,18 +19,20 @@ vi.mock('../../../../database/collections', () => ({
   },
 }))
 
-vi.mock('../../meets-skill-threshold', () => ({
-  meetsSkillThreshold: vi.fn(),
+vi.mock('../../join-blocker', () => ({
+  joinBlocker: vi.fn(),
 }))
 
 const actor = {
   steamId: '76561198000000001' as SteamId64,
+  hasAcceptedRules: true,
   bans: [] as PlayerBan[],
   verified: true,
   roles: [] as PlayerRole[],
 }
 
 const queue = {
+  enabled: true,
   skillThreshold: null,
   requireVerification: false,
   gamemode: Gamemode.sixes,
@@ -65,7 +67,7 @@ describe('QueueSlot', () => {
 
   describe('when slot is empty and there is an actor', () => {
     beforeEach(() => {
-      vi.mocked(meetsSkillThreshold).mockResolvedValue(true)
+      vi.mocked(joinBlocker).mockResolvedValue(null)
     })
 
     it('renders a join button', async () => {
@@ -80,37 +82,12 @@ describe('QueueSlot', () => {
       expect(button!.getAttribute('disabled')).toBeUndefined()
     })
 
-    it('renders a disabled join button when the queue requires verification', async () => {
-      const html = await QueueSlot({
-        queue: { ...queue, requireVerification: true },
-        slot: emptySlot,
-        actor: { ...actor, verified: false },
-      })
+    it('renders a disabled join button with the join blocker as its tooltip', async () => {
+      vi.mocked(joinBlocker).mockResolvedValue('You have active bans')
+      const html = await QueueSlot({ queue, slot: emptySlot, actor })
       const button = parse(html).querySelector('.join-queue-button')
       expect(button!.getAttribute('disabled')).toBeDefined()
-      expect(button!.text).toContain('You are not verified to join the queue')
-    })
-
-    it('renders a disabled join button when actor has active bans', async () => {
-      const html = await QueueSlot({
-        queue,
-        slot: emptySlot,
-        actor: {
-          ...actor,
-          bans: [
-            {
-              actor: '76561198000000099' as SteamId64,
-              start: new Date(),
-              end: new Date(Date.now() + 60_000),
-              reason: 'test ban',
-            },
-          ] as PlayerBan[],
-        },
-      })
-      const root = parse(html)
-      const button = root.querySelector('.join-queue-button')
-      expect(button).not.toBeNull()
-      expect(button!.getAttribute('disabled')).toBeDefined()
+      expect(button!.text).toContain('You have active bans')
     })
   })
 
