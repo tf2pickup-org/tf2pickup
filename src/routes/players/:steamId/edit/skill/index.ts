@@ -1,8 +1,7 @@
 import { gamemodeConfigs } from '../../../../../gamemodes/configs'
-import { PlayerRole } from '../../../../../database/models/player.model'
-import { environment } from '../../../../../environment'
+import { PlayerRole, type PlayerSkill } from '../../../../../database/models/player.model'
+import { Gamemode } from '../../../../../shared/types/gamemode'
 import { z } from 'zod'
-import type { Tf2ClassName } from '../../../../../shared/types/tf2-class-name'
 import { players } from '../../../../../players'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
 import { routes } from '../../../../../utils/routes'
@@ -22,11 +21,17 @@ export default routes(async app => {
         params: z.object({
           steamId: steamId64,
         }),
+        querystring: z.object({ gamemode: z.enum(Gamemode) }),
       },
     },
     async (request, reply) => {
       const { steamId } = request.params
-      await players.update(steamId, { $unset: { skill: '' } }, {}, request.user!.player.steamId)
+      await players.update(
+        steamId,
+        { $unset: { [`skill.${request.query.gamemode}`]: '' } },
+        {},
+        request.user!.player.steamId,
+      )
       const player = await players.bySteamId(steamId, [
         'steamId',
         'skill',
@@ -49,14 +54,7 @@ export default routes(async app => {
         params: z.object({
           steamId: steamId64,
         }),
-        body: z.object({
-          ...gamemodeConfigs[environment.QUEUE_CONFIG].classes
-            .map(({ name }) => name)
-            .reduce<Partial<Record<`skill.${Tf2ClassName}`, z.ZodNumber>>>(
-              (acc, key) => ({ ...acc, [`skill.${key}`]: z.coerce.number() }),
-              {},
-            ),
-        }),
+        body: z.looseObject({ gamemode: z.enum(Gamemode) }),
       },
     },
     async (request, reply) => {
@@ -68,23 +66,24 @@ export default routes(async app => {
         'stats',
         'skillHistory',
       ])
-      const oldSkill = player.skill?.[environment.QUEUE_CONFIG] ?? {}
-      const skill = Object.entries(request.body)
-        .filter(([key]) => key.startsWith('skill.'))
-        .reduce<Partial<Record<Tf2ClassName, number>>>(
-          (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
-          {},
-        )
+      const { gamemode } = request.body
+      const oldSkill = player.skill?.[gamemode] ?? {}
+      const skill: PlayerSkill = Object.fromEntries(
+        gamemodeConfigs[gamemode].classes.map(({ name }) => [
+          name,
+          z.coerce.number().parse(request.body[`skill.${name}`]),
+        ]),
+      )
       await players.setSkill({
         steamId: player.steamId,
-        gamemode: environment.QUEUE_CONFIG,
+        gamemode,
         skill,
         actor: request.user!.player.steamId,
       })
       safe(() =>
         recordSkillSuggestionUsage({
           player,
-          gamemode: environment.QUEUE_CONFIG,
+          gamemode,
           oldSkill,
           newSkill: skill,
         }),

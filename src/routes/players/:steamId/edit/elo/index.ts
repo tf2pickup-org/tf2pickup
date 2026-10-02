@@ -1,3 +1,4 @@
+import { Gamemode } from '../../../../../shared/types/gamemode'
 import z from 'zod'
 import { PlayerRole } from '../../../../../database/models/player.model'
 import { steamId64 } from '../../../../../shared/schemas/steam-id-64'
@@ -18,12 +19,18 @@ export default routes(async app => {
         params: z.object({
           steamId: steamId64,
         }),
+        querystring: z.object({ gamemode: z.enum(Gamemode).optional() }),
       },
     },
     async (req, reply) => {
       const { steamId } = req.params
       safe(recordEloPageRender)()
-      await reply.status(200).html(EditPlayerEloPage({ steamId }))
+      await reply.status(200).html(
+        EditPlayerEloPage({
+          steamId,
+          ...(req.query.gamemode ? { gamemode: req.query.gamemode } : {}),
+        }),
+      )
     },
   )
 })
