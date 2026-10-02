@@ -1,3 +1,4 @@
+import { environment } from '../../../../environment'
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
 import { queue } from '../../../../queues/auto'
@@ -192,7 +193,8 @@ async function SkillSuggestions() {
 }
 
 async function DefaultPlayerSkill() {
-  const defaultPlayerSkill = await configuration.get('games.default_player_skill')
+  const defaultPlayerSkill =
+    (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
   const skillStep = await configuration.get('games.skill_step')
   const classes = queue.config.classes.map(({ name }) => name)
 

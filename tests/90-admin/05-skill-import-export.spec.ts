@@ -1,5 +1,6 @@
 import { authUsers, expect } from '../fixtures/auth-users'
 import { users } from '../data'
+import { getQueueConfig } from '../queue-slots'
 import { resolve } from 'node:path'
 import { writeFile, unlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -92,7 +93,8 @@ ${targetSteamId},TestPlayer,7,8,9,10`
 
     // Verify database was updated
     const updatedPlayer = await db.collection('players').findOne({ steamId: targetSteamId })
-    expect(updatedPlayer?.['skill']).toMatchObject({
+    const updatedSkill = updatedPlayer?.['skill'] as Record<string, unknown> | undefined
+    expect(updatedSkill?.[getQueueConfig()]).toMatchObject({
       scout: 7,
       soldier: 8,
       demoman: 9,
@@ -151,6 +153,7 @@ ${futureSteamId},FuturePlayer,5,6,7,8`
         .collection('futureplayerskills')
         .findOne({ steamId: futureSteamId })
       expect(futureSkill).not.toBeNull()
+      expect(futureSkill?.['gamemode']).toBe(getQueueConfig())
       expect(futureSkill?.['skill']).toMatchObject({
         scout: 5,
         soldier: 6,
