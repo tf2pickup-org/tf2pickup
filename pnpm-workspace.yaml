@@ -1,7 +1,7 @@
 overrides:
   axios: '1.20.0'
   fast-uri: '4.2.1'
-  follow-redirects: '1.16.0'
+  follow-redirects: '1.16.1'
   lodash: '4.18.1'
   'minimatch@9': '10.2.6'
   'brace-expansion@2': '5.0.12'
