@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.23.15](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.14...4.23.15) (2026-10-05)
+
+### Dependencies
+
+* @fastify/otel to v0.21.1 ([#894](https://github.com/tf2pickup-org/tf2pickup/issues/894)) ([d9dfe60](https://github.com/tf2pickup-org/tf2pickup/commit/d9dfe60e9f6694d207800644153dcc4ca7068cb6)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* @fastify/sensible to v6.0.6 ([42b2101](https://github.com/tf2pickup-org/tf2pickup/commit/42b21013a37bfd23b15edca22ae5ab2e912382ce))
+* @fastify/static to v10.1.5 ([69d462a](https://github.com/tf2pickup-org/tf2pickup/commit/69d462af7ffcfde5b2d4a977bedff32b92655166))
+* @napi-rs/canvas to v1.0.10 ([553f668](https://github.com/tf2pickup-org/tf2pickup/commit/553f668f9654b1f8bcfa41e2abfeb9bfe7c4bb7c))
+* cssnano to v9.1.1 ([88ef243](https://github.com/tf2pickup-org/tf2pickup/commit/88ef243caa966bcbb5f1fe71dc96c660235733ee))
+* cssnano to v9.1.2 ([dc7c97f](https://github.com/tf2pickup-org/tf2pickup/commit/dc7c97f985a06782ec8d4ce3a221f393b961ccfb))
+* csv-parse to v7.0.3 ([d27758c](https://github.com/tf2pickup-org/tf2pickup/commit/d27758cb1e5a7a57a3867763c74af835cf58dc1a))
+* csv-stringify to v6.9.0 ([0923940](https://github.com/tf2pickup-org/tf2pickup/commit/092394064460ddd70bbb8aea8bd4f13b5b86e47e))
+* dotenv to v18.0.4 ([469de96](https://github.com/tf2pickup-org/tf2pickup/commit/469de968ff5f54916ea50e478e83bbf9b711aff9))
+* dotenv to v18.0.5 ([#892](https://github.com/tf2pickup-org/tf2pickup/issues/892)) ([b381c9e](https://github.com/tf2pickup-org/tf2pickup/commit/b381c9efa5162e126f18b6cf246624915acd42ff))
+* mongodb to v7.7.0 ([4ec5477](https://github.com/tf2pickup-org/tf2pickup/commit/4ec5477640a78aaabd21c2194971dc7dc3962150))
+* motion to v13.4.4 ([cb9b2d4](https://github.com/tf2pickup-org/tf2pickup/commit/cb9b2d4ace88395ce152506e553f88ee0892894f))
+* motion to v13.4.6 ([#891](https://github.com/tf2pickup-org/tf2pickup/issues/891)) ([f2f1517](https://github.com/tf2pickup-org/tf2pickup/commit/f2f1517c84bd78d6c7e889cd748c47d7c3ca0091))
+* motion to v13.5.0 ([d74e143](https://github.com/tf2pickup-org/tf2pickup/commit/d74e14353bffab26e384c7429170421f34253deb))
+* sanitize-html to v2.18.0 ([e6b9142](https://github.com/tf2pickup-org/tf2pickup/commit/e6b9142e65bf08491075743f4c53ee4755939132))
+* ws to v8.22.0 ([6d9441a](https://github.com/tf2pickup-org/tf2pickup/commit/6d9441ac11dcaca29b01eb3cd884bc25e66c0895))
+
 ## [4.23.14](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.13...4.23.14) (2026-09-28)
 
 ### Bug Fixes
