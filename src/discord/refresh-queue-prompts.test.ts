@@ -110,4 +110,25 @@ describe('refreshQueuePrompts()', () => {
     const [{ embeds }] = channel.send.mock.calls[0] as [{ embeds: unknown[] }]
     expect(title(embeds[0])).toBe('**6/12 players in the queue!**')
   })
+
+  it('deletes the prompt of a queue that is no longer enabled', async () => {
+    vi.mocked(queues.listEnabled).mockResolvedValue([sixes] as never)
+    vi.mocked(getSlots).mockResolvedValue(slots(0, 12) as never)
+    vi.mocked(collections.discordBotState.findOne).mockResolvedValue({
+      guildId: 'guild',
+      promptMessageIds: { [ultiduo._id.toHexString()]: 'duo-message' },
+    } as never)
+    const del = vi.fn()
+    vi.mocked(getMessage).mockImplementation(async (_, id) =>
+      id === 'duo-message' ? ({ delete: del } as never) : undefined,
+    )
+
+    await refreshQueuePrompts()
+
+    expect(del).toHaveBeenCalledTimes(1)
+    expect(collections.discordBotState.updateOne).toHaveBeenCalledWith(
+      { guildId: 'guild' },
+      { $unset: { [`promptMessageIds.${ultiduo._id.toHexString()}`]: 1 } },
+    )
+  })
 })
