@@ -1,6 +1,7 @@
 import { activityLog } from '../activity-log'
 import { collections } from '../database/collections'
 import type { QueueId } from '../database/models/queue.model'
+import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
@@ -19,11 +20,21 @@ export async function disable(id: QueueId, actor: SteamId64) {
     throw errors.badRequest('at least one queue must stay enabled')
   }
 
+  if ((await collections.queueState.findOne({ queue: id }))?.state === QueueState.launching) {
+    throw errors.badRequest('the queue is launching a game')
+  }
+
   await collections.queues.updateOne({ _id: id }, { $set: { enabled: false } })
   const players = (
     await collections.queueSlots.find({ queue: id, player: { $ne: null } }).toArray()
   ).map(({ player }) => player!.steamId)
-  await kick(...players)
+  try {
+    await kick(...players)
+  } catch (error) {
+    // a launch started after the check above
+    await collections.queues.updateOne({ _id: id }, { $set: { enabled: true } })
+    throw error
+  }
 
   await withQueueLock(id, 'disable', async () => {
     await tasks.cancel('queue:readyUpTimeout', { queue: id })
