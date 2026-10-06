@@ -29,6 +29,15 @@ describe('mergePlayers()', () => {
     expect(added!.roles).toEqual([])
   })
 
+  it('frees players only on the incoming instance from their last game', async () => {
+    const [added] = mergePlayers(
+      [],
+      [player({ steamId: '2', activeGame: 3 as GameNumber })],
+      numberMap,
+    )
+    expect(added).not.toHaveProperty('activeGame')
+  })
+
   it("keeps the primary's identity and roles, and merges the rest", () => {
     const [merged] = mergePlayers(
       [
