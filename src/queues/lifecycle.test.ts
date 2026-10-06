@@ -11,6 +11,7 @@ import { move } from './move'
 import { remove } from './remove'
 import { reset } from './auto/reset'
 import { kick } from './auto/kick'
+import { QueueState } from '../database/models/queue-state.model'
 
 vi.mock('../database/collections', () => {
   const collection = () => ({
@@ -138,6 +139,28 @@ describe('disable()', () => {
     ]) {
       expect(collection.deleteMany).toHaveBeenCalledWith({ queue: id })
     }
+  })
+
+  it('refuses a queue that is launching a game', async () => {
+    withQueue({ enabled: true })
+    vi.mocked(collections.queues.countDocuments).mockResolvedValue(2)
+    vi.mocked(collections.queueState.findOne).mockResolvedValueOnce({
+      state: QueueState.launching,
+    } as never)
+    await expect(disable(id, actor)).rejects.toThrow('the queue is launching a game')
+    expect(collections.queues.updateOne).not.toHaveBeenCalled()
+  })
+
+  it('re-enables the queue when the kick fails', async () => {
+    withQueue({ enabled: true })
+    vi.mocked(collections.queues.countDocuments).mockResolvedValue(2)
+    vi.mocked(kick).mockRejectedValueOnce(new Error('invalid queue state'))
+    await expect(disable(id, actor)).rejects.toThrow('invalid queue state')
+    expect(collections.queues.updateOne).toHaveBeenLastCalledWith(
+      { _id: id },
+      { $set: { enabled: true } },
+    )
+    expect(collections.queueState.deleteMany).not.toHaveBeenCalled()
   })
 })
 
