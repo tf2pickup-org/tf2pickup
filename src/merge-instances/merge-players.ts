@@ -1,3 +1,4 @@
+import { omit } from 'es-toolkit'
 import type { GameNumber } from '../database/models/game.model'
 import type { ClassCount, PlayerModel, PlayerStats } from '../database/models/player.model'
 
@@ -40,8 +41,10 @@ function renumberHistory(player: PlayerModel, numberMap: Map<number, GameNumber>
 // had on the other instance. Game counts add up; per-gamemode skill and elo are the primary's
 // where both instances have them; bans and history from both are kept.
 function mergePlayer(primary: PlayerModel, incoming: PlayerModel): PlayerModel {
+  const mumbleCertificate = primary.mumbleCertificate ?? incoming.mumbleCertificate
   return {
     ...primary,
+    ...(mumbleCertificate && { mumbleCertificate }),
     joinedAt: primary.joinedAt < incoming.joinedAt ? primary.joinedAt : incoming.joinedAt,
     cooldownLevel: Math.max(primary.cooldownLevel, incoming.cooldownLevel),
     hasAcceptedRules: primary.hasAcceptedRules || incoming.hasAcceptedRules,
@@ -60,16 +63,27 @@ function mergePlayer(primary: PlayerModel, incoming: PlayerModel): PlayerModel {
 }
 
 // The players to write to the primary: those on both instances, merged, and those only on the
-// incoming one, without their roles.
+// incoming one, without their roles. No game is in progress on either instance, so an incoming
+// activeGame only waits for its games.freePlayer task, which stays behind on the incoming one.
 export function mergePlayers(
   primary: PlayerModel[],
   incoming: PlayerModel[],
   numberMap: Map<number, GameNumber>,
 ): PlayerModel[] {
   const byId = new Map(primary.map(player => [player.steamId, player]))
+  const certificateOwners = new Map(
+    primary.flatMap(player =>
+      player.mumbleCertificate ? [[player.mumbleCertificate.hash, player.steamId]] : [],
+    ),
+  )
   return incoming.map(player => {
     const renumbered = renumberHistory(player, numberMap)
     const existing = byId.get(player.steamId)
-    return existing ? mergePlayer(existing, renumbered) : { ...renumbered, roles: [] }
+    const merged = existing
+      ? mergePlayer(existing, renumbered)
+      : { ...omit(renumbered, ['activeGame']), roles: [] }
+    // a certificate links to one account only, and the primary's links win
+    const owner = merged.mumbleCertificate && certificateOwners.get(merged.mumbleCertificate.hash)
+    return owner && owner !== merged.steamId ? omit(merged, ['mumbleCertificate']) : merged
   })
 }
