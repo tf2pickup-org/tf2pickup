@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import type { GameNumber } from '../database/models/game.model'
-import { PlayerRole, type PlayerModel } from '../database/models/player.model'
+import {
+  MumbleVerificationMethod,
+  PlayerRole,
+  type PlayerModel,
+} from '../database/models/player.model'
 import { mergePlayers } from './merge-players'
 
 function player(overrides: Partial<PlayerModel>): PlayerModel {
@@ -19,6 +23,10 @@ function player(overrides: Partial<PlayerModel>): PlayerModel {
 
 const numberMap = new Map([[3, 103 as GameNumber]])
 
+function certificate(hash: string): NonNullable<PlayerModel['mumbleCertificate']> {
+  return { hash, boundAt: new Date('2024-01-01'), method: MumbleVerificationMethod.code }
+}
+
 describe('mergePlayers()', () => {
   it('adds players only on the incoming instance, without their roles', () => {
     const [added] = mergePlayers(
@@ -27,6 +35,42 @@ describe('mergePlayers()', () => {
       numberMap,
     )
     expect(added!.roles).toEqual([])
+  })
+
+  it('frees players only on the incoming instance from their last game', async () => {
+    const [added] = mergePlayers(
+      [],
+      [player({ steamId: '2', activeGame: 3 as GameNumber })],
+      numberMap,
+    )
+    expect(added).not.toHaveProperty('activeGame')
+  })
+
+  it("keeps the incoming player's Mumble certificate when the primary has none", () => {
+    const [merged] = mergePlayers(
+      [player({ steamId: '2' })],
+      [player({ steamId: '2', mumbleCertificate: certificate('a') })],
+      numberMap,
+    )
+    expect(merged!.mumbleCertificate?.hash).toBe('a')
+  })
+
+  it("keeps the primary's Mumble certificate over the incoming one", () => {
+    const [merged] = mergePlayers(
+      [player({ steamId: '2', mumbleCertificate: certificate('a') })],
+      [player({ steamId: '2', mumbleCertificate: certificate('b') })],
+      numberMap,
+    )
+    expect(merged!.mumbleCertificate?.hash).toBe('a')
+  })
+
+  it('drops an incoming Mumble certificate linked to another primary player', () => {
+    const [added] = mergePlayers(
+      [player({ steamId: '1', mumbleCertificate: certificate('a') })],
+      [player({ steamId: '2', mumbleCertificate: certificate('a') })],
+      numberMap,
+    )
+    expect(added).not.toHaveProperty('mumbleCertificate')
   })
 
   it("keeps the primary's identity and roles, and merges the rest", () => {
