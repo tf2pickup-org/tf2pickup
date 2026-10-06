@@ -21,11 +21,27 @@ const clientName = new URL(environment.WEBSITE_URL).hostname
 const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
 
 // Each enabled queue has its own prompt; it is posted once enough players join and edited after.
+// Prompts of queues that are no longer enabled are deleted.
 export async function refreshQueuePrompts() {
   await queuePromptMutex.runExclusive(async () => {
     const enabled = await queues.listEnabled()
     for (const queue of enabled) {
       await refreshPrompt(queue, enabled.length > 1)
+    }
+    await deleteStalePrompts(new Set(enabled.map(queue => queue._id.toHexString())))
+  })
+}
+
+async function deleteStalePrompts(enabled: Set<string>) {
+  await forEachEnabledChannel('queuePrompts', async channel => {
+    const state = await collections.discordBotState.findOne({ guildId: channel.guild.id })
+    const stale = Object.entries(state?.promptMessageIds ?? {}).filter(([key]) => !enabled.has(key))
+    for (const [key, messageId] of stale) {
+      await (await getMessage(channel, messageId))?.delete()
+      await collections.discordBotState.updateOne(
+        { guildId: channel.guild.id },
+        { $unset: { [`promptMessageIds.${key}`]: 1 } },
+      )
     }
   })
 }

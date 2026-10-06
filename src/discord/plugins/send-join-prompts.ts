@@ -12,5 +12,7 @@ export default fp(async () => {
     return
   }
 
-  events.on('queue/slots:updated', debounce(safe(refreshQueuePrompts), secondsToMilliseconds(3)))
+  const refresh = debounce(safe(refreshQueuePrompts), secondsToMilliseconds(3))
+  events.on('queue/slots:updated', refresh)
+  events.on('queue:updated', refresh)
 })
