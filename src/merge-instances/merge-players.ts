@@ -1,3 +1,4 @@
+import { omit } from 'es-toolkit'
 import type { GameNumber } from '../database/models/game.model'
 import type { ClassCount, PlayerModel, PlayerStats } from '../database/models/player.model'
 
@@ -60,7 +61,8 @@ function mergePlayer(primary: PlayerModel, incoming: PlayerModel): PlayerModel {
 }
 
 // The players to write to the primary: those on both instances, merged, and those only on the
-// incoming one, without their roles.
+// incoming one, without their roles. No game is in progress on either instance, so an incoming
+// activeGame only waits for its games.freePlayer task, which stays behind on the incoming one.
 export function mergePlayers(
   primary: PlayerModel[],
   incoming: PlayerModel[],
@@ -70,6 +72,8 @@ export function mergePlayers(
   return incoming.map(player => {
     const renumbered = renumberHistory(player, numberMap)
     const existing = byId.get(player.steamId)
-    return existing ? mergePlayer(existing, renumbered) : { ...renumbered, roles: [] }
+    return existing
+      ? mergePlayer(existing, renumbered)
+      : { ...omit(renumbered, ['activeGame']), roles: [] }
   })
 }
