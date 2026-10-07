@@ -47,7 +47,7 @@ export async function AdminToolbox(props: {
         }
       </script>
 
-      <div class="player-admin-toolbox">
+      <div class="player-admin-toolbox admin-area-content">
         {requireVerification && <PlayerVerifiedCheckbox player={player} />}
 
         {gamemodes.length > 0 && (
