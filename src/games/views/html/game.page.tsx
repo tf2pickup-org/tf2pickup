@@ -41,9 +41,9 @@ export async function GamePage(props: { number: GameNumber }) {
       canonical={`/games/${game.number}`}
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class={`game-page config-${game.gamemode} relative container mx-auto`}>
+        <div class="game-page">
           <GameSummary game={game} actor={actor} />
           <GameSlotList game={game} actor={actor} />
           <GameEventList game={game} />

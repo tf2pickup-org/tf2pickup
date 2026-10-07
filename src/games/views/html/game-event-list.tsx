@@ -35,9 +35,9 @@ export async function GameEventList(props: { game: GameModel }) {
 
   return (
     <div class="game-events">
-      <span class="text-2xl font-bold text-white">Game events</span>
+      <span class="game-events-caption">Game events</span>
       <div
-        class="game-event-list fade-scroll h-[300px]"
+        class="game-event-list fade-scroll"
         data-fade-scroll
         id={`game-${props.game.number}-event-list`}
         aria-label="Game events"
@@ -190,8 +190,8 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       }
     case GameEventType.substituteRequested: {
       const playerRef = (
-        <span class="font-bold whitespace-nowrap">
-          <GameClassIcon gameClass={props.event.gameClass} size={20} />{' '}
+        <span class="game-event-chip">
+          <GameClassIcon gameClass={props.event.gameClass} size={20} />
           <PlayerLink steamId={props.event.player} />
         </span>
       )
@@ -224,7 +224,11 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         <span>
           <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}
           replaced <PlayerLink steamId={props.event.replacee} class="font-bold whitespace-nowrap" />{' '}
-          on <GameClassIcon gameClass={props.event.gameClass} size={20} /> {props.event.gameClass}
+          on{' '}
+          <span class="game-event-chip">
+            <GameClassIcon gameClass={props.event.gameClass} size={20} />
+            {props.event.gameClass}
+          </span>
         </span>
       )
     }
@@ -232,11 +236,11 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       return (
         <div class="flex flex-row items-center gap-2">
           <span class="flex-1">Round ended</span>
-          <span class="bg-team-blu rounded-sm px-2 py-1 tabular-nums">
-            BLU: {props.event.score.blu}
+          <span class="game-event-score bg-team-blu" aria-label="BLU score">
+            {props.event.score.blu}
           </span>
-          <span class="bg-team-red rounded-sm px-2 py-1 tabular-nums">
-            RED: {props.event.score.red}
+          <span class="game-event-score bg-team-red" aria-label="RED score">
+            {props.event.score.red}
           </span>
         </div>
       )
@@ -245,11 +249,11 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       return (
         <div class="flex flex-row items-center gap-2">
           <span class="flex-1">Score corrected</span>
-          <span class="bg-team-blu rounded-sm px-2 py-1 tabular-nums">
-            BLU: {props.event.score.blu}
+          <span class="game-event-score bg-team-blu" aria-label="BLU score">
+            {props.event.score.blu}
           </span>
-          <span class="bg-team-red rounded-sm px-2 py-1 tabular-nums">
-            RED: {props.event.score.red}
+          <span class="game-event-score bg-team-red" aria-label="RED score">
+            {props.event.score.red}
           </span>
         </div>
       )
