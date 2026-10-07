@@ -9,6 +9,7 @@ test('disable game page admin buttons after the game ends @6v6 @9v9', async ({
   const admin = users.getAdmin()
   const page = await admin.gamePage(gameNumber)
   await page.goto()
+  await page.openAdminArea()
 
   await expect(page.forceEndButton).toBeEnabled()
   await expect(page.reinitializeGameServerButton).toBeEnabled()

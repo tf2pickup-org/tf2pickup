@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';
 
+@import './admin-area.css';
 @import './admin-panel.css';
 @import './banner.css';
 @import './button.css';
