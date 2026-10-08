@@ -11,13 +11,15 @@ export function DocumentPage(document: DocumentModel) {
 
   return (
     <Layout title={makeTitle(document.name)}>
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto">
-          <div class="my-9 text-[48px] font-bold text-zinc-200 capitalize" safe>
+        <div class="mx-auto mb-16 w-full max-w-[1254px]">
+          <h1 class="page-title capitalize lg:mt-[93px]" safe>
             {document.name}
-          </div>
-          <article class="prose prose-invert mb-16 max-w-none">{safeParsed}</article>
+          </h1>
+          <article class="prose prose-invert prose-zinc mt-5 max-w-none text-[#c7c4c7]">
+            {safeParsed}
+          </article>
         </div>
       </Page>
       <Footer />

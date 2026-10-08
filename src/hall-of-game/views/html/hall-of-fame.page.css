@@ -1,24 +1,33 @@
 @reference '../../../html/styles/main.css';
 
 @layer components {
-  .hof-board {
+  .hof-boards {
     display: grid;
-    grid-template-columns: auto auto 1fr auto;
-    column-gap: 16px;
-    row-gap: 10px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 48px;
 
-    padding: 10px 14px;
+    @media (width >= theme(--breakpoint-lg)) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
 
-    background-color: rgba(19, 16, 20, 0.5);
-    color: var(--color-zinc-200);
+  .hof-board {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 22px 16px 12px;
+    border: 1px solid var(--color-zinc-800);
     border-radius: 8px;
-
+    background-color: var(--color-zinc-900);
+    color: #c7c4c7;
     font-size: 20px;
-    font-weight: 500;
 
     .title {
+      margin-bottom: 17px;
       font-size: 24px;
       font-weight: 700;
+      line-height: 1.5;
     }
 
     .hof-record {
@@ -26,15 +35,31 @@
       @apply duration-75;
 
       display: grid;
-      grid-column: span 4 / span 4;
-      grid-template-columns: subgrid;
-      border-radius: 4px;
+      grid-template-columns: 32px 38px minmax(0, 1fr) auto;
       align-items: center;
-      padding: 0px 8px 0px 0px;
+      gap: 10px;
+      margin-left: 8px;
+      border-radius: 4px;
+
+      > :first-child {
+        margin-right: 8px;
+      }
 
       &:hover {
-        background-color: color-mix(in srgb, var(--color-zinc-850) 40%, transparent);
+        background-color: var(--color-zinc-800);
       }
+    }
+
+    .name {
+      overflow: hidden;
+      font-weight: 500;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .count {
+      font-weight: 700;
+      text-align: right;
     }
   }
 }
