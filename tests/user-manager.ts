@@ -62,8 +62,8 @@ export class UserContext {
     return gamePage
   }
 
-  async queuePage() {
-    return new QueuePage(await this.page())
+  async queuePage(slug?: string) {
+    return new QueuePage(await this.page(), slug)
   }
 
   async dispose() {

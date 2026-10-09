@@ -13,7 +13,7 @@ import type { AppWebSocket } from './types'
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
   ready: () => void
-  navigated: (url: string) => void
+  navigated: (url: string, previousUrl: string) => void
   'queue:join': (slotId: QueueSlotId) => void
   'queue:leave': () => void
   'queue:votemap': (mapName: string) => void
@@ -258,8 +258,9 @@ export class Gateway extends EventEmitter implements Broadcaster {
           socket.currentUrl = parsed.navigated
           this.emit('ready', socket)
         } else {
+          const previousUrl = socket.currentUrl
           socket.currentUrl = parsed.navigated
-          this.emit('navigated', socket, parsed.navigated)
+          this.emit('navigated', socket, parsed.navigated, previousUrl)
         }
         return
       }

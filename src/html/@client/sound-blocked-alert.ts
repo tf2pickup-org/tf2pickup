@@ -32,8 +32,8 @@ function isAudioBlocked() {
   return Howler.ctx.state === 'suspended' && !hasBeenActivated()
 }
 
-function isInQueue() {
-  return document.querySelector<HTMLInputElement>('#isInQueue')?.value === 'true'
+function isInAnyQueue() {
+  return document.querySelector<HTMLInputElement>('#isInAnyQueue')?.value === 'true'
 }
 
 function reportAudioStatus() {
@@ -53,7 +53,7 @@ function notificationBannerVisible() {
 }
 
 function shouldShow() {
-  return isAudioBlocked() && isInQueue() && !notificationBannerVisible()
+  return isAudioBlocked() && isInAnyQueue() && !notificationBannerVisible()
 }
 
 function cancelScheduledShow() {
@@ -107,7 +107,7 @@ htmx.on('htmx:wsOpen', event => {
   reportAudioStatus()
 })
 
-// queue membership is swapped into #isInQueue over the websocket
+// queue membership is swapped into #isInAnyQueue over the websocket
 htmx.on('htmx:wsAfterMessage', update)
 
 onLoadWithAttr(attrName, init)
