@@ -4,7 +4,7 @@ import { IconBrandTwitch } from '../../../html/components/icons'
 export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitchTvProfile'> }) {
   return (
     <div
-      class="bg-abru-light-5 flex flex-row items-center gap-4 rounded-sm p-2"
+      class="bg-zinc-850 flex flex-row items-center gap-4 rounded-sm p-2"
       hx-target="this"
       hx-swap="outerHTML"
     >

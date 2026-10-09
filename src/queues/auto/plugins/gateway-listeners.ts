@@ -16,6 +16,7 @@ import { preReady } from '../../../pre-ready'
 import { errors } from '../../../errors'
 import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../views/html/map-vote-selection'
+import { QueueSwitcher } from '../views/html/queue-switcher'
 import { FlashMessage } from '../../../html/components/flash-message'
 import type { AppWebSocket } from '../../../websocket/types'
 import { players } from '../../../players'
@@ -55,6 +56,7 @@ export default fp(
           .send(async () => [
             await IsInQueue({ queue: queue._id, actor }),
             await MapVoteSelection({ queue: queue._id, actor }),
+            await QueueSwitcher({ active: queue, actor }),
           ])
       }
     }

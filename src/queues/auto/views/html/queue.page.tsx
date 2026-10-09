@@ -39,10 +39,10 @@ export async function QueuePage(props: {
       {props.atRoot && (
         <script>{`history.replaceState(null, '', '${queues.queuePageUrl(queue.slug)}')`}</script>
       )}
-      <NavigationBar />
+      <NavigationBar queuePage />
       <Page>
-        <div class="container mx-auto grid grid-cols-1 gap-y-8 lg:grid-cols-4 lg:gap-x-4">
-          <div class="order-1 grid grid-cols-1 gap-y-2 lg:col-span-4">
+        <div class="queue-page">
+          <div class="queue-alerts">
             <OfflineAlert />
             {!!user && <RequestNotificationPermissions />}
             {!!user && <SoundBlockedAlert />}
@@ -50,12 +50,10 @@ export async function QueuePage(props: {
             <SubstitutionRequests />
             <Announcements />
           </div>
-
-          <div class="order-2 lg:order-3 lg:row-span-2">
+          <div class="queue-page-layout">
             <Sidebar queue={queue._id} user={user} required={required} />
+            <QueueContent queue={queue} />
           </div>
-
-          <QueueContent queue={queue} />
         </div>
       </Page>
       <Footer />

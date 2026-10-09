@@ -61,8 +61,8 @@ export async function StaffPage() {
       <Page>
         <div class="container mx-auto">
           <div class="my-9">
-            <div class="text-abru-light-75 text-[48px] font-bold">Staff</div>
-            <div class="text-abru-light-60 text-lg">
+            <div class="text-[48px] font-bold text-zinc-200">Staff</div>
+            <div class="text-lg text-zinc-400">
               The people who keep <span safe>{environment.WEBSITE_NAME}</span> running
             </div>
           </div>
@@ -104,11 +104,11 @@ function StaffCard(props: { member: StaffMember; isOnline: boolean }) {
           {member.name}
         </span>
         {isSuperUser ? (
-          <span class="bg-accent rounded-[3px] px-[8px] py-[6px] leading-none font-bold text-white">
+          <span class="bg-crimson-600 rounded-[3px] px-[8px] py-[6px] leading-none font-bold text-white">
             super user
           </span>
         ) : (
-          <span class="bg-alert text-abru-light-3 rounded-[3px] px-[8px] py-[6px] leading-none font-bold">
+          <span class="bg-alert rounded-[3px] px-[8px] py-[6px] leading-none font-bold text-zinc-900">
             admin
           </span>
         )}

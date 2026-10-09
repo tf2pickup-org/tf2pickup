@@ -105,7 +105,7 @@ export class QueuePage {
   }
 
   header() {
-    return this.page.getByRole('heading', { name: /Players: \d+\/\d+/ })
+    return this.page.getByRole('heading', { name: /Players \d+\/\d+/ })
   }
 
   slot(slot: SlotId) {
