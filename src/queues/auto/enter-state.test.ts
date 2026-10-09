@@ -15,6 +15,9 @@ vi.mock('../../database/collections', () => ({
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn() } }))
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } }))
+vi.mock('./take-launch-snapshot', () => ({
+  takeLaunchSnapshot: vi.fn().mockResolvedValue('snapshot'),
+}))
 vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ readyUpTimeout: 40_000 }) }))
 
 import { ObjectId } from 'mongodb'
@@ -84,13 +87,16 @@ describe('enterState()', () => {
   })
 
   describe('launching', () => {
-    it('cancels the ready-up timeouts', async () => {
+    it('cancels the ready-up timeouts and hands over the launch snapshot', async () => {
       await enterState(queue, QueueState.launching, emit)
 
       expect(tasks.cancel).toHaveBeenCalledWith('queue:readyUpTimeout', { queue })
       expect(tasks.cancel).toHaveBeenCalledWith('queue:unready', { queue })
       expect(tasks.schedule).not.toHaveBeenCalled()
-      expect(emit).toHaveBeenCalledOnce()
+      expect(emit.mock.calls).toEqual([
+        ['queue/state:updated', { queue, state: QueueState.launching }],
+        ['queue:launching', 'snapshot'],
+      ])
     })
   })
 })
