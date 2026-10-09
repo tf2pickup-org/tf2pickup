@@ -74,6 +74,37 @@
     }
   }
 
+  /* tabs sit on the card below them, so only their top corners are rounded */
+  .admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    a {
+      padding: 6px 12px;
+      border-radius: 6px 6px 0 0;
+      background: var(--color-zinc-800);
+      color: var(--color-zinc-200);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+
+      &:hover {
+        color: var(--color-white);
+      }
+
+      &[aria-current='page'] {
+        background: var(--color-crimson-600);
+        color: var(--color-white);
+      }
+    }
+
+    + * .admin-panel-set,
+    + .admin-panel-set {
+      border-top-left-radius: 0;
+    }
+  }
+
   .admin-panel-title {
     margin-bottom: 10px;
     color: var(--color-zinc-100);
@@ -115,6 +146,37 @@
     grid-template-columns: 1fr auto;
     align-items: center;
     margin-bottom: 10px;
+
+    /* tabs sit on the card below them, so only their top corners are rounded */
+    .admin-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+
+      a {
+        padding: 6px 12px;
+        border-radius: 6px 6px 0 0;
+        background: var(--color-zinc-800);
+        color: var(--color-zinc-200);
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+
+        &:hover {
+          color: var(--color-white);
+        }
+
+        &[aria-current='page'] {
+          background: var(--color-crimson-600);
+          color: var(--color-white);
+        }
+      }
+
+      + * .admin-panel-set,
+      + .admin-panel-set {
+        border-top-left-radius: 0;
+      }
+    }
 
     .admin-panel-title {
       margin-bottom: 0;
