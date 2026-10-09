@@ -1,39 +1,9 @@
-import type { Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { delay } from 'es-toolkit'
 import { expect, launchGame as test } from '../fixtures/launch-game'
 
-const readyUpTimeout = secondsToMilliseconds(20)
-const keys = ['queue.ready_up_timeout', 'queue.ready_state_timeout'] as const
-
-async function configure(page: Page, key: string, value: string) {
-  await page.goto('/admin/view-for-nerds')
-  const input = page.getByLabel(key, { exact: true })
-  await input.fill(value)
-  await Promise.all([
-    page.waitForResponse(
-      response => response.url().endsWith('/admin/view-for-nerds') && response.ok(),
-    ),
-    input.press('Enter'),
-  ])
-}
-
-let saved: string[] = []
-
-test.beforeEach(async ({ users }) => {
-  const page = await users.getAdmin().page()
-  await page.goto('/admin/view-for-nerds')
-  saved = await Promise.all(keys.map(key => page.getByLabel(key, { exact: true }).inputValue()))
-  await configure(page, keys[0], readyUpTimeout.toString())
-  await configure(page, keys[1], secondsToMilliseconds(30).toString())
-})
-
-test.afterEach(async ({ users }) => {
-  const page = await users.getAdmin().page()
-  for (const [i, key] of keys.entries()) {
-    await configure(page, key, saved[i]!)
-  }
-})
+// the queue's default
+const readyUpTimeout = secondsToMilliseconds(40)
 
 test('a queue cleared while readying up starts its next ready-up afresh @6v6 @9v9', async ({
   players,

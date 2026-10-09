@@ -14,9 +14,9 @@ vi.mock('../../utils/safe', () => ({
   safe: <T>(fn: T): T => fn,
 }))
 
-vi.mock('../../configuration', () => ({
-  configuration: {
-    get: vi.fn(),
+vi.mock('../../queues', () => ({
+  queues: {
+    anyRequiresVerification: vi.fn(),
   },
 }))
 
@@ -32,7 +32,7 @@ vi.mock('..', () => ({
 
 import { events } from '../../events'
 import { Gamemode } from '../../shared/types/gamemode'
-import { configuration } from '../../configuration'
+import { queues } from '../../queues'
 import { collections } from '../../database/collections'
 import { players } from '..'
 import plugin from './auto-verify-eligible-players'
@@ -40,7 +40,7 @@ import type { PlayerModel } from '../../database/models/player.model'
 
 describe('auto-verify-eligible-players', () => {
   let playerUpdatedHandler: (params: { after: PlayerModel }) => Promise<void>
-  let configurationUpdatedHandler: (params: { key: string }) => Promise<void>
+  let queueUpdatedHandler: () => Promise<void>
 
   beforeEach(async () => {
     vi.resetAllMocks()
@@ -54,19 +54,16 @@ describe('auto-verify-eligible-players', () => {
     expect(playerUpdatedCall, 'plugin must register a player:updated handler').toBeDefined()
     playerUpdatedHandler = playerUpdatedCall![1] as typeof playerUpdatedHandler
 
-    const configurationUpdatedCall = vi
+    const queueUpdatedCall = vi
       .mocked(events.on)
-      .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'configuration:updated')
-    expect(
-      configurationUpdatedCall,
-      'plugin must register a configuration:updated handler',
-    ).toBeDefined()
-    configurationUpdatedHandler = configurationUpdatedCall![1] as typeof configurationUpdatedHandler
+      .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'queue:updated')
+    expect(queueUpdatedCall, 'plugin must register a queue:updated handler').toBeDefined()
+    queueUpdatedHandler = queueUpdatedCall![1] as typeof queueUpdatedHandler
   })
 
   describe('player:updated', () => {
-    it('verifies a player with a skill assigned when verification is required', async () => {
-      vi.mocked(configuration.get).mockResolvedValue(true)
+    it('verifies a player with a skill assigned when a queue requires verification', async () => {
+      vi.mocked(queues.anyRequiresVerification).mockResolvedValue(true)
 
       await playerUpdatedHandler({
         after: {
@@ -79,8 +76,8 @@ describe('auto-verify-eligible-players', () => {
       expect(players.update).toHaveBeenCalledWith('STEAM_0:1', { $set: { verified: true } })
     })
 
-    it('verifies a player who has played a game when verification is required', async () => {
-      vi.mocked(configuration.get).mockResolvedValue(true)
+    it('verifies a player who has played a game when a queue requires verification', async () => {
+      vi.mocked(queues.anyRequiresVerification).mockResolvedValue(true)
 
       await playerUpdatedHandler({
         after: {
@@ -102,7 +99,7 @@ describe('auto-verify-eligible-players', () => {
         } as PlayerModel,
       })
 
-      expect(configuration.get).not.toHaveBeenCalled()
+      expect(queues.anyRequiresVerification).not.toHaveBeenCalled()
       expect(players.update).not.toHaveBeenCalled()
     })
 
@@ -114,12 +111,12 @@ describe('auto-verify-eligible-players', () => {
         } as PlayerModel,
       })
 
-      expect(configuration.get).not.toHaveBeenCalled()
+      expect(queues.anyRequiresVerification).not.toHaveBeenCalled()
       expect(players.update).not.toHaveBeenCalled()
     })
 
-    it('does nothing when player verification is not required', async () => {
-      vi.mocked(configuration.get).mockResolvedValue(false)
+    it('does nothing when no queue requires verification', async () => {
+      vi.mocked(queues.anyRequiresVerification).mockResolvedValue(false)
 
       await playerUpdatedHandler({
         after: {
@@ -133,26 +130,19 @@ describe('auto-verify-eligible-players', () => {
     })
   })
 
-  describe('configuration:updated', () => {
-    it('ignores unrelated configuration changes', async () => {
-      await configurationUpdatedHandler({ key: 'players.etf2l_account_required' })
+  describe('queue:updated', () => {
+    it('does nothing when no enabled queue requires verification', async () => {
+      vi.mocked(queues.anyRequiresVerification).mockResolvedValue(false)
 
-      expect(configuration.get).not.toHaveBeenCalled()
-      expect(collections.players.updateMany).not.toHaveBeenCalled()
-    })
-
-    it('does nothing when player verification was disabled', async () => {
-      vi.mocked(configuration.get).mockResolvedValue(false)
-
-      await configurationUpdatedHandler({ key: 'queue.require_player_verification' })
+      await queueUpdatedHandler()
 
       expect(collections.players.updateMany).not.toHaveBeenCalled()
     })
 
-    it('bulk-verifies all eligible unverified players when player verification is enabled', async () => {
-      vi.mocked(configuration.get).mockResolvedValue(true)
+    it('bulk-verifies all eligible unverified players when a queue requires verification', async () => {
+      vi.mocked(queues.anyRequiresVerification).mockResolvedValue(true)
 
-      await configurationUpdatedHandler({ key: 'queue.require_player_verification' })
+      await queueUpdatedHandler()
 
       expect(collections.players.updateMany).toHaveBeenCalledWith(
         {

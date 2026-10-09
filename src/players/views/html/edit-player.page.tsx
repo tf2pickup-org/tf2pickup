@@ -1,3 +1,4 @@
+import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { resolve } from 'node:path'
 import { PlayerRole, type PlayerBan, type PlayerModel } from '../../../database/models/player.model'
 import { Layout } from '../../../html/layout'
@@ -26,7 +27,6 @@ import {
 } from '../../../html/components/icons'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
-import { queue } from '../../../queues/auto'
 import { defaultElo, provisionalThreshold } from '../../../games/calculate-elo-updates'
 import type { Children } from '@kitajs/html'
 import {
@@ -260,7 +260,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
             </tr>
           </thead>
           <tbody>
-            {queue.config.classes.map(({ name: gameClass }) => {
+            {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name: gameClass }) => {
               const elo = player.elo?.[environment.QUEUE_CONFIG]?.[gameClass]
               const games = player.stats.gamesByClass[environment.QUEUE_CONFIG]?.[gameClass] ?? 0
               const provisional = games < provisionalThreshold

@@ -1,3 +1,4 @@
+import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
@@ -5,7 +6,6 @@ import { PlayerRole, type PlayerModel } from '../../../database/models/player.mo
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import { queue } from '../../../queues/auto'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
@@ -197,7 +197,7 @@ function PlayerPresentation(props: {
 
         <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
 
-        {queue.config.classes.map(({ name: gameClass }) => (
+        {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name: gameClass }) => (
           <>
             <GameClassIcon gameClass={gameClass} size={32} />
             <span class="text-2xl font-bold" aria-label={`Games played as ${gameClass}`}>
@@ -212,7 +212,10 @@ function PlayerPresentation(props: {
           href={`https://steamcommunity.com/profiles/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+          class={[
+            'player-presentation-link',
+            gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+          ]}
           title="Steam"
           data-umami-event="open-external-profile"
           data-umami-event-target="steam"
@@ -225,7 +228,10 @@ function PlayerPresentation(props: {
           href={`https://logs.tf/profile/${props.player.steamId}`}
           target="_blank"
           rel="noreferrer"
-          class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+          class={[
+            'player-presentation-link',
+            gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+          ]}
           title="Logs"
           data-umami-event="open-external-profile"
           data-umami-event-target="logs"
@@ -239,7 +245,10 @@ function PlayerPresentation(props: {
             href={`https://etf2l.org/forum/user/${props.player.etf2lProfile.id}`}
             target="_blank"
             rel="noreferrer"
-            class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+            class={[
+              'player-presentation-link',
+              gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+            ]}
             title="ETF2L"
             data-umami-event="open-external-profile"
             data-umami-event-target="etf2l"
@@ -256,7 +265,10 @@ function PlayerPresentation(props: {
             href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}/`}
             target="_blank"
             rel="noreferrer"
-            class={['player-presentation-link', queue.config.classes.length > 4 && 'compact']}
+            class={[
+              'player-presentation-link',
+              gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+            ]}
             title="Twitch"
             data-umami-event="open-external-profile"
             data-umami-event-target="twitch"

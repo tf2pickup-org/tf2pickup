@@ -1,7 +1,7 @@
+import { queues } from '../../queues'
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { safe } from '../../utils/safe'
-import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { players } from '..'
 import type { PlayerModel } from '../../database/models/player.model'
@@ -25,20 +25,16 @@ export default fp(
           return
         }
 
-        if (await configuration.get('queue.require_player_verification')) {
+        if (await queues.anyRequiresVerification()) {
           await verify(after.steamId)
         }
       }),
     )
 
     events.on(
-      'configuration:updated',
-      safe(async ({ key }) => {
-        if (key !== 'queue.require_player_verification') {
-          return
-        }
-
-        if (!(await configuration.get('queue.require_player_verification'))) {
+      'queue:updated',
+      safe(async () => {
+        if (!(await queues.anyRequiresVerification())) {
           return
         }
 
