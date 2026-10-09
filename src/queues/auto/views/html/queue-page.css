@@ -45,7 +45,8 @@
   }
 
   .queue-switcher-options {
-    display: flex;
+    display: grid;
+    grid-auto-columns: auto;
     align-items: center;
     gap: 7px;
     height: 100%;
@@ -53,6 +54,7 @@
 
   .queue-switcher-option {
     position: relative;
+    grid-row: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -72,11 +74,19 @@
     border-color: var(--color-zinc-700);
   }
 
-  .queue-switcher-option[data-joined]::before {
+  .queue-switcher-label {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* the dot lives in the label, so it stays above the indicator while it moves */
+  .queue-switcher-option[data-joined] .queue-switcher-label::before {
     content: '';
     position: absolute;
     top: 50%;
-    left: 8px;
+    left: -11px;
     width: 7px;
     height: 7px;
     border-radius: 50%;
@@ -97,8 +107,17 @@
 
   .queue-switcher-option[aria-current='page'] {
     border-color: transparent;
-    background: var(--color-zinc-700);
+    background: transparent;
     color: var(--color-zinc-200);
+  }
+
+  /* sits in the active option's grid cell; a view transition glides it to the picked queue */
+  .queue-switcher-indicator {
+    grid-row: 1;
+    align-self: stretch;
+    border-radius: 5px;
+    background: var(--color-zinc-700);
+    view-transition-name: queue-switcher-indicator;
   }
 
   .queue-state {
@@ -217,6 +236,16 @@
     font-weight: 700;
   }
 
+  /* switching queues (see queue-switch-transition.ts): the slots and maps fade through, the map
+     vote glides to its new spot */
+  [data-queue-switch] .queue-content #queue {
+    view-transition-name: queue;
+  }
+
+  [data-queue-switch] .queue-content #map-vote {
+    view-transition-name: queue-map-vote;
+  }
+
   .queue-content #map-vote {
     margin-top: 48px;
   }
@@ -308,5 +337,53 @@
       padding: 0 8px;
       font-size: 14px;
     }
+  }
+}
+
+::view-transition-group(queue-switcher-indicator) {
+  animation-duration: 200ms;
+  animation-timing-function: ease-out;
+}
+
+::view-transition-group(queue),
+::view-transition-group(queue-map-vote) {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+}
+
+@keyframes queue-out {
+  to {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+@keyframes queue-in {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* the old queue is gone before the new one comes in, so their texts never overlap */
+::view-transition-old(queue),
+::view-transition-old(queue-map-vote) {
+  animation: 100ms ease-in both queue-out;
+}
+
+::view-transition-new(queue),
+::view-transition-new(queue-map-vote) {
+  animation: 200ms ease-out 100ms both queue-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(queue-switcher-indicator),
+  ::view-transition-group(queue),
+  ::view-transition-group(queue-map-vote),
+  ::view-transition-old(queue),
+  ::view-transition-old(queue-map-vote),
+  ::view-transition-new(queue),
+  ::view-transition-new(queue-map-vote) {
+    animation: none;
   }
 }
