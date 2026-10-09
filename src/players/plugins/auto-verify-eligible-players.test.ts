@@ -31,6 +31,7 @@ vi.mock('..', () => ({
 }))
 
 import { events } from '../../events'
+import { Gamemode } from '../../shared/types/gamemode'
 import { configuration } from '../../configuration'
 import { collections } from '../../database/collections'
 import { players } from '..'
@@ -70,7 +71,7 @@ describe('auto-verify-eligible-players', () => {
       await playerUpdatedHandler({
         after: {
           steamId: 'STEAM_0:1',
-          skill: { scout: 5 },
+          skill: { [Gamemode.sixes]: { scout: 5 } },
           stats: { totalGames: 0, gamesByClass: {} },
         } as PlayerModel,
       })
@@ -96,7 +97,7 @@ describe('auto-verify-eligible-players', () => {
         after: {
           steamId: 'STEAM_0:1',
           verified: true,
-          skill: { scout: 5 },
+          skill: { [Gamemode.sixes]: { scout: 5 } },
           stats: { totalGames: 1, gamesByClass: {} },
         } as PlayerModel,
       })
@@ -123,7 +124,7 @@ describe('auto-verify-eligible-players', () => {
       await playerUpdatedHandler({
         after: {
           steamId: 'STEAM_0:1',
-          skill: { scout: 5 },
+          skill: { [Gamemode.sixes]: { scout: 5 } },
           stats: { totalGames: 0, gamesByClass: {} },
         } as PlayerModel,
       })
