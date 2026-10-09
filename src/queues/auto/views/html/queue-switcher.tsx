@@ -21,9 +21,15 @@ export async function QueueSwitcher(props: {
     props.actor ? collections.queueSlots.distinct('queue', { 'player.steamId': props.actor }) : [],
   ])
 
+  // the indicator comes first, so a view transition always keeps it under the labels
+  const activeIndex = enabled.findIndex(queue => queue.slug === props.active.slug)
+
   return (
     <nav id="queue-switcher" class="queue-switcher" aria-label="Queues">
       <div class="queue-switcher-options">
+        {activeIndex >= 0 && (
+          <span class="queue-switcher-indicator" style={`grid-column: ${activeIndex + 1}`} />
+        )}
         {enabled.map((queue, i) => {
           const { current, required } = counts[i]!
           return (
@@ -36,10 +42,16 @@ export async function QueueSwitcher(props: {
               data-umami-event="switch-queue"
               data-umami-event-queue={queue.slug}
               class="queue-switcher-option"
+              style={`grid-column: ${i + 1}`}
               data-joined={joined.some(id => id.equals(queue._id)) ? '' : undefined}
             >
-              <span safe>{queue.name}</span>
-              <QueueSwitcherCount slug={queue.slug} current={current} required={required} />
+              <span
+                class="queue-switcher-label"
+                style={`view-transition-name: queue-switcher-label-${queue.slug}`}
+              >
+                <span safe>{queue.name}</span>
+                <QueueSwitcherCount slug={queue.slug} current={current} required={required} />
+              </span>
             </a>
           )
         })}
