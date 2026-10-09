@@ -65,6 +65,16 @@ describe('create()', () => {
     ]).toContainEqual(blu.sort())
   })
 
+  it('gives a player with no skill and no default skill 1', async () => {
+    vi.mocked(players.bySteamId).mockResolvedValue({ skill: {} } as never)
+    const slots = await createdSlots(
+      queue(Gamemode.sixes),
+      queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
+      'cp_process_f12',
+    )
+    expect(slots.map(slot => slot.skill)).toEqual([1, 1])
+  })
+
   it('gives players no skill in a gamemode that is not auto-balanced', async () => {
     const slots = await createdSlots(
       queue(Gamemode.ultiduo),
