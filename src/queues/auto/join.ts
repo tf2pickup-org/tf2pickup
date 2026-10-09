@@ -57,20 +57,25 @@ export async function join(
     throw errors.badRequest(`player does not meet skill threshold`)
   }
 
-  // a player is in at most one queue at a time
-  if (
-    await collections.queueSlots.countDocuments({
-      queue: { $ne: queue },
-      'player.steamId': steamId,
-    })
-  ) {
-    await vacateSlot(steamId)
-  }
-
-  return await queueCommand(queue, 'join', async emit => {
+  return await queueCommand('join', async emit => {
     const state = await getState(queue)
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
+    }
+
+    // checked before leaving another queue, so a taken slot doesn't cost the player theirs
+    if ((await collections.queueSlots.findOne({ _id: slot._id }))?.player) {
+      throw withLogLevel(errors.badRequest('slot occupied'), 'debug')
+    }
+
+    // a player is in at most one queue at a time
+    if (
+      await collections.queueSlots.countDocuments({
+        queue: { $ne: queue },
+        'player.steamId': steamId,
+      })
+    ) {
+      await vacateSlot(steamId, emit)
     }
 
     const targetSlot = await collections.queueSlots.findOneAndUpdate(
