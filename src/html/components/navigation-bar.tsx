@@ -16,6 +16,7 @@ import Html from '@kitajs/html'
 import { configuration } from '../../configuration'
 import { environment } from '../../environment'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
+import { isCurrentPage } from '../is-current-page'
 
 export function NavigationBar(props: { wide?: boolean } = {}) {
   const user = requestContext.get('user')
@@ -186,12 +187,11 @@ async function Menu(props: { wide: boolean }) {
 }
 
 function MenuItem({ href, children }: Html.PropsWithChildren<{ href: string }>) {
-  const url = requestContext.get('url')
   return (
     <a
       href={href}
       class="nav-menu-item"
-      aria-current={url === href ? 'page' : undefined}
+      aria-current={isCurrentPage(href) ? 'page' : undefined}
       preload="mousedown"
     >
       {children}
