@@ -1,9 +1,124 @@
 @layer components {
+  .admin-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    padding-top: 24px;
+
+    @media (width >= theme(--breakpoint-lg)) {
+      grid-template-columns: 381px minmax(0, 1fr);
+      align-items: start;
+      gap: 26px;
+      padding-top: 50px;
+    }
+  }
+
+  .admin-panel-sidebar {
+    display: flex;
+    gap: 4px;
+    padding: 12px;
+    border: 1px solid var(--color-zinc-800);
+    border-radius: 8px;
+    background: var(--color-zinc-900);
+
+    @media (width < theme(--breakpoint-lg)) {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    @media (width >= theme(--breakpoint-lg)) {
+      flex-direction: column;
+    }
+  }
+
+  .admin-panel-body {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid var(--color-zinc-800);
+    border-radius: 8px;
+    background: var(--color-zinc-900);
+    color: #c7c4c7;
+
+    input[type='text'],
+    input[type='number'],
+    input[type='url'],
+    input[type='datetime-local'],
+    select {
+      min-height: 42px;
+      padding: 0 12px;
+      border: 1px solid var(--color-zinc-700);
+      background-color: var(--color-zinc-950);
+    }
+
+    textarea {
+      padding: 12px;
+      border: 1px solid var(--color-zinc-700);
+      background-color: var(--color-zinc-950);
+    }
+
+    .button {
+      min-height: 39px;
+      padding: 8px 16px;
+      border: 1px solid var(--color-zinc-600);
+      border-radius: 6px;
+      line-height: 16px;
+
+      &[data-variant='accent']:not(:disabled) {
+        border-color: var(--color-crimson-600);
+        background-color: var(--color-crimson-700);
+
+        &:hover {
+          background-color: color-mix(in hsl, var(--color-crimson-700), black 10%);
+        }
+      }
+    }
+  }
+
+  /* tabs sit on the card below them, so only their top corners are rounded */
+  .admin-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+
+    a {
+      padding: 6px 12px;
+      border-radius: 6px 6px 0 0;
+      background: var(--color-zinc-800);
+      color: var(--color-zinc-200);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+
+      &:hover {
+        color: var(--color-white);
+      }
+
+      &[aria-current='page'] {
+        background: var(--color-crimson-600);
+        color: var(--color-white);
+      }
+    }
+
+    + * .admin-panel-set,
+    + .admin-panel-set {
+      border-top-left-radius: 0;
+    }
+  }
+
+  .admin-panel-title {
+    margin-bottom: 10px;
+    color: var(--color-zinc-100);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 48px;
+  }
+
   .admin-panel-section {
     font-size: 14px;
     color: var(--color-zinc-400);
     font-weight: 500;
     padding: 8px 12px;
+    text-transform: uppercase;
 
     @media (width < theme(--breakpoint-lg)) {
       flex-shrink: 0;
@@ -12,13 +127,13 @@
     }
 
     &:not(:first-child) {
-      border-top: 1px solid var(--color-zinc-600);
+      border-top: 1px solid var(--color-zinc-800);
       padding-top: 16px;
-      margin-top: 8px;
+      margin-top: 12px;
 
       @media (width < theme(--breakpoint-lg)) {
         border-top: none;
-        border-left: 1px solid var(--color-zinc-600);
+        border-left: 1px solid var(--color-zinc-800);
         padding: 8px 12px 8px 16px;
         margin-top: 0;
         margin-left: 4px;
@@ -30,10 +145,41 @@
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
+    margin-bottom: 10px;
 
-    h1 {
-      font-size: 32px;
-      color: var(--color-zinc-200);
+    /* tabs sit on the card below them, so only their top corners are rounded */
+    .admin-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+
+      a {
+        padding: 6px 12px;
+        border-radius: 6px 6px 0 0;
+        background: var(--color-zinc-800);
+        color: var(--color-zinc-200);
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+
+        &:hover {
+          color: var(--color-white);
+        }
+
+        &[aria-current='page'] {
+          background: var(--color-crimson-600);
+          color: var(--color-white);
+        }
+      }
+
+      + * .admin-panel-set,
+      + .admin-panel-set {
+        border-top-left-radius: 0;
+      }
+    }
+
+    .admin-panel-title {
+      margin-bottom: 0;
     }
   }
 
@@ -54,11 +200,12 @@
     flex-flow: flex nowrap;
     align-items: center;
     gap: 8px;
+    min-height: 42px;
     color: var(--color-zinc-200);
     font-weight: 500;
-    font-size: 18px;
-    border-radius: 4px;
-    padding: 6px 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    padding: 0 16px;
     position: relative;
 
     @media (width < theme(--breakpoint-lg)) {
@@ -67,11 +214,12 @@
     }
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-zinc-950), transparent 80%);
+      background-color: var(--color-zinc-800);
     }
 
     &.active {
-      background-color: var(--color-zinc-950);
+      background-color: var(--color-zinc-800);
+      color: var(--color-zinc-100);
 
       &:before {
         position: absolute;
@@ -94,30 +242,17 @@
   }
 
   .admin-panel-content {
-    background-color: var(--color-zinc-950);
-    border-radius: 16px;
-    padding: 32px;
     display: flex;
     flex-direction: column;
     gap: 16px;
 
     .group {
       background-color: var(--color-zinc-850);
+      border: 1px solid var(--color-zinc-800);
       border-radius: 8px;
       padding: 16px;
-      color: var(--color-zinc-200);
-      font-size: 18px;
-
-      input[type='text'],
-      input[type='number'],
-      input[type='url'] {
-        background-color: var(--color-zinc-950);
-        color: var(--color-white);
-        border-radius: 8px;
-        padding: 8px;
-        font-size: 16px;
-        font-weight: 500;
-      }
+      color: #c7c4c7;
+      font-size: 16px;
 
       .input-group {
         display: flex;

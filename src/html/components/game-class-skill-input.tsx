@@ -16,7 +16,7 @@ export function GameClassSkillInput(props: {
   const step = props.step ?? 1.0
   return (
     <div class="game-class-skill-input" style={props.style} data-skill-spinner>
-      <GameClassIcon gameClass={props.gameClass} size={32} />
+      <GameClassIcon gameClass={props.gameClass} size={24} />
       <label class="sr-only" for={id} safe>
         {props.label ?? `Player's skill on ${props.gameClass}`}
       </label>

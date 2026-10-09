@@ -255,16 +255,11 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64; gamemode?: 
     <EditPlayer player={player} activePage="/elo">
       <div class="admin-panel-content">
         {gamemodes.length > 1 && (
-          <nav class="mb-4 flex flex-row flex-wrap gap-2" aria-label="Gamemodes">
+          <nav class="admin-tabs" aria-label="Gamemodes">
             {gamemodes.map(tab => (
               <a
                 href={`/players/${player.steamId}/edit/elo?gamemode=${tab}`}
-                class={[
-                  'rounded-md px-3 py-1.5 text-sm font-bold',
-                  tab === gamemode
-                    ? 'bg-crimson-600 text-white'
-                    : 'bg-zinc-800 text-zinc-200 hover:text-white',
-                ]}
+
                 aria-current={tab === gamemode ? 'page' : undefined}
               >
                 {tab}
@@ -336,7 +331,7 @@ function EditPlayer(props: {
       title={makeTitle(`Edit ${props.player.name}`)}
       embedStyle={resolve(import.meta.dirname, 'edit-player.page.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
         <AdminPanel>
           <AdminPanelSidebar>

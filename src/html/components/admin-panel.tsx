@@ -1,16 +1,12 @@
 import type { Children } from '@kitajs/html'
 
 export function AdminPanel(props?: { children?: Children }) {
-  return (
-    <div class="container mx-auto grid grid-cols-1 gap-4 lg:grid-cols-5 lg:gap-8">
-      {props?.children}
-    </div>
-  )
+  return <div class="admin-panel page-wide">{props?.children}</div>
 }
 
 export function AdminPanelSidebar(props?: { children?: Children }) {
   return (
-    <div class="flex gap-1 max-lg:[scrollbar-width:none] max-lg:overflow-x-auto lg:flex-col">
+    <div class="admin-panel-sidebar">
       {props?.children}
       <script>{`
         if (!window.matchMedia('(min-width: 64rem)').matches) {
@@ -36,17 +32,17 @@ export function AdminPanelLink(props: { href: string; active?: boolean; children
 }
 
 export function AdminPanelBody(props?: { children?: Children }) {
-  return <div class="lg:col-span-4">{props?.children}</div>
+  return <div class="admin-panel-body">{props?.children}</div>
 }
 
 export function AdminPanelHeader(props?: { children?: Children }) {
-  return <h1 class="mb-4 text-[32px] text-zinc-200">{props?.children}</h1>
+  return <h1 class="admin-panel-title">{props?.children}</h1>
 }
 
 export function AdminPanelContent(props?: { children?: Children }) {
-  return <div class="rounded-2xl bg-zinc-950 p-8">{props?.children}</div>
+  return <div class="admin-panel-content">{props?.children}</div>
 }
 
 export function AdminPanelGroup(props?: { children?: Children }) {
-  return <div class="bg-zinc-850 rounded-lg">{props?.children}</div>
+  return <div class="admin-panel-set">{props?.children}</div>
 }
