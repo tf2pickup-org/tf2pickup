@@ -336,7 +336,7 @@ function EditPlayer(props: {
       title={makeTitle(`Edit ${props.player.name}`)}
       embedStyle={resolve(import.meta.dirname, 'edit-player.page.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
         <AdminPanel>
           <AdminPanelSidebar>
