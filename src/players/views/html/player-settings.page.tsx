@@ -13,45 +13,45 @@ export async function PlayerSettingsPage() {
 
   return (
     <Layout title={makeTitle('Settings')}>
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto flex flex-col gap-8">
-          <form action="" method="post">
-            <div class="flex flex-1 flex-col gap-4 rounded-lg bg-zinc-950 p-[24px] font-normal text-zinc-200">
-              <h4 class="text-[24px] font-bold">Preferences</h4>
+        <div class="page-wide">
+          <h1 class="page-title">Settings</h1>
 
-              <div class="flex flex-col">
-                <label for="notification-sound-volume">Notification sound volume</label>
-                <div class="flex flex-row items-center gap-2">
-                  <IconVolume />
-                  <input
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.1"
-                    value={soundVolume.toString()}
-                    id="notification-sound-volume"
-                    name="soundVolume"
-                    class="w-[360px]"
-                  ></input>
-                </div>
-              </div>
+          <form action="" method="post" class="page-panel mt-12 flex flex-col gap-3">
+            <h2 class="text-2xl leading-[1.5] font-bold">Preferences</h2>
 
-              <div class="flex">
-                <button
-                  type="submit"
-                  class="button mt-6"
-                  data-variant="accent"
-                  data-umami-event="save-settings"
-                >
-                  Save
-                </button>
+            <div class="flex flex-col gap-3">
+              <label for="notification-sound-volume">Notification sound volume:</label>
+              <div class="flex flex-row items-center gap-2">
+                <IconVolume />
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={soundVolume.toString()}
+                  id="notification-sound-volume"
+                  name="soundVolume"
+                  class="accent-crimson-600 w-[357px] max-w-full"
+                ></input>
               </div>
+            </div>
+
+            <div class="page-actions mt-3">
+              <button
+                type="submit"
+                class="button"
+                data-variant="accent"
+                data-umami-event="save-settings"
+              >
+                Save
+              </button>
             </div>
           </form>
 
-          <div class="flex flex-1 flex-col gap-4 rounded-lg bg-zinc-950 p-[24px] font-normal text-zinc-200">
-            <h4 class="text-[24px] font-bold">Linked accounts</h4>
+          <div class="page-panel mt-6 flex flex-col gap-6">
+            <h2 class="text-2xl leading-[1.5] font-bold">Integrations</h2>
 
             <TwitchTvSettingsEntry player={user.player} />
           </div>

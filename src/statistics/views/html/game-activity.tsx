@@ -25,7 +25,7 @@ export async function GameActivity() {
   return (
     <div>
       <div class="mb-4 flex items-center gap-4">
-        <span class="text-2xl font-bold text-zinc-200">Game activity</span>
+        <h2 class="text-2xl leading-[1.5] font-bold">Game activity</h2>
         <span class="text-sm text-zinc-400">
           {total} games launched since <span safe>{format(firstDay, 'MMMM yyyy')}</span>
         </span>
