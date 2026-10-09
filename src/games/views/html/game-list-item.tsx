@@ -7,68 +7,63 @@ import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PickDeep } from 'type-fest'
 
 export function GameListItem(props: {
-  game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'>
+  game: PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'gamemode'>
   classPlayed?: Tf2ClassName
 }) {
+  const { game } = props
   const isRunning = [
     GameState.created,
     GameState.configuring,
     GameState.launching,
     GameState.started,
-  ].includes(props.game.state)
-
-  const launchedAt = props.game.events[0].at
-
-  let gameLabel = <div class="col-span-2"></div>
-  if (props.game.state === GameState.interrupted) {
-    gameLabel = (
-      <div class="game-list-label" data-state="interrupted">
-        force-ended
-      </div>
-    )
-  } else if (props.game.score?.blu !== undefined) {
-    gameLabel = (
-      <>
-        <div class="game-list-label tabular-nums" data-team="blu">
-          blu: {props.game.score.blu}
-        </div>
-        <div class="game-list-label tabular-nums" data-team="red">
-          red: {props.game.score.red}
-        </div>
-      </>
-    )
-  } else if (
-    [GameState.created, GameState.configuring, GameState.launching].includes(props.game.state)
-  ) {
-    gameLabel = (
-      <div class="game-list-label" data-state="launching">
-        {props.game.state}
-      </div>
-    )
-  }
+  ].includes(game.state)
+  const isCancelled = game.state === GameState.interrupted
 
   return (
-    <a class="game-list-item" href={`/games/${props.game.number}`} preload="mousedown">
-      <div class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</div>
-      <span class={['game-number', isRunning && 'text-crimson-600', 'tabular-nums']} safe>
-        #{props.game.number}
+    <a
+      class="game-list-item"
+      href={`/games/${game.number}`}
+      preload="mousedown"
+      data-live={isRunning ? 'true' : undefined}
+    >
+      <div class="game-list-thumbnail">
+        <MapThumbnail map={game.map} />
+      </div>
+
+      <span class="game-number">
+        <span class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</span>
+        <span class="tabular-nums" safe>
+          #{game.number}
+        </span>
       </span>
+
+      <span class="game-list-badge">{game.gamemode}</span>
+
+      {props.classPlayed && (
+        <span class="game-list-class">
+          <GameClassIcon gameClass={props.classPlayed} size={32} />
+        </span>
+      )}
+
+      {isCancelled ? (
+        <span class="game-list-badge game-list-status" data-cancelled>
+          cancelled
+        </span>
+      ) : game.score ? (
+        <span class="game-list-score game-list-status tabular-nums">
+          <span data-team="red">{game.score.red}</span>
+          <span data-team="blu">{game.score.blu}</span>
+        </span>
+      ) : (
+        <></>
+      )}
+
       <span class="map-name" safe>
-        {props.game.map}
+        {game.map}
       </span>
       <span class="launched-at" safe>
-        {format(launchedAt, 'dd.MM.yyyy HH:mm')}
+        {format(game.events[0].at, 'MMM d, yyyy, h:mm a')}
       </span>
-
-      <div class="game-class-icon">
-        {props.classPlayed && <GameClassIcon gameClass={props.classPlayed} size={32} />}
-      </div>
-
-      {gameLabel}
-
-      <div class="absolute top-0 right-0 bottom-0 left-0 -z-10 overflow-hidden rounded-lg max-sm:left-1/3 xl:left-1/3">
-        <MapThumbnail map={props.game.map} />
-      </div>
     </a>
   )
 }

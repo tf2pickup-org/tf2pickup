@@ -25,216 +25,292 @@
 }
 
 @layer components {
-  .game-list {
-    display: grid;
-    row-gap: 16px;
-    grid-template-columns: 1fr;
+  .games-page {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
 
-    @media (width >= theme(--breakpoint-sm)) {
-      column-gap: 8px;
-      row-gap: 10px;
-      grid-template-columns: 22px repeat(4, auto) 1fr 1fr;
+    @media (width >= theme(--breakpoint-lg)) {
+      padding: 0 16px;
+    }
+  }
+
+  .games-page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 24px 0 16px;
+
+    @media (width >= theme(--breakpoint-lg)) {
+      margin-top: 93px;
+    }
+  }
+
+  .games-page-title {
+    margin-bottom: 8px;
+    color: var(--color-zinc-100);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 48px;
+  }
+
+  .games-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-zinc-200);
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .games-filter-bar {
+    position: relative;
+
+    summary {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 39px;
+      padding: 0 16px 0 8px;
+      border: 1px solid var(--color-zinc-800);
+      border-radius: 6px;
+      background: var(--color-zinc-900);
+      cursor: pointer;
+      list-style: none;
+
+      &::-webkit-details-marker {
+        display: none;
+      }
     }
 
-    @media (width >= theme(--breakpoint-xl)) {
-      grid-template-columns: 22px repeat(5, auto) 1fr;
+    &[open] .games-filter-chevron {
+      rotate: 180deg;
+    }
+  }
+
+  .games-filter-placeholder {
+    color: #48484e;
+  }
+
+  .games-filter-menu {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    width: 158px;
+    padding: 6px;
+    border: 1px solid var(--color-zinc-800);
+    border-radius: 6px;
+    background: var(--color-zinc-900);
+
+    a {
+      padding: 3px 6px;
+      border-radius: 3px;
+      color: var(--color-white);
+
+      &:hover,
+      &[aria-current='true'] {
+        background: var(--color-zinc-800);
+      }
+    }
+  }
+
+  .games-filter-clear {
+    display: flex;
+    align-items: center;
+    height: 39px;
+    padding: 0 16px;
+    border: 1px solid var(--color-zinc-600);
+    border-radius: 6px;
+    background: var(--color-zinc-700);
+    color: var(--color-zinc-100);
+    font-weight: 700;
+
+    &:hover {
+      background: var(--color-zinc-600);
+    }
+  }
+
+  .game-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    @media (width >= theme(--breakpoint-sm)) {
+      display: grid;
+      grid-template-columns:
+        [number] auto [gamemode] auto [status] auto [map] auto [date] auto
+        1fr;
+      column-gap: 24px;
+
+      &:has(.game-list-class) {
+        grid-template-columns:
+          [number] auto [gamemode] auto [class] auto [status] auto [map] auto [date] auto
+          1fr;
+      }
     }
 
     .game-list-item {
-      @apply transition-colors;
-      @apply duration-75;
+      --item-background: var(--color-zinc-800);
 
       position: relative;
-      display: grid;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 24px;
+      min-height: 64px;
+      padding: 12px 16px;
       overflow: hidden;
       border-radius: 8px;
-
-      color: var(--color-zinc-200);
+      background: var(--item-background);
+      color: #ced5d9;
+      font-size: 16px;
       font-weight: 500;
 
-      /* mobile: self-contained card with the map thumbnail fading in from the right */
-      grid-template-columns: repeat(3, auto) 1fr auto auto;
-      align-items: center;
-      row-gap: 24px;
-      padding: 16px;
-      background: linear-gradient(
-        90deg,
-        var(--color-zinc-700) 45%,
-        --alpha(var(--color-zinc-700) / 35%) 100%
-      );
-
       @media (width >= theme(--breakpoint-sm)) {
+        display: grid;
+        grid-column: 1 / -1;
         grid-template-columns: subgrid;
-        @apply col-span-7;
-        place-items: center;
-
-        row-gap: 0;
-        height: 60px;
-        padding: 8px;
-        background: --alpha(var(--color-zinc-700) / 50%);
-
-        &:hover {
-          background: --alpha(var(--color-zinc-700) / 90%);
-        }
       }
 
-      @media (width >= theme(--breakpoint-xl)) {
-        height: 80px;
-
-        background: var(--color-zinc-700);
-        background: linear-gradient(90deg, var(--color-zinc-700) 35%, transparent 90%);
-
-        &:hover {
-          background: linear-gradient(
-            90deg,
-            color-mix(in hsl, var(--color-zinc-700), white 3%) 35%,
-            transparent 90%
-          );
-        }
+      &[data-live] {
+        color: var(--color-zinc-200);
       }
 
-      .live-indicator {
-        order: 0;
+      &:hover {
+        --item-background: color-mix(in hsl, var(--color-zinc-800), white 4%);
       }
 
+      & > * {
+        position: relative;
+      }
+    }
+
+    @media (width >= theme(--breakpoint-sm)) {
       .game-number {
-        order: 1;
-
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 500;
-        line-height: normal;
+        grid-column: number;
       }
 
-      .game-class-icon {
-        order: 3;
-        margin: 0 8px;
+      .game-list-badge {
+        grid-column: gamemode;
+        text-align: center;
+      }
 
-        @media (width >= theme(--breakpoint-sm)) {
-          order: 2;
-        }
+      .game-list-class {
+        grid-column: class;
+      }
+
+      .game-list-status {
+        grid-column: status;
+        justify-self: start;
       }
 
       .map-name {
-        order: 2;
-        white-space: nowrap;
-
-        @media (width >= theme(--breakpoint-sm)) {
-          order: 5;
-        }
-
-        @media (width >= theme(--breakpoint-xl)) {
-          justify-self: start;
-          margin: 0 16px;
-        }
+        grid-column: map;
       }
 
       .launched-at {
-        order: 4;
-        white-space: nowrap;
+        grid-column: date;
+      }
+    }
 
-        @media (width >= theme(--breakpoint-sm)) {
-          order: 6;
-        }
+    .game-list-thumbnail {
+      position: absolute;
+      inset: 0 0 0 34.4%;
 
-        @media (width >= theme(--breakpoint-xl)) {
-          justify-self: start;
-        }
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, var(--item-background), transparent);
       }
 
-      .game-list-label {
+      .map-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .game-number {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-zinc-200);
+      font-size: 24px;
+    }
+
+    [data-live] .game-number {
+      color: var(--color-crimson-600);
+    }
+
+    .live-indicator {
+      display: flex;
+      justify-content: center;
+      width: 18px;
+    }
+
+    .game-list-badge {
+      padding: 6px 8px;
+      border-radius: 3px;
+      background: var(--color-zinc-700);
+      color: var(--color-zinc-200);
+      line-height: 1;
+
+      &[data-cancelled] {
+        padding: 5px 8px;
+        border-radius: 4px;
+        color: var(--color-zinc-300);
+        text-transform: uppercase;
+      }
+    }
+
+    .game-list-score {
+      display: flex;
+      gap: 8px;
+      color: #f4f4ed;
+
+      span {
+        min-width: 42px;
+        padding: 0 14px;
         border-radius: 3px;
-        padding: 0 13px;
         text-align: center;
-        white-space: nowrap;
-        order: 5;
-
-        @media (width >= theme(--breakpoint-sm)) {
-          order: 3;
-        }
-
-        &[data-team='blu'] {
-          background-color: var(--color-team-blu);
-          text-transform: uppercase;
-          order: 5;
-
-          @media (width >= theme(--breakpoint-sm)) {
-            order: 3;
-          }
-        }
-
-        &[data-team='red'] {
-          background-color: var(--color-team-red);
-          text-transform: uppercase;
-          order: 6;
-
-          @media (width >= theme(--breakpoint-sm)) {
-            order: 4;
-          }
-        }
-
-        &[data-state='interrupted'] {
-          @apply col-span-2;
-          background-color: var(--color-zinc-600);
-          justify-self: stretch;
-        }
-
-        &[data-state='launching'] {
-          @apply col-span-2;
-          background-color: var(--color-alert);
-          color: var(--color-zinc-900);
-          justify-self: stretch;
-        }
       }
 
-      @media (width < theme(--breakpoint-sm)) {
-        .live-indicator {
-          grid-area: 1 / 1;
+      [data-team='red'] {
+        background: var(--color-team-red);
+      }
 
-          &:not(:empty) {
-            margin-right: 8px;
-          }
-        }
+      [data-team='blu'] {
+        background: var(--color-team-blu);
+      }
+    }
 
-        .game-number {
-          grid-area: 1 / 2;
-          color: var(--color-zinc-100);
-        }
+    .map-name,
+    .launched-at {
+      white-space: nowrap;
+    }
 
-        .game-class-icon {
-          grid-area: 1 / 3;
-        }
+    @media (width < theme(--breakpoint-sm)) {
+      .game-list-item {
+        gap: 8px 12px;
+      }
 
-        .map-name {
-          grid-area: 2 / 1 / 3 / 4;
-          justify-self: start;
-        }
+      .game-list-thumbnail {
+        left: 50%;
+      }
 
-        .launched-at {
-          grid-area: 2 / 4 / 3 / 7;
-          justify-self: end;
-          font-size: 12px;
-        }
+      .game-number {
+        font-size: 20px;
+      }
 
-        .game-list-label {
-          font-size: 12px;
-          font-weight: 700;
-          padding: 2px 8px;
-
-          &[data-team='blu'] {
-            grid-area: 1 / 5;
-          }
-
-          &[data-team='red'] {
-            grid-area: 1 / 6;
-            margin-left: 8px;
-          }
-
-          &[data-state='interrupted'],
-          &[data-state='launching'] {
-            grid-area: 1 / 5 / 2 / 7;
-          }
-        }
+      .launched-at {
+        font-size: 12px;
       }
     }
   }
