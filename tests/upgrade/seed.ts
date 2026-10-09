@@ -9,3 +9,5 @@ export const mapPool = [
   { name: 'cp_upgrade_b', execConfig: 'upgrade_config_b' },
   { name: 'koth_upgrade_c', execConfig: 'upgrade_config_c' },
 ]
+export const readyUpTimeoutSeconds = 45
+export const mapCooldown = 3

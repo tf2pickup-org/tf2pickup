@@ -8,6 +8,7 @@ export function GameClassSkillInput(props: {
   step?: number
   name?: undefined | string
   id?: undefined | string
+  label?: undefined | string
   style?: undefined | string
   children?: undefined | Children
 }) {
@@ -16,8 +17,8 @@ export function GameClassSkillInput(props: {
   return (
     <div class="game-class-skill-input" style={props.style} data-skill-spinner>
       <GameClassIcon gameClass={props.gameClass} size={32} />
-      <label class="sr-only" for={id}>
-        Player's skill on {props.gameClass}
+      <label class="sr-only" for={id} safe>
+        {props.label ?? `Player's skill on ${props.gameClass}`}
       </label>
       <button type="button" class="skill-spinner-btn" data-action="decrement" aria-label="Decrease">
         {'‹'}
