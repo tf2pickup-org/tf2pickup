@@ -3,6 +3,7 @@ import { PlayerRestrictionsPage } from '../../../admin/player-restrictions/views
 import { z } from 'zod'
 import { configuration } from '../../../configuration'
 import { requestContext } from '@fastify/request-context'
+import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { routes } from '../../../utils/routes'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { Gamemode } from '../../../shared/types/gamemode'
@@ -44,7 +45,11 @@ export default routes(async app => {
           const [, gamemode, gameClass] = /^defaultPlayerSkill\.([^.]+)\.([^.]+)$/.exec(key) ?? []
           const gamemodeSkill = z.enum(Gamemode).safeParse(gamemode)
           const skillClass = z.enum(Tf2ClassName).safeParse(gameClass)
-          if (gamemodeSkill.success && skillClass.success) {
+          if (
+            gamemodeSkill.success &&
+            gamemodeConfigs[gamemodeSkill.data].autoBalance &&
+            skillClass.success
+          ) {
             defaultPlayerSkill[gamemodeSkill.data] = {
               ...defaultPlayerSkill[gamemodeSkill.data],
               [skillClass.data]: z.coerce.number().parse(value),

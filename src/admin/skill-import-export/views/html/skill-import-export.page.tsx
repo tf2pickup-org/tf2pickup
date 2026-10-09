@@ -7,7 +7,7 @@ import { Admin } from '../../../views/html/admin'
 export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
   const { gamemode } = props
   const classNames = gamemodeConfigs[gamemode].classes.map(c => c.name)
-  const gamemodes = await queues.gamemodesInUse()
+  const gamemodes = (await queues.gamemodesInUse()).filter(tab => gamemodeConfigs[tab].autoBalance)
 
   return (
     <Admin activePage="skill-import-export">
