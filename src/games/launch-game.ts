@@ -1,6 +1,6 @@
 import type { GameModel } from '../database/models/game.model'
 import { logger } from '../logger'
-import { queue } from '../queue-auto'
+import { queue } from '../queues/auto'
 import { assignGameServer } from './assign-game-server'
 import { create } from './create'
 import { configure } from './rcon/configure'

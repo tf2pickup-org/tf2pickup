@@ -9,7 +9,7 @@ import { GameEventType } from '../database/models/game-event.model'
 import { events } from '../events'
 import { applyCooldown } from './apply-cooldown'
 import { players } from '../players'
-import { queue } from '../queue-auto'
+import { queue } from '../queues/auto'
 import { calculateJoinGameserverTimeout } from './calculate-join-gameserver-timeout'
 import { logError } from '../utils/log-error'
 
