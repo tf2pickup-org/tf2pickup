@@ -27,70 +27,73 @@ export async function MumbleVerificationPage(props: { steamId: SteamId64 }) {
 
   return (
     <Layout title={makeTitle('Mumble verification')}>
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto flex max-w-3xl flex-col gap-8 text-zinc-200">
-          <section class="flex flex-col gap-4 rounded-lg bg-zinc-950 p-[24px]">
-            <h4 class="text-[24px] font-bold">Mumble verification</h4>
-            <p>
-              Game channels on our Mumble server are open only to that game's players. The bot
-              recognizes you by your Mumble certificate, so link it to your account once and you're
-              set.
-            </p>
-            {player.mumbleCertificate ? (
-              <p class="flex flex-row items-center gap-2" id="mumble-verification-status">
-                <IconCheck class="shrink-0 text-green-600" />
-                <span>
-                  Your Mumble certificate is linked to your account since{' '}
-                  <span safe>{format(player.mumbleCertificate.boundAt, 'MMMM d, yyyy')}</span>.
-                </span>
+        <div class="page-wide">
+          <h1 class="page-title">Mumble verification</h1>
+          <div class="mt-12 flex max-w-3xl flex-col gap-6">
+            <section class="page-panel flex flex-col gap-4">
+              <h2 class="text-2xl leading-[1.5] font-bold">Your certificate</h2>
+              <p>
+                Game channels on our Mumble server are open only to that game's players. The bot
+                recognizes you by your Mumble certificate, so link it to your account once and
+                you're set.
               </p>
-            ) : (
-              <p class="flex flex-row items-center gap-2" id="mumble-verification-status">
-                <IconX class="shrink-0 text-red-600" />
-                <span>Your Mumble certificate isn't linked to your account yet.</span>
+              {player.mumbleCertificate ? (
+                <p class="flex flex-row items-center gap-2" id="mumble-verification-status">
+                  <IconCheck class="shrink-0 text-green-600" />
+                  <span>
+                    Your Mumble certificate is linked to your account since{' '}
+                    <span safe>{format(player.mumbleCertificate.boundAt, 'MMMM d, yyyy')}</span>.
+                  </span>
+                </p>
+              ) : (
+                <p class="flex flex-row items-center gap-2" id="mumble-verification-status">
+                  <IconX class="shrink-0 text-red-600" />
+                  <span>Your Mumble certificate isn't linked to your account yet.</span>
+                </p>
+              )}
+            </section>
+
+            <section class="page-panel flex flex-col gap-4">
+              <h2 class="text-2xl leading-[1.5] font-bold">
+                {player.mumbleCertificate ? 'Verify again' : 'Link your certificate'}
+              </h2>
+              {!!player.mumbleCertificate && (
+                <p>Only needed if you use a new computer or a new certificate.</p>
+              )}
+              {players.hasActiveBan(player) ? (
+                <p>You can't verify while you're banned.</p>
+              ) : (
+                <VerificationSteps
+                  steamId={props.steamId}
+                  serverUrl={serverUrl}
+                  host={host ?? ''}
+                  port={port}
+                  botName={botName}
+                />
+              )}
+            </section>
+
+            <section class="page-panel flex flex-col gap-4" id="new-certificate">
+              <h2 class="text-2xl leading-[1.5] font-bold">Lost your certificate?</h2>
+              <p>
+                Mumble keeps your certificate on your computer. If you reinstalled Mumble, switched
+                computers, or the bot says your certificate is linked to another account, create a
+                new one:
               </p>
-            )}
-          </section>
-
-          <section class="flex flex-col gap-4 rounded-lg bg-zinc-950 p-[24px]">
-            <h4 class="text-[24px] font-bold">
-              {player.mumbleCertificate ? 'Verify again' : 'Link your certificate'}
-            </h4>
-            {!!player.mumbleCertificate && (
-              <p>Only needed if you use a new computer or a new certificate.</p>
-            )}
-            {players.hasActiveBan(player) ? (
-              <p>You can't verify while you're banned.</p>
-            ) : (
-              <VerificationSteps
-                steamId={props.steamId}
-                serverUrl={serverUrl}
-                host={host ?? ''}
-                port={port}
-                botName={botName}
-              />
-            )}
-          </section>
-
-          <section class="flex flex-col gap-4 rounded-lg bg-zinc-950 p-[24px]" id="new-certificate">
-            <h4 class="text-[24px] font-bold">Lost your certificate?</h4>
-            <p>
-              Mumble keeps your certificate on your computer. If you reinstalled Mumble, switched
-              computers, or the bot says your certificate is linked to another account, create a new
-              one:
-            </p>
-            <ol class="list-inside list-decimal">
-              <li>
-                In Mumble, open <strong>Configure → Certificate Wizard</strong>.
-              </li>
-              <li>
-                Choose <strong>Create a new certificate</strong> and follow the steps.
-              </li>
-              <li>Reconnect to the server and send the bot a new code.</li>
-            </ol>
-            <p>Your new certificate replaces the old one on your account.</p>
-          </section>
+              <ol class="list-inside list-decimal">
+                <li>
+                  In Mumble, open <strong>Configure → Certificate Wizard</strong>.
+                </li>
+                <li>
+                  Choose <strong>Create a new certificate</strong> and follow the steps.
+                </li>
+                <li>Reconnect to the server and send the bot a new code.</li>
+              </ol>
+              <p>Your new certificate replaces the old one on your account.</p>
+            </section>
+          </div>
         </div>
       </Page>
       <Footer />
