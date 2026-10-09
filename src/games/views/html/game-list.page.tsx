@@ -9,7 +9,7 @@ import { Pagination, paginate } from '../../../html/components/pagination'
 import { makeTitle } from '../../../html/make-title'
 import type { PickDeep } from 'type-fest'
 import type { GameModel } from '../../../database/models/game.model'
-import type { Gamemode } from '../../../shared/types/gamemode'
+import { Gamemode } from '../../../shared/types/gamemode'
 import { GamesFilter } from './games-filter'
 
 const itemsPerPage = 8
@@ -27,7 +27,11 @@ export async function GameListPage(props: { page: number; gamemode?: Gamemode | 
         <div class="games-page">
           <div class="games-page-header">
             <h1 class="games-page-title">Games</h1>
-            <GamesFilter gamemode={props.gamemode} />
+            <GamesFilter
+              baseUrl="/games"
+              gamemodes={await playedGamemodes()}
+              gamemode={props.gamemode}
+            />
           </div>
           <div class="contents" id="gameList">
             <GameList {...props} />
@@ -86,4 +90,9 @@ export async function GameList(props: { page: number; gamemode?: Gamemode | unde
   ) : (
     <p class="text-zinc-400">No games yet.</p>
   )
+}
+
+async function playedGamemodes() {
+  const played = await collections.games.distinct('gamemode')
+  return Object.values(Gamemode).filter(gamemode => played.includes(gamemode))
 }
