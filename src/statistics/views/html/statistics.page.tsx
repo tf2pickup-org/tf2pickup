@@ -18,25 +18,25 @@ export async function StatisticsPage() {
       canonical="/statistics"
       embedStyle={resolve(import.meta.dirname, 'statistics.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">
-          <div class="lg:col-span-2">
-            <div class="my-9 text-[48px] font-bold text-zinc-200 capitalize">Statistics</div>
-          </div>
+        <div class="page-wide">
+          <h1 class="page-title">Stats</h1>
 
-          <GlobalStats />
+          <div class="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <GlobalStats />
 
-          <div class="flex flex-col rounded-lg bg-zinc-950 px-12 py-8">
-            <PlayedMapsCount />
-          </div>
+            <div class="page-panel flex flex-col">
+              <PlayedMapsCount />
+            </div>
 
-          <div class="flex flex-col rounded-lg bg-zinc-950 px-6 py-8">
-            <GameLaunchTimeSpans />
-          </div>
+            <div class="page-panel flex flex-col">
+              <GameLaunchTimeSpans />
+            </div>
 
-          <div class="rounded-lg bg-zinc-950 px-6 py-8 lg:col-span-2">
-            <GameActivity />
+            <div class="page-panel lg:col-span-2">
+              <GameActivity />
+            </div>
           </div>
         </div>
       </Page>
