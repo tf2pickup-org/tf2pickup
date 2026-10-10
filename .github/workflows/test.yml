@@ -163,7 +163,7 @@ jobs:
         run: npx playwright install-deps chromium
 
       - name: Download artifact
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         with:
           name: image
           path: /tmp
@@ -294,7 +294,7 @@ jobs:
         run: pnpm install
 
       - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v8.0.1
+        uses: actions/download-artifact@v8.0.2
         continue-on-error: true
         with:
           path: all-blob-reports
