@@ -85,7 +85,7 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: image
           path: /tmp/image.tar
@@ -250,7 +250,7 @@ jobs:
         run: docker container stop nginx
 
       - if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: blob-report-${{ matrix.queue-config }}-${{ matrix.shard }}
           path: blob-report
@@ -307,7 +307,7 @@ jobs:
 
       - name: Upload HTML report
         if: ${{ hashFiles('playwright-report/**') != '' }}
-        uses: actions/upload-artifact@v7.0.1
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: html-report-attempt-${{ github.run_attempt }}
           path: playwright-report
