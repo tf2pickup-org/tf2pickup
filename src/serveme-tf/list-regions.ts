@@ -1,6 +1,7 @@
-import { client } from './client'
+import { getClient } from './client'
 
 export async function listRegions() {
+  const client = await getClient()
   if (!client) {
     throw new Error(`serveme.tf disabled`)
   }

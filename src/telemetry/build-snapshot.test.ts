@@ -6,13 +6,18 @@ vi.mock('../environment', () => ({
   environment: {
     QUEUE_CONFIG: '6v6',
     DISCORD_BOT_TOKEN: 'token',
-    SERVEME_TF_API_KEY: undefined,
     TF2_QUICK_SERVER_CLIENT_ID: 'id',
     TF2_QUICK_SERVER_CLIENT_SECRET: 'secret',
     TWITCH_CLIENT_ID: undefined,
     TWITCH_CLIENT_SECRET: undefined,
     LOGS_TF_API_KEY: 'logs',
     UMAMI_WEBSITE_ID: undefined,
+  },
+}))
+
+vi.mock('../serveme-tf', () => ({
+  servemeTf: {
+    isEnabled: vi.fn().mockResolvedValue(false),
   },
 }))
 
