@@ -200,8 +200,8 @@ importers:
         specifier: 10.1.3
         version: 10.1.3
       '@fastify/otel':
-        specifier: 0.21.1
-        version: 0.21.1(@opentelemetry/api@1.9.1)(supports-color@8.1.1)
+        specifier: 0.21.2
+        version: 0.21.2(@opentelemetry/api@1.9.1)(supports-color@8.1.1)
       '@fastify/rate-limit':
         specifier: 11.2.0
         version: 11.2.0
@@ -1005,8 +1005,8 @@ packages:
   '@fastify/multipart@10.1.3':
     resolution: {integrity: sha512-nLZopLYgAj+0BhcSm6upfT5x4fwKDfGlJ51U4Bkg1HknFaO6LjfCc2prqbXMNjRdM0cCVzp3L4bjkvfuuTLxJg==}
 
-  '@fastify/otel@0.21.1':
-    resolution: {integrity: sha512-oV2c3ddx9NZLC1iM5+a47IpAi5c6qTE6AvNlln6AX9fQPB2FToOC72hsrgEKu2xmySzu0WFxaS8aSXhPtlcH6Q==}
+  '@fastify/otel@0.21.2':
+    resolution: {integrity: sha512-JWkxmIroQtJaVKGIzFTvAEI+J4elMmjgWGcQkRhvrcHYCf5xD3Q0sgQusQ2tMcCVewg7haoWSWIvub+KixKU3w==}
     peerDependencies:
       '@opentelemetry/api': ^1.9.0
 
@@ -1444,12 +1444,6 @@ packages:
 
   '@opentelemetry/context-async-hooks@2.12.0':
     resolution: {integrity: sha512-iK/1nD7mmZVkuYjVjkdFBiCvzntJdFny1S3CYbUYyOq7V5enL6XX+gJ7eh965L1LnS11VA8mQ7Ej/ck04SB0MQ==}
-    engines: {node: ^18.19.0 || >=20.6.0}
-    peerDependencies:
-      '@opentelemetry/api': '>=1.0.0 <1.10.0'
-
-  '@opentelemetry/core@2.11.0':
-    resolution: {integrity: sha512-7YP44XH0tV6+Mb54x2YGf84i7yi+31MBZlE8JwvozkxyTvXbSp10X7cI7YE49ChJ3shMJoBmCJF3+1QFBJctGA==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
@@ -5716,10 +5710,10 @@ snapshots:
       fastify-plugin: 6.0.0
       secure-json-parse: 4.1.0
 
-  '@fastify/otel@0.21.1(@opentelemetry/api@1.9.1)(supports-color@8.1.1)':
+  '@fastify/otel@0.21.2(@opentelemetry/api@1.9.1)(supports-color@8.1.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.11.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/core': 2.12.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/instrumentation': 0.222.0(@opentelemetry/api@1.9.1)(supports-color@8.1.1)
       '@opentelemetry/semantic-conventions': 1.43.0
       minimatch: 10.2.6
@@ -6214,11 +6208,6 @@ snapshots:
   '@opentelemetry/context-async-hooks@2.12.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-
-  '@opentelemetry/core@2.11.0(@opentelemetry/api@1.9.1)':
-    dependencies:
-      '@opentelemetry/api': 1.9.1
-      '@opentelemetry/semantic-conventions': 1.43.0
 
   '@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1)':
     dependencies:
