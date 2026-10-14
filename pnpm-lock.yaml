@@ -188,8 +188,8 @@ importers:
         specifier: 6.2.1
         version: 6.2.1
       '@fastify/flash':
-        specifier: 6.0.5
-        version: 6.0.5
+        specifier: 6.0.6
+        version: 6.0.6
       '@fastify/formbody':
         specifier: 9.0.1
         version: 9.0.1
@@ -987,8 +987,8 @@ packages:
   '@fastify/fast-json-stringify-compiler@5.0.3':
     resolution: {integrity: sha512-uik7yYHkLr6fxd8hJSZ8c+xF4WafPK+XzneQDPU+D10r5X19GW8lJcom2YijX2+qtFF1ENJlHXKFM9ouXNJYgQ==}
 
-  '@fastify/flash@6.0.5':
-    resolution: {integrity: sha512-DaJcL7acz6T3b7SUHAaegK4RelSbHlJzsFAWAPx5BEft/NSzg+eaNU0Fw5i0EkEAEtOMCV2gcXYWr4flm5r+mA==}
+  '@fastify/flash@6.0.6':
+    resolution: {integrity: sha512-U5XULQoE9x8MZ9gmgn3FpuE23kfrsz8rJVLREjwbux6JfRV05kdoac01yC12grUBbNRPAE4a2Tl5oKvzH8Pq9w==}
 
   '@fastify/formbody@9.0.1':
     resolution: {integrity: sha512-QaUet4NQavwnl6iPYMaf5hJC2N7kRPOmC58RhDiFThfg7Hcc8X2LdpcEfmaOEBimq5z7yZLy1e1q+PIv3o3tFQ==}
@@ -5685,7 +5685,7 @@ snapshots:
     dependencies:
       fast-json-stringify: 6.3.0
 
-  '@fastify/flash@6.0.5':
+  '@fastify/flash@6.0.6':
     dependencies:
       fastify-plugin: 6.0.0
 
