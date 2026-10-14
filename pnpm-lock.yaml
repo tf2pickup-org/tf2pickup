@@ -209,8 +209,8 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       '@fastify/secure-session':
-        specifier: 8.4.0
-        version: 8.4.0
+        specifier: 8.4.1
+        version: 8.4.1
       '@fastify/sensible':
         specifier: 6.0.6
         version: 6.0.6
@@ -1019,8 +1019,8 @@ packages:
   '@fastify/request-context@7.0.2':
     resolution: {integrity: sha512-XpXmh09g3841GkygpWydPd41hCk7kNcyV6Th5pBXcpol0N283k25IhG4Zf8DJUsQiGhHL0kB1LsuOs7pMt3d6Q==}
 
-  '@fastify/secure-session@8.4.0':
-    resolution: {integrity: sha512-S1fv1OF0lprcFB/c17k/T2BXElv2r5rlwPfWtPr4Tb7Evp4Z9Azegi0AnMrWnNNgUZsqJ1FWkFtU1r9ySuRFAg==}
+  '@fastify/secure-session@8.4.1':
+    resolution: {integrity: sha512-V9khuSlcbpupL3ZVKvAsnPtxFWDj41946W17vmRYvL4Ov57lh7ZVyYYioB4SYNf7xdV8qa+ZRQ86Ni9sBE2oQQ==}
     hasBin: true
 
   '@fastify/send@4.0.0':
@@ -5739,7 +5739,7 @@ snapshots:
     dependencies:
       fastify-plugin: 6.0.0
 
-  '@fastify/secure-session@8.4.0':
+  '@fastify/secure-session@8.4.1':
     dependencies:
       '@fastify/cookie': 11.0.2
       fastify-plugin: 6.0.0
