@@ -1,11 +1,10 @@
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { errors } from '../../errors'
-import { events } from '../../events'
 import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
-import { withQueueLock } from '../with-queue-lock'
+import { queueCommand } from './queue-command'
 import { withLogLevel } from '../../utils/with-log-level'
 
 export async function voteMap(
@@ -18,7 +17,7 @@ export async function voteMap(
   }
 
   const { queue } = slot
-  return await withQueueLock(queue, 'vote-map', async () => {
+  return await queueCommand(queue, 'vote-map', async emit => {
     logger.trace({ queue, steamId, map }, 'queue.voteMap()')
     const mapCount = await collections.queueMapOptions.countDocuments({ queue, name: map })
     if (mapCount === 0) {
@@ -39,7 +38,7 @@ export async function voteMap(
     }
 
     const results = await getMapVoteResults(queue)
-    events.emit('queue/mapVoteResults:updated', { queue, results })
+    emit('queue/mapVoteResults:updated', { queue, results })
     return { queue, results }
   })
 }
