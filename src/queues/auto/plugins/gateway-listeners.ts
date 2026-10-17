@@ -26,6 +26,7 @@ import { byPageUrl } from '../../by-page-url'
 import type { QueueModel } from '../../../database/models/queue.model'
 import { listEnabled } from '../../list-enabled'
 import { queuePageUrl } from '../../queue-page-url'
+import { configuration } from '../../../configuration'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -43,9 +44,10 @@ export default fp(
       const slots = await collections.queueSlots
         .find({ queue: queue._id, player: { $ne: null } })
         .toArray()
+      const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
       app.gateway
         .to({ player: actorId })
-        .send(() => Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))))
+        .send(() => Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor, defaultSkill }))))
     }
 
     // each open queue page shows the membership for its own queue
