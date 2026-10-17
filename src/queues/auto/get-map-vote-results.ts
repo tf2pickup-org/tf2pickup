@@ -1,13 +1,15 @@
 import { collections } from '../../database/collections'
+import type { QueueId } from '../../database/models/queue.model'
 
-export async function getMapVoteResults(): Promise<Record<string, number>> {
+export async function getMapVoteResults(queue: QueueId): Promise<Record<string, number>> {
   const results = await collections.queueMapOptions
     .aggregate([
+      { $match: { queue } },
       {
         $lookup: {
           from: collections.queueMapVotes.collectionName,
-          localField: 'name',
-          foreignField: 'map',
+          let: { map: '$name' },
+          pipeline: [{ $match: { queue } }, { $match: { $expr: { $eq: ['$map', '$$map'] } } }],
           as: 'votes',
         },
       },

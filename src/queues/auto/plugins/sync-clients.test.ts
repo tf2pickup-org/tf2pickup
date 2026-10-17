@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import type { FastifyInstance } from 'fastify'
+import { ObjectId } from 'mongodb'
 
 const {
   mockPlayersFind,
@@ -9,6 +10,7 @@ const {
   mockQueueSlotsFindOne,
   mockNotFound,
   mockGetState,
+  shownQueue,
 } = vi.hoisted(() => ({
   mockPlayersFind: vi.fn(),
   mockPlayersCollectionFindOne: vi.fn(),
@@ -16,6 +18,7 @@ const {
   mockQueueSlotsFindOne: vi.fn(),
   mockNotFound: vi.fn((msg: string) => new Error(msg)),
   mockGetState: vi.fn(),
+  shownQueue: { _id: { equals: (other: unknown) => other === 'shown-queue' }, gamemode: '6v6' },
 }))
 
 vi.mock('fastify-plugin', () => ({ default: <T>(fn: T): T => fn }))
@@ -24,6 +27,7 @@ vi.mock('../../../utils/safe', () => ({ safe: <T>(fn: T): T => fn }))
 vi.mock('../../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../../errors', () => ({ errors: { notFound: mockNotFound } }))
 vi.mock('../../get-state', () => ({ getState: mockGetState }))
+vi.mock('../../get-default', () => ({ getDefault: vi.fn().mockResolvedValue(shownQueue) }))
 vi.mock('../../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },
@@ -163,9 +167,9 @@ describe('sync-clients', () => {
       mockPlayersFind.mockReturnValue({
         toArray: vi.fn().mockResolvedValue([{ steamId: steamId1 }, { steamId: steamId2 }]),
       })
-      const handler = getHandler<{ target: SteamId64 }>('queue/friendship:created')
+      const handler = getHandler<{ queue: unknown; target: SteamId64 }>('queue/friendship:created')
 
-      await handler({ target: steamId1 })
+      await handler({ queue: 'shown-queue', target: steamId1 })
 
       expect(mockPlayersFind).toHaveBeenCalledOnce()
       expect(mockPlayersFind).toHaveBeenCalledWith(
@@ -196,6 +200,7 @@ describe('sync-clients', () => {
       await getReadyHandler()(socket)
 
       expect(mockQueueSlotsFindOne).toHaveBeenCalledWith({
+        queue: shownQueue._id,
         'player.steamId': steamId1,
         ready: false,
       })
@@ -230,9 +235,9 @@ describe('sync-clients', () => {
       mockPlayersFind.mockReturnValue({
         toArray: vi.fn().mockResolvedValue([{ steamId: steamId1 }, { steamId: steamId2 }]),
       })
-      const handler = getHandler<{ slots: unknown[] }>('queue/slots:updated')
+      const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
 
-      await handler({ slots: [] })
+      await handler({ queue: 'shown-queue', slots: [] })
 
       expect(mockPlayersFind).toHaveBeenCalledOnce()
       expect(mockPlayersFind).toHaveBeenCalledWith(
@@ -242,11 +247,20 @@ describe('sync-clients', () => {
       expect(vi.mocked(players.bySteamId)).not.toHaveBeenCalled()
     })
 
+    it("ignores queues that aren't shown on the page", async () => {
+      const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
+
+      await handler({ queue: new ObjectId(), slots: [] })
+
+      expect(mockPlayersFind).not.toHaveBeenCalled()
+      expect(app.gateway.broadcast).not.toHaveBeenCalled()
+    })
+
     it('does not include unauthenticated clients in the batch query', async () => {
       ;(app.websocketServer.clients as Set<unknown>).add({ player: undefined })
-      const handler = getHandler<{ slots: unknown[] }>('queue/slots:updated')
+      const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
 
-      await handler({ slots: [] })
+      await handler({ queue: 'shown-queue', slots: [] })
 
       expect(mockPlayersFind).toHaveBeenCalledWith(
         { steamId: { $in: [] } },

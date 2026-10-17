@@ -1,21 +1,24 @@
 import { maxBy, sample } from 'es-toolkit'
 import { collections } from '../../database/collections'
+import type { QueueId } from '../../database/models/queue.model'
 import { logger } from '../../logger'
 
-export async function getMapWinner(): Promise<string> {
+export async function getMapWinner(queue: QueueId): Promise<string> {
   const mapsWithVotes = await collections.queueMapOptions
     .aggregate<{ name: string; votes: number }>([
+      { $match: { queue } },
       {
         $lookup: {
           from: 'queue.mapvotes',
           let: {
             map: '$name',
+            queue: '$queue',
           },
           pipeline: [
             {
               $match: {
                 $expr: {
-                  $eq: ['$map', '$$map'],
+                  $and: [{ $eq: ['$map', '$$map'] }, { $eq: ['$queue', '$$queue'] }],
                 },
               },
             },
@@ -34,7 +37,7 @@ export async function getMapWinner(): Promise<string> {
       },
     ])
     .toArray()
-  logger.trace({ mapsWithVotes }, 'queue.getMapWinner()')
+  logger.trace({ queue, mapsWithVotes }, 'queue.getMapWinner()')
   const maxVotes = maxBy(mapsWithVotes, r => r.votes)?.votes ?? 0
   const mapsWithMaxVotes = mapsWithVotes.filter(m => m.votes === maxVotes)
   return sample(mapsWithMaxVotes).name

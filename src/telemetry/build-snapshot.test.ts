@@ -33,9 +33,15 @@ vi.mock('../database/collections', () => ({
   },
 }))
 
-vi.mock('../maps/pool', () => ({
-  mapPool: {
-    get: vi.fn().mockResolvedValue([{ name: 'cp_process_f12' }, { name: 'cp_gullywash_f9' }]),
+vi.mock('../queues', () => ({
+  queues: {
+    getDefault: vi.fn().mockResolvedValue({
+      gamemode: '6v6',
+      skillThreshold: null,
+      requireVerification: false,
+      mapCooldown: 2,
+      maps: [{ name: 'cp_process_f12' }, { name: 'cp_gullywash_f9' }],
+    }),
   },
 }))
 
@@ -72,9 +78,6 @@ const values: Record<string, unknown> = {
   'games.auto_force_end_threshold': 4,
   'players.etf2l_account_required': false,
   'players.minimum_in_game_hours': 0,
-  'queue.player_skill_threshold': null,
-  'queue.require_player_verification': false,
-  'queue.map_cooldown': 2,
   'serveme_tf.preferred_region': 'eu',
   'games.cooldown_levels': [{ level: 0, banLengthMs: 1 }],
   'games.default_player_skill': { '6v6': { soldier: 5 } },

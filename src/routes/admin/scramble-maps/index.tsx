@@ -1,6 +1,7 @@
 import { PlayerRole } from '../../../database/models/player.model'
 import { ScrambleMaps } from '../../../admin/scramble-maps/views/html/scramble-maps.page'
-import { queue } from '../../../queues/auto'
+import { queues } from '../../../queues'
+import { resetMapOptions } from '../../../maps/reset-options'
 import { MapVoteOptions } from '../../../admin/scramble-maps/views/html/map-vote-options'
 import { routes } from '../../../utils/routes'
 import { FlashMessage } from '../../../html/components/flash-message'
@@ -22,9 +23,10 @@ export default routes(async app => {
       },
     )
     .put('/scramble', { config: { authorize: [PlayerRole.admin] } }, async (request, reply) => {
-      await queue.resetMapOptions()
+      const queue = (await queues.getDefault())._id
+      await resetMapOptions(queue)
       const newMaps = await collections.queueMapOptions
-        .find({}, { projection: { name: 1 } })
+        .find({ queue }, { projection: { name: 1 } })
         .toArray()
       await activityLog.recordMapScramble(
         request.user!.player.steamId,

@@ -1,14 +1,15 @@
+import { environment } from '../../../../environment'
+import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import type { ImportAnalysis } from '../../types'
 import { Admin } from '../../../views/html/admin'
 import type { PlayerSkill } from '../../../../database/models/player.model'
-import { config } from '../../../../queues/auto/config'
 
 interface PreviewPageProps {
   analysis: ImportAnalysis
 }
 
 export function PreviewPage({ analysis }: PreviewPageProps) {
-  const classNames = config.classes.map(c => c.name)
+  const classNames = gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(c => c.name)
   const totalChanges =
     analysis.changedPlayers.length +
     analysis.initializedPlayers.length +
