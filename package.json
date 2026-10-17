@@ -89,7 +89,7 @@
     "pem": "1.14.8",
     "pino": "10.4.0",
     "postcss": "8.5.29",
-    "postcss-import": "17.0.0",
+    "postcss-import": "17.0.1",
     "postcss-nested": "8.0.1",
     "rcon-client": "4.2.5",
     "sanitize-html": "2.18.0",
