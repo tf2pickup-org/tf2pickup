@@ -1,6 +1,7 @@
 import { milliseconds, minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { z } from 'zod'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import { Gamemode } from '../../shared/types/gamemode'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
 import { HideServerInfoMode } from '../../shared/types/hide-server-info-mode'
@@ -89,9 +90,14 @@ export const configurationSchema = z.discriminatedUnion('key', [
   z.object({
     key: z.literal('games.default_player_skill'),
     value: z
-      .partialRecord(z.enum(Tf2ClassName), z.number())
+      .partialRecord(z.enum(Gamemode), z.partialRecord(z.enum(Tf2ClassName), z.number()))
       .default(() =>
-        Object.fromEntries(Object.values(Tf2ClassName).map(className => [className, 1])),
+        Object.fromEntries(
+          Object.values(Gamemode).map(gamemode => [
+            gamemode,
+            Object.fromEntries(Object.values(Tf2ClassName).map(className => [className, 1])),
+          ]),
+        ),
       ),
   }),
   z.object({

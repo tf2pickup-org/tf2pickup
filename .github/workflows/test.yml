@@ -225,7 +225,7 @@ jobs:
         run: docker ps
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
+        run: pnpm test:e2e --project=chromium --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep @${{ matrix.queue-config }}
         env:
           API_URL: 'http://127.0.0.1:3000'
           STEAM_USERNAME: ${{ secrets.TEST_USER_USERNAME }}
@@ -277,6 +277,131 @@ jobs:
           if [ "$codeChanged" = true ]; then
             test "$e2eResult" = success
           fi
+
+  upgrade-tests:
+    name: upgrade from ${{ matrix.upgrade-from }} (${{ matrix.queue-config }})
+    needs: [build, changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    env:
+      API_URL: 'http://127.0.0.1:3000'
+      WEBSITE_URL: 'https://www.localhost'
+      MONGODB_URI: 'mongodb://localhost:27017/tf2pickup'
+      STEAM_API_KEY: ${{ secrets.STEAM_API_KEY || 'FAKE_STEAM_API_KEY' }}
+      QUEUE_CONFIG: ${{ matrix.queue-config }}
+      THUMBNAIL_SERVICE_URL: 'https://mapthumbnails.tf2pickup.org'
+      LOG_RELAY_ADDRESS: '127.0.0.1'
+      LOG_RELAY_PORT: '9871'
+      GAME_SERVER_SECRET: 'xxxxxx'
+      KEY_STORE_PASSPHRASE: 'a_password'
+      ENABLE_TEST_AUTH: 'true'
+      LOG_LEVEL: 'trace'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # the last release before multi-queue
+        upgrade-from: ['4.23.13']
+        queue-config: ['6v6', '9v9']
+
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: pnpm/action-setup@v6.1.0
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24.21.0
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Download artifact
+        uses: actions/download-artifact@v8.0.1
+        with:
+          name: image
+          path: /tmp
+
+      - name: Load image
+        run: docker load --input /tmp/image.tar
+
+      - name: Configure access via proxy
+        run: |
+          sudo cp ${{ github.workspace }}/tests/nginx/certs/localhost.crt /usr/local/share/ca-certificates
+          sudo update-ca-certificates
+          sudo echo "127.0.0.1 www.localhost" | sudo tee -a /etc/hosts
+
+      - name: Start ${{ matrix.upgrade-from }}
+        run: tests/upgrade/start-app.sh ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.upgrade-from }}
+        env:
+          MONGODB_URI: 'mongodb://mongo:27017/tf2pickup'
+          NETWORK: ${{ job.services.mongo.network }}
+        timeout-minutes: 3
+
+      - name: Start nginx
+        run: |
+          docker run \
+            --detach \
+            --name nginx \
+            --network=${{ job.services.mongo.network }} \
+            -p 80:80/tcp \
+            -p 443:443/tcp \
+            -v ${{ github.workspace }}/tests/nginx/nginx.conf:/etc/nginx/nginx.conf \
+            -v ${{ github.workspace }}/tests/nginx/certs:/etc/nginx/certs \
+            nginx
+
+      - name: Seed ${{ matrix.upgrade-from }}
+        run: pnpm test:e2e --project=upgrade-before
+
+      - name: Show ${{ matrix.upgrade-from }} logs
+        if: ${{ always() }}
+        run: docker container logs tf2pickup-app
+
+      - name: Upgrade
+        run: |
+          docker container rm --force tf2pickup-app
+          tests/upgrade/start-app.sh ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build.outputs.tag }}
+          # nginx resolves the app's address once, at startup
+          docker restart nginx
+        env:
+          MONGODB_URI: 'mongodb://mongo:27017/tf2pickup'
+          NETWORK: ${{ job.services.mongo.network }}
+        timeout-minutes: 3
+
+      - name: Verify the upgrade
+        run: pnpm test:e2e --project=upgrade-after
+
+      - name: Show app logs
+        if: ${{ always() }}
+        run: docker container logs tf2pickup-app
+
+      - if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: upgrade-report-${{ matrix.upgrade-from }}-${{ matrix.queue-config }}
+          path: test-results
+          retention-days: 7
 
   merge-reports:
     if: ${{ !cancelled() }}
