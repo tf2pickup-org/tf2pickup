@@ -32,25 +32,24 @@ export async function PlayerListPage() {
       canonical="/players"
       embedStyle={resolve(import.meta.dirname, 'style.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto">
-          <div class="my-9 text-[48px] font-bold text-zinc-200">Players</div>
+        <div class="page-wide">
+          <h1 class="page-title">Players</h1>
 
-          <div class="player-list-index">
+          <nav class="player-list-index" aria-label="Jump to letter">
             {groups.map(letter => (
-              <a href={`#${letter}`} style="uppercase" safe>
+              <a href={`#${letter}`} safe>
                 {letter}
               </a>
             ))}
-          </div>
+          </nav>
 
           {groups.map(letter => (
-            <div class="player-list-section">
-              <div class="section-divider"></div>
-              <a id={letter} class="section-letter" safe>
+            <section class="player-list-section">
+              <h2 id={letter} class="section-letter" safe>
                 {letter}
-              </a>
+              </h2>
 
               <div class="player-group">
                 {groupedPlayers.get(letter)?.map(player => (
@@ -59,7 +58,7 @@ export async function PlayerListPage() {
                   </a>
                 ))}
               </div>
-            </div>
+            </section>
           ))}
         </div>
       </Page>

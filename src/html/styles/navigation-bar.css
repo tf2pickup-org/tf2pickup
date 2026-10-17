@@ -162,7 +162,7 @@
       line-height: 24px;
     }
 
-    .nav-wide .nav-menu-item[data-accent='true'] {
+    .nav-wide .nav-menu-item[aria-current='page'] {
       background: var(--color-surface-raised);
     }
 
