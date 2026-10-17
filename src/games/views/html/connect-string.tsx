@@ -5,7 +5,6 @@ import { IconCopy } from '../../../html/components/icons'
 export async function ConnectString(props: {
   connectString?: string | undefined
   gameNumber: GameNumber
-  id?: undefined | number | string
   ariaLabel?: string
   children: Children
 }) {
@@ -26,7 +25,7 @@ export async function ConnectString(props: {
   }
 
   return (
-    <div class="connect-string" id={props.id}>
+    <div class="connect-string">
       <div class="content" aria-label={props.ariaLabel} aria-readonly>
         {props.children}
       </div>

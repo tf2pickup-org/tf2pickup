@@ -1,6 +1,7 @@
 import { Html } from '@kitajs/html'
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import {
+  IconChevronDown,
   IconClick,
   IconEye,
   IconEyeOff,
@@ -12,38 +13,55 @@ import { ConnectString } from './connect-string'
 
 export function AdminToolbox(props: { game: GameModel }) {
   return (
-    <div class="game-admin-toolbox">
-      <div class="controls">
-        <AdminToolbox.gameControlButtons {...props} />
+    <details id="game-admin-toolbox" class="admin-area" data-details-persist="admin-toolbox">
+      <summary class="admin-area-summary">
+        <span>Admin area</span>
+        <IconChevronDown class="admin-area-chevron" />
+      </summary>
+      <script>
+        {
+          `try{if(localStorage.getItem('details-persist-admin-toolbox')==='open'){document.currentScript.closest('details').setAttribute('open','');}}catch(e){}` as 'safe'
+        }
+      </script>
 
-        <label class="show-assigned-skills-checkbox">
-          <input type="checkbox" class="button" data-variant="accent" id="show-assigned-skills" />
-          <div class="icon">
-            <div class="on">
-              <IconEyeOff />
-              <span class="sr-only">Hide sensitive data</span>
-            </div>
-            <div class="off">
-              <IconEye />
-              <span class="sr-only">Show sensitive data</span>
-            </div>
-          </div>
-          <span class="tooltip text-nowrap">Toggle sensitive data</span>
+      <div class="game-admin-toolbox admin-area-content">
+        <label class="show-assigned-skills-toggle">
+          <input type="checkbox" class="sr-only" id="show-assigned-skills" />
+          <span class="on">
+            <IconEyeOff />
+            Hide skills
+          </span>
+          <span class="off">
+            <IconEye />
+            Show skills
+          </span>
         </label>
-      </div>
 
-      <AdminToolbox.rconConnect {...props} />
-    </div>
+        <AdminToolbox.rconConnect {...props} />
+
+        <section class="admin-area-section">
+          <h4 class="admin-area-caption">Server actions</h4>
+          <AdminToolbox.serverActionButtons {...props} />
+        </section>
+
+        <section class="admin-area-section">
+          <h4 class="admin-area-caption">Danger zone</h4>
+          <AdminToolbox.forceEndButton {...props} />
+        </section>
+      </div>
+    </details>
   )
 }
 
-AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
-  const disabled = ![
-    GameState.created,
-    GameState.configuring,
-    GameState.launching,
-    GameState.started,
-  ].includes(props.game.state)
+AdminToolbox.gameControlButtons = (props: { game: GameModel }) => (
+  <>
+    <AdminToolbox.serverActionButtons {...props} />
+    <AdminToolbox.forceEndButton {...props} />
+  </>
+)
+
+AdminToolbox.serverActionButtons = (props: { game: GameModel }) => {
+  const disabled = !isRunning(props.game)
 
   return (
     <>
@@ -75,20 +93,6 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
 
       <button
         class="button"
-        disabled={disabled}
-        id={`game-${props.game.number}-force-end-game-button`}
-        hx-trigger="click"
-        hx-put={`/games/${props.game.number}/force-end`}
-        hx-confirm="Are you sure you want to force-end this game?"
-        data-umami-event="force-end-game"
-        data-umami-event-game-number={props.game.number}
-      >
-        <IconX />
-        Force-end
-      </button>
-
-      <button
-        class="button"
         disabled={disabled || !props.game.gameServer}
         id={`game-${props.game.number}-rcon-console-button`}
         onclick="htmx.trigger('#rcon-console-dialog', 'open')"
@@ -102,6 +106,23 @@ AdminToolbox.gameControlButtons = (props: { game: GameModel }) => {
   )
 }
 
+AdminToolbox.forceEndButton = (props: { game: GameModel }) => (
+  <button
+    class="button"
+    data-variant="danger"
+    disabled={!isRunning(props.game)}
+    id={`game-${props.game.number}-force-end-game-button`}
+    hx-trigger="click"
+    hx-put={`/games/${props.game.number}/force-end`}
+    hx-confirm="Are you sure you want to force-end this game?"
+    data-umami-event="force-end-game"
+    data-umami-event-game-number={props.game.number}
+  >
+    <IconX />
+    Force-end
+  </button>
+)
+
 AdminToolbox.rconConnect = (props: { game: GameModel }) => {
   const id = `game-${props.game.number}-rcon-connect-string`
 
@@ -114,13 +135,24 @@ AdminToolbox.rconConnect = (props: { game: GameModel }) => {
 
   const rconConnect = `rcon_address ${props.game.gameServer.rcon.address}:${props.game.gameServer.rcon.port}; rcon_password "${props.game.gameServer.rcon.password}"`
   return (
-    <ConnectString
-      gameNumber={props.game.number}
-      connectString={rconConnect}
-      id={id}
-      ariaLabel="RCON connect string"
-    >
-      {Html.escapeHtml(rconConnect)}
-    </ConnectString>
+    <section class="admin-area-section" id={id}>
+      <h4 class="admin-area-caption">RCON</h4>
+      <ConnectString
+        gameNumber={props.game.number}
+        connectString={rconConnect}
+        ariaLabel="RCON connect string"
+      >
+        {Html.escapeHtml(rconConnect)}
+      </ConnectString>
+    </section>
   )
+}
+
+function isRunning(game: Pick<GameModel, 'state'>) {
+  return [
+    GameState.created,
+    GameState.configuring,
+    GameState.launching,
+    GameState.started,
+  ].includes(game.state)
 }
