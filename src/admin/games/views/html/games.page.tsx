@@ -1,3 +1,4 @@
+import { queues } from '../../../../queues'
 import { millisecondsToSeconds } from 'date-fns'
 import { configuration } from '../../../../configuration'
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
@@ -9,6 +10,12 @@ import { GameServerCommandPreview } from './game-server-command-preview'
 
 export async function GamesPage() {
   const whitelistId = await configuration.get('games.whitelist_id')
+  const globalWhitelistId = whitelistId
+  const gamemodeWhitelistIds = await configuration.get('games.gamemode_whitelist_ids')
+  const gamemodeWhitelists = (await queues.gamemodesInUse()).map(gamemode => ({
+    gamemode,
+    whitelistId: gamemodeWhitelistIds[gamemode],
+  }))
   const joinGameServerTimeout = await configuration.get('games.join_gameserver_timeout')
   const rejoinGameServerTimeout = await configuration.get('games.rejoin_gameserver_timeout')
   const executeExtraCommands = await configuration.get('games.execute_extra_commands')
@@ -35,6 +42,27 @@ export async function GamesPage() {
               />
             </dd>
           </dl>
+
+          {gamemodeWhitelists.map(({ gamemode, whitelistId }) => (
+            <dl>
+              <dt>
+                <label for={`gamemodeWhitelistId-${gamemode}`}>{gamemode} whitelist ID</label>
+              </dt>
+              <dd class="flex flex-col">
+                <input
+                  type="text"
+                  name={`gamemodeWhitelistId.${gamemode}`}
+                  value={whitelistId ?? ''}
+                  placeholder={globalWhitelistId ?? ''}
+                  id={`gamemodeWhitelistId-${gamemode}`}
+                />
+                <p class="text-abru-light-75 text-sm">
+                  For {gamemode} queues without a whitelist of their own. Leave empty to use the
+                  whitelist above.
+                </p>
+              </dd>
+            </dl>
+          ))}
 
           <dl>
             <dt>

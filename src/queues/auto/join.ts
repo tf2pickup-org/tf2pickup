@@ -24,6 +24,9 @@ export async function join(
 ): Promise<QueueSlotModel[]> {
   logger.trace({ queue, steamId, slotId }, `queue.join()`)
   const settings = await get(queue)
+  if (!settings.enabled) {
+    throw errors.badRequest('this queue is disabled')
+  }
   const player = await players.bySteamId(steamId, [
     'hasAcceptedRules',
     'activeGame',

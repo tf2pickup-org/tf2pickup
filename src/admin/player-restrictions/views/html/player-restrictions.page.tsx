@@ -1,6 +1,5 @@
 import { queues } from '../../../../queues'
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
-import { environment } from '../../../../environment'
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
 import { Admin } from '../../../views/html/admin'
@@ -14,8 +13,6 @@ export async function PlayerRestrictionsPage() {
         <div class="admin-panel-set flex flex-col gap-4">
           <RequireEtf2lAccount />
           <MinimumTf2InGameHours />
-          <RequirePlayerVerification />
-          <PlayerSkillThreshold />
           <SkillStep />
           <SkillSuggestions />
           <DefaultPlayerSkill />
@@ -75,75 +72,6 @@ async function MinimumTf2InGameHours() {
   )
 }
 
-async function RequirePlayerVerification() {
-  const { requireVerification: requirePlayerVerification } = await queues.getDefault()
-  return (
-    <div class="group flex flex-row items-center justify-between">
-      <dl>
-        <dt>
-          <label class="text-abru-light-75" for="requirePlayerVerification">
-            Require player verification
-          </label>
-        </dt>
-        <dd class="text-abru-light-75">
-          <span class="hidden group-has-checked:inline-block">
-            Players must be manually verified by an admin before they can join the queue
-          </span>
-          <span class="group-has-checked:hidden">All players can join the queue freely</span>
-        </dd>
-      </dl>
-
-      <Switch
-        id="requirePlayerVerification"
-        checked={requirePlayerVerification}
-        name="requirePlayerVerification"
-      />
-    </div>
-  )
-}
-
-async function PlayerSkillThreshold() {
-  const { skillThreshold: playerSkillThreshold } = await queues.getDefault()
-  const playerSkillThresholdEnabled = playerSkillThreshold !== null
-
-  return (
-    <dl>
-      <dt class="group flex flex-row gap-2">
-        <label for="playerSkillThresholdEnabled">Player skill threshold</label>
-        <input
-          type="checkbox"
-          id="playerSkillThresholdEnabled"
-          name="playerSkillThresholdEnabled"
-          value="enabled"
-          checked={playerSkillThresholdEnabled}
-        />
-        <span class="hidden group-has-checked:inline-block">enabled</span>
-        <span class="group-has-checked:hidden">disabled</span>
-      </dt>
-      <dd class="flex flex-col">
-        <div>
-          <label for="playerSkillThreshold" class="sr-only">
-            Player skill threshold value
-          </label>
-          <input
-            type="number"
-            id="playerSkillThreshold"
-            name="playerSkillThreshold"
-            value={playerSkillThreshold?.toString()}
-            disabled={!playerSkillThresholdEnabled}
-            data-toggle-disabled-form="#playerRestrictionsForm"
-            data-toggle-disabled-control="playerSkillThresholdEnabled"
-            data-toggle-disabled-checked="true"
-          />
-        </div>
-        <p class="text-abru-light-75 text-sm">
-          Players will be able to join queue only on classes that meet the given criteria.
-        </p>
-      </dd>
-    </dl>
-  )
-}
-
 async function SkillStep() {
   const skillStep = await configuration.get('games.skill_step')
   return (
@@ -194,27 +122,30 @@ async function SkillSuggestions() {
 }
 
 async function DefaultPlayerSkill() {
-  const defaultPlayerSkill =
-    (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
+  const defaultPlayerSkill = await configuration.get('games.default_player_skill')
   const skillStep = await configuration.get('games.skill_step')
-  const classes = gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name }) => name)
 
   return (
     <dl>
       <dt>
         <span class="text-abru-light-75 font-bold">Default player skill</span>
       </dt>
-      <dd class="flex flex-col">
-        <div class="flex flex-row flex-wrap gap-2">
-          {classes.map(gameClass => (
-            <GameClassSkillInput
-              gameClass={gameClass}
-              name={`defaultPlayerSkill.${gameClass}`}
-              value={defaultPlayerSkill[gameClass] ?? 1}
-              step={skillStep}
-            />
-          ))}
-        </div>
+      <dd class="flex flex-col gap-2">
+        {(await queues.gamemodesInUse()).map(gamemode => (
+          <div class="flex flex-row flex-wrap items-center gap-2">
+            <span class="w-16 font-bold">{gamemode}</span>
+            {gamemodeConfigs[gamemode].classes.map(({ name: gameClass }) => (
+              <GameClassSkillInput
+                gameClass={gameClass}
+                id={`defaultPlayerSkill-${gamemode}-${gameClass}`}
+                label={`Default ${gamemode} skill on ${gameClass}`}
+                name={`defaultPlayerSkill.${gamemode}.${gameClass}`}
+                value={defaultPlayerSkill[gamemode]?.[gameClass] ?? 1}
+                step={skillStep}
+              />
+            ))}
+          </div>
+        ))}
         <p class="text-abru-light-75 text-sm">
           If a player starts a game without skill assigned for them, the game balance system will
           use this fallback value.
