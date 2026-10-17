@@ -72,10 +72,14 @@ class ReadyUpDialog {
 }
 
 export class QueuePage {
-  constructor(public readonly page: Page) {}
+  // without a slug, the default queue served at `/`
+  constructor(
+    public readonly page: Page,
+    public readonly slug?: string,
+  ) {}
 
   async goto() {
-    await this.page.goto('/')
+    await this.page.goto(this.slug ? `/q/${this.slug}` : '/')
   }
 
   async joinQueue(slot: SlotId) {
@@ -91,7 +95,7 @@ export class QueuePage {
     await Promise.all([
       this.page.waitForResponse(
         response =>
-          response.url().endsWith('/queue/players') &&
+          response.url().endsWith('/players') &&
           response.request().method() === 'DELETE' &&
           response.status() === 204,
       ),

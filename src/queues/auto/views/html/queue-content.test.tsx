@@ -22,12 +22,6 @@ vi.mock('../../../../events', () => ({
   },
 }))
 
-vi.mock('../../config', () => ({
-  config: {
-    classes: [],
-  },
-}))
-
 vi.mock('@fastify/request-context', () => ({
   requestContext: {
     get: vi.fn(),
@@ -41,10 +35,11 @@ vi.mock('../../../../players', () => ({
 }))
 
 import { parse } from 'node-html-parser'
-import { ClearQueueButton } from './queue.page'
+import { ClearQueueButton } from './queue-content'
 import { PlayerRole } from '../../../../database/models/player.model'
 import type { User } from '../../../../auth/types/user'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import type { QueueModel } from '../../../../database/models/queue.model'
 
 const adminUser: User = {
   player: {
@@ -64,23 +59,25 @@ const regularUser: User = {
   },
 }
 
+const queue = { slug: 'auto-6v6' } as QueueModel
+
 describe('ClearQueueButton', () => {
   it('renders the button for admins', async () => {
-    const html = await ClearQueueButton({ actor: adminUser })
+    const html = await ClearQueueButton({ queue, actor: adminUser })
     const root = parse(html)
-    const button = root.querySelector('[hx-delete="/queue/players"]')
+    const button = root.querySelector('[hx-delete="/q/auto-6v6/players"]')
     expect(button).not.toBeNull()
   })
 
   it('does not render for non-admins', async () => {
-    const html = await ClearQueueButton({ actor: regularUser })
+    const html = await ClearQueueButton({ queue, actor: regularUser })
     const root = parse(html)
-    expect(root.querySelector('[hx-delete="/queue/players"]')).toBeNull()
+    expect(root.querySelector('[hx-delete="/q/auto-6v6/players"]')).toBeNull()
   })
 
   it('does not render when there is no actor', async () => {
-    const html = await ClearQueueButton({ actor: undefined })
+    const html = await ClearQueueButton({ queue, actor: undefined })
     const root = parse(html)
-    expect(root.querySelector('[hx-delete="/queue/players"]')).toBeNull()
+    expect(root.querySelector('[hx-delete="/q/auto-6v6/players"]')).toBeNull()
   })
 })
