@@ -12,16 +12,11 @@ export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
   return (
     <Admin activePage="skill-import-export">
       {gamemodes.length > 1 && (
-        <nav class="mb-4 flex flex-row flex-wrap gap-2" aria-label="Gamemodes">
+        <nav class="admin-tabs" aria-label="Gamemodes">
           {gamemodes.map(tab => (
             <a
               href={`/admin/skill-import-export?gamemode=${tab}`}
-              class={[
-                'rounded-md px-3 py-1.5 text-sm font-bold',
-                tab === gamemode
-                  ? 'bg-crimson-600 text-white'
-                  : 'bg-zinc-800 text-zinc-200 hover:text-white',
-              ]}
+
               aria-current={tab === gamemode ? 'page' : undefined}
             >
               {tab}
