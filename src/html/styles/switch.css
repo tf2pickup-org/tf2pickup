@@ -19,7 +19,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: var(--color-abru-light-20);
+      background-color: var(--color-zinc-600);
       transition: 0.4s;
       border-radius: 34px;
 
@@ -30,7 +30,7 @@
         width: 18px;
         left: 3px;
         top: 3px;
-        background-color: var(--color-abru-dark-25);
+        background-color: var(--color-zinc-950);
         transition: 0.4s;
         border-radius: 50%;
         z-index: 20;
@@ -38,7 +38,7 @@
     }
 
     input:checked + .slider {
-      background-color: var(--color-accent);
+      background-color: var(--color-crimson-600);
     }
 
     input:checked + .slider:before {

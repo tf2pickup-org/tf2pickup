@@ -15,7 +15,7 @@ export async function StreamList() {
 
   return (
     <div class="flex flex-col gap-4" id="stream-list">
-      <span class="text-[32px] font-bold text-white">Now streaming</span>
+      <h2 class="text-2xl font-bold text-white">Now streaming</h2>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {featured.map(stream => (
           <FeaturedStream {...stream} />
@@ -44,7 +44,7 @@ function FeaturedStream(props: StreamModel) {
       data-umami-event-streamer={props.userName}
     >
       <img src={thumbnail} alt="stream thumbnail" class="rounded-xs" width="177" height="100" />
-      <div class="text-abru-light-75 flex flex-col justify-center font-medium">
+      <div class="flex flex-col justify-center font-medium text-zinc-200">
         <span class="text-lg" safe>
           {props.userName}
         </span>
@@ -70,10 +70,10 @@ function CompactStream(props: StreamModel) {
       data-umami-event="watch-stream"
       data-umami-event-streamer={props.userName}
     >
-      <span class="text-abru-light-75 truncate text-lg font-medium" safe>
+      <span class="truncate text-lg font-medium text-zinc-200" safe>
         {props.userName}
       </span>
-      <span class="text-abru-light-75 flex shrink-0 flex-row items-center gap-1.5 text-sm font-medium">
+      <span class="flex shrink-0 flex-row items-center gap-1.5 text-sm font-medium text-zinc-200">
         <IconEye size={18} />
         {props.viewerCount}
       </span>

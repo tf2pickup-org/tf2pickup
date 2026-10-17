@@ -40,10 +40,10 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
 
         <div
           id="profile-menu"
-          class="bg-abru-dark-29 absolute z-50 mt-2 w-[300px] origin-top rounded-[10px] p-2 drop-shadow-xl"
+          class="absolute z-50 mt-2 w-[300px] origin-top rounded-[10px] bg-zinc-950 p-2 drop-shadow-xl"
           style="display: none;"
         >
-          <div class="text-abru-light-75 flex flex-col gap-1">
+          <div class="flex flex-col gap-1 text-zinc-200">
             <a href={`/players/${player.steamId}`} class="profile-menu-item" preload="mousedown">
               <IconUserCircle />
               <span>My profile</span>

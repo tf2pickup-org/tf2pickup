@@ -30,7 +30,7 @@ export async function Tf2QuickServerList(props: {
                 onclick="document.getElementById('tf2qs-region-select').style.display='none'"
               />
               <span safe>{server.serverId.substring(0, 8)}</span>
-              <span class="text-abru-light-50 text-sm" safe>
+              <span class="text-sm text-zinc-400" safe>
                 ({server.region})
               </span>
             </label>

@@ -24,7 +24,9 @@ describe('MapResult', () => {
   it('renders 0 when there are no votes', async () => {
     const html = await MapResult({ results: {}, map: 'cp_badlands' })
     const root = parse(html)
-    expect(root.querySelector('#map-result-cp_badlands')?.text).toBe('0')
+    const result = root.querySelector('#map-result-cp_badlands')
+    expect(result?.text).toBe('0')
+    expect(result?.hasAttribute('data-animate-number')).toBe(false)
   })
 
   it('renders 100 when all votes are for this map', async () => {

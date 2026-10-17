@@ -42,7 +42,7 @@ export function LogEntryList(props: LogEntryListProps) {
                   ip: props.ip,
                 })}
                 hx-target="#log-results"
-                class="hover:text-abru-light-75 cursor-pointer"
+                class="cursor-pointer hover:text-zinc-200"
               >
                 Date{sortIndicator}
               </a>
@@ -63,7 +63,7 @@ export function LogEntryList(props: LogEntryListProps) {
           ))}
           {props.logs.length === 0 && (
             <tr>
-              <td colspan="6" class="text-abru-light-50 px-4 py-8 text-center">
+              <td colspan="6" class="px-4 py-8 text-center text-zinc-400">
                 No log entries found.
               </td>
             </tr>
@@ -96,7 +96,7 @@ export function LogEntryList(props: LogEntryListProps) {
 
 function LogEntry(props: { action: PlayerActionEntryModel; playerName: string }) {
   return (
-    <tr class="even:bg-abru-dark-6">
+    <tr class="even:bg-zinc-900">
       <th scope="row" class="truncate px-4 py-2" safe>
         {props.action.timestamp.toLocaleString()}
       </th>
