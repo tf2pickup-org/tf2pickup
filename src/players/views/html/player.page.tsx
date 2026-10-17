@@ -5,7 +5,7 @@ import { PlayerRole, type PlayerModel } from '../../../database/models/player.mo
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
-import { queue } from '../../../queue-auto'
+import { queue } from '../../../queues/auto'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,

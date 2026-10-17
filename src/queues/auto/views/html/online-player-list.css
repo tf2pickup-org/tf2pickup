@@ -1,0 +1,40 @@
+@reference '../../../../html/styles/main.css';
+
+@layer components {
+  .online-player-list {
+    flex: 1 1 0;
+    list-style-type: none;
+
+    li {
+      &:nth-child(odd) {
+        background-color: var(--color-abru-dark-6);
+      }
+
+      &:nth-child(even) {
+        background-color: var(--color-abru-light-5);
+      }
+    }
+
+    a {
+      color: var(--color-abru-light-75);
+      border-radius: 2px;
+      padding: 4px 8px;
+      font-weight: 300;
+      text-align: start;
+      display: inline-block;
+      width: 100%;
+
+      @media (width < theme(--breakpoint-lg)) {
+        padding: 10px 12px;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      &.admin {
+        color: var(--color-alert);
+      }
+    }
+  }
+}
