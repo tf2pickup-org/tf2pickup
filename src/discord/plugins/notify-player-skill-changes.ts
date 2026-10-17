@@ -1,3 +1,4 @@
+import { Gamemode } from '../../shared/types/gamemode'
 import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { isEqual } from 'es-toolkit'
@@ -40,10 +41,14 @@ export default fp(
       safe(async ({ before, after, adminId }) => {
         if (!isEqual(before.skill, after.skill)) {
           const admin = await players.bySteamId(adminId!, ['name', 'steamId', 'avatar.medium'])
-          const changes = generateChangesText(
-            before.skill?.[environment.QUEUE_CONFIG],
-            after.skill?.[environment.QUEUE_CONFIG],
-          )
+          const changes = Object.values(Gamemode)
+            .map(gamemode => ({
+              gamemode,
+              text: generateChangesText(before.skill?.[gamemode], after.skill?.[gamemode]),
+            }))
+            .filter(({ text }) => text)
+            .map(({ gamemode, text }) => `**${gamemode}**\n${text}`)
+            .join('\n')
 
           await toAdmins({
             embeds: [

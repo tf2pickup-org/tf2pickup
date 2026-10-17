@@ -1,4 +1,3 @@
-import { environment } from '../../../../environment'
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import type { ImportAnalysis } from '../../types'
 import { Admin } from '../../../views/html/admin'
@@ -9,7 +8,7 @@ interface PreviewPageProps {
 }
 
 export function PreviewPage({ analysis }: PreviewPageProps) {
-  const classNames = gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(c => c.name)
+  const classNames = gamemodeConfigs[analysis.gamemode].classes.map(c => c.name)
   const totalChanges =
     analysis.changedPlayers.length +
     analysis.initializedPlayers.length +
@@ -20,7 +19,12 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
       <div class="admin-panel-set flex flex-col gap-6">
         <header class="flex flex-row items-center justify-between">
           <h2 class="text-lg font-bold">Import preview</h2>
-          <a href="/admin/skill-import-export" class="button" data-size="dense">
+          <span class="text-abru-light-75">{analysis.gamemode} skill</span>
+          <a
+            href={`/admin/skill-import-export?gamemode=${analysis.gamemode}`}
+            class="button"
+            data-size="dense"
+          >
             Cancel
           </a>
         </header>

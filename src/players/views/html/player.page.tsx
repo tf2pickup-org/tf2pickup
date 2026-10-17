@@ -1,11 +1,16 @@
+import { playerGamemodes } from '../../player-gamemodes'
+import type { Gamemode } from '../../../shared/types/gamemode'
 import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { collections } from '../../../database/collections'
 import { Layout } from '../../../html/layout'
 import { NavigationBar } from '../../../html/components/navigation-bar'
-import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
+import {
+  PlayerRole,
+  type PlayerModel,
+  type PlayerStats,
+} from '../../../database/models/player.model'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { format } from 'date-fns'
-import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import {
   IconAlignBoxBottomRight,
@@ -65,7 +70,8 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
           <PlayerPresentation
             player={player}
             gameCount={player.stats.totalGames}
-            gameCountOnClasses={player.stats.gamesByClass[environment.QUEUE_CONFIG] ?? {}}
+            gameCountOnClasses={player.stats.gamesByClass}
+            gamemodes={await shownGamemodes(player)}
             isAdmin={user?.player.roles.includes(PlayerRole.admin) ?? false}
           />
 
@@ -148,7 +154,8 @@ function PlayerPresentation(props: {
     | 'skill'
   >
   gameCount: number
-  gameCountOnClasses: Partial<Record<Tf2ClassName, number>>
+  gameCountOnClasses: PlayerStats['gamesByClass']
+  gamemodes: Gamemode[]
   isAdmin: boolean
 }) {
   return (
@@ -197,12 +204,31 @@ function PlayerPresentation(props: {
 
         <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
 
-        {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name: gameClass }) => (
+        {props.gamemodes.map((gamemode, i) => (
           <>
-            <GameClassIcon gameClass={gameClass} size={32} />
-            <span class="text-2xl font-bold" aria-label={`Games played as ${gameClass}`}>
-              {props.gameCountOnClasses[gameClass] ?? 0}
-            </span>
+            {props.gamemodes.length > 1 && (
+              <>
+                {i > 0 && (
+                  <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
+                )}
+                <span class="text-base font-light md:row-span-2">{gamemode}</span>
+              </>
+            )}
+            {gamemodeConfigs[gamemode].classes.map(({ name: gameClass }) => (
+              <>
+                <GameClassIcon gameClass={gameClass} size={32} />
+                <span
+                  class="text-2xl font-bold"
+                  aria-label={
+                    props.gamemodes.length > 1
+                      ? `${gamemode} games played as ${gameClass}`
+                      : `Games played as ${gameClass}`
+                  }
+                >
+                  {props.gameCountOnClasses[gamemode]?.[gameClass] ?? 0}
+                </span>
+              </>
+            ))}
           </>
         ))}
       </div>
@@ -214,7 +240,8 @@ function PlayerPresentation(props: {
           rel="noreferrer"
           class={[
             'player-presentation-link',
-            gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+            props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
+              'compact',
           ]}
           title="Steam"
           data-umami-event="open-external-profile"
@@ -230,7 +257,8 @@ function PlayerPresentation(props: {
           rel="noreferrer"
           class={[
             'player-presentation-link',
-            gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+            props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
+              'compact',
           ]}
           title="Logs"
           data-umami-event="open-external-profile"
@@ -247,7 +275,8 @@ function PlayerPresentation(props: {
             rel="noreferrer"
             class={[
               'player-presentation-link',
-              gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+              props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
+                'compact',
             ]}
             title="ETF2L"
             data-umami-event="open-external-profile"
@@ -267,7 +296,8 @@ function PlayerPresentation(props: {
             rel="noreferrer"
             class={[
               'player-presentation-link',
-              gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4 && 'compact',
+              props.gamemodes.some(gamemode => gamemodeConfigs[gamemode].classes.length > 4) &&
+                'compact',
             ]}
             title="Twitch"
             data-umami-event="open-external-profile"
@@ -282,4 +312,13 @@ function PlayerPresentation(props: {
       </div>
     </div>
   )
+}
+
+// The gamemodes the player has played, or the instance's first one for a player without games.
+async function shownGamemodes(player: Pick<PlayerModel, 'skill' | 'stats'>): Promise<Gamemode[]> {
+  const gamemodes = await playerGamemodes(player)
+  const played = gamemodes.filter(
+    gamemode => Object.keys(player.stats.gamesByClass[gamemode] ?? {}).length > 0,
+  )
+  return played.length > 0 ? played : gamemodes.slice(0, 1)
 }
