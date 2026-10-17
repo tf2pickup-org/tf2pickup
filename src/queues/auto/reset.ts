@@ -14,7 +14,7 @@ import { resetMapOptions } from '../../maps/reset-options'
 export async function reset(queue: QueueId) {
   logger.trace({ queue }, 'queue.reset()')
   const { gamemode } = await get(queue)
-  await queueCommand(queue, 'reset', async emit => {
+  await queueCommand('reset', async emit => {
     await collections.queueSlots.deleteMany({ queue })
     await collections.queueSlots.insertMany(generateEmptyQueue(queue, gamemodeConfigs[gamemode]))
     await collections.queueState.updateOne(

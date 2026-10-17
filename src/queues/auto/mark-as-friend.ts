@@ -11,13 +11,13 @@ export async function markAsFriend(
   source: SteamId64,
   target: SteamId64 | null,
 ): Promise<QueueSlotModel | null> {
-  const sourceSlot = await collections.queueSlots.findOne({ 'player.steamId': source })
-  if (!sourceSlot) {
-    throw errors.notFound(`source slot not found: ${source}`)
-  }
+  return await queueCommand('mark-as-friend', async emit => {
+    const sourceSlot = await collections.queueSlots.findOne({ 'player.steamId': source })
+    if (!sourceSlot) {
+      throw errors.notFound(`source slot not found: ${source}`)
+    }
 
-  const { queue } = sourceSlot
-  return await queueCommand(queue, 'mark-as-friend', async emit => {
+    const { queue } = sourceSlot
     logger.trace({ queue, source, target }, `queue.markAsFriend()`)
 
     const queueState = await getState(queue)
