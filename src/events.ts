@@ -19,6 +19,7 @@ import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
 import type { WithId } from 'mongodb'
 import type { QueueId } from './database/models/queue.model'
+import type { LaunchSnapshot } from './queues/types/launch-snapshot'
 
 export interface Events {
   'chat:messageDeleted': {
@@ -192,6 +193,7 @@ export interface Events {
     admin: SteamId64
   }
 
+  'queue:launching': LaunchSnapshot
   'queue:playerKicked': {
     player: SteamId64
   }

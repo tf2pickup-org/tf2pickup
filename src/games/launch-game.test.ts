@@ -1,20 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ObjectId } from 'mongodb'
-import type { QueueId } from '../database/models/queue.model'
-
-const queue = { _id: new ObjectId() as QueueId, gamemode: '6v6', maps: [] }
-
-vi.mock('../queues/get', () => ({
-  get: vi.fn().mockImplementation(() => Promise.resolve(queue)),
-}))
-vi.mock('../queues/auto/get-slots', () => ({ getSlots: vi.fn().mockResolvedValue([]) }))
-vi.mock('../queues/auto/get-map-winner', () => ({
-  getMapWinner: vi.fn().mockResolvedValue('cp_badlands'),
-}))
-vi.mock('../queues/auto/get-friends', () => ({ getFriends: vi.fn().mockResolvedValue([]) }))
-vi.mock('../queues/auto/unready-queue', () => ({
-  unreadyQueue: vi.fn().mockResolvedValue(undefined),
-}))
+import type { QueueId, QueueModel } from '../database/models/queue.model'
+import type { LaunchSnapshot } from '../queues/types/launch-snapshot'
 
 vi.mock('./create', () => ({
   create: vi.fn(),
@@ -35,38 +22,53 @@ vi.mock('../logger', () => ({
 import { launchGame } from './launch-game'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
-import { unreadyQueue } from '../queues/auto/unready-queue'
+import { configure } from './rcon/configure'
+
+const snapshot: LaunchSnapshot = {
+  queue: { _id: new ObjectId() as QueueId, gamemode: '6v6', maps: [] } as unknown as QueueModel,
+  slots: [],
+  map: 'cp_badlands',
+  friends: [],
+}
 
 describe('launchGame()', () => {
   beforeEach(() => {
     vi.clearAllMocks()
   })
 
-  it('creates the game from the queue', async () => {
+  it('creates the game from the launch snapshot', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(create).mockResolvedValue({ number: 42 } as any)
 
-    await launchGame(queue._id)
+    await launchGame(snapshot)
 
-    expect(create).toHaveBeenCalledWith(queue, [], 'cp_badlands', [])
+    expect(create).toHaveBeenCalledWith(snapshot.queue, [], 'cp_badlands', [])
   })
 
   it('assigns a game server to the created game', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     vi.mocked(create).mockResolvedValue({ number: 42 } as any)
 
-    await launchGame(queue._id)
+    await launchGame(snapshot)
 
     expect(assignGameServer).toHaveBeenCalledWith(42, { retries: 3 })
-    expect(unreadyQueue).not.toHaveBeenCalled()
+    expect(configure).toHaveBeenCalledWith(42)
   })
 
-  it('reverts the queue when game creation fails', async () => {
+  it('throws when game creation fails', async () => {
     vi.mocked(create).mockRejectedValue(new Error('queue slot medic-1 is empty'))
 
-    await launchGame(queue._id)
-
-    expect(unreadyQueue).toHaveBeenCalledWith(queue._id)
+    await expect(launchGame(snapshot)).rejects.toThrow('queue slot medic-1 is empty')
     expect(assignGameServer).not.toHaveBeenCalled()
+  })
+
+  it('does not throw when the game server cannot be assigned, since the game exists', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(assignGameServer).mockRejectedValue(new Error('no free game server'))
+
+    await launchGame(snapshot)
+
+    expect(configure).not.toHaveBeenCalled()
   })
 })
