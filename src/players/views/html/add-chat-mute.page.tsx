@@ -25,11 +25,17 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
         'style.css',
       )}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto">
-          <form action="" method="post" id="addChatMuteForm">
-            <div class="admin-panel-set">
+        <div class="page-wide max-w-[720px]!">
+          <h1 class="page-title">
+            Mute{' '}
+            <a href={`/players/${props.steamId}`} class="hover:underline" safe>
+              {player.name}
+            </a>
+          </h1>
+          <form action="" method="post" id="addChatMuteForm" class="mt-8">
+            <div class="admin-panel-set page-panel">
               <div class="form-checkbox">
                 <input
                   type="radio"
@@ -121,9 +127,14 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
               </div>
             </div>
 
-            <button type="submit" class="button mt-6" data-variant="accent">
-              Save
-            </button>
+            <div class="page-actions mt-6">
+              <button type="submit" class="button" data-variant="accent">
+                Save
+              </button>
+              <a href={`/players/${props.steamId}`} class="button">
+                Cancel
+              </a>
+            </div>
           </form>
         </div>
       </Page>
