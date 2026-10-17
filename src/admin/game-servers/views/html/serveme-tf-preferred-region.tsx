@@ -1,4 +1,3 @@
-import { memoize } from 'es-toolkit'
 import { servemeTf } from '../../../../serveme-tf'
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 import { configuration } from '../../../../configuration'
@@ -35,14 +34,12 @@ export function ServemeTfPreferredRegion() {
   )
 }
 
-const getRegions = memoize(async () => await servemeTf.listRegions())
-
 interface SaveResult {
   success: true
 }
 
 export async function RegionList(props?: { saveResult?: SaveResult }) {
-  const regions = await getRegions()
+  const regions = await servemeTf.listRegions()
   const selected = await configuration.get('serveme_tf.preferred_region')
 
   return (
