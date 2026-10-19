@@ -49,7 +49,7 @@
       overflow: hidden;
       border-radius: 8px;
 
-      color: var(--color-abru-light-75);
+      color: var(--color-zinc-200);
       font-weight: 500;
 
       /* mobile: self-contained card with the map thumbnail fading in from the right */
@@ -59,8 +59,8 @@
       padding: 16px;
       background: linear-gradient(
         90deg,
-        var(--color-abru-light-15) 45%,
-        --alpha(var(--color-abru-light-15) / 35%) 100%
+        var(--color-zinc-700) 45%,
+        --alpha(var(--color-zinc-700) / 35%) 100%
       );
 
       @media (width >= theme(--breakpoint-sm)) {
@@ -71,23 +71,23 @@
         row-gap: 0;
         height: 60px;
         padding: 8px;
-        background: --alpha(var(--color-abru-light-15) / 50%);
+        background: --alpha(var(--color-zinc-700) / 50%);
 
         &:hover {
-          background: --alpha(var(--color-abru-light-15) / 90%);
+          background: --alpha(var(--color-zinc-700) / 90%);
         }
       }
 
       @media (width >= theme(--breakpoint-xl)) {
         height: 80px;
 
-        background: var(--color-abru-light-15);
-        background: linear-gradient(90deg, var(--color-abru-light-15) 35%, transparent 90%);
+        background: var(--color-zinc-700);
+        background: linear-gradient(90deg, var(--color-zinc-700) 35%, transparent 90%);
 
         &:hover {
           background: linear-gradient(
             90deg,
-            color-mix(in hsl, var(--color-abru-light-15), white 3%) 35%,
+            color-mix(in hsl, var(--color-zinc-700), white 3%) 35%,
             transparent 90%
           );
         }
@@ -175,14 +175,14 @@
 
         &[data-state='interrupted'] {
           @apply col-span-2;
-          background-color: var(--color-abru-light-25);
+          background-color: var(--color-zinc-600);
           justify-self: stretch;
         }
 
         &[data-state='launching'] {
           @apply col-span-2;
           background-color: var(--color-alert);
-          color: var(--color-abru-light-3);
+          color: var(--color-zinc-900);
           justify-self: stretch;
         }
       }
@@ -198,7 +198,7 @@
 
         .game-number {
           grid-area: 1 / 2;
-          color: var(--color-ash);
+          color: var(--color-zinc-100);
         }
 
         .game-class-icon {

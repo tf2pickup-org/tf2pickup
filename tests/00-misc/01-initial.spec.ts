@@ -13,8 +13,7 @@ test('has steam login button', async ({ page }) => {
 
 test('has queue state', async ({ page }) => {
   await page.goto('/')
-  const queueState = page.getByText('Players:')
-  expect(queueState).toBeTruthy()
+  await expect(page.getByRole('heading', { name: /^Players \d+\/\d+$/ })).toBeVisible()
 })
 
 test('has 12 queue slots and no join buttons @6v6', async ({ page }) => {

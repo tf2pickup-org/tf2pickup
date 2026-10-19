@@ -5,10 +5,12 @@
     @apply transition-colors;
     @apply duration-75;
 
-    background-color: var(--color-abru-light-15);
+    min-width: 0;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-raised);
 
     &:hover {
-      background-color: color-mix(in hsl, var(--color-abru-light-15), white 4%);
+      background-color: var(--color-surface-hover);
     }
   }
 }
