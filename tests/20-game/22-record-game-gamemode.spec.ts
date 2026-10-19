@@ -21,10 +21,13 @@ test('records the game under its gamemode @6v6 @9v9', async ({
 
   const [medicName] = [...desiredSlots.entries()].find(([, slot]) => slot === 'medic-1')!
   const medic = users.byName(medicName)
-  const medicGameCount = page.getByLabel('Games played as medic')
-
-  await page.goto(`/players/${medic.steamId}`)
-  const before = Number(await medicGameCount.innerText())
+  const medicGames = async () => {
+    const { stats } = (await (await request.get(`/api/v1/players/${medic.steamId}`)).json()) as {
+      stats: { gamesByClass: Record<string, Record<string, number>> }
+    }
+    return stats.gamesByClass[getQueueConfig()]?.['medic'] ?? 0
+  }
+  const before = await medicGames()
 
   await gameServer.matchEnds()
   const gamePage = new GamePage(page, gameNumber)
@@ -32,7 +35,6 @@ test('records the game under its gamemode @6v6 @9v9', async ({
   await expect(gamePage.gameEvent('Game ended')).toBeVisible()
 
   await expect(async () => {
-    await page.goto(`/players/${medic.steamId}`)
-    await expect(medicGameCount).toHaveText(String(before + 1))
+    expect(await medicGames()).toBe(before + 1)
   }).toPass()
 })
