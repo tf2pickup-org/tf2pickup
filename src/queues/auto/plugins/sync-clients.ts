@@ -60,6 +60,7 @@ export default fp(
       const actor = socket.player
         ? await players.bySteamId(socket.player.steamId, [
             'steamId',
+            'hasAcceptedRules',
             'bans',
             'activeGame',
             'skill',
@@ -231,12 +232,16 @@ export default fp(
     async function fetchActorMap(recipientIds: SteamId64[]) {
       const actors = await collections.players
         .find<
-          Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'>
+          Pick<
+            PlayerModel,
+            'steamId' | 'hasAcceptedRules' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'
+          >
         >(
           { steamId: { $in: recipientIds } },
           {
             projection: {
               steamId: 1,
+              hasAcceptedRules: 1,
               bans: 1,
               activeGame: 1,
               skill: 1,

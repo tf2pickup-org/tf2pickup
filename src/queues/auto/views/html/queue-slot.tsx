@@ -16,7 +16,7 @@ import {
 } from '../../../../html/components/icons'
 import { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../../html/components/game-class-icon'
-import { meetsSkillThreshold } from '../../meets-skill-threshold'
+import { joinBlocker, type JoinBlockerPlayer } from '../../join-blocker'
 import type { QueueSlotId } from '../../../types/queue-slot-id'
 
 const enum MarkAsFriendButtonState {
@@ -26,10 +26,9 @@ const enum MarkAsFriendButtonState {
   selected, // marked by me
 }
 
-type Actor =
-  Pick<PlayerModel, 'steamId' | 'bans' | 'activeGame' | 'skill' | 'verified' | 'roles'> | undefined
+type Actor = (JoinBlockerPlayer & Pick<PlayerModel, 'steamId' | 'roles'>) | undefined
 
-type Queue = Pick<QueueModel, 'skillThreshold' | 'requireVerification' | 'gamemode'>
+type Queue = Pick<QueueModel, 'enabled' | 'skillThreshold' | 'requireVerification' | 'gamemode'>
 
 export async function QueueSlot(props: { queue: Queue; slot: QueueSlotModel; actor?: Actor }) {
   const isOwnSlot = !!props.actor && props.slot.player?.steamId === props.actor.steamId
@@ -38,18 +37,7 @@ export async function QueueSlot(props: { queue: Queue; slot: QueueSlotModel; act
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
-    const activeBans =
-      props.actor.bans?.filter(b => b.end.getTime() > new Date().getTime()).length ?? 0
-    let disabled: string | undefined = undefined
-    if (activeBans > 0) {
-      disabled = 'You have active bans'
-    } else if (props.actor.activeGame) {
-      disabled = 'You are already in a game'
-    } else if (!(await meetsSkillThreshold(props.actor, props.slot, props.queue))) {
-      disabled = `You do not meet skill requirements to play ${props.slot.gameClass}`
-    } else if (props.queue.requireVerification && !props.actor.verified) {
-      disabled = 'You are not verified to join the queue'
-    }
+    const disabled = (await joinBlocker(props.actor, props.slot, props.queue)) ?? undefined
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
 

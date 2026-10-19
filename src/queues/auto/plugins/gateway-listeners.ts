@@ -33,6 +33,7 @@ export default fp(
     async function refreshTakenSlots(queue: QueueModel, actorId: SteamId64) {
       const actor = await players.bySteamId(actorId, [
         'steamId',
+        'hasAcceptedRules',
         'bans',
         'activeGame',
         'skill',
