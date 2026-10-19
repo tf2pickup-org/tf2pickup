@@ -26,13 +26,15 @@ export async function HallOfFamePage() {
       canonical="/hall-of-fame"
       embedStyle={resolve(import.meta.dirname, 'hall-of-fame.page.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto grid grid-cols-1 gap-x-4 gap-y-2 p-2 lg:grid-cols-2 lg:gap-y-0 lg:p-0">
-          <div class="my-9 text-[48px] font-bold text-zinc-200 lg:col-span-2">Hall of Fame</div>
+        <div class="page-wide">
+          <h1 class="page-title">Hall of Fame</h1>
 
-          <Board title="All classes" entries={all} />
-          <Board title="Medics" entries={medics} />
+          <div class="hof-boards">
+            <Board title="All classes" entries={all} />
+            <Board title="Medics" entries={medics} />
+          </div>
         </div>
       </Page>
       <Footer />
@@ -43,21 +45,22 @@ export async function HallOfFamePage() {
 function Board(props: { title: string; entries: HallOfFameEntry[] }) {
   return (
     <div class="hof-board">
-      <div class="title col-span-4" safe>
+      <h2 class="title" safe>
         {props.title}
-      </div>
+      </h2>
       {props.entries.map((record, i) => (
         <a class="hof-record" href={`/players/${record.player.steamId}`} preload="mousedown">
           <MaybeAward i={i} />
           <img
             src={playerAvatarUrl(record.player.avatar, 'medium')}
-            width="64"
-            height="64"
-            class="h-[38px] w-[38px]"
-            alt="{name}'s avatar"
+            width="38"
+            height="38"
+            alt={`${record.player.name}'s avatar`}
           />
-          <span safe>{record.player.name}</span>
-          <span class="justify-self-end">{record.count}</span>
+          <span class="name" safe>
+            {record.player.name}
+          </span>
+          <span class="count">{record.count}</span>
         </a>
       ))}
     </div>
@@ -73,7 +76,7 @@ function MaybeAward(props: { i: number }) {
     case 2:
       return <IconAwardFilled size={32} class="text-place-3rd place-self-center"></IconAwardFilled>
     default:
-      return <span class="place-self-center">{props.i + 1}.</span>
+      return <span class="text-center">{props.i + 1}.</span>
   }
 }
 
