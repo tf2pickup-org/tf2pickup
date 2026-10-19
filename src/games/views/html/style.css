@@ -31,7 +31,8 @@
       grid-template-columns: 2fr 3fr auto auto 3fr;
     }
 
-    &.config-ultiduo {
+    &.config-ultiduo,
+    &.config-bball {
       @media (width >= theme(--breakpoint-xl)) {
         grid-template-areas:
           'gameSummary scoreBlu     scoreBlu        scoreRed        scoreRed'
@@ -211,6 +212,36 @@
         grid-template-areas:
           'redSoldier1'
           'redMedic1';
+
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 8px 0;
+        }
+      }
+
+      &.config-bball.team-blu {
+        grid-area: slotsBlu;
+        grid-template-areas:
+          'bluSoldier1'
+          'bluSoldier2';
+
+        @media (width >= theme(--breakpoint-lg)) {
+          border-radius: 0 0 0 8px;
+
+          .slot {
+            flex-flow: row-reverse nowrap;
+
+            .player-link {
+              justify-content: flex-end;
+            }
+          }
+        }
+      }
+
+      &.config-bball.team-red {
+        grid-area: slotsRed;
+        grid-template-areas:
+          'redSoldier1'
+          'redSoldier2';
 
         @media (width >= theme(--breakpoint-lg)) {
           border-radius: 0 0 8px 0;

@@ -1,10 +1,11 @@
-import { PlayerRole } from '../../../database/models/player.model'
-import { routes } from '../../../utils/routes'
-import { getSlots } from '../../../queues/auto/get-slots'
-import { kick } from '../../../queues/auto/kick'
-import { events } from '../../../events'
-import { activityLog } from '../../../activity-log'
-import { queues } from '../../../queues'
+import { z } from 'zod'
+import { PlayerRole } from '../../../../database/models/player.model'
+import { routes } from '../../../../utils/routes'
+import { getSlots } from '../../../../queues/auto/get-slots'
+import { kick } from '../../../../queues/auto/kick'
+import { events } from '../../../../events'
+import { activityLog } from '../../../../activity-log'
+import { queues } from '../../../../queues'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -14,9 +15,10 @@ export default routes(async app => {
       config: {
         authorize: [PlayerRole.admin],
       },
+      schema: { params: z.object({ slug: z.string() }) },
     },
     async (request, reply) => {
-      const queue = (await queues.getDefault())._id
+      const queue = (await queues.bySlug(request.params.slug))._id
       const slots = await getSlots(queue)
       const steamIds = slots.flatMap(slot => (slot.player ? [slot.player.steamId] : []))
 

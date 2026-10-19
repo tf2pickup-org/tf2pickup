@@ -5,7 +5,7 @@ import type { UserContext, UserName } from '../user-manager'
 import { waitForEmptyQueue } from './wait-for-empty-queue'
 import { GamePage } from '../pages/game.page'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { getPlayerCount, getQueueConfig, type SlotId } from '../queue-slots'
+import { getQueueConfig, type SlotId } from '../queue-slots'
 
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
@@ -18,6 +18,10 @@ export interface LaunchGameOptions {
     | 'created' // the game was created, but nothing is ready yet
     | 'launching' // the gameserver is configured, but the match hasn't started yet
     | 'started' // all players are connected and the match has started
+
+  // Launch the game through this queue instead of the default one
+  // Default: undefined
+  queue: { slug: string; gamemode: string } | undefined
 }
 
 const desiredSlots6v6: [UserName, SlotId][] = [
@@ -56,6 +60,23 @@ const desiredSlots9v9: [UserName, SlotId][] = [
   ['ShadowPulse', 'spy-2'],
 ]
 
+const desiredSlotsByGamemode: Record<string, [UserName, SlotId][]> = {
+  '6v6': desiredSlots6v6,
+  '9v9': desiredSlots9v9,
+  ultiduo: [
+    ['Promenader', 'soldier-1'],
+    ['Mayflower', 'soldier-2'],
+    ['Polemic', 'medic-1'],
+    ['Shadowhunter', 'medic-2'],
+  ],
+  bball: [
+    ['Promenader', 'soldier-1'],
+    ['Mayflower', 'soldier-2'],
+    ['Polemic', 'soldier-3'],
+    ['Shadowhunter', 'soldier-4'],
+  ],
+}
+
 export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmptyQueue).extend<
   LaunchGameOptions & {
     gameNumber: number
@@ -65,13 +86,15 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
 >({
   killGame: [true, { option: true }],
   waitForStage: ['created', { option: true }],
+  queue: [undefined, { option: true }],
 
-  desiredSlots: async ({}, use) => {
-    const slots = getQueueConfig() === '9v9' ? desiredSlots9v9 : desiredSlots6v6
-    await use(new Map<UserName, SlotId>(slots))
+  desiredSlots: async ({ queue }, use) => {
+    await use(
+      new Map<UserName, SlotId>(desiredSlotsByGamemode[queue?.gamemode ?? getQueueConfig()]),
+    )
   },
   players: async ({ users, desiredSlots }, use) => {
-    const requiredCount = getPlayerCount()
+    const requiredCount = desiredSlots.size
     if (users.count < requiredCount) {
       throw new Error(`at least ${requiredCount} users are required to launch a game`)
     }
@@ -80,7 +103,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
     await use(players)
   },
   gameNumber: [
-    async ({ users, players, gameServer, killGame, desiredSlots, waitForStage }, use) => {
+    async ({ users, players, gameServer, killGame, desiredSlots, waitForStage, queue }, use) => {
       let gameNumber: number | undefined
       let setupCompleted = false
 
@@ -94,7 +117,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
           const batch = playersToReadyUp.slice(i, i + batchSize)
           await Promise.all(
             batch.map(async user => {
-              const page = await user.queuePage()
+              const page = await user.queuePage(queue?.slug)
               await page.goto()
               const slot = desiredSlots.get(user.playerName)!
               await page.slot(slot).join()
@@ -103,13 +126,13 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
         }
 
         // The player who fills the final slot is automatically readied by the queue.
-        const lastQueuePage = await lastPlayer.queuePage()
+        const lastQueuePage = await lastPlayer.queuePage(queue?.slug)
         await lastQueuePage.goto()
         await lastQueuePage.slot(desiredSlots.get(lastPlayer.playerName)!).join()
 
         await Promise.all(
           players.map(async user => {
-            const queuePage = await user.queuePage()
+            const queuePage = await user.queuePage(queue?.slug)
             const page = await user.page()
             const slot = desiredSlots.get(user.playerName)!
 
@@ -183,7 +206,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
             const adminPage = await users.getAdmin().adminPage()
             await adminPage.freeStaticGameServer()
           } else if (shouldCleanup) {
-            const queuePage = await users.getAdmin().queuePage()
+            const queuePage = await users.getAdmin().queuePage(queue?.slug)
             await queuePage.goto()
             await queuePage.clearQueue()
           }
