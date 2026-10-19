@@ -8,6 +8,7 @@ import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
 import { get } from '../get'
 import type { Emit } from './queue-command'
+import { takeLaunchSnapshot } from './take-launch-snapshot'
 
 // must run inside queueCommand()
 export async function enterState(queue: QueueId, state: QueueState, emit: Emit) {
@@ -64,6 +65,9 @@ export async function enterState(queue: QueueId, state: QueueState, emit: Emit) 
   }
 
   emit('queue/state:updated', { queue, state })
+  if (state === QueueState.launching) {
+    emit('queue:launching', await takeLaunchSnapshot(queue))
+  }
 }
 
 // left over, they would fire into the queue's next ready-up
