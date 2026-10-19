@@ -3,7 +3,8 @@ import { z } from 'zod'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import type { PlayerSkill } from '../../database/models/player.model'
-import { config } from '../../queues/auto/config'
+import { gamemodeConfigs } from '../../gamemodes/configs'
+import type { Gamemode } from '../../shared/types/gamemode'
 
 export interface ParsedPlayerSkill {
   steamId: SteamId64
@@ -21,8 +22,8 @@ export interface ParseCsvError {
   error: string
 }
 
-export function parseCsv(content: string): ParseCsvResult | ParseCsvError {
-  const classNames = config.classes.map(c => c.name)
+export function parseCsv(content: string, gamemode: Gamemode): ParseCsvResult | ParseCsvError {
+  const classNames = gamemodeConfigs[gamemode].classes.map(c => c.name)
 
   try {
     const records: Record<string, string>[] = parse(content, {
