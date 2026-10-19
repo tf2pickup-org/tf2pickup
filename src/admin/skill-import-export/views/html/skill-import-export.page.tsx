@@ -1,9 +1,10 @@
-import { config } from '../../../../queues/auto/config'
+import { environment } from '../../../../environment'
+import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import { IconDownload, IconUpload } from '../../../../html/components/icons'
 import { Admin } from '../../../views/html/admin'
 
 export async function SkillImportExportPage() {
-  const classNames = config.classes.map(c => c.name)
+  const classNames = gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(c => c.name)
 
   return (
     <Admin activePage="skill-import-export">

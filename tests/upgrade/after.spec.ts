@@ -1,10 +1,16 @@
 // Runs against the version under test, started on the database the before-specs filled on 4.23.13.
-import { authUsers, expect } from '../fixtures/auth-users'
-import { launchGame } from '../fixtures/launch-game'
+import { authUsers } from '../fixtures/auth-users'
+import { expect, launchGame } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
 import { getQueueConfig } from '../queue-slots'
 import { loadState } from './state'
-import { defaultPlayerSkill, skilledPlayer, skilledPlayerSkill } from './seed'
+import {
+  defaultPlayerSkill,
+  mapPool,
+  playerSkillThreshold,
+  skilledPlayer,
+  skilledPlayerSkill,
+} from './seed'
 
 authUsers('player skill survives the upgrade', async ({ users }) => {
   const admin = await users.getAdmin().page()
@@ -20,6 +26,20 @@ authUsers('default player skill survives the upgrade', async ({ users }) => {
   await expect(admin.getByLabel("Player's skill on medic")).toHaveValue(
     defaultPlayerSkill.medic.toString(),
   )
+})
+
+authUsers('player restrictions survive the upgrade', async ({ users }) => {
+  const admin = await users.getAdmin().page()
+  await admin.goto('/admin/player-restrictions')
+  await expect(admin.getByLabel('Player skill threshold', { exact: true })).toBeChecked()
+  await expect(admin.getByLabel('Player skill threshold value', { exact: true })).toHaveValue(
+    playerSkillThreshold.toString(),
+  )
+  await expect(admin.getByLabel('Require player verification')).toBeChecked()
+})
+
+authUsers('the map pool survives the upgrade', async ({ users }) => {
+  expect(await (await users.getAdmin().adminPage()).mapPool()).toEqual(mapPool)
 })
 
 authUsers('played games survive the upgrade', async ({ users, request }) => {
@@ -50,7 +70,14 @@ authUsers('played games survive the upgrade', async ({ users, request }) => {
 launchGame.use({ waitForStage: 'started' })
 launchGame(
   'games keep being recorded after the upgrade',
-  async ({ gameNumber, gameServer, desiredSlots, users, page }) => {
+  async ({ gameNumber, gameServer, desiredSlots, users, page, request }) => {
+    const { map } = (await (await request.get(`/api/v1/games/${gameNumber}`)).json()) as {
+      map: string
+    }
+    await expect(gameServer).toHaveCommand(
+      `exec ${mapPool.find(({ name }) => name === map)!.execConfig}`,
+    )
+
     await gameServer.matchEnds()
     const gamePage = new GamePage(page, gameNumber)
     await gamePage.goto()

@@ -1,23 +1,29 @@
 import type { GameModel } from '../database/models/game.model'
+import type { QueueId } from '../database/models/queue.model'
 import { logger } from '../logger'
-import { queue } from '../queues/auto'
+import { get } from '../queues/get'
+import { getFriends } from '../queues/auto/get-friends'
+import { getMapWinner } from '../queues/auto/get-map-winner'
+import { getSlots } from '../queues/auto/get-slots'
+import { unreadyQueue } from '../queues/auto/unready-queue'
 import { assignGameServer } from './assign-game-server'
 import { create } from './create'
 import { configure } from './rcon/configure'
 
-export async function launchGame() {
-  logger.info('launching game')
+export async function launchGame(queueId: QueueId) {
+  logger.info({ queue: queueId }, 'launching game')
 
   let game: GameModel
   try {
-    const slots = await queue.getSlots()
-    const map = await queue.getMapWinner()
-    const friends = await queue.getFriends()
-    logger.trace({ slots, map, friends }, 'launchGame()')
-    game = await create(slots, map, friends)
+    const queue = await get(queueId)
+    const slots = await getSlots(queueId)
+    const map = await getMapWinner(queueId)
+    const friends = await getFriends(queueId)
+    logger.trace({ queue: queueId, slots, map, friends }, 'launchGame()')
+    game = await create(queue, slots, map, friends)
   } catch (error) {
     logger.error({ error }, 'failed to launch game; reverting queue')
-    await queue.unreadyQueue()
+    await unreadyQueue(queueId)
     return
   }
 

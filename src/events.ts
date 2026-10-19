@@ -18,6 +18,7 @@ import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
 import type { WithId } from 'mongodb'
+import type { QueueId } from './database/models/queue.model'
 
 export interface Events {
   'chat:messageDeleted': {
@@ -194,30 +195,41 @@ export interface Events {
   'queue:playerKicked': {
     player: SteamId64
   }
+  'queue:updated': {
+    queue: QueueId
+  }
   'queue:cleared': {
+    queue: QueueId
     admin: SteamId64
     playerCount: number
   }
   'queue/mapPool:reset': {
+    queue: QueueId
     maps: MapPoolEntry[]
   }
   'queue/slots:updated': {
+    queue: QueueId
     slots: QueueSlotModel[]
   }
   'queue/state:updated': {
+    queue: QueueId
     state: QueueState
   }
   'queue/mapOptions:reset': {
+    queue: QueueId
     mapOptions: string[]
   }
   'queue/mapVoteResults:updated': {
+    queue: QueueId
     results: Record<string, number>
   }
   'queue/friendship:created': {
+    queue: QueueId
     source: SteamId64
     target: SteamId64
   }
   'queue/friendship:updated': {
+    queue: QueueId
     source: SteamId64
     target: {
       before: SteamId64
@@ -225,6 +237,7 @@ export interface Events {
     }
   }
   'queue/friendship:removed': {
+    queue: QueueId
     source: SteamId64
     target: SteamId64
   }

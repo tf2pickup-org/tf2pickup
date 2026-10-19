@@ -10,6 +10,7 @@ import { logError } from '../../../utils/log-error'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { markAsFriend } from '../mark-as-friend'
 import { getState } from '../../get-state'
+import { get } from '../../get'
 import { QueueState } from '../../../database/models/queue-state.model'
 import { preReady } from '../../../pre-ready'
 import { errors } from '../../../errors'
@@ -20,11 +21,13 @@ import type { AppWebSocket } from '../../../websocket/types'
 import { players } from '../../../players'
 import { queueWsCallDuration } from '../../metrics'
 import { measureTime } from '../../../utils/measure-time'
+import { getDefault } from '../../get-default'
+import type { QueueModel } from '../../../database/models/queue.model'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
-    async function refreshTakenSlots(actorId: SteamId64) {
+    async function refreshTakenSlots(queue: QueueModel, actorId: SteamId64) {
       const actor = await players.bySteamId(actorId, [
         'steamId',
         'bans',
@@ -33,10 +36,12 @@ export default fp(
         'verified',
         'roles',
       ])
-      const slots = await collections.queueSlots.find({ player: { $ne: null } }).toArray()
+      const slots = await collections.queueSlots
+        .find({ queue: queue._id, player: { $ne: null } })
+        .toArray()
       app.gateway
         .to({ player: actorId })
-        .send(() => Promise.all(slots.map(slot => QueueSlot({ slot, actor }))))
+        .send(() => Promise.all(slots.map(slot => QueueSlot({ queue, slot, actor }))))
     }
 
     function wsSafe<Args extends unknown[]>(
@@ -77,14 +82,15 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        const slots = await join(slotId, socket.player.steamId)
+        const queue = await getDefault()
+        const slots = await join(queue._id, slotId, socket.player.steamId)
         if (slots.find(s => s.canMakeFriendsWith?.length)) {
-          await refreshTakenSlots(socket.player.steamId)
+          await refreshTakenSlots(queue, socket.player.steamId)
         }
 
         app.gateway
           .to({ player: socket.player.steamId })
-          .send(async () => await IsInQueue({ actor: socket.player?.steamId }))
+          .send(async () => await IsInQueue({ queue: queue._id, actor: socket.player?.steamId }))
       }),
     )
 
@@ -97,17 +103,17 @@ export default fp(
 
         const slot = await leave(socket.player.steamId)
         if (slot.canMakeFriendsWith?.length) {
-          await refreshTakenSlots(socket.player.steamId)
+          await refreshTakenSlots(await get(slot.queue), socket.player.steamId)
         }
 
         app.gateway
           .to({ player: socket.player.steamId })
           .send(async () => [
-            await IsInQueue({ actor: socket.player?.steamId }),
-            await MapVoteSelection({ actor: socket.player?.steamId }),
+            await IsInQueue({ queue: slot.queue, actor: socket.player?.steamId }),
+            await MapVoteSelection({ queue: slot.queue, actor: socket.player?.steamId }),
           ])
 
-        const queueState = await getState()
+        const queueState = await getState(slot.queue)
         if (queueState === QueueState.ready) {
           const close = await ReadyUpDialog.close()
           app.gateway.to({ player: socket.player.steamId }).send(() => close)
@@ -134,10 +140,10 @@ export default fp(
           throw errors.unauthorized('unauthorized')
         }
 
-        await voteMap(socket.player.steamId, map)
+        const { queue } = await voteMap(socket.player.steamId, map)
         app.gateway
           .to({ player: socket.player.steamId })
-          .send(async actor => await MapVoteSelection({ actor }))
+          .send(async actor => await MapVoteSelection({ queue, actor }))
       }),
     )
 

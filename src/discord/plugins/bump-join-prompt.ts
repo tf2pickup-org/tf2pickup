@@ -1,9 +1,10 @@
+import { queues } from '../../queues'
+import { getSlots } from '../../queues/auto/get-slots'
 import fp from 'fastify-plugin'
 import { forEachEnabledChannel } from '../for-each-enabled-channel'
 import { collections } from '../../database/collections'
 import { getMessage } from '../get-message'
 import { minutesToMilliseconds } from 'date-fns'
-import { queue } from '../../queues/auto'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
 import { queuePromptMutex } from '../queue-prompt-mutex'
@@ -39,7 +40,8 @@ async function ensurePromptIsVisible() {
       }
 
       const thresholdRatio = config.bumpPlayerThresholdRatio
-      const slots = await queue.getSlots()
+      const queue = (await queues.getDefault())._id
+      const slots = await getSlots(queue)
       const playerCount = slots.filter(slot => !!slot.player).length
       const requiredPlayerCount = slots.length
 
