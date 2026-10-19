@@ -9,9 +9,9 @@ import { GameSlot } from './game-slot'
 export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undefined }) {
   const configClassNames = `config-${props.game.gamemode}`
   return (
-    <>
+    <div class={`game-slots ${configClassNames}`}>
       <div class="score-header team-blu">
-        <span class="uppercase">blu</span>
+        <span class="team-name">blu</span>
         <GameScore game={props.game} team={Tf2Team.blu} />
       </div>
 
@@ -37,7 +37,7 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
       </div>
 
       <div class="score-header team-red">
-        <span class="uppercase">red</span>
+        <span class="team-name">red</span>
         <GameScore game={props.game} team={Tf2Team.red} />
       </div>
 
@@ -51,7 +51,7 @@ export function GameSlotList(props: { game: GameModel; actor?: SteamId64 | undef
             <GameSlot slot={slot} game={props.game} actor={props.actor} />
           ))}
       </div>
-    </>
+    </div>
   )
 }
 
