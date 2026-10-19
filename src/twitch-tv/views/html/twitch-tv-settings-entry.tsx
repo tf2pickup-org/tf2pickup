@@ -4,19 +4,22 @@ import { IconBrandTwitch } from '../../../html/components/icons'
 export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitchTvProfile'> }) {
   return (
     <div
-      class="bg-zinc-850 flex flex-row items-center gap-4 rounded-sm p-2"
+      class="page-actions flex-row items-center gap-x-8! px-5"
       hx-target="this"
       hx-swap="outerHTML"
     >
-      <IconBrandTwitch size={32} />
-      <p class="font-bold">twitch.tv</p>
+      <p class="flex items-center gap-1 text-2xl font-bold">
+        <IconBrandTwitch size={24} />
+        Twitch.tv
+      </p>
       {props.player.twitchTvProfile ? (
         <>
           <p>
-            Logged in as{' '}
+            Logged in as:{' '}
             <a
               href={`https://www.twitch.tv/${props.player.twitchTvProfile.login}`}
               target="_blank"
+              class="hover:underline"
               safe
             >
               {props.player.twitchTvProfile.login}
@@ -25,7 +28,7 @@ export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitch
           <div class="flex-1"></div>
           <button
             class="button"
-            data-size="dense"
+
             hx-put="/twitch/disconnect"
             data-umami-event="twitch-disconnect"
           >
@@ -39,7 +42,7 @@ export function TwitchTvSettingsEntry(props: { player: Pick<PlayerModel, 'twitch
           <a
             class="button"
             data-variant="accent"
-            data-size="dense"
+
             href="/twitch/auth"
             hx-boost="false"
             data-umami-event="twitch-connect"
