@@ -1,4 +1,4 @@
-import { config } from '../../../../queue-auto/config'
+import { config } from '../../../../queues/auto/config'
 import { IconDownload, IconUpload } from '../../../../html/components/icons'
 import { Admin } from '../../../views/html/admin'
 
