@@ -25,6 +25,8 @@ const environmentSchema = z.object({
   MONGODB_URI: z.url(),
   SUPER_USER: steamId64.optional(),
   STEAM_API_KEY: z.string(),
+  // The gamemode a pre-5.0 instance ran. Read only by the migrations that turn it into a queue;
+  // queues are configured in the admin panel.
   QUEUE_CONFIG: z
     .enum([Gamemode.sixes, Gamemode.highlander, Gamemode.ultiduo])
     .default(Gamemode.sixes),
