@@ -90,7 +90,7 @@
     "pino": "10.4.0",
     "postcss": "8.5.30",
     "postcss-import": "17.0.1",
-    "postcss-nested": "8.0.1",
+    "postcss-nested": "9.0.1",
     "rcon-client": "4.2.5",
     "sanitize-html": "2.18.1",
     "steamapi": "3.1.5",
