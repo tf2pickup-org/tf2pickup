@@ -3,6 +3,7 @@ import {
   ConfigurationEntryEdit,
   ViewForNerdsPage,
 } from '../../../admin/view-for-nerds/views/html/view-for-nerds.page'
+import { secretKeys } from '../../../admin/view-for-nerds/secret-keys'
 import { z } from 'zod'
 import {
   configurationSchema,
@@ -54,6 +55,9 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { key, value } = request.body
+        if (secretKeys.has(key) && !request.user!.player.roles.includes(PlayerRole.superUser)) {
+          return reply.forbidden()
+        }
         await configuration.set(key, value, request.user!.player.steamId)
         const defaultValue = configuration.getDefault(key)
         await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
@@ -77,6 +81,9 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { key } = request.query
+        if (secretKeys.has(key) && !request.user!.player.roles.includes(PlayerRole.superUser)) {
+          return reply.forbidden()
+        }
         const value = await configuration.reset(key, request.user!.player.steamId)
         const defaultValue = configuration.getDefault(key)
         await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))

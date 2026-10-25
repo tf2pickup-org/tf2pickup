@@ -1,6 +1,5 @@
 import { z } from 'zod'
 import dotenv from 'dotenv'
-import { KnownEndpoint } from '@tf2pickup-org/serveme-tf-client'
 import { steamId64 } from './shared/schemas/steam-id-64'
 
 dotenv.config()
@@ -40,9 +39,6 @@ const environmentSchema = z.object({
     .string()
     .default('false')
     .transform(value => ['true', '1', 'yes', 'on'].includes(value.trim().toLowerCase())),
-
-  SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
-  SERVEME_TF_API_KEY: z.string().optional(),
 
   TF2_QUICK_SERVER_CLIENT_ID: z.string().optional(),
   TF2_QUICK_SERVER_CLIENT_SECRET: z.string().optional(),

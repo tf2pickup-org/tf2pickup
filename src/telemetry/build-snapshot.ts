@@ -3,6 +3,7 @@ import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { environment } from '../environment'
 import { mapPool } from '../maps/pool'
+import { servemeTf } from '../serveme-tf'
 import { getPlayedMapsCount } from '../statistics/get-played-maps-count'
 import { version } from '../version'
 import { getUsageCounters } from './get-usage-counters'
@@ -190,7 +191,7 @@ export async function buildSnapshot() {
 
   const integrationEntries = [
     { key: 'discord', value: Boolean(environment.DISCORD_BOT_TOKEN), label: 'Discord' },
-    { key: 'serveme', value: Boolean(environment.SERVEME_TF_API_KEY), label: 'serveme.tf' },
+    { key: 'serveme', value: await servemeTf.isEnabled(), label: 'serveme.tf' },
     {
       key: 'tf2QuickServer',
       value: Boolean(

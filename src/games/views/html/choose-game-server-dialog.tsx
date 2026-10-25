@@ -6,6 +6,8 @@ import { Tf2QuickServerList } from '../../../tf2-quick-server/views/html/tf2-qui
 import type { GameNumber } from '../../../database/models/game.model'
 
 export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) {
+  const servemeTfEnabled = await servemeTf.isEnabled()
+
   return (
     <dialog
       id="choose-game-server-dialog"
@@ -15,7 +17,7 @@ export async function ChooseGameServerDialog(props: { gameNumber: GameNumber }) 
       <form hx-put={`/games/${props.gameNumber}/reassign-gameserver`} class="flex flex-col">
         <header class="font-bold">Choose game server</header>
         <StaticGameServerList name="gameServer" />
-        {servemeTf.isEnabled && <ServemeTfServerList />}
+        {servemeTfEnabled && <ServemeTfServerList />}
         {tf2QuickServer.isEnabled && <Tf2QuickServerList gameNumber={props.gameNumber} />}
         <button
           class="button mt-8 self-center"

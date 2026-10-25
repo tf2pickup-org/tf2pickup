@@ -1,10 +1,11 @@
 import { GameServerProvider, type GameModel, type GameServer } from '../database/models/game.model'
-import { client } from './client'
+import { getClient } from './client'
 import { logger } from '../logger'
 import { pickServer } from './pick-server'
 import { errors } from '../errors'
 
 export async function assign(game: GameModel, name?: string): Promise<GameServer> {
+  const client = await getClient()
   if (!client) {
     throw errors.badRequest(`serveme.tf is disabled`)
   }

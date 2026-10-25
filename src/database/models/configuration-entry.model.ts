@@ -1,5 +1,6 @@
 import { milliseconds, minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { z } from 'zod'
+import { KnownEndpoint } from '@tf2pickup-org/serveme-tf-client'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
@@ -252,6 +253,22 @@ export const configurationSchema = z.discriminatedUnion('key', [
     key: z.literal('queue.pre_ready_up_timeout'),
     value: z.number().positive().default(minutesToMilliseconds(5)),
   }),
+  z
+    .object({
+      key: z.literal('serveme_tf.enabled'),
+      value: z.boolean().default(false),
+    })
+    .describe('Whether the serveme.tf integration is enabled'),
+  z.object({
+    key: z.literal('serveme_tf.api_endpoint'),
+    value: z.enum(KnownEndpoint).default(KnownEndpoint.europe),
+  }),
+  z
+    .object({
+      key: z.literal('serveme_tf.api_key'),
+      value: z.string().min(1).nullable().default(null),
+    })
+    .describe('serveme.tf API key (visible to super users only)'),
   z.object({
     key: z.literal('serveme_tf.preferred_region'),
     value: z.string().nullable().default(null),

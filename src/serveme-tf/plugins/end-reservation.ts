@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import { tasks } from '../../tasks'
-import { client } from '../client'
+import { getClient } from '../client'
 import type { ReservationId } from '@tf2pickup-org/serveme-tf-client'
 import { events } from '../../events'
 import { GameServerProvider } from '../../database/models/game.model'
@@ -12,6 +12,7 @@ const endReservationDelay = secondsToMilliseconds(30)
 // eslint-disable-next-line @typescript-eslint/require-await
 export default fp(async () => {
   async function endReservation(id: ReservationId) {
+    const client = await getClient()
     if (!client) {
       throw new Error(`serveme.tf disabled`)
     }
