@@ -183,4 +183,6 @@ Channels:
 
 - Confirm a metric/field has data (and pick alert thresholds) by running a `query_range` first.
 - `service.name` values seen: `tf2pickup-pl`, `tf2pickup-fr`, `tf2pickup-eu`, `tf2pickup-ru`,
-  `hl-tf2pickup-eu` (one OTel service per deployed instance).
+  `tf2pickup-fi`, `tf2pickup-cz`, `br-tf2pickup-org`, `hl-br-tf2pickup-org`, `hl-tf2pickup-eu`
+  (one OTel service per deployed instance). The list grows; discover the current set with a logs
+  `count` table query grouped by resource `service.name`.
