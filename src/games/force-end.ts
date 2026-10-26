@@ -7,6 +7,7 @@ import type { Bot } from '../shared/types/bot'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { activityLog } from '../activity-log'
 import { update } from './update'
+import { logger } from '../logger'
 
 export async function forceEnd(
   gameNumber: GameNumber,
@@ -40,6 +41,7 @@ export async function forceEnd(
       ],
     },
   )
+  logger.info({ gameNumber, actor, reason }, `game #${gameNumber} force-ended`)
   await activityLog.record({
     type: 'game force-ended',
     gameNumber,
