@@ -293,8 +293,8 @@ importers:
         specifier: 1.6.20
         version: 1.6.20
       croner:
-        specifier: 10.0.1
-        version: 10.0.1
+        specifier: 11.0.0
+        version: 11.0.0
       cssnano:
         specifier: 9.9.0
         version: 9.9.0(postcss@8.5.31)
@@ -2744,8 +2744,8 @@ packages:
     resolution: {integrity: sha512-zTF1smuEo4MqYkx2/vzE2QftjgUJGaDNkIyEV9iZG7OfRhxZh6DlLEm+xHAcc0D2k8hL/Abseoep1crmG9so/w==}
     engines: {node: '>=20'}
 
-  croner@10.0.1:
-    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
+  croner@11.0.0:
+    resolution: {integrity: sha512-T17ADjdttrVToyzLpLq9Xb9xzcMwpQ/M3Qs9szhh0MVNTbv6NWQ9OFYa2qlzPYXFMn+uoDlnW1IpIv6cAvFtyA==}
     engines: {node: '>=18.0'}
 
   cross-spawn@7.0.6:
@@ -7400,7 +7400,7 @@ snapshots:
       p-filter: 4.1.0
       p-map: 7.0.4
 
-  croner@10.0.1: {}
+  croner@11.0.0: {}
 
   cross-spawn@7.0.6:
     dependencies:
