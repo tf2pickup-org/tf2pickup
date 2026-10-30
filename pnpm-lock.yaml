@@ -292,9 +292,6 @@ importers:
       country-flag-icons:
         specifier: 1.6.20
         version: 1.6.20
-      croner:
-        specifier: 10.0.1
-        version: 10.0.1
       cssnano:
         specifier: 9.9.0
         version: 9.9.0(postcss@8.5.32)
@@ -2743,10 +2740,6 @@ packages:
   cpy@13.2.0:
     resolution: {integrity: sha512-zTF1smuEo4MqYkx2/vzE2QftjgUJGaDNkIyEV9iZG7OfRhxZh6DlLEm+xHAcc0D2k8hL/Abseoep1crmG9so/w==}
     engines: {node: '>=20'}
-
-  croner@10.0.1:
-    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
-    engines: {node: '>=18.0'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -7399,8 +7392,6 @@ snapshots:
       micromatch: 4.0.8
       p-filter: 4.1.0
       p-map: 7.0.4
-
-  croner@10.0.1: {}
 
   cross-spawn@7.0.6:
     dependencies:
