@@ -8,7 +8,7 @@ export default routes(async app => {
   // the default queue, without a redirect; the browser shows the queue's own URL
   app.get('/', async (request, reply) => {
     const queue = await queues.getDefault()
-    if (request.headers['hx-request'] === 'true') {
+    if (request.isHtmx()) {
       void reply.header('HX-Push-Url', queues.queuePageUrl(queue.slug))
     }
     return reply.html(QueuePage({ queue, atRoot: true }))
