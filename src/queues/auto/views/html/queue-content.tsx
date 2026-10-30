@@ -5,6 +5,7 @@ import { PlayerRole } from '../../../../database/models/player.model'
 import type { QueueModel } from '../../../../database/models/queue.model'
 import type { QueueSlotModel } from '../../../../database/models/queue-slot.model'
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
+import { Gamemode } from '../../../../shared/types/gamemode'
 import { GameClassIcon } from '../../../../html/components/game-class-icon'
 import { IconEraser } from '../../../../html/components/icons'
 import { players } from '../../../../players'
@@ -72,18 +73,20 @@ async function QueueState(props: {
   )
 }
 
+const gridColsByGamemode: Record<Gamemode, string> = {
+  [Gamemode.sixes]: 'xl:grid-cols-4',
+  [Gamemode.highlander]: 'xl:grid-cols-3',
+  [Gamemode.ultiduo]: 'xl:grid-cols-2',
+  [Gamemode.bball]: 'xl:grid-cols-2',
+}
+
 async function Queue(props: {
   queue: QueueModel
   slots: QueueSlotModel[]
   actor?: SteamId64 | undefined
 }) {
   const config = gamemodeConfigs[props.queue.gamemode]
-  const gridCols =
-    config.classes.length > 4
-      ? 'xl:grid-cols-3'
-      : config.classes.length > 2
-        ? 'xl:grid-cols-4'
-        : 'xl:grid-cols-2'
+  const gridCols = gridColsByGamemode[props.queue.gamemode]
   const actor = props.actor
     ? await players.bySteamId(props.actor, [
         'steamId',
