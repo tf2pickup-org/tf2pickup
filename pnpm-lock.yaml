@@ -365,8 +365,8 @@ importers:
         specifier: 18.1.2
         version: 18.1.2
       mime:
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.1.2
+        version: 4.1.2
       mongodb:
         specifier: 7.7.0
         version: 7.7.0
@@ -3852,8 +3852,8 @@ packages:
     engines: {node: '>=10.0.0'}
     hasBin: true
 
-  mime@4.1.1:
-    resolution: {integrity: sha512-YAApRsTpM2+gnUFHhRNGfkX8NK0V5xj1nyQLufGlwEI+eX4xRsTcel2IXDuMEGSGjBvzykNW4VuoEACgwYe7BQ==}
+  mime@4.1.2:
+    resolution: {integrity: sha512-ikRzZ2RwbUVDyL9SsU0f2Phcmav4yq5r8faH5ZZKHtOZrMBLnrQOrj0uvqZ5R1uQnj+RO7Wcklw/lAf81mP9LQ==}
     engines: {node: '>=16'}
     hasBin: true
 
@@ -8533,7 +8533,7 @@ snapshots:
 
   mime@3.0.0: {}
 
-  mime@4.1.1: {}
+  mime@4.1.2: {}
 
   mimic-function@5.0.1: {}
 
