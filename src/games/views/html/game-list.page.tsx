@@ -9,10 +9,12 @@ import { Pagination, paginate } from '../../../html/components/pagination'
 import { makeTitle } from '../../../html/make-title'
 import type { PickDeep } from 'type-fest'
 import type { GameModel } from '../../../database/models/game.model'
+import type { Gamemode } from '../../../shared/types/gamemode'
+import { GamesFilter } from './games-filter'
 
 const itemsPerPage = 8
 
-export async function GameListPage(props: { page: number }) {
+export async function GameListPage(props: { page: number; gamemode?: Gamemode | undefined }) {
   return (
     <Layout
       title={makeTitle('games')}
@@ -20,10 +22,13 @@ export async function GameListPage(props: { page: number }) {
       canonical="/games"
       embedStyle={resolve(import.meta.dirname, 'game-list.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto">
-          <div class="my-9 text-[48px] font-bold text-zinc-200">Games</div>
+        <div class="games-page">
+          <div class="games-page-header">
+            <h1 class="games-page-title">Games</h1>
+            <GamesFilter gamemode={props.gamemode} />
+          </div>
           <div class="contents" id="gameList">
             <GameList {...props} />
           </div>
@@ -34,14 +39,19 @@ export async function GameListPage(props: { page: number }) {
   )
 }
 
-export async function GameList(props: { page: number }) {
-  const { page } = props
-  const { last, around } = paginate(page, itemsPerPage, await collections.games.countDocuments())
+export async function GameList(props: { page: number; gamemode?: Gamemode | undefined }) {
+  const { page, gamemode } = props
+  const filter = gamemode ? { gamemode } : {}
+  const { last, around } = paginate(
+    page,
+    itemsPerPage,
+    await collections.games.countDocuments(filter),
+  )
   const skip = (page - 1) * itemsPerPage
 
   const games = await collections.games
-    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map'>>(
-      {},
+    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'gamemode'>>(
+      filter,
       {
         limit: itemsPerPage,
         skip,
@@ -51,6 +61,7 @@ export async function GameList(props: { page: number }) {
           state: 1,
           score: 1,
           map: 1,
+          gamemode: 1,
           events: { $slice: 1 },
         },
       },
@@ -65,7 +76,7 @@ export async function GameList(props: { page: number }) {
         ))}
       </div>
       <Pagination
-        hrefFn={page => `/games?page=${page}`}
+        hrefFn={page => `/games?${new URLSearchParams({ page: String(page), ...filter })}`}
         lastPage={last}
         currentPage={page}
         around={around}

@@ -45,6 +45,18 @@ describe('GET /games', () => {
     },
   )
 
+  it('filters the game list by gamemode', async () => {
+    const response = await app.inject({ method: 'GET', url: '/', query: { gamemode: '9v9' } })
+    expect(response.statusCode).toBe(200)
+    expect(GameListPage).toHaveBeenCalledWith({ page: 1, gamemode: '9v9' })
+  })
+
+  it('rejects an unknown gamemode', async () => {
+    const response = await app.inject({ method: 'GET', url: '/', query: { gamemode: 'hl' } })
+    expect(response.statusCode).toBe(400)
+    expect(GameListPage).not.toHaveBeenCalled()
+  })
+
   it('strips unknown params such as goto instead of passing them on', async () => {
     const response = await app.inject({
       method: 'GET',
