@@ -26,9 +26,18 @@ const classes9v9 = [
   { name: 'spy', count: 2 },
 ]
 
-export function* queueSlots(): Generator<SlotId> {
-  const classes = queueConfig === '9v9' ? classes9v9 : classes6v6
-  for (const gc of classes) {
+const classesByGamemode: Record<string, { name: string; count: number }[]> = {
+  '6v6': classes6v6,
+  '9v9': classes9v9,
+  ultiduo: [
+    { name: 'soldier', count: 2 },
+    { name: 'medic', count: 2 },
+  ],
+  bball: [{ name: 'soldier', count: 4 }],
+}
+
+export function* queueSlots(gamemode: string = queueConfig): Generator<SlotId> {
+  for (const gc of classesByGamemode[gamemode]!) {
     for (let i = 1; i <= gc.count; ++i) {
       yield `${gc.name}-${i}` as SlotId
     }

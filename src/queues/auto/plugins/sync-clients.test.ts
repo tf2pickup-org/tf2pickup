@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import type { FastifyInstance } from 'fastify'
-import { ObjectId } from 'mongodb'
 
 const {
   mockPlayersFind,
@@ -18,7 +17,7 @@ const {
   mockQueueSlotsFindOne: vi.fn(),
   mockNotFound: vi.fn((msg: string) => new Error(msg)),
   mockGetState: vi.fn(),
-  shownQueue: { _id: { equals: (other: unknown) => other === 'shown-queue' }, gamemode: '6v6' },
+  shownQueue: { _id: 'shown-queue', slug: 'auto-6v6', gamemode: '6v6' },
 }))
 
 vi.mock('fastify-plugin', () => ({ default: <T>(fn: T): T => fn }))
@@ -27,7 +26,21 @@ vi.mock('../../../utils/safe', () => ({ safe: <T>(fn: T): T => fn }))
 vi.mock('../../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../../errors', () => ({ errors: { notFound: mockNotFound } }))
 vi.mock('../../get-state', () => ({ getState: mockGetState }))
-vi.mock('../../get-default', () => ({ getDefault: vi.fn().mockResolvedValue(shownQueue) }))
+vi.mock('../..', () => ({
+  queues: {
+    get: vi.fn().mockResolvedValue(shownQueue),
+    listEnabled: vi.fn().mockResolvedValue([shownQueue]),
+    byPageUrl: vi.fn((url: string) =>
+      Promise.resolve(url === '/q/auto-6v6' ? shownQueue : undefined),
+    ),
+    queuePageUrl: (slug: string) => `/q/${slug}`,
+    pageUrls: vi.fn().mockResolvedValue(['/q/auto-6v6']),
+  },
+}))
+vi.mock('../../player-counts', () => ({
+  playerCounts: vi.fn().mockResolvedValue({ current: 0, required: 12 }),
+}))
+vi.mock('../views/html/queue-switcher-count', () => ({ QueueSwitcherCount: vi.fn() }))
 vi.mock('../../../database/collections', () => ({
   collections: {
     players: { find: mockPlayersFind, findOne: mockPlayersCollectionFindOne },
@@ -189,7 +202,7 @@ describe('sync-clients', () => {
     }
 
     function makeSocket() {
-      return { player: { steamId: steamId1 }, currentUrl: '/', send: vi.fn() }
+      return { player: { steamId: steamId1 }, currentUrl: '/q/auto-6v6', send: vi.fn() }
     }
 
     it('shows the ready-up dialog when the queue is in ready state and the player has not readied up', async () => {
@@ -247,12 +260,12 @@ describe('sync-clients', () => {
       expect(vi.mocked(players.bySteamId)).not.toHaveBeenCalled()
     })
 
-    it("ignores queues that aren't shown on the page", async () => {
+    it("sends the slots to the queue's page only", async () => {
       const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
 
-      await handler({ queue: new ObjectId(), slots: [] })
+      await handler({ queue: 'shown-queue', slots: [] })
 
-      expect(mockPlayersFind).not.toHaveBeenCalled()
+      expect(app.gateway.to).toHaveBeenCalledWith({ url: '/q/auto-6v6' })
       expect(app.gateway.broadcast).not.toHaveBeenCalled()
     })
 

@@ -43,6 +43,10 @@ export default fp(
 
         app.log.debug(`${socket.player.steamId} (${player.name}) connected from ${ipAddress}`)
 
+        // a check left over from an earlier disconnect could otherwise land in the gap of a
+        // later page reload and mark the player offline
+        await tasks.cancel('onlinePlayers:validatePlayer', { player: socket.player.steamId })
+
         await collections.onlinePlayers.updateOne(
           {
             steamId: socket.player.steamId,
