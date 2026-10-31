@@ -1,4 +1,5 @@
 export interface DiscordBotStateModel {
   guildId: string
-  promptMessageId?: string | undefined
+  // queue id → the message holding that queue's prompt
+  promptMessageIds?: Record<string, string>
 }

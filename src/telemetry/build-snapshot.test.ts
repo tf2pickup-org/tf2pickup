@@ -42,6 +42,26 @@ vi.mock('../queues', () => ({
       mapCooldown: 2,
       maps: [{ name: 'cp_process_f12' }, { name: 'cp_gullywash_f9' }],
     }),
+    list: vi.fn().mockResolvedValue([
+      {
+        slug: 'auto-6v6',
+        name: '6v6',
+        gamemode: '6v6',
+        launchMode: 'auto',
+        enabled: true,
+        skillThreshold: null,
+        requireVerification: false,
+      },
+      {
+        slug: 'secret-slug',
+        name: 'Secret name',
+        gamemode: 'ultiduo',
+        launchMode: 'auto',
+        enabled: false,
+        skillThreshold: 2,
+        requireVerification: true,
+      },
+    ]),
   },
 }))
 
@@ -168,5 +188,27 @@ describe('buildSnapshot', () => {
       label: 'Skill suggestions applied (30d)',
     })
     expect(snapshot.meta.features.map(entry => entry.key)).toEqual(Object.keys(snapshot.features))
+  })
+
+  it('reports every queue without its slug or name', async () => {
+    const snapshot = await buildSnapshot()
+    expect(snapshot.features['queues.enabled_count']).toBe(1)
+    expect(snapshot.queues).toEqual([
+      {
+        gamemode: '6v6',
+        launchMode: 'auto',
+        enabled: true,
+        hasSkillThreshold: false,
+        requireVerification: false,
+      },
+      {
+        gamemode: 'ultiduo',
+        launchMode: 'auto',
+        enabled: false,
+        hasSkillThreshold: true,
+        requireVerification: true,
+      },
+    ])
+    expect(JSON.stringify(snapshot)).not.toMatch(/secret/i)
   })
 })
