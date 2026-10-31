@@ -9,6 +9,10 @@
     {
       "updateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true
+    },
+    {
+      "matchPackageNames": ["@tf2pickup-org/mumble-client"],
+      "minimumReleaseAge": null
     }
   ],
   "automergeType": "branch",
