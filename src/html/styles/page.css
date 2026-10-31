@@ -1,0 +1,24 @@
+@layer components {
+  .page-wide {
+    width: 100%;
+    max-width: 1920px;
+    margin: 0 auto;
+    padding-bottom: 16px;
+
+    @media (width >= theme(--breakpoint-lg)) {
+      padding-inline: 16px;
+    }
+  }
+
+  .page-title {
+    margin-top: 24px;
+    color: var(--color-zinc-100);
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 48px;
+
+    @media (width >= theme(--breakpoint-lg)) {
+      margin-top: 37px;
+    }
+  }
+}
