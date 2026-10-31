@@ -77,13 +77,13 @@ const values: Record<string, unknown> = {
   'queue.map_cooldown': 2,
   'serveme_tf.preferred_region': 'eu',
   'games.cooldown_levels': [{ level: 0, banLengthMs: 1 }],
-  'games.default_player_skill': { soldier: 5 },
+  'games.default_player_skill': { '6v6': { soldier: 5 } },
   'games.execute_extra_commands': [],
 }
 
 const defaults: Record<string, unknown> = {
   'games.cooldown_levels': [{ level: 0, banLengthMs: 1 }],
-  'games.default_player_skill': { soldier: 1 },
+  'games.default_player_skill': { '6v6': { soldier: 1 } },
 }
 
 vi.mocked(configuration.get).mockImplementation((key: string) =>

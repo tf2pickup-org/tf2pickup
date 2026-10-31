@@ -1,4 +1,5 @@
 import { configuration } from '../../../configuration'
+import { environment } from '../../../environment'
 import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
 import {
   IconBan,
@@ -27,11 +28,12 @@ export async function AdminToolbox(props: {
   >
 }) {
   const { player } = props
-  const defaultSkill = await configuration.get('games.default_player_skill')
+  const defaultSkill =
+    (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
   const skillStep = await configuration.get('games.skill_step')
   const requireVerification = await configuration.get('queue.require_player_verification')
   const skillSuggestions = (await configuration.get('games.skill_suggestions'))
-    ? makeSkillSuggestions({ player })
+    ? makeSkillSuggestions({ player, gamemode: environment.QUEUE_CONFIG })
     : undefined
   const compact = queue.config.classes.length > 4
 
@@ -89,7 +91,11 @@ export async function AdminToolbox(props: {
                   <GameClassSkillInput
                     gameClass={gameClass.name}
                     name={`skill.${gameClass.name}`}
-                    value={player.skill?.[gameClass.name] ?? defaultSkill[gameClass.name] ?? 0}
+                    value={
+                      player.skill?.[environment.QUEUE_CONFIG]?.[gameClass.name] ??
+                      defaultSkill[gameClass.name] ??
+                      0
+                    }
                     step={skillStep}
                   >
                     <SkillLastUpdated

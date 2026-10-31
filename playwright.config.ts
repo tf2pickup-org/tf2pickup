@@ -34,8 +34,23 @@ export default defineConfig({
     },
     {
       name: 'chromium',
+      testIgnore: /upgrade\//,
       use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
       dependencies: ['setup'],
+    },
+    // Upgrade test: upgrade-before runs against the previous release, then the version under test
+    // starts on the same database and upgrade-after checks what survived. upgrade-after must not
+    // depend on setup, which resets players.
+    {
+      name: 'upgrade-before',
+      testMatch: /upgrade\/before\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
+      dependencies: ['setup'],
+    },
+    {
+      name: 'upgrade-after',
+      testMatch: /upgrade\/after\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'], ...(process.env.CI ? { ignoreHTTPSErrors: true } : {}) },
     },
     // {
     //   name: 'firefox',

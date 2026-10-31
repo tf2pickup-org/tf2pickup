@@ -1,9 +1,10 @@
+import type { StrictUpdateFilter } from 'mongodb'
 import { subMonths } from 'date-fns'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { GameState } from '../database/models/game.model'
 import { GameEventType } from '../database/models/game-event.model'
-import type { PlayerElo } from '../database/models/player.model'
+import type { PlayerElo, PlayerModel } from '../database/models/player.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 import type { GameNumber } from '../database/models/game.model'
@@ -59,10 +60,13 @@ export async function up() {
   // Write results to the database
   let updated = 0
   for (const [steamId, elo] of eloState) {
-    await collections.players.updateOne(
-      { steamId },
-      { $set: { elo }, $push: { eloHistory: { $each: eloHistoryState.get(steamId) ?? [] } } },
-    )
+    // Writes the pre-partition (flat, per-class) elo shape; migration 029 later
+    // nests it under the instance's gamemode. Cast so this historical migration
+    // still compiles against the now per-gamemode PlayerModel.
+    await collections.players.updateOne({ steamId }, {
+      $set: { elo },
+      $push: { eloHistory: { $each: eloHistoryState.get(steamId) ?? [] } },
+    } as StrictUpdateFilter<PlayerModel>)
     updated++
   }
 

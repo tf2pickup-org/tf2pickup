@@ -1,7 +1,9 @@
+import type { StrictUpdateFilter } from 'mongodb'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
 import { GameState } from '../database/models/game.model'
 import { SlotStatus } from '../database/models/game-slot.model'
+import type { PlayerModel } from '../database/models/player.model'
 import type { Tf2ClassName } from '../shared/types/tf2-class-name'
 
 export async function up() {
@@ -37,14 +39,12 @@ export async function up() {
       }
     }
 
-    await collections.players.updateOne(
-      { steamId: player.steamId },
-      {
-        $set: {
-          stats,
-        },
-      },
-    )
+    // Writes the pre-partition (flat, per-class) stats shape; migration 030 later
+    // nests it under the instance's gamemode. Cast so this historical migration
+    // still compiles against the now per-gamemode PlayerModel.
+    await collections.players.updateOne({ steamId: player.steamId }, {
+      $set: { stats },
+    } as StrictUpdateFilter<PlayerModel>)
 
     nUpdated += 1
   }
