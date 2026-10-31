@@ -7,25 +7,25 @@
     padding: 8px 12px;
     font-size: 18px;
     font-weight: 500;
-    color: var(--color-abru-dark-3);
+    color: var(--color-zinc-900);
 
     @media (width >= theme(--breakpoint-md)) {
       flex-direction: row;
     }
 
     &[data-tone='warning'] {
-      background-color: var(--color-accent-600);
-      color: var(--color-abru-dark-3);
+      background-color: var(--color-crimson-600);
+      color: var(--color-zinc-900);
     }
 
     &[data-tone='alert'] {
       background-color: var(--color-alert);
-      color: var(--color-abru-light-3);
+      color: var(--color-zinc-900);
     }
 
     &[data-tone='info'] {
-      background-color: var(--color-abru-light-70);
-      color: var(--color-abru-light-3);
+      background-color: var(--color-zinc-300);
+      color: var(--color-zinc-900);
     }
   }
 }
