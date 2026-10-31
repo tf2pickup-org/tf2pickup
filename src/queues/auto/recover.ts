@@ -23,7 +23,7 @@ export async function recover(queue: QueueId) {
   // the app went down mid-launch
   if (state.state === QueueState.launching) {
     logger.info({ queue }, 'queue was launching, launching again')
-    await queueCommand(queue, 'recover', async emit => {
+    await queueCommand('recover', async emit => {
       emit('queue:launching', await takeLaunchSnapshot(queue))
     })
   }
