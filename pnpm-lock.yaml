@@ -275,8 +275,8 @@ importers:
         specifier: 0.5.20
         version: 0.5.20(tailwindcss@4.3.3)
       '@tf2pickup-org/mumble-client':
-        specifier: 0.13.0
-        version: 0.13.0
+        specifier: 0.14.0
+        version: 0.14.0
       '@tf2pickup-org/serveme-tf-client':
         specifier: 0.1.2
         version: 0.1.2
@@ -2192,8 +2192,8 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || >=4.0.0 || insiders'
 
-  '@tf2pickup-org/mumble-client@0.13.0':
-    resolution: {integrity: sha512-7If+QxlQREzTrFN/WgYOX8eX8sknXSII5DwUjrHOHuRBUBPtydefZbWXYUfRdj3d+0pVzm5/1MVtPeAniHbzjA==}
+  '@tf2pickup-org/mumble-client@0.14.0':
+    resolution: {integrity: sha512-kNGd/8BOpCAdAjD3ckBRF7SBf4V/AQUL6RVKG7bRFcR33CJUmzJHAOuJCI/CNc0J29cQcCI7f/IHURMBMvtTlw==}
 
   '@tf2pickup-org/mumble-protocol@1.0.12':
     resolution: {integrity: sha512-6Jx2aPcRc8AMDRFheW6GK+JEBVusfFZ3X/5q1Gze4H1tgmBvyTGbAqUYZtCTiYQQSSp8DXCANa/YKpfuAcuKvA==}
@@ -6788,7 +6788,7 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 4.3.3
 
-  '@tf2pickup-org/mumble-client@0.13.0':
+  '@tf2pickup-org/mumble-client@0.14.0':
     dependencies:
       '@protobuf-ts/runtime': 2.11.1
       '@tf2pickup-org/mumble-protocol': 1.0.12
