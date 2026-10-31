@@ -11,7 +11,7 @@ export default routes(async app => {
       },
     },
     async (_request, reply) => {
-      await reply.redirect('/admin/player-restrictions')
+      await reply.redirect('/admin/queues')
     },
   )
 })
