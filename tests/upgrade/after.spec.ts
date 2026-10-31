@@ -2,11 +2,15 @@
 import { authUsers } from '../fixtures/auth-users'
 import { expect, launchGame } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
-import { getQueueConfig } from '../queue-slots'
+import { AdminQueuesPage } from '../pages/admin-queues.page'
+import { queuePresets } from '../../src/queues/presets'
+import { defaultQueueSlug, getQueueConfig } from '../queue-slots'
 import { loadState } from './state'
 import {
   defaultPlayerSkill,
+  mapCooldown,
   mapPool,
+  readyUpTimeoutSeconds,
   playerSkillThreshold,
   skilledPlayer,
   skilledPlayerSkill,
@@ -23,19 +27,33 @@ authUsers('player skill survives the upgrade', async ({ users }) => {
 authUsers('default player skill survives the upgrade', async ({ users }) => {
   const admin = await users.getAdmin().page()
   await admin.goto('/admin/player-restrictions')
-  await expect(admin.getByLabel("Player's skill on medic")).toHaveValue(
+  await expect(admin.getByLabel(`Default ${getQueueConfig()} skill on medic`)).toHaveValue(
     defaultPlayerSkill.medic.toString(),
   )
 })
 
 authUsers('player restrictions survive the upgrade', async ({ users }) => {
   const admin = await users.getAdmin().page()
-  await admin.goto('/admin/player-restrictions')
+  await admin.goto(`/admin/queues/${defaultQueueSlug()}`)
   await expect(admin.getByLabel('Player skill threshold', { exact: true })).toBeChecked()
   await expect(admin.getByLabel('Player skill threshold value', { exact: true })).toHaveValue(
     playerSkillThreshold.toString(),
   )
   await expect(admin.getByLabel('Require player verification')).toBeChecked()
+  await expect(admin.getByLabel('Ready-up timeout (seconds)')).toHaveValue(
+    readyUpTimeoutSeconds.toString(),
+  )
+  await expect(admin.getByLabel('Map cooldown')).toHaveValue(mapCooldown.toString())
+})
+
+authUsers('every preset is added and only the old queue is enabled', async ({ users }) => {
+  const admin = new AdminQueuesPage(await users.getAdmin().page())
+  await admin.goto()
+  for (const { slug } of queuePresets) {
+    await expect(admin.row(slug).getByRole('button', { name: 'Disable' })).toBeVisible({
+      visible: slug === defaultQueueSlug(),
+    })
+  }
 })
 
 authUsers('the map pool survives the upgrade', async ({ users }) => {
