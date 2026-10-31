@@ -1,7 +1,7 @@
 import pino from 'pino'
-import { logs } from '@opentelemetry/api-logs'
+import { logs } from '@opentelemetry/api'
 import { trace } from '@opentelemetry/api'
-import type { AttributeValue, Attributes } from '@opentelemetry/api'
+import type { Attributes } from '@opentelemetry/api'
 import { environment } from './environment'
 import { serializeRequest } from './utils/serialize-request'
 
@@ -25,7 +25,7 @@ const pinoLevelToSeverityText = (level: number) => {
   return 'TRACE'
 }
 
-const isAttributeValue = (v: unknown): v is AttributeValue =>
+const isAttributeValue = (v: unknown): v is string | number | boolean =>
   typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean'
 
 const flattenAttributes = (obj: Record<string, unknown>, prefix = ''): Attributes => {

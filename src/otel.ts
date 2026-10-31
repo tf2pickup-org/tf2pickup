@@ -21,10 +21,12 @@ const sdk = new NodeSDK({
     [ATTR_SERVICE_VERSION]: version,
   }),
   traceExporter: new OTLPTraceExporter(),
-  metricReader: new PeriodicExportingMetricReader({
-    exporter: new OTLPMetricExporter(),
-  }),
-  logRecordProcessor: new BatchLogRecordProcessor({ exporter: new OTLPLogExporter() }),
+  metricReaders: [
+    new PeriodicExportingMetricReader({
+      exporter: new OTLPMetricExporter(),
+    }),
+  ],
+  logRecordProcessors: [new BatchLogRecordProcessor({ exporter: new OTLPLogExporter() })],
   instrumentations: [
     new RuntimeNodeInstrumentation(),
     new HttpInstrumentation(),
