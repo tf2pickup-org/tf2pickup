@@ -1,3 +1,5 @@
+import { playerGamemodes } from '../../player-gamemodes'
+import type { Gamemode } from '../../../shared/types/gamemode'
 import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { resolve } from 'node:path'
 import { PlayerRole, type PlayerBan, type PlayerModel } from '../../../database/models/player.model'
@@ -238,11 +240,38 @@ export async function EditPlayerRolesPage(props: { steamId: SteamId64 }) {
   )
 }
 
-export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
-  const player = await players.bySteamId(props.steamId, ['name', 'steamId', 'elo', 'stats'])
+export async function EditPlayerEloPage(props: { steamId: SteamId64; gamemode?: Gamemode }) {
+  const player = await players.bySteamId(props.steamId, [
+    'name',
+    'steamId',
+    'elo',
+    'stats',
+    'skill',
+  ])
+  const gamemodes = await playerGamemodes(player)
+  const gamemode =
+    props.gamemode && gamemodes.includes(props.gamemode) ? props.gamemode : gamemodes[0]!
   return (
     <EditPlayer player={player} activePage="/elo">
       <div class="admin-panel-content">
+        {gamemodes.length > 1 && (
+          <nav class="mb-4 flex flex-row flex-wrap gap-2" aria-label="Gamemodes">
+            {gamemodes.map(tab => (
+              <a
+                href={`/players/${player.steamId}/edit/elo?gamemode=${tab}`}
+                class={[
+                  'rounded-md px-3 py-1.5 text-sm font-bold',
+                  tab === gamemode
+                    ? 'bg-accent text-white'
+                    : 'bg-abru-light-10 text-abru-light-75 hover:text-white',
+                ]}
+                aria-current={tab === gamemode ? 'page' : undefined}
+              >
+                {tab}
+              </a>
+            ))}
+          </nav>
+        )}
         <p class="bg-abru-dark-25 text-abru-light-75 mb-4 flex items-center gap-2 rounded-lg px-4 py-3 text-sm">
           <IconAlertSquareRounded size={20} />
           <span>
@@ -260,9 +289,9 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
             </tr>
           </thead>
           <tbody>
-            {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(({ name: gameClass }) => {
-              const elo = player.elo?.[environment.QUEUE_CONFIG]?.[gameClass]
-              const games = player.stats.gamesByClass[environment.QUEUE_CONFIG]?.[gameClass] ?? 0
+            {gamemodeConfigs[gamemode].classes.map(({ name: gameClass }) => {
+              const elo = player.elo?.[gamemode]?.[gameClass]
+              const games = player.stats.gamesByClass[gamemode]?.[gameClass] ?? 0
               const provisional = games < provisionalThreshold
               return (
                 <tr class="border-abru-light-10 border-b last:border-0">
@@ -288,7 +317,7 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
             })}
           </tbody>
         </table>
-        <EloHistoryChart steamId={props.steamId} />
+        <EloHistoryChart steamId={props.steamId} gamemode={gamemode} />
       </div>
     </EditPlayer>
   )
