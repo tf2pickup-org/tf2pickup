@@ -1,5 +1,6 @@
 import { requestContext } from '@fastify/request-context'
 import type { User } from '../../../../auth/types/user'
+import { configuration } from '../../../../configuration'
 import { collections } from '../../../../database/collections'
 import { PlayerRole } from '../../../../database/models/player.model'
 import type { QueueModel } from '../../../../database/models/queue.model'
@@ -96,6 +97,7 @@ async function Queue(props: {
         'roles',
       ])
     : undefined
+  const defaultSkill = (await configuration.get('games.default_player_skill'))[props.queue.gamemode]
 
   // a team of two fits in rows, one per team
   if (positions.length === 2) {
@@ -135,7 +137,12 @@ async function Queue(props: {
             {teamSlots[teamIndex]
               ?.filter(slot => slot !== undefined)
               .map(slot => (
-                <QueueSlot queue={props.queue} slot={slot} actor={actor} />
+                <QueueSlot
+                  queue={props.queue}
+                  slot={slot}
+                  actor={actor}
+                  defaultSkill={defaultSkill}
+                />
               ))}
           </div>
         ))}
@@ -162,7 +169,12 @@ async function Queue(props: {
             {props.slots
               .filter(slot => slot.gameClass === gameClass)
               .map(slot => (
-                <QueueSlot queue={props.queue} slot={slot} actor={actor} />
+                <QueueSlot
+                  queue={props.queue}
+                  slot={slot}
+                  actor={actor}
+                  defaultSkill={defaultSkill}
+                />
               ))}
           </div>
         ))}
