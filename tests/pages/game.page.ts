@@ -87,11 +87,19 @@ export class GamePage {
     return this.page.getByLabel('Game events').getByText(event)
   }
 
+  async openAdminArea() {
+    const adminArea = this.page.locator('#game-admin-toolbox')
+    if ((await adminArea.getAttribute('open')) === null) {
+      await adminArea.locator('summary').click()
+    }
+  }
+
   get forceEndButton() {
     return this.page.getByRole('button', { name: 'Force-end' })
   }
 
   async forceEnd() {
+    await this.openAdminArea()
     this.page.once('dialog', dialog => dialog.accept())
     await this.forceEndButton.click()
   }
@@ -101,6 +109,7 @@ export class GamePage {
   }
 
   async reinitializeGameServer() {
+    await this.openAdminArea()
     this.page.once('dialog', dialog => dialog.accept())
     await this.reinitializeGameServerButton.click()
   }

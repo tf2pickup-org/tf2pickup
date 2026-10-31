@@ -24,38 +24,38 @@ export function GameSummary(props: {
 }) {
   const launchedAt = props.game.events[0].at
   return (
-    <div
-      id={`game-${props.game.number}-summary`}
-      class="flex flex-col overflow-hidden rounded-lg text-zinc-200 xl:mr-4"
-      style="grid-area: gameSummary"
-    >
-      <div class="game-summary-caption relative flex min-h-[200px] flex-1 flex-col justify-end px-[10px]">
-        <div class="absolute top-0 right-0 bottom-0 left-0 -z-10">
-          <MapThumbnail map={props.game.map} />
+    <div id={`game-${props.game.number}-summary`} class="game-summary">
+      <div class="game-summary-background">
+        <MapThumbnail map={props.game.map} />
+      </div>
+
+      <div class="flex items-start justify-between gap-2">
+        <div class="game-summary-pill">
+          <span class="tabular-nums" safe>
+            #{props.game.number}
+          </span>
+          <GameStateIndicator game={props.game} />
         </div>
+        <span class="game-summary-pill">{props.game.gamemode}</span>
+      </div>
 
-        <div class="game-floating-label top-[10px] left-[10px] text-zinc-200 tabular-nums">
-          <span safe>#{props.game.number}</span>
-        </div>
-
-        <GameStateIndicator game={props.game} />
-
+      <div class="flex flex-col gap-3">
         <div class="game-info">
           <span class="game-info-label">map</span>
           <span class="game-info-value" safe>
             {props.game.map}
           </span>
         </div>
-      </div>
 
-      <div class="flex flex-col gap-[8px] bg-zinc-950 p-[10px]">
         <div class="game-info">
           <span class="game-info-label">launched</span>
           <span class="game-info-value" safe>
-            {format(launchedAt, 'dd.MM.yyyy HH:mm')}
+            {format(launchedAt, 'PPpp')}
           </span>
         </div>
+      </div>
 
+      <div class="flex flex-col gap-[10px]">
         <ConnectInfo game={props.game} actor={props.actor} />
         <LogsLink game={props.game} />
         <DemoLink game={props.game} />
