@@ -3,6 +3,7 @@ import type { GamemodeConfig } from '../types/gamemode-config'
 
 export const _9v9: GamemodeConfig = {
   teamCount: 2,
+  autoBalance: true,
   classes: [
     {
       name: Tf2ClassName.scout,
