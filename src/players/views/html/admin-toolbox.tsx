@@ -1,3 +1,5 @@
+import { queues } from '../../../queues'
+import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { configuration } from '../../../configuration'
 import { environment } from '../../../environment'
 import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
@@ -10,7 +12,6 @@ import {
   IconEdit,
   IconInputX,
 } from '../../../html/components/icons'
-import { queue } from '../../../queues/auto'
 import { WinLossChart } from './win-loss-chart'
 import { GameClassSkillInput } from '../../../html/components/game-class-skill-input'
 import { players } from '../..'
@@ -31,11 +32,11 @@ export async function AdminToolbox(props: {
   const defaultSkill =
     (await configuration.get('games.default_player_skill'))[environment.QUEUE_CONFIG] ?? {}
   const skillStep = await configuration.get('games.skill_step')
-  const requireVerification = await configuration.get('queue.require_player_verification')
+  const requireVerification = await queues.anyRequiresVerification()
   const skillSuggestions = (await configuration.get('games.skill_suggestions'))
     ? makeSkillSuggestions({ player, gamemode: environment.QUEUE_CONFIG })
     : undefined
-  const compact = queue.config.classes.length > 4
+  const compact = gamemodeConfigs[environment.QUEUE_CONFIG].classes.length > 4
 
   return (
     <details
@@ -87,7 +88,7 @@ export async function AdminToolbox(props: {
             <h4 class="caption">Skill</h4>
             <form method="post" action={`/players/${player.steamId}/edit/skill`}>
               <div class={['skill-inputs', compact && 'compact']}>
-                {queue.config.classes.map(gameClass => (
+                {gamemodeConfigs[environment.QUEUE_CONFIG].classes.map(gameClass => (
                   <GameClassSkillInput
                     gameClass={gameClass.name}
                     name={`skill.${gameClass.name}`}

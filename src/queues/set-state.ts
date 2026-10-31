@@ -1,5 +1,6 @@
 import { collections } from '../database/collections'
 import type { PlayerModel } from '../database/models/player.model'
+import type { QueueId } from '../database/models/queue.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
 import { events } from '../events'
@@ -8,12 +9,13 @@ import { preReady } from '../pre-ready'
 import { withLogLevel } from '../utils/with-log-level'
 import { withQueueLock } from './with-queue-lock'
 
-export async function setState(state: QueueState) {
-  await withQueueLock('set-state', async () => {
-    logger.trace({ state }, 'queue.setState()')
+export async function setState(queue: QueueId, state: QueueState) {
+  await withQueueLock(queue, 'set-state', async () => {
+    logger.trace({ queue, state }, 'queue.setState()')
 
     if (state === QueueState.launching) {
       const notReadyCount = await collections.queueSlots.countDocuments({
+        queue,
         $or: [{ player: { $eq: null } }, { ready: { $eq: false } }],
       })
       if (notReadyCount > 0) {
@@ -24,10 +26,10 @@ export async function setState(state: QueueState) {
       }
     }
 
-    await collections.queueState.updateOne({}, { $set: { state } })
+    await collections.queueState.updateOne({ queue }, { $set: { state } })
 
     if (state === QueueState.ready) {
-      const last = (await collections.queueState.findOne())?.last
+      const last = (await collections.queueState.findOne({ queue }))?.last
       if (!last) {
         throw errors.internalServerError('invalid queue state: last undefined')
       }
@@ -40,7 +42,10 @@ export async function setState(state: QueueState) {
         .toArray()
       const toReadyUp = (
         await collections.queueSlots
-          .find({ 'player.steamId': { $in: preReadiedPlayers.map(({ steamId }) => steamId) } })
+          .find({
+            queue,
+            'player.steamId': { $in: preReadiedPlayers.map(({ steamId }) => steamId) },
+          })
           .toArray()
       ).map(slot => slot.player!.steamId)
 
@@ -49,7 +54,7 @@ export async function setState(state: QueueState) {
           [...toReadyUp, last].map(
             async player =>
               await collections.queueSlots.findOneAndUpdate(
-                { 'player.steamId': player },
+                { queue, 'player.steamId': player },
                 {
                   $set: { ready: true },
                 },
@@ -58,10 +63,10 @@ export async function setState(state: QueueState) {
           ),
         )
       ).filter(slot => slot !== null)
-      events.emit('queue/slots:updated', { slots })
+      events.emit('queue/slots:updated', { queue, slots })
       await preReady.start(last)
     }
 
-    events.emit('queue/state:updated', { state })
+    events.emit('queue/state:updated', { queue, state })
   })
 }

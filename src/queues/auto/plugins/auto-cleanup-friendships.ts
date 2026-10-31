@@ -6,7 +6,18 @@ import { debounce } from 'es-toolkit'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    events.on('queue/slots:updated', debounce(cleanupFriendships, 100))
+    const cleanups = new Map<string, () => void>()
+    events.on('queue/slots:updated', ({ queue }) => {
+      const key = queue.toHexString()
+      let cleanup = cleanups.get(key)
+      if (!cleanup) {
+        cleanup = debounce(async () => {
+          await cleanupFriendships(queue)
+        }, 100)
+        cleanups.set(key, cleanup)
+      }
+      cleanup()
+    })
   },
   {
     name: 'auto cleanup friendships',
