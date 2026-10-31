@@ -16,6 +16,7 @@ allowBuilds:
 
 minimumReleaseAgeExclude:
   - tsx@4.22.2
+  - '@tf2pickup-org/mumble-client'
 
 publicHoistPattern:
   - 'playwright*'
