@@ -15,13 +15,14 @@ test('ready-up dialog is shown again after refreshing another queue @multi-queue
   desiredSlots,
   queue,
 }) => {
-  await Promise.all(
-    players.map(async player => {
-      const page = await player.queuePage(queue!.slug)
-      await page.goto()
-      await page.slot(desiredSlots.get(player.playerName)!).join()
-    }),
-  )
+  const join = async (player: (typeof players)[number]) => {
+    const page = await player.queuePage(queue!.slug)
+    await page.goto()
+    await page.slot(desiredSlots.get(player.playerName)!).join()
+  }
+  // the player who fills the final slot is readied automatically and gets no dialog
+  await Promise.all(players.slice(0, -1).map(join))
+  await join(players.at(-1)!)
 
   const page = await players[0]!.queuePage(queue!.slug)
   await expect(page.readyUpDialog().readyUpButton()).toBeVisible({
