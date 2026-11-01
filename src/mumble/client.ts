@@ -56,6 +56,7 @@ export async function tryConnect() {
     })
 
     const localClient = client
+    localClient.on('textMessage', payload => events.emit('mumble/textMessage', payload))
     let attempt = 0
     let reconnecting = false
     localClient.on('error', async (error: unknown) => {

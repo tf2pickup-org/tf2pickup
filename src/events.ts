@@ -18,6 +18,7 @@ import type { MumbleClientStatus } from './mumble/status'
 import type { ChatMessageModel } from './database/models/chat-message.model'
 import type { GameSlotId } from './shared/types/game-slot-id'
 import type { WithId } from 'mongodb'
+import type { User } from '@tf2pickup-org/mumble-client'
 
 export interface Events {
   'chat:messageDeleted': {
@@ -147,6 +148,15 @@ export interface Events {
   }
   'mumble/error': {
     error: unknown
+  }
+  'mumble/textMessage': {
+    sender: User | undefined
+    message: string
+    isPrivate: boolean
+  }
+  'mumble/certificateConflict': {
+    player: SteamId64
+    owner: SteamId64
   }
 
   'player:connected': {
