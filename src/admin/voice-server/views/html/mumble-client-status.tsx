@@ -5,14 +5,53 @@ import { MumbleClientStatus as Status } from '../../../../mumble/status'
 
 type Privileges = NonNullable<Awaited<ReturnType<typeof mumble.getPrivileges>>>
 
-const privilegeRows: { key: keyof Privileges; name: string; enables: string }[] = [
-  { key: 'enter', name: 'Enter the games channel', enables: 'joining the games channel' },
-  { key: 'makeChannel', name: 'Make channel', enables: 'game and team channels' },
-  { key: 'write', name: 'Write', enables: 'channel ACLs and the admin group' },
-  { key: 'move', name: 'Move', enables: 'moving verified players in and substitutes out' },
-  { key: 'textMessage', name: 'Text message', enables: 'verification codes and notices' },
-  { key: 'register', name: 'Register (server root)', enables: 'registering admins' },
-  { key: 'ban', name: 'Ban (server root)', enables: 'reading client IP addresses' },
+const privilegesDocsUrl = 'https://docs.tf2pickup.org/docs/mumble-verification'
+
+const privilegeRows: { key: keyof Privileges; name: string; acl: string; reason: string }[] = [
+  {
+    key: 'enter',
+    name: 'Enter the games channel',
+    acl: 'Enter',
+    reason: 'The bot sits in the games channel and manages everything under it.',
+  },
+  {
+    key: 'makeChannel',
+    name: 'Create channels',
+    acl: 'Make channel',
+    reason: 'Creates a channel for every game, with BLU and RED channels inside it.',
+  },
+  {
+    key: 'write',
+    name: 'Edit channel permissions',
+    acl: 'Write ACL',
+    reason:
+      "Lets only a game's players into their team channel, and keeps the admin group up to date.",
+  },
+  {
+    key: 'move',
+    name: 'Move users',
+    acl: 'Move',
+    reason: 'Moves verified players into their team channel, and replaced players out of it.',
+  },
+  {
+    key: 'textMessage',
+    name: 'Send text messages',
+    acl: 'Text message',
+    reason: 'Sends players their verification instructions.',
+  },
+  {
+    key: 'register',
+    name: 'Register users',
+    acl: 'Register User, on the root channel',
+    reason: 'Registers admins so they can enter any game channel.',
+  },
+  {
+    key: 'ban',
+    name: 'See IP addresses',
+    acl: 'Ban, on the root channel',
+    reason:
+      "Mumble only shows IP addresses to users who can ban. The bot compares them with the game server's to verify players automatically. It never bans anyone.",
+  },
 ]
 
 export async function MumbleClientStatus() {
@@ -53,26 +92,50 @@ async function PrivilegeChecklist() {
   }
 
   return (
-    <ul class="mt-4 flex flex-col gap-1" id="mumble-privileges">
-      {privilegeRows.map(({ key, name, enables }) => (
-        <li class="flex flex-row items-center gap-2">
-          {privileges[key] ? <IconCheck class="text-green-600" /> : <IconX class="text-red-600" />}
-          <span class="sr-only">{privileges[key] ? 'granted' : 'missing'}</span>
-          <span class="font-medium" safe>
-            {name}
-          </span>
-          <span class="text-abru-light-75" safe>
-            {enables}
-          </span>
-        </li>
-      ))}
-      <li class="flex flex-row items-center gap-2 pl-8">
-        <span class="font-medium">Message rate limits raised</span>
-        <span class="text-abru-light-75">
-          the bot can't check this; set <code>messageburst=50</code> and{' '}
-          <code>messagelimit=10</code> in the server config so ACL updates don't time out
-        </span>
-      </li>
-    </ul>
+    <section class="mt-6 flex max-w-prose flex-col gap-4" id="mumble-privileges">
+      <div>
+        <h4 class="font-bold">Bot privileges</h4>
+        <p class="text-abru-light-75">
+          Automatic player verification needs the bot to have these privileges on the Mumble server.{' '}
+          <a href={privilegesDocsUrl} target="_blank" class="underline">
+            How to grant them
+          </a>
+        </p>
+      </div>
+
+      <ul class="flex flex-col gap-3">
+        {privilegeRows.map(({ key, name, acl, reason }) => (
+          <li class="flex flex-row gap-3">
+            {privileges[key] ? (
+              <IconCheck class="shrink-0 text-green-600" />
+            ) : (
+              <IconX class="shrink-0 text-red-600" />
+            )}
+            <div class="flex flex-col">
+              <span class="font-medium">
+                <span safe>{name}</span>
+                <span class="sr-only">{privileges[key] ? ': granted' : ': missing'}</span>{' '}
+                <code class="text-abru-light-75 text-sm" safe>
+                  {acl}
+                </code>
+              </span>
+              <span class="text-abru-light-75" safe>
+                {reason}
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="flex flex-col">
+        <h4 class="font-bold">Message rate limits</h4>
+        <p class="text-abru-light-75">
+          By default Mumble drops a client's messages after a burst of 5, then allows 1 per second,
+          which makes the bot's permission updates time out. Raise the limits in the server config,
+          for example <code>messageburst=50</code> and <code>messagelimit=10</code>. The bot can't
+          read these settings, so check them yourself.
+        </p>
+      </div>
+    </section>
   )
 }
