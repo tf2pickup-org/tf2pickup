@@ -7,50 +7,63 @@ type Privileges = NonNullable<Awaited<ReturnType<typeof mumble.getPrivileges>>>
 
 const privilegesDocsUrl = 'https://docs.tf2pickup.org/docs/mumble-verification'
 
-const privilegeRows: { key: keyof Privileges; name: string; acl: string; reason: string }[] = [
+const privilegeRows: {
+  key: keyof Privileges
+  name: string
+  reason: string
+  permission: string
+  channel: 'games' | 'root'
+}[] = [
   {
     key: 'enter',
-    name: 'Enter the games channel',
-    acl: 'Enter',
+    name: 'Join the games channel',
     reason: 'The bot sits in the games channel and manages everything under it.',
+    permission: 'Enter',
+    channel: 'games',
   },
   {
     key: 'makeChannel',
     name: 'Create channels',
-    acl: 'Make channel',
     reason: 'Creates a channel for every game, with BLU and RED channels inside it.',
+    permission: 'Make channel',
+    channel: 'games',
   },
   {
     key: 'write',
-    name: 'Edit channel permissions',
-    acl: 'Write ACL',
+    name: 'Change who can join a channel',
     reason:
       "Lets only a game's players into their team channel, and keeps the admin group up to date.",
+    permission: 'Write ACL',
+    channel: 'games',
   },
   {
     key: 'move',
-    name: 'Move users',
-    acl: 'Move',
+    name: 'Move players between channels',
     reason: 'Moves verified players into their team channel, and replaced players out of it.',
+    permission: 'Move',
+    channel: 'games',
   },
   {
     key: 'textMessage',
-    name: 'Send text messages',
-    acl: 'Text message',
+    name: 'Message players',
     reason: 'Sends players their verification instructions.',
+    permission: 'Text message',
+    channel: 'games',
   },
   {
     key: 'register',
-    name: 'Register users',
-    acl: 'Register User, on the root channel',
-    reason: 'Registers admins so they can enter any game channel.',
+    name: 'Register admins',
+    reason: 'Registers site admins on Mumble so they can enter any game channel.',
+    permission: 'Register User',
+    channel: 'root',
   },
   {
     key: 'ban',
-    name: 'See IP addresses',
-    acl: 'Ban, on the root channel',
+    name: "See players' IP addresses",
     reason:
-      "Mumble only shows IP addresses to users who can ban. The bot compares them with the game server's to verify players automatically. It never bans anyone.",
+      "Mumble only shows IP addresses to users who are allowed to ban. The bot compares them with the game server's to verify players automatically. It never bans anyone.",
+    permission: 'Ban',
+    channel: 'root',
   },
 ]
 
@@ -94,17 +107,18 @@ async function PrivilegeChecklist() {
   return (
     <section class="mt-6 flex max-w-prose flex-col gap-4" id="mumble-privileges">
       <div>
-        <h4 class="font-bold">Bot privileges</h4>
-        <p class="text-abru-light-75">
-          Automatic player verification needs the bot to have these privileges on the Mumble server.{' '}
+        <h4 class="text-abru-light-85 font-bold">What the bot is allowed to do</h4>
+        <p>
+          Automatic player verification needs the bot to have these permissions on the Mumble
+          server. The games channel is the one set in <em>Channel name</em> above.{' '}
           <a href={privilegesDocsUrl} target="_blank" class="underline">
-            How to grant them
+            How to grant permissions in Mumble
           </a>
         </p>
       </div>
 
-      <ul class="flex flex-col gap-3">
-        {privilegeRows.map(({ key, name, acl, reason }) => (
+      <ul class="flex flex-col gap-4">
+        {privilegeRows.map(({ key, name, reason, permission, channel }) => (
           <li class="flex flex-row gap-3">
             {privileges[key] ? (
               <IconCheck class="shrink-0 text-green-600" />
@@ -112,28 +126,27 @@ async function PrivilegeChecklist() {
               <IconX class="shrink-0 text-red-600" />
             )}
             <div class="flex flex-col">
-              <span class="font-medium">
+              <span class="text-abru-light-85 font-medium">
                 <span safe>{name}</span>
-                <span class="sr-only">{privileges[key] ? ': granted' : ': missing'}</span>{' '}
-                <code class="text-abru-light-75 text-sm" safe>
-                  {acl}
-                </code>
+                <span class="sr-only">{privileges[key] ? ': allowed' : ': not allowed'}</span>
               </span>
-              <span class="text-abru-light-75" safe>
-                {reason}
+              <span safe>{reason}</span>
+              <span class="text-sm">
+                Mumble permission: <strong safe>{permission}</strong>{' '}
+                {channel === 'games' ? 'on the games channel' : 'on the root channel'}
               </span>
             </div>
           </li>
         ))}
       </ul>
 
-      <div class="flex flex-col">
-        <h4 class="font-bold">Message rate limits</h4>
-        <p class="text-abru-light-75">
-          By default Mumble drops a client's messages after a burst of 5, then allows 1 per second,
-          which makes the bot's permission updates time out. Raise the limits in the server config,
-          for example <code>messageburst=50</code> and <code>messagelimit=10</code>. The bot can't
-          read these settings, so check them yourself.
+      <div>
+        <h4 class="text-abru-light-85 font-bold">Message rate limits</h4>
+        <p>
+          By default Mumble ignores a client's messages after a burst of 5, then allows 1 per
+          second, which makes the bot's permission updates time out. Raise the limits in the server
+          config, for example <code>messageburst=50</code> and <code>messagelimit=10</code>. The bot
+          can't read these settings, so check them yourself.
         </p>
       </div>
     </section>
