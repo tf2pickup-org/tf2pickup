@@ -5,6 +5,10 @@ import { MumbleClientStatus as Status } from '../../../../mumble/status'
 
 type Privileges = NonNullable<Awaited<ReturnType<typeof mumble.getPrivileges>>>
 
+// shown only while the player verification switch on the voice server page is on
+const visibleWithVerification =
+  'hidden group-has-[#mumble-player-verification:checked]/voice-server:flex'
+
 const privilegesDocsUrl = 'https://docs.tf2pickup.org/docs/mumble-verification'
 
 const privilegeRows: {
@@ -13,6 +17,7 @@ const privilegeRows: {
   reason: string
   permission: string
   channel: 'games' | 'root'
+  verificationOnly?: true
 }[] = [
   {
     key: 'enter',
@@ -35,6 +40,7 @@ const privilegeRows: {
       "Lets only a game's players into their team channel, and keeps the admin group up to date.",
     permission: 'Write ACL',
     channel: 'games',
+    verificationOnly: true,
   },
   {
     key: 'move',
@@ -42,6 +48,7 @@ const privilegeRows: {
     reason: 'Moves verified players into their team channel, and replaced players out of it.',
     permission: 'Move',
     channel: 'games',
+    verificationOnly: true,
   },
   {
     key: 'textMessage',
@@ -49,6 +56,7 @@ const privilegeRows: {
     reason: 'Sends players their verification instructions.',
     permission: 'Text message',
     channel: 'games',
+    verificationOnly: true,
   },
   {
     key: 'register',
@@ -56,6 +64,7 @@ const privilegeRows: {
     reason: 'Registers site admins on Mumble so they can enter any game channel.',
     permission: 'Register User',
     channel: 'root',
+    verificationOnly: true,
   },
   {
     key: 'ban',
@@ -64,6 +73,7 @@ const privilegeRows: {
       "Mumble only shows IP addresses to users who are allowed to ban. The bot compares them with the game server's to verify players automatically. It never bans anyone.",
     permission: 'Ban',
     channel: 'root',
+    verificationOnly: true,
   },
 ]
 
@@ -109,8 +119,8 @@ async function PrivilegeChecklist() {
       <div>
         <h4 class="text-abru-light-85 font-bold">What the bot is allowed to do</h4>
         <p>
-          Automatic player verification needs the bot to have these permissions on the Mumble
-          server. The games channel is the one set in <em>Channel name</em> above.{' '}
+          The bot needs these permissions on the Mumble server. The games channel is the one set in{' '}
+          <em>Channel name</em> above.{' '}
           <a href={privilegesDocsUrl} target="_blank" class="underline">
             How to grant permissions in Mumble
           </a>
@@ -118,8 +128,8 @@ async function PrivilegeChecklist() {
       </div>
 
       <ul class="flex flex-col gap-4">
-        {privilegeRows.map(({ key, name, reason, permission, channel }) => (
-          <li class="flex flex-row gap-3">
+        {privilegeRows.map(({ key, name, reason, permission, channel, verificationOnly }) => (
+          <li class={['flex-row gap-3', verificationOnly ? visibleWithVerification : 'flex']}>
             {privileges[key] ? (
               <IconCheck class="shrink-0 text-green-600" />
             ) : (
@@ -140,7 +150,7 @@ async function PrivilegeChecklist() {
         ))}
       </ul>
 
-      <div>
+      <div class={['flex-col', visibleWithVerification]}>
         <h4 class="text-abru-light-85 font-bold">Message rate limits</h4>
         <p>
           By default Mumble ignores a client's messages after a burst of 5, then allows 1 per

@@ -164,6 +164,12 @@ export const configurationSchema = z.discriminatedUnion('key', [
       value: z.string().min(1).default('tf2pickup.org bot'),
     })
     .describe('Name of the bot user that connects to the mumble server'),
+  z
+    .object({
+      key: z.literal('games.voice_server.mumble.player_verification'),
+      value: z.boolean().default(false),
+    })
+    .describe("Verify players by their Mumble certificate and only let a game's players in"),
   z.object({
     key: z.literal('games.join_queue_cooldown'),
     value: z

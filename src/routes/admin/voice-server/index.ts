@@ -45,6 +45,7 @@ export default routes(async app => {
             mumbleUsername: z
               .union([z.literal('').transform(() => mumbleUsernameDefault), z.string()])
               .default(mumbleUsernameDefault),
+            mumblePlayerVerification: z.coerce.boolean().default(false),
           }),
         },
       },
@@ -58,6 +59,7 @@ export default routes(async app => {
           mumblePassword,
           mumbleChannelName,
           mumbleUsername,
+          mumblePlayerVerification,
         } = request.body
         const actor = request.user!.player.steamId
         await configuration.set('games.voice_server_type', type, actor)
@@ -71,6 +73,11 @@ export default routes(async app => {
             configuration.set('games.voice_server.mumble.password', mumblePassword, actor),
             configuration.set('games.voice_server.mumble.channel_name', mumbleChannelName, actor),
             configuration.set('games.voice_server.mumble.username', mumbleUsername, actor),
+            configuration.set(
+              'games.voice_server.mumble.player_verification',
+              mumblePlayerVerification,
+              actor,
+            ),
           ])
         }
         requestContext.set('messages', { success: ['Configuration saved'] })

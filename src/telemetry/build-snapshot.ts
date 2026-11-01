@@ -32,6 +32,7 @@ export async function buildSnapshot() {
     logsTfUploadMethod,
     hideServerInfo,
     voiceServerType,
+    mumblePlayerVerification,
     autoForceEndThreshold,
     etf2lAccountRequired,
     minimumInGameHours,
@@ -48,6 +49,7 @@ export async function buildSnapshot() {
     configuration.get('games.logs_tf_upload_method'),
     configuration.get('games.hide_server_info_from_spectators'),
     configuration.get('games.voice_server_type'),
+    configuration.get('games.voice_server.mumble.player_verification'),
     configuration.get('games.auto_force_end_threshold'),
     configuration.get('players.etf2l_account_required'),
     configuration.get('players.minimum_in_game_hours'),
@@ -111,6 +113,12 @@ export async function buildSnapshot() {
       key: 'games.voice_server_type',
       value: voiceServerType,
       label: 'Voice server',
+      group: 'Games',
+    },
+    {
+      key: 'games.voice_server.mumble.player_verification',
+      value: mumblePlayerVerification,
+      label: 'Mumble player verification',
       group: 'Games',
     },
     {
