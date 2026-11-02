@@ -14,7 +14,7 @@ export default routes(async app => {
     },
     async (req, reply) => {
       if (!(await isVerificationEnabled())) {
-        throw errors.notFound('mumble verification is disabled')
+        throw errors.notFound()
       }
 
       await reply.status(200).html(MumbleVerificationPage({ steamId: req.user!.player.steamId }))

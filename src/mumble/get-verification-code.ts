@@ -11,19 +11,20 @@ const generateCode = customAlphabet(verificationCodeFormat.alphabet, verificatio
 
 export async function getVerificationCode(player: SteamId64): Promise<MumbleVerificationCodeModel> {
   const now = new Date()
-  const existing = await collections.mumbleVerificationCodes.findOne({
-    player,
-    expiresAt: { $gt: now },
-  })
-  if (existing) {
-    return existing
-  }
-
-  const code: MumbleVerificationCodeModel = {
-    code: generateCode(),
-    player,
-    expiresAt: addMinutes(now, codeTtlMinutes),
-  }
-  await collections.mumbleVerificationCodes.replaceOne({ player }, code, { upsert: true })
-  return code
+  const fresh = { $gt: ['$expiresAt', now] }
+  // an upsert matching the unique player index by equality is retried by mongo on a duplicate key,
+  // so concurrent callers all get the same persisted code
+  const code = await collections.mumbleVerificationCodes.findOneAndUpdate(
+    { player },
+    [
+      {
+        $set: {
+          code: { $cond: [fresh, '$code', generateCode()] },
+          expiresAt: { $cond: [fresh, '$expiresAt', addMinutes(now, codeTtlMinutes)] },
+        },
+      },
+    ],
+    { upsert: true, returnDocument: 'after' },
+  )
+  return code!
 }
