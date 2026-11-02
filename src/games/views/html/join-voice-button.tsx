@@ -1,6 +1,8 @@
 import { SlotStatus } from '../../../database/models/game-slot.model'
 import type { GameModel } from '../../../database/models/game.model'
 import { IconHeadset } from '../../../html/components/icons'
+import { isVerificationEnabled } from '../../../mumble/is-verification-enabled'
+import { players } from '../../../players'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function JoinVoiceButton(props: {
@@ -31,18 +33,32 @@ async function JoinVoiceButtonContent(props: {
     return <></>
   }
 
+  const { mumbleCertificate } = await players.bySteamId(props.actor, ['mumbleCertificate'])
+  const needsVerification = !mumbleCertificate && (await isVerificationEnabled())
+
   return (
-    <a
-      href={slot.voiceServerUrl}
-      class="button"
-      hx-boost="false"
-      data-umami-event="join-voice"
-      data-umami-event-game-number={props.game.number}
-      data-umami-event-game-state={props.game.state}
-    >
-      <IconHeadset size={24} />
-      join voice
-    </a>
+    <>
+      <a
+        href={slot.voiceServerUrl}
+        class="button"
+        hx-boost="false"
+        data-umami-event="join-voice"
+        data-umami-event-game-number={props.game.number}
+        data-umami-event-game-state={props.game.state}
+      >
+        <IconHeadset size={24} />
+        join voice
+      </a>
+      {needsVerification && (
+        <a
+          href="/mumble"
+          class="text-center text-sm underline"
+          data-umami-event="mumble-verification-hint"
+        >
+          Mumble not verified, set up
+        </a>
+      )}
+    </>
   )
 }
 
