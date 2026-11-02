@@ -24,5 +24,8 @@ export interface GameSlotModel {
   skill?: number
   shouldJoinBy?: Date
   voiceServerUrl?: string
+  // players replaced in this slot who keep Mumble access until the replacement is in game and in
+  // the team channel
+  voiceOutgoing?: SteamId64[]
   applyCooldown?: boolean // should apply cooldown to player if they get replaced
 }
