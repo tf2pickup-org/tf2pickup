@@ -6,7 +6,8 @@ const validCode = new RegExp(
 
 export function parseVerificationCode(message: string): string | undefined {
   const code = message
-    .replace(/<[^>]*>/g, '')
+    .split(/<[^>]*>/)
+    .join('')
     .toUpperCase()
     .replace(/O/g, '0')
     .replace(/[IL]/g, '1')
