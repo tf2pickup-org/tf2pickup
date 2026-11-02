@@ -2,6 +2,8 @@ import fp from 'fastify-plugin'
 import { secondsToMilliseconds } from 'date-fns'
 import { delay } from 'es-toolkit'
 import { collections } from '../../database/collections'
+import { SlotStatus } from '../../database/models/game-slot.model'
+import { GameState } from '../../database/models/game.model'
 import { environment } from '../../environment'
 import { events } from '../../events'
 import { safe } from '../../utils/safe'
@@ -42,7 +44,11 @@ export default fp(
           return
         }
 
-        if (user.hash && (await isBound(user.hash))) {
+        if (!user.name || (user.hash && (await isBound(user.hash)))) {
+          return
+        }
+
+        if (!(await isUnverifiedPlayer(user.name))) {
           return
         }
 
@@ -57,4 +63,27 @@ export default fp(
 
 async function isBound(hash: string) {
   return (await collections.players.countDocuments({ 'mumbleCertificate.hash': hash })) > 0
+}
+
+// the game page's voice link connects with the player's name, so this skips Mumble users who
+// aren't here for a pickup game on general-purpose servers
+async function isUnverifiedPlayer(mumbleName: string) {
+  const games = await collections.games
+    .find(
+      { state: { $in: [GameState.launching, GameState.started] } },
+      { projection: { slots: 1 } },
+    )
+    .toArray()
+  const steamIds = games.flatMap(({ slots }) =>
+    slots
+      .filter(({ status }) => [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(status))
+      .map(({ player }) => player),
+  )
+  const unverified = await collections.players
+    .find(
+      { steamId: { $in: steamIds }, mumbleCertificate: { $exists: false } },
+      { projection: { name: 1 } },
+    )
+    .toArray()
+  return unverified.some(({ name }) => name.replace(/\s+/g, '_') === mumbleName)
 }
