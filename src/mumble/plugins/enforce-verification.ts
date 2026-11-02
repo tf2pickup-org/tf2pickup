@@ -65,8 +65,23 @@ export default fp(
       safe(async ({ before, after }) => {
         const hash = after.mumbleCertificate?.hash
         const bound = hash !== undefined && hash !== before.mumbleCertificate?.hash
+        const unlinked = !!before.mumbleCertificate && !after.mumbleCertificate
         const rolesChanged = before.roles.join() !== after.roles.join()
-        if ((!bound && !rolesChanged) || !(await isVerificationEnabled())) {
+        if ((!bound && !unlinked && !rolesChanged) || !(await isVerificationEnabled())) {
+          return
+        }
+
+        if (unlinked) {
+          const game = await collections.games.findOne({
+            state: { $in: liveStates },
+            'slots.player': after.steamId,
+          })
+          if (game) {
+            await syncGameAcl(game)
+          }
+          if (before.mumbleCertificate?.registration) {
+            await gamesRootAcl.apply(true)
+          }
           return
         }
 
