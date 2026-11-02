@@ -2,6 +2,7 @@ import { PlayerRole } from '../database/models/player.model'
 import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { client } from './client'
+import { getServerId } from './get-server-id'
 import { runInCommandQueue } from './run-in-command-queue'
 
 // Mumble groups take registered users only, so admins are registered on Mumble to join the admin
@@ -11,9 +12,10 @@ export async function registerAdmin(steamId: SteamId64) {
     'roles',
     'mumbleCertificate',
   ])
+  const server = await getServerId()
   if (
     !mumbleCertificate ||
-    mumbleCertificate.userId !== undefined ||
+    mumbleCertificate.registration?.server === server ||
     !roles.some(role => [PlayerRole.admin, PlayerRole.superUser].includes(role))
   ) {
     return false
@@ -33,6 +35,8 @@ export async function registerAdmin(steamId: SteamId64) {
     return false
   }
 
-  await players.update(steamId, { $set: { 'mumbleCertificate.userId': userId } })
+  await players.update(steamId, {
+    $set: { 'mumbleCertificate.registration': { server, userId } },
+  })
   return true
 }

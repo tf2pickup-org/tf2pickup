@@ -1,12 +1,15 @@
 import type { AclEntry, AclGroup } from '@tf2pickup-org/mumble-client'
 import { collections } from '../database/collections'
 import { PlayerRole } from '../database/models/player.model'
+import { environment } from '../environment'
 import { client } from './client'
 import { findTargetChannel } from './find-target-channel'
+import { getServerId } from './get-server-id'
 import { mumblePermission } from './mumble-permission'
 import { runInCommandQueue } from './run-in-command-queue'
 
-const adminGroup = 'tf2pickup-admins'
+// several sites can share a Mumble server
+const adminGroup = `${environment.WEBSITE_NAME.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-admins`
 
 // Nobody but the admins can enter the channels under the games channel; each game's channels then
 // let their own players in. The games channel itself stays as the server admin set it up.
@@ -44,7 +47,21 @@ export const gamesRootAcl = {
       return
     }
 
+    // reading the ACL needs Write; servers that never had verification on are left alone
+    if (!enabled && !(await channel.getPermissions()).canWrite) {
+      return
+    }
+
     const acl = await runInCommandQueue(async () => await channel.fetchAcl())
+    const applied = acl.entries.some(entry => !entry.inherited && isOwnEntry(entry))
+    if (
+      !enabled &&
+      !applied &&
+      !acl.groups.some(({ name, add }) => name === adminGroup && add.length)
+    ) {
+      return
+    }
+
     // a save replaces the channel's own entries and groups with what it gets, inherited ones too
     const kept = acl.entries.filter(entry => !entry.inherited && !isOwnEntry(entry))
     // ponytail: a group defined here with no members and default flags looks inherited and is
@@ -62,7 +79,7 @@ export const gamesRootAcl = {
         entries: [...kept, ...(enabled ? entries : [])],
         groups: [...groups, ...(enabled ? [await buildAdminGroup()] : [])],
       })
-    })
+    }, 2)
   },
 
   async isApplied() {
@@ -82,9 +99,9 @@ async function buildAdminGroup(): Promise<AclGroup> {
     .find(
       {
         roles: { $in: [PlayerRole.admin, PlayerRole.superUser] },
-        'mumbleCertificate.userId': { $exists: true },
+        'mumbleCertificate.registration.server': await getServerId(),
       },
-      { projection: { 'mumbleCertificate.userId': 1 } },
+      { projection: { 'mumbleCertificate.registration': 1 } },
     )
     .toArray()
   return {
@@ -92,7 +109,7 @@ async function buildAdminGroup(): Promise<AclGroup> {
     inherited: false,
     inherit: true,
     inheritable: true,
-    add: admins.map(({ mumbleCertificate }) => mumbleCertificate!.userId!),
+    add: admins.map(({ mumbleCertificate }) => mumbleCertificate!.registration!.userId),
     remove: [],
     inheritedMembers: [],
   }

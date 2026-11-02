@@ -2,7 +2,9 @@ import fp from 'fastify-plugin'
 import { collections } from '../../database/collections'
 import { SlotStatus } from '../../database/models/game-slot.model'
 import { GameState, type GameModel } from '../../database/models/game.model'
+import { PlayerRole } from '../../database/models/player.model'
 import { events } from '../../events'
+import { client } from '../client'
 import { safe } from '../../utils/safe'
 import { gamesRootAcl } from '../games-root-acl'
 import { isVerificationEnabled } from '../is-verification-enabled'
@@ -33,7 +35,8 @@ export default fp(
     events.on(
       'mumble/connectionStatusChanged',
       safe(async ({ status }) => {
-        if (status === MumbleClientStatus.connected && (await isVerificationEnabled())) {
+        // also when off, so turning it off while the bot was disconnected still takes effect
+        if (status === MumbleClientStatus.connected) {
           await reconcile()
         }
       }),
@@ -97,6 +100,10 @@ export default fp(
 
 async function reconcile() {
   const enabled = await isVerificationEnabled()
+  if (enabled) {
+    await registerConnectedAdmins()
+  }
+
   await gamesRootAcl.apply(enabled)
   if (!enabled) {
     return
@@ -116,4 +123,21 @@ function occupancy({ slots }: Pick<GameModel, 'slots'>) {
     .map(({ player, team }) => `${player}:${team}`)
     .sort()
     .join()
+}
+
+// users already on the server when the bot connects never trigger mumble/userJoined
+async function registerConnectedAdmins() {
+  const hashes = client?.users.findAll(({ hash }) => !!hash).map(({ hash }) => hash!) ?? []
+  const admins = await collections.players
+    .find(
+      {
+        roles: { $in: [PlayerRole.admin, PlayerRole.superUser] },
+        'mumbleCertificate.hash': { $in: hashes },
+      },
+      { projection: { steamId: 1 } },
+    )
+    .toArray()
+  for (const { steamId } of admins) {
+    await registerAdmin(steamId)
+  }
 }

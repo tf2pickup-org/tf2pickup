@@ -48,6 +48,6 @@ export async function syncGameAcl(game: Pick<GameModel, 'number' | 'slots'>) {
           deny: 0,
         })),
       })
-    })
+    }, 2) // the update and the query that confirms it
   }
 }
