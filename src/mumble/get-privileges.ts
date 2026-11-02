@@ -1,25 +1,24 @@
 import { client } from './client'
+import { findTargetChannel } from './find-target-channel'
 
 export async function getPrivileges() {
   if (!client?.self) {
     return undefined
   }
 
-  const serverRoot = client.channels.byId(0)
-  if (!serverRoot) {
+  const [gamesChannel, serverRoot] = [await findTargetChannel(client), client.channels.byId(0)]
+  if (!gamesChannel || !serverRoot) {
     return undefined
   }
 
-  const [gamesRoot, root] = await Promise.all([
-    client.user.channel.getPermissions(),
+  const [games, root] = await Promise.all([
+    gamesChannel.getPermissions(),
     serverRoot.getPermissions(),
   ])
   return {
-    enter: gamesRoot.canJoinChannel,
-    makeChannel: gamesRoot.canCreateChannel,
-    write: gamesRoot.canWrite,
-    move: gamesRoot.canMove,
-    textMessage: gamesRoot.canSendTextMessage,
+    enter: games.canJoinChannel,
+    makeChannel: games.canCreateChannel,
+    write: games.canWrite,
     register: root.canRegister,
     ban: root.canBan,
   }

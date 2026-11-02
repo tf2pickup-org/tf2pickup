@@ -1,21 +1,15 @@
-import type { Channel, Client } from '@tf2pickup-org/mumble-client'
+import type { Client } from '@tf2pickup-org/mumble-client'
 import { configuration } from '../configuration'
 import { logger } from '../logger'
 import { assertClientIsConnected } from './assert-client-is-connected'
 import { errors } from '../errors'
+import { findTargetChannel } from './find-target-channel'
 
 export async function moveToTargetChannel(c: Client | undefined) {
   assertClientIsConnected(c)
-  let channel: Channel | undefined
-
-  const channelName = await configuration.get('games.voice_server.mumble.channel_name')
-  if (!channelName) {
-    channel = c.channels.byId(0) // 0 is the root channel
-  } else {
-    channel = c.channels.byName(channelName)
-  }
-
+  const channel = await findTargetChannel(c)
   if (!channel) {
+    const channelName = await configuration.get('games.voice_server.mumble.channel_name')
     throw errors.badRequest(`channel does not exist: ${channelName}`)
   }
 

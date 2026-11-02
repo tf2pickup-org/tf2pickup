@@ -35,26 +35,10 @@ const privilegeRows: {
   },
   {
     key: 'write',
-    name: 'Change who can join a channel',
+    name: 'Manage game channels',
     reason:
-      "Lets only a game's players into their team channel, and keeps the admin group up to date.",
+      "Lets only a game's players into their team channel, moves them in and out of it, and messages them their verification instructions.",
     permission: 'Write ACL',
-    channel: 'games',
-    verificationOnly: true,
-  },
-  {
-    key: 'move',
-    name: 'Move players between channels',
-    reason: 'Moves verified players into their team channel, and replaced players out of it.',
-    permission: 'Move',
-    channel: 'games',
-    verificationOnly: true,
-  },
-  {
-    key: 'textMessage',
-    name: 'Message players',
-    reason: 'Sends players their verification instructions.',
-    permission: 'Text message',
     channel: 'games',
     verificationOnly: true,
   },
@@ -120,7 +104,8 @@ async function PrivilegeChecklist() {
         <h4 class="text-abru-light-85 font-bold">What the bot is allowed to do</h4>
         <p>
           The bot needs these permissions on the Mumble server. The games channel is the one set in{' '}
-          <em>Channel name</em> above.{' '}
+          <em>Channel name</em> above. Write ACL on a channel grants every other permission on it,
+          too.{' '}
           <a href={privilegesDocsUrl} target="_blank" class="underline">
             How to grant permissions in Mumble
           </a>
