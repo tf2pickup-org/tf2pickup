@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.24.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.24.0...4.24.1) (2026-11-02)
+
+### Dependencies
+
+* @fastify/otel to v0.21.4 ([#919](https://github.com/tf2pickup-org/tf2pickup/issues/919)) ([87abb45](https://github.com/tf2pickup-org/tf2pickup/commit/87abb4544a0269179ee83432c603a12563589d53)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* @fastify/static to v10.1.8 ([4d51ba9](https://github.com/tf2pickup-org/tf2pickup/commit/4d51ba9bd25d868fca9d90e4917ab60063df6847))
+* @tf2pickup-org/mumble-client to v0.14.0 ([0b74915](https://github.com/tf2pickup-org/tf2pickup/commit/0b749154d8f301db4aba26c38db21f61f127978d))
+* @tf2pickup-org/mumble-client to v0.15.1 ([d1d0d6b](https://github.com/tf2pickup-org/tf2pickup/commit/d1d0d6bc059f0cdf99d0625ac3425615d73fa597))
+* chart.js to v4.6.1 ([f08543e](https://github.com/tf2pickup-org/tf2pickup/commit/f08543ed0a01b78c4de301622c3efa0cf064dc4c))
+* es-toolkit to v1.53.0 ([6616134](https://github.com/tf2pickup-org/tf2pickup/commit/6616134e5f67891d0def01e712caea97b5b81186))
+* linkifyjs monorepo to v4.4.0 ([10f4a2b](https://github.com/tf2pickup-org/tf2pickup/commit/10f4a2bdcebdfb22047f4f6fd35723487da37933))
+* marked to v18.1.2 ([ea7d846](https://github.com/tf2pickup-org/tf2pickup/commit/ea7d8469536bb2cc3fa7171ececb48ff5faf0284))
+* mime to v4.1.2 ([5658950](https://github.com/tf2pickup-org/tf2pickup/commit/56589506894d6981b1f663ef65e24c41dd00401f))
+* motion to v14 ([#895](https://github.com/tf2pickup-org/tf2pickup/issues/895)) ([19c0c79](https://github.com/tf2pickup-org/tf2pickup/commit/19c0c79fc2c32a39b0e7f77c596530d1481e7ff8))
+* motion to v14.8.0 ([084045f](https://github.com/tf2pickup-org/tf2pickup/commit/084045f7060ada1441e1e019a6eb6765c1df0bd2))
+* opentelemetry to v3 ([#923](https://github.com/tf2pickup-org/tf2pickup/issues/923)) ([122d821](https://github.com/tf2pickup-org/tf2pickup/commit/122d82127a422786c85050352076cbbab9a23d92)), closes [#913](https://github.com/tf2pickup-org/tf2pickup/issues/913) [#916](https://github.com/tf2pickup-org/tf2pickup/issues/916) [#917](https://github.com/tf2pickup-org/tf2pickup/issues/917) [#916](https://github.com/tf2pickup-org/tf2pickup/issues/916) [#917](https://github.com/tf2pickup-org/tf2pickup/issues/917)
+* opentelemetry-js monorepo ([#916](https://github.com/tf2pickup-org/tf2pickup/issues/916)) ([c71c134](https://github.com/tf2pickup-org/tf2pickup/commit/c71c134b25a3284cf95dc4242b16e4dc7fcfbb1c)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* postcss to v8.5.32 ([1dffbf9](https://github.com/tf2pickup-org/tf2pickup/commit/1dffbf907fc7c12530092c43d3475f026f70696e))
+
 # [4.24.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.23.15...4.24.0) (2026-10-26)
 
 ### Features
