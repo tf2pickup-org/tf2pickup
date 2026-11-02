@@ -143,8 +143,8 @@ async function VerificationSteps(props: {
         </code>
         <span class="text-sm">
           It works once and expires{' '}
-          <span safe>{formatDistanceToNow(expiresAt, { addSuffix: true })}</span>. Reload this page
-          for a new one.
+          <span safe>{formatDistanceToNow(expiresAt, { addSuffix: true })}</span>. Once it expires,
+          reload this page for a new one.
         </span>
       </li>
       <li class="flex flex-col gap-2">
