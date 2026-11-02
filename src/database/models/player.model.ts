@@ -57,6 +57,7 @@ export interface PlayerMumbleCertificate {
   hash: string
   boundAt: Date
   method: MumbleVerificationMethod
+  userId?: number // set once the player is registered on Mumble as an admin
 }
 
 export interface PlayerModel {

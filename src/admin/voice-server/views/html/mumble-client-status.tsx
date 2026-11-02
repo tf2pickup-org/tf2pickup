@@ -15,8 +15,8 @@ const privilegeRows: {
   key: keyof Privileges
   name: string
   reason: string
-  permission: string
-  channel: 'games' | 'root'
+  permission?: string
+  channel?: 'games' | 'root'
   verificationOnly?: true
 }[] = [
   {
@@ -43,6 +43,15 @@ const privilegeRows: {
     verificationOnly: true,
   },
   {
+    key: 'move',
+    name: 'Move players into their team channel',
+    reason:
+      "When a player gets verified, they're usually waiting in another channel. Mumble only lets the bot move them from a channel where it has Move.",
+    permission: 'Move',
+    channel: 'root',
+    verificationOnly: true,
+  },
+  {
     key: 'register',
     name: 'Register admins',
     reason: 'Registers site admins on Mumble so they can enter any game channel.',
@@ -57,6 +66,13 @@ const privilegeRows: {
       "Mumble only shows IP addresses to users who are allowed to ban. The bot compares them with the game server's to verify players automatically. It never bans anyone.",
     permission: 'Ban',
     channel: 'root',
+    verificationOnly: true,
+  },
+  {
+    key: 'gamesRootAcl',
+    name: 'Keep players out of other games',
+    reason:
+      "The bot's entries on the games channel: nobody but site admins can enter game channels, except each game's own players. The bot adds them when you save with the switch on, and removes them when you turn it off.",
     verificationOnly: true,
   },
 ]
@@ -126,10 +142,12 @@ async function PrivilegeChecklist() {
                 <span class="sr-only">{privileges[key] ? ': allowed' : ': not allowed'}</span>
               </span>
               <span safe>{reason}</span>
-              <span class="text-sm">
-                Mumble permission: <strong safe>{permission}</strong>{' '}
-                {channel === 'games' ? 'on the games channel' : 'on the root channel'}
-              </span>
+              {!!permission && (
+                <span class="text-sm">
+                  Mumble permission: <strong safe>{permission}</strong>{' '}
+                  {channel === 'games' ? 'on the games channel' : 'on the root channel'}
+                </span>
+              )}
             </div>
           </li>
         ))}
