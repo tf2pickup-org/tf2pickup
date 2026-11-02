@@ -14,6 +14,16 @@ import { collections } from '../database/collections'
 import { players } from '../players'
 import { events } from '../events'
 import { verificationCount } from './verification-count'
+import type { PlayerModel } from '../database/models/player.model'
+
+function givenPlayer(before: Partial<PlayerModel>) {
+  vi.mocked(players.update).mockImplementation(async (_steamId, factory) => {
+    const update = (typeof factory === 'function' ? factory(before as PlayerModel) : factory) as {
+      $set: Partial<PlayerModel>
+    }
+    return { ...before, ...update.$set } as PlayerModel
+  })
+}
 
 const player = '76561198000000000' as SteamId64
 const other = '76561198000000001' as SteamId64
@@ -21,6 +31,7 @@ const other = '76561198000000001' as SteamId64
 describe('bindCertificate()', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    givenPlayer({})
   })
 
   it('binds an unused certificate', async () => {
@@ -28,15 +39,7 @@ describe('bindCertificate()', () => {
     await expect(bindCertificate(player, 'hash', MumbleVerificationMethod.code)).resolves.toEqual({
       outcome: 'bound',
     })
-    expect(players.update).toHaveBeenCalledWith(player, {
-      $set: {
-        mumbleCertificate: {
-          hash: 'hash',
-          boundAt: expect.any(Date),
-          method: MumbleVerificationMethod.code,
-        },
-      },
-    })
+    expect(players.update).toHaveBeenCalledWith(player, expect.any(Function))
     expect(verificationCount.add).toHaveBeenCalledWith(1, {
       method: MumbleVerificationMethod.code,
       outcome: 'bound',
@@ -62,5 +65,33 @@ describe('bindCertificate()', () => {
       player,
       owner: other,
     })
+  })
+
+  it('replaces the certificate of a player who verifies with a code again', async () => {
+    vi.mocked(collections.players.findOne).mockResolvedValue(null)
+    givenPlayer({
+      mumbleCertificate: {
+        hash: 'old',
+        boundAt: new Date(),
+        method: MumbleVerificationMethod.code,
+      },
+    })
+    await expect(bindCertificate(player, 'hash', MumbleVerificationMethod.code)).resolves.toEqual({
+      outcome: 'bound',
+    })
+  })
+
+  it('never replaces a certificate by IP match', async () => {
+    vi.mocked(collections.players.findOne).mockResolvedValue(null)
+    givenPlayer({
+      mumbleCertificate: {
+        hash: 'old',
+        boundAt: new Date(),
+        method: MumbleVerificationMethod.code,
+      },
+    })
+    await expect(
+      bindCertificate(player, 'hash', MumbleVerificationMethod.ipMatch),
+    ).resolves.toEqual({ outcome: 'playerHasCertificate' })
   })
 })

@@ -35,6 +35,10 @@ export async function matchByIp(address: string, connected?: SteamId64) {
   const [user] = sessions as [User & { hash: string }]
   const [player] = candidates as [(typeof candidates)[number]]
   const result = await bindCertificate(player.steamId, user.hash, MumbleVerificationMethod.ipMatch)
+  if (result.outcome === 'playerHasCertificate') {
+    return
+  }
+
   if (result.outcome === 'conflict') {
     logger.warn(
       { player: player.steamId, owner: result.owner, mumbleUser: user.name },
