@@ -20,5 +20,5 @@ export async function moveToTargetChannel(c: Client | undefined) {
   }
 
   logger.trace({ channel: { id: channel.id, name: channel.name } }, 'mumble channel found')
-  await c.user.moveToChannel(channel.id)
+  await c.self.moveToChannel(channel)
 }

@@ -17,7 +17,7 @@ export async function setupGameChannels(game: GameModel) {
   await moveToTargetChannel(client)
   const channelName = `${game.number}`
   try {
-    const channel = await client.user.channel.createSubChannel(channelName)
+    const channel = await client.self.channel.createSubChannel(channelName)
     await Promise.all(
       subChannelNames.map(async subChannelName => await channel.createSubChannel(subChannelName)),
     )
