@@ -42,7 +42,7 @@ export const configureMumbleServer = authUsers.extend<{
 
     const channel = client.channels.byName(channelName)
     if (!channel) {
-      await client.user!.channel.createSubChannel(channelName)
+      await client.self!.channel.createSubChannel(channelName)
     }
 
     await use(client)
@@ -72,7 +72,7 @@ export const configureMumbleServer = authUsers.extend<{
         }
 
         const acl = await channel.fetchAcl()
-        acl.acls = [
+        acl.entries = [
           {
             applyHere: true,
             applySubs: true,

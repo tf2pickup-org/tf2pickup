@@ -4,12 +4,12 @@ import { logger } from '../logger'
 import { client } from './client'
 
 export async function linkChannels(game: GameModel) {
-  if (!client?.user) {
+  if (!client?.self) {
     return
   }
 
   const channelName = `${game.number}`
-  const gameChannel = client.user.channel.subChannels.find(channel => channel.name === channelName)
+  const gameChannel = client.self.channel.subChannels.find(channel => channel.name === channelName)
   if (!gameChannel) {
     throw errors.badRequest('channel does not exist')
   }

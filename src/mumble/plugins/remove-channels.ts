@@ -19,7 +19,7 @@ export default fp(
       await moveToTargetChannel(client)
       assertClientIsConnected(client)
 
-      const channel = client.user.channel.subChannels.find(({ name }) => name === `${gameNumber}`)
+      const channel = client.self.channel.subChannels.find(({ name }) => name === `${gameNumber}`)
       if (!channel) {
         logger.debug({ gameNumber }, 'mumble channel already removed')
         return
