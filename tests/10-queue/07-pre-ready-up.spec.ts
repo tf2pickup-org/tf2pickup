@@ -1,10 +1,10 @@
 import { mergeTests } from '@playwright/test'
 import { accessMongoDb } from '../fixtures/access-mongo-db'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { launchGame, expect } from '../fixtures/launch-game'
+import { launchGame } from '../fixtures/launch-game'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
+import { expect } from '../fixtures/expect'
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 const test = mergeTests(accessMongoDb, launchGame, waitForEmptyQueue)
 const readyUpTimeout = secondsToMilliseconds(20)
 

@@ -1,6 +1,7 @@
-import { authUsers, expect } from '../fixtures/auth-users'
+import { authUsers as test } from '../fixtures/auth-users'
+import { expect } from '../fixtures/expect'
 
-authUsers('banned player sees ban alert @6v6 @9v9', async ({ users }) => {
+test('banned player sees ban alert @6v6 @9v9', async ({ users }) => {
   const player = users.byName('AstraGirl')
   const playerPage = await player.queuePage()
   await playerPage.goto()
@@ -19,7 +20,7 @@ authUsers('banned player sees ban alert @6v6 @9v9', async ({ users }) => {
   await expect(banAlert).not.toBeVisible()
 })
 
-authUsers('anonymously banned player does not see the admin @6v6 @9v9', async ({ users }) => {
+test('anonymously banned player does not see the admin @6v6 @9v9', async ({ users }) => {
   const player = users.byName('AstraGirl')
   const playerPage = await player.queuePage()
   await playerPage.goto()

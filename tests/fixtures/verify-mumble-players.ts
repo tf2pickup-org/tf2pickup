@@ -2,7 +2,8 @@ import { mergeTests } from '@playwright/test'
 import { Client } from '@tf2pickup-org/mumble-client'
 import pem from 'pem'
 import { configureMumbleServer } from './configure-mumble-server'
-import { expect, launchGame } from './launch-game'
+import { launchGame } from './launch-game'
+import { expect } from './expect'
 
 export interface MumbleUser {
   client: Client
@@ -114,5 +115,3 @@ export const verifyMumblePlayers = mergeTests(launchGame, configureMumbleServer)
     }
   },
 })
-
-export { expect }

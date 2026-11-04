@@ -1,10 +1,9 @@
-import { secondsToMilliseconds } from 'date-fns'
-import { expect, launchGame } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
-import { delay } from 'es-toolkit'
+import { expect } from '../fixtures/expect'
 
-launchGame.use({ waitForStage: 'started' })
-launchGame('report rounds @6v6 @9v9', async ({ gameNumber, page, gameServer }) => {
+test.use({ waitForStage: 'started' })
+test('report rounds @6v6 @9v9', async ({ gameNumber, page, gameServer }) => {
   // wait for the gameserver to be configured
   const gamePage = new GamePage(page, gameNumber)
   await gamePage.goto()
@@ -17,13 +16,10 @@ launchGame('report rounds @6v6 @9v9', async ({ gameNumber, page, gameServer }) =
   await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
   await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
 
-  await delay(secondsToMilliseconds(1))
-
   await gameServer.roundEnds('red')
   await expect(gamePage.page.getByText('Round ended')).toHaveCount(2)
   await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
   await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
 
-  await delay(secondsToMilliseconds(1))
   await gameServer.matchEnds()
 })

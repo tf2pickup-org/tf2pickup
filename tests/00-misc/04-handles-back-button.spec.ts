@@ -1,7 +1,8 @@
-import { expect, mergeTests } from '@playwright/test'
+import { mergeTests } from '@playwright/test'
 import { authUsers } from '../fixtures/auth-users'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
 import { QueuePage } from '../pages/queue.page'
+import { expect } from '../fixtures/expect'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 

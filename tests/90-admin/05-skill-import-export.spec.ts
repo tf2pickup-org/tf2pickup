@@ -1,32 +1,31 @@
-import { authUsers, expect } from '../fixtures/auth-users'
+import { authUsers as test } from '../fixtures/auth-users'
 import { users } from '../data'
 import { resolve } from 'node:path'
 import { writeFile, unlink } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
+import { expect } from '../fixtures/expect'
 
-authUsers(
-  'skill import/export page is accessible for admins @6v6 @9v9',
-  async ({ users: userManager }) => {
-    const adminPage = await userManager.getAdmin().page()
-    await adminPage.goto('/admin/skill-import-export')
-    await expect(adminPage.getByRole('heading', { name: 'Export player skills' })).toBeVisible()
-    await expect(adminPage.getByRole('heading', { name: 'Import player skills' })).toBeVisible()
-    await expect(adminPage.getByRole('link', { name: 'Download CSV' })).toBeVisible()
-    await expect(adminPage.getByRole('button', { name: 'Upload and preview' })).toBeVisible()
-  },
-)
+test('skill import/export page is accessible for admins @6v6 @9v9', async ({
+  users: userManager,
+}) => {
+  const adminPage = await userManager.getAdmin().page()
+  await adminPage.goto('/admin/skill-import-export')
+  await expect(adminPage.getByRole('heading', { name: 'Export player skills' })).toBeVisible()
+  await expect(adminPage.getByRole('heading', { name: 'Import player skills' })).toBeVisible()
+  await expect(adminPage.getByRole('link', { name: 'Download CSV' })).toBeVisible()
+  await expect(adminPage.getByRole('button', { name: 'Upload and preview' })).toBeVisible()
+})
 
-authUsers(
-  'skill import/export page is not accessible for non-admins @6v6 @9v9',
-  async ({ users: userManager }) => {
-    const userPage = await userManager.getNext(u => !u.isAdmin).page()
-    await userPage.goto('/admin/skill-import-export')
-    await expect(userPage.getByText('403')).toBeVisible()
-    await expect(userPage.getByText('Forbidden')).toBeVisible()
-  },
-)
+test('skill import/export page is not accessible for non-admins @6v6 @9v9', async ({
+  users: userManager,
+}) => {
+  const userPage = await userManager.getNext(u => !u.isAdmin).page()
+  await userPage.goto('/admin/skill-import-export')
+  await expect(userPage.getByText('403')).toBeVisible()
+  await expect(userPage.getByText('Forbidden')).toBeVisible()
+})
 
-authUsers('export skills downloads a CSV file @6v6 @9v9', async ({ users: userManager }) => {
+test('export skills downloads a CSV file @6v6 @9v9', async ({ users: userManager }) => {
   const adminPage = await userManager.getAdmin().page()
   await adminPage.goto('/admin/skill-import-export')
 
@@ -37,7 +36,7 @@ authUsers('export skills downloads a CSV file @6v6 @9v9', async ({ users: userMa
   expect(download.suggestedFilename()).toMatch(/player-skills-.*\.csv/)
 })
 
-authUsers('upload CSV shows preview page @6v6 @9v9', async ({ users: userManager }) => {
+test('upload CSV shows preview page @6v6 @9v9', async ({ users: userManager }) => {
   const adminPage = await userManager.getAdmin().page()
   await adminPage.goto('/admin/skill-import-export')
 
@@ -62,7 +61,7 @@ ${users[1].steamId},${users[1].name},3,4,3,4`
   }
 })
 
-authUsers('apply import updates player skills @6v6 @9v9', async ({ users: userManager, db }) => {
+test('apply import updates player skills @6v6 @9v9', async ({ users: userManager, db }) => {
   const adminPage = await userManager.getAdmin().page()
   const adminSteamId = users[0].steamId
   const targetSteamId = users[1].steamId
@@ -118,50 +117,50 @@ ${targetSteamId},TestPlayer,7,8,9,10`
   }
 })
 
-authUsers(
-  'future player skills are stored for unregistered players @6v6 @9v9',
-  async ({ users: userManager, db }) => {
-    const adminPage = await userManager.getAdmin().page()
-    const futureSteamId = '76561198000000001' // A Steam ID that doesn't exist in the database
+test('future player skills are stored for unregistered players @6v6 @9v9', async ({
+  users: userManager,
+  db,
+}) => {
+  const adminPage = await userManager.getAdmin().page()
+  const futureSteamId = '76561198000000001' // A Steam ID that doesn't exist in the database
 
-    // Ensure this player doesn't exist
-    await db.collection('players').deleteOne({ steamId: futureSteamId })
-    await db.collection('futureplayerskills').deleteOne({ steamId: futureSteamId })
+  // Ensure this player doesn't exist
+  await db.collection('players').deleteOne({ steamId: futureSteamId })
+  await db.collection('futureplayerskills').deleteOne({ steamId: futureSteamId })
 
-    const csvContent = `steamId,name,scout,soldier,demoman,medic
+  const csvContent = `steamId,name,scout,soldier,demoman,medic
 ${futureSteamId},FuturePlayer,5,6,7,8`
 
-    const tmpFile = resolve(tmpdir(), `test-future-skills-${Date.now()}.csv`)
-    await writeFile(tmpFile, csvContent)
+  const tmpFile = resolve(tmpdir(), `test-future-skills-${Date.now()}.csv`)
+  await writeFile(tmpFile, csvContent)
 
-    try {
-      await adminPage.goto('/admin/skill-import-export')
-      await adminPage.locator('input[type="file"]').setInputFiles(tmpFile)
-      await adminPage.getByRole('button', { name: 'Upload and preview' }).click()
+  try {
+    await adminPage.goto('/admin/skill-import-export')
+    await adminPage.locator('input[type="file"]').setInputFiles(tmpFile)
+    await adminPage.getByRole('button', { name: 'Upload and preview' }).click()
 
-      await expect(adminPage.getByRole('heading', { name: 'Import preview' })).toBeVisible()
-      await expect(adminPage.getByRole('heading', { name: 'Future players' })).toBeVisible()
+    await expect(adminPage.getByRole('heading', { name: 'Import preview' })).toBeVisible()
+    await expect(adminPage.getByRole('heading', { name: 'Future players' })).toBeVisible()
 
-      // Apply the changes
-      await adminPage.getByRole('button', { name: /Apply \d+ change/ }).click()
-      await expect(adminPage.getByText(/Successfully applied/)).toBeVisible()
+    // Apply the changes
+    await adminPage.getByRole('button', { name: /Apply \d+ change/ }).click()
+    await expect(adminPage.getByText(/Successfully applied/)).toBeVisible()
 
-      // Verify future player skill was stored
-      const futureSkill = await db
-        .collection('futureplayerskills')
-        .findOne({ steamId: futureSteamId })
-      expect(futureSkill).not.toBeNull()
-      expect(futureSkill?.['skill']).toMatchObject({
-        scout: 5,
-        soldier: 6,
-        demoman: 7,
-        medic: 8,
-      })
-    } finally {
-      await unlink(tmpFile).catch(() => {
-        /* ignore cleanup errors */
-      })
-      await db.collection('futureplayerskills').deleteOne({ steamId: futureSteamId })
-    }
-  },
-)
+    // Verify future player skill was stored
+    const futureSkill = await db
+      .collection('futureplayerskills')
+      .findOne({ steamId: futureSteamId })
+    expect(futureSkill).not.toBeNull()
+    expect(futureSkill?.['skill']).toMatchObject({
+      scout: 5,
+      soldier: 6,
+      demoman: 7,
+      medic: 8,
+    })
+  } finally {
+    await unlink(tmpFile).catch(() => {
+      /* ignore cleanup errors */
+    })
+    await db.collection('futureplayerskills').deleteOne({ steamId: futureSteamId })
+  }
+})

@@ -1,5 +1,6 @@
-import { test, expect, type APIResponse } from '@playwright/test'
+import { test, type APIResponse } from '@playwright/test'
 import { users } from '../data'
+import { expect } from '../fixtures/expect'
 
 const halJson = 'application/hal+json'
 

@@ -1,11 +1,8 @@
 import type { Client } from '@tf2pickup-org/mumble-client'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import type { GameServerSimulator } from '../game-server-simulator'
-import {
-  expect,
-  type MumbleUser,
-  verifyMumblePlayers as test,
-} from '../fixtures/verify-mumble-players'
+import { type MumbleUser, verifyMumblePlayers as test } from '../fixtures/verify-mumble-players'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'launching' })
 // the bot spaces its ACL saves and moves out to stay under Mumble's message rate limit

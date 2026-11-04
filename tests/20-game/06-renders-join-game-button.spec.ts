@@ -1,5 +1,6 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { launchGame as test, expect } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
 test.beforeEach(async ({ users }) => {
   const page = await users.getAdmin().adminPage()

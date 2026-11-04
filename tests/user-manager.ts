@@ -76,15 +76,6 @@ export class UserContext {
       this._browserContext = undefined
     }
   }
-
-  async close() {
-    if (this._page) {
-      await this._page.close()
-    }
-    if (this._browserContext) {
-      await this._browserContext.close()
-    }
-  }
 }
 
 export class UserManager {

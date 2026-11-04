@@ -8,7 +8,6 @@ interface AuthUsersFixture {
   users: UserManager
 }
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 export const authUsers = test.extend<AuthUsersFixture>({
   steamIds: async ({}, use) => {
     await use(users.map(u => u.steamId))
@@ -21,9 +20,7 @@ export const authUsers = test.extend<AuthUsersFixture>({
     })
     await use(new UserManager(users))
     for (const user of users) {
-      await user.close()
+      await user.dispose()
     }
   },
 })
-
-export { expect } from '@playwright/test'

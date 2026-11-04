@@ -1,6 +1,7 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { expect, launchGame as test } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { QueuePage } from '../pages/queue.page'
+import { expect } from '../fixtures/expect'
 
 test('redirect player to launched game @6v6 @9v9', async ({
   users,

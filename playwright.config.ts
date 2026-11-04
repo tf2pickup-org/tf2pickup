@@ -12,13 +12,13 @@ export default defineConfig({
   fullyParallel: true,
   failOnFlakyTests: !!process.env.CI,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 0,
   workers: 1,
   reporter: process.env.CI ? [['blob'], ['github']] : 'html',
   timeout: secondsToMilliseconds(45),
   reportSlowTests: {
     max: 5,
-    threshold: minutesToMilliseconds(10),
+    threshold: minutesToMilliseconds(1),
   },
   use: {
     baseURL: process.env.CI ? 'https://www.localhost' : 'http://localhost:3000',

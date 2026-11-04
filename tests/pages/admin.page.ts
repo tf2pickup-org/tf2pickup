@@ -1,5 +1,6 @@
-import { expect, type Page } from '@playwright/test'
+import { type Page } from '@playwright/test'
 import { secondsToMilliseconds } from 'date-fns'
+import { expect } from '../fixtures/expect'
 
 export class AdminPage {
   constructor(public readonly page: Page) {}

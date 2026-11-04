@@ -1,5 +1,6 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { launchGame as test, expect } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'started' })
 test.describe('substitutes @6v6 @9v9', () => {

@@ -1,15 +1,15 @@
-import { expect } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { launchGame as test } from '../fixtures/launch-game'
-import { delay } from 'es-toolkit'
+import { GamePage } from '../pages/game.page'
 import { queueSlots } from '../queue-slots'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'launching' })
 test('free players when the game ends @6v6 @9v9', async ({
   players,
   gameServer,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   gameNumber,
+  page,
   desiredSlots,
 }) => {
   test.setTimeout(minutesToMilliseconds(1))
@@ -26,7 +26,9 @@ test('free players when the game ends @6v6 @9v9', async ({
 
   await gameServer.connectAllPlayers()
   await gameServer.matchStarts()
-  await delay(secondsToMilliseconds(3))
+  const gamePage = new GamePage(page, gameNumber)
+  await gamePage.goto()
+  await expect(gamePage.gameEvent('Game started')).toBeVisible()
   await gameServer.matchEnds()
 
   const medics = Array.from(desiredSlots.entries())

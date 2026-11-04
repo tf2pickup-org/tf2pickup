@@ -1,7 +1,8 @@
 import type { Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { delay } from 'es-toolkit'
-import { expect, launchGame as test } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
 const readyUpTimeout = secondsToMilliseconds(20)
 const keys = ['queue.ready_up_timeout', 'queue.ready_state_timeout'] as const

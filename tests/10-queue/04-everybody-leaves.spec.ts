@@ -7,7 +7,7 @@ import { getPlayerCount, queueSlots } from '../queue-slots'
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
 test('everybody leaves @6v6 @9v9', async ({ steamIds, users }) => {
-  authUsers.setTimeout(minutesToMilliseconds(2))
+  test.setTimeout(minutesToMilliseconds(2))
   const playerCount = getPlayerCount()
   const queueUsers = steamIds.slice(0, playerCount)
   const slots = [...queueSlots()]

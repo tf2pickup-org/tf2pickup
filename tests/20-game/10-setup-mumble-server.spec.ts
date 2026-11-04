@@ -1,6 +1,7 @@
 import { mergeTests } from '@playwright/test'
-import { expect, launchGame } from '../fixtures/launch-game'
+import { launchGame } from '../fixtures/launch-game'
 import { configureMumbleServer } from '../fixtures/configure-mumble-server'
+import { expect } from '../fixtures/expect'
 
 const test = mergeTests(launchGame, configureMumbleServer)
 

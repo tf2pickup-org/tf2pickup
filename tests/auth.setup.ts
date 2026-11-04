@@ -5,7 +5,6 @@ import { existsSync } from 'node:fs'
 
 const authDir = resolve(import.meta.dirname, '.auth')
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
 setup('authenticate', async ({ browser, db }) => {
   const players = db.collection('players')
   for (const user of users) {

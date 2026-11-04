@@ -1,6 +1,7 @@
-import { errors, expect, type Locator, type Page } from '@playwright/test'
+import { errors, type Locator, type Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { queueSlots, type SlotId } from '../queue-slots'
+import { expect } from '../fixtures/expect'
 
 class QueueSlot {
   readonly locator: Locator
