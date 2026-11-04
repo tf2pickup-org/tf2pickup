@@ -18,6 +18,6 @@ test('keeps a correctly reported 5cp final score @6v6 @9v9', async ({
 
   await gameServer.feedLogs(logFixture('cp_gullywash_4072522.log'))
 
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('2')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('3')
+  await expect(gamePage.teamScore('blu')).toHaveText('2')
+  await expect(gamePage.teamScore('red')).toHaveText('3')
 })

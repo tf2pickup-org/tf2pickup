@@ -32,7 +32,7 @@ test.describe('when user opens a new tab and then closes it @6v6 @9v9', () => {
     await queuePage.goto()
     const [anotherPage] = await Promise.all([
       blacklight.browserContext.waitForEvent('page'),
-      queuePage.page.getByRole('link', { name: 'Games' }).click({ button: 'middle' }),
+      queuePage.gamesLink().click({ button: 'middle' }),
     ])
 
     // player closes the second tab - should remain online

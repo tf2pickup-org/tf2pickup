@@ -10,7 +10,7 @@ test('banned player sees ban alert @6v6 @9v9', async ({ users }) => {
   const adminPage = await admin.adminPage()
   await adminPage.banPlayer(player.steamId, { reason: 'testing' })
 
-  const banAlert = playerPage.page.getByText('You are banned')
+  const banAlert = playerPage.banAlert()
   await expect(banAlert).toBeVisible()
   await expect(banAlert).toHaveText(
     new RegExp(`^You are banned until\\s*.+\\s*for\\s*testing\\s*by\\s*${admin.playerName}\\s*$`),
@@ -29,7 +29,7 @@ test('anonymously banned player does not see the admin @6v6 @9v9', async ({ user
   const adminPage = await admin.adminPage()
   await adminPage.banPlayer(player.steamId, { reason: 'testing', anonymous: true })
 
-  const banAlert = playerPage.page.getByText('You are banned')
+  const banAlert = playerPage.banAlert()
   await expect(banAlert).toBeVisible()
   await expect(banAlert).toHaveText(
     /^You are banned until\s*.+\s*for\s*testing\s*by\s*tf2pickup\.org Staff\s*$/,

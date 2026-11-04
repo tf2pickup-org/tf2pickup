@@ -19,16 +19,14 @@ test('recomputes the final score on a payload map reporting a broken 0:0 @6v6 @9
 
   await gameServer.feedLogs(logFixture('pl_upward_4071167.log'))
 
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
+  await expect(gamePage.teamScore('blu')).toHaveText('1')
+  await expect(gamePage.teamScore('red')).toHaveText('0')
 
   // the teams switch sides between the two stopwatch rounds, which is shown
   // as a "teams swapped" event in the game event timeline
-  await expect(
-    gamePage.page.getByLabel('Game events').getByText('Teams swapped sides'),
-  ).toBeVisible()
+  await expect(gamePage.gameEvent('Teams swapped sides')).toBeVisible()
 
   // per-round "Round ended" rows count captured control points, not the match
   // score, so they're meaningless on stopwatch maps and must be hidden
-  await expect(gamePage.page.getByLabel('Game events').getByText('Round ended')).toHaveCount(0)
+  await expect(gamePage.gameEvent('Round ended')).toHaveCount(0)
 })

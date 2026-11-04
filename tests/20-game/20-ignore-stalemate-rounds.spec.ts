@@ -23,8 +23,8 @@ test('does not mistake stalemate rounds for a match restart @6v6 @9v9', async ({
 
   await gameServer.feedLogs(logFixture('cp_snakewater_4056794.log'))
 
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('2')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
+  await expect(gamePage.teamScore('blu')).toHaveText('2')
+  await expect(gamePage.teamScore('red')).toHaveText('1')
 
   // the replay starts before the page's live updates connect, so read the recorded events
   await gamePage.goto()

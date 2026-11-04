@@ -22,8 +22,8 @@ test('handles a match start doubled across a second boundary @6v6 @9v9', async (
 
   await gameServer.feedLogs(logFixture('cp_process_4084159.log'))
 
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('5')
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
+  await expect(gamePage.teamScore('red')).toHaveText('5')
+  await expect(gamePage.teamScore('blu')).toHaveText('1')
 
   // the replay starts before the page's live updates connect, so read the recorded events
   await gamePage.goto()

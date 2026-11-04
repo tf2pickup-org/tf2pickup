@@ -21,6 +21,6 @@ test('recomputes the final score on an attack/defend map after a team swap @6v6 
 
   await gameServer.feedLogs(logFixture('cp_steel_4064166.log'))
 
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('0')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
+  await expect(gamePage.teamScore('blu')).toHaveText('0')
+  await expect(gamePage.teamScore('red')).toHaveText('1')
 })

@@ -128,6 +128,14 @@ export class QueuePage {
     await this.readyUpDialog().readyUp()
   }
 
+  gamesLink() {
+    return this.page.getByRole('link', { name: 'Games' })
+  }
+
+  banAlert() {
+    return this.page.getByText('You are banned')
+  }
+
   goBackToGameLink() {
     return this.page.getByRole('link', { name: 'Go back to the game' })
   }

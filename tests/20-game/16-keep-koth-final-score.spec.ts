@@ -18,17 +18,13 @@ test('keeps a correctly reported koth final score @6v6 @9v9', async ({
 
   await gameServer.feedLogs(logFixture('koth_product_4072544.log'))
 
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('2')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('2')
+  await expect(gamePage.teamScore('blu')).toHaveText('2')
+  await expect(gamePage.teamScore('red')).toHaveText('2')
 
   // koth teams never switch sides, so no "teams swapped" event must show up
-  await expect(
-    gamePage.page.getByLabel('Game events').getByText('Teams swapped sides'),
-  ).toHaveCount(0)
+  await expect(gamePage.gameEvent('Teams swapped sides')).toHaveCount(0)
 
   // on koth the per-round score is the actual match score, so "Round ended"
   // rows are meaningful and must still be shown
-  await expect(
-    gamePage.page.getByLabel('Game events').getByText('Round ended').first(),
-  ).toBeVisible()
+  await expect(gamePage.gameEvent('Round ended').first()).toBeVisible()
 })
