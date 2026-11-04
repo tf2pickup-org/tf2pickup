@@ -21,7 +21,7 @@ export interface LaunchGameOptions {
     | 'started' // all players are connected and the match has started
 }
 
-const desiredSlots6v6: [UserName, SlotId][] = [
+export const desiredSlots6v6: [UserName, SlotId][] = [
   ['Promenader', 'scout-1'],
   ['Mayflower', 'scout-2'],
   ['Polemic', 'scout-3'],
@@ -36,7 +36,7 @@ const desiredSlots6v6: [UserName, SlotId][] = [
   ['BellBoy', 'medic-2'],
 ]
 
-const desiredSlots9v9: [UserName, SlotId][] = [
+export const desiredSlots9v9: [UserName, SlotId][] = [
   ['Promenader', 'scout-1'],
   ['Mayflower', 'scout-2'],
   ['Polemic', 'soldier-1'],

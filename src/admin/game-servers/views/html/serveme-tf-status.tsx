@@ -1,8 +1,7 @@
 import { IconCheck, IconX } from '../../../../html/components/icons'
-import { servemeTf } from '../../../../serveme-tf'
 
-export function ServemeTfStatus() {
-  return servemeTf.isEnabled ? (
+export function ServemeTfStatus(props: { enabled: boolean }) {
+  return props.enabled ? (
     <span class="flex flex-row text-green-600">
       <IconCheck />
       enabled

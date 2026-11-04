@@ -1,12 +1,18 @@
+import { requestContext } from '@fastify/request-context'
 import { configuration } from '../../../../configuration'
 import {
   configurationSchema,
   type Configuration,
 } from '../../../../database/models/configuration-entry.model'
+import { PlayerRole } from '../../../../database/models/player.model'
 import { IconArrowBackUp } from '../../../../html/components/icons'
 import { Admin } from '../../../views/html/admin'
+import { secretKeys } from '../../secret-keys'
 
 export async function ViewForNerdsPage() {
+  const user = requestContext.get('user')
+  const canSeeSecrets = user?.player.roles.includes(PlayerRole.superUser) ?? false
+
   const entries = await Promise.all(
     configurationSchema._zod.def.options.map(async option => {
       const _key = option._zod.def.shape.key._zod.def.values[0]!
@@ -29,7 +35,10 @@ export async function ViewForNerdsPage() {
 
           <div class="table-row-group max-lg:block max-lg:space-y-4">
             {entries.map(props => (
-              <ConfigurationEntryEdit {...props} />
+              <ConfigurationEntryEdit
+                {...props}
+                masked={secretKeys.has(props._key) && !canSeeSecrets}
+              />
             ))}
           </div>
         </div>
@@ -42,12 +51,13 @@ export function ConfigurationEntryEdit(props: {
   _key: keyof Configuration
   value: unknown
   defaultValue: unknown
+  masked?: boolean
 }) {
-  const valueJson = JSON.stringify(props.value)
+  const valueJson = props.masked === true ? '' : JSON.stringify(props.value)
   const isDefault = valueJson === JSON.stringify(props.defaultValue)
 
   let resetButton = <></>
-  if (!isDefault) {
+  if (!isDefault && props.masked !== true) {
     resetButton = (
       <button
         class="text-abru-light-60 align-middle"
@@ -77,13 +87,17 @@ export function ConfigurationEntryEdit(props: {
         </label>
       </div>
       <div class="table-cell">
-        <input
-          type="text"
-          name="value"
-          value={valueJson}
-          class="w-full"
-          id={`${props._key}-edit`}
-        />
+        {props.masked === true ? (
+          <input type="text" value="••••••••" disabled class="w-full" id={`${props._key}-edit`} />
+        ) : (
+          <input
+            type="text"
+            name="value"
+            value={valueJson}
+            class="w-full"
+            id={`${props._key}-edit`}
+          />
+        )}
       </div>
       <div class="table-cell align-middle">{resetButton}</div>
     </form>
