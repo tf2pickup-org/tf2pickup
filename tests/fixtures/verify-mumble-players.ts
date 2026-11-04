@@ -65,10 +65,14 @@ export const verifyMumblePlayers = mergeTests(launchGame, configureMumbleServer)
       const setting = await db
         .collection('configuration')
         .findOne({ key: 'games.voice_server.mumble.player_verification' })
+      const admin = await users.getAdmin().adminPage()
       if (setting?.['value'] !== true) {
-        const admin = await users.getAdmin().adminPage()
         await admin.setMumblePlayerVerification(true)
       }
+
+      // the defaults; other specs shorten them, and then players who aren't on the game server
+      // get auto-subbed until the game is force-ended
+      await admin.configureGames({ joinGameServerTimeout: 300, rejoinGameServerTimeout: 180 })
 
       await use()
     },
