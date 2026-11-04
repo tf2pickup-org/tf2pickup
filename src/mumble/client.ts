@@ -57,6 +57,15 @@ export async function tryConnect() {
 
     const localClient = client
     localClient.on('textMessage', payload => events.emit('mumble/textMessage', payload))
+    // userCreate also fires for every user already on the server while the connection syncs
+    let synced = false
+    localClient.on('connect', () => (synced = true))
+    localClient.on('disconnect', () => (synced = false))
+    localClient.on('userCreate', user => {
+      if (synced) {
+        events.emit('mumble/userJoined', { user })
+      }
+    })
     let attempt = 0
     let reconnecting = false
     localClient.on('error', async (error: unknown) => {

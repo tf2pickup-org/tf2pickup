@@ -154,6 +154,9 @@ export interface Events {
     message: string
     isPrivate: boolean
   }
+  'mumble/userJoined': {
+    user: User
+  }
   'mumble/certificateConflict': {
     player: SteamId64
     owner: SteamId64
