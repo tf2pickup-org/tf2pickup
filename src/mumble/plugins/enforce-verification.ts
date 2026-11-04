@@ -4,6 +4,7 @@ import { SlotStatus } from '../../database/models/game-slot.model'
 import { GameState, type GameModel } from '../../database/models/game.model'
 import { PlayerRole } from '../../database/models/player.model'
 import { events } from '../../events'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
 import { gamesRootAcl } from '../games-root-acl'
@@ -65,20 +66,25 @@ export default fp(
       safe(async ({ before, after }) => {
         const hash = after.mumbleCertificate?.hash
         const bound = hash !== undefined && hash !== before.mumbleCertificate?.hash
+        const unlinked = !!before.mumbleCertificate && !after.mumbleCertificate
         const rolesChanged = before.roles.join() !== after.roles.join()
-        if ((!bound && !rolesChanged) || !(await isVerificationEnabled())) {
+        if ((!bound && !unlinked && !rolesChanged) || !(await isVerificationEnabled())) {
+          return
+        }
+
+        if (bound || unlinked) {
+          await syncGamesOf(after.steamId)
+        }
+
+        if (unlinked) {
+          if (before.mumbleCertificate?.registration) {
+            await gamesRootAcl.apply(true)
+          }
           return
         }
 
         if (bound) {
-          const game = await collections.games.findOne({
-            state: { $in: liveStates },
-            'slots.player': after.steamId,
-          })
-          if (game) {
-            await syncGameAcl(game)
-            await moveToTeamChannel(after.steamId, hash)
-          }
+          await moveToTeamChannel(after.steamId, hash)
         }
 
         if ((await registerAdmin(after.steamId)) || rolesChanged) {
@@ -148,5 +154,18 @@ async function registerConnectedAdmins() {
     .toArray()
   for (const { steamId } of admins) {
     await registerAdmin(steamId)
+  }
+}
+
+// a replaced player is only in voiceOutgoing, and may be playing another game by now
+async function syncGamesOf(player: SteamId64) {
+  const games = await collections.games
+    .find({
+      state: { $in: liveStates },
+      $or: [{ 'slots.player': player }, { 'slots.voiceOutgoing': player }],
+    })
+    .toArray()
+  for (const game of games) {
+    await syncGameAcl(game)
   }
 }

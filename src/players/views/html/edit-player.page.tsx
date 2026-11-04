@@ -19,6 +19,7 @@ import {
   IconBan,
   IconChartArrowsVertical,
   IconDeviceFloppy,
+  IconHeadset,
   IconMessageCircleOff,
   IconPlus,
   IconUserScan,
@@ -46,6 +47,8 @@ import { configuration } from '../../../configuration'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
 import { requestContext } from '@fastify/request-context'
+import { isVerificationEnabled } from '../../../mumble/is-verification-enabled'
+import { MumbleVerificationMethod } from '../../../database/models/player.model'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -53,6 +56,7 @@ const editPlayerPages = {
   '/chat-mutes': 'Chat mutes',
   '/roles': 'Roles',
   '/elo': 'ELO',
+  '/mumble': 'Mumble',
 } as const
 
 export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
@@ -294,7 +298,55 @@ export async function EditPlayerEloPage(props: { steamId: SteamId64 }) {
   )
 }
 
-function EditPlayer(props: {
+export async function EditPlayerMumblePage(props: { steamId: SteamId64 }) {
+  const player = await players.bySteamId(props.steamId, ['name', 'steamId', 'mumbleCertificate'])
+  const certificate = player.mumbleCertificate
+  return (
+    <EditPlayer player={player} activePage="/mumble">
+      <div class="admin-panel-set flex flex-col gap-4">
+        {certificate ? (
+          <>
+            <dl class="grid grid-cols-[max-content_1fr] gap-x-6 gap-y-2">
+              <dt>Certificate</dt>
+              <dd class="font-mono break-all" safe>
+                {certificate.hash}
+              </dd>
+              <dt>Linked</dt>
+              <dd safe>{format(certificate.boundAt, 'MMMM d, yyyy HH:mm')}</dd>
+              <dt>Linked by</dt>
+              <dd>
+                {certificate.method === MumbleVerificationMethod.ipMatch
+                  ? 'IP match'
+                  : 'verification code'}
+              </dd>
+            </dl>
+            <p>
+              Unlinking takes the player's access to game channels away. They can link a certificate
+              again on their own.
+            </p>
+            <form action={`/players/${player.steamId}/edit/mumble/unlink`} method="post">
+              <button
+                type="submit"
+                class="button self-start"
+                data-variant="accent"
+                data-size="dense"
+                data-umami-event="unlink-mumble-certificate"
+                data-umami-event-player={player.steamId}
+              >
+                <IconX size={20} />
+                <span>Unlink certificate</span>
+              </button>
+            </form>
+          </>
+        ) : (
+          <p>No Mumble certificate is linked to this player.</p>
+        )}
+      </div>
+    </EditPlayer>
+  )
+}
+
+async function EditPlayer(props: {
   player: Pick<PlayerModel, 'name' | 'steamId'>
   children: Children
   activePage: keyof typeof editPlayerPages
@@ -344,6 +396,15 @@ function EditPlayer(props: {
               <IconChartArrowsVertical />
               ELO
             </AdminPanelLink>
+            {(await isVerificationEnabled()) && (
+              <AdminPanelLink
+                href={`/players/${props.player.steamId}/edit/mumble`}
+                active={props.activePage === '/mumble'}
+              >
+                <IconHeadset />
+                Mumble
+              </AdminPanelLink>
+            )}
 
             {user.player.roles.includes(PlayerRole.superUser) && (
               <>
