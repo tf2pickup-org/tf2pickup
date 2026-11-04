@@ -1,7 +1,7 @@
-import { expect } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { launchGame as test } from '../fixtures/launch-game'
 import { queueSlots } from '../queue-slots'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'started' })
 

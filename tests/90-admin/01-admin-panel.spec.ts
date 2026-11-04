@@ -1,13 +1,14 @@
-import { authUsers, expect } from '../fixtures/auth-users'
+import { authUsers as test } from '../fixtures/auth-users'
+import { expect } from '../fixtures/expect'
 
-authUsers('admin panel is visible & accessible @6v6 @9v9', async ({ users }) => {
+test('admin panel is visible & accessible @6v6 @9v9', async ({ users }) => {
   const adminsPage = await users.getAdmin().page()
   await adminsPage.goto('/')
   await adminsPage.getByRole('link', { name: 'Admin panel' }).click()
   await adminsPage.waitForURL(/admin/)
 })
 
-authUsers('admin panel is not visible for non-admins @6v6 @9v9', async ({ users }) => {
+test('admin panel is not visible for non-admins @6v6 @9v9', async ({ users }) => {
   const userPage = await users.getNext(u => !u.isAdmin).page()
   await userPage.goto('/')
   await expect(userPage.getByRole('link', { name: 'Admin panel' })).not.toBeVisible()
@@ -18,7 +19,7 @@ authUsers('admin panel is not visible for non-admins @6v6 @9v9', async ({ users 
   await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
 })
 
-authUsers('admin panel is not visible for anonymous users @6v6 @9v9', async ({ page }) => {
+test('admin panel is not visible for anonymous users @6v6 @9v9', async ({ page }) => {
   await page.goto('/')
   await expect(page.getByRole('link', { name: 'Admin panel' })).not.toBeVisible()
 
@@ -40,14 +41,13 @@ authUsers('admin panel is not visible for anonymous users @6v6 @9v9', async ({ p
   '/admin/rules',
   '/admin/privacy-policy',
 ].forEach(adminPage => {
-  authUsers(
-    `admin panel is not available for non-admins on ${adminPage} @6v6 @9v9`,
-    async ({ users }) => {
-      const userPage = await users.getNext(u => !u.isAdmin).page()
-      await userPage.goto(adminPage)
-      await expect(userPage.getByText('403')).toBeVisible()
-      await expect(userPage.getByText('Forbidden')).toBeVisible()
-      await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
-    },
-  )
+  test(`admin panel is not available for non-admins on ${adminPage} @6v6 @9v9`, async ({
+    users,
+  }) => {
+    const userPage = await users.getNext(u => !u.isAdmin).page()
+    await userPage.goto(adminPage)
+    await expect(userPage.getByText('403')).toBeVisible()
+    await expect(userPage.getByText('Forbidden')).toBeVisible()
+    await expect(userPage.getByRole('link', { name: 'Go back home' })).toBeVisible()
+  })
 })

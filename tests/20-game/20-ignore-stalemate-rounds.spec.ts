@@ -1,32 +1,34 @@
-import { expect, launchGame } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
 import { logFixture } from '../fixtures/log-fixture'
+import { expect } from '../fixtures/expect'
 
 // the replayed log drives the whole match lifecycle, including the initial
 // doubled Round_Start — starting the match here would make that pair look
 // like a mid-game restart
-launchGame.use({ waitForStage: 'launching' })
+test.use({ waitForStage: 'launching' })
 
 // Replays the real log of https://logs.tf/4056794 (cp_snakewater_final1, a 6v6
 // 5cp map). Two rounds end in a stalemate, so there is no Round_Win between
 // two Round_Starts. The replay re-stamps all lines to the current second — the
 // post-stalemate Round_Start must not be mistaken for the doubled Round_Start
 // of a match restart.
-launchGame(
-  'does not mistake stalemate rounds for a match restart @6v6 @9v9',
-  async ({ gameNumber, page, gameServer }) => {
-    const gamePage = new GamePage(page, gameNumber)
-    await gamePage.goto()
+test('does not mistake stalemate rounds for a match restart @6v6 @9v9', async ({
+  gameNumber,
+  page,
+  gameServer,
+}) => {
+  const gamePage = new GamePage(page, gameNumber)
+  await gamePage.goto()
 
-    await gameServer.feedLogs(logFixture('cp_snakewater_4056794.log'))
+  await gameServer.feedLogs(logFixture('cp_snakewater_4056794.log'))
 
-    await expect(gamePage.page.getByLabel('blu team score')).toHaveText('2')
-    await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
+  await expect(gamePage.teamScore('blu')).toHaveText('2')
+  await expect(gamePage.teamScore('red')).toHaveText('1')
 
-    // the replay starts before the page's live updates connect, so read the recorded events
-    await gamePage.goto()
-    await expect(gamePage.gameEvent('Game ended')).toBeVisible()
-    await expect(gamePage.gameEvent('Game restarted')).not.toBeVisible()
-    await expect(gamePage.gameEvent('Game started')).toHaveCount(1)
-  },
-)
+  // the replay starts before the page's live updates connect, so read the recorded events
+  await gamePage.goto()
+  await expect(gamePage.gameEvent('Game ended')).toBeVisible()
+  await expect(gamePage.gameEvent('Game restarted')).not.toBeVisible()
+  await expect(gamePage.gameEvent('Game started')).toHaveCount(1)
+})

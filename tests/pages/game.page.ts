@@ -83,6 +83,10 @@ export class GamePage {
     await btn.click()
   }
 
+  teamScore(team: 'blu' | 'red') {
+    return this.page.getByLabel(`${team} team score`)
+  }
+
   gameEvent(event: string | RegExp) {
     return this.page.getByLabel('Game events').getByText(event)
   }

@@ -1,5 +1,6 @@
-import { test, expect } from '@playwright/test'
+import { test } from '@playwright/test'
 import { QueuePage } from '../pages/queue.page'
+import { expect } from '../fixtures/expect'
 
 test('has title @6v6', async ({ page }) => {
   await page.goto('/')

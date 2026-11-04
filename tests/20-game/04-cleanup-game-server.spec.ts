@@ -1,13 +1,12 @@
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { expect, launchGame } from '../fixtures/launch-game'
-import { delay } from 'es-toolkit'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
-launchGame.use({ waitForStage: 'started' })
+test.use({ waitForStage: 'started' })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-launchGame('cleanup game server @6v6 @9v9', async ({ gameServer, gameNumber }) => {
-  launchGame.setTimeout(minutesToMilliseconds(2))
+test('cleanup game server @6v6 @9v9', async ({ gameServer, gameNumber }) => {
+  test.setTimeout(minutesToMilliseconds(2))
 
-  await delay(secondsToMilliseconds(3))
   await gameServer.matchEnds()
 
   await expect(gameServer).toHaveCommand(/^logaddress_del/, {

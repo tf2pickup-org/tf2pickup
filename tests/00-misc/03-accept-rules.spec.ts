@@ -1,26 +1,16 @@
-import { authUsers, expect } from '../fixtures/auth-users'
-import { mergeTests } from '@playwright/test'
-import { accessMongoDb } from '../fixtures/access-mongo-db'
+import { test } from '@playwright/test'
+import { expect } from '../fixtures/expect'
+import { users } from '../data'
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-const test = mergeTests(authUsers, accessMongoDb)
+const newcomer = users.find(({ name }) => name === 'Newcomer')!
 
-test.describe('when user has not accepted the rules yet', () => {
-  test.beforeEach(async ({ db, steamIds }) => {
-    const steamId = steamIds[0]!
-    const players = db.collection('players')
-    await players.updateOne({ steamId }, { $set: { hasAcceptedRules: false } })
-  })
+test('accept rules @6v6 @9v9', async ({ page }) => {
+  await page.goto(`/auth/test?steamId=${newcomer.steamId}`)
+  await expect(page.getByTitle('Accept rules dialog')).toBeVisible()
 
-  test('accept rules @6v6 @9v9', async ({ users }) => {
-    const page = await users.getFirst().page()
-    await page.goto('/')
-    await expect(page.getByTitle('Accept rules dialog')).toBeVisible()
+  const btn = page.getByRole('button', { name: 'I accept these rules' })
+  await expect(btn).toBeVisible()
+  await btn.click()
 
-    const btn = page.getByRole('button', { name: 'I accept these rules' })
-    await expect(btn).toBeVisible()
-    await btn.click()
-
-    await expect(page.getByTitle('Accept rules dialog')).not.toBeVisible()
-  })
+  await expect(page.getByTitle('Accept rules dialog')).not.toBeVisible()
 })

@@ -1,9 +1,10 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { expect, launchGame } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
-launchGame.use({ waitForStage: 'launching' })
+test.use({ waitForStage: 'launching' })
 
-launchGame('reinitialize game server @6v6 @9v9', async ({ users, gameNumber }) => {
+test('reinitialize game server @6v6 @9v9', async ({ users, gameNumber }) => {
   const admin = users.getAdmin()
   const page = await admin.gamePage(gameNumber)
   await page.goto()

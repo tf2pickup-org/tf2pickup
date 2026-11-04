@@ -1,5 +1,6 @@
-import { launchGame as test, expect } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'launching' })
 

@@ -1,5 +1,6 @@
-import { expect, authUsers as test } from '../fixtures/auth-users'
+import { authUsers as test } from '../fixtures/auth-users'
 import { loremIpsum } from 'lorem-ipsum'
+import { expect } from '../fixtures/expect'
 
 test('chat is not visible for unauthenticated users @6v6 @9v9', async ({ page }) => {
   await page.goto('/')

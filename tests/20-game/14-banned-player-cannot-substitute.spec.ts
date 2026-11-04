@@ -1,5 +1,5 @@
-import { expect } from '@playwright/test'
 import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'started' })
 

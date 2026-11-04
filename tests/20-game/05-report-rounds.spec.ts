@@ -1,29 +1,25 @@
-import { secondsToMilliseconds } from 'date-fns'
-import { expect, launchGame } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { GamePage } from '../pages/game.page'
-import { delay } from 'es-toolkit'
+import { expect } from '../fixtures/expect'
 
-launchGame.use({ waitForStage: 'started' })
-launchGame('report rounds @6v6 @9v9', async ({ gameNumber, page, gameServer }) => {
+test.use({ waitForStage: 'started' })
+test('report rounds @6v6 @9v9', async ({ gameNumber, page, gameServer }) => {
   // wait for the gameserver to be configured
   const gamePage = new GamePage(page, gameNumber)
   await gamePage.goto()
 
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('0')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
+  await expect(gamePage.teamScore('blu')).toHaveText('0')
+  await expect(gamePage.teamScore('red')).toHaveText('0')
 
   await gameServer.roundEnds('blu')
   await expect(gamePage.page.getByText('Round ended')).toBeVisible()
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('0')
-
-  await delay(secondsToMilliseconds(1))
+  await expect(gamePage.teamScore('blu')).toHaveText('1')
+  await expect(gamePage.teamScore('red')).toHaveText('0')
 
   await gameServer.roundEnds('red')
   await expect(gamePage.page.getByText('Round ended')).toHaveCount(2)
-  await expect(gamePage.page.getByLabel('blu team score')).toHaveText('1')
-  await expect(gamePage.page.getByLabel('red team score')).toHaveText('1')
+  await expect(gamePage.teamScore('blu')).toHaveText('1')
+  await expect(gamePage.teamScore('red')).toHaveText('1')
 
-  await delay(secondsToMilliseconds(1))
   await gameServer.matchEnds()
 })

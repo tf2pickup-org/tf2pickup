@@ -1,6 +1,7 @@
-import { expect, launchGame } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
-launchGame('force end game @6v6 @9v9', async ({ users, gameNumber }) => {
+test('force end game @6v6 @9v9', async ({ users, gameNumber }) => {
   const admin = users.getAdmin()
   const adminsPage = await admin.gamePage(gameNumber)
   await adminsPage.goto()

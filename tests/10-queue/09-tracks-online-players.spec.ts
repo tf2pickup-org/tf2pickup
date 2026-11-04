@@ -1,6 +1,7 @@
 import { secondsToMilliseconds } from 'date-fns'
-import { expect, authUsers as test } from '../fixtures/auth-users'
+import { authUsers as test } from '../fixtures/auth-users'
 import { delay } from 'es-toolkit'
+import { expect } from '../fixtures/expect'
 
 test('tracks online players @6v6 @9v9', async ({ page, users }) => {
   await page.goto('/')
@@ -29,13 +30,13 @@ test.describe('when user opens a new tab and then closes it @6v6 @9v9', () => {
 
     const queuePage = await blacklight.queuePage()
     await queuePage.goto()
-    await queuePage.page.getByRole('link', { name: 'Games' }).click({ button: 'middle' })
-    await delay(secondsToMilliseconds(1))
+    const [anotherPage] = await Promise.all([
+      blacklight.browserContext.waitForEvent('page'),
+      queuePage.gamesLink().click({ button: 'middle' }),
+    ])
 
     // player closes the second tab - should remain online
-    const anotherPage = blacklight.browserContext.pages()[1]
-    expect(anotherPage).toBeTruthy()
-    await anotherPage!.close()
+    await anotherPage.close()
     await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).toBeVisible()
     await delay(secondsToMilliseconds(15))
     await expect(onlinePlayerList.getByRole('link', { name: 'Blacklight' })).toBeVisible()

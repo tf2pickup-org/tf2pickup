@@ -1,5 +1,6 @@
-import { launchGame as test, expect } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { expect } from '../fixtures/expect'
 
 test('ready-up dialog is shown again after page refresh @6v6', async ({
   players,

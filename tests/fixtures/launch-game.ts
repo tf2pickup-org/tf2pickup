@@ -1,11 +1,12 @@
 import { authUsers } from './auth-users'
-import { expect, mergeTests } from '@playwright/test'
+import { mergeTests } from '@playwright/test'
 import { simulateGameServer } from './simulate-game-server'
 import type { UserContext, UserName } from '../user-manager'
 import { waitForEmptyQueue } from './wait-for-empty-queue'
 import { GamePage } from '../pages/game.page'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { getPlayerCount, getQueueConfig, type SlotId } from '../queue-slots'
+import { expect } from './expect'
 
 export interface LaunchGameOptions {
   // Set to true to kill the game after the test
@@ -139,6 +140,7 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
           if (waitForStage === 'started') {
             await gameServer.connectAllPlayers()
             await gameServer.matchStarts()
+            await expect(gamePage.gameEvent('Game started')).toBeVisible()
           }
         }
 
@@ -197,5 +199,3 @@ export const launchGame = mergeTests(authUsers, simulateGameServer, waitForEmpty
     { timeout: minutesToMilliseconds(2) },
   ],
 })
-
-export { expect } from './simulate-game-server'

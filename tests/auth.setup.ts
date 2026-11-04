@@ -1,13 +1,17 @@
-import { accessMongoDb as setup } from './fixtures/access-mongo-db'
+import { test as setup } from '@playwright/test'
+import { MongoClient } from 'mongodb'
 import { resolve } from 'node:path'
 import { users } from './data'
-import { existsSync } from 'node:fs'
 
 const authDir = resolve(import.meta.dirname, '.auth')
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-setup('authenticate', async ({ browser, db }) => {
-  const players = db.collection('players')
+setup('authenticate', async ({ browser }) => {
+  if (!process.env['MONGODB_URI']) {
+    throw new Error('MONGODB_URI is required to seed test players')
+  }
+
+  const client = await MongoClient.connect(process.env['MONGODB_URI'])
+  const players = client.db().collection('players')
   for (const user of users) {
     await players.updateOne(
       { steamId: user.steamId },
@@ -23,7 +27,7 @@ setup('authenticate', async ({ browser, db }) => {
               'https://avatars.steamstatic.com/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb_full.jpg',
           },
           roles: 'roles' in user ? user.roles : [],
-          hasAcceptedRules: true,
+          hasAcceptedRules: 'hasAcceptedRules' in user ? user.hasAcceptedRules : true,
           cooldownLevel: 0,
           preferences: {},
           stats: {
@@ -34,6 +38,7 @@ setup('authenticate', async ({ browser, db }) => {
         $unset: {
           activeGame: 1,
           skill: 1,
+          mumbleCertificate: 1,
         },
       },
       {
@@ -41,21 +46,19 @@ setup('authenticate', async ({ browser, db }) => {
       },
     )
   }
+  await client.close()
 
   await Promise.all(
     users
       .map(u => u.steamId)
       .map(async steamId => {
         const path = resolve(authDir, `${steamId}.json`)
-        if (existsSync(path)) {
-          return
-        }
-
         const context = await browser.newContext()
         const page = await context.newPage()
         await page.goto(`/auth/test?steamId=${steamId}`)
         await page.waitForURL('/')
-        await page.context().storageState({ path })
+        await context.storageState({ path })
+        await context.close()
       }),
   )
 })

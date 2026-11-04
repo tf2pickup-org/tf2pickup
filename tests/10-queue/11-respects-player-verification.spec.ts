@@ -1,10 +1,12 @@
-import { expect, mergeTests } from '@playwright/test'
+import { mergeTests } from '@playwright/test'
 import { authUsers } from '../fixtures/auth-users'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
+import { expect } from '../fixtures/expect'
+import { users } from '../data'
 
 const test = mergeTests(authUsers, waitForEmptyQueue)
 
-const moonManSteamId = '76561199195972852'
+const moonManSteamId = users.find(({ name }) => name === 'MoonMan')!.steamId
 
 test.describe('when player verification is required @6v6 @9v9', () => {
   test.beforeAll(async ({ users }) => {

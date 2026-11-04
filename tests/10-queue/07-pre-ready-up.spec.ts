@@ -1,20 +1,24 @@
 import { mergeTests } from '@playwright/test'
-import { accessMongoDb } from '../fixtures/access-mongo-db'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import { launchGame, expect } from '../fixtures/launch-game'
+import { launchGame } from '../fixtures/launch-game'
 import { waitForEmptyQueue } from '../fixtures/wait-for-empty-queue'
+import { expect } from '../fixtures/expect'
 
-// eslint-disable-next-line @typescript-eslint/no-deprecated
-const test = mergeTests(accessMongoDb, launchGame, waitForEmptyQueue)
+const test = mergeTests(launchGame, waitForEmptyQueue)
 const readyUpTimeout = secondsToMilliseconds(20)
 
-test.beforeEach(async ({ db }) => {
-  const configuration = db.collection('configuration')
-  await configuration.updateOne(
-    { key: 'queue.pre_ready_up_timeout' },
-    { $set: { value: readyUpTimeout } },
-    { upsert: true },
-  )
+const key = 'queue.pre_ready_up_timeout'
+let saved: string
+
+test.beforeEach(async ({ users }) => {
+  const admin = await users.getAdmin().adminPage()
+  saved = await admin.configurationValue(key)
+  await admin.configure(key, readyUpTimeout.toString())
+})
+
+test.afterEach(async ({ users }) => {
+  const admin = await users.getAdmin().adminPage()
+  await admin.configure(key, saved)
 })
 
 test('pre-ready up button is visible for logged-in-users @6v6 @9v9', async ({ users }) => {
@@ -58,41 +62,41 @@ test('pre-ready up readies up when the queue is ready @6v6 @9v9', async ({
   const preReadiedPlayers = players.slice(0, -1)
   const lastPlayer = players[players.length - 1]!
 
-  await Promise.all(
-    preReadiedPlayers.map(async user => {
-      const page = await user.queuePage()
+  try {
+    await Promise.all(
+      preReadiedPlayers.map(async user => {
+        const page = await user.queuePage()
+        await page.goto()
+        const slot = desiredSlots.get(user.playerName)!
+        await page.slot(slot).join()
+        await page.preReadyUp()
+      }),
+    )
+
+    {
+      const page = await lastPlayer.queuePage()
       await page.goto()
-      const slot = desiredSlots.get(user.playerName)!
+      const slot = desiredSlots.get(lastPlayer.playerName)!
       await page.slot(slot).join()
-      await page.preReadyUp()
-    }),
-  )
+    }
 
-  {
-    const page = await lastPlayer.queuePage()
-    await page.goto()
-    const slot = desiredSlots.get(lastPlayer.playerName)!
-    await page.slot(slot).join()
-  }
-
-  await Promise.all(
-    players.map(async user => {
-      const page = await user.page()
-      await page.waitForURL(/games\/(\d+)/)
-    }),
-  )
-
-  {
-    const page = await users.byName('Promenader').page()
-    const matches = /games\/(\d+)/.exec(page.url())
-    if (matches) {
-      const gameNumber = Number(matches[1])
-      // kill the game
-      const adminPage = await users.getAdmin().gamePage(gameNumber)
-      await adminPage.goto()
-      await adminPage.forceEnd()
-    } else {
-      throw new Error('could not launch game')
+    await Promise.all(
+      players.map(async user => {
+        const page = await user.page()
+        await page.waitForURL(/games\/(\d+)/)
+      }),
+    )
+  } finally {
+    for (const user of players) {
+      const matches = /games\/(\d+)/.exec((await user.page()).url())
+      if (matches) {
+        const gamePage = await users.getAdmin().gamePage(Number(matches[1]))
+        await gamePage.goto()
+        if (await gamePage.isLive()) {
+          await gamePage.forceEnd()
+        }
+        break
+      }
     }
   }
 })

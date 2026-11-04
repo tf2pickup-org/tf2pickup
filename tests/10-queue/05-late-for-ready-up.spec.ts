@@ -1,5 +1,6 @@
-import { launchGame as test, expect } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
 import { minutesToMilliseconds } from 'date-fns'
+import { expect } from '../fixtures/expect'
 
 test('player is late for ready up @6v6', async ({ players, desiredSlots, users, page }) => {
   test.setTimeout(minutesToMilliseconds(2))

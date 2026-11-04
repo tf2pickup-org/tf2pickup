@@ -1,4 +1,5 @@
-import { expect, launchGame as test } from '../fixtures/launch-game'
+import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
 test('auto-closes games with too many substitute requests @6v6 @9v9', async ({
   gameNumber,

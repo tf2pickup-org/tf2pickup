@@ -1,7 +1,7 @@
 import { secondsToMilliseconds } from 'date-fns'
 import { GamePage } from '../pages/game.page'
-import { expect } from '@playwright/test'
 import { launchGame as test } from '../fixtures/launch-game'
+import { expect } from '../fixtures/expect'
 
 test.use({ waitForStage: 'launching' })
 
