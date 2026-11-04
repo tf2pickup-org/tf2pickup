@@ -1,6 +1,6 @@
+import { Gamemode } from '../../../shared/types/gamemode'
 import { resolve } from 'node:path'
 import { Layout } from '../../../html/layout'
-import { environment } from '../../../environment'
 import { NavigationBar } from '../../../html/components/navigation-bar'
 import { Page } from '../../../html/components/page'
 import { Footer } from '../../../html/components/footer'
@@ -86,15 +86,23 @@ async function getMostActiveOverall(): Promise<HallOfFameEntry[]> {
   return players.map(player => ({ player, count: player.stats.totalGames }))
 }
 
+// medic games across every gamemode
 async function getMostActiveMedics(): Promise<HallOfFameEntry[]> {
-  const players = await collections.players
-    .find(
-      { [`stats.gamesByClass.${environment.QUEUE_CONFIG}.medic`]: { $gt: 0 } },
-      { sort: { [`stats.gamesByClass.${environment.QUEUE_CONFIG}.medic`]: -1 }, limit: 10 },
-    )
+  return await collections.players
+    .aggregate<HallOfFameEntry>([
+      {
+        $set: {
+          medicGames: {
+            $sum: Object.values(Gamemode).map(
+              gamemode => `$stats.gamesByClass.${gamemode}.${Tf2ClassName.medic}`,
+            ),
+          },
+        },
+      },
+      { $match: { medicGames: { $gt: 0 } } },
+      { $sort: { medicGames: -1 } },
+      { $limit: 10 },
+      { $project: { _id: 0, player: '$$ROOT', count: '$medicGames' } },
+    ])
     .toArray()
-  return players.map(player => ({
-    player,
-    count: player.stats.gamesByClass[environment.QUEUE_CONFIG]?.[Tf2ClassName.medic] ?? 0,
-  }))
 }
