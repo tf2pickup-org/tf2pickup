@@ -1,5 +1,23 @@
 # Changelog
 
+# [4.25.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.24.1...4.25.0) (2026-11-04)
+
+### Features
+
+* **mumble:** hand over team channels on substitutions and open them at game end ([#932](https://github.com/tf2pickup-org/tf2pickup/issues/932)) ([26ca47a](https://github.com/tf2pickup-org/tf2pickup/commit/26ca47ae1d20d71bf60c6345a50d1543fa15d1b8))
+* **mumble:** keep game channels to their players with ACLs ([#931](https://github.com/tf2pickup-org/tf2pickup/issues/931)) ([37b5908](https://github.com/tf2pickup-org/tf2pickup/commit/37b590869882057c4b91b821c064c2eec8373538)), closes [tf2pickup-org/docs.tf2pickup.org#188](https://github.com/tf2pickup-org/docs.tf2pickup.org/issues/188)
+* **mumble:** let admins see and unlink a player's Mumble certificate ([#933](https://github.com/tf2pickup-org/tf2pickup/issues/933)) ([d381849](https://github.com/tf2pickup-org/tf2pickup/commit/d38184992164b478cff7815e09ee78cdc8c1e705))
+* **mumble:** link players' Mumble certificates with a verification code ([#928](https://github.com/tf2pickup-org/tf2pickup/issues/928)) ([cbdcd50](https://github.com/tf2pickup-org/tf2pickup/commit/cbdcd50d36665bb73861d038b3cb82e7889cc75a))
+* **mumble:** opt-in player verification switch and privilege checklist ([#927](https://github.com/tf2pickup-org/tf2pickup/issues/927)) ([87c14c1](https://github.com/tf2pickup-org/tf2pickup/commit/87c14c170ce20dba43f0fcd41e57f9886b78eeb7))
+* **mumble:** verify players by matching their Mumble and game server IPs ([#930](https://github.com/tf2pickup-org/tf2pickup/issues/930)) ([f4a464e](https://github.com/tf2pickup-org/tf2pickup/commit/f4a464e8e894714ef10836ea01f1d6030eed8f8d)), closes [#3](https://github.com/tf2pickup-org/tf2pickup/issues/3)
+
+### Dependencies
+
+* @fastify/websocket to v11.3.6 ([d69f3cd](https://github.com/tf2pickup-org/tf2pickup/commit/d69f3cd26f748254f224414b321921b75a86a5ea))
+* @tf2pickup-org/mumble-client to v0.15.2 ([cfe678b](https://github.com/tf2pickup-org/tf2pickup/commit/cfe678bff84179ec7154ee630e3ecf75a6764099))
+* es-toolkit to v1.53.1 ([073954c](https://github.com/tf2pickup-org/tf2pickup/commit/073954c4d53e43c99eba01820e0970866e668eb7))
+* ws to v8.22.1 ([11459af](https://github.com/tf2pickup-org/tf2pickup/commit/11459af514bc9c527a16164182600a3c371a8ddf))
+
 ## [4.24.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.24.0...4.24.1) (2026-11-02)
 
 ### Dependencies
