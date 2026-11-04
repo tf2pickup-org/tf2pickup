@@ -84,14 +84,6 @@ export interface Events {
   'match:started': {
     gameNumber: GameNumber
   }
-  'match:roundWon': {
-    gameNumber: GameNumber
-    winner: Tf2Team
-  }
-  'match:roundLength': {
-    gameNumber: GameNumber
-    lengthMs: number
-  }
   'match:ended': {
     gameNumber: GameNumber
   }
@@ -114,11 +106,6 @@ export interface Events {
     steamId: SteamId64
     message: string
   }
-  'match/score:reported': {
-    gameNumber: GameNumber
-    teamName: Tf2Team
-    score: number
-  }
   'match/score:final': {
     gameNumber: GameNumber
     team: Tf2Team
@@ -128,11 +115,6 @@ export interface Events {
   // by Round_Start being logged twice in the same second
   'match/score:reset': {
     gameNumber: GameNumber
-  }
-  'match/controlPoint:captured': {
-    gameNumber: GameNumber
-    team: Tf2Team
-    controlPoint: number
   }
   'match/logs:uploaded': {
     gameNumber: GameNumber
