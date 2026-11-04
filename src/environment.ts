@@ -17,6 +17,7 @@ const environmentSchema = z.object({
   TRUST_PROXY: z.string().default('loopback, uniquelocal'),
 
   ENABLE_TEST_AUTH: z.enum(['true', 'false']).default('false'),
+  TEST_AUTH_SECRET: z.string().min(32).optional(),
 
   WEBSITE_URL: z.url(),
   WEBSITE_NAME: z.string().default('tf2pickup.org'),
