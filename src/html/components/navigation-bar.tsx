@@ -17,19 +17,19 @@ import { configuration } from '../../configuration'
 import { environment } from '../../environment'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 
-export function NavigationBar(props: { queuePage?: boolean } = {}) {
+export function NavigationBar(props: { wide?: boolean } = {}) {
   const user = requestContext.get('user')
   return (
     <nav
       class={[
         'relative flex min-h-[64px] flex-row justify-center lg:min-h-[95px]',
-        props.queuePage ? 'queue-nav' : '',
+        props.wide ? 'nav-wide' : '',
       ]}
     >
       <div
         class={[
-          'queue-nav-inner flex flex-row items-center',
-          props.queuePage ? 'w-full px-4' : 'container px-2 lg:px-0',
+          'nav-wide-inner flex flex-row items-center',
+          props.wide ? 'w-full px-4' : 'container px-2 lg:px-0',
         ]}
       >
         <button
@@ -47,7 +47,7 @@ export function NavigationBar(props: { queuePage?: boolean } = {}) {
           </span>
         </button>
 
-        <a href="/" class={['self-center', !props.queuePage && 'lg:mx-1']}>
+        <a href="/" class={['self-center', !props.wide && 'lg:mx-1']}>
           <img
             alt={`${environment.WEBSITE_NAME} logo`}
             src="/logo.png"
@@ -60,10 +60,10 @@ export function NavigationBar(props: { queuePage?: boolean } = {}) {
           id="nav-menu"
           class="hidden flex-row items-center gap-5 font-medium max-lg:fixed max-lg:inset-x-0 max-lg:top-16 max-lg:bottom-0 max-lg:z-40 max-lg:flex-col max-lg:items-stretch max-lg:overflow-y-auto max-lg:bg-zinc-950/85 max-lg:py-4 lg:ml-auto lg:flex"
         >
-          <Menu queuePage={props.queuePage === true} />
+          <Menu wide={props.wide === true} />
         </div>
 
-        <div class={props.queuePage ? 'ml-auto' : 'ml-auto lg:ml-3'}>
+        <div class={props.wide ? 'ml-auto' : 'ml-auto lg:ml-3'}>
           {user ? (
             <>
               <a
@@ -109,7 +109,7 @@ export function NavigationBar(props: { queuePage?: boolean } = {}) {
   )
 }
 
-async function Menu(props: { queuePage: boolean }) {
+async function Menu(props: { wide: boolean }) {
   const user = requestContext.get('user')
   const discordInvite = await configuration.get('misc.discord_invite_link')
 
@@ -117,7 +117,7 @@ async function Menu(props: { queuePage: boolean }) {
     <div
       class={[
         'flex flex-col gap-[10px] px-4 lg:flex-row lg:items-center',
-        props.queuePage ? 'lg:px-[11px]' : 'lg:px-0',
+        props.wide ? 'lg:px-[11px]' : 'lg:px-0',
       ]}
     >
       <GamesLink />

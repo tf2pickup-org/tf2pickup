@@ -90,7 +90,9 @@ export async function PlayerPage(props: { player: PlayerPageData; page: number }
 export async function PlayerGameList(props: { steamId: SteamId64; page: number }) {
   const skip = (props.page - 1) * gamesPerPage
   const games = await collections.games
-    .find<PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'slots'>>(
+    .find<
+      PickDeep<GameModel, 'number' | 'state' | 'events.0' | 'score' | 'map' | 'gamemode' | 'slots'>
+    >(
       { 'slots.player': props.steamId },
       {
         limit: gamesPerPage,
@@ -102,6 +104,7 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
           events: { $slice: 1 },
           score: 1,
           map: 1,
+          gamemode: 1,
           slots: 1,
         },
       },
