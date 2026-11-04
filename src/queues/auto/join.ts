@@ -3,7 +3,6 @@ import type { QueueId } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { QueueState } from '../../database/models/queue-state.model'
 import { errors } from '../../errors'
-import { events } from '../../events'
 import { logger } from '../../logger'
 import { players } from '../../players'
 import { preReady } from '../../pre-ready'
@@ -11,7 +10,7 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { getState } from '../get-state'
 import { withLogLevel } from '../../utils/with-log-level'
 import { meetsSkillThreshold } from './meets-skill-threshold'
-import { withQueueLock } from '../with-queue-lock'
+import { queueCommand } from './queue-command'
 import type { QueueSlotId } from '../types/queue-slot-id'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 import { get } from '../get'
@@ -68,7 +67,7 @@ export async function join(
     await vacateSlot(steamId)
   }
 
-  return await withQueueLock(queue, 'join', async () => {
+  return await queueCommand(queue, 'join', async emit => {
     const state = await getState(queue)
     if (![QueueState.waiting, QueueState.ready].includes(state)) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
@@ -112,7 +111,7 @@ export async function join(
     await collections.queueState.updateOne({ queue }, { $set: { last: player.steamId } })
 
     const slots = [oldSlot, targetSlot].filter(Boolean) as QueueSlotModel[]
-    events.emit('queue/slots:updated', { queue, slots })
+    emit('queue/slots:updated', { queue, slots })
 
     if (targetSlot.ready) {
       await preReady.start(steamId)
