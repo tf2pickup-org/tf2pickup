@@ -94,10 +94,25 @@ export class GameServerSimulator {
   private roundStartTimestamp = Date.now()
   private score = { red: 0, blu: 0 }
 
+  readonly port: number
+  readonly address: string
+  readonly rconPassword: string
+  readonly name: string
+
   constructor(
     readonly apiAddress: string,
     readonly secret: string,
+    {
+      port = 27015,
+      address = '127.0.0.1',
+      rconPassword = '123456',
+      name = 'Simulated Game Server',
+    }: { port?: number; address?: string; rconPassword?: string; name?: string } = {},
   ) {
+    this.port = port
+    this.address = address
+    this.rconPassword = rconPassword
+    this.name = name
     this.socket = createSocket('udp4')
     this.server = new Server(socket => {
       socket.on('data', data => {
@@ -113,7 +128,7 @@ export class GameServerSimulator {
             const response2 = new RconPacket()
             response2.type = RconPacketType.SERVERDATA_AUTH_RESPONSE
 
-            if (packet.body === '123456') {
+            if (packet.body === this.rconPassword) {
               response2.id = packet.id
             } else {
               response2.id = -1
@@ -230,7 +245,7 @@ export class GameServerSimulator {
 
   async run() {
     return new Promise<void>(resolve => {
-      this.server.listen(27015, resolve)
+      this.server.listen(this.port, resolve)
     })
   }
 
@@ -375,10 +390,10 @@ export class GameServerSimulator {
 
   async sendHeartbeat() {
     const params = new URLSearchParams()
-    params.set('name', 'Simulated Game Server')
-    params.set('address', '127.0.0.1')
-    params.set('port', '27015')
-    params.set('rconPassword', '123456')
+    params.set('name', this.name)
+    params.set('address', this.address)
+    params.set('port', String(this.port))
+    params.set('rconPassword', this.rconPassword)
     const response = await fetch(`${this.apiAddress}/static-game-servers/`, {
       method: 'POST',
       headers: {
