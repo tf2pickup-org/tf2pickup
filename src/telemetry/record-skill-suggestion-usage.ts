@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import type { PlayerModel, PlayerSkill } from '../database/models/player.model'
 import type { Gamemode } from '../shared/types/gamemode'
 import { makeSkillSuggestions } from '../players/make-skill-suggestions'
+import { effectiveSkill } from '../players/effective-skill'
 import { utcDayKey } from './utc-day-key'
 
 interface RecordSkillSuggestionUsageParams {
@@ -28,12 +29,12 @@ export async function recordSkillSuggestionUsage({
     return
   }
 
-  const defaultSkill = (await configuration.get('games.default_player_skill'))[gamemode] ?? {}
+  const defaultSkill = (await configuration.get('games.default_player_skill'))[gamemode]
   const suggestions = makeSkillSuggestions({ player, gamemode })
 
   const followed = [...suggestions.entries()].some(([gameClass, direction]) => {
-    const before = oldSkill[gameClass] ?? defaultSkill[gameClass] ?? 0
-    const after = newSkill[gameClass] ?? defaultSkill[gameClass] ?? 0
+    const before = effectiveSkill(oldSkill, defaultSkill, gameClass)
+    const after = effectiveSkill(newSkill, defaultSkill, gameClass)
     return direction === 'up' ? after > before : after < before
   })
 
