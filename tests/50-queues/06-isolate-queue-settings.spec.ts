@@ -2,9 +2,9 @@ import { expect, queues } from '../fixtures/queues'
 import { AdminQueuesPage } from '../pages/admin-queues.page'
 import { defaultQueueSlug } from '../queue-slots'
 
-// GhostWalker only plays 9v9 games, so in the 6v6 run they have no skill (default 1) and are
-// never auto-verified.
-const player = 'GhostWalker'
+// IronViper only plays 9v9 games, so in the 6v6 run they have no skill (default 1) and no games,
+// and are never auto-verified. (GhostWalker substitutes in 6v6 games.)
+const player = 'IronViper'
 
 queues.afterEach(async ({ users }) => {
   const admin = await users.getAdmin().adminPage()
