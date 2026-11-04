@@ -1,5 +1,6 @@
 import htmx from './htmx'
 import { Howl, Howler } from 'howler'
+import { playExclusively } from './play-exclusively'
 
 interface HtmxNodeInternalData {
   sound?: Howl
@@ -19,19 +20,22 @@ function loadSound(element: Element) {
   internalData.sound = new Howl({ src: [src] })
 }
 
-async function resumeAndPlay(sound: Howl) {
+async function resumeAndPlay(sound: Howl, soundId: string) {
   if (Howler.ctx.state === 'suspended') {
     await Howler.ctx.resume().catch(console.warn)
   }
-  sound.play()
+  // Resuming first means a tab that cannot unlock its audio context drops out before
+  // racing for the sound, instead of winning it and swallowing the notification.
+  if (Howler.ctx.state !== 'running') return
+  await playExclusively(soundId, () => sound.play())
 }
 
 export function playSound(element: Element | null, volume?: number) {
-  if (!element) return
+  if (!element?.id) return
   const sound = api.getInternalData(element).sound
   if (!sound) return
   if (volume !== undefined) sound.volume(volume)
-  void resumeAndPlay(sound)
+  void resumeAndPlay(sound, element.id)
 }
 
 export function stopSound(element: Element | null) {
