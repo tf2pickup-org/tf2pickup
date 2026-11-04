@@ -66,7 +66,7 @@ export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
       <input type="hidden" name="sort" value={props.sort} />
       <table class="w-full text-left text-sm max-lg:min-w-2xl">
         <thead>
-          <tr class="border-abru-light-25 border-b">
+          <tr class="border-b border-zinc-600">
             <th class="w-[160px] px-4 py-2">
               <a
                 href={buildUrl({
@@ -85,7 +85,7 @@ export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
                 })}
                 hx-target="#activity-log-results"
                 hx-push-url="true"
-                class="hover:text-abru-light-75 cursor-pointer"
+                class="cursor-pointer hover:text-zinc-200"
               >
                 Date{sortIndicator}
               </a>
@@ -102,7 +102,7 @@ export function ActivityLogEntryList(props: ActivityLogEntryListProps) {
           ))}
           {props.logs.length === 0 && (
             <tr>
-              <td colspan="5" class="text-abru-light-50 px-4 py-8 text-center">
+              <td colspan="5" class="px-4 py-8 text-center text-zinc-400">
                 No log entries found.
               </td>
             </tr>
@@ -142,7 +142,7 @@ function ActivityLogEntry(props: {
   const actor = getActor(log)
 
   return (
-    <tr class="even:bg-abru-dark-6">
+    <tr class="even:bg-zinc-900">
       <th scope="row" class="px-4 py-2 whitespace-nowrap" safe>
         {log.timestamp.toLocaleString()}
       </th>
@@ -161,7 +161,7 @@ function ActivityLogEntry(props: {
             </a>
           )
         ) : (
-          <span class="text-abru-light-25">—</span>
+          <span class="text-zinc-600">—</span>
         )}
       </td>
       <td class="px-4 py-2">
@@ -169,7 +169,7 @@ function ActivityLogEntry(props: {
       </td>
       <td class="truncate px-4 py-2">
         {actor === 'bot' ? (
-          <span class="text-abru-light-50">bot</span>
+          <span class="text-zinc-400">bot</span>
         ) : actor ? (
           isDeletedUser(actor) ? (
             <DeletedUser />
@@ -179,7 +179,7 @@ function ActivityLogEntry(props: {
             </a>
           )
         ) : (
-          <span class="text-abru-light-25">—</span>
+          <span class="text-zinc-600">—</span>
         )}
       </td>
     </tr>
@@ -227,7 +227,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'player name change') {
     return (
       <span>
-        <span class="text-abru-light-50" safe>
+        <span class="text-zinc-400" safe>
           {log.oldName}
         </span>{' '}
         → <span safe>{log.newName}</span>
@@ -248,7 +248,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     return (
       <span>
         <span safe>{log.reason}</span>
-        <span class="text-abru-light-50">
+        <span class="text-zinc-400">
           {' · expires '}
           <span safe>{log.end.toLocaleDateString()}</span>
         </span>
@@ -259,7 +259,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'ban revoked') {
     return (
       <span>
-        <span class="text-abru-light-50">Reason was: </span>
+        <span class="text-zinc-400">Reason was: </span>
         <span safe>{log.reason}</span>
       </span>
     )
@@ -269,7 +269,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
     return (
       <span>
         <span safe>{log.reason}</span>
-        <span class="text-abru-light-50">
+        <span class="text-zinc-400">
           {' · expires '}
           <span safe>{log.end.toLocaleDateString()}</span>
         </span>
@@ -280,7 +280,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'chat mute revoked') {
     return (
       <span>
-        <span class="text-abru-light-50">Reason was: </span>
+        <span class="text-zinc-400">Reason was: </span>
         <span safe>{log.reason}</span>
       </span>
     )
@@ -293,7 +293,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
       <span>
         <span safe>{preview}</span>
         {log.maps.length > 5 && (
-          <span class="text-abru-light-50" safe>
+          <span class="text-zinc-400" safe>
             {extra}
           </span>
         )}
@@ -303,7 +303,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
 
   if (log.type === 'game reconfigured' || log.type === 'game force-ended') {
     return (
-      <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
+      <a href={`/games/${log.gameNumber}`} class="hover:text-zinc-200" safe>
         Game #{log.gameNumber}
       </a>
     )
@@ -312,10 +312,10 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'game server reassigned') {
     return (
       <span>
-        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
+        <a href={`/games/${log.gameNumber}`} class="hover:text-zinc-200" safe>
           Game #{log.gameNumber}
         </a>
-        <span class="text-abru-light-50"> → </span>
+        <span class="text-zinc-400"> → </span>
         <span safe>{log.gameServer}</span>
       </span>
     )
@@ -324,12 +324,12 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'substitute requested') {
     return (
       <span>
-        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
+        <a href={`/games/${log.gameNumber}`} class="hover:text-zinc-200" safe>
           Game #{log.gameNumber}
         </a>
-        <span class="text-abru-light-50"> · {log.gameClass}</span>
+        <span class="text-zinc-400"> · {log.gameClass}</span>
         {log.reason !== undefined && (
-          <span class="text-abru-light-50">
+          <span class="text-zinc-400">
             {' '}
             · <span safe>{log.reason}</span>
           </span>
@@ -341,10 +341,10 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   if (log.type === 'rcon command executed') {
     return (
       <span>
-        <a href={`/games/${log.gameNumber}`} class="hover:text-abru-light-75" safe>
+        <a href={`/games/${log.gameNumber}`} class="hover:text-zinc-200" safe>
           Game #{log.gameNumber}
         </a>
-        <span class="text-abru-light-50"> · </span>
+        <span class="text-zinc-400"> · </span>
         <span class="font-mono" safe>
           {log.command}
         </span>
@@ -354,7 +354,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
 
   if (log.type === 'queue cleared') {
     return (
-      <span class="text-abru-light-50">
+      <span class="text-zinc-400">
         {log.playerCount} player{log.playerCount !== 1 ? 's' : ''} removed
       </span>
     )
@@ -363,7 +363,7 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
   return (
     <span>
       <span safe>{log.maps.join(', ')}</span>
-      {log.count > 1 && <span class="text-abru-light-50"> ×{log.count}</span>}
+      {log.count > 1 && <span class="text-zinc-400"> ×{log.count}</span>}
     </span>
   )
 }

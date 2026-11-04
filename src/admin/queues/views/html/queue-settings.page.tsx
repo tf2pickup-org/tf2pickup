@@ -19,7 +19,7 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
       />
       <form action="" method="post" id="queueSettingsForm">
         <div class="admin-panel-set flex flex-col gap-4">
-          <dl class="text-abru-light-75 text-sm">
+          <dl class="text-sm text-zinc-200">
             <dt>Slug</dt>
             <dd safe>{queue.slug}</dd>
             <dt>Gamemode</dt>
@@ -40,11 +40,11 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
           <div class="group flex flex-row items-center justify-between">
             <dl>
               <dt>
-                <label class="text-abru-light-75" for="requireVerification">
+                <label class="text-zinc-200" for="requireVerification">
                   Require player verification
                 </label>
               </dt>
-              <dd class="text-abru-light-75">
+              <dd class="text-zinc-200">
                 <span class="hidden group-has-checked:inline-block">
                   Players must be manually verified by an admin before they can join this queue
                 </span>
@@ -88,7 +88,7 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
                   data-toggle-disabled-checked="true"
                 />
               </div>
-              <p class="text-abru-light-75 text-sm">
+              <p class="text-sm text-zinc-200">
                 Players will be able to join this queue only on classes that meet the given
                 criteria.
               </p>
@@ -120,7 +120,7 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
                 min="0"
                 value={queue.mapCooldown.toString()}
               />
-              <p class="text-abru-light-75 text-sm">
+              <p class="text-sm text-zinc-200">
                 How many games have to be played before the last map can be voted for again
               </p>
             </dd>
@@ -138,7 +138,7 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
                 value={queue.whitelistId ?? ''}
                 placeholder={inheritedWhitelistId ?? ''}
               />
-              <p class="text-abru-light-75 text-sm">
+              <p class="text-sm text-zinc-200">
                 Leave empty to use the gamemode's or the global whitelist
               </p>
             </dd>
@@ -169,7 +169,7 @@ function SecondsInput(props: { id: string; label: string; value: number; descrip
           min="1"
           value={millisecondsToSeconds(props.value).toString()}
         />
-        <p class="text-abru-light-75 text-sm" safe>
+        <p class="text-sm text-zinc-200" safe>
           {props.description}
         </p>
       </dd>

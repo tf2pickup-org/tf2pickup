@@ -22,20 +22,20 @@ export async function StatisticsPage() {
       <Page>
         <div class="container mx-auto grid grid-cols-1 gap-4 px-2 lg:grid-cols-2">
           <div class="lg:col-span-2">
-            <div class="text-abru-light-75 my-9 text-[48px] font-bold capitalize">Statistics</div>
+            <div class="my-9 text-[48px] font-bold text-zinc-200 capitalize">Statistics</div>
           </div>
 
           <GlobalStats />
 
-          <div class="bg-abru-dark-25 flex flex-col rounded-lg px-12 py-8">
+          <div class="flex flex-col rounded-lg bg-zinc-950 px-12 py-8">
             <PlayedMapsCount />
           </div>
 
-          <div class="bg-abru-dark-25 flex flex-col rounded-lg px-6 py-8">
+          <div class="flex flex-col rounded-lg bg-zinc-950 px-6 py-8">
             <GameLaunchTimeSpans />
           </div>
 
-          <div class="bg-abru-dark-25 rounded-lg px-6 py-8 lg:col-span-2">
+          <div class="rounded-lg bg-zinc-950 px-6 py-8 lg:col-span-2">
             <GameActivity />
           </div>
         </div>

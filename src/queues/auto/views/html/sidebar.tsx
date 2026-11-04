@@ -18,14 +18,14 @@ export function Sidebar(props: { queue: QueueId; user?: User | undefined; requir
           </span>
         </button>
 
-        <button class="tab-link" data-tabs-select="tab-online-player-list">
-          <IconUserCircle size={18} />
-          <OnlinePlayerCount />
-        </button>
-
         <button class="tab-link" data-tabs-select="tab-chat">
           <IconMessageCircle size={18} />
           <span>Chat</span>
+        </button>
+
+        <button class="tab-link" data-tabs-select="tab-online-player-list">
+          <IconUserCircle size={18} />
+          <OnlinePlayerCount />
         </button>
       </div>
 

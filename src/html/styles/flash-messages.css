@@ -25,7 +25,7 @@
         padding: 12px 24px;
         font-weight: 700;
         font-size: 16px;
-        color: var(--color-ash);
+        color: var(--color-zinc-100);
       }
 
       progress[value] {
