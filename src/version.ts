@@ -10,4 +10,7 @@ if (!packageJsonPath) {
 const file = await readFile(packageJsonPath)
 const packageJsonSchema = z.object({ version: z.string() })
 
-export const { version } = packageJsonSchema.parse(JSON.parse(file.toString()))
+const { version: packageVersion } = packageJsonSchema.parse(JSON.parse(file.toString()))
+const commit = process.env['GIT_COMMIT']
+
+export const version = commit ? `${packageVersion}+${commit.slice(0, 7)}` : packageVersion
