@@ -2,7 +2,7 @@ import { configuration } from '../configuration'
 import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
-import { GameState, type GameNumber } from '../database/models/game.model'
+import { GameState } from '../database/models/game.model'
 import type { QueueModel } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
@@ -10,6 +10,7 @@ import { players } from '../players'
 import type { Gamemode } from '../shared/types/gamemode'
 import { resolveWhitelistId } from '../queues/resolve-whitelist-id'
 import type { SteamId64 } from '../shared/types/steam-id-64'
+import { insertGame } from './insert-game'
 import { pickTeams, type PlayerSlot } from './pick-teams'
 
 export async function create(
@@ -25,8 +26,7 @@ export async function create(
   const execConfig = queue.maps.find(({ name }) => name === map)?.execConfig
   const whitelistId = await resolveWhitelistId(queue)
 
-  const { insertedId } = await collections.games.insertOne({
-    number: await getNextGameNumber(),
+  const { insertedId } = await insertGame({
     gamemode: queue.gamemode,
     queue: queue._id,
     map,
@@ -78,13 +78,4 @@ async function queueSlotToPlayerSlot(
   }
 
   return { player: player.steamId, gameClass, skill }
-}
-
-async function getNextGameNumber(): Promise<GameNumber> {
-  const latestGame = await collections.games.findOne({}, { sort: { 'events.0.at': -1 } })
-  if (latestGame) {
-    return (latestGame.number + 1) as GameNumber
-  } else {
-    return 1 as GameNumber
-  }
 }
