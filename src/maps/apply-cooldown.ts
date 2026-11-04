@@ -1,13 +1,18 @@
-import { configuration } from '../configuration'
 import { collections } from '../database/collections'
+import type { QueueId } from '../database/models/queue.model'
 import { logger } from '../logger'
+import { get } from '../queues/get'
 
-export async function applyMapCooldown(map: string) {
-  logger.trace({ map }, 'queue.applyMapCooldown()')
-  await collections.maps.updateMany(
-    { name: { $ne: map }, cooldown: { $gt: 0 } },
-    { $inc: { cooldown: -1 } },
+export async function applyMapCooldown(queue: QueueId, map: string) {
+  logger.trace({ queue, map }, 'queue.applyMapCooldown()')
+  await collections.queues.updateOne(
+    { _id: queue },
+    { $inc: { 'maps.$[other].cooldown': -1 } },
+    { arrayFilters: [{ 'other.name': { $ne: map }, 'other.cooldown': { $gt: 0 } }] },
   )
-  const cooldown = await configuration.get('queue.map_cooldown')
-  await collections.maps.updateOne({ name: map }, { $set: { cooldown } })
+  const { mapCooldown } = await get(queue)
+  await collections.queues.updateOne(
+    { _id: queue, 'maps.name': map },
+    { $set: { 'maps.$.cooldown': mapCooldown } },
+  )
 }
