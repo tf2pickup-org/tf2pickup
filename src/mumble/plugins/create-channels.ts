@@ -7,6 +7,8 @@ import { games } from '../../games'
 import { mumbleDirectUrl } from '../mumble-direct-url'
 import { collections } from '../../database/collections'
 import { client } from '../client'
+import { isVerificationEnabled } from '../is-verification-enabled'
+import { syncGameAcl } from '../sync-game-acl'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -17,6 +19,9 @@ export default fp(
         if (client) {
           await setupGameChannels(game)
           logger.info({ game }, 'channels for game created')
+          if (await isVerificationEnabled()) {
+            await syncGameAcl(game)
+          }
         }
       }),
     )
