@@ -12,8 +12,8 @@ export async function DocumentsPage(props: { name: string }) {
   const safeBody = doc.body
   return (
     <Admin activePage={props.name.replace(' ', '-') as 'rules' | 'privacy-policy'}>
-      <form action="" method="post" class="admin-panel-set flex h-full flex-col gap-2">
-        <textarea class="grow" name="body">
+      <form action="" method="post" class="admin-panel-set flex flex-col gap-2">
+        <textarea class="h-[65dvh] min-h-64" name="body">
           {safeBody}
         </textarea>
 

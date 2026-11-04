@@ -145,7 +145,7 @@ export function Admin(props: {
       : superUserPages[props.activePage as keyof typeof superUserPages].title
   return (
     <Layout title={makeTitle(title)} embedStyle={resolve(import.meta.dirname, 'style.css')}>
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
         <AdminPanel>
           <AdminPanelSidebar>
