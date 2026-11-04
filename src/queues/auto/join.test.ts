@@ -15,7 +15,7 @@ vi.mock('../../players', () => ({ players: { bySteamId: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn() } }))
 vi.mock('../get', () => ({ get: vi.fn() }))
 vi.mock('../get-state', () => ({ getState: vi.fn() }))
-vi.mock('./meets-skill-threshold', () => ({ meetsSkillThreshold: vi.fn().mockResolvedValue(true) }))
+vi.mock('./join-blocker', () => ({ joinBlocker: vi.fn().mockResolvedValue(null) }))
 vi.mock('./vacate-slot', () => ({ vacateSlot: vi.fn() }))
 vi.mock('./queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
@@ -33,6 +33,7 @@ import { get } from '../get'
 import { getState } from '../get-state'
 import type { QueueSlotId } from '../types/queue-slot-id'
 import { join } from './join'
+import { joinBlocker } from './join-blocker'
 import { vacateSlot } from './vacate-slot'
 
 const queue = new ObjectId() as QueueId
@@ -40,16 +41,23 @@ const steamId = '76561198000000001' as SteamId64
 const slotId = 'scout-1' as QueueSlotId
 const slot = { _id: new ObjectId(), queue, id: slotId, gameClass: 'scout', player: null }
 
+const player = {
+  steamId,
+  name: 'player',
+  hasAcceptedRules: true,
+  avatar: { medium: 'avatar' },
+  bans: [{ end: new Date(Date.now() + 60_000) }],
+}
+
 describe('join()', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(get).mockResolvedValue({ enabled: true, requireVerification: false } as never)
-    vi.mocked(players.bySteamId).mockResolvedValue({
-      steamId,
-      name: 'player',
-      hasAcceptedRules: true,
-      avatar: { medium: 'avatar' },
-    } as never)
+    vi.mocked(joinBlocker).mockResolvedValue(null)
+    vi.mocked(players.bySteamId).mockImplementation((async (_: SteamId64, keys: string[]) =>
+      Object.fromEntries(
+        Object.entries(player).filter(([key]) => keys.some(k => k.split('.')[0] === key)),
+      )) as never)
     vi.mocked(getState).mockResolvedValue(QueueState.waiting)
     vi.mocked(collections.queueSlots.findOne).mockResolvedValue(slot as never)
     // the player sits in another queue
@@ -81,5 +89,28 @@ describe('join()', () => {
 
     await expect(join(queue, slotId, steamId)).rejects.toThrow('invalid queue state')
     expect(vacateSlot).not.toHaveBeenCalled()
+  })
+
+  it('refuses a player with a join blocker and leaves the slots alone', async () => {
+    vi.mocked(joinBlocker).mockResolvedValue('You have active bans')
+
+    await expect(join(queue, slotId, steamId)).rejects.toThrow('You have active bans')
+    expect(collections.queueSlots.findOneAndUpdate).not.toHaveBeenCalled()
+    expect(vacateSlot).not.toHaveBeenCalled()
+  })
+
+  it("hands the player's bans to the join blocker", async () => {
+    vi.mocked(collections.queueSlots.findOneAndUpdate).mockResolvedValueOnce({
+      ...slot,
+      player: { steamId },
+    } as never)
+
+    await join(queue, slotId, steamId)
+
+    expect(joinBlocker).toHaveBeenCalledWith(
+      expect.objectContaining({ bans: player.bans }),
+      slot,
+      expect.anything(),
+    )
   })
 })
