@@ -264,7 +264,7 @@ export class GameServerSimulator {
     }
   }
 
-  async playerConnects(playerName: string) {
+  async playerConnects(playerName: string, address = '127.0.0.1') {
     const player = this.addedPlayers.find(player => player.name === playerName)
     if (!player) {
       throw new Error(`player not found: ${playerName}`)
@@ -274,7 +274,7 @@ export class GameServerSimulator {
     player.connected = true
     await delay(this.eventDelay / 2)
     await this.log(
-      `"${player.name}<${player.userId}><${steamId3}><>" connected, address "127.0.0.1:27005"`,
+      `"${player.name}<${player.userId}><${steamId3}><>" connected, address "${address}:27005"`,
     )
     await delay(this.eventDelay / 2)
   }

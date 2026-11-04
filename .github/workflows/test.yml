@@ -132,6 +132,10 @@ jobs:
           - 64738:64738/udp
         env:
           MUMBLE_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
+          # every test client connects from the same address
+          MUMBLE_CONFIG_AUTOBANATTEMPTS: 0
+          MUMBLE_CONFIG_MESSAGEBURST: 50
+          MUMBLE_CONFIG_MESSAGELIMIT: 10
         options: >-
           --user root
 

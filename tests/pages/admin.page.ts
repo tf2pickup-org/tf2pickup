@@ -167,6 +167,21 @@ export class AdminPage {
     await expect(this.page.getByText('connected', { exact: true })).toBeVisible()
   }
 
+  async setMumblePlayerVerification(enabled: boolean) {
+    await this.page.goto('/admin/voice-server')
+    await this.page.getByLabel('Verify players automatically').setChecked(enabled, { force: true })
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('connected', { exact: true })).toBeVisible()
+  }
+
+  async unlinkMumbleCertificate(steamId: string) {
+    await this.page.goto(`/players/${steamId}/edit/mumble`)
+    await this.page.getByRole('button', { name: 'Unlink certificate' }).click()
+    await expect(
+      this.page.getByText('No Mumble certificate is linked to this player.'),
+    ).toBeVisible()
+  }
+
   async configureGames(config: {
     joinGameServerTimeout?: number
     rejoinGameServerTimeout?: number
