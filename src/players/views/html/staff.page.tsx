@@ -57,17 +57,15 @@ export async function StaffPage() {
       canonical="/staff"
       embedStyle={resolve(import.meta.dirname, 'staff.page.css')}
     >
-      <NavigationBar />
+      <NavigationBar wide />
       <Page>
-        <div class="container mx-auto">
-          <div class="my-9">
-            <div class="text-[48px] font-bold text-zinc-200">Staff</div>
-            <div class="text-lg text-zinc-400">
-              The people who keep <span safe>{environment.WEBSITE_NAME}</span> running
-            </div>
-          </div>
+        <div class="page-wide">
+          <h1 class="page-title">Staff</h1>
+          <p class="mt-3 text-lg text-[#c7c4c7]">
+            The people who keep <span safe>{environment.WEBSITE_NAME}</span> running
+          </p>
 
-          <div class="staff-list">
+          <div class="staff-list mt-12">
             {staff.map(member => (
               <StaffCard member={member} isOnline={onlineSteamIds.has(member.steamId)} />
             ))}

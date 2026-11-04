@@ -10,7 +10,7 @@ export async function PlayedMapsCount() {
 
   return (
     <>
-      <span class="mb-6 text-2xl font-bold text-zinc-200">Most played maps</span>
+      <h2 class="mb-6 text-2xl leading-[1.5] font-bold">Most played maps</h2>
       <div class="mx-auto my-auto w-full max-w-[26rem]">
         <canvas id="played-maps-count"></canvas>
       </div>
@@ -30,11 +30,11 @@ const backgroundColor = [
   '#F61059',
   '#FFCAE9',
   '#A17BCC',
-  '#FAFF00',
-  '#FF8C42',
+  '#E5EB00',
+  '#FF7700',
   '#06D6A0',
   '#573280',
-  '#51BBFE',
+  '#4392F1',
   '#AED4E6',
 ]
 
@@ -53,7 +53,7 @@ function toChartData(data: PlayedMapCount[]) {
         data: topMaps.map((d: PlayedMapCount) => d.count),
         backgroundColor,
         borderWidth: 2,
-        borderColor: '#141115',
+        borderColor: '#18181B',
         hoverOffset: 4,
       },
     ],

@@ -5,14 +5,16 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 export async function MumbleSettingsEntry(props: { steamId: SteamId64 }) {
   const { mumbleCertificate } = await players.bySteamId(props.steamId, ['mumbleCertificate'])
   return (
-    <div class="bg-zinc-850 flex flex-row items-center gap-4 rounded-sm p-2">
-      <IconHeadset size={32} />
-      <p class="font-bold">Mumble</p>
+    <div class="page-actions flex-row items-center gap-x-8! px-5">
+      <p class="flex items-center gap-1 text-2xl font-bold">
+        <IconHeadset size={24} />
+        Mumble
+      </p>
       {mumbleCertificate ? (
         <>
           <p>Your Mumble certificate is linked, so you can join your games' voice channels</p>
           <div class="flex-1"></div>
-          <a class="button" data-size="dense" href="/mumble" data-umami-event="mumble-verify-again">
+          <a class="button" href="/mumble" data-umami-event="mumble-verify-again">
             Verify again
           </a>
         </>
@@ -23,7 +25,7 @@ export async function MumbleSettingsEntry(props: { steamId: SteamId64 }) {
           <a
             class="button"
             data-variant="accent"
-            data-size="dense"
+
             href="/mumble"
             data-umami-event="mumble-verify"
           >
