@@ -31,6 +31,7 @@ import type { LogsTfLogModel } from './models/logs-tf-log.model'
 import type { DeferredKickModel } from './models/deferred-kick.model'
 import type { GameRoundProgressModel } from './models/game-round-progress.model'
 import type { TelemetryStatModel } from './models/telemetry-stat.model'
+import type { MumbleVerificationCodeModel } from './models/mumble-verification-code.model'
 import { ensureIndexes } from './ensure-indexes'
 
 export const collections = {
@@ -53,6 +54,9 @@ export const collections = {
   keys: database.collection<KeyModel>('keys'),
   logsTfLogs: database.collection<LogsTfLogModel>('logstf.logs'),
   maps: database.collection<MapPoolEntry>('maps'),
+  mumbleVerificationCodes: database.collection<MumbleVerificationCodeModel>(
+    'mumble.verificationcodes',
+  ),
   onlinePlayers: database.collection<OnlinePlayerModel>('onlineplayers'),
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),

@@ -29,6 +29,13 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     // Sparse: preReadyUntil is $unset once the pre-ready lapses, so this only
     // ever holds the handful of players pre-readied right now.
     { spec: { preReadyUntil: 1 }, options: { sparse: true } },
+    // One Mumble certificate per account; a duplicate key means it's linked elsewhere.
+    { spec: { 'mumbleCertificate.hash': 1 }, options: { unique: true, sparse: true } },
+  ],
+  mumbleVerificationCodes: [
+    { spec: { code: 1 }, options: { unique: true } },
+    { spec: { player: 1 }, options: { unique: true } },
+    { spec: { expiresAt: 1 }, options: { expireAfterSeconds: 0 } },
   ],
   games: [
     { spec: { number: 1 }, options: { unique: true } },

@@ -6,6 +6,8 @@ import { makeTitle } from '../../../html/make-title'
 import { TwitchTvSettingsEntry } from '../../../twitch-tv/views/html/twitch-tv-settings-entry'
 import { Footer } from '../../../html/components/footer'
 import { requestContext } from '@fastify/request-context'
+import { MumbleSettingsEntry } from '../../../mumble/views/html/mumble-settings-entry'
+import { isVerificationEnabled } from '../../../mumble/is-verification-enabled'
 
 export async function PlayerSettingsPage() {
   const user = requestContext.get('user')!
@@ -54,6 +56,9 @@ export async function PlayerSettingsPage() {
             <h4 class="text-[24px] font-bold">Linked accounts</h4>
 
             <TwitchTvSettingsEntry player={user.player} />
+            {(await isVerificationEnabled()) && (
+              <MumbleSettingsEntry steamId={user.player.steamId} />
+            )}
           </div>
         </div>
       </Page>

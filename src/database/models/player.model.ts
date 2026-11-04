@@ -48,6 +48,17 @@ export type PlayerSkill = Partial<Record<Tf2ClassName, number>>
 
 export type PlayerElo = Partial<Record<Tf2ClassName, number>>
 
+export enum MumbleVerificationMethod {
+  ipMatch = 'ip match',
+  code = 'code',
+}
+
+export interface PlayerMumbleCertificate {
+  hash: string
+  boundAt: Date
+  method: MumbleVerificationMethod
+}
+
 export interface PlayerModel {
   name: string
   steamId: SteamId64
@@ -76,6 +87,7 @@ export interface PlayerModel {
     changedAt: Date
   }[]
   preReadyUntil?: Date
+  mumbleCertificate?: PlayerMumbleCertificate
   preferences: PlayerPreferences
   bans?: PlayerBan[]
   chatMutes?: PlayerBan[]
