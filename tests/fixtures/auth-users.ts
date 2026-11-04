@@ -1,4 +1,4 @@
-import { accessMongoDb as test } from './access-mongo-db'
+import { test } from '@playwright/test'
 import { UserContext, UserManager, type UserSteamId } from '../user-manager'
 import { users } from '../data'
 import { resolve } from 'node:path'
@@ -10,7 +10,7 @@ interface AuthUsersFixture {
 
 export const authUsers = test.extend<AuthUsersFixture>({
   steamIds: async ({}, use) => {
-    await use(users.map(u => u.steamId))
+    await use(users.filter(u => !('hasAcceptedRules' in u)).map(u => u.steamId))
   },
   users: async ({ steamIds, browser }, use) => {
     const authDir = resolve(import.meta.dirname, '../.auth')

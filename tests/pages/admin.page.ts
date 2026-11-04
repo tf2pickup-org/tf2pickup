@@ -67,12 +67,31 @@ export class AdminPage {
     }
   }
 
+  async openPlayerToolbox(steamId: string) {
+    await this.page.goto(`/players/${steamId}`)
+    await this.openToolbox()
+  }
+
+  skillInput(className: string) {
+    return this.page.getByLabel(`Player's skill on ${className}`)
+  }
+
+  skillLastUpdated() {
+    return this.page.locator('#player-admin-toolbox .tooltip')
+  }
+
+  async resetSkill(steamId: string) {
+    await this.openPlayerToolbox(steamId)
+    this.page.once('dialog', dialog => dialog.accept())
+    await this.page.getByRole('button', { name: 'Reset' }).click()
+    await expect(this.page.getByText('This player has no skill assigned')).toBeVisible()
+  }
+
   async updateSkill(
     steamId: string,
     skill: { scout: number; soldier: number; demoman: number; medic: number },
   ) {
-    await this.page.goto(`/players/${steamId}`)
-    await this.openToolbox()
+    await this.openPlayerToolbox(steamId)
     await this.page.getByLabel("Player's skill on scout").fill(skill.scout.toString())
     await this.page.getByLabel("Player's skill on soldier").fill(skill.soldier.toString())
     await this.page.getByLabel("Player's skill on demoman").fill(skill.demoman.toString())
@@ -181,6 +200,30 @@ export class AdminPage {
     await expect(
       this.page.getByText('No Mumble certificate is linked to this player.'),
     ).toBeVisible()
+  }
+
+  async unlinkMumbleCertificateIfLinked(steamId: string) {
+    await this.page.goto(`/players/${steamId}/edit/mumble`)
+    if (await this.page.getByRole('button', { name: 'Unlink certificate' }).isVisible()) {
+      await this.unlinkMumbleCertificate(steamId)
+    }
+  }
+
+  async configurationValue(key: string) {
+    await this.page.goto('/admin/view-for-nerds')
+    return await this.page.getByLabel(key, { exact: true }).inputValue()
+  }
+
+  async configure(key: string, value: string) {
+    await this.page.goto('/admin/view-for-nerds')
+    const input = this.page.getByLabel(key, { exact: true })
+    await input.fill(value)
+    await Promise.all([
+      this.page.waitForResponse(
+        response => response.url().endsWith('/admin/view-for-nerds') && response.ok(),
+      ),
+      input.press('Enter'),
+    ])
   }
 
   async configureGames(config: {

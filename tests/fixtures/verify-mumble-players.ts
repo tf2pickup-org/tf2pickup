@@ -39,7 +39,7 @@ export const verifyMumblePlayers = mergeTests(launchGame, configureMumbleServer)
 }>({
   mumbleVerificationEnabled: [
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async ({ users, db, mumbleClient, mumbleServerConfigured }, use) => {
+    async ({ users, mumbleClient, mumbleServerConfigured }, use) => {
       const [bot] = mumbleClient.users.findAll(({ name }) => name === 'tf2pickup.org bot')
       if (bot?.userId === undefined) {
         throw new Error('bot is not registered')
@@ -59,15 +59,13 @@ export const verifyMumblePlayers = mergeTests(launchGame, configureMumbleServer)
         await root.saveAcl(acl)
       }
 
-      await db.collection('players').updateMany({}, { $unset: { mumbleCertificate: 1 } })
-
       // ponytail: left on once enabled; saving the voice server form reconnects the bot, which then
       // resyncs every game channel through its rate-limited command queue
-      const setting = await db
-        .collection('configuration')
-        .findOne({ key: 'games.voice_server.mumble.player_verification' })
       const admin = await users.getAdmin().adminPage()
-      if (setting?.['value'] !== true) {
+      const setting = await admin.configurationValue(
+        'games.voice_server.mumble.player_verification',
+      )
+      if (setting !== 'true') {
         await admin.setMumblePlayerVerification(true)
       }
 
@@ -79,9 +77,11 @@ export const verifyMumblePlayers = mergeTests(launchGame, configureMumbleServer)
     },
     { auto: true },
   ],
-  connectToMumble: async ({ mumbleClient, mumbleConfiguration }, use) => {
+  connectToMumble: async ({ users, mumbleClient, mumbleConfiguration }, use) => {
     const clients: Client[] = []
+    const names = new Set<string>()
     await use(async name => {
+      names.add(name)
       const { clientKey, certificate } = await createCertificate()
       const client = new Client({
         host: 'localhost',
@@ -112,6 +112,13 @@ export const verifyMumblePlayers = mergeTests(launchGame, configureMumbleServer)
 
     for (const client of clients) {
       client.disconnect()
+    }
+
+    const admin = await users.getAdmin().adminPage()
+    for (const user of users) {
+      if (names.has(user.playerName)) {
+        await admin.unlinkMumbleCertificateIfLinked(user.steamId)
+      }
     }
   },
 })
