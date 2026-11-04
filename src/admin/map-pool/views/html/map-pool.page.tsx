@@ -1,15 +1,21 @@
 import { queues } from '../../../../queues'
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
-import { mapPool } from '../../../../maps/pool'
+import type { QueueModel } from '../../../../database/models/queue.model'
+import { QueueTabs } from '../../../../html/components/queue-tabs'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 
-export async function MapPoolPage() {
-  const maps = await mapPool.get((await queues.getDefault())._id)
+export async function MapPoolPage(props: { queue: QueueModel }) {
+  const { maps } = props.queue
 
   return (
     <Admin activePage="map-pool">
-      <form action="" method="post">
+      <QueueTabs
+        queues={await queues.list()}
+        active={props.queue.slug}
+        href={slug => `/admin/map-pool?queue=${slug}`}
+      />
+      <form action={`/admin/map-pool?queue=${props.queue.slug}`} method="post">
         <div class="admin-panel-set">
           <table class="table-auto max-lg:w-full">
             <thead>
@@ -38,9 +44,6 @@ export async function MapPoolPage() {
             Add map
           </button>
 
-          <p class="mt-2 text-sm">
-            Making changes to the map pool will scramble the maps automatically.
-          </p>
           <p>
             <SaveButton />
           </p>
