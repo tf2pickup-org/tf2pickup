@@ -157,6 +157,9 @@ export interface Events {
   'mumble/userJoined': {
     user: User
   }
+  'mumble/userMoved': {
+    user: User
+  }
   'mumble/certificateConflict': {
     player: SteamId64
     owner: SteamId64

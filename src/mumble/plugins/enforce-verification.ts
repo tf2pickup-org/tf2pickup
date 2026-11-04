@@ -52,6 +52,15 @@ export default fp(
     )
 
     events.on(
+      'game:ended',
+      safe(async ({ game }) => {
+        if (await isVerificationEnabled()) {
+          await syncGameAcl(game)
+        }
+      }),
+    )
+
+    events.on(
       'player:updated',
       safe(async ({ before, after }) => {
         const hash = after.mumbleCertificate?.hash
@@ -110,7 +119,7 @@ async function reconcile() {
   }
 
   const games = await collections.games
-    .find({ state: { $in: liveStates } }, { projection: { number: 1, slots: 1 } })
+    .find({ state: { $in: liveStates } }, { projection: { number: 1, state: 1, slots: 1 } })
     .toArray()
   for (const game of games) {
     await syncGameAcl(game)
@@ -120,7 +129,7 @@ async function reconcile() {
 function occupancy({ slots }: Pick<GameModel, 'slots'>) {
   return slots
     .filter(({ status }) => [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(status))
-    .map(({ player, team }) => `${player}:${team}`)
+    .map(({ player, team, voiceOutgoing }) => `${player}:${team}:${voiceOutgoing?.join('+')}`)
     .sort()
     .join()
 }

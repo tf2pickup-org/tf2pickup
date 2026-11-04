@@ -66,6 +66,11 @@ export async function tryConnect() {
         events.emit('mumble/userJoined', { user })
       }
     })
+    localClient.on('userUpdate', (user, changes) => {
+      if (synced && changes.channelId) {
+        events.emit('mumble/userMoved', { user })
+      }
+    })
     let attempt = 0
     let reconnecting = false
     localClient.on('error', async (error: unknown) => {
