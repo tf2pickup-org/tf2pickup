@@ -23,6 +23,7 @@ describe('update()', () => {
     vi.clearAllMocks()
     vi.mocked(get).mockResolvedValue({
       slug: 'auto-6v6',
+      gamemode: '6v6',
       skillThreshold: null,
       requireVerification: false,
     } as never)
@@ -52,5 +53,17 @@ describe('update()', () => {
   it('rejects invalid settings', async () => {
     await expect(update(queue, { readyUpTimeout: -1 }, actor)).rejects.toThrow()
     expect(collections.queues.updateOne).not.toHaveBeenCalled()
+  })
+
+  it('rejects a skill threshold for a gamemode that is not auto-balanced', async () => {
+    vi.mocked(get).mockResolvedValue({ slug: 'duo', gamemode: 'ultiduo' } as never)
+
+    await expect(update(queue, { skillThreshold: 1 }, actor)).rejects.toThrow(
+      'ultiduo queues have no skill threshold',
+    )
+    expect(collections.queues.updateOne).not.toHaveBeenCalled()
+
+    await update(queue, { skillThreshold: null }, actor)
+    expect(collections.queues.updateOne).toHaveBeenCalled()
   })
 })

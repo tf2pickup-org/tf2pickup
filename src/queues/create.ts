@@ -6,6 +6,7 @@ import type { MapPoolEntry } from '../database/models/map-pool-entry.model'
 import { createQueueSchema, type QueueId, type QueueModel } from '../database/models/queue.model'
 import { errors } from '../errors'
 import { events } from '../events'
+import { assertSkillThresholdAllowed } from './assert-skill-threshold-allowed'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
 /**
@@ -18,6 +19,7 @@ export async function create(
   actor: SteamId64,
 ): Promise<QueueModel> {
   const parsed = createQueueSchema.parse(input)
+  assertSkillThresholdAllowed(parsed.gamemode, parsed.skillThreshold)
   if (await collections.queues.countDocuments({ slug: parsed.slug })) {
     throw errors.conflict(`queue ${parsed.slug} already exists`)
   }
