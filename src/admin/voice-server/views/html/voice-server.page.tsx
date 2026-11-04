@@ -3,6 +3,7 @@ import { VoiceServerType } from '../../../../shared/types/voice-server-type'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 import { MumbleClientStatus } from './mumble-client-status'
+import { Switch } from '../../../../html/components/switch'
 
 export async function VoiceServerPage() {
   const type = await configuration.get('games.voice_server_type')
@@ -14,6 +15,7 @@ export async function VoiceServerPage() {
     mumblePassword,
     mumbleChannelName,
     mumbleUsername,
+    mumblePlayerVerification,
   ] = await Promise.all([
     configuration.get('games.voice_server.mumble.url'),
     configuration.get('games.voice_server.mumble.internal_url'),
@@ -21,11 +23,12 @@ export async function VoiceServerPage() {
     configuration.get('games.voice_server.mumble.password'),
     configuration.get('games.voice_server.mumble.channel_name'),
     configuration.get('games.voice_server.mumble.username'),
+    configuration.get('games.voice_server.mumble.player_verification'),
   ])
 
   return (
     <Admin activePage="voice-server">
-      <form action="" method="post" id="voiceServerForm">
+      <form action="" method="post" id="voiceServerForm" class="group/voice-server">
         <div class="admin-panel-set">
           <div class="form-checkbox">
             <input
@@ -183,6 +186,31 @@ export async function VoiceServerPage() {
                 </p>
               </dd>
             </dl>
+
+            <div class="group my-4 flex flex-row items-center justify-between">
+              <dl>
+                <dt>
+                  <label class="font-medium" for="mumble-player-verification">
+                    Verify players automatically
+                  </label>
+                </dt>
+                <dd class="text-abru-light-75">
+                  <span class="hidden group-has-checked:inline-block">
+                    Only a game's players can join its channels. Players are recognized by their
+                    Mumble certificate.
+                  </span>
+                  <span class="group-has-checked:hidden">
+                    The bot only creates the channels. Who can join them is up to the Mumble
+                    server's own permissions.
+                  </span>
+                </dd>
+              </dl>
+              <Switch
+                id="mumble-player-verification"
+                name="mumblePlayerVerification"
+                checked={mumblePlayerVerification}
+              />
+            </div>
 
             <MumbleClientStatus />
           </fieldset>

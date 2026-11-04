@@ -69,6 +69,7 @@ const values: Record<string, unknown> = {
   'games.logs_tf_upload_method': 'backend',
   'games.hide_server_info_from_spectators': 'auto',
   'games.voice_server_type': 'mumble',
+  'games.voice_server.mumble.player_verification': true,
   'games.auto_force_end_threshold': 4,
   'players.etf2l_account_required': false,
   'players.minimum_in_game_hours': 0,
@@ -105,6 +106,7 @@ describe('buildSnapshot', () => {
     const snapshot = await buildSnapshot()
     expect(snapshot.features['games.skill_suggestions']).toBe(true)
     expect(snapshot.features['games.voice_server_type']).toBe('mumble')
+    expect(snapshot.features['games.voice_server.mumble.player_verification']).toBe(true)
     expect(snapshot.features['queue.player_skill_threshold']).toBeNull()
     expect(snapshot.features['serveme_tf.preferred_region']).toBe('eu')
   })

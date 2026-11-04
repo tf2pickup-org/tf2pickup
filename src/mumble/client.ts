@@ -127,11 +127,6 @@ async function afterConnect(c: Client) {
 
   await c.self.setSelfDeaf(true)
   await moveToTargetChannel(c)
-
-  const permissions = await c.self.channel.getPermissions()
-  if (!permissions.canCreateChannel) {
-    logger.warn(`bot ${c.self.name} does not have permissions to create new channels`)
-  }
   setStatus(MumbleClientStatus.connected)
 }
 
