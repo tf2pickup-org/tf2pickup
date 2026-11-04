@@ -58,41 +58,41 @@ test('pre-ready up readies up when the queue is ready @6v6 @9v9', async ({
   const preReadiedPlayers = players.slice(0, -1)
   const lastPlayer = players[players.length - 1]!
 
-  await Promise.all(
-    preReadiedPlayers.map(async user => {
-      const page = await user.queuePage()
+  try {
+    await Promise.all(
+      preReadiedPlayers.map(async user => {
+        const page = await user.queuePage()
+        await page.goto()
+        const slot = desiredSlots.get(user.playerName)!
+        await page.slot(slot).join()
+        await page.preReadyUp()
+      }),
+    )
+
+    {
+      const page = await lastPlayer.queuePage()
       await page.goto()
-      const slot = desiredSlots.get(user.playerName)!
+      const slot = desiredSlots.get(lastPlayer.playerName)!
       await page.slot(slot).join()
-      await page.preReadyUp()
-    }),
-  )
+    }
 
-  {
-    const page = await lastPlayer.queuePage()
-    await page.goto()
-    const slot = desiredSlots.get(lastPlayer.playerName)!
-    await page.slot(slot).join()
-  }
-
-  await Promise.all(
-    players.map(async user => {
-      const page = await user.page()
-      await page.waitForURL(/games\/(\d+)/)
-    }),
-  )
-
-  {
-    const page = await users.byName('Promenader').page()
-    const matches = /games\/(\d+)/.exec(page.url())
-    if (matches) {
-      const gameNumber = Number(matches[1])
-      // kill the game
-      const adminPage = await users.getAdmin().gamePage(gameNumber)
-      await adminPage.goto()
-      await adminPage.forceEnd()
-    } else {
-      throw new Error('could not launch game')
+    await Promise.all(
+      players.map(async user => {
+        const page = await user.page()
+        await page.waitForURL(/games\/(\d+)/)
+      }),
+    )
+  } finally {
+    for (const user of players) {
+      const matches = /games\/(\d+)/.exec((await user.page()).url())
+      if (matches) {
+        const gamePage = await users.getAdmin().gamePage(Number(matches[1]))
+        await gamePage.goto()
+        if (await gamePage.isLive()) {
+          await gamePage.forceEnd()
+        }
+        break
+      }
     }
   }
 })
