@@ -1,4 +1,5 @@
 import type { PlayerSkill } from '../../database/models/player.model'
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 export interface ChangedPlayer {
@@ -23,6 +24,7 @@ export interface FuturePlayer {
 }
 
 export interface ImportAnalysis {
+  gamemode: Gamemode
   changedPlayers: ChangedPlayer[]
   initializedPlayers: InitializedPlayer[]
   unaffectedCount: number
