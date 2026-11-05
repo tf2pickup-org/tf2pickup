@@ -25,7 +25,7 @@
     "@fastify/helmet": "13.2.0",
     "@fastify/multipart": "10.1.7",
     "@fastify/otel": "0.21.4",
-    "@fastify/rate-limit": "11.2.1",
+    "@fastify/rate-limit": "11.2.2",
     "@fastify/request-context": "7.0.5",
     "@fastify/secure-session": "8.4.2",
     "@fastify/sensible": "6.0.7",
