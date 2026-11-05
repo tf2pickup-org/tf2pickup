@@ -27,7 +27,7 @@
     "@fastify/otel": "0.21.4",
     "@fastify/rate-limit": "11.2.1",
     "@fastify/request-context": "7.0.5",
-    "@fastify/secure-session": "8.4.1",
+    "@fastify/secure-session": "8.4.2",
     "@fastify/sensible": "6.0.7",
     "@fastify/static": "10.1.8",
     "@fastify/websocket": "11.3.6",
