@@ -30,6 +30,7 @@ logger.info(`starting tf2pickup.org ${version}`)
 if (!environment.CI) {
   await app.register(await import('@fastify/rate-limit'), {
     keyGenerator: req => realIp(req),
+    allowList: (_req, key) => environment.RATE_LIMIT_ALLOW_LIST.includes(key),
   })
 }
 
