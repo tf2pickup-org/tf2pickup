@@ -14,6 +14,7 @@ import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http'
 import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs'
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http'
 import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici'
+import { redactUrl } from './utils/redact-url'
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
@@ -29,11 +30,12 @@ const sdk = new NodeSDK({
   logRecordProcessors: [new BatchLogRecordProcessor({ exporter: new OTLPLogExporter() })],
   instrumentations: [
     new RuntimeNodeInstrumentation(),
-    new HttpInstrumentation(),
+    new HttpInstrumentation({ redactedQueryParamsServer: ['secret'] }),
     new FastifyOtel({
       registerOnInitialization: true,
       requestHook: (span, request) => {
         span.updateName(`${request.method} ${request.routeOptions.url}`)
+        span.setAttribute('url.path', redactUrl(request.url))
       },
     }),
     new MongoDBInstrumentation(),
