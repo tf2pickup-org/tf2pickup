@@ -8,3 +8,7 @@ node_modules
 eslint.config.js
 playwright.config.ts
 *.md
+.env
+.env.*
+!.env.example
+tests/.auth
