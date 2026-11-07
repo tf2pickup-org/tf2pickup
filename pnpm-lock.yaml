@@ -215,8 +215,8 @@ importers:
         specifier: 6.0.7
         version: 6.0.7
       '@fastify/static':
-        specifier: 10.1.8
-        version: 10.1.8
+        specifier: 10.1.10
+        version: 10.1.10
       '@fastify/websocket':
         specifier: 11.3.6
         version: 11.3.6
@@ -1023,8 +1023,8 @@ packages:
   '@fastify/sensible@6.0.7':
     resolution: {integrity: sha512-e4+bJEcAPGdKsIljulWtEKeECuYGLkVTB1dgWh19m2u4ttETS/5EWZhw6KPXlgi6ZiSet5IqYrcMRMrRub0Hrg==}
 
-  '@fastify/static@10.1.8':
-    resolution: {integrity: sha512-3CbgWOXJX8f46xxsuOgQl9h0lyQQiABMG40kxRF5PWJk4LyBW5m3mLZoW5glnm2TUTC1gVFCBnqOt5S6zIIIrg==}
+  '@fastify/static@10.1.10':
+    resolution: {integrity: sha512-CGwOoZiKg5m4SAqeiS8bzCSKDa71DMFQ7QeVsuWBOrfFu32DpVZWFFb0cpEg7e54YK6HZZsl4g/wfoKMnRQMUw==}
 
   '@fastify/swagger@9.5.1':
     resolution: {integrity: sha512-EGjYLA7vDmCPK7XViAYMF6y4+K3XUy5soVTVxsyXolNe/Svb4nFQxvtuQvvoQb2Gzc9pxiF3+ZQN/iZDHhKtTg==}
@@ -3272,10 +3272,6 @@ packages:
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
-  glob@13.0.3:
-    resolution: {integrity: sha512-/g3B0mC+4x724v1TgtBlBtt2hPi/EWptsIAmXUx9Z2rvBYleQcsrmaOzd5LyL50jf/Soi83ZDJmw2+XqvH/EeA==}
-    engines: {node: 20 || >=22}
-
   glob@14.0.3:
     resolution: {integrity: sha512-A1vjIwC3qpdCso45Iw127gnp7sPhqgY8lUQhDrArIs+GbmfaaVPFuoyy7WyLT9EPZCRZ7j7aLdwUhQmHWesEow==}
     engines: {node: 18 || 20 || >=22}
@@ -4121,10 +4117,6 @@ packages:
   path-scurry@1.11.1:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
-
-  path-scurry@2.0.0:
-    resolution: {integrity: sha512-ypGJsmGtdXUOeM5u93TyeIEfEhM6s+ljAhrk5vAvSx8uyY/02OvrZnA0YNGUrPXfpJMgI1ODd3nwz8Npx4O4cg==}
-    engines: {node: 20 || >=22}
 
   path-scurry@3.0.0:
     resolution: {integrity: sha512-1pTbQqH1wIwMi/eleQ5leFTTCkzFsPcgXNjwOA8YGGW/W4/kHT3dssE7Z6NH+zuqNLOzOB0uaD61yl7cAcVhgg==}
@@ -5534,7 +5526,7 @@ snapshots:
       type-is: 2.0.1
       vary: 1.1.2
 
-  '@fastify/static@10.1.8':
+  '@fastify/static@10.1.10':
     dependencies:
       '@fastify/accept-negotiator': 2.0.0
       '@fastify/error': 4.2.0
@@ -5542,7 +5534,7 @@ snapshots:
       content-disposition: 3.0.0
       fastify-plugin: 6.0.1
       fastq: 1.20.1
-      glob: 13.0.3
+      glob: 14.0.3
 
   '@fastify/swagger@9.5.1(supports-color@8.1.1)':
     dependencies:
@@ -8000,12 +7992,6 @@ snapshots:
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
-  glob@13.0.3:
-    dependencies:
-      minimatch: 10.2.6
-      minipass: 7.1.2
-      path-scurry: 2.0.0
-
   glob@14.0.3:
     dependencies:
       minimatch: 11.0.4
@@ -8747,11 +8733,6 @@ snapshots:
   path-scurry@1.11.1:
     dependencies:
       lru-cache: 10.4.3
-      minipass: 7.1.2
-
-  path-scurry@2.0.0:
-    dependencies:
-      lru-cache: 11.0.1
       minipass: 7.1.2
 
   path-scurry@3.0.0:
