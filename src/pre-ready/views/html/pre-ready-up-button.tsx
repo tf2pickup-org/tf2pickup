@@ -32,12 +32,9 @@ export async function PreReadyUpButton(props: {
       <IconCoffee />
       <div class="flex-1">
         {timeLeft > 0 ? (
-          <>
-            <span>Pre-readied</span>{' '}
-            <span class="tabular-nums" data-countdown={timeLeft} safe>
-              {formatTimeout(timeLeft)}
-            </span>
-          </>
+          <span class="tabular-nums" data-countdown={timeLeft} safe>
+            {formatTimeout(timeLeft)}
+          </span>
         ) : (
           <span>Pre-ready up</span>
         )}
