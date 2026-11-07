@@ -25,18 +25,16 @@ export async function PreReadyUpButton(props: {
       ws-send
       hx-trigger="click"
       sync-attr:disabled="#isInQueue.value === false"
-      aria-selected={timeLeft > 0}
+      aria-label="Pre-ready up"
+      aria-pressed={timeLeft > 0 ? 'true' : 'false'}
       data-umami-event={timeLeft > 0 ? 'pre-ready-up-cancel' : 'pre-ready-up'}
     >
       <IconCoffee />
       <div class="flex-1">
         {timeLeft > 0 ? (
-          <>
-            <span class="tabular-nums" data-countdown={timeLeft} safe>
-              {formatTimeout(timeLeft)}
-            </span>
-            <span class="sr-only">Pre-ready up</span>
-          </>
+          <span class="tabular-nums" data-countdown={timeLeft} safe>
+            {formatTimeout(timeLeft)}
+          </span>
         ) : (
           <span>Pre-ready up</span>
         )}

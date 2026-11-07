@@ -145,9 +145,9 @@ export class QueuePage {
   }
 
   async preReadyUp() {
-    await expect(this.preReadyUpButton).not.toHaveAttribute('aria-selected')
+    await expect(this.preReadyUpButton).not.toHaveAttribute('aria-pressed', 'true')
     await this.preReadyUpButton.click({ noWaitAfter: true })
-    await expect(this.preReadyUpButton).toHaveAttribute('aria-selected')
+    await expect(this.preReadyUpButton).toHaveAttribute('aria-pressed', 'true')
   }
 
   async waitToBeEmpty(options?: { timeout?: number }) {
