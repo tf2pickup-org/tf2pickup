@@ -44,9 +44,9 @@ test('pre-ready expires @6v6 @9v9', async ({ users }) => {
   await page.goto()
   await page.joinQueue('soldier-1')
   await page.preReadyUpButton.click()
-  await expect(page.preReadyUpButton).toHaveAttribute('aria-selected')
+  await expect(page.preReadyUpButton).toHaveAttribute('aria-pressed', 'true')
   await expect(page.preReadyUpButton).toContainText(/\d+:\d+/)
-  await expect(page.preReadyUpButton).not.toHaveAttribute('aria-selected', {
+  await expect(page.preReadyUpButton).not.toHaveAttribute('aria-pressed', 'true', {
     timeout: readyUpTimeout + secondsToMilliseconds(2),
   })
   await expect(page.preReadyUpButton).not.toContainText(/\d+:\d+/, {
@@ -124,12 +124,12 @@ test('pre-ready up enables automatically after readying up @6v6 @9v9', async ({
   const page = await polemic.queuePage()
   await page.goto()
   await page.slot(desiredSlots.get('Polemic')!).join()
-  await expect(page.preReadyUpButton).toHaveAttribute('aria-selected')
+  await expect(page.preReadyUpButton).toHaveAttribute('aria-pressed', 'true')
 
   {
     const page = await shadowhunter.queuePage()
     await page.readyUpDialog().readyUp()
-    await expect(page.preReadyUpButton).toHaveAttribute('aria-selected')
+    await expect(page.preReadyUpButton).toHaveAttribute('aria-pressed', 'true')
   }
 })
 

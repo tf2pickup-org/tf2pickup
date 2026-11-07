@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { minutesToMilliseconds } from 'date-fns'
 
 vi.mock('../../../players', () => ({
   players: {
@@ -29,5 +30,23 @@ describe('PreReadyUpButton', () => {
     await PreReadyUpButton({ actor })
 
     expect(players.bySteamId).toHaveBeenCalledWith(actor, ['preReadyUntil'])
+  })
+
+  it('is pressed and says so while pre-readied', async () => {
+    const html = await PreReadyUpButton({
+      actor,
+      preReadyUntil: new Date(Date.now() + minutesToMilliseconds(1)),
+    })
+
+    expect(html).toContain('aria-pressed="true"')
+    expect(html).toContain('Pre-readied')
+    expect(html).not.toContain('aria-selected')
+  })
+
+  it('is not pressed otherwise', async () => {
+    const html = await PreReadyUpButton({ actor, preReadyUntil: undefined })
+
+    expect(html).toContain('aria-pressed="false"')
+    expect(html).not.toContain('Pre-readied')
   })
 })
