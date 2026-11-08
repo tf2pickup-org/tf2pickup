@@ -1,5 +1,26 @@
 # Changelog
 
+## [4.25.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.0...4.25.1) (2026-11-08)
+
+### Bug Fixes
+
+* **pre-ready:** announce the pre-readied state ([#940](https://github.com/tf2pickup-org/tf2pickup/issues/940)) ([479f336](https://github.com/tf2pickup-org/tf2pickup/commit/479f3366a564dda283c063041646398cc2fb0015))
+* **queue:** send queue slot updates only to the queue page ([#941](https://github.com/tf2pickup-org/tf2pickup/issues/941)) ([d0d73e2](https://github.com/tf2pickup-org/tf2pickup/commit/d0d73e2f4a956dd44649459b735de241407888c3))
+
+### Dependencies
+
+* @fastify/multipart to v10.1.7 ([18326a3](https://github.com/tf2pickup-org/tf2pickup/commit/18326a3eb852384b736af225532a4fbd7a223abd))
+* @fastify/rate-limit to v11.2.2 ([451a281](https://github.com/tf2pickup-org/tf2pickup/commit/451a281bc07b7cd6c86a2d6782486a3426bd5a60))
+* @fastify/secure-session to v8.4.2 ([78fe415](https://github.com/tf2pickup-org/tf2pickup/commit/78fe415b3b6c7eb2a387d1e89aa92d4d9df98faa))
+* @fastify/static to v10.1.10 ([2f9dff4](https://github.com/tf2pickup-org/tf2pickup/commit/2f9dff4aabb3f1f346b2283dea968b4a4f18c30c))
+* @fastify/websocket to v11.3.7 ([5e26287](https://github.com/tf2pickup-org/tf2pickup/commit/5e2628752db6aa57d1aaf265b2207f41201cc1b0))
+* @napi-rs/canvas to v1.1.0 ([f6a9ee8](https://github.com/tf2pickup-org/tf2pickup/commit/f6a9ee8c0b7128955235ffe9e646509d877d5eef))
+* fastify to v5.12.8 ([3f22810](https://github.com/tf2pickup-org/tf2pickup/commit/3f22810475085ee27e06f64a58481b15faa11de9))
+* marked to v18.1.3 ([4de0c47](https://github.com/tf2pickup-org/tf2pickup/commit/4de0c47dc63004716f4fa595d56005d071c1b92f))
+* motion to v14.9.0 ([fa86d05](https://github.com/tf2pickup-org/tf2pickup/commit/fa86d05b153f129295face5692b286fdddfc8b00))
+* motion to v14.9.1 ([4a2ff1e](https://github.com/tf2pickup-org/tf2pickup/commit/4a2ff1e0eeeea9946d8d995e348a5855246deea4))
+* tailwindcss monorepo to v4.3.4 ([285022a](https://github.com/tf2pickup-org/tf2pickup/commit/285022a07b56e254870361a3e8bb9f3d1d7117d7))
+
 # [4.25.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.24.1...4.25.0) (2026-11-04)
 
 ### Features
