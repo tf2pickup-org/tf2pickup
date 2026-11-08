@@ -175,6 +175,17 @@ describe('sync-clients', () => {
     })
   })
 
+  describe('queue/slots:updated', () => {
+    it('sends updates only to clients on the queue page', async () => {
+      const handler = getHandler<{ slots: unknown[] }>('queue/slots:updated')
+
+      await handler({ slots: [] })
+
+      expect(app.gateway.broadcast).not.toHaveBeenCalled()
+      expect(app.gateway.to).toHaveBeenCalledWith({ url: '/' })
+    })
+  })
+
   describe('syncQueuePage', () => {
     function getReadyHandler(): (socket: unknown) => Promise<void> {
       const call = vi

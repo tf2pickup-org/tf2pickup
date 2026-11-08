@@ -151,20 +151,20 @@ export default fp(
           .map(c => c.player?.steamId)
           .filter((id): id is SteamId64 => id !== undefined)
 
-        const [playerCount, actorMap] = await Promise.all([
+        const [playerCount, title, actorMap] = await Promise.all([
           CurrentPlayerCount(),
+          SetTitle(),
           fetchActorMap(connectedPlayers),
         ])
 
-        app.gateway.broadcast(player => {
+        app.gateway.to({ url: '/' }).send(player => {
           const actor = player ? actorMap.get(player) : undefined
           return Promise.all(slots.map(slot => QueueSlot({ slot, actor }))).then(items => [
             ...items,
             playerCount,
+            title,
           ])
         })
-
-        app.gateway.broadcast(() => SetTitle())
       }),
     )
 
