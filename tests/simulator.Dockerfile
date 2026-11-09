@@ -1,6 +1,6 @@
-# The AI playground's game server simulator (see .github/workflows/ai-playground.yml).
+# The AI playground's game server simulator (built by .github/workflows/build.yml).
 FROM node:24.22.2-slim
-RUN corepack enable && corepack prepare pnpm@11.24.0 --activate
+RUN corepack enable
 WORKDIR /app
 COPY . .
 RUN pnpm install --frozen-lockfile
