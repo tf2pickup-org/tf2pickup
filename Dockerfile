@@ -17,6 +17,8 @@ RUN apt update && apt install -y --no-install-recommends openssl && rm -rf /var/
 COPY package.json /app
 COPY --from=prod-deps /app/node_modules /app/node_modules
 COPY --from=build /app/dist /app/dist
+ARG GIT_COMMIT
+ENV GIT_COMMIT=${GIT_COMMIT}
 USER node
 ENV NODE_ENV=production
 ENV APP_HOST=0.0.0.0

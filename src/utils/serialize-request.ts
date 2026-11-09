@@ -1,5 +1,6 @@
 import type { FastifyRequest } from 'fastify'
 import { realIp } from './real-ip'
+import { redactUrl } from './redact-url'
 
 // Extends Fastify's default request log serializer with the real client IP
 // (resolved the same way as the rate-limit keyGenerator) and the User-Agent,
@@ -7,7 +8,7 @@ import { realIp } from './real-ip'
 export function serializeRequest(req: FastifyRequest) {
   return {
     method: req.method,
-    url: req.url,
+    url: redactUrl(req.url),
     host: req.host,
     remoteAddress: req.ip,
     remotePort: req.socket.remotePort,
