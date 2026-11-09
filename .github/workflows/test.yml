@@ -67,7 +67,7 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=semver,pattern=stable,enable=${{ !contains(github.event.push.ref, 'alpha') && !contains(github.event.push.ref, 'beta') && !contains(github.event.push.ref, 'rc') }}
+            type=semver,pattern=stable,enable=${{ !contains(github.ref, 'alpha') && !contains(github.ref, 'beta') && !contains(github.ref, 'rc') }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v4.4.1
