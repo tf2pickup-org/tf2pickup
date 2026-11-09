@@ -181,6 +181,14 @@ export class GameServerSimulator {
               response.id = packet.id
               response.body = packet.body
               socket.write(response.toBuffer())
+            } else if (/^sm_game_player_del \d{17}$/.test(packet.body)) {
+              const [, steamId64] = /^sm_game_player_del (\d{17})$/.exec(packet.body) ?? []
+              this.addedPlayers = this.addedPlayers.filter(player => player.steamId64 !== steamId64)
+              const response = new RconPacket()
+              response.type = RconPacketType.SERVERDATA_RESPONSE_VALUE
+              response.id = packet.id
+              response.body = packet.body
+              socket.write(response.toBuffer())
             } else if (/^sm_game_player_delall$/.test(packet.body)) {
               this.addedPlayers = []
               const response = new RconPacket()

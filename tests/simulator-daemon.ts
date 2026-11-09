@@ -6,7 +6,14 @@
 //   POST /servers/:n/autoplay         body {"enabled": boolean}
 //   POST /servers/:n/:action          body: JSON array of the action's arguments, e.g.
 //                                     ["playerName"] for playerConnects, ["blu"] for roundEnds
+//
+// With CONTROL_TOKEN set, every request needs an "Authorization: Bearer <token>" header.
+//
+// MANUAL_PLAYERS (steamIds, comma-separated) are left to connect on their own through the API, the
+// way a real player joins the server: autoplay connects everyone else and starts the match once
+// each of them has connected or been substituted.
 import { createServer, type IncomingMessage } from 'node:http'
+import { timingSafeEqual } from 'node:crypto'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { delay } from 'es-toolkit'
 import { GameServerSimulator } from './game-server-simulator'
@@ -31,6 +38,17 @@ const controlHost = process.env['CONTROL_HOST'] ?? '127.0.0.1'
 const controlPort = Number(process.env['CONTROL_PORT'] ?? 8080)
 const roundLength = secondsToMilliseconds(Number(process.env['AUTOPLAY_ROUND_SECONDS'] ?? 30))
 const winLimit = Number(process.env['AUTOPLAY_WIN_LIMIT'] ?? 3)
+const manualPlayers = process.env['MANUAL_PLAYERS']?.split(',').filter(Boolean) ?? []
+const controlToken = process.env['CONTROL_TOKEN']
+
+function authorized(request: IncomingMessage) {
+  if (!controlToken) {
+    return true
+  }
+  const expected = Buffer.from(`Bearer ${controlToken}`)
+  const actual = Buffer.from(request.headers.authorization ?? '')
+  return actual.length === expected.length && timingSafeEqual(actual, expected)
+}
 
 const actions = [
   'connectAllPlayers',
@@ -90,7 +108,22 @@ async function play(slot: Slot) {
     return
   }
 
-  await simulator.connectAllPlayers()
+  const connectBots = async () => {
+    for (const player of simulator.addedPlayers.filter(
+      player => !player.connected && !manualPlayers.includes(player.steamId64),
+    )) {
+      await simulator.playerConnects(player.name)
+      await simulator.playerJoinsTeam(player.name)
+    }
+  }
+  // substitutes are bots too, so this also connects whoever replaced a player who never showed up
+  while (simulator.addedPlayers.some(player => !player.connected)) {
+    await connectBots()
+    await delay(secondsToMilliseconds(5))
+    if (interrupted()) {
+      return
+    }
+  }
   await simulator.matchStarts()
   const score = { blu: 0, red: 0 }
   while (score.blu < winLimit && score.red < winLimit) {
@@ -99,10 +132,7 @@ async function play(slot: Slot) {
       return
     }
 
-    for (const player of simulator.addedPlayers.filter(player => !player.connected)) {
-      await simulator.playerConnects(player.name)
-      await simulator.playerJoinsTeam(player.name)
-    }
+    await connectBots()
 
     const winner = Math.random() < 0.5 ? 'blu' : 'red'
     score[winner] += 1
@@ -139,6 +169,10 @@ createServer((request, response) => {
   }
 
   const run = async () => {
+    if (!authorized(request)) {
+      reply(401)
+      return
+    }
     const path = new URL(request.url ?? '/', 'http://localhost').pathname
     if (request.method === 'GET' && path === '/servers') {
       reply(
@@ -148,12 +182,15 @@ createServer((request, response) => {
           port: simulator.port,
           autoplay,
           playing,
-          players: simulator.addedPlayers.map(({ name, team, gameClass, connected }) => ({
-            name,
-            team,
-            gameClass,
-            connected,
-          })),
+          players: simulator.addedPlayers.map(
+            ({ steamId64, name, team, gameClass, connected }) => ({
+              steamId64,
+              name,
+              team,
+              gameClass,
+              connected,
+            }),
+          ),
         })),
       )
       return
