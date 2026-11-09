@@ -48,7 +48,7 @@ export function NavigationBar() {
 
         <div
           id="nav-menu"
-          class="max-lg:bg-abru/85 hidden flex-row items-center gap-5 font-medium max-lg:fixed max-lg:inset-x-0 max-lg:top-16 max-lg:bottom-0 max-lg:z-40 max-lg:flex-col max-lg:items-stretch max-lg:overflow-y-auto max-lg:py-4 lg:ml-auto lg:flex"
+          class="max-lg:bg-abru hidden flex-row items-center gap-5 font-medium max-lg:fixed max-lg:inset-x-0 max-lg:top-16 max-lg:bottom-0 max-lg:z-40 max-lg:flex-col max-lg:items-stretch max-lg:overflow-y-auto max-lg:py-4 lg:ml-auto lg:flex"
         >
           <Menu />
         </div>
@@ -91,7 +91,7 @@ export function NavigationBar() {
             button.setAttribute('aria-expanded', String(!open));
             openIcon.classList.toggle('hidden', !open);
             closeIcon.classList.toggle('hidden', open);
-            nav.classList.toggle('max-lg:bg-abru/85', !open);
+            nav.classList.toggle('max-lg:bg-abru', !open);
           });
         }
       `}</script>
