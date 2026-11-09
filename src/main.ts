@@ -31,9 +31,17 @@ logger.info(`starting tf2pickup.org ${version}`)
 if (!environment.CI) {
   await app.register(await import('@fastify/rate-limit'), {
     keyGenerator: req => realIp(req),
-    // the AI playground's bots and agents carry the test auth secret in a cookie
-    allowList: req =>
-      isTestAuthSecret(req.headers.cookie?.match(/(?:^|;\s*)test-auth-secret=([^;]*)/)?.[1]),
+    // /auth/test hands the AI playground's bots and agents a cookie with the test auth secret
+    allowList: environment.TEST_AUTH_SECRET
+      ? req => {
+          const value = req.headers.cookie?.match(/(?:^|;\s*)test-auth-secret=([^;]*)/)?.[1]
+          try {
+            return isTestAuthSecret(value && decodeURIComponent(value))
+          } catch {
+            return false
+          }
+        }
+      : [],
   })
 }
 

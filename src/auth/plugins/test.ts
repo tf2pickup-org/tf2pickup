@@ -5,6 +5,7 @@ import { environment } from '../../environment'
 import { logger } from '../../logger'
 import { isTestAuthSecret } from '../is-test-auth-secret'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import { secondsInWeek } from 'date-fns/constants'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -33,6 +34,16 @@ export default fp(
         }
 
         request.session.set('steamId', request.query.steamId)
+        if (environment.TEST_AUTH_SECRET !== undefined) {
+          // exempts the client from the rate limit
+          reply.setCookie('test-auth-secret', environment.TEST_AUTH_SECRET, {
+            path: '/',
+            maxAge: secondsInWeek,
+            httpOnly: true,
+            sameSite: 'strict',
+            secure: environment.NODE_ENV === 'production',
+          })
+        }
         return await reply.redirect(environment.WEBSITE_URL, 302)
       },
     )
