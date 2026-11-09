@@ -21,14 +21,17 @@ const secret = 'a'.repeat(32)
 describe('GET /auth/test', () => {
   let app: ReturnType<typeof fastify>
   const sessionSet = vi.fn()
+  const setCookie = vi.fn()
 
   beforeEach(async () => {
     sessionSet.mockClear()
+    setCookie.mockClear()
     app = fastify()
     app.setValidatorCompiler(validatorCompiler)
     app.decorateRequest('session', {
       getter: () => ({ set: sessionSet }),
     })
+    app.decorateReply('setCookie', setCookie)
     await app.register((await import('./test')).default)
     await app.ready()
   })
@@ -57,6 +60,15 @@ describe('GET /auth/test', () => {
       })
       expect(response.statusCode).toBe(302)
       expect(sessionSet).toHaveBeenCalledWith('steamId', steamId)
+    })
+
+    it('hands out the rate limit exemption cookie', async () => {
+      await app.inject({ method: 'GET', url: '/auth/test', query: { steamId, secret } })
+      expect(setCookie).toHaveBeenCalledWith(
+        'test-auth-secret',
+        secret,
+        expect.objectContaining({ httpOnly: true }),
+      )
     })
 
     it.each([undefined, 'wrong', secret.slice(1)])('rejects secret=%s', async given => {

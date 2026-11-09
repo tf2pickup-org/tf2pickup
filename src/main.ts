@@ -12,6 +12,7 @@ import { logError } from './utils/log-error'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
+import { isTestAuthSecret } from './auth/is-test-auth-secret'
 
 const app = fastify({
   loggerInstance,
@@ -30,7 +31,17 @@ logger.info(`starting tf2pickup.org ${version}`)
 if (!environment.CI) {
   await app.register(await import('@fastify/rate-limit'), {
     keyGenerator: req => realIp(req),
-    allowList: (_req, key) => environment.RATE_LIMIT_ALLOW_LIST.includes(key),
+    // /auth/test hands the AI playground's bots and agents a cookie with the test auth secret
+    allowList: environment.TEST_AUTH_SECRET
+      ? req => {
+          const value = req.headers.cookie?.match(/(?:^|;\s*)test-auth-secret=([^;]*)/)?.[1]
+          try {
+            return isTestAuthSecret(value && decodeURIComponent(value))
+          } catch {
+            return false
+          }
+        }
+      : [],
   })
 }
 
