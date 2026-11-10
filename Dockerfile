@@ -1,7 +1,7 @@
-FROM node:24.22.2-slim AS base
+FROM node:26.13.0-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@11.24.0 --activate
+RUN npm install -g pnpm@12.18.0
 COPY . /app
 WORKDIR /app
 
