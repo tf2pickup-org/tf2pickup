@@ -7,6 +7,7 @@ export async function up() {
     {
       $pull: {
         slots: {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
           status: 'replaced' as SlotStatus,
         },
       },

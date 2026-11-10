@@ -4,6 +4,7 @@ import type {
   ActivityLogEntryType,
 } from '../../../../database/models/activity-log-entry.model'
 import type { PlayerSkill } from '../../../../database/models/player.model'
+import { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
 import { Pagination, paginate } from '../../../../html/components/pagination'
 import { isDeletedUser, type SteamId64 } from '../../../../shared/types/steam-id-64'
 import { activityLog } from '../../../../activity-log'
@@ -369,11 +370,10 @@ function Details(props: { log: ActivityLogEntryModel; playerNames: Map<SteamId64
 }
 
 function computeSkillDiff(oldSkill: PlayerSkill, newSkill: PlayerSkill): string {
-  const allKeys = new Set([...Object.keys(oldSkill), ...Object.keys(newSkill)])
   const parts: string[] = []
-  for (const key of allKeys) {
-    const oldVal = oldSkill[key as keyof PlayerSkill]
-    const newVal = newSkill[key as keyof PlayerSkill]
+  for (const key of Object.values(Tf2ClassName)) {
+    const oldVal = oldSkill[key]
+    const newVal = newSkill[key]
     if (oldVal !== newVal) {
       parts.push(`${key}: ${oldVal ?? '—'} → ${newVal ?? '—'}`)
     }

@@ -4,14 +4,10 @@ export type { ImportAnalysis } from './types'
 import { collections } from '../../database/collections'
 import type { PlayerModel, PlayerSkill } from '../../database/models/player.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
 function skillsEqual(a: PlayerSkill | undefined, b: PlayerSkill): boolean {
-  const aKeys = Object.keys(a ?? {}).filter(k => a?.[k as keyof PlayerSkill] !== undefined)
-  const bKeys = Object.keys(b).filter(k => b[k as keyof PlayerSkill] !== undefined)
-
-  if (aKeys.length !== bKeys.length) return false
-
-  return aKeys.every(k => a![k as keyof PlayerSkill] === b[k as keyof PlayerSkill])
+  return Object.values(Tf2ClassName).every(k => a?.[k] === b[k])
 }
 
 function makeProfileUrl(steamId: SteamId64): string {

@@ -22,6 +22,7 @@ interface GameEvent {
 }
 
 // converts 'Red' and 'Blue' to valid team names
+// eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
 const fixTeamName = (teamName: string): Tf2Team => teamName.toLowerCase().substring(0, 3) as Tf2Team
 
 // the last Round_Start line seen per game (cleared when a round ends with a

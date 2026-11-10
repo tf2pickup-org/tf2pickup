@@ -4,5 +4,6 @@ import { collections } from '../database/collections'
 import type { PlayerRole } from '../database/models/player.model'
 
 export async function up() {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
   await collections.players.deleteOne({ roles: 'bot' as PlayerRole })
 }

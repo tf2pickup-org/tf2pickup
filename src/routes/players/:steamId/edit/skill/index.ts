@@ -68,12 +68,9 @@ export default routes(async app => {
         'skillHistory',
       ])
       const oldSkill = player.skill ?? {}
-      const skill = Object.entries(request.body)
-        .filter(([key]) => key.startsWith('skill.'))
-        .reduce<Partial<Record<Tf2ClassName, number>>>(
-          (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
-          {},
-        )
+      const skill = Object.fromEntries(
+        queue.config.classes.map(({ name }) => [name, request.body[`skill.${name}`]]),
+      )
       await players.setSkill({
         steamId: player.steamId,
         skill,

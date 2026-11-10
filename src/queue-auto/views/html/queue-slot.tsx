@@ -114,7 +114,12 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
     slotActionButton = <MarkAsFriendButton {...props} />
   }
 
-  const skillEntries = isAdmin && skill ? Object.entries(skill) : []
+  const skillEntries =
+    isAdmin && skill
+      ? Object.values(Tf2ClassName).flatMap(c =>
+          skill[c] === undefined ? [] : [[c, skill[c]] as const],
+        )
+      : []
 
   return (
     <div class="player-info" data-player-ready={`${props.slot.ready}`}>
@@ -145,7 +150,7 @@ async function PlayerInfo(props: { slot: QueueSlotModel; actor?: Actor }) {
               ? 'No skill assigned'
               : skillEntries.map(([className, value], index) => (
                   <>
-                    <GameClassIcon gameClass={className as Tf2ClassName} size={16} /> {value}
+                    <GameClassIcon gameClass={className} size={16} /> {value}
                     {index < skillEntries.length - 1 && <br />}
                   </>
                 ))}

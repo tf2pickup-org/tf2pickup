@@ -1,6 +1,7 @@
 import type { ImportAnalysis } from '../../types'
 import { Admin } from '../../../views/html/admin'
 import type { PlayerSkill } from '../../../../database/models/player.model'
+import type { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
 import { config } from '../../../../queue-auto/config'
 
 interface PreviewPageProps {
@@ -152,7 +153,7 @@ interface PlayerTableRow {
 
 interface PlayerSkillTableProps {
   players: PlayerTableRow[]
-  classNames: string[]
+  classNames: Tf2ClassName[]
   showOldSkill: boolean
 }
 
@@ -163,7 +164,7 @@ function PlayerSkillTable({ players, classNames, showOldSkill }: PlayerSkillTabl
         <tr class="border-abru-dark-29 border-b">
           <th class="p-2 text-left">Player</th>
           {classNames.map(c => (
-            <th class="p-2 text-center capitalize">{c as 'safe'}</th>
+            <th class="p-2 text-center capitalize">{c}</th>
           ))}
         </tr>
       </thead>
@@ -176,8 +177,8 @@ function PlayerSkillTable({ players, classNames, showOldSkill }: PlayerSkillTabl
               </a>
             </td>
             {classNames.map(c => {
-              const oldVal = showOldSkill ? p.oldSkill?.[c as keyof PlayerSkill] : undefined
-              const newVal = p.newSkill[c as keyof PlayerSkill]
+              const oldVal = showOldSkill ? p.oldSkill?.[c] : undefined
+              const newVal = p.newSkill[c]
               const changed = showOldSkill && oldVal !== newVal
 
               return (

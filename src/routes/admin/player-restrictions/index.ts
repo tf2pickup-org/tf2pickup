@@ -65,12 +65,12 @@ export default routes(async app => {
           skillSuggestions,
           skillStep,
         } = request.body
-        const defaultPlayerSkill = Object.entries(request.body)
-          .filter(([key]) => key.startsWith('defaultPlayerSkill.'))
-          .reduce<Partial<Record<Tf2ClassName, number>>>(
-            (acc, [key, value]) => ({ ...acc, [key.split('.')[1] as Tf2ClassName]: value }),
-            {},
-          )
+        const defaultPlayerSkill = Object.fromEntries(
+          queue.config.classes.map(({ name }) => [
+            name,
+            request.body[`defaultPlayerSkill.${name}`],
+          ]),
+        )
 
         const actor = request.user!.player.steamId
         await Promise.all([
