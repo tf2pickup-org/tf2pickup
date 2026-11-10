@@ -244,8 +244,8 @@ async function* compileConfig(game: GameModel, password: string): AsyncGenerator
   const whitelistId = await configuration.get('games.whitelist_id')
   if (whitelistId !== null) {
     if (map?.execConfig) {
-      // Map configs (e.g. etf2l_6v6) set their own tftrue_whitelist_id; TFTrue downloads it
-      // asynchronously and saves it under the *current* id's filename, so changing the id
+      // Map configs (e.g. etf2l_6v6) set their own tftrue_whitelist_id. tf2rue downloads it
+      // asynchronously and writes the response to the *current* id's filename, so changing the id
       // mid-download overwrites custom_whitelist_<ours>.txt with the map config's whitelist.
       // ponytail: fixed wait, poll mp_tournament_whitelist if whitelist.tf gets slower than this
       await delay(secondsToMilliseconds(5))
