@@ -14,9 +14,9 @@ const makeRequest = (overrides: Partial<FastifyRequest> = {}) =>
   }) as unknown as FastifyRequest
 
 describe('serializeRequest', () => {
-  it('captures the real client IP from forwarding headers', () => {
+  it('takes the client IP from req.ip, ignoring spoofable forwarding headers', () => {
     const req = makeRequest({ headers: { 'x-forwarded-for': '198.51.100.9, 172.18.0.1' } })
-    expect(serializeRequest(req).clientIp).toBe('198.51.100.9')
+    expect(serializeRequest(req).clientIp).toBe('203.0.113.7')
   })
 
   it('captures the User-Agent header', () => {

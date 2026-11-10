@@ -4,7 +4,6 @@ import { staticGameServers } from '../../static-game-servers'
 import { routes } from '../../utils/routes'
 import { errors } from '../../errors'
 import { environment } from '../../environment'
-import { realIp } from '../../utils/real-ip'
 
 const gameServerHeartbeatSchema = z.object({
   name: z.string(),
@@ -45,7 +44,7 @@ export default routes(async app => {
         port,
         rconPassword,
         priority: priority,
-        internalIpAddress: internalIpAddress ?? realIp(req),
+        internalIpAddress: internalIpAddress ?? req.ip,
       })
       await reply.status(200).send()
     },

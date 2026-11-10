@@ -1,9 +1,8 @@
 import type { FastifyRequest } from 'fastify'
-import { realIp } from './real-ip'
 import { redactUrl } from './redact-url'
 
-// Extends Fastify's default request log serializer with the real client IP
-// (resolved the same way as the rate-limit keyGenerator) and the User-Agent,
+// Extends Fastify's default request log serializer with the client IP
+// (req.ip, validated against TRUST_PROXY) and the User-Agent,
 // so both land as queryable req.* attributes through the pino → OTel bridge.
 export function serializeRequest(req: FastifyRequest) {
   return {
@@ -12,7 +11,7 @@ export function serializeRequest(req: FastifyRequest) {
     host: req.host,
     remoteAddress: req.ip,
     remotePort: req.socket.remotePort,
-    clientIp: realIp(req),
+    clientIp: req.ip,
     userAgent: req.headers['user-agent'],
   }
 }

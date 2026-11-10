@@ -7,20 +7,22 @@ import { logger, logger as loggerInstance } from './logger'
 import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
-import { realIp } from './utils/real-ip'
+import proxyAddr from '@fastify/proxy-addr'
 import { logError } from './utils/log-error'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 import { isTestAuthSecret } from './auth/is-test-auth-secret'
 
+const trustProxy = proxyAddr.compile(environment.TRUST_PROXY.split(',').map(it => it.trim()))
+
 const app = fastify({
   loggerInstance,
-  trustProxy: environment.TRUST_PROXY,
+  trustProxy,
   // Bind the client IP into the per-request child logger so every request-scoped
   // log line (notably fastify's "request completed") is attributable to an IP.
   childLoggerFactory: (parent, bindings, childLoggerOpts, rawReq) =>
-    parent.child({ ...bindings, 'req.clientIp': realIp(rawReq) }, childLoggerOpts),
+    parent.child({ ...bindings, 'req.clientIp': proxyAddr(rawReq, trustProxy) }, childLoggerOpts),
 })
 
 app.setSerializerCompiler(serializerCompiler)
@@ -30,7 +32,6 @@ logger.info(`starting tf2pickup.org ${version}`)
 
 if (!environment.CI) {
   await app.register(await import('@fastify/rate-limit'), {
-    keyGenerator: req => realIp(req),
     // /auth/test hands the AI playground's bots and agents a cookie with the test auth secret
     allowList: environment.TEST_AUTH_SECRET
       ? req => {
