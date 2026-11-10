@@ -1,35 +1,51 @@
 # tf2pickup.org
 
-Team Fortress 2 pick-up game coordination platform. Full-stack Node.js application using Fastify, MongoDB, server-rendered HTML, and HTMX.
+## Project Overview
+
+tf2pickup.org — a Team Fortress 2 pick-up game coordination platform. Full-stack Node.js app using Fastify, MongoDB, server-rendered HTML with HTMX.
 
 ## Commands
 
-- `pnpm dev` — start the development server with hot reload.
-- `pnpm build` — compile TypeScript, run `tsc-alias`, and copy assets to `dist/`.
-- `pnpm lint` — run Prettier checks and ESLint.
-- `pnpm format` — format with Prettier.
-- `pnpm test` — run Vitest unit tests.
-- `pnpm test -- src/path/to/file.test.ts` — run one test file.
-- `pnpm test:e2e` — run Playwright tests; requires the application and MongoDB.
-- `docker-compose up -d mongo` — start MongoDB for development.
-
-Before starting a development server or MongoDB, check whether one is already running (for example, ports 3000 and 27017) and reuse it.
+- `pnpm dev` — run dev server with hot reload (tsx --watch)
+- `pnpm build` — TypeScript compilation + tsc-alias + asset copy to dist/
+- `pnpm lint` — prettier --check + eslint
+- `pnpm format` — prettier --write
+- `pnpm test` — unit tests (vitest, files in src/)
+- `pnpm test -- src/path/to/file.test.ts` — run a single test file
+- `pnpm test:e2e` — Playwright e2e tests (requires running app + mongo)
+- Docker: `docker-compose up -d mongo` to start MongoDB for development
 
 ## Architecture
 
-- Fastify 5 with the Zod type provider for request validation.
-- Raw MongoDB driver with typed collections in `src/database/collections.ts`; models are in `src/database/models/`.
-- `@kitajs/html` renders type-safe JSX to HTML; HTMX supplies partial-page updates. Detect the `hx-request` header when serving a fragment.
-- Tailwind CSS 4 is processed through PostCSS and embedded at render time.
-- esbuild bundles browser code from `src/html/@client/`.
+### Tech Stack
 
-### Startup and modules
+- **Fastify 5** with Zod type provider for request validation
+- **MongoDB** (no ORM — raw driver with typed collections in `src/database/collections.ts`)
+- **@kitajs/html** for type-safe JSX → HTML server rendering
+- **HTMX** for dynamic partial page updates (detects `hx-request` header for fragment responses)
+- **Tailwind CSS 4** via PostCSS, embedded at render time
+- **esbuild** bundles client-side JS from `src/html/@client/`
 
-`src/main.ts` initializes OpenTelemetry, runs Umzug migrations, registers Fastify plugins, then auto-loads `**/plugins/**`, `**/middleware/**`, and routes in `src/routes/`.
+### Application Startup (`src/main.ts`)
 
-Use the feature-driven structure under `src/`: business logic plus optional `plugins/`, `middleware/`, `views/html/`, and `schemas/` directories. Plugins subscribe to the typed event emitter in `src/events.ts`.
+1. OpenTelemetry init (`src/otel.ts`)
+2. Database migrations via Umzug (`src/migrate.ts`)
+3. Fastify plugin registration (security, session, HTML, websocket)
+4. Auto-load all `**/plugins/**` files, then `**/middleware/**` files, then routes from `src/routes/`
 
-Routes are auto-loaded with directory-name prefixes. Export routes through the `routes()` wrapper from `src/utils/routes.ts`:
+### Module Structure
+
+Feature-driven layout under `src/`. Each module (queue, games, players, admin, etc.) contains:
+
+- Business logic files (e.g., `join.ts`, `leave.ts`)
+- `plugins/` — Fastify plugins auto-loaded at startup (event handlers, hooks)
+- `middleware/` — request middleware auto-loaded at startup
+- `views/html/` — JSX page/component files
+- `schemas/` — Zod validation schemas
+
+### Route Registration
+
+Routes live in `src/routes/` and are auto-loaded by `@fastify/autoload` with directory-name prefixes. Route files export default using the `routes()` wrapper from `src/utils/routes.ts`, which provides the Zod type provider:
 
 ```ts
 export default routes(async app => {
@@ -37,32 +53,54 @@ export default routes(async app => {
 })
 ```
 
-### Database and environment
+### Event System
 
-Add database indexes through `ensureIndexes()` rather than migrations unless specifically asked otherwise. Environment variables are Zod-validated in `src/environment.ts`; consult `sample.env` for `MONGODB_URI`, `STEAM_API_KEY`, `QUEUE_CONFIG`, and `WEBSITE_URL`.
+Typed event emitter in `src/events.ts`. Modules communicate via events (e.g., `game:created`, `queue/slots:updated`, `player:connected`). Plugins subscribe to events.
+
+### Client-Side Code
+
+Browser JS lives in `src/html/@client/`. Files are bundled by esbuild and served via the `serve-bundles` plugin. These files use browser globals and HTMX extensions.
+
+### Database
+
+Collections are exported from `src/database/collections.ts` with TypeScript models in `src/database/models/`. Migrations in `src/migrations/` use Umzug.
+
+- Add new DB indexes via `ensureIndexes()` rather than via migrations, unless explicitly told otherwise.
+
+### Environment
+
+All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for available variables. Key ones: `MONGODB_URI`, `STEAM_API_KEY`, `QUEUE_CONFIG` (6v6/9v9/bball/ultiduo/test), `WEBSITE_URL`.
 
 ### Observability
 
-OpenTelemetry in `src/otel.ts` sends `tf2pickup.*` metrics, logs, and traces to SigNoz. Use the `signoz-query` skill for production investigations. There are three distinct channels:
+OpenTelemetry (`src/otel.ts`) ships metrics (`tf2pickup.*`), logs, and traces to SigNoz at `https://logs.tf2pickup.org` (`SIGNOZ_API_KEY` in `.env`). To query it from the CLI — investigate errors/latency, search logs, or build dashboards/alerts — use the `signoz-query` skill (`.claude/skills/signoz-query/SKILL.md`).
 
-- OTel/SigNoz: operational health, outcomes, and diagnostics.
-- Umami: per-instance in-browser product analytics via `data-umami-event`.
-- tf2pickup telemetry: anonymous cross-instance feature-adoption snapshots in `src/telemetry/build-snapshot.ts`.
-
-Use the framework in `docs/observability.md`. For a new feature, add a snapshot entry for configuration or feature flags, a Umami tag for user-facing interactions, or OTel instrumentation for operational health/outcomes; omit instrumentation when none apply.
+There are three instrumentation channels — **OTel/SigNoz** (operational metrics/logs/traces for instances we host), **Umami** (per-instance, in-browser product analytics, via `data-umami-event` tags), and **tf2pickup telemetry** (anonymous cross-instance feature-adoption snapshot built in `src/telemetry/build-snapshot.ts`). See [docs/observability.md](docs/observability.md) for what belongs in each and a decision framework.
 
 ## Conventions
 
-- Keep one export per file and match its name to the hyphenated filename (`foo-bar.ts` exports `fooBar`).
-- Use conventional commits.
-- Use date-fns duration helpers rather than raw time values.
-- Use camelCase for all constants; never SCREAMING_SNAKE_CASE.
-- Keep TypeScript strict and ESM-only. Use pnpm.
-- Adapt third-party code to this project’s styles rather than vendoring it unchanged.
-- For production imports, confirm a package is a runtime dependency. Lazy-import optional or development-only modules.
-- Avoid barrel imports that cause `environment.ts` to load.
-- Disclose non-obvious asset or data transformations.
+- **One export per file** — the exported function name must match the file name (e.g., `foo-bar.ts` → `export function fooBar()`)
+- **Conventional commits** for PR titles and commit messages (check git log for examples)
+- **Use date-fns helpers** for time durations instead of raw numbers (e.g., `secondsToMilliseconds(1)` not `1000`)
+- **camelCase for constants** — never `UPPER_CASE`/`SCREAMING_SNAKE_CASE`, even for module-level or "global" consts (e.g., `const maxRetries = 3` not `const MAX_RETRIES = 3`)
+- **Strict TypeScript** — project uses `@tsconfig/strictest`
+- **ESM only** — `"type": "module"` in package.json
+- **pnpm** as package manager
+- **Adapt external code** — when integrating external/third-party code, adapt it to tf2pickup's coding style and idioms rather than vendoring it wholesale.
+- **Instrument new features when applicable** — consider whether a new feature warrants telemetry or metrics, and route it to the right channel per [docs/observability.md](docs/observability.md): a config/feature flag → add an entry to `src/telemetry/build-snapshot.ts` (anonymous cross-instance adoption); a user-facing interaction → a `data-umami-event` tag; operational health/outcomes → OTel metrics/logs. Skip it when none of these fit.
 
-## Verification
+## Development Environment
 
-After code changes, run linting, type checking, and relevant tests. For a PR, also watch CI until it is green before considering it complete.
+Before starting a dev server or MongoDB, check whether one is already running (e.g., check ports 3000/27017) and reuse it rather than spawning your own.
+
+## Dependencies & Imports
+
+When importing dependencies in production code paths, verify the package is a runtime dependency (not a `devDependency`), and prefer lazy imports for optional/dev-only modules. Avoid barrel imports that pull in `environment.ts`.
+
+## Transparency / Working Style
+
+Always disclose any non-obvious transformation of assets or data (e.g., upscaling an image, modifying inputs) instead of doing it silently.
+
+## Testing & CI
+
+After any change, run lint, typecheck, and tests, and watch CI until it is fully green before considering a PR done.
