@@ -202,6 +202,9 @@ importers:
       '@fastify/otel':
         specifier: 0.21.4
         version: 0.21.4(@opentelemetry/api@1.10.0)(supports-color@8.1.1)
+      '@fastify/proxy-addr':
+        specifier: 5.1.0
+        version: 5.1.0
       '@fastify/rate-limit':
         specifier: 11.2.2
         version: 11.2.2
