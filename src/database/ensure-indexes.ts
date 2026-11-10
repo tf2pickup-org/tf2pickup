@@ -1,15 +1,10 @@
 import { collections } from './collections'
-import {
-  MongoServerError,
-  ObjectId,
-  type CreateIndexesOptions,
-  type IndexSpecification,
-} from 'mongodb'
+import { MongoServerError, ObjectId, type IndexOptions, type IndexSpecification } from 'mongodb'
 import { logger } from '../logger'
 
 interface IndexDefinition {
   spec: IndexSpecification
-  options?: CreateIndexesOptions
+  options?: IndexOptions
 }
 
 const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> = {
@@ -90,7 +85,7 @@ export async function ensureIndexes() {
     const collection = collections[collectionName as keyof typeof collections]
     for (const { spec, options } of indexes) {
       try {
-        await collection.createIndex(spec, options)
+        await collection.createIndex(spec, options, undefined)
       } catch (error) {
         if (
           collectionName === 'gameLogs' &&
@@ -116,7 +111,7 @@ export async function ensureIndexes() {
             doc.dups.shift()
             await collections.gameLogs.deleteMany({ _id: { $in: doc.dups } })
           }
-          await collection.createIndex(spec, options)
+          await collection.createIndex(spec, options, undefined)
           logger.info('gamelogs index created successfully after removing duplicates')
         } else {
           logger.error(error)
