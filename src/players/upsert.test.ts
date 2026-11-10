@@ -290,6 +290,20 @@ describe('upsertPlayer()', () => {
       })
     })
 
+    describe('and the etf2l.org API is down', () => {
+      beforeEach(() => {
+        vi.mocked(etf2l).getPlayerProfile.mockRejectedValue(
+          new Etf2lApiError('', { status: 503 } as Response, 'Service Unavailable'),
+        )
+      })
+
+      it('should throw', async () => {
+        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
+          'ETF2L.org is unavailable, please try again later',
+        )
+      })
+    })
+
     describe('and user has active etf2l bans', () => {
       beforeEach(() => {
         vi.mocked(etf2l).getPlayerProfile.mockResolvedValue({

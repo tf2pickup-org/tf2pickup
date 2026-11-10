@@ -45,7 +45,7 @@ const environmentSchema = z.object({
   SERVEME_TF_API_ENDPOINT: z.string().default(KnownEndpoint.europe),
   SERVEME_TF_API_KEY: z.string().optional(),
 
-  ETF2L_API_ENDPOINT: z.url().default('http://api-v2.etf2l.org'),
+  ETF2L_API_ENDPOINT: z.url().default('https://api.etf2l.org'),
 
   TF2_QUICK_SERVER_CLIENT_ID: z.string().optional(),
   TF2_QUICK_SERVER_CLIENT_SECRET: z.string().optional(),
