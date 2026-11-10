@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.25.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.1...4.25.2) (2026-11-10)
+
+### Bug Fixes
+
+* **games:** wait for the map config's whitelist download before setting ours ([#949](https://github.com/tf2pickup-org/tf2pickup/issues/949)) ([d19bce2](https://github.com/tf2pickup-org/tf2pickup/commit/d19bce2ed1d9d8f7e03aa7dcd5b2fe8775b866a5))
+* **ui:** make the mobile nav menu background opaque ([#942](https://github.com/tf2pickup-org/tf2pickup/issues/942)) ([ba9b72e](https://github.com/tf2pickup-org/tf2pickup/commit/ba9b72e8552e5999a16255a24d3f5597b2173e08)), closes [#725](https://github.com/tf2pickup-org/tf2pickup/issues/725)
+
+### Dependencies
+
+* @fastify/etag to v6.2.2 ([#945](https://github.com/tf2pickup-org/tf2pickup/issues/945)) ([94eca7a](https://github.com/tf2pickup-org/tf2pickup/commit/94eca7ad132f6ce3ba2b957f446af334e4fe825d)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+* @fastify/multipart to v10.1.8 ([#948](https://github.com/tf2pickup-org/tf2pickup/issues/948)) ([5c850e4](https://github.com/tf2pickup-org/tf2pickup/commit/5c850e46133f7a6d849af6edce82cb2bdb0e829a)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+
 ## [4.25.1](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.0...4.25.1) (2026-11-08)
 
 ### Bug Fixes
