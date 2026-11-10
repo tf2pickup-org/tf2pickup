@@ -1,6 +1,7 @@
 import { collections } from './collections'
 import { MongoServerError, ObjectId, type IndexOptions, type IndexSpecification } from 'mongodb'
 import { logger } from '../logger'
+import { hoursToSeconds } from 'date-fns'
 
 interface IndexDefinition {
   spec: IndexSpecification
@@ -64,7 +65,10 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { gameNumber: 1, slotId: 1 }, options: { unique: true } },
     { spec: { gameNumber: 1, replacement: 1 } },
   ],
-  gamesRoundProgress: [{ spec: { gameNumber: 1 }, options: { unique: true } }],
+  gamesLogParseState: [
+    { spec: { gameNumber: 1 }, options: { unique: true } },
+    { spec: { at: 1 }, options: { expireAfterSeconds: hoursToSeconds(24) } },
+  ],
   futurePlayerSkills: [{ spec: { steamId: 1 }, options: { unique: true } }],
   pendingImports: [{ spec: { actor: 1 }, options: { unique: true } }],
   logsTfLogs: [
