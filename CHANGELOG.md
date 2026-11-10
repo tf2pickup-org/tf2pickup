@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.25.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.2...4.25.3) (2026-11-10)
+
+### Bug Fixes
+
+* **a11y:** keep keyboard focus across websocket swaps ([#950](https://github.com/tf2pickup-org/tf2pickup/issues/950)) ([ff98aab](https://github.com/tf2pickup-org/tf2pickup/commit/ff98aab61b0b434d95d1f0b2ba90cd4f0e7e293e))
+
 ## [4.25.2](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.1...4.25.2) (2026-11-10)
 
 ### Bug Fixes
