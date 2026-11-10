@@ -105,6 +105,9 @@ async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerPara
     if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
       logger.info({ player }, 'ETF2L.org account not found')
       throw withLogLevel(errors.forbidden(`ETF2L.org account is required`), 'info')
+    } else if (error instanceof Etf2lApiError && error.response.status >= 500) {
+      logger.warn({ player, status: error.response.status }, 'ETF2L.org API unavailable')
+      throw errors.serviceUnavailable(`ETF2L.org is unavailable, please try again later`)
     } else {
       throw error
     }

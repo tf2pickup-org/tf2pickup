@@ -8,4 +8,5 @@ export const errors = {
   conflict: httpErrors.conflict,
 
   internalServerError: httpErrors.internalServerError,
+  serviceUnavailable: httpErrors.serviceUnavailable,
 } as const
