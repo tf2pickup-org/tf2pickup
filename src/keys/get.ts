@@ -19,20 +19,16 @@ export async function get(keyName: string): Promise<KeyPair> {
     const keyPair = await generateKeyPair('ec', { namedCurve: 'secp521r1' })
     await collections.keys.insertOne({
       name: keyName,
-      privateKeyEncoded: keyPair.privateKey
-        .export({
-          format: 'pem',
-          type: 'pkcs8',
-          passphrase: environment.KEY_STORE_PASSPHRASE,
-          cipher: 'aes-256-cbc',
-        })
-        .toString(),
-      publicKeyEncoded: keyPair.publicKey
-        .export({
-          format: 'pem',
-          type: 'spki',
-        })
-        .toString(),
+      privateKeyEncoded: keyPair.privateKey.export({
+        format: 'pem',
+        type: 'pkcs8',
+        passphrase: environment.KEY_STORE_PASSPHRASE,
+        cipher: 'aes-256-cbc',
+      }),
+      publicKeyEncoded: keyPair.publicKey.export({
+        format: 'pem',
+        type: 'spki',
+      }),
     })
     logger.info({ keyName }, `key pair "${keyName} generated`)
     return keyPair
