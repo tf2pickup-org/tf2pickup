@@ -8,13 +8,14 @@ import { secrets } from './secrets'
 import { environment } from './environment'
 import { version } from './version'
 import proxyAddr from '@fastify/proxy-addr'
+import { compileTrustProxy } from './utils/compile-trust-proxy'
 import { logError } from './utils/log-error'
 import { ErrorPage } from './error-pages/views/html/error.page'
 import { secondsInWeek } from 'date-fns/constants'
 import autoload from '@fastify/autoload'
 import { isTestAuthSecret } from './auth/is-test-auth-secret'
 
-const trustProxy = proxyAddr.compile(environment.TRUST_PROXY.split(',').map(it => it.trim()))
+const trustProxy = compileTrustProxy(environment.TRUST_PROXY)
 
 const app = fastify({
   loggerInstance,
