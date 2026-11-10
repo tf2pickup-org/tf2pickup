@@ -107,7 +107,7 @@
     "@tsconfig/strictest": "2.0.8",
     "@types/howler": "2.2.13",
     "@types/jsonwebtoken": "9.0.10",
-    "@types/node": "24.19.2",
+    "@types/node": "26.6.6",
     "@types/openid": "2.0.5",
     "@types/pem": "1.14.4",
     "@types/sanitize-html": "2.16.2",
