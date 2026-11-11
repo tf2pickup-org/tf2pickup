@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.25.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.3...4.25.4) (2026-11-11)
+
+### Bug Fixes
+
+* **etf2l:** migrate to api.etf2l.org ahead of api-v2 sunset ([#951](https://github.com/tf2pickup-org/tf2pickup/issues/951)) ([30a2939](https://github.com/tf2pickup-org/tf2pickup/commit/30a2939b4ed8ce68a62616d905abf03180b81897))
+* key rate limiter and client IPs on trusted req.ip ([#955](https://github.com/tf2pickup-org/tf2pickup/issues/955)) ([28a090e](https://github.com/tf2pickup-org/tf2pickup/commit/28a090eef3329cbf2eddbda2d3ad4eeb00d25d4a))
+* **queue:** keep map vote border below tooltips ([#956](https://github.com/tf2pickup-org/tf2pickup/issues/956)) ([e76848c](https://github.com/tf2pickup-org/tf2pickup/commit/e76848cadfa72552f6a9d5bae0feb9f1dce4c3bf))
+
+### Dependencies
+
+* es-toolkit to v1.53.2 ([c538ca2](https://github.com/tf2pickup-org/tf2pickup/commit/c538ca2d1a49ca37ad54f6185479fc29f4b6bede))
+* mongodb to v7.8.0 ([#938](https://github.com/tf2pickup-org/tf2pickup/issues/938)) ([076c24c](https://github.com/tf2pickup-org/tf2pickup/commit/076c24cb27a76da8d6dd89653c38ff2d0690031a))
+
 ## [4.25.3](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.2...4.25.3) (2026-11-10)
 
 ### Bug Fixes
