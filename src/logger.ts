@@ -1,5 +1,5 @@
 import pino from 'pino'
-import { logs } from '@opentelemetry/api'
+import { logs, SeverityNumber } from '@opentelemetry/api'
 import { trace } from '@opentelemetry/api'
 import type { Attributes } from '@opentelemetry/api'
 import { environment } from './environment'
@@ -7,12 +7,12 @@ import { serializeRequest } from './utils/serialize-request'
 
 // https://opentelemetry.io/docs/specs/otel/logs/data-model/#field-severitynumber
 const pinoLevelToSeverityNumber = (level: number) => {
-  if (level >= 60) return 21 // FATAL
-  if (level >= 50) return 17 // ERROR
-  if (level >= 40) return 13 // WARN
-  if (level >= 30) return 9 // INFO
-  if (level >= 20) return 5 // DEBUG
-  return 1 // TRACE
+  if (level >= 60) return SeverityNumber.FATAL
+  if (level >= 50) return SeverityNumber.ERROR
+  if (level >= 40) return SeverityNumber.WARN
+  if (level >= 30) return SeverityNumber.INFO
+  if (level >= 20) return SeverityNumber.DEBUG
+  return SeverityNumber.TRACE
 }
 
 // https://opentelemetry.io/docs/specs/otel/logs/data-model/#field-severitytext

@@ -3,7 +3,7 @@ import { events } from '../../events'
 import { isEqual } from 'es-toolkit'
 import { players } from '../../players'
 import type { PlayerModel } from '../../database/models/player.model'
-import type { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { toAdmins } from '../to-admins'
 import { EmbedBuilder } from 'discord.js'
 import { environment } from '../../environment'
@@ -15,11 +15,7 @@ function generateChangesText(
   oldSkill: PlayerModel['skill'],
   newSkill: PlayerModel['skill'],
 ): string {
-  const allClasses = new Set([
-    ...Object.keys(oldSkill ?? {}),
-    ...Object.keys(newSkill ?? {}),
-  ]) as Set<Tf2ClassName>
-  return [...allClasses]
+  return Object.values(Tf2ClassName)
     .filter(gameClass => newSkill?.[gameClass] !== oldSkill?.[gameClass])
     .map(
       gameClass =>

@@ -4,7 +4,7 @@ import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { Tf2Team } from '../shared/types/tf2-team'
 
 export async function up() {
-  const gameClasses = [...Object.keys(Tf2ClassName)] as Tf2ClassName[]
+  const gameClasses = Object.values(Tf2ClassName)
   const games = await collections.games.find().toArray()
   for (const game of games) {
     const classCounts: Record<Tf2Team, Record<Tf2ClassName, number>> = {

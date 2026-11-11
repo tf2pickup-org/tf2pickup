@@ -126,6 +126,7 @@ export async function up() {
               throw new Error(`actor ${event.actor.toString()} not found (game #${game.number})`)
             }
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
             if (a.roles.includes('bot' as PlayerRole)) {
               actor = 'bot'
             } else {
