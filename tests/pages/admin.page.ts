@@ -52,6 +52,7 @@ export class AdminPage {
     await this.page.getByRole('link', { name: 'Add mute' }).click()
     await this.page.getByLabel('Reason').fill(reason)
     await this.page.getByRole('button', { name: 'Save' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
   }
 
   async revokeAllChatMutes(steamId: string) {
@@ -62,9 +63,11 @@ export class AdminPage {
     await this.page.getByRole('link', { name: 'Chat mutes' }).click()
     await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
 
-    for (const revokeButton of await this.page.getByRole('button', { name: 'Revoke mute' }).all()) {
+    const revokeButtons = this.page.getByRole('button', { name: 'Revoke mute' })
+    for (const revokeButton of await revokeButtons.all()) {
       await revokeButton.click()
     }
+    await expect(revokeButtons).toHaveCount(0)
   }
 
   async openPlayerToolbox(steamId: string) {
