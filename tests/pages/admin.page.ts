@@ -27,7 +27,6 @@ export class AdminPage {
       await this.page.getByLabel('Anonymous').check()
     }
     await this.page.getByRole('button', { name: 'Save' }).click()
-    await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
   }
 
   async revokeAllBans(steamId: string) {
@@ -53,6 +52,7 @@ export class AdminPage {
     await this.page.getByRole('link', { name: 'Add mute' }).click()
     await this.page.getByLabel('Reason').fill(reason)
     await this.page.getByRole('button', { name: 'Save' }).click()
+    await this.page.waitForURL(/\/players\/[^/]+\/edit\/chat-mutes$/)
   }
 
   async revokeAllChatMutes(steamId: string) {
