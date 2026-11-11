@@ -77,6 +77,7 @@ curl https://tf2pickup.example.com/api/v1/
     "players": { "href": "/api/v1/players" },
     "games": { "href": "/api/v1/games" },
     "queue": { "href": "/api/v1/queue" },
+    "queues": { "href": "/api/v1/queues" },
     "onlinePlayers": { "href": "/api/v1/online-players" },
     "version": { "href": "/api/v1/version" }
   }
@@ -150,7 +151,7 @@ curl "https://tf2pickup.example.com/api/v1/players?offset=0&limit=20"
         "roles": [],
         "stats": {
           "totalGames": 42,
-          "gamesByClass": { "soldier": 30, "scout": 12 }
+          "gamesByClass": { "6v6": { "soldier": 30, "scout": 12 } }
         },
         "etf2lProfileId": 12345,
         "twitchTvProfileUrl": "https://www.twitch.tv/somestreamer",
@@ -199,7 +200,7 @@ curl https://tf2pickup.example.com/api/v1/players/76561198012345678
   "roles": [],
   "stats": {
     "totalGames": 42,
-    "gamesByClass": { "soldier": 30, "scout": 12 }
+    "gamesByClass": { "6v6": { "soldier": 30, "scout": 12 } }
   },
   "etf2lProfileId": 12345,
   "twitchTvProfileUrl": "https://www.twitch.tv/somestreamer",
@@ -217,6 +218,7 @@ curl https://tf2pickup.example.com/api/v1/players/76561198012345678
 - `etf2lProfileId` — ETF2L profile ID, or `null` if no ETF2L profile is linked.
 - `twitchTvProfileUrl` — Twitch channel URL, or `null` if no Twitch profile is linked.
 - `activeGame` — game number of the player's current active game, or `null` if not in a game.
+- `stats.gamesByClass` — games played per class, grouped by gamemode (`6v6`, `9v9`, `bball`, `ultiduo`). Gamemodes the player hasn't played are left out.
 
 ---
 
@@ -258,6 +260,7 @@ curl "https://tf2pickup.example.com/api/v1/players/76561198012345678/games?offse
     "games": [
       {
         "id": 1234,
+        "gamemode": "6v6",
         "map": "cp_process_final",
         "state": "ended",
         "score": { "red": 3, "blu": 2 },
@@ -313,6 +316,7 @@ curl "https://tf2pickup.example.com/api/v1/games?offset=0&limit=20&state=ended"
     "games": [
       {
         "id": 1234,
+        "gamemode": "6v6",
         "map": "cp_process_final",
         "state": "ended",
         "score": { "red": 3, "blu": 2 },
@@ -356,6 +360,7 @@ curl https://tf2pickup.example.com/api/v1/games/1234
 ```json
 {
   "id": 1234,
+  "gamemode": "6v6",
   "map": "cp_process_final",
   "state": "ended",
   "score": { "red": 3, "blu": 2 },
@@ -379,6 +384,7 @@ curl https://tf2pickup.example.com/api/v1/games/1234
 - `endedAt` — `null` for active games.
 - `gameServer` — `null` if no server has been assigned yet.
 - `state` — one of `created`, `configuring`, `launching`, `started`, `ended`, `interrupted`.
+- `gamemode` — the game's gamemode: `6v6`, `9v9`, `bball` or `ultiduo`.
 
 ---
 
@@ -502,20 +508,49 @@ curl https://tf2pickup.example.com/api/v1/games/1234/events
 
 ---
 
-### GET /api/v1/queue
+### GET /api/v1/queues
 
-Returns the current live queue state, including slot occupancy and map vote results.
+Returns every enabled queue, in the order the admins set. The first one is the default queue, which the site's front page shows.
 
 **Example request:**
 
 ```bash
-curl https://tf2pickup.example.com/api/v1/queue
+curl https://tf2pickup.example.com/api/v1/queues
 ```
 
 **Example response:**
 
 ```json
 {
+  "_links": { "self": { "href": "/api/v1/queues" } },
+  "_embedded": {
+    "queues": [
+      // queue objects, as returned by GET /api/v1/queues/:slug
+    ]
+  }
+}
+```
+
+---
+
+### GET /api/v1/queues/:slug
+
+Returns one queue's live state, including slot occupancy and map vote results. Returns `404` if no queue has this slug, or if the queue is disabled.
+
+**Example request:**
+
+```bash
+curl https://tf2pickup.example.com/api/v1/queues/auto-6v6
+```
+
+**Example response:**
+
+```json
+{
+  "slug": "auto-6v6",
+  "name": "6v6",
+  "gamemode": "6v6",
+  "launchMode": "auto",
   "state": "waiting",
   "config": {
     "teamCount": 2,
@@ -546,17 +581,29 @@ curl https://tf2pickup.example.com/api/v1/queue
     "cp_metalworks": 0
   },
   "_links": {
-    "self": { "href": "/api/v1/queue" }
+    "self": { "href": "/api/v1/queues/auto-6v6" },
+    "page": { "href": "/q/auto-6v6" }
   }
 }
 ```
 
 **Field notes:**
 
+- `slug` — the queue's identifier in URLs. It is set when the queue is created and never changes.
+- `name` — display name chosen by the admins.
+- `gamemode` — `6v6`, `9v9`, `bball` or `ultiduo`.
+- `launchMode` — how the queue launches a game. `auto` (teams balanced by skill) is the only mode today.
 - `state` — `"waiting"`, `"ready"`, or `"launching"`.
 - `slots[].player` — `null` if the slot is empty.
 - `mapVoteResults` — map names to vote counts. Empty object `{}` if no map vote is in progress.
 - `config.classes[].canMakeFriendsWith` — optional field; present only for classes that support the friend system.
+- `_links.page` — the queue's page on the website.
+
+---
+
+### GET /api/v1/queue
+
+Returns the default queue (the first enabled one), in the same shape as `GET /api/v1/queues/:slug`, except that `_links.self` is `/api/v1/queue`. It is kept for clients written before multiple queues; new clients should use `GET /api/v1/queues`.
 
 ---
 
@@ -611,5 +658,5 @@ All errors return a standard JSON body with an HTTP status code.
 | Status | Error                 | Scenario                                             |
 | ------ | --------------------- | ---------------------------------------------------- |
 | `400`  | Bad Request           | Invalid query parameters (e.g. non-numeric `offset`) |
-| `404`  | Not Found             | The requested player or game does not exist          |
+| `404`  | Not Found             | The requested player, game or queue does not exist   |
 | `500`  | Internal Server Error | Unexpected server error                              |
