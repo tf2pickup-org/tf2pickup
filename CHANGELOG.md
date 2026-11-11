@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.25.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.4...4.25.5) (2026-11-11)
+
+### Bug Fixes
+
+* **queue:** restore map vote thumbnail gradient ([#960](https://github.com/tf2pickup-org/tf2pickup/issues/960)) ([7c1cfad](https://github.com/tf2pickup-org/tf2pickup/commit/7c1cfadbf12f75d013db44cee9e261d144e6e2cf)), closes [#956](https://github.com/tf2pickup-org/tf2pickup/issues/956)
+
+### Dependencies
+
+* @fastify/otel to v1 ([#957](https://github.com/tf2pickup-org/tf2pickup/issues/957)) ([f82e9fd](https://github.com/tf2pickup-org/tf2pickup/commit/f82e9fd30fc30425514704e688769aa386a3ce04)), closes [#8203](https://github.com/tf2pickup-org/tf2pickup/issues/8203)
+
 ## [4.25.4](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.3...4.25.4) (2026-11-11)
 
 ### Bug Fixes
