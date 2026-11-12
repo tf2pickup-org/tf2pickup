@@ -4,7 +4,7 @@ import { SlotStatus, type GameSlotModel } from '../../../database/models/game-sl
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { IconPlus, IconReplaceFilled } from '../../../html/components/icons'
+import { IconLock, IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
@@ -83,8 +83,8 @@ async function GameSlotContent(props: {
           </div>
           <img
             src={playerAvatarUrl(props.player.avatar, 'medium')}
-            width="38"
-            height="38"
+            width="40"
+            height="40"
             alt={`${props.player.name}'s avatar`}
           />
           <a href={`/players/${props.player.steamId}`} class="player-link">
@@ -137,7 +137,11 @@ async function GameSlotContent(props: {
           </button>
         )
       } else {
-        return <></>
+        return (
+          <span class="flex flex-1 justify-center text-zinc-400">
+            <IconLock size={32} />
+          </span>
+        )
       }
     }
   }
@@ -163,8 +167,8 @@ function DeletedGameSlot(props: { slot: GameSlotModel }) {
       </div>
       <img
         src={playerAvatarUrl(undefined, 'medium')}
-        width="38"
-        height="38"
+        width="40"
+        height="40"
         alt="deleted user's avatar"
       />
       <span class="player-link">
@@ -177,7 +181,7 @@ function DeletedGameSlot(props: { slot: GameSlotModel }) {
 function RequestSubstituteButton(props: { number: GameNumber }) {
   return (
     <button
-      class="rounded-xs bg-zinc-100 p-2 transition-colors duration-75 hover:bg-zinc-200"
+      class="request-substitute-button"
       hx-put={`/games/${props.number}/request-substitute`}
       hx-trigger="click"
       aria-label="Request substitute"
