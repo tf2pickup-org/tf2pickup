@@ -18,13 +18,39 @@
     box-shadow: 0 8px 32px rgb(0 0 0 / 50%);
     translate: -50% 0;
 
+    &::details-content {
+      display: grid;
+      grid-template-rows: 0fr;
+      overflow: hidden;
+      transition:
+        grid-template-rows 200ms ease-out,
+        content-visibility 200ms allow-discrete;
+    }
+
+    &[open]::details-content {
+      grid-template-rows: 1fr;
+    }
+
+    &:not([open]) .admin-area-content {
+      padding-bottom: 0;
+    }
+
     .admin-area-content {
       display: flex;
       flex-direction: column;
       gap: 12px;
+      min-height: 0;
       max-height: calc(100dvh - 160px);
       padding: 0 12px 12px;
       overflow-y: auto;
+      transition: padding-bottom 200ms ease-out;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      &::details-content,
+      .admin-area-content {
+        transition: none;
+      }
     }
 
     .button {
@@ -56,6 +82,10 @@
     &::-webkit-details-marker {
       display: none;
     }
+  }
+
+  .admin-area-chevron {
+    transition: rotate 200ms ease-out;
   }
 
   .admin-area[open] .admin-area-chevron {
