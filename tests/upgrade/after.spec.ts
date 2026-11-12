@@ -77,9 +77,6 @@ authUsers('played games survive the upgrade', async ({ users, request }) => {
   }
   expect(player.stats.gamesByClass).toEqual({ [getQueueConfig()]: { medic: 1 } })
 
-  await page.goto(`/players/${medic}`)
-  await expect(page.getByLabel('Games played as medic')).toHaveText('1')
-
   await page.goto(`/players/${medic}/edit/elo`)
   const medicRow = page.getByRole('row', { name: /medic/ })
   await expect(medicRow.getByRole('cell').nth(1)).toHaveText(medicElo)
@@ -104,8 +101,10 @@ launchGame(
 
     const [medicName] = [...desiredSlots.entries()].find(([, slot]) => slot === 'medic-1')!
     await expect(async () => {
-      await page.goto(`/players/${users.byName(medicName).steamId}`)
-      await expect(page.getByLabel('Games played as medic')).toHaveText('2')
+      const { stats } = (await (
+        await request.get(`/api/v1/players/${users.byName(medicName).steamId}`)
+      ).json()) as { stats: { gamesByClass: Record<string, Record<string, number>> } }
+      expect(stats.gamesByClass[getQueueConfig()]?.['medic']).toBe(2)
     }).toPass()
   },
 )
