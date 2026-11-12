@@ -15,6 +15,8 @@ import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
 import { StreamList } from '../views/html/stream-list'
 import { BanAlerts } from '../views/html/ban-alerts'
 import { CurrentPlayerCount } from '../views/html/current-player-count'
+import { TeamPlayerCount } from '../views/html/team-player-count'
+import { teamSlots } from '../views/html/team-slots'
 import { PreReadyUpButton } from '../../../pre-ready/views/html/pre-ready-up-button'
 import { OnlinePlayerCount } from '../views/html/online-player-count'
 import { ChatMessages } from '../views/html/chat'
@@ -77,6 +79,9 @@ export default fp(
       }
       socket.send(await IsInQueue({ queue: queue._id, actor: socket.player?.steamId }))
       socket.send(await CurrentPlayerCount({ queue: queue._id }))
+      for (const [teamIndex, team] of teamSlots(queue.gamemode, slots).entries()) {
+        socket.send(await TeamPlayerCount({ teamIndex, slots: team }))
+      }
       socket.send(await SetTitle({ queue: queue._id }))
 
       if (socket.player && (await getState(queue._id)) === QueueState.ready) {
@@ -178,19 +183,24 @@ export default fp(
           .map(c => c.player?.steamId)
           .filter((id): id is SteamId64 => id !== undefined)
 
-        const [playerCount, title, actorMap, defaultPlayerSkill] = await Promise.all([
+        const [playerCount, title, actorMap, defaultPlayerSkill, allSlots] = await Promise.all([
           CurrentPlayerCount({ queue: queueId }),
           SetTitle({ queue: queueId }),
           fetchActorMap(connectedPlayers),
           configuration.get('games.default_player_skill'),
+          collections.queueSlots.find({ queue: queueId }).toArray(),
         ])
+        const teamCounts = teamSlots(queue.gamemode, allSlots).map((team, teamIndex) =>
+          TeamPlayerCount({ teamIndex, slots: team }),
+        )
         const defaultSkill = defaultPlayerSkill[queue.gamemode]
 
         app.gateway.to({ url }).send(player => {
           const actor = player ? actorMap.get(player) : undefined
-          return Promise.all(
-            slots.map(slot => QueueSlot({ queue, slot, actor, defaultSkill })),
-          ).then(items => [...items, playerCount, title])
+          return Promise.all([
+            ...slots.map(slot => QueueSlot({ queue, slot, actor, defaultSkill })),
+            ...teamCounts,
+          ]).then(items => [...items, playerCount, title])
         })
 
         const { current, required } = await playerCounts(queue)

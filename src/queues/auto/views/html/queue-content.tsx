@@ -19,6 +19,8 @@ import { MapVoteSelection } from './map-vote-selection'
 import { QueueSlot } from './queue-slot'
 import { QueueSwitcher } from './queue-switcher'
 import { StreamList } from './stream-list'
+import { TeamPlayerCount } from './team-player-count'
+import { teamSlots } from './team-slots'
 
 // The part of the queue page that belongs to one queue; the rest (chat, online players…) is
 // shared by all of them and stays in place when switching queues. Its children are laid out by the
@@ -100,16 +102,9 @@ async function Queue(props: {
   const defaultSkill = (await configuration.get('games.default_player_skill'))[props.queue.gamemode]
 
   // a team of two fits in rows, one per team
-  if (positions.length === 2) {
+  const teams = teamSlots(props.queue.gamemode, props.slots)
+  if (teams.length > 0) {
     const teamNames = ['BLU', 'RED'] as const
-    const teamSlots = teamNames.map((_, teamIndex) =>
-      positions.map(
-        position =>
-          props.slots.filter(slot => slot.gameClass === position.gameClass)[
-            position.classIndex * config.teamCount + teamIndex
-          ],
-      ),
-    )
 
     return (
       <form id="queue" class="queue-compact-grid" ws-send data-disable-when-offline>
@@ -130,20 +125,16 @@ async function Queue(props: {
               ]}
             >
               <span>{teamName}</span>
-              <span>
-                {teamSlots[teamIndex]?.filter(slot => slot?.player).length ?? 0}/{positions.length}
-              </span>
+              <TeamPlayerCount teamIndex={teamIndex} slots={teams[teamIndex] ?? []} />
             </div>
-            {teamSlots[teamIndex]
-              ?.filter(slot => slot !== undefined)
-              .map(slot => (
-                <QueueSlot
-                  queue={props.queue}
-                  slot={slot}
-                  actor={actor}
-                  defaultSkill={defaultSkill}
-                />
-              ))}
+            {teams[teamIndex]?.map(slot => (
+              <QueueSlot
+                queue={props.queue}
+                slot={slot}
+                actor={actor}
+                defaultSkill={defaultSkill}
+              />
+            ))}
           </div>
         ))}
       </form>
