@@ -102,7 +102,7 @@ export default fp(async app => {
     for (const slot of after.slots) {
       const beforeSlot = before.slots.find(s => s.player === slot.player)
       if (!beforeSlot) {
-        return
+        continue
       }
 
       if (
