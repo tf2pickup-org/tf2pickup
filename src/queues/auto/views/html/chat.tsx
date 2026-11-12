@@ -1,3 +1,4 @@
+import Html from '@kitajs/html'
 import { format, isSameDay, isToday, isYesterday } from 'date-fns'
 import type { WithId } from 'mongodb'
 import { chat } from '../../../../chat'
@@ -72,7 +73,38 @@ function ChatDateSeparator(props: { at: Date }) {
   )
 }
 
-export function ChatMessageList(props: { messages: WithId<ChatMessageModel>[] }) {
+function chatDayId(date: Date) {
+  return `chat-day-${format(date, 'yyyy-MM-dd')}`
+}
+
+function ChatDay(props: Html.PropsWithChildren<{ at: Date }>) {
+  return (
+    <div class="chat-day">
+      <ChatDateSeparator at={props.at} />
+      <div class="chat-day-messages" id={chatDayId(props.at)}>
+        {props.children}
+      </div>
+    </div>
+  )
+}
+
+function groupByDay(messages: WithId<ChatMessageModel>[]) {
+  const days: WithId<ChatMessageModel>[][] = []
+  for (const message of messages) {
+    const day = days.at(-1)
+    if (day && isSameDay(day[0]!.at, message.at)) {
+      day.push(message)
+    } else {
+      days.push([message])
+    }
+  }
+  return days
+}
+
+export function ChatMessageList(props: {
+  messages: WithId<ChatMessageModel>[]
+  before?: Date | undefined
+}) {
   let trigger = <></>
   if (props.messages.length > 0) {
     trigger = (
@@ -86,29 +118,19 @@ export function ChatMessageList(props: { messages: WithId<ChatMessageModel>[] })
     )
   }
 
-  const nodes: JSX.Element[] = []
-  let previousAt: Date | undefined
-
-  for (const message of props.messages) {
-    if (previousAt && !isSameDay(message.at, previousAt)) {
-      // We are crossing from a newer day (previousAt) to an older day (message.at).
-      // Place the separator for the newer day *after* its last message in DOM.
-      nodes.push(<ChatDateSeparator at={previousAt} />)
-    }
-
-    nodes.push(<ChatMessage message={message} />)
-    previousAt = message.at
-  }
-
-  if (previousAt) {
-    // Add a separator for the oldest day at the end so it appears above that
-    // day's messages once column-reverse is applied.
-    nodes.push(<ChatDateSeparator at={previousAt} />)
-  }
-
   return (
     <>
-      {nodes}
+      {groupByDay(props.messages).map(day => {
+        const at = day[0]!.at
+        const messages = day.map(message => <ChatMessage message={message} />)
+        return props.before && isSameDay(at, props.before) ? (
+          <div id={chatDayId(at)} hx-swap-oob="beforeend">
+            {messages}
+          </div>
+        ) : (
+          <ChatDay at={at}>{messages}</ChatDay>
+        )
+      })}
       {trigger}
     </>
   )
@@ -122,15 +144,19 @@ ChatMessages.append = function (props: {
   message: WithId<ChatMessageModel>
   previousMessageAt?: Date | undefined
 }) {
+  if (props.previousMessageAt && isSameDay(props.message.at, props.previousMessageAt)) {
+    return (
+      <div id={chatDayId(props.message.at)} hx-swap-oob="afterbegin">
+        <ChatMessage message={props.message} />
+      </div>
+    )
+  }
+
   return (
     <div id="chat-message-list" hx-swap-oob="afterbegin">
-      <ChatMessage message={props.message} />
-      {/* When the new message starts a new day compared to the previous message, insert a
-          separator for the newer (current) day after it so it appears visually above
-          this day's messages in the column-reverse list. */}
-      {(!props.previousMessageAt || !isSameDay(props.message.at, props.previousMessageAt)) && (
-        <ChatDateSeparator at={props.message.at} />
-      )}
+      <ChatDay at={props.message.at}>
+        <ChatMessage message={props.message} />
+      </ChatDay>
     </div>
   )
 }

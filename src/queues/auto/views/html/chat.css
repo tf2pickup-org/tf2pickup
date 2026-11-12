@@ -66,13 +66,26 @@
       display: flex;
       flex-direction: column-reverse;
       overflow-y: scroll;
-      padding: 8px;
+      padding: 0 8px 8px;
+
+      .chat-day:not(:has(.chat-message)) {
+        display: none;
+      }
+
+      .chat-day-messages {
+        display: flex;
+        flex-direction: column-reverse;
+      }
 
       .chat-date-separator {
+        position: sticky;
+        top: 0;
+        z-index: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 8px 0;
+        padding: 8px 0;
+        background-color: var(--color-surface);
         color: var(--color-zinc-400);
         font-size: 12px;
         text-transform: uppercase;
