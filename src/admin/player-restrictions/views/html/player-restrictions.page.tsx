@@ -1,6 +1,6 @@
 import { configuration } from '../../../../configuration'
 import { Switch } from '../../../../html/components/switch'
-import { queue } from '../../../../queue-auto'
+import { queue } from '../../../../queues/auto'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 import { GameClassSkillInput } from '../../../../html/components/game-class-skill-input'

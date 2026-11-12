@@ -2,7 +2,7 @@ import type { ImportAnalysis } from '../../types'
 import { Admin } from '../../../views/html/admin'
 import type { PlayerSkill } from '../../../../database/models/player.model'
 import type { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
-import { config } from '../../../../queue-auto/config'
+import { config } from '../../../../queues/auto/config'
 
 interface PreviewPageProps {
   analysis: ImportAnalysis
