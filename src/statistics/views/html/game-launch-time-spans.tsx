@@ -9,7 +9,7 @@ export async function GameLaunchTimeSpans() {
 
   return (
     <>
-      <span class="mb-6 text-2xl font-bold text-zinc-200">Game launch times</span>
+      <h2 class="mb-6 text-2xl leading-[1.5] font-bold">Game launch times</h2>
       <div class="my-auto w-full px-4">
         <canvas id="game-launch-time-spans"></canvas>
       </div>
@@ -40,7 +40,7 @@ function toChartData(data: GameLaunchTimeSpan[]) {
       {
         label: 'morning',
         data: series.filter(d => d.timeOfTheDay === 'morning').map(e => e.count),
-        backgroundColor: '#FAFF00',
+        backgroundColor: '#E5EB00',
       },
       {
         label: 'afternoon',
