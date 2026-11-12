@@ -88,6 +88,7 @@ async function Queue(props: {
   const actor = props.actor
     ? await players.bySteamId(props.actor, [
         'steamId',
+        'hasAcceptedRules',
         'bans',
         'activeGame',
         'skill',
