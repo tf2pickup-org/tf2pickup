@@ -11,13 +11,13 @@ export async function voteMap(
   steamId: SteamId64,
   map: string,
 ): Promise<{ queue: QueueId; results: Record<string, number> }> {
-  const slot = await collections.queueSlots.findOne({ 'player.steamId': steamId })
-  if (!slot) {
-    throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
-  }
+  return await queueCommand('vote-map', async emit => {
+    const slot = await collections.queueSlots.findOne({ 'player.steamId': steamId })
+    if (!slot) {
+      throw withLogLevel(errors.badRequest('player not in the queue'), 'debug')
+    }
 
-  const { queue } = slot
-  return await queueCommand(queue, 'vote-map', async emit => {
+    const { queue } = slot
     logger.trace({ queue, steamId, map }, 'queue.voteMap()')
     const mapCount = await collections.queueMapOptions.countDocuments({ queue, name: map })
     if (mapCount === 0) {

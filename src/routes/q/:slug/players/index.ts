@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { PlayerRole } from '../../../../database/models/player.model'
 import { routes } from '../../../../utils/routes'
 import { getSlots } from '../../../../queues/auto/get-slots'
-import { kick } from '../../../../queues/auto/kick'
+import { queueEngine } from '../../../../queues/auto'
 import { events } from '../../../../events'
 import { activityLog } from '../../../../activity-log'
 import { queues } from '../../../../queues'
@@ -23,7 +23,7 @@ export default routes(async app => {
       const steamIds = slots.flatMap(slot => (slot.player ? [slot.player.steamId] : []))
 
       if (steamIds.length > 0) {
-        await kick(...steamIds)
+        await queueEngine.kick(...steamIds)
         events.emit('queue:cleared', {
           queue,
           admin: request.user!.player.steamId,
