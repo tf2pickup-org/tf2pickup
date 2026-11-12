@@ -49,7 +49,7 @@ const emptySlot = {
 describe('QueueSlot', () => {
   describe('when slot is empty and there is no actor', () => {
     it('renders the slot wrapper', async () => {
-      const html = await QueueSlot({ queue, slot: emptySlot })
+      const html = await QueueSlot({ queue, slot: emptySlot, defaultSkill: undefined })
       const root = parse(html)
       const slot = root.querySelector('.queue-slot')
       expect(slot).not.toBeNull()
@@ -59,7 +59,7 @@ describe('QueueSlot', () => {
     })
 
     it('renders no join button', async () => {
-      const html = await QueueSlot({ queue, slot: emptySlot })
+      const html = await QueueSlot({ queue, slot: emptySlot, defaultSkill: undefined })
       const root = parse(html)
       expect(root.querySelector('.join-queue-button')).toBeNull()
     })
@@ -67,7 +67,7 @@ describe('QueueSlot', () => {
 
   describe('when slot is empty and there is an actor', () => {
     beforeEach(() => {
-      vi.mocked(joinBlocker).mockResolvedValue(null)
+      vi.mocked(joinBlocker).mockReturnValue(null)
     })
 
     it('renders a join button', async () => {
@@ -75,6 +75,7 @@ describe('QueueSlot', () => {
         queue,
         slot: emptySlot,
         actor: actor,
+        defaultSkill: undefined,
       })
       const root = parse(html)
       const button = root.querySelector('.join-queue-button')
@@ -83,8 +84,8 @@ describe('QueueSlot', () => {
     })
 
     it('renders a disabled join button with the join blocker as its tooltip', async () => {
-      vi.mocked(joinBlocker).mockResolvedValue('You have active bans')
-      const html = await QueueSlot({ queue, slot: emptySlot, actor })
+      vi.mocked(joinBlocker).mockReturnValue('You have active bans')
+      const html = await QueueSlot({ queue, slot: emptySlot, actor, defaultSkill: undefined })
       const button = parse(html).querySelector('.join-queue-button')
       expect(button!.getAttribute('disabled')).toBeDefined()
       expect(button!.text).toContain('You have active bans')

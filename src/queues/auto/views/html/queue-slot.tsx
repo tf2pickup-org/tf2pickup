@@ -30,14 +30,20 @@ type Actor = (JoinBlockerPlayer & Pick<PlayerModel, 'steamId' | 'roles'>) | unde
 
 type Queue = Pick<QueueModel, 'enabled' | 'skillThreshold' | 'requireVerification' | 'gamemode'>
 
-export async function QueueSlot(props: { queue: Queue; slot: QueueSlotModel; actor?: Actor }) {
+export async function QueueSlot(props: {
+  queue: Queue
+  slot: QueueSlotModel
+  actor?: Actor
+  defaultSkill: PlayerSkill | undefined
+}) {
   const isOwnSlot = !!props.actor && props.slot.player?.steamId === props.actor.steamId
   const isReadySlot = !!props.slot.player && props.slot.ready
   let slotContent = <></>
   if (props.slot.player) {
     slotContent = <PlayerInfo {...props} />
   } else if (props.actor) {
-    const disabled = (await joinBlocker(props.actor, props.slot, props.queue)) ?? undefined
+    const disabled =
+      joinBlocker(props.actor, props.slot, props.queue, props.defaultSkill) ?? undefined
     slotContent = <JoinButton slotId={props.slot.id} disabled={disabled} />
   }
 
