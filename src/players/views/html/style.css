@@ -182,13 +182,17 @@
     justify-content: center;
     gap: 8px;
     min-height: 39px;
-    padding: 8px 16px;
+    padding: 8px;
     border: 1px solid var(--color-zinc-600);
     border-radius: 6px;
     background-color: var(--color-zinc-700);
     color: var(--color-zinc-100);
     font-weight: 700;
     line-height: 16px;
+
+    svg {
+      flex: none;
+    }
 
     &:hover {
       background-color: color-mix(in hsl, var(--color-zinc-700), black 5%);
