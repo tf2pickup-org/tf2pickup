@@ -257,9 +257,13 @@ describe('sync-clients', () => {
 
   describe('player/ban:added', () => {
     it("sends the ban alerts to the player's queue pages only", async () => {
+      mockPlayersFind.mockReturnValue({
+        toArray: vi.fn().mockResolvedValue([{ steamId: steamId1 }]),
+      })
       const handler = getHandler<{ player: SteamId64 }>('player/ban:added')
 
       await handler({ player: steamId1 })
+      await vi.waitFor(() => expect(mockQueueSlotsFind).toHaveBeenCalled())
 
       expect(app.gateway.to).toHaveBeenCalledWith({ players: [steamId1] })
       expect(app.gateway.to).toHaveBeenCalledWith({ urls: ['/q/auto-6v6'] })
