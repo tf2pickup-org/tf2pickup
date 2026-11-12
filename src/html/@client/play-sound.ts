@@ -21,7 +21,8 @@ function loadSound(element: Element) {
 }
 
 async function resumeAndPlay(sound: Howl, soundId: string) {
-  if (Howler.ctx.state === 'suspended') {
+  // Safari also reports 'interrupted' after tab switches or minimizing; resume that too.
+  if (Howler.ctx.state !== 'running') {
     await Howler.ctx.resume().catch(console.warn)
   }
   // Resuming first means a tab that cannot unlock its audio context drops out before
