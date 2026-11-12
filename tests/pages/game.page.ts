@@ -57,6 +57,10 @@ export class GamePage {
     return this.page.getByLabel('Connect string', { exact: true })
   }
 
+  copyConnectStringButton() {
+    return this.page.locator('.connect-string').getByRole('button')
+  }
+
   waitingForGameServer() {
     return this.page.locator('a').filter({ hasText: 'Waiting for server...' })
   }
