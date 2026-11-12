@@ -1,5 +1,49 @@
 # Changelog
 
+# [5.0.0-alpha.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.6...5.0.0-alpha.0) (2026-11-12)
+
+### Bug Fixes
+
+* **players:** resolve a missing skill the same way everywhere ([#885](https://github.com/tf2pickup-org/tf2pickup/issues/885)) ([c5db356](https://github.com/tf2pickup-org/tf2pickup/commit/c5db3561f195af8f38a16b4f1eca469d7997f1e0)), closes [#884](https://github.com/tf2pickup-org/tf2pickup/issues/884)
+* **queues:** stop banned players from joining over the websocket ([#886](https://github.com/tf2pickup-org/tf2pickup/issues/886)) ([8f8c388](https://github.com/tf2pickup-org/tf2pickup/commit/8f8c388785a46b1c0f32d16e71c93a8fd21f9adb)), closes [#885](https://github.com/tf2pickup-org/tf2pickup/issues/885)
+
+### Features
+
+* **admin:** manage queues from the admin panel ([#862](https://github.com/tf2pickup-org/tf2pickup/issues/862)) ([ba08b99](https://github.com/tf2pickup-org/tf2pickup/commit/ba08b9928125ba6ddf1f0b88ae0df2fde09b8542)), closes [#861](https://github.com/tf2pickup-org/tf2pickup/issues/861)
+* **admin:** move the admin panel and edit player shell to 5.0 ([#903](https://github.com/tf2pickup-org/tf2pickup/issues/903)) ([6444cf5](https://github.com/tf2pickup-org/tf2pickup/commit/6444cf5768b32b845b19264d6ec4b97b07a2888d)), closes [#902](https://github.com/tf2pickup-org/tf2pickup/issues/902)
+* **gamemode:** partition games and player data by gamemode ([#860](https://github.com/tf2pickup-org/tf2pickup/issues/860)), closes [#859](https://github.com/tf2pickup-org/tf2pickup/issues/859) [#816](https://github.com/tf2pickup-org/tf2pickup/issues/816) [#819](https://github.com/tf2pickup-org/tf2pickup/issues/819)
+* **gamemodes:** keep skill to the auto-balanced gamemodes ([#881](https://github.com/tf2pickup-org/tf2pickup/issues/881)) ([b927280](https://github.com/tf2pickup-org/tf2pickup/commit/b927280d8b2116841104ab4cdd81201f80949137)), closes [#868](https://github.com/tf2pickup-org/tf2pickup/issues/868)
+* **games:** redesign the game page ([#897](https://github.com/tf2pickup-org/tf2pickup/issues/897)) ([f411a1f](https://github.com/tf2pickup-org/tf2pickup/commit/f411a1fa8e298f41537d7f1e81997541e1b99283)), closes [#889](https://github.com/tf2pickup-org/tf2pickup/issues/889)
+* **games:** redesign the games page and filter it by gamemode ([#888](https://github.com/tf2pickup-org/tf2pickup/issues/888)) ([6ad9758](https://github.com/tf2pickup-org/tf2pickup/commit/6ad97588f490464f90b726e07e7eafcdcf99dff9))
+* **players:** redesign the player profile game history ([#889](https://github.com/tf2pickup-org/tf2pickup/issues/889)) ([1b8dc3e](https://github.com/tf2pickup-org/tf2pickup/commit/1b8dc3ec9220fe46736ee28e2fddd967958486d7))
+* **players:** show and edit player data per gamemode ([#863](https://github.com/tf2pickup-org/tf2pickup/issues/863)), closes [#862](https://github.com/tf2pickup-org/tf2pickup/issues/862) [#860](https://github.com/tf2pickup-org/tf2pickup/issues/860) [#860](https://github.com/tf2pickup-org/tf2pickup/issues/860)
+* **queues:** animate switching between queues ([#900](https://github.com/tf2pickup-org/tf2pickup/issues/900)) ([f134732](https://github.com/tf2pickup-org/tf2pickup/commit/f134732d174757cb7f7bc5145202673f5fa5f5c0)), closes [#898](https://github.com/tf2pickup-org/tf2pickup/issues/898)
+* **queues:** merge another instance into this one ([#867](https://github.com/tf2pickup-org/tf2pickup/issues/867)) ([d94bcde](https://github.com/tf2pickup-org/tf2pickup/commit/d94bcde01e6082639eadde953bcf7d9e1a70fff1)), closes [#866](https://github.com/tf2pickup-org/tf2pickup/issues/866) [#826](https://github.com/tf2pickup-org/tf2pickup/issues/826)
+* **queues:** queues API, per-queue telemetry, metrics and Discord prompts ([#866](https://github.com/tf2pickup-org/tf2pickup/issues/866)) ([93dbfcd](https://github.com/tf2pickup-org/tf2pickup/commit/93dbfcd848e29bd320a6271209a193eadc85ea1b)), closes [#865](https://github.com/tf2pickup-org/tf2pickup/issues/865)
+* **queues:** serve each queue at /q/<slug> and switch queues in place ([#865](https://github.com/tf2pickup-org/tf2pickup/issues/865)) ([0b72525](https://github.com/tf2pickup-org/tf2pickup/commit/0b72525db85cf089b26923f60792e8d4a538701f)), closes [#863](https://github.com/tf2pickup-org/tf2pickup/issues/863)
+* **queues:** store queues in the database and key the queue engine by queue ([#861](https://github.com/tf2pickup-org/tf2pickup/issues/861)), closes [#860](https://github.com/tf2pickup-org/tf2pickup/issues/860) [#820](https://github.com/tf2pickup-org/tf2pickup/issues/820)
+* redesign the hall of fame, document and player list pages ([#898](https://github.com/tf2pickup-org/tf2pickup/issues/898)) ([dcd43d3](https://github.com/tf2pickup-org/tf2pickup/commit/dcd43d3d257b727e5dcd9e4c144f9a42f3848370)), closes [#897](https://github.com/tf2pickup-org/tf2pickup/issues/897)
+* redesign the stats, settings and staff pages ([#902](https://github.com/tf2pickup-org/tf2pickup/issues/902)) ([9a16da7](https://github.com/tf2pickup-org/tf2pickup/commit/9a16da7ed60636a0c7004ce69aa269e426f91b4d)), closes [#901](https://github.com/tf2pickup-org/tf2pickup/issues/901)
+
+### Performance Improvements
+
+* **queues:** load the default skill once per render, not per slot ([#887](https://github.com/tf2pickup-org/tf2pickup/issues/887)) ([4c2ad5f](https://github.com/tf2pickup-org/tf2pickup/commit/4c2ad5fb3b7588abaeb15bf4bb95a6ab119b6838)), closes [#886](https://github.com/tf2pickup-org/tf2pickup/issues/886)
+
+### BREAKING CHANGES
+
+* **players:** `QUEUE_CONFIG` is read only by the upgrade migrations.
+  Changing it no longer changes the gamemode of a running instance; manage
+  queues in the admin panel instead.
+* **gamemode:** `stats.gamesByClass` in `/api/v1/players` is nested by
+  gamemode (`{ "6v6": { "scout": 12 } }` instead of `{ "scout": 12 }`).
+
+  ---------
+* **queues:** the `queue.*` configuration keys are removed; queue
+  settings and the map pool live on the queue itself. The upgrade
+  migration moves them onto `auto-<QUEUE_CONFIG>`.
+
+  ---------
+
 ## [4.25.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.5...4.25.6) (2026-11-12)
 
 ### Dependencies
