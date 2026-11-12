@@ -1,5 +1,6 @@
 import { millisecondsToSeconds } from 'date-fns'
 import type { QueueModel } from '../../../../database/models/queue.model'
+import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import { QueueTabs } from '../../../../html/components/queue-tabs'
 import { Switch } from '../../../../html/components/switch'
 import { queues } from '../../../../queues'
@@ -58,42 +59,44 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
             />
           </div>
 
-          <dl>
-            <dt class="group flex flex-row gap-2">
-              <label for="skillThresholdEnabled">Player skill threshold</label>
-              <input
-                type="checkbox"
-                id="skillThresholdEnabled"
-                name="skillThresholdEnabled"
-                value="enabled"
-                checked={queue.skillThreshold !== null}
-              />
-              <span class="hidden group-has-checked:inline-block">enabled</span>
-              <span class="group-has-checked:hidden">disabled</span>
-            </dt>
-            <dd class="flex flex-col">
-              <div>
-                <label for="skillThreshold" class="sr-only">
-                  Player skill threshold value
-                </label>
+          {gamemodeConfigs[queue.gamemode].autoBalance && (
+            <dl>
+              <dt class="group flex flex-row gap-2">
+                <label for="skillThresholdEnabled">Player skill threshold</label>
                 <input
-                  type="number"
-                  id="skillThreshold"
-                  name="skillThreshold"
-                  step="any"
-                  value={queue.skillThreshold?.toString()}
-                  disabled={queue.skillThreshold === null}
-                  data-toggle-disabled-form="#queueSettingsForm"
-                  data-toggle-disabled-control="skillThresholdEnabled"
-                  data-toggle-disabled-checked="true"
+                  type="checkbox"
+                  id="skillThresholdEnabled"
+                  name="skillThresholdEnabled"
+                  value="enabled"
+                  checked={queue.skillThreshold !== null}
                 />
-              </div>
-              <p class="text-sm text-zinc-200">
-                Players will be able to join this queue only on classes that meet the given
-                criteria.
-              </p>
-            </dd>
-          </dl>
+                <span class="hidden group-has-checked:inline-block">enabled</span>
+                <span class="group-has-checked:hidden">disabled</span>
+              </dt>
+              <dd class="flex flex-col">
+                <div>
+                  <label for="skillThreshold" class="sr-only">
+                    Player skill threshold value
+                  </label>
+                  <input
+                    type="number"
+                    id="skillThreshold"
+                    name="skillThreshold"
+                    step="any"
+                    value={queue.skillThreshold?.toString()}
+                    disabled={queue.skillThreshold === null}
+                    data-toggle-disabled-form="#queueSettingsForm"
+                    data-toggle-disabled-control="skillThresholdEnabled"
+                    data-toggle-disabled-checked="true"
+                  />
+                </div>
+                <p class="text-sm text-zinc-200">
+                  Players will be able to join this queue only on classes that meet the given
+                  criteria.
+                </p>
+              </dd>
+            </dl>
+          )}
 
           <SecondsInput
             id="readyUpTimeout"
