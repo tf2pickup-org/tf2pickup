@@ -43,7 +43,7 @@ export async function send(params: SendParams): Promise<WithId<ChatMessageModel>
     }
 
     const previousMessage = await collections.chatMessages.findOne(
-      { at: { $lt: message.at } },
+      { at: { $lt: message.at }, deletedAt: { $exists: false } },
       {
         sort: { at: -1 },
       },
