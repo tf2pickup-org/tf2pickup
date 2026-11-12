@@ -221,5 +221,24 @@ describe('QueueSlot', () => {
         expect(tooltip!.text).toBe('No skill assigned')
       })
     })
+
+    describe.each([Gamemode.ultiduo, Gamemode.bball])('when the gamemode is %s', gamemode => {
+      beforeEach(() => {
+        vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
+        vi.mocked(collections.queueFriends.findOne).mockResolvedValue(null)
+      })
+
+      it('renders neither the clover icon nor the skill tooltip', async () => {
+        const html = await QueueSlot({
+          queue: { ...queue, gamemode },
+          slot: occupiedSlot,
+          actor: adminActor,
+        })
+        const root = parse(html)
+        expect(root.querySelector('.fresh-player-icon')).toBeNull()
+        expect(root.querySelector('.player-name-area .tooltip')).toBeNull()
+        expect(collections.players.findOne).not.toHaveBeenCalled()
+      })
+    })
   })
 })
