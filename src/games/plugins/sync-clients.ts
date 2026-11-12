@@ -11,8 +11,6 @@ import { GameEventList } from '../views/html/game-event-list'
 import { GameSlot } from '../views/html/game-slot'
 import { GamesLink } from '../../html/components/games-link'
 import { GameScore } from '../views/html/game-score'
-import { JoinVoiceButton } from '../views/html/join-voice-button'
-import { JoinGameButton } from '../views/html/join-game-button'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { ServerReadyNotification } from '../views/html/server-ready-notification'
 import { errors } from '../../errors'
@@ -70,7 +68,7 @@ export default fp(async app => {
     ) {
       app.gateway
         .to({ url: `/games/${after.number}` })
-        .send(async actor => await JoinGameButton({ game: after, actor }))
+        .send(async actor => await ConnectInfo({ game: after, actor }))
     }
 
     if (after.connectString !== undefined && before.connectString !== after.connectString) {
@@ -107,18 +105,14 @@ export default fp(async app => {
         return
       }
 
-      if (beforeSlot.shouldJoinBy !== slot.shouldJoinBy) {
+      if (
+        beforeSlot.shouldJoinBy !== slot.shouldJoinBy ||
+        beforeSlot.voiceServerUrl !== slot.voiceServerUrl
+      ) {
         app.gateway
           .to({ url: `/games/${after.number}` })
           .to({ player: slot.player })
-          .send(async actor => await JoinGameButton({ game: after, actor }))
-      }
-
-      if (beforeSlot.voiceServerUrl !== slot.voiceServerUrl) {
-        app.gateway
-          .to({ url: `/games/${after.number}` })
-          .to({ player: slot.player })
-          .send(async actor => await JoinVoiceButton({ game: after, actor }))
+          .send(async actor => await ConnectInfo({ game: after, actor }))
       }
     }
   })

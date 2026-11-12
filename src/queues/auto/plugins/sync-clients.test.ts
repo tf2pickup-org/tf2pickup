@@ -255,6 +255,17 @@ describe('sync-clients', () => {
     })
   })
 
+  describe('player/ban:added', () => {
+    it("sends the ban alerts to the player's queue pages only", async () => {
+      const handler = getHandler<{ player: SteamId64 }>('player/ban:added')
+
+      await handler({ player: steamId1 })
+
+      expect(app.gateway.to).toHaveBeenCalledWith({ players: [steamId1] })
+      expect(app.gateway.to).toHaveBeenCalledWith({ urls: ['/q/auto-6v6'] })
+    })
+  })
+
   describe('queue/slots:updated handler', () => {
     it('pre-fetches all connected players in a single batch query', async () => {
       ;(app.websocketServer.clients as Set<unknown>).add({ player: { steamId: steamId1 } })
