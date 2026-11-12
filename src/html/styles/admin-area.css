@@ -48,7 +48,8 @@
 
     @media (prefers-reduced-motion: reduce) {
       &::details-content,
-      .admin-area-content {
+      .admin-area-content,
+      .admin-area-chevron {
         transition: none;
       }
     }
