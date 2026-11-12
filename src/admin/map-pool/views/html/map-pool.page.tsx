@@ -1,10 +1,11 @@
+import { queues } from '../../../../queues'
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { mapPool } from '../../../../maps/pool'
 import { Admin } from '../../../views/html/admin'
 import { SaveButton } from '../../../views/html/save-button'
 
 export async function MapPoolPage() {
-  const maps = await mapPool.get()
+  const maps = await mapPool.get((await queues.getDefault())._id)
 
   return (
     <Admin activePage="map-pool">
@@ -56,6 +57,7 @@ export function MapPoolEntry(props: { name: string; execConfig?: string | undefi
         <input
           type="text"
           name="name[]"
+          aria-label="Map name"
           value={props.name}
           required
           class="max-lg:w-full max-lg:min-w-0"
@@ -65,12 +67,13 @@ export function MapPoolEntry(props: { name: string; execConfig?: string | undefi
         <input
           type="text"
           name="execConfig[]"
+          aria-label="Map config"
           value={props.execConfig}
           class="max-lg:w-full max-lg:min-w-0"
         />
       </td>
       <td>
-        <button class="text-white" data-remove-closest="tr">
+        <button class="text-white" data-remove-closest="tr" aria-label="Remove map">
           <IconMinus />
         </button>
       </td>

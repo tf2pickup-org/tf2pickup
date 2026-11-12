@@ -3,27 +3,8 @@ import { delay } from 'es-toolkit'
 import { launchGame as test } from '../fixtures/launch-game'
 import { expect } from '../fixtures/expect'
 
-const readyUpTimeout = secondsToMilliseconds(20)
-const keys = ['queue.ready_up_timeout', 'queue.ready_state_timeout'] as const
-
-let saved: string[] = []
-
-test.beforeEach(async ({ users }) => {
-  const admin = await users.getAdmin().adminPage()
-  saved = []
-  for (const key of keys) {
-    saved.push(await admin.configurationValue(key))
-  }
-  await admin.configure(keys[0], readyUpTimeout.toString())
-  await admin.configure(keys[1], secondsToMilliseconds(30).toString())
-})
-
-test.afterEach(async ({ users }) => {
-  const admin = await users.getAdmin().adminPage()
-  for (const [i, key] of keys.entries()) {
-    await admin.configure(key, saved[i]!)
-  }
-})
+// the queue's default
+const readyUpTimeout = secondsToMilliseconds(40)
 
 test('a queue cleared while readying up starts its next ready-up afresh @6v6 @9v9', async ({
   players,

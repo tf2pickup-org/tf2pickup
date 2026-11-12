@@ -1,58 +1,49 @@
 import { collections } from '../../database/collections'
+import type { QueueId } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { QueueState } from '../../database/models/queue-state.model'
 import { events } from '../../events'
+import { gamemodeConfigs } from '../../gamemodes/configs'
+import type { GamemodeConfig } from '../../gamemodes/types/gamemode-config'
 import { logger } from '../../logger'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
-import { config } from './config'
+import { get } from '../get'
 import { getSlots } from './get-slots'
 import { getState } from '../get-state'
 import { resetMapOptions } from '../../maps/reset-options'
 
-export async function reset() {
-  logger.trace('queue.reset()')
-  const slots = generateEmptyQueue()
-  await collections.queueSlots.deleteMany({})
-  await collections.queueSlots.insertMany(slots)
+export async function reset(queue: QueueId) {
+  logger.trace({ queue }, 'queue.reset()')
+  const { gamemode } = await get(queue)
+  await collections.queueSlots.deleteMany({ queue })
+  await collections.queueSlots.insertMany(generateEmptyQueue(queue, gamemodeConfigs[gamemode]))
   await collections.queueState.updateOne(
-    {},
-    {
-      $set: {
-        state: QueueState.waiting,
-      },
-    },
-    {
-      upsert: true,
-    },
+    { queue },
+    { $set: { state: QueueState.waiting } },
+    { upsert: true },
   )
-  events.emit('queue/slots:updated', { slots: await getSlots() })
-  events.emit('queue/state:updated', { state: await getState() })
-  await resetMapOptions()
-  logger.info('queue reset')
+  events.emit('queue/slots:updated', { queue, slots: await getSlots(queue) })
+  events.emit('queue/state:updated', { queue, state: await getState(queue) })
+  await resetMapOptions(queue)
+  logger.info({ queue }, 'queue reset')
 }
 
 type EmptyQueueSlot = Omit<QueueSlotModel, 'player'> & { player: null }
 
-function generateEmptyQueue(): EmptyQueueSlot[] {
+function generateEmptyQueue(queue: QueueId, config: GamemodeConfig): EmptyQueueSlot[] {
   const classCounts = Object.fromEntries(Object.keys(Tf2ClassName).map(gc => [gc, 1])) as Record<
     Tf2ClassName,
     number
   >
 
-  const slots = config.classes.reduce<EmptyQueueSlot[]>((prev, curr) => {
-    const classSlots: EmptyQueueSlot[] = []
-    for (let i = 0; i < curr.count * config.teamCount; ++i) {
-      classSlots.push({
-        id: `${curr.name}-${classCounts[curr.name]++}`,
-        gameClass: curr.name,
-        canMakeFriendsWith: curr.canMakeFriendsWith ?? [],
-        player: null,
-        ready: false,
-      })
-    }
-
-    return prev.concat(classSlots)
-  }, [])
-
-  return slots
+  return config.classes.flatMap(({ name, count, canMakeFriendsWith }) =>
+    Array.from({ length: count * config.teamCount }, () => ({
+      queue,
+      id: `${name}-${classCounts[name]++}`,
+      gameClass: name,
+      canMakeFriendsWith: canMakeFriendsWith ?? [],
+      player: null,
+      ready: false,
+    })),
+  )
 }
