@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.25.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.5...4.25.6) (2026-11-12)
+
+### Dependencies
+
+* @fastify/proxy-addr to v5.1.2 ([5325140](https://github.com/tf2pickup-org/tf2pickup/commit/53251400d5f5e8458bce769a36190a2e71ebe9a8))
+* address open dependabot alerts ([#962](https://github.com/tf2pickup-org/tf2pickup/issues/962)) ([ed2463f](https://github.com/tf2pickup-org/tf2pickup/commit/ed2463ff757b09e0ae4cd0c5c99ad8b7bcea503b)), closes [#961](https://github.com/tf2pickup-org/tf2pickup/issues/961)
+
 ## [4.25.5](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.4...4.25.5) (2026-11-11)
 
 ### Bug Fixes
