@@ -36,7 +36,7 @@ export async function ViewForNerdsPage() {
       <div class="admin-panel-set">
         <div class="table w-full max-lg:block">
           <div class="table-header-group max-lg:hidden">
-            <div class="table-row">
+            <div class="view-for-nerds-row table-row">
               <div class="table-cell">Key</div>
               <div class="table-cell">Value</div>
             </div>
@@ -83,7 +83,7 @@ export function ConfigurationEntryEdit(props: {
 
   return (
     <form
-      class="hover:bg-zinc-925 table-row max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:items-center max-lg:gap-x-2"
+      class="view-for-nerds-row table-row max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:items-center max-lg:gap-x-2"
       hx-post={url}
       hx-swap="outerHTML"
     >
