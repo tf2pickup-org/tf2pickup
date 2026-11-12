@@ -56,7 +56,7 @@ setup('authenticate', async ({ browser }) => {
         const context = await browser.newContext()
         const page = await context.newPage()
         await page.goto(`/auth/test?steamId=${steamId}`)
-        await page.waitForURL('/')
+        await page.waitForURL(url => url.pathname === '/' || url.pathname.startsWith('/q/'))
         await context.storageState({ path })
         await context.close()
       }),
