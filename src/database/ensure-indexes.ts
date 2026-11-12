@@ -1,6 +1,7 @@
 import { collections } from './collections'
 import { MongoServerError, ObjectId, type IndexOptions, type IndexSpecification } from 'mongodb'
 import { logger } from '../logger'
+import { Gamemode } from '../shared/types/gamemode'
 
 interface IndexDefinition {
   spec: IndexSpecification
@@ -19,7 +20,9 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     // Covers the player list query (steamId + name, no _id) so it runs index-only.
     { spec: { steamId: 1, name: 1 } },
     { spec: { 'stats.totalGames': -1 } },
-    { spec: { 'stats.gamesByClass.medic': -1 } },
+    ...Object.values(Gamemode).map(gamemode => ({
+      spec: { [`stats.gamesByClass.${gamemode}.medic`]: -1 },
+    })),
     { spec: { avatarLastSyncedAt: 1 } },
     // Sparse: preReadyUntil is $unset once the pre-ready lapses, so this only
     // ever holds the handful of players pre-readied right now.
@@ -65,7 +68,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { gameNumber: 1, replacement: 1 } },
   ],
   gamesRoundProgress: [{ spec: { gameNumber: 1 }, options: { unique: true } }],
-  futurePlayerSkills: [{ spec: { steamId: 1 }, options: { unique: true } }],
+  futurePlayerSkills: [{ spec: { steamId: 1, gamemode: 1 }, options: { unique: true } }],
   pendingImports: [{ spec: { actor: 1 }, options: { unique: true } }],
   logsTfLogs: [
     { spec: { logId: 1 }, options: { unique: true } },

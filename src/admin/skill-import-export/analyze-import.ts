@@ -3,6 +3,7 @@ import type { ChangedPlayer, FuturePlayer, ImportAnalysis, InitializedPlayer } f
 export type { ImportAnalysis } from './types'
 import { collections } from '../../database/collections'
 import type { PlayerModel, PlayerSkill } from '../../database/models/player.model'
+import type { Gamemode } from '../../shared/types/gamemode'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 
@@ -14,7 +15,10 @@ function makeProfileUrl(steamId: SteamId64): string {
   return `/player/${steamId}`
 }
 
-export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise<ImportAnalysis> {
+export async function analyzeImport(
+  parsedPlayers: ParsedPlayerSkill[],
+  gamemode: Gamemode,
+): Promise<ImportAnalysis> {
   const steamIds = parsedPlayers.map(p => p.steamId)
   const existingPlayers = await collections.players
     .find({ steamId: { $in: steamIds } }, { projection: { steamId: 1, name: 1, skill: 1 } })
@@ -41,9 +45,10 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
       continue
     }
 
-    const hasExistingSkill = existing.skill && Object.keys(existing.skill).length > 0
+    const existingSkill = existing.skill?.[gamemode]
+    const hasExistingSkill = existingSkill && Object.keys(existingSkill).length > 0
 
-    if (skillsEqual(existing.skill, parsed.skill)) {
+    if (skillsEqual(existingSkill, parsed.skill)) {
       unaffectedCount++
       continue
     }
@@ -53,7 +58,7 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
         steamId: existing.steamId,
         name: existing.name,
         profileUrl: makeProfileUrl(existing.steamId),
-        oldSkill: existing.skill!,
+        oldSkill: existingSkill,
         newSkill: parsed.skill,
       })
     } else {
@@ -67,6 +72,7 @@ export async function analyzeImport(parsedPlayers: ParsedPlayerSkill[]): Promise
   }
 
   return {
+    gamemode,
     changedPlayers,
     initializedPlayers,
     unaffectedCount,
