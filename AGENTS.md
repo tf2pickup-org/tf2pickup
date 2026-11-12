@@ -69,7 +69,7 @@ Collections are exported from `src/database/collections.ts` with TypeScript mode
 
 ### Environment
 
-All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for available variables. Key ones: `MONGODB_URI`, `STEAM_API_KEY`, `QUEUE_CONFIG` (6v6/9v9/bball/ultiduo/test), `WEBSITE_URL`.
+All env vars are Zod-validated in `src/environment.ts`. See `sample.env` for available variables. Key ones: `MONGODB_URI`, `STEAM_API_KEY`, `WEBSITE_URL`. `QUEUE_CONFIG` is read only by the upgrade migrations, which tag pre-5.0 data with that gamemode; queues themselves are DB entities managed in the admin panel (`src/queues`).
 
 ### Observability
 
