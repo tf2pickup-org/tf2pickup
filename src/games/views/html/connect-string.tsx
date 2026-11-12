@@ -1,6 +1,6 @@
 import type { Children } from '@kitajs/html'
 import type { GameNumber } from '../../../database/models/game.model'
-import { IconCopy } from '../../../html/components/icons'
+import { IconCheck, IconCopy } from '../../../html/components/icons'
 
 export async function ConnectString(props: {
   connectString?: string | undefined
@@ -13,13 +13,15 @@ export async function ConnectString(props: {
   if (props.connectString) {
     csBtn = (
       <button
-        class="hover:text-zinc-100"
+        class="group hover:text-zinc-100"
         copy-to-clipboard={props.connectString}
         data-umami-event="copy-connect-string"
         data-umami-event-game-number={props.gameNumber}
       >
-        <IconCopy size={24} />
-        <span class="sr-only">Copy connect string</span>
+        <IconCopy size={24} class="group-data-copied:hidden" />
+        <IconCheck size={24} class="hidden text-green-500 group-data-copied:block" />
+        <span class="sr-only group-data-copied:hidden">Copy connect string</span>
+        <span class="sr-only hidden group-data-copied:inline">Copied</span>
       </button>
     )
   }

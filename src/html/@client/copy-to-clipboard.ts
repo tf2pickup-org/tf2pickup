@@ -1,3 +1,4 @@
+import { secondsToMilliseconds } from 'date-fns'
 import htmx from './htmx.js'
 
 function maybeCopyToClipboard(element: Element) {
@@ -11,6 +12,10 @@ function maybeCopyToClipboard(element: Element) {
     event.preventDefault()
     try {
       await navigator.clipboard.writeText(text)
+      element.setAttribute('data-copied', '')
+      setTimeout(() => {
+        element.removeAttribute('data-copied')
+      }, secondsToMilliseconds(2))
     } catch (error) {
       console.error(error)
     }
