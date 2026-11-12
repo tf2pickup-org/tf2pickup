@@ -16,6 +16,7 @@ import {
 } from '../../../../html/components/icons'
 import { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
 import { GameClassIcon } from '../../../../html/components/game-class-icon'
+import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import { joinBlocker, type JoinBlockerPlayer } from '../../join-blocker'
 import type { QueueSlotId } from '../../../types/queue-slot-id'
 
@@ -85,14 +86,17 @@ async function PlayerInfo(props: { queue: Queue; slot: QueueSlotModel; actor?: A
     return <></>
   }
 
-  let isAdmin = false
+  let showSkill = false
   let skill: PlayerSkill | undefined = undefined
-  if (props.actor?.roles.includes(PlayerRole.admin)) {
+  if (
+    props.actor?.roles.includes(PlayerRole.admin) &&
+    gamemodeConfigs[props.queue.gamemode].autoBalance
+  ) {
     const slotPlayer = await collections.players.findOne<Pick<PlayerModel, 'skill'>>(
       { steamId: props.slot.player.steamId },
       { projection: { skill: 1 } },
     )
-    isAdmin = true
+    showSkill = true
     skill = slotPlayer?.skill?.[props.queue.gamemode]
   }
 
@@ -110,7 +114,7 @@ async function PlayerInfo(props: { queue: Queue; slot: QueueSlotModel; actor?: A
   }
 
   const skillEntries =
-    isAdmin && skill
+    showSkill && skill
       ? Object.values(Tf2ClassName).flatMap(c =>
           skill[c] === undefined ? [] : [[c, skill[c]] as const],
         )
@@ -133,13 +137,13 @@ async function PlayerInfo(props: { queue: Queue; slot: QueueSlotModel; actor?: A
           <span class="player-name-text" safe>
             {props.slot.player.name}
           </span>
-          {isAdmin && skillEntries.length === 0 && (
+          {showSkill && skillEntries.length === 0 && (
             <span class="fresh-player-icon">
               <IconClover size={18} />
             </span>
           )}
         </a>
-        {isAdmin && (
+        {showSkill && (
           <span class="tooltip">
             {skillEntries.length === 0
               ? 'No skill assigned'
