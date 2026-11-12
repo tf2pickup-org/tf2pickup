@@ -9,7 +9,7 @@ export async function GameLaunchTimeSpans() {
 
   return (
     <>
-      <span class="text-abru-light-75 mb-6 text-2xl font-bold">Game launch times</span>
+      <span class="mb-6 text-2xl font-bold text-zinc-200">Game launch times</span>
       <div class="my-auto w-full px-4">
         <canvas id="game-launch-time-spans"></canvas>
       </div>

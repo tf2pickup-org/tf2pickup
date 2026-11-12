@@ -5,7 +5,7 @@ import type { SteamId64 } from '../../../shared/types/steam-id-64'
 export async function MumbleSettingsEntry(props: { steamId: SteamId64 }) {
   const { mumbleCertificate } = await players.bySteamId(props.steamId, ['mumbleCertificate'])
   return (
-    <div class="bg-abru-light-5 flex flex-row items-center gap-4 rounded-sm p-2">
+    <div class="bg-zinc-850 flex flex-row items-center gap-4 rounded-sm p-2">
       <IconHeadset size={32} />
       <p class="font-bold">Mumble</p>
       {mumbleCertificate ? (

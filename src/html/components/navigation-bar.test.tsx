@@ -18,7 +18,7 @@ describe('NavigationBar', () => {
   it('gives the mobile menu an opaque background', async () => {
     const html = await NavigationBar()
 
-    expect(html).not.toMatch(/bg-abru\/\d+/)
-    expect(html).toMatch(/id="nav-menu"\s+class="[^"]*\bmax-lg:bg-abru\b/)
+    expect(html).not.toMatch(/bg-zinc-950\/\d+/)
+    expect(html).toMatch(/id="nav-menu"\s+class="[^"]*\bmax-lg:bg-zinc-950\b/)
   })
 })

@@ -117,7 +117,7 @@ async function PrivilegeChecklist() {
   return (
     <section class="mt-6 flex max-w-prose flex-col gap-4" id="mumble-privileges">
       <div>
-        <h4 class="text-abru-light-85 font-bold">What the bot is allowed to do</h4>
+        <h4 class="font-bold text-zinc-100">What the bot is allowed to do</h4>
         <p>
           The bot needs these permissions on the Mumble server. The games channel is the one set in{' '}
           <em>Channel name</em> above. Write ACL on a channel grants every other permission on it,
@@ -137,7 +137,7 @@ async function PrivilegeChecklist() {
               <IconX class="shrink-0 text-red-600" />
             )}
             <div class="flex flex-col">
-              <span class="text-abru-light-85 font-medium">
+              <span class="font-medium text-zinc-100">
                 <span safe>{name}</span>
                 <span class="sr-only">{privileges[key] ? ': allowed' : ': not allowed'}</span>
               </span>
@@ -154,7 +154,7 @@ async function PrivilegeChecklist() {
       </ul>
 
       <div class={['flex-col', visibleWithVerification]}>
-        <h4 class="text-abru-light-85 font-bold">Message rate limits</h4>
+        <h4 class="font-bold text-zinc-100">Message rate limits</h4>
         <p>
           By default Mumble ignores a client's messages after a burst of 5, then allows 1 per
           second, which makes the bot's permission updates time out. Raise the limits in the server

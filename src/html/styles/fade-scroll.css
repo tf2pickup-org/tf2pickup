@@ -30,7 +30,7 @@
 
   /* Firefox */
   scrollbar-width: auto;
-  scrollbar-color: var(--color-abru-light-30) transparent;
+  scrollbar-color: var(--color-zinc-500) transparent;
 
   /* Webkit / Blink */
   &::-webkit-scrollbar {
@@ -38,7 +38,7 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: var(--color-abru-light-30);
+    background-color: var(--color-zinc-500);
     border-radius: 9999px; /* always round */
   }
 

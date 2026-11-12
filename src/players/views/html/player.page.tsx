@@ -116,9 +116,7 @@ export async function PlayerGameList(props: { steamId: SteamId64; page: number }
 
   return games.length > 0 ? (
     <>
-      <div class="text-abru-light-75 text-center text-2xl font-bold md:text-start">
-        Game history
-      </div>
+      <div class="text-center text-2xl font-bold text-zinc-200 md:text-start">Game history</div>
       <div class="game-list col-span-2" style="view-transition-name: player-game-list">
         {games.map(game => (
           <GameListItem
@@ -174,7 +172,7 @@ function PlayerPresentation(props: {
           {props.player.name}
         </span>
         {props.player.roles.includes(PlayerRole.admin) ? (
-          <span class="bg-alert text-abru-light-3 rounded-[3px] px-[8px] py-[6px] leading-none font-bold">
+          <span class="bg-alert rounded-[3px] px-[8px] py-[6px] leading-none font-bold text-zinc-900">
             admin
           </span>
         ) : (
@@ -202,14 +200,14 @@ function PlayerPresentation(props: {
         <span class="hidden text-base font-light md:inline">Total games played:</span>
         <span class="justify-self-start text-2xl font-bold">{props.gameCount}</span>
 
-        <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
+        <div class="row-span-2 mx-2 hidden h-[48px] w-[2px] self-center bg-zinc-700 md:block"></div>
 
         {props.gamemodes.map((gamemode, i) => (
           <>
             {props.gamemodes.length > 1 && (
               <>
                 {i > 0 && (
-                  <div class="bg-abru-light-15 row-span-2 mx-2 hidden h-[48px] w-[2px] self-center md:block"></div>
+                  <div class="row-span-2 mx-2 hidden h-[48px] w-[2px] self-center bg-zinc-700 md:block"></div>
                 )}
                 <span class="text-base font-light md:row-span-2">{gamemode}</span>
               </>
