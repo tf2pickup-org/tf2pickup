@@ -98,6 +98,8 @@ import { players } from '../../../players'
 import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../../database/models/queue-state.model'
 import { QueueSlot } from '../views/html/queue-slot'
+import { QueueSwitcherCount } from '../views/html/queue-switcher-count'
+import { queues } from '../..'
 import plugin from './sync-clients'
 
 const steamId1 = '76561198000000001' as SteamId64
@@ -310,6 +312,33 @@ describe('sync-clients', () => {
       expect(QueueSlot).toHaveBeenCalledWith(
         expect.objectContaining({ slot, defaultSkill: { soldier: 2 } }),
       )
+    })
+
+    it('does not send the queue switcher count when there is no switcher', async () => {
+      const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
+
+      await handler({ queue: 'shown-queue', slots: [] })
+
+      expect(QueueSwitcherCount).not.toHaveBeenCalled()
+      expect(app.gateway.to).not.toHaveBeenCalledWith({ urls: ['/q/auto-6v6'] })
+    })
+
+    it('sends the queue switcher count to every queue page when there is a switcher', async () => {
+      vi.mocked(queues.listEnabled).mockResolvedValueOnce([
+        shownQueue,
+        { ...shownQueue, _id: 'other-queue', slug: 'auto-9v9' },
+      ] as never)
+      vi.mocked(queues.pageUrls).mockResolvedValueOnce(['/q/auto-6v6', '/q/auto-9v9'])
+      const handler = getHandler<{ queue: unknown; slots: unknown[] }>('queue/slots:updated')
+
+      await handler({ queue: 'shown-queue', slots: [] })
+
+      expect(QueueSwitcherCount).toHaveBeenCalledWith({
+        slug: 'auto-6v6',
+        current: 0,
+        required: 12,
+      })
+      expect(app.gateway.to).toHaveBeenCalledWith({ urls: ['/q/auto-6v6', '/q/auto-9v9'] })
     })
 
     it('does not include unauthenticated clients in the batch query', async () => {
