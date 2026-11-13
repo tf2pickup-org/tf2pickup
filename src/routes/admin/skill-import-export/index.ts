@@ -57,7 +57,7 @@ export default routes(async app => {
         const gamemode = await selectedGamemode(request.query.gamemode)
         const csv = await exportSkills(gamemode)
         const filename = `player-skills-${gamemode}-${new Date().toISOString().split('T')[0]}.csv`
-        void reply
+        return reply
           .status(200)
           .header('Content-Type', 'text/csv; charset=utf-8')
           .header('Content-Disposition', `attachment; filename="${filename}"`)
