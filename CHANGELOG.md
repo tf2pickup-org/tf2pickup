@@ -1,5 +1,21 @@
 # Changelog
 
+# [5.0.0-alpha.1](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.0...5.0.0-alpha.1) (2026-11-13)
+
+### Bug Fixes
+
+* **chat:** group messages by day with sticky date separators ([#968](https://github.com/tf2pickup-org/tf2pickup/issues/968)) ([4644d34](https://github.com/tf2pickup-org/tf2pickup/commit/4644d3409eacc527ba034fde00d4a6a7338dcba7))
+* **games:** confirm copying the connect string ([#970](https://github.com/tf2pickup-org/tf2pickup/issues/970)) ([1ed3bf5](https://github.com/tf2pickup-org/tf2pickup/commit/1ed3bf5589302118460dcf28416df509a90f6649))
+* **games:** keep syncing later slots after a replaced player ([#971](https://github.com/tf2pickup-org/tf2pickup/issues/971)) ([b9aa77a](https://github.com/tf2pickup-org/tf2pickup/commit/b9aa77a5f280095759179f6236a74564cbcd8c99))
+* only send out-of-band swaps that have a target on the page ([#969](https://github.com/tf2pickup-org/tf2pickup/issues/969)) ([1248552](https://github.com/tf2pickup-org/tf2pickup/commit/1248552c2324e9ed12486363185bf0d4d87eaeb4))
+* **queue:** hide skill tooltip for gamemodes that aren't auto-balanced ([#967](https://github.com/tf2pickup-org/tf2pickup/issues/967)) ([916baa5](https://github.com/tf2pickup-org/tf2pickup/commit/916baa5999b4135e4798ff794c25f20b0871aea9))
+* **queue:** keep team player counters in sync in compact queues ([#966](https://github.com/tf2pickup-org/tf2pickup/issues/966)) ([6967a34](https://github.com/tf2pickup-org/tf2pickup/commit/6967a3438d64d0f30b4af7d475cd6720244073bb))
+* **sounds:** de-duplicate notification sounds across browser tabs ([#831](https://github.com/tf2pickup-org/tf2pickup/issues/831)) ([983d859](https://github.com/tf2pickup-org/tf2pickup/commit/983d859f27e8387ff43b29a32a4628db048973da))
+
+### Dependencies
+
+* dotenv to v18.0.10 ([e40c0c5](https://github.com/tf2pickup-org/tf2pickup/commit/e40c0c5a0e4811f7f2780a10bcdab35b0e07c272))
+
 # [5.0.0-alpha.0](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.6...5.0.0-alpha.0) (2026-11-12)
 
 ### Bug Fixes
