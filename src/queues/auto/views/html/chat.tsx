@@ -77,13 +77,15 @@ function chatDayId(date: Date) {
   return `chat-day-${format(date, 'yyyy-MM-dd')}`
 }
 
+function chatDayMessages(date: Date) {
+  return `#${chatDayId(date)} .chat-day-messages`
+}
+
 function ChatDay(props: Html.PropsWithChildren<{ at: Date }>) {
   return (
-    <div class="chat-day">
+    <div class="chat-day" id={chatDayId(props.at)}>
       <ChatDateSeparator at={props.at} />
-      <div class="chat-day-messages" id={chatDayId(props.at)}>
-        {props.children}
-      </div>
+      <div class="chat-day-messages">{props.children}</div>
     </div>
   )
 }
@@ -124,9 +126,7 @@ export function ChatMessageList(props: {
         const at = day[0]!.at
         const messages = day.map(message => <ChatMessage message={message} />)
         return props.before && isSameDay(at, props.before) ? (
-          <div id={chatDayId(at)} hx-swap-oob="beforeend">
-            {messages}
-          </div>
+          <div hx-swap-oob={`beforeend:${chatDayMessages(at)}`}>{messages}</div>
         ) : (
           <ChatDay at={at}>{messages}</ChatDay>
         )
@@ -146,18 +146,22 @@ ChatMessages.append = function (props: {
 }) {
   if (props.previousMessageAt && isSameDay(props.message.at, props.previousMessageAt)) {
     return (
-      <div id={chatDayId(props.message.at)} hx-swap-oob="afterbegin">
+      <div hx-swap-oob={`afterbegin:${chatDayMessages(props.message.at)}`}>
         <ChatMessage message={props.message} />
       </div>
     )
   }
 
+  // htmx swaps into every element matching the id, so drop a stale group whose messages were all deleted
   return (
-    <div id="chat-message-list" hx-swap-oob="afterbegin">
-      <ChatDay at={props.message.at}>
-        <ChatMessage message={props.message} />
-      </ChatDay>
-    </div>
+    <>
+      <div id={chatDayId(props.message.at)} hx-swap-oob="delete"></div>
+      <div id="chat-message-list" hx-swap-oob="afterbegin">
+        <ChatDay at={props.message.at}>
+          <ChatMessage message={props.message} />
+        </ChatDay>
+      </div>
+    </>
   )
 }
 

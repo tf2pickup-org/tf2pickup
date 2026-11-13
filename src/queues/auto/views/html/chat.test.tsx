@@ -49,8 +49,10 @@ describe('ChatMessageList', () => {
         before: new Date(2026, 10, 12, 8, 0),
       }),
     )
-    const continued = root.querySelector('#chat-day-2026-11-12')!
-    expect(continued.getAttribute('hx-swap-oob')).toBe('beforeend')
+    const continued = root.querySelector('[hx-swap-oob]')!
+    expect(continued.getAttribute('hx-swap-oob')).toBe(
+      'beforeend:#chat-day-2026-11-12 .chat-day-messages',
+    )
     expect(continued.querySelector('.chat-date-separator')).toBeNull()
     expect(continued.querySelectorAll('.chat-message').length).toBe(1)
     expect(root.querySelectorAll('.chat-day .chat-date-separator').map(s => s.text)).toEqual([
@@ -67,8 +69,9 @@ describe('ChatMessages.append', () => {
         previousMessageAt: new Date(2026, 10, 12, 8, 0),
       }),
     )
-    const target = root.querySelector('#chat-day-2026-11-12')!
-    expect(target.getAttribute('hx-swap-oob')).toBe('afterbegin')
+    expect(root.querySelector('[hx-swap-oob]')?.getAttribute('hx-swap-oob')).toBe(
+      'afterbegin:#chat-day-2026-11-12 .chat-day-messages',
+    )
     expect(root.querySelector('.chat-date-separator')).toBeNull()
   })
 
@@ -76,8 +79,14 @@ describe('ChatMessages.append', () => {
     const root = parse(
       await ChatMessages.append({ message: message(today), previousMessageAt: yesterday }),
     )
-    expect(root.querySelector('#chat-message-list')?.getAttribute('hx-swap-oob')).toBe('afterbegin')
-    expect(root.querySelectorAll('.chat-day').length).toBe(1)
-    expect(root.querySelector('.chat-day #chat-day-2026-11-12 .chat-message')).not.toBeNull()
+    expect(
+      root.querySelectorAll('[hx-swap-oob]').map(el => [el.id, el.getAttribute('hx-swap-oob')]),
+    ).toEqual([
+      ['chat-day-2026-11-12', 'delete'],
+      ['chat-message-list', 'afterbegin'],
+    ])
+    expect(
+      root.querySelector('#chat-message-list #chat-day-2026-11-12 .chat-message'),
+    ).not.toBeNull()
   })
 })
