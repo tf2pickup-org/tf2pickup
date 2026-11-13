@@ -10,6 +10,7 @@ export class AdminPage {
     const content = this.page.locator('#player-admin-toolbox .player-admin-toolbox')
     if (!(await content.isVisible())) {
       await this.page.locator('#player-admin-toolbox summary').click()
+      await expect(content).toBeVisible()
     }
   }
 
