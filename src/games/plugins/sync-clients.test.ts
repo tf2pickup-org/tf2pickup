@@ -88,4 +88,21 @@ describe('games sync-clients', () => {
     expect(ConnectInfo).toHaveBeenCalled()
     expect(JoinGameButton).not.toHaveBeenCalled()
   })
+
+  it('keeps syncing later slots when an earlier slot has a new player', async () => {
+    const replacement = '76561198000000002' as SteamId64
+    const other = '76561198000000003' as SteamId64
+    onGameUpdated({
+      before: makeGame({ slots: [{ player }, { player: other }] as GameModel['slots'] }),
+      after: makeGame({
+        slots: [
+          { player: replacement },
+          { player: other, voiceServerUrl: 'mumble://example' },
+        ] as GameModel['slots'],
+      }),
+    })
+    await render()
+
+    expect(ConnectInfo).toHaveBeenCalled()
+  })
 })
