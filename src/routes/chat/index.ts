@@ -25,7 +25,7 @@ export default routes(async app => {
       async (request, reply) => {
         const { before } = request.query
         const messages = await chat.getSnapshot({ before })
-        return reply.status(200).send(await ChatMessageList({ messages }))
+        return reply.status(200).send(await ChatMessageList({ messages, before }))
       },
     )
     .post(
