@@ -435,7 +435,10 @@
     display: flex;
     flex-flow: column nowrap;
     gap: 10px;
-    height: 527px;
+
+    @media (width >= theme(--breakpoint-xl)) {
+      height: 527px;
+    }
 
     .game-event {
       display: flex;
