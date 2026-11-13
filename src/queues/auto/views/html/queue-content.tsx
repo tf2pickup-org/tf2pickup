@@ -33,7 +33,7 @@ export async function QueueContent(props: { queue: QueueModel }) {
 
   return (
     <div id="queue-content" class="tab-content max-lg:order-3 lg:contents!">
-      <div class="queue-toolbar">
+      <div class="queue-toolbar" id="queue-toolbar" tabindex="-1">
         <IsInQueue queue={queue._id} actor={user?.player.steamId} />
         <MapVoteSelection queue={queue._id} actor={user?.player.steamId} />
         <QueueSwitcher active={queue} actor={user?.player.steamId} />
