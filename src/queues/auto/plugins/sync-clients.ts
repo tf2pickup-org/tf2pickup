@@ -374,7 +374,10 @@ export default fp(
 
     const refreshBanAlerts = async (player: SteamId64) => {
       const cmp = await BanAlerts({ actor: player })
-      app.gateway.to({ players: [player] }).send(() => cmp)
+      app.gateway
+        .to({ players: [player] })
+        .to({ urls: await queues.pageUrls() })
+        .send(() => cmp)
 
       setImmediate(async () => {
         await syncAllSlots(player)
