@@ -10,6 +10,12 @@ import { OnlinePlayerList } from './online-player-list'
 export function Sidebar(props: { queue: QueueId; user?: User | undefined; required: number }) {
   return (
     <div class="queue-sidebar">
+      <a
+        href="#queue-toolbar"
+        class="sr-only focus:not-sr-only focus:mb-2 focus:self-start max-lg:hidden"
+      >
+        Skip to queue
+      </a>
       <div class="tab" data-tabs data-tabs-persist="queue-sidebar">
         <button class="tab-link lg:hidden" data-tabs-select="queue-content">
           <span>
