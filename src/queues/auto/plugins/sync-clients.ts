@@ -203,6 +203,10 @@ export default fp(
           ]).then(items => [...items, playerCount, title])
         })
 
+        // the switcher is not rendered for a single queue
+        if ((await queues.listEnabled()).length < 2) {
+          return
+        }
         const { current, required } = await playerCounts(queue)
         const count = await QueueSwitcherCount({ slug: queue.slug, current, required })
         app.gateway.to({ urls: await queues.pageUrls() }).send(() => count)
