@@ -70,7 +70,7 @@ describe('ChatMessages.append', () => {
       }),
     )
     expect(root.querySelector('[hx-swap-oob]')?.getAttribute('hx-swap-oob')).toBe(
-      'afterbegin:#chat-day-2026-11-12 .chat-day-messages',
+      'afterbegin:#chat-day-2026-11-12:first-child .chat-day-messages',
     )
     expect(root.querySelector('.chat-date-separator')).toBeNull()
   })
@@ -81,10 +81,7 @@ describe('ChatMessages.append', () => {
     )
     expect(
       root.querySelectorAll('[hx-swap-oob]').map(el => [el.id, el.getAttribute('hx-swap-oob')]),
-    ).toEqual([
-      ['chat-day-2026-11-12', 'delete'],
-      ['chat-message-list', 'afterbegin'],
-    ])
+    ).toEqual([['chat-message-list', 'afterbegin']])
     expect(
       root.querySelector('#chat-message-list #chat-day-2026-11-12 .chat-message'),
     ).not.toBeNull()
