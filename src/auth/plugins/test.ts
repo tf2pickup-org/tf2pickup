@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
 import { environment } from '../../environment'
 import { logger } from '../../logger'
+import { collections } from '../../database/collections'
 import { isTestAuthSecret } from '../is-test-auth-secret'
 import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { secondsInWeek } from 'date-fns/constants'
@@ -25,12 +26,20 @@ export default fp(
           querystring: z.object({
             steamId: steamId64,
             secret: z.string().optional(),
+            acceptedRules: z.stringbool().optional(),
           }),
         },
       },
       async (request, reply) => {
         if (environment.TEST_AUTH_SECRET !== undefined && !isTestAuthSecret(request.query.secret)) {
           return await reply.code(403).send()
+        }
+
+        if (request.query.acceptedRules !== undefined) {
+          await collections.players.updateOne(
+            { steamId: request.query.steamId },
+            { $set: { hasAcceptedRules: request.query.acceptedRules } },
+          )
         }
 
         request.session.set('steamId', request.query.steamId)

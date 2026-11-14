@@ -11,6 +11,11 @@ vi.mock('../../environment', () => ({
   },
 }))
 
+const updateOne = vi.fn()
+vi.mock('../../database/collections', () => ({
+  collections: { players: { updateOne } },
+}))
+
 vi.mock('../../logger', () => ({
   logger: { warn: vi.fn() },
 }))
@@ -26,6 +31,7 @@ describe('GET /auth/test', () => {
   beforeEach(async () => {
     sessionSet.mockClear()
     setCookie.mockClear()
+    updateOne.mockClear()
     app = fastify()
     app.setValidatorCompiler(validatorCompiler)
     app.decorateRequest('session', {
@@ -45,6 +51,19 @@ describe('GET /auth/test', () => {
     const response = await app.inject({ method: 'GET', url: '/auth/test', query: { steamId } })
     expect(response.statusCode).toBe(302)
     expect(sessionSet).toHaveBeenCalledWith('steamId', steamId)
+  })
+
+  it('leaves the rules flag alone by default', async () => {
+    await app.inject({ method: 'GET', url: '/auth/test', query: { steamId } })
+    expect(updateOne).not.toHaveBeenCalled()
+  })
+
+  it.each([
+    ['false', false],
+    ['true', true],
+  ])('sets hasAcceptedRules for acceptedRules=%s', async (given, expected) => {
+    await app.inject({ method: 'GET', url: '/auth/test', query: { steamId, acceptedRules: given } })
+    expect(updateOne).toHaveBeenCalledWith({ steamId }, { $set: { hasAcceptedRules: expected } })
   })
 
   describe('when a secret is configured', () => {
@@ -75,10 +94,14 @@ describe('GET /auth/test', () => {
       const response = await app.inject({
         method: 'GET',
         url: '/auth/test',
-        query: given === undefined ? { steamId } : { steamId, secret: given },
+        query:
+          given === undefined
+            ? { steamId, acceptedRules: 'false' }
+            : { steamId, secret: given, acceptedRules: 'false' },
       })
       expect(response.statusCode).toBe(403)
       expect(sessionSet).toHaveBeenCalledTimes(0)
+      expect(updateOne).not.toHaveBeenCalled()
     })
   })
 })
