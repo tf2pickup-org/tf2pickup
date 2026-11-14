@@ -146,22 +146,20 @@ ChatMessages.append = function (props: {
 }) {
   if (props.previousMessageAt && isSameDay(props.message.at, props.previousMessageAt)) {
     return (
-      <div hx-swap-oob={`afterbegin:${chatDayMessages(props.message.at)}`}>
+      <div
+        hx-swap-oob={`afterbegin:#${chatDayId(props.message.at)}:first-child .chat-day-messages`}
+      >
         <ChatMessage message={props.message} />
       </div>
     )
   }
 
-  // htmx swaps into every element matching the id, so drop a stale group whose messages were all deleted
   return (
-    <>
-      <div id={chatDayId(props.message.at)} hx-swap-oob="delete"></div>
-      <div id="chat-message-list" hx-swap-oob="afterbegin">
-        <ChatDay at={props.message.at}>
-          <ChatMessage message={props.message} />
-        </ChatDay>
-      </div>
-    </>
+    <div id="chat-message-list" hx-swap-oob="afterbegin">
+      <ChatDay at={props.message.at}>
+        <ChatMessage message={props.message} />
+      </ChatDay>
+    </div>
   )
 }
 
