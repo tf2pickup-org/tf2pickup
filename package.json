@@ -92,7 +92,7 @@
     "postcss": "8.5.32",
     "postcss-nested": "9.0.1",
     "rcon-client": "4.2.5",
-    "sanitize-html": "2.18.1",
+    "sanitize-html": "2.18.2",
     "steamapi": "3.1.5",
     "steamid": "2.1.0",
     "tailwindcss": "4.3.5",
