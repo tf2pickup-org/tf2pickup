@@ -120,7 +120,7 @@
     "lorem-ipsum": "3.0.0",
     "node-html-parser": "9.0.7",
     "pino-princess": "1.6.3",
-    "prettier": "3.10.0",
+    "prettier": "3.10.1",
     "prettier-plugin-tailwindcss": "0.8.1",
     "release-it": "21.1.2",
     "rimraf": "6.1.4",
