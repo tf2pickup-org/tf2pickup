@@ -233,6 +233,26 @@ export const configurationSchema = z.discriminatedUnion('key', [
     value: z.boolean().default(false),
   }),
   z.object({
+    key: z.literal('players.etf2l_ban_sync'),
+    value: z.boolean().default(false),
+  }),
+  z
+    .object({
+      key: z.literal('players.etf2l_ban_sync_reasons'),
+      value: z
+        .array(z.string())
+        .default([
+          'cheating',
+          'aimbot',
+          'triggerbot',
+          'wallhack',
+          'alting',
+          'banned game modifications',
+          'game ban',
+        ]),
+    })
+    .describe('Mirror only ETF2L.org bans whose reason contains one of these (case-insensitive)'),
+  z.object({
     key: z.literal('players.minimum_in_game_hours'),
     value: z.number().default(0),
   }),

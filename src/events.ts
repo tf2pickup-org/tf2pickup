@@ -197,7 +197,7 @@ export interface Events {
   'player/ban:revoked': {
     player: SteamId64
     ban: PlayerBan
-    admin: SteamId64
+    admin: SteamId64 | Bot
   }
   'player/chatMute:added': {
     player: SteamId64
