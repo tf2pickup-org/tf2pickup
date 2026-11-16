@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin'
 import { GameState } from '../../database/models/game.model'
+import { SlotStatus } from '../../database/models/game-slot.model'
 import { events } from '../../events'
 import { ConnectInfo } from '../views/html/connect-info'
 import { DemoLink } from '../views/html/demo-link'
@@ -125,13 +126,19 @@ export default fp(async app => {
   events.on('game:ended', refreshGamesLink)
 
   events.on('game:playerConnectionStatusUpdated', ({ game, player, playerConnectionStatus }) => {
-    app.gateway.to({ url: `/games/${game.number}` }).send(
-      async () =>
-        await PlayerConnectionStatusIndicator({
-          steamId: player,
-          connectionStatus: playerConnectionStatus,
-        }),
-    )
+    const slot = game.slots.find(s => s.player === player)
+    if (
+      slot?.status === SlotStatus.active &&
+      [GameState.launching, GameState.started].includes(game.state)
+    ) {
+      app.gateway.to({ url: `/games/${game.number}` }).send(
+        async () =>
+          await PlayerConnectionStatusIndicator({
+            steamId: player,
+            connectionStatus: playerConnectionStatus,
+          }),
+      )
+    }
     app.gateway
       .to({ url: `/games/${game.number}` })
       .to({ player })
