@@ -25,6 +25,8 @@ export interface PlayerBan {
   end: Date
   reason: string
   anonymous?: boolean
+  source?: 'etf2l'
+  revokedLocally?: boolean
 }
 
 export interface TwitchTvProfile {
