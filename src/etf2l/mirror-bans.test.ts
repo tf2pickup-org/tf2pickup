@@ -3,20 +3,62 @@ import { addDays, getUnixTime, subDays } from 'date-fns'
 import type { PlayerBan } from '../database/models/player.model'
 import { hasActiveBan } from '../players/has-active-ban'
 
-const { config, bans, players, events, activityLog } = vi.hoisted(() => {
-  const bans: PlayerBan[] = []
+interface Update {
+  $set: Record<string, unknown>
+}
+type ArrayFilter = Record<string, unknown>
+
+const { config, store, players, events, activityLog } = vi.hoisted(() => {
+  const store = { bans: [] as PlayerBan[], afterSnapshot: undefined as (() => void) | undefined }
+
+  function matches(ban: PlayerBan, filter: ArrayFilter, id: string) {
+    return Object.entries(filter).every(([key, condition]) => {
+      const value = ban[key.slice(id.length + 1) as keyof PlayerBan]
+      if (typeof condition !== 'object') return value === condition
+      const c = condition as { $eq?: Date; $ne?: unknown }
+      if (c.$eq) return (value as Date).getTime() === c.$eq.getTime()
+      return value !== c.$ne
+    })
+  }
+
+  function applyUpdate(update: Update, arrayFilters: ArrayFilter[]) {
+    for (const [path, value] of Object.entries(update.$set)) {
+      const [, id, field] = /^bans\.\$\[(\w+)\]\.(\w+)$/.exec(path)!
+      const filter = arrayFilters.find(f => Object.keys(f).every(k => k.startsWith(`${id}.`)))!
+      for (const ban of store.bans.filter(b => matches(b, filter, id!))) {
+        Object.assign(ban, { [field!]: value })
+      }
+    }
+  }
+
+  const copy = () => store.bans.map(b => ({ ...b }))
+
   return {
-    bans,
+    store,
     config: new Map<string, unknown>(),
     players: {
-      bySteamId: vi.fn(async () => ({ bans: bans.map(b => ({ ...b })) })),
-      addBan: vi.fn(),
-      update: vi.fn(async (_steamId: string, update: { $set: Record<string, unknown> }) => {
-        const ban = bans.find(b => b.source === 'etf2l')!
-        ban.end = update.$set['bans.$[ban].end'] as Date
-        ban.reason = update.$set['bans.$[ban].reason'] as string
-        return { bans }
+      bySteamId: vi.fn(async () => {
+        const snapshot = { bans: copy() }
+        store.afterSnapshot?.()
+        return snapshot
       }),
+      addBan: vi.fn(async ({ admin, ...ban }: Omit<PlayerBan, 'actor'> & { admin: 'bot' }) => {
+        store.bans.push({ actor: admin, ...ban })
+      }),
+      update: vi.fn(
+        async (
+          _steamId: string,
+          updateOrFactory: Update | ((before: { bans: PlayerBan[] }) => Update),
+          options: { arrayFilters: ArrayFilter[] },
+        ) => {
+          const update =
+            typeof updateOrFactory === 'function'
+              ? updateOrFactory({ bans: copy() })
+              : updateOrFactory
+          applyUpdate(update, options.arrayFilters)
+          return { bans: copy() }
+        },
+      ),
     },
     events: { emit: vi.fn() },
     activityLog: { record: vi.fn() },
@@ -45,13 +87,16 @@ function etf2lBan(reason: string, end: Date, banStart = start) {
 describe('mirrorBans', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    bans.length = 0
+    store.bans.length = 0
+    store.afterSnapshot = undefined
     config.set('players.etf2l_ban_sync', true)
     config.set('players.etf2l_ban_sync_reasons', ['cheating'])
   })
 
-  it('mirrors a new active matching ban', async () => {
+  it('mirrors a new active matching ban, once across runs', async () => {
     await mirrorBans(steamId, [etf2lBan('Cheating', future)])
+    await mirrorBans(steamId, [etf2lBan('Cheating', future)])
+
     expect(players.addBan).toHaveBeenCalledExactlyOnceWith({
       player: steamId,
       admin: 'bot',
@@ -60,6 +105,8 @@ describe('mirrorBans', () => {
       reason: 'ETF2L.org: Cheating',
       source: 'etf2l',
     })
+    expect(players.update).not.toHaveBeenCalled()
+    expect(events.emit).not.toHaveBeenCalled()
   })
 
   it('ignores expired and non-matching bans', async () => {
@@ -80,7 +127,7 @@ describe('mirrorBans', () => {
 
   describe('with an existing mirrored ban', () => {
     beforeEach(() => {
-      bans.push({
+      store.bans.push({
         actor: 'bot',
         start,
         end: future,
@@ -89,19 +136,17 @@ describe('mirrorBans', () => {
       })
     })
 
-    it('applies a revert and emits ban:revoked once', async () => {
+    it('applies a revert and emits ban:revoked once across runs', async () => {
       const revertedEnd = subDays(start, 1)
       await mirrorBans(steamId, [etf2lBan('Reverted', revertedEnd)])
+      await mirrorBans(steamId, [etf2lBan('Reverted', revertedEnd)])
 
-      expect(players.update).toHaveBeenCalledExactlyOnceWith(
-        steamId,
-        { $set: { 'bans.$[ban].end': revertedEnd, 'bans.$[ban].reason': 'ETF2L.org: Reverted' } },
-        { arrayFilters: [{ 'ban.start': { $eq: start }, 'ban.source': 'etf2l' }] },
-      )
-      expect(hasActiveBan({ bans })).toBe(false)
+      expect(players.update).toHaveBeenCalledOnce()
+      expect(store.bans[0]).toMatchObject({ end: revertedEnd, reason: 'ETF2L.org: Reverted' })
+      expect(hasActiveBan(store)).toBe(false)
       expect(events.emit).toHaveBeenCalledExactlyOnceWith('player/ban:revoked', {
         player: steamId,
-        ban: bans[0],
+        ban: store.bans[0],
         admin: 'bot',
       })
       expect(activityLog.record).toHaveBeenCalledExactlyOnceWith({
@@ -116,23 +161,29 @@ describe('mirrorBans', () => {
       config.set('players.etf2l_ban_sync_reasons', ['aimbot'])
       const later = addDays(future, 10)
       await mirrorBans(steamId, [etf2lBan('Cheating', later)])
-      expect(players.update).toHaveBeenCalledOnce()
-      expect(bans[0]!.end).toEqual(later)
+      expect(store.bans[0]!.end).toEqual(later)
       expect(events.emit).not.toHaveBeenCalled()
     })
 
     it('leaves a locally revoked ban untouched', async () => {
-      bans[0]!.revokedLocally = true
-      bans[0]!.end = subDays(new Date(), 1)
+      const revokedAt = subDays(new Date(), 1)
+      Object.assign(store.bans[0]!, { revokedLocally: true, end: revokedAt })
       await mirrorBans(steamId, [etf2lBan('Cheating', addDays(future, 10))])
+      expect(store.bans[0]!.end).toEqual(revokedAt)
       expect(players.update).not.toHaveBeenCalled()
       expect(players.addBan).not.toHaveBeenCalled()
     })
 
-    it('is idempotent', async () => {
-      await mirrorBans(steamId, [etf2lBan('Cheating', future)])
-      expect(players.update).not.toHaveBeenCalled()
-      expect(players.addBan).not.toHaveBeenCalled()
+    it('does not override an admin revocation that lands after the snapshot', async () => {
+      const revokedAt = new Date()
+      store.afterSnapshot = () =>
+        Object.assign(store.bans[0]!, { revokedLocally: true, end: revokedAt })
+
+      await mirrorBans(steamId, [etf2lBan('Cheating', addDays(future, 10))])
+      expect(store.bans[0]).toMatchObject({ end: revokedAt, revokedLocally: true })
+
+      await mirrorBans(steamId, [etf2lBan('Reverted', subDays(start, 1))])
+      expect(store.bans[0]).toMatchObject({ end: revokedAt, revokedLocally: true })
       expect(events.emit).not.toHaveBeenCalled()
     })
 
@@ -143,9 +194,9 @@ describe('mirrorBans', () => {
   })
 
   it('never touches a local ban with the same start', async () => {
-    bans.push({ actor: 'bot', start, end: future, reason: 'local' })
+    store.bans.push({ actor: 'bot', start, end: future, reason: 'local' })
     await mirrorBans(steamId, [etf2lBan('Reverted', subDays(start, 1))])
-    expect(players.update).not.toHaveBeenCalled()
+    expect(store.bans[0]).toMatchObject({ end: future, reason: 'local' })
     expect(players.addBan).not.toHaveBeenCalled()
   })
 })

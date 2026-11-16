@@ -19,23 +19,25 @@ describe('revokeBan', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     bans.length = 0
-  })
-
-  it('marks a mirrored ETF2L ban as revoked locally', async () => {
-    bans.push({ actor: 'bot', start: banStart, end: new Date(), reason: 'x', source: 'etf2l' })
-    const ban = await revokeBan({ player: 'player' as never, banStart, actor: admin })
-    expect(ban.revokedLocally).toBe(true)
-    expect(update).toHaveBeenLastCalledWith(
-      'player',
-      { $set: { 'bans.$[ban].revokedLocally': true } },
-      { arrayFilters: [{ 'ban.start': { $eq: banStart }, 'ban.source': 'etf2l' }] },
-    )
-  })
-
-  it('does not mark a normal ban', async () => {
     bans.push({ actor: admin, start: banStart, end: new Date(), reason: 'x' })
-    const ban = await revokeBan({ player: 'player' as never, banStart, actor: admin })
-    expect(ban.revokedLocally).toBeUndefined()
-    expect(update).toHaveBeenCalledOnce()
+  })
+
+  it('ends the ban and marks mirrored ETF2L bans in a single update', async () => {
+    await revokeBan({ player: 'player' as never, banStart, actor: admin })
+    expect(update).toHaveBeenCalledExactlyOnceWith(
+      'player',
+      {
+        $set: {
+          'bans.$[ban].end': expect.any(Date),
+          'bans.$[mirrored].revokedLocally': true,
+        },
+      },
+      {
+        arrayFilters: [
+          { 'ban.start': { $eq: banStart } },
+          { 'mirrored.start': { $eq: banStart }, 'mirrored.source': 'etf2l' },
+        ],
+      },
+    )
   })
 })
