@@ -5,6 +5,7 @@ import { players } from '../players'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { Etf2lApiError } from './errors/etf2l-api.error'
 import { tasks } from '../tasks'
+import { mirrorBans } from './mirror-bans'
 
 export async function syncPlayerProfile(playerId: SteamId64) {
   const player = await players.bySteamId(playerId, ['steamId'])
@@ -22,6 +23,7 @@ export async function syncPlayerProfile(playerId: SteamId64) {
         etf2lProfileLastSyncedAt: new Date(),
       },
     })
+    await mirrorBans(player.steamId, profile.bans ?? [])
   } catch (error) {
     if (error instanceof Etf2lApiError) {
       switch (error.response.status) {

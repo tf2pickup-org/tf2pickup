@@ -25,7 +25,7 @@ export async function fetchPlayers(logs: ActivityLogEntryModel[]): Promise<Map<S
     if (log.type === 'ban added' && log.actor !== 'bot') {
       ids.add(log.actor)
     }
-    if (log.type === 'ban revoked') {
+    if (log.type === 'ban revoked' && log.actor !== 'bot') {
       ids.add(log.actor)
     }
     if (log.type === 'chat mute added' && log.actor !== 'bot') {

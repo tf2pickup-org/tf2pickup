@@ -15,10 +15,14 @@ export async function revokeBan(props: {
     {
       $set: {
         'bans.$[ban].end': new Date(),
+        'bans.$[mirrored].revokedLocally': true,
       },
     },
     {
-      arrayFilters: [{ 'ban.start': { $eq: props.banStart } }],
+      arrayFilters: [
+        { 'ban.start': { $eq: props.banStart } },
+        { 'mirrored.start': { $eq: props.banStart }, 'mirrored.source': 'etf2l' },
+      ],
     },
   )
 
