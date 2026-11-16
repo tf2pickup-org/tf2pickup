@@ -135,7 +135,7 @@ export async function replacePlayer({
     })
 
     if (shouldApplyCooldown) {
-      await applyCooldown(replacee)
+      await applyCooldown(replacee, newGame.number)
     }
 
     return updatedGame
