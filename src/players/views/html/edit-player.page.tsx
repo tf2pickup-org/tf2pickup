@@ -473,6 +473,11 @@ export async function BanDetails(props: {
     )
   }
 
+  const etf2lProfile =
+    props.ban.source === 'etf2l'
+      ? (await players.bySteamId(props.player.steamId, ['etf2lProfile.id'])).etf2lProfile
+      : undefined
+
   return (
     <div class="ban-item group" id={`player-ban-${props.ban.start.getTime().toString()}`}>
       <form class="contents">
@@ -484,6 +489,18 @@ export async function BanDetails(props: {
             by {actorDesc}
             {props.ban.anonymous && <span class="italic"> (anonymous)</span>}
           </span>
+          {props.ban.source === 'etf2l' && (
+            <span class="ms-2 inline-flex rounded bg-zinc-700 px-2 py-1 text-xs">
+              {etf2lProfile ? (
+                <a href={`https://etf2l.org/forum/user/${etf2lProfile.id}`}>
+                  synced from ETF2L.org
+                </a>
+              ) : (
+                <>synced from ETF2L.org</>
+              )}
+              {props.ban.revokedLocally && <span class="ms-1">(revoked locally)</span>}
+            </span>
+          )}
         </div>
 
         <div class="row-span-2 flex items-center">
