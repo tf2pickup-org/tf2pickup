@@ -98,6 +98,7 @@ const values: Record<string, unknown> = {
   'games.voice_server.mumble.player_verification': true,
   'games.auto_force_end_threshold': 4,
   'players.etf2l_account_required': false,
+  'players.etf2l_ban_sync': false,
   'players.minimum_in_game_hours': 0,
   'serveme_tf.preferred_region': 'eu',
   'games.cooldown_levels': [{ level: 0, banLengthMs: 1 }],
@@ -132,6 +133,17 @@ describe('buildSnapshot', () => {
     expect(snapshot.features['games.voice_server.mumble.player_verification']).toBe(true)
     expect(snapshot.features['queue.player_skill_threshold']).toBeNull()
     expect(snapshot.features['serveme_tf.preferred_region']).toBe('eu')
+  })
+
+  it.each([false, true])('reports ETF2L ban sync as %s under Players', async enabled => {
+    values['players.etf2l_ban_sync'] = enabled
+    const snapshot = await buildSnapshot()
+    expect(snapshot.features['players.etf2l_ban_sync']).toBe(enabled)
+    expect(snapshot.meta.features).toContainEqual({
+      key: 'players.etf2l_ban_sync',
+      label: 'Sync ETF2L.org bans',
+      group: 'Players',
+    })
   })
 
   it('derives integration flags from env presence', async () => {
