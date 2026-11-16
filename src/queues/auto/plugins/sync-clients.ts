@@ -82,7 +82,7 @@ export default fp(
       for (const [teamIndex, team] of teamSlots(queue.gamemode, slots).entries()) {
         socket.send(await TeamPlayerCount({ teamIndex, slots: team }))
       }
-      socket.send(await SetTitle({ queue: queue._id }))
+      socket.send(await SetTitle({ queue }))
 
       if (socket.player && (await getState(queue._id)) === QueueState.ready) {
         const slot = await collections.queueSlots.findOne({
@@ -185,7 +185,7 @@ export default fp(
 
         const [playerCount, title, actorMap, defaultPlayerSkill, allSlots] = await Promise.all([
           CurrentPlayerCount({ queue: queueId }),
-          SetTitle({ queue: queueId }),
+          SetTitle({ queue }),
           fetchActorMap(connectedPlayers),
           configuration.get('games.default_player_skill'),
           collections.queueSlots.find({ queue: queueId }).toArray(),
