@@ -35,17 +35,31 @@ export async function syncBans() {
     }
   }
 
-  if (rows.length === 0) {
-    return
-  }
-
   const steamIds = Array.from(new Set(rows.map(row => row.steamid64)))
   const players = await collections.players
-    .find({ steamId: { $in: steamIds } }, { projection: { steamId: 1 } })
+    .find(
+      {
+        $or: [
+          { steamId: { $in: steamIds } },
+          {
+            bans: {
+              $elemMatch: {
+                source: 'etf2l',
+                revokedLocally: { $ne: true },
+                end: { $gt: new Date() },
+              },
+            },
+          },
+        ],
+      },
+      { projection: { steamId: 1 } },
+    )
     .toArray()
   for (const { steamId } of players) {
     await tasks.schedule('etf2l:syncPlayerProfile', 0, { player: steamId })
   }
 
-  watermark = Math.max(...rows.map(row => row.start))
+  if (rows.length > 0) {
+    watermark = Math.max(...rows.map(row => row.start))
+  }
 }
