@@ -13,8 +13,8 @@ vi.mock('../otel', () => ({
 
 import { Gateway } from './gateway'
 
-function navigated(url: string) {
-  return JSON.stringify({ navigated: url })
+function navigated(url: string, page: number) {
+  return JSON.stringify({ navigated: url, page })
 }
 
 describe('Gateway', () => {
@@ -30,34 +30,29 @@ describe('Gateway', () => {
     } as unknown as AppWebSocket
     const app = { websocketServer: { clients: new Set([socket]) } } as unknown as FastifyInstance
     gateway = new Gateway(app)
+    gateway.parse(socket, navigated('/q/6v6', 1))
   })
 
-  it.each([
-    ['the first navigation', [navigated('/q/6v6')]],
-    ['a later navigation', [navigated('/q/6v6'), navigated('/games/1')]],
-  ])('acknowledges %s', (_, messages) => {
-    for (const message of messages) {
-      gateway.parse(socket, message)
-    }
+  function sent() {
+    return vi.mocked(socket.send).mock.calls.map(([msg]) => msg)
+  }
 
-    expect(vi.mocked(socket.send).mock.calls.map(([msg]) => msg)).toEqual(
-      messages.map(() => '<!--navigated-->'),
-    )
-  })
-
-  it('drops a page-scoped message when the recipient leaves the page while it renders', async () => {
-    gateway.parse(socket, navigated('/q/6v6'))
-    vi.mocked(socket.send).mockClear()
-
+  it('tags page-scoped messages with the page they were addressed to', async () => {
     const { promise, resolve } = Promise.withResolvers<string>()
     gateway.to({ url: '/q/6v6' }).send(() => promise)
-    gateway.parse(socket, navigated('/games/1'))
+    gateway.parse(socket, navigated('/games/1', 2))
     resolve('<div id="online-player-list"></div>')
-    await vi.waitFor(() => {
-      expect(socket.send).toHaveBeenCalledTimes(1)
-    })
-    await new Promise(setImmediate)
 
-    expect(vi.mocked(socket.send).mock.calls.map(([msg]) => msg)).toEqual(['<!--navigated-->'])
+    await vi.waitFor(() => {
+      expect(sent()).toEqual(['<!--page:1--><div id="online-player-list"></div>'])
+    })
+  })
+
+  it('does not tag messages that are not page-scoped', async () => {
+    gateway.to({ authenticated: false }).send(() => '<div id="notification"></div>')
+
+    await vi.waitFor(() => {
+      expect(sent()).toEqual(['<div id="notification"></div>'])
+    })
   })
 })

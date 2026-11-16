@@ -66,6 +66,7 @@ const preReadyToggle = z.object({
 
 const navigated = z.object({
   navigated: z.string(),
+  page: z.number().int().optional(),
   HEADERS: htmxHeaders.optional(),
 })
 
@@ -127,21 +128,24 @@ async function sendSafe(client: AppWebSocket, msg: string) {
   })
 }
 
-// tells the client that everything after it was addressed to the page it navigated to
-const navigationAck = '<!--navigated-->'
+// lets the client drop page-scoped messages addressed to a page it has already left
+function pageTag(client: AppWebSocket) {
+  return client.page === undefined ? '' : `<!--page:${client.page}-->`
+}
 
-async function send(client: AppWebSocket, message: MessageFn, accepts = () => true) {
+async function send(client: AppWebSocket, message: MessageFn, tag = '') {
   try {
     const m = await message(client.player?.steamId)
-    for (const msg of Array.isArray(m) ? m : [m]) {
-      if (!msg) {
-        continue
+    if (!m) {
+      return
+    }
+
+    if (Array.isArray(m)) {
+      for (const msg of m) {
+        await sendSafe(client, tag + msg)
       }
-      // the client may have navigated away while the message was rendering
-      if (!accepts()) {
-        return
-      }
-      await sendSafe(client, msg)
+    } else {
+      await sendSafe(client, tag + m)
     }
   } catch (error) {
     assertIsError(error)
@@ -202,31 +206,27 @@ class BroadcastOperator {
     let recipients = 0
     this.app.websocketServer.clients.forEach(async client => {
       const socket = client as AppWebSocket
-      if (!this.accepts(socket)) {
-        return
+      if ('authenticated' in this.filters) {
+        if (Boolean(socket.player) !== this.filters.authenticated) {
+          return
+        }
+      }
+
+      if (this.filters.players) {
+        if (!socket.player || !this.filters.players.has(socket.player.steamId)) {
+          return
+        }
+      }
+
+      if (this.filters.urls) {
+        if (!socket.currentUrl || !this.filters.urls.has(socket.currentUrl)) {
+          return
+        }
       }
       recipients++
-      await send(socket, message, () => this.accepts(socket))
+      await send(socket, message, this.filters.urls ? pageTag(socket) : '')
     })
     broadcastRecipients.record(recipients)
-  }
-
-  private accepts(socket: AppWebSocket) {
-    if ('authenticated' in this.filters && Boolean(socket.player) !== this.filters.authenticated) {
-      return false
-    }
-
-    if (
-      this.filters.players &&
-      (!socket.player || !this.filters.players.has(socket.player.steamId))
-    ) {
-      return false
-    }
-
-    if (this.filters.urls && (!socket.currentUrl || !this.filters.urls.has(socket.currentUrl))) {
-      return false
-    }
-    return true
   }
 }
 
@@ -260,14 +260,13 @@ export class Gateway extends EventEmitter implements Broadcaster {
     try {
       const parsed = clientMessage.parse(JSON.parse(message))
       if ('navigated' in parsed) {
-        const previousUrl = socket.currentUrl
-        socket.currentUrl = parsed.navigated
-        sendSafe(socket, navigationAck).catch((error: unknown) => {
-          logger.error({ error }, 'failed to acknowledge navigation')
-        })
-        if (!previousUrl) {
+        socket.page = parsed.page
+        if (!socket.currentUrl) {
+          socket.currentUrl = parsed.navigated
           this.emit('ready', socket)
         } else {
+          const previousUrl = socket.currentUrl
+          socket.currentUrl = parsed.navigated
           this.emit('navigated', socket, parsed.navigated, previousUrl)
         }
         return

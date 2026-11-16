@@ -5,9 +5,7 @@ interface SocketWrapper {
 }
 
 let socket: SocketWrapper | undefined
-let pendingNavigationAcks = 0
-
-const navigationAck = '<!--navigated-->'
+let page = 0
 
 function normalizePath(path: string) {
   try {
@@ -22,34 +20,15 @@ function reportNavigation(path: string) {
     return
   }
 
-  pendingNavigationAcks++
-  const msg = JSON.stringify({ navigated: path })
+  const msg = JSON.stringify({ navigated: path, page: ++page })
   socket.send(msg)
 }
 
-function hasEveryTarget(message: string) {
-  const template = document.createElement('template')
-  template.innerHTML = message
-  return [...template.content.children].every(element => {
-    const oob = element.getAttribute('hx-swap-oob') ?? 'true'
-    const colon = oob.indexOf(':')
-    try {
-      const selector = colon > 0 ? oob.slice(colon + 1) : `#${CSS.escape(element.id)}`
-      return document.querySelector(selector) !== null
-    } catch {
-      // ponytail: htmx's extended selectors (closest, find…) aren't checked; htmx resolves them
-      return true
-    }
-  })
-}
-
-// Until the server acknowledges a navigation, it can still send swaps meant for the previous page.
+// page-scoped messages are tagged with the page they were addressed to; drop the ones for a page we left
 htmx.on('htmx:wsBeforeMessage', event => {
   const { message } = (event as CustomEvent<{ message: string }>).detail
-  if (message === navigationAck) {
-    pendingNavigationAcks = Math.max(0, pendingNavigationAcks - 1)
-    event.preventDefault()
-  } else if (pendingNavigationAcks > 0 && !hasEveryTarget(message)) {
+  const tag = /^<!--page:(\d+)-->/.exec(message)
+  if (tag && Number(tag[1]) !== page) {
     event.preventDefault()
   }
 })
@@ -60,7 +39,6 @@ export async function goTo(path: string) {
 
 htmx.on('htmx:wsOpen', event => {
   socket = (event as CustomEvent<{ socketWrapper: SocketWrapper }>).detail.socketWrapper
-  pendingNavigationAcks = 0
   reportNavigation(window.location.pathname)
 })
 
