@@ -66,6 +66,7 @@ const preReadyToggle = z.object({
 
 const navigated = z.object({
   navigated: z.string(),
+  page: z.number().int(),
   HEADERS: htmxHeaders.optional(),
 })
 
@@ -127,7 +128,7 @@ async function sendSafe(client: AppWebSocket, msg: string) {
   })
 }
 
-async function send(client: AppWebSocket, message: MessageFn) {
+async function send(client: AppWebSocket, message: MessageFn, tag = '') {
   try {
     const m = await message(client.player?.steamId)
     if (!m) {
@@ -136,10 +137,10 @@ async function send(client: AppWebSocket, message: MessageFn) {
 
     if (Array.isArray(m)) {
       for (const msg of m) {
-        await sendSafe(client, msg)
+        await sendSafe(client, tag + msg)
       }
     } else {
-      await sendSafe(client, m)
+      await sendSafe(client, tag + m)
     }
   } catch (error) {
     assertIsError(error)
@@ -218,7 +219,8 @@ class BroadcastOperator {
         }
       }
       recipients++
-      await send(socket, message)
+      // lets the client drop messages addressed to a page it has already left
+      await send(socket, message, this.filters.urls ? `<!--page:${socket.page}-->` : '')
     })
     broadcastRecipients.record(recipients)
   }
@@ -254,6 +256,7 @@ export class Gateway extends EventEmitter implements Broadcaster {
     try {
       const parsed = clientMessage.parse(JSON.parse(message))
       if ('navigated' in parsed) {
+        socket.page = parsed.page
         if (!socket.currentUrl) {
           socket.currentUrl = parsed.navigated
           this.emit('ready', socket)

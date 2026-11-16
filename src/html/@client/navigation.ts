@@ -5,6 +5,7 @@ interface SocketWrapper {
 }
 
 let socket: SocketWrapper | undefined
+let page = 0
 
 function normalizePath(path: string) {
   try {
@@ -19,9 +20,18 @@ function reportNavigation(path: string) {
     return
   }
 
-  const msg = JSON.stringify({ navigated: path })
+  const msg = JSON.stringify({ navigated: path, page: ++page })
   socket.send(msg)
 }
+
+// page-scoped messages are tagged with the page they were addressed to; drop the ones for a page we left
+htmx.on('htmx:wsBeforeMessage', event => {
+  const { message } = (event as CustomEvent<{ message: string }>).detail
+  const tag = /^<!--page:(\d+)-->/.exec(message)
+  if (tag && Number(tag[1]) !== page) {
+    event.preventDefault()
+  }
+})
 
 export async function goTo(path: string) {
   await htmx.ajax('get', path, { target: document.body, push: 'true' })
