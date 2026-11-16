@@ -12,6 +12,7 @@ export async function PlayerRestrictionsPage() {
       <form action="" method="post" id="playerRestrictionsForm">
         <div class="admin-panel-set flex flex-col gap-4">
           <RequireEtf2lAccount />
+          <Etf2lBanSync />
           <MinimumTf2InGameHours />
           <SkillStep />
           <SkillSuggestions />
@@ -49,6 +50,50 @@ async function RequireEtf2lAccount() {
         checked={etf2lAccountRequired}
         name="etf2lAccountRequired"
       />
+    </div>
+  )
+}
+
+async function Etf2lBanSync() {
+  const [enabled, reasons] = await Promise.all([
+    configuration.get('players.etf2l_ban_sync'),
+    configuration.get('players.etf2l_ban_sync_reasons'),
+  ])
+  return (
+    <div class="flex flex-col gap-2">
+      <div class="flex flex-row items-center justify-between">
+        <dl>
+          <dt>
+            <label class="text-zinc-200" for="etf2lBanSync">
+              Sync ETF2L.org bans
+            </label>
+          </dt>
+          <dd class="text-zinc-200">
+            Mirror matching ETF2L.org bans and prevent banned players from registering.
+          </dd>
+        </dl>
+        <Switch id="etf2lBanSync" name="etf2lBanSync" checked={enabled} />
+      </div>
+      <dl>
+        <dt>
+          <label for="etf2lBanSyncReasons">ETF2L.org ban reasons</label>
+        </dt>
+        <dd class="flex flex-col gap-1">
+          <textarea
+            id="etf2lBanSyncReasons"
+            name="etf2lBanSyncReasons"
+            rows="7"
+            aria-describedby="etf2lBanSyncReasonsHelp"
+            safe
+          >
+            {reasons.join('\n')}
+          </textarea>
+          <p id="etf2lBanSyncReasonsHelp" class="text-sm text-zinc-200">
+            Case-insensitive substring matching, one reason per line. Leave empty to mirror every
+            ban.
+          </p>
+        </dd>
+      </dl>
     </div>
   )
 }

@@ -35,6 +35,7 @@ export async function buildSnapshot() {
     mumblePlayerVerification,
     autoForceEndThreshold,
     etf2lAccountRequired,
+    etf2lBanSync,
     minimumInGameHours,
     servemePreferredRegion,
     cooldownLevels,
@@ -49,6 +50,7 @@ export async function buildSnapshot() {
     configuration.get('games.voice_server.mumble.player_verification'),
     configuration.get('games.auto_force_end_threshold'),
     configuration.get('players.etf2l_account_required'),
+    configuration.get('players.etf2l_ban_sync'),
     configuration.get('players.minimum_in_game_hours'),
     configuration.get('serveme_tf.preferred_region'),
     configuration.get('games.cooldown_levels'),
@@ -133,6 +135,12 @@ export async function buildSnapshot() {
       key: 'players.etf2l_account_required',
       value: etf2lAccountRequired,
       label: 'ETF2L account required',
+      group: 'Players',
+    },
+    {
+      key: 'players.etf2l_ban_sync',
+      value: etf2lBanSync,
+      label: 'Sync ETF2L.org bans',
       group: 'Players',
     },
     {
