@@ -6,6 +6,7 @@ vi.mock('../../database/collections', () => ({
     queueFriends: { find: vi.fn(), deleteMany: vi.fn() },
   },
 }))
+vi.mock('../../logger', () => ({ logger: { trace: vi.fn() } }))
 vi.mock('./kick-from-queue', () => ({ kickFromQueue: vi.fn() }))
 const emit = vi.hoisted(() => vi.fn())
 vi.mock('./queue-command', () => ({
