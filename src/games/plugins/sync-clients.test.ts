@@ -88,6 +88,23 @@ describe('games sync-clients', () => {
     expect(JoinVoiceButton).not.toHaveBeenCalled()
   })
 
+  it("does not re-render the connect info when a slot's shouldJoinBy is unchanged", async () => {
+    const shouldJoinBy = new Date()
+    onGameUpdated({
+      before: makeGame({
+        state: GameState.started,
+        slots: [{ player, shouldJoinBy }] as GameModel['slots'],
+      }),
+      after: makeGame({
+        state: GameState.started,
+        slots: [{ player, shouldJoinBy: new Date(shouldJoinBy) }] as GameModel['slots'],
+      }),
+    })
+    await render()
+
+    expect(ConnectInfo).not.toHaveBeenCalled()
+  })
+
   it('re-renders the whole connect info when the connect string changes', async () => {
     onGameUpdated({
       before: makeGame({}),

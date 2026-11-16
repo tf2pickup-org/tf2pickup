@@ -55,4 +55,31 @@ describe('Gateway', () => {
       expect(sent()).toEqual(['<div id="notification"></div>'])
     })
   })
+
+  it('drops a keyed message superseded while it was rendering', async () => {
+    const { promise, resolve } = Promise.withResolvers<string>()
+    gateway.to({ authenticated: false }).send(() => promise, { key: 'k' })
+    gateway.to({ authenticated: false }).send(() => 'fast', { key: 'k' })
+    await vi.waitFor(() => {
+      expect(sent()).toEqual(['fast'])
+    })
+    resolve('slow')
+
+    await new Promise(r => setTimeout(r))
+    expect(sent()).toEqual(['fast'])
+  })
+
+  it('does not hold back other messages while one renders', async () => {
+    const { promise, resolve } = Promise.withResolvers<string>()
+    gateway.broadcast(() => promise)
+    gateway.broadcast(() => 'fast')
+    await vi.waitFor(() => {
+      expect(sent()).toEqual(['fast'])
+    })
+    resolve('slow')
+
+    await vi.waitFor(() => {
+      expect(sent()).toEqual(['fast', 'slow'])
+    })
+  })
 })

@@ -128,10 +128,21 @@ async function sendSafe(client: AppWebSocket, msg: string) {
   })
 }
 
-async function send(client: AppWebSocket, message: MessageFn, tag = '') {
+const latestSends = new WeakMap<AppWebSocket, Map<string, symbol>>()
+
+// A keyed message is dropped if a newer message with the same key was sent to the client while it
+// was rendering, so a slow render of stale state can't overwrite a newer one on the page.
+async function send(client: AppWebSocket, message: MessageFn, tag = '', key?: string) {
+  const token = Symbol()
+  if (key) {
+    const sends = latestSends.get(client) ?? new Map<string, symbol>()
+    sends.set(key, token)
+    latestSends.set(client, sends)
+  }
+
   try {
     const m = await message(client.player?.steamId)
-    if (!m) {
+    if (!m || (key && latestSends.get(client)?.get(key) !== token)) {
       return
     }
 
@@ -197,7 +208,7 @@ class BroadcastOperator {
     return new BroadcastOperator(this.app, mergeFilters(this.filters, filter))
   }
 
-  send(message: MessageFn) {
+  send(message: MessageFn, options: { key?: string } = {}) {
     let recipients = 0
     this.app.websocketServer.clients.forEach(async client => {
       const socket = client as AppWebSocket
@@ -220,7 +231,12 @@ class BroadcastOperator {
       }
       recipients++
       // lets the client drop messages addressed to a page it has already left
-      await send(socket, message, this.filters.urls ? `<!--page:${socket.page}-->` : '')
+      await send(
+        socket,
+        message,
+        this.filters.urls ? `<!--page:${socket.page}-->` : '',
+        options.key,
+      )
     })
     broadcastRecipients.record(recipients)
   }
