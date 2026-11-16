@@ -22,9 +22,18 @@ export async function revokeBan(props: {
     },
   )
 
-  const ban = after.bans?.find(b => b.start.getTime() === props.banStart.getTime())
+  let ban = after.bans?.find(b => b.start.getTime() === props.banStart.getTime())
   if (!ban) {
     throw errors.notFound(`ban not found`)
+  }
+
+  if (ban.source === 'etf2l') {
+    ban = { ...ban, revokedLocally: true }
+    await update(
+      props.player,
+      { $set: { 'bans.$[ban].revokedLocally': true } },
+      { arrayFilters: [{ 'ban.start': { $eq: props.banStart }, 'ban.source': 'etf2l' }] },
+    )
   }
 
   events.emit('player/ban:revoked', { player: after.steamId, ban, admin: props.actor })
