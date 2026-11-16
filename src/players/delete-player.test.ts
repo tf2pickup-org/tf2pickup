@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ObjectId } from 'mongodb'
 import { deletePlayer } from './delete-player'
+import { queueEngine } from '../queues/auto'
+import { forPlayer } from './mutex'
 import { collections } from '../database/collections'
 import { PlayerRole } from '../database/models/player.model'
 import { GameEventType } from '../database/models/game-event.model'
@@ -30,10 +32,9 @@ vi.mock('../database/collections', () => ({
     },
     activityLog: { updateMany: vi.fn(() => Promise.resolve()) },
     onlinePlayers: { deleteMany: vi.fn(() => Promise.resolve()) },
-    queueSlots: { updateMany: vi.fn(() => Promise.resolve()) },
-    queueFriends: { deleteMany: vi.fn(() => Promise.resolve()) },
   },
 }))
+vi.mock('../queues/auto', () => ({ queueEngine: { removePlayer: vi.fn() } }))
 
 beforeEach(() => {
   vi.clearAllMocks()
@@ -130,12 +131,25 @@ describe('deletePlayer()', () => {
   it('should clear live presence', async () => {
     await deletePlayer(victim)
     expect(collections.onlinePlayers.deleteMany).toHaveBeenCalledWith({ steamId: victim })
-    expect(collections.queueSlots.updateMany).toHaveBeenCalledWith(
-      { 'player.steamId': victim },
-      { $set: { player: null, ready: false } },
-    )
-    expect(collections.queueFriends.deleteMany).toHaveBeenCalledWith({
-      $or: [{ source: victim }, { target: victim }],
+  })
+
+  it('should remove the player from the queue through the queue engine', async () => {
+    await deletePlayer(victim)
+    expect(queueEngine.removePlayer).toHaveBeenCalledWith(victim)
+  })
+
+  it('should not hold the player lock while removing them from the queue', async () => {
+    let locked: boolean | undefined
+    vi.mocked(queueEngine.removePlayer).mockImplementationOnce(async () => {
+      locked = forPlayer(victim).isLocked()
     })
+    await deletePlayer(victim)
+    expect(locked).toBe(false)
+  })
+
+  it('should leave the queue untouched when the player cannot be deleted', async () => {
+    mockState.roles = [PlayerRole.superUser]
+    await expect(deletePlayer(victim)).rejects.toThrow()
+    expect(queueEngine.removePlayer).not.toHaveBeenCalled()
   })
 })

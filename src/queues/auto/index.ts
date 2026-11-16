@@ -5,6 +5,7 @@ import { leave } from './leave'
 import { markAsFriend } from './mark-as-friend'
 import { readyUp } from './ready-up'
 import { recover } from './recover'
+import { removePlayer } from './remove-player'
 import { reset } from './reset'
 import { teardown } from './teardown'
 import { voteMap } from './vote-map'
@@ -17,6 +18,7 @@ export const queueEngine = {
   markAsFriend,
   readyUp,
   recover,
+  removePlayer,
   reset,
   teardown,
   voteMap,
