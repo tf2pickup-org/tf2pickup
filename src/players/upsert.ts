@@ -12,6 +12,9 @@ import { errors } from '../errors'
 import { environment } from '../environment'
 import { events } from '../events'
 import { withLogLevel } from '../utils/with-log-level'
+import { shouldMirrorBan } from '../etf2l/should-mirror-ban'
+import { millisecondsToSeconds } from 'date-fns'
+import type { Etf2lProfile } from '../etf2l/types/etf2l-profile'
 
 interface UpsertPlayerParams {
   steamID: string
@@ -83,35 +86,42 @@ async function verifyInGameHours(steamId: SteamId64) {
 
 async function verifyEtf2l(player: CreatePlayerParams): Promise<CreatePlayerParams> {
   const etf2lAccountRequired = await configuration.get('players.etf2l_account_required')
-  if (!etf2lAccountRequired) {
+  const etf2lBanSync = await configuration.get('players.etf2l_ban_sync')
+  if (!etf2lAccountRequired && !etf2lBanSync) {
     return player
   }
 
+  let etf2lProfile: Etf2lProfile
   try {
-    const etf2lProfile = await etf2l.getPlayerProfile(player.steamId)
+    etf2lProfile = await etf2l.getPlayerProfile(player.steamId)
+  } catch (error) {
+    if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
+      if (!etf2lAccountRequired) {
+        return player
+      }
+      logger.info({ player }, 'ETF2L.org account not found')
+      throw withLogLevel(errors.forbidden(`ETF2L.org account is required`), 'info')
+    }
+    if (!(error instanceof Etf2lApiError) || error.response.status >= 500) {
+      logger.warn({ player, error }, 'ETF2L.org API unavailable')
+      throw errors.serviceUnavailable(`ETF2L.org is unavailable, please try again later`)
+    }
+    throw error
+  }
+
+  if (etf2lBanSync) {
+    const reasons = await configuration.get('players.etf2l_ban_sync_reasons')
     if (
-      etf2lProfile.bans &&
-      etf2lProfile.bans.filter(ban => ban.end > Date.now() / 1000).length > 0
+      etf2lProfile.bans?.some(
+        ban => ban.end > millisecondsToSeconds(Date.now()) && shouldMirrorBan(ban.reason, reasons),
+      )
     ) {
       logger.warn({ etf2lProfile, player }, 'banned on ETF2L.org')
       throw errors.forbidden(`you are banned on ETF2L.org`)
     }
-
-    return {
-      ...player,
-      name: etf2lProfile.name,
-    }
-  } catch (error) {
-    if (error instanceof Etf2lApiError && error.response.status === 404 /* Not Found */) {
-      logger.info({ player }, 'ETF2L.org account not found')
-      throw withLogLevel(errors.forbidden(`ETF2L.org account is required`), 'info')
-    } else if (error instanceof Etf2lApiError && error.response.status >= 500) {
-      logger.warn({ player, status: error.response.status }, 'ETF2L.org API unavailable')
-      throw errors.serviceUnavailable(`ETF2L.org is unavailable, please try again later`)
-    } else {
-      throw error
-    }
   }
+
+  return etf2lAccountRequired ? { ...player, name: etf2lProfile.name } : player
 }
 
 export interface CreatePlayerParams {
