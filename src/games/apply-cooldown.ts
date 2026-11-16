@@ -2,10 +2,11 @@ import { configuration } from '../configuration'
 import { logger } from '../logger'
 import { players } from '../players'
 import { addBan } from '../players/add-ban'
+import type { GameNumber } from '../database/models/game.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
-export async function applyCooldown(steamId: SteamId64) {
-  logger.trace({ steamId }, 'players.applyCooldown()')
+export async function applyCooldown(steamId: SteamId64, gameNumber: GameNumber) {
+  logger.trace({ steamId, gameNumber }, 'players.applyCooldown()')
 
   const cooldownLevels = await configuration.get('games.cooldown_levels')
   if (cooldownLevels.length === 0) {
@@ -22,7 +23,7 @@ export async function applyCooldown(steamId: SteamId64) {
     player: player.steamId,
     admin: 'bot',
     end: new Date(Date.now() + cooldown.banLengthMs),
-    reason: `Cooldown level ${player.cooldownLevel}`,
+    reason: `Not connecting to game #${gameNumber} in time`,
   })
 
   logger.info({ player }, 'cooldown applied')

@@ -1,3 +1,4 @@
+import { formatDistanceToNow } from 'date-fns'
 import { collections } from '../../../../database/collections'
 import type { PlayerBan, PlayerModel } from '../../../../database/models/player.model'
 import { environment } from '../../../../environment'
@@ -41,6 +42,7 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
           <span class="font-bold" safe>
             {ban.end.toLocaleString()}
           </span>
+          &nbsp;(<span safe>{formatDistanceToNow(ban.end, { addSuffix: true })}</span>)
           &nbsp;for&nbsp;
           <span class="font-bold" safe>
             {ban.reason}
