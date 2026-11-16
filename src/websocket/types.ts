@@ -5,7 +5,7 @@ export type AppWebSocket = WebSocket & {
   id: string
   isAlive: boolean
   currentUrl?: string
-  page?: number | undefined
+  page?: number
   audioReady?: boolean
   player?: {
     steamId: SteamId64

@@ -66,7 +66,7 @@ const preReadyToggle = z.object({
 
 const navigated = z.object({
   navigated: z.string(),
-  page: z.number().int().optional(),
+  page: z.number().int(),
   HEADERS: htmxHeaders.optional(),
 })
 
@@ -126,11 +126,6 @@ async function sendSafe(client: AppWebSocket, msg: string) {
       }
     })
   })
-}
-
-// lets the client drop page-scoped messages addressed to a page it has already left
-function pageTag(client: AppWebSocket) {
-  return client.page === undefined ? '' : `<!--page:${client.page}-->`
 }
 
 async function send(client: AppWebSocket, message: MessageFn, tag = '') {
@@ -224,7 +219,8 @@ class BroadcastOperator {
         }
       }
       recipients++
-      await send(socket, message, this.filters.urls ? pageTag(socket) : '')
+      // lets the client drop messages addressed to a page it has already left
+      await send(socket, message, this.filters.urls ? `<!--page:${socket.page}-->` : '')
     })
     broadcastRecipients.record(recipients)
   }
