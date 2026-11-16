@@ -13,18 +13,13 @@ import { forPlayer } from './mutex'
 // replaced with a sentinel so it renders as "deleted user". Player action logs
 // intentionally keep the real steam id for auditing.
 export async function deletePlayer(steamId: SteamId64): Promise<void> {
-  const player = await collections.players.findOne({ steamId }, { projection: { roles: 1 } })
-  if (!player) {
-    throw errors.notFound(`Player with steamId ${steamId} does not exist`)
-  }
-  if (player.roles.includes(PlayerRole.superUser)) {
-    throw errors.forbidden('Super-users cannot be deleted')
-  }
-
+  await assertDeletable(steamId)
   // outside forPlayer(): kicking cancels pre-ready, which updates the player under that lock
   await queueEngine.removePlayer(steamId)
 
   await forPlayer(steamId).runExclusive(async () => {
+    // the player may have been promoted while we were removing them from the queue
+    await assertDeletable(steamId)
     await anonymizeGames(steamId)
 
     await collections.chatMessages.updateMany(
@@ -47,6 +42,16 @@ export async function deletePlayer(steamId: SteamId64): Promise<void> {
 
     await collections.players.deleteOne({ steamId })
   })
+}
+
+async function assertDeletable(steamId: SteamId64): Promise<void> {
+  const player = await collections.players.findOne({ steamId }, { projection: { roles: 1 } })
+  if (!player) {
+    throw errors.notFound(`Player with steamId ${steamId} does not exist`)
+  }
+  if (player.roles.includes(PlayerRole.superUser)) {
+    throw errors.forbidden('Super-users cannot be deleted')
+  }
 }
 
 async function anonymizeGames(steamId: SteamId64): Promise<void> {

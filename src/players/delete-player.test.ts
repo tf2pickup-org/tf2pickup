@@ -147,6 +147,14 @@ describe('deletePlayer()', () => {
     expect(locked).toBe(false)
   })
 
+  it('should re-check eligibility under the player lock', async () => {
+    vi.mocked(queueEngine.removePlayer).mockImplementationOnce(async () => {
+      mockState.roles = [PlayerRole.superUser]
+    })
+    await expect(deletePlayer(victim)).rejects.toThrow('Super-users cannot be deleted')
+    expect(collections.players.deleteOne).not.toHaveBeenCalled()
+  })
+
   it('should leave the queue untouched when the player cannot be deleted', async () => {
     mockState.roles = [PlayerRole.superUser]
     await expect(deletePlayer(victim)).rejects.toThrow()
