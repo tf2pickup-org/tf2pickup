@@ -9,7 +9,7 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { get } from '../get'
 import { getSlots } from './get-slots'
 import { queueCommand } from './queue-command'
-import { resetMapOptions } from '../../maps/reset-options'
+import { resetMapOptions } from './reset-map-options'
 
 export async function reset(queue: QueueId) {
   logger.trace({ queue }, 'queue.reset()')
@@ -24,7 +24,7 @@ export async function reset(queue: QueueId) {
     )
     emit('queue/slots:updated', { queue, slots: await getSlots(queue) })
     emit('queue/state:updated', { queue, state: QueueState.waiting })
-    await resetMapOptions(queue)
+    await resetMapOptions(queue, emit)
   })
   logger.info({ queue }, 'queue reset')
 }
