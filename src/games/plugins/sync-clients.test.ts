@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { FastifyInstance } from 'fastify'
 import { GameState, type GameModel } from '../../database/models/game.model'
+import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 vi.mock('fastify-plugin', () => ({ default: <T>(fn: T): T => fn }))
@@ -29,6 +30,7 @@ import { events } from '../../events'
 import { ConnectInfo } from '../views/html/connect-info'
 import { JoinGameButton } from '../views/html/join-game-button'
 import { JoinVoiceButton } from '../views/html/join-voice-button'
+import { PlayerConnectionStatusIndicator } from '../views/html/player-connection-status-indicator'
 import plugin from './sync-clients'
 
 const player = '76561198000000001' as SteamId64
@@ -46,6 +48,11 @@ function makeGame(overrides: Partial<GameModel>): GameModel {
 describe('games sync-clients', () => {
   let send: ReturnType<typeof vi.fn>
   let onGameUpdated: (params: { before: GameModel; after: GameModel }) => void
+  let onConnectionStatusUpdated: (params: {
+    game: GameModel
+    player: SteamId64
+    playerConnectionStatus: PlayerConnectionStatus
+  }) => void
 
   beforeEach(async () => {
     vi.clearAllMocks()
@@ -55,6 +62,9 @@ describe('games sync-clients', () => {
     const app = { gateway: { to, broadcast: vi.fn() } } as unknown as FastifyInstance
     await (plugin as unknown as (app: FastifyInstance) => Promise<void>)(app)
     onGameUpdated = vi.mocked(events.on).mock.calls.find(([e]) => e === 'game:updated')![1] as never
+    onConnectionStatusUpdated = vi
+      .mocked(events.on)
+      .mock.calls.find(([e]) => e === 'game:playerConnectionStatusUpdated')![1] as never
   })
 
   async function render() {
@@ -104,5 +114,28 @@ describe('games sync-clients', () => {
     await render()
 
     expect(ConnectInfo).toHaveBeenCalled()
+  })
+
+  describe('when a player connection status changes', () => {
+    it.each([
+      ['an active slot in a live game', SlotStatus.active, GameState.started, true],
+      [
+        'a slot waiting for a substitute',
+        SlotStatus.waitingForSubstitute,
+        GameState.started,
+        false,
+      ],
+      ['an active slot in an ended game', SlotStatus.active, GameState.ended, false],
+    ])('for %s', async (_, status, state, rendered) => {
+      onConnectionStatusUpdated({
+        game: makeGame({ state, slots: [{ player, status }] as GameModel['slots'] }),
+        player,
+        playerConnectionStatus: PlayerConnectionStatus.connected,
+      })
+      await render()
+
+      expect(vi.mocked(PlayerConnectionStatusIndicator).mock.calls.length > 0).toBe(rendered)
+      expect(ConnectInfo).toHaveBeenCalled()
+    })
   })
 })
