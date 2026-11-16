@@ -5,7 +5,7 @@ interface SocketWrapper {
 }
 
 let socket: SocketWrapper | undefined
-let awaitingNavigationAck = false
+let pendingNavigationAcks = 0
 
 const navigationAck = '<!--navigated-->'
 
@@ -22,7 +22,7 @@ function reportNavigation(path: string) {
     return
   }
 
-  awaitingNavigationAck = true
+  pendingNavigationAcks++
   const msg = JSON.stringify({ navigated: path })
   socket.send(msg)
 }
@@ -47,9 +47,9 @@ function hasEveryTarget(message: string) {
 htmx.on('htmx:wsBeforeMessage', event => {
   const { message } = (event as CustomEvent<{ message: string }>).detail
   if (message === navigationAck) {
-    awaitingNavigationAck = false
+    pendingNavigationAcks = Math.max(0, pendingNavigationAcks - 1)
     event.preventDefault()
-  } else if (awaitingNavigationAck && !hasEveryTarget(message)) {
+  } else if (pendingNavigationAcks > 0 && !hasEveryTarget(message)) {
     event.preventDefault()
   }
 })
@@ -60,6 +60,7 @@ export async function goTo(path: string) {
 
 htmx.on('htmx:wsOpen', event => {
   socket = (event as CustomEvent<{ socketWrapper: SocketWrapper }>).detail.socketWrapper
+  pendingNavigationAcks = 0
   reportNavigation(window.location.pathname)
 })
 
