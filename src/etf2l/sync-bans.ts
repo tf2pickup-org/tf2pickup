@@ -19,18 +19,20 @@ export async function syncBans() {
 
   const since = watermark
   const rows: z.infer<typeof etf2lBanSchema>[] = []
-  try {
-    for (let page = 1; page <= maxPages; ++page) {
-      const bans = await getBans(page)
-      const newer = bans.filter(ban => ban.start > since)
-      rows.push(...newer)
-      if (bans.length === 0 || newer.length < bans.length) {
-        break
-      }
+  for (let page = 1; page <= maxPages; ++page) {
+    let bans: z.infer<typeof etf2lBanSchema>[]
+    try {
+      bans = await getBans(page)
+    } catch (error) {
+      logger.warn({ error, page }, 'failed to fetch ETF2L.org bans')
+      break
     }
-  } catch (error) {
-    logger.warn({ error }, 'failed to fetch ETF2L.org bans')
-    return
+
+    const newer = bans.filter(ban => ban.start > since)
+    rows.push(...newer)
+    if (bans.length === 0 || newer.length < bans.length) {
+      break
+    }
   }
 
   if (rows.length === 0) {

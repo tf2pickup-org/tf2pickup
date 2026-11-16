@@ -90,6 +90,31 @@ describe('syncBans()', () => {
     expect(schedule.mock.calls).toEqual([['etf2l:syncPlayerProfile', 0, { player: 'reg-1' }]])
   })
 
+  it('keeps hits from earlier pages when a later page fails', async () => {
+    const syncBans = await load()
+    getBans.mockImplementation((page: number) =>
+      page === 1
+        ? Promise.resolve([row('reg-1', 1), row('reg-2', 2)])
+        : Promise.reject(new Error('500 Internal Server Error')),
+    )
+
+    await syncBans()
+
+    expect(getBans.mock.calls).toEqual([[1], [2]])
+    expect(schedule.mock.calls).toEqual([
+      ['etf2l:syncPlayerProfile', 0, { player: 'reg-1' }],
+      ['etf2l:syncPlayerProfile', 0, { player: 'reg-2' }],
+    ])
+
+    vi.clearAllMocks()
+    getBans.mockResolvedValue([row('reg-1', 1), row('reg-2', 2)])
+
+    await syncBans()
+
+    expect(getBans).toHaveBeenCalledTimes(1)
+    expect(schedule).not.toHaveBeenCalled()
+  })
+
   it('stops on an empty page', async () => {
     const syncBans = await load()
     getBans.mockResolvedValue([])
