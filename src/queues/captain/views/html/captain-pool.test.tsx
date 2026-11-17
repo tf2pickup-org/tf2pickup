@@ -84,7 +84,6 @@ describe('CaptainPool', () => {
       ...captainRoles(Gamemode.highlander).map(role => CaptainPool.roleColumn({ ...props, role })),
     ].map(fragment => Buffer.byteLength(String(fragment)))
 
-    process.stderr.write(`SIZES ${JSON.stringify(fragments)}\n`)
     expect(Math.max(...fragments)).toBeLessThan(50 * 1024)
   })
 })
