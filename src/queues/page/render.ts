@@ -1,6 +1,7 @@
 import { collections } from '../../database/collections'
 import { QueueState } from '../../database/models/queue-state.model'
 import type { AppWebSocket } from '../../websocket/types'
+import { pageTag } from '../../websocket/page-tag'
 import { getState } from '../get-state'
 import { ReadyUpDialog } from '../auto/views/html/ready-up-dialog'
 import { IsInQueue } from '../auto/views/html/is-in-queue'
@@ -13,6 +14,7 @@ import { sharedParts } from './shared-parts'
 // Brings a client that just opened a queue page up to date. Switching from another queue's page
 // keeps the shared part of the page.
 export async function render(socket: AppWebSocket, previousUrl?: string) {
+  const tag = pageTag(socket)
   const queue = await byPageUrl(socket.currentUrl)
   if (!queue) {
     return
@@ -41,7 +43,7 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
     steamId,
     actor: () => Promise.resolve(actor),
   })) {
-    socket.send(html)
+    socket.send(tag + html)
   }
 
   if (steamId && (await getState(queue._id)) === QueueState.ready) {

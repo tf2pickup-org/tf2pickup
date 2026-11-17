@@ -296,6 +296,18 @@ describe('queuePage.render', () => {
     expect(await received(socket)).toContain('ready-up-dialog')
   })
 
+  it('tags its updates with the page they were rendered for', async () => {
+    const socket = connect('/q/6v6')
+
+    const rendering = queuePage.render(socket)
+    socket.page = 2
+    await rendering
+
+    const messages = vi.mocked(socket.send).mock.calls.map(([msg]) => String(msg))
+    expect(messages.length).toBeGreaterThan(0)
+    expect(messages.every(msg => msg.startsWith('<!--page:1-->'))).toBe(true)
+  })
+
   it('renders nothing off a queue page', async () => {
     const socket = connect('/games/1', alice)
 

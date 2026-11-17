@@ -67,6 +67,7 @@ async function GameSlotContent(props: {
     : null
   const isAdmin = actor?.roles.includes(PlayerRole.admin)
 
+  const showConnectionState = [GameState.launching, GameState.started].includes(props.game.state)
   const showRequestSubstituteButton =
     isAdmin &&
     [GameState.created, GameState.configuring, GameState.launching, GameState.started].includes(
@@ -102,7 +103,14 @@ async function GameSlotContent(props: {
             <></>
           )}
 
-          <PlayerConnectionStatusIndicator game={props.game} slot={props.slot} />
+          {showConnectionState ? (
+            <PlayerConnectionStatusIndicator
+              steamId={props.player.steamId}
+              connectionStatus={props.slot.connectionStatus}
+            />
+          ) : (
+            <></>
+          )}
         </>
       )
 

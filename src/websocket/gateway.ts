@@ -9,6 +9,7 @@ import type { QueueSlotId } from '../queues/types/queue-slot-id'
 import { meter } from '../otel'
 import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from './types'
+import { pageTag } from './page-tag'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
@@ -212,7 +213,7 @@ class BroadcastOperator {
     const recipients = this.sockets()
     for (const socket of recipients) {
       // lets the client drop messages addressed to a page it has already left
-      void send(socket, message, this.filters.urls ? `<!--page:${socket.page}-->` : '', options.key)
+      void send(socket, message, this.filters.urls ? pageTag(socket) : '', options.key)
     }
     broadcastRecipients.record(recipients.length)
   }

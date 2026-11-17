@@ -1,24 +1,13 @@
-import {
-  PlayerConnectionStatus,
-  SlotStatus,
-  type GameSlotModel,
-} from '../../../database/models/game-slot.model'
-import { GameState, type GameModel } from '../../../database/models/game.model'
+import { PlayerConnectionStatus } from '../../../database/models/game-slot.model'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export function PlayerConnectionStatusIndicator(props: {
-  game: Pick<GameModel, 'state'>
-  slot: Pick<GameSlotModel, 'player' | 'status' | 'connectionStatus'>
+  steamId: SteamId64
+  connectionStatus: PlayerConnectionStatus
 }) {
-  if (
-    props.slot.status !== SlotStatus.active ||
-    ![GameState.launching, GameState.started].includes(props.game.state)
-  ) {
-    return <></>
-  }
-
   return (
     <div
-      id={`player-${props.slot.player}-connection-status`}
+      id={`player-${props.steamId}-connection-status`}
       aria-label="Player connection status"
       class={[
         'player-connection-status',
@@ -26,10 +15,10 @@ export function PlayerConnectionStatusIndicator(props: {
           [PlayerConnectionStatus.connected]: 'connected',
           [PlayerConnectionStatus.joining]: 'joining',
           [PlayerConnectionStatus.offline]: 'offline',
-        }[props.slot.connectionStatus],
+        }[props.connectionStatus],
       ]}
     >
-      <span class="sr-only">Player is {props.slot.connectionStatus}</span>
+      <span class="sr-only">Player is {props.connectionStatus}</span>
     </div>
   )
 }
