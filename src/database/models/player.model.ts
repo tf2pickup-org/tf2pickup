@@ -110,10 +110,16 @@ export interface PlayerModel {
   twitchTvProfile?: TwitchTvProfile
   stats: PlayerStats
   elo?: PlayerEloByGamemode
+  captainModeElo?: Partial<
+    Record<Gamemode, { classes: PlayerElo; overall?: number; captain?: number }>
+  >
   eloHistory?: {
     at: Date
     gamemode: Gamemode
     elo: PlayerElo
+    launchMode?: 'captain'
+    overall?: number
+    captain?: number
     game: GameNumber
   }[]
 }

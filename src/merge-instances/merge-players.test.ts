@@ -28,6 +28,43 @@ function certificate(hash: string): NonNullable<PlayerModel['mumbleCertificate']
 }
 
 describe('mergePlayers()', () => {
+  it('merges captain ratings per gamemode with primary precedence and preserves tagged history', () => {
+    const [merged] = mergePlayers(
+      [player({ captainModeElo: { '6v6': { classes: { scout: 1600 }, overall: 1650 } } })],
+      [
+        player({
+          captainModeElo: {
+            '6v6': { classes: { scout: 1400 }, captain: 1500 },
+            '9v9': { classes: { spy: 1450 }, overall: 1490, captain: 1520 },
+          },
+          eloHistory: [
+            {
+              at: new Date(),
+              game: 3 as GameNumber,
+              gamemode: '9v9',
+              launchMode: 'captain',
+              elo: { spy: 1450 },
+              overall: 1490,
+              captain: 1520,
+            },
+          ],
+        }),
+      ],
+      numberMap,
+    )
+    expect(merged!.captainModeElo).toEqual({
+      '6v6': { classes: { scout: 1600 }, overall: 1650 },
+      '9v9': { classes: { spy: 1450 }, overall: 1490, captain: 1520 },
+    })
+    expect(merged!.eloHistory![0]).toMatchObject({
+      game: 103,
+      launchMode: 'captain',
+      overall: 1490,
+      captain: 1520,
+    })
+    expect(merged!.elo).toBeUndefined()
+  })
+
   it('adds players only on the incoming instance, without their roles', () => {
     const [added] = mergePlayers(
       [],
