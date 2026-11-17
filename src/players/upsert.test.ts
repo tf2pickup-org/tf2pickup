@@ -6,6 +6,8 @@ import { Etf2lApiError } from '../etf2l/errors/etf2l-api.error'
 import { PlayerRole } from '../database/models/player.model'
 import { collections } from '../database/collections'
 import { ObjectId } from 'mongodb'
+import { configurationSchema } from '../database/models/configuration-entry.model'
+import { addDays, getUnixTime, subDays } from 'date-fns'
 
 const mockPlayer = vi.hoisted(() => ({
   steamId: '76561198074409147',
@@ -267,59 +269,155 @@ describe('upsertPlayer()', () => {
     })
   })
 
-  describe('and etf2l profile verification is enabled', () => {
+  describe('ETF2L registration restrictions', () => {
+    const registration = { ...upsertedPlayer, steamID: '12345678901234567' }
+
     beforeEach(() => {
-      mockConfig.set('players.etf2l_account_required', true)
+      vi.clearAllMocks()
+      mockConfig.set('players.etf2l_account_required', false)
+      mockConfig.set('players.etf2l_ban_sync', false)
+      mockConfig.set(
+        'players.etf2l_ban_sync_reasons',
+        configurationSchema.parse({ key: 'players.etf2l_ban_sync_reasons' }).value,
+      )
+      vi.mocked(etf2l.getPlayerProfile).mockResolvedValue({
+        id: 123,
+        name: 'League name',
+        country: 'Poland',
+        bans: [
+          {
+            start: getUnixTime(subDays(now, 1)),
+            end: getUnixTime(addDays(now, 1)),
+            reason: 'Cheating (Mirror)',
+          },
+        ],
+      })
     })
 
     afterEach(() => {
       mockConfig.set('players.etf2l_account_required', false)
+      mockConfig.set('players.etf2l_ban_sync', false)
+      mockConfig.set('players.bypass_registration_restrictions', [])
+      mockEnv.SUPER_USER = undefined
     })
 
-    describe('and user does not have an etf2l.org account', () => {
-      beforeEach(() => {
-        vi.mocked(etf2l).getPlayerProfile.mockRejectedValue(
+    it('rejects matching active bans independently of the account requirement', async () => {
+      mockConfig.set('players.etf2l_ban_sync', true)
+      await expect(upsert(registration)).rejects.toMatchObject({
+        statusCode: 403,
+        message: 'you are banned on ETF2L.org',
+      })
+      expect(collections.players.insertOne).not.toHaveBeenCalled()
+      expect(etf2l.getPlayerProfile).toHaveBeenCalledExactlyOnceWith(registration.steamID)
+    })
+
+    it('fetches only once when both restrictions are enabled', async () => {
+      mockConfig.set('players.etf2l_ban_sync', true)
+      mockConfig.set('players.etf2l_account_required', true)
+      await expect(upsert(registration)).rejects.toMatchObject({ statusCode: 403 })
+      expect(etf2l.getPlayerProfile).toHaveBeenCalledTimes(1)
+    })
+
+    it.each(['non-matching', 'expired', 'ends now', 'no bans'])(
+      'allows a player with %s bans and preserves the Steam name',
+      async scenario => {
+        mockConfig.set('players.etf2l_ban_sync', true)
+        vi.mocked(etf2l.getPlayerProfile).mockResolvedValue({
+          id: 123,
+          name: 'League name',
+          country: 'Poland',
+          bans:
+            scenario === 'no bans'
+              ? null
+              : [
+                  {
+                    start: getUnixTime(subDays(now, 2)),
+                    end: getUnixTime(
+                      scenario === 'expired'
+                        ? subDays(now, 1)
+                        : scenario === 'ends now'
+                          ? now
+                          : addDays(now, 1),
+                    ),
+                    reason: scenario === 'non-matching' ? 'Toxicity' : 'Cheating',
+                  },
+                ],
+        })
+        await upsert(registration)
+        expect(collections.players.insertOne).toHaveBeenCalledWith(
+          expect.objectContaining({ name: registration.nickname }),
+        )
+      },
+    )
+
+    it('mirrors every reason when the filter is empty', async () => {
+      mockConfig.set('players.etf2l_ban_sync', true)
+      mockConfig.set('players.etf2l_ban_sync_reasons', [])
+      await expect(upsert(registration)).rejects.toMatchObject({ statusCode: 403 })
+    })
+
+    it('allows active bans when only the account is required and uses the league name', async () => {
+      mockConfig.set('players.etf2l_account_required', true)
+      await upsert(registration)
+      expect(collections.players.insertOne).toHaveBeenCalledWith(
+        expect.objectContaining({ name: 'League name' }),
+      )
+    })
+
+    it.each([false, true])(
+      'handles missing accounts with account required = %s',
+      async required => {
+        mockConfig.set('players.etf2l_account_required', required)
+        mockConfig.set('players.etf2l_ban_sync', true)
+        vi.mocked(etf2l.getPlayerProfile).mockRejectedValue(
           new Etf2lApiError('', { status: 404 } as Response, 'Not Found'),
         )
-      })
+        if (required) {
+          await expect(upsert(registration)).rejects.toMatchObject({
+            statusCode: 403,
+            message: 'ETF2L.org account is required',
+          })
+        } else {
+          await upsert(registration)
+          expect(collections.players.insertOne).toHaveBeenCalledTimes(1)
+        }
+      },
+    )
 
-      it('should throw', async () => {
-        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
-          'ETF2L.org account is required',
-        )
+    it.each([
+      [false, new Etf2lApiError('', { status: 500 } as Response, 'Server Error')],
+      [true, new Etf2lApiError('', { status: 500 } as Response, 'Server Error')],
+      [false, new TypeError('fetch failed')],
+      [true, new TypeError('fetch failed')],
+    ])('fails closed on API failure with account required = %s', async (required, error) => {
+      mockConfig.set('players.etf2l_account_required', required)
+      mockConfig.set('players.etf2l_ban_sync', !required)
+      vi.mocked(etf2l.getPlayerProfile).mockRejectedValue(error)
+      await expect(upsert(registration)).rejects.toMatchObject({
+        statusCode: 503,
+        message: 'ETF2L.org is unavailable, please try again later',
       })
+      expect(collections.players.insertOne).not.toHaveBeenCalled()
     })
 
-    describe('and the etf2l.org API is down', () => {
-      beforeEach(() => {
-        vi.mocked(etf2l).getPlayerProfile.mockRejectedValue(
-          new Etf2lApiError('', { status: 503 } as Response, 'Service Unavailable'),
-        )
-      })
-
-      it('should throw', async () => {
-        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
-          'ETF2L.org is unavailable, please try again later',
-        )
-      })
+    it('makes no ETF2L request with both restrictions disabled', async () => {
+      vi.mocked(etf2l.getPlayerProfile).mockRejectedValue(new TypeError('fetch failed'))
+      await upsert(registration)
+      expect(etf2l.getPlayerProfile).not.toHaveBeenCalled()
+      expect(collections.players.insertOne).toHaveBeenCalledTimes(1)
     })
 
-    describe('and user has active etf2l bans', () => {
-      beforeEach(() => {
-        vi.mocked(etf2l).getPlayerProfile.mockResolvedValue({
-          bans: [
-            {
-              end: new Date(2195, 0, 1).getTime() / 1000,
-            },
-          ],
-        })
-      })
-
-      it('should throw', async () => {
-        await expect(upsert({ ...upsertedPlayer, steamID: '12345678901234567' })).rejects.toThrow(
-          'you are banned on ETF2L.org',
-        )
-      })
+    it.each(['bypass list', 'super user'])('skips both restrictions for the %s', async bypass => {
+      mockConfig.set('players.etf2l_account_required', true)
+      mockConfig.set('players.etf2l_ban_sync', true)
+      if (bypass === 'bypass list') {
+        mockConfig.set('players.bypass_registration_restrictions', [registration.steamID])
+      } else {
+        mockEnv.SUPER_USER = registration.steamID
+      }
+      await upsert(registration)
+      expect(etf2l.getPlayerProfile).not.toHaveBeenCalled()
+      expect(collections.players.insertOne).toHaveBeenCalledTimes(1)
     })
   })
 })

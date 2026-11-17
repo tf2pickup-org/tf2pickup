@@ -31,6 +31,13 @@ export default routes(async app => {
         schema: {
           body: z.looseObject({
             etf2lAccountRequired: z.coerce.boolean().default(false),
+            etf2lBanSync: z.coerce.boolean().default(false),
+            etf2lBanSyncReasons: z.string().transform(value =>
+              value
+                .split('\n')
+                .map(reason => reason.trim())
+                .filter(Boolean),
+            ),
             minimumInGameHours: z.coerce.number(),
             skillSuggestions: z.coerce.boolean().default(false),
             skillStep: z.coerce.number().positive(),
@@ -38,8 +45,14 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        const { etf2lAccountRequired, minimumInGameHours, skillSuggestions, skillStep } =
-          request.body
+        const {
+          etf2lAccountRequired,
+          etf2lBanSync,
+          etf2lBanSyncReasons,
+          minimumInGameHours,
+          skillSuggestions,
+          skillStep,
+        } = request.body
         const defaultPlayerSkill = await configuration.get('games.default_player_skill')
         for (const [key, value] of Object.entries(request.body)) {
           const [, gamemode, gameClass] = /^defaultPlayerSkill\.([^.]+)\.([^.]+)$/.exec(key) ?? []
@@ -60,6 +73,8 @@ export default routes(async app => {
         const actor = request.user!.player.steamId
         await Promise.all([
           configuration.set('players.etf2l_account_required', etf2lAccountRequired, actor),
+          configuration.set('players.etf2l_ban_sync', etf2lBanSync, actor),
+          configuration.set('players.etf2l_ban_sync_reasons', etf2lBanSyncReasons, actor),
           configuration.set('players.minimum_in_game_hours', minimumInGameHours, actor),
           configuration.set('games.default_player_skill', defaultPlayerSkill, actor),
           configuration.set('games.skill_step', skillStep, actor),
