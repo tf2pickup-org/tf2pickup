@@ -102,6 +102,53 @@ describe('deletePlayer()', () => {
     expect(set.events[1]).toMatchObject({ replacee: deletedUserSteamId, replacement: other })
   })
 
+  it('should anonymize a captain who was substituted out of their slot', async () => {
+    vi.mocked(collections.games.find).mockReturnValueOnce({
+      toArray: () =>
+        Promise.resolve([
+          {
+            _id: new ObjectId(),
+            // the original captain was replaced, so no slot names them any more
+            slots: [{ id: 0, player: other }],
+            events: [{ event: GameEventType.gameCreated, at: new Date() }],
+            captains: { red: victim, blu: other },
+          },
+        ]),
+    } as unknown as ReturnType<typeof collections.games.find>)
+
+    await deletePlayer(victim)
+
+    const [filter] = vi.mocked(collections.games.find).mock.calls[0]!
+    expect(filter).toMatchObject({
+      $or: expect.arrayContaining([{ 'captains.red': victim }, { 'captains.blu': victim }]),
+    })
+    const [, update] = vi.mocked(collections.games.updateOne).mock.calls[0]!
+    expect((update as { $set: { captains: unknown } }).$set.captains).toEqual({
+      red: deletedUserSteamId,
+      blu: other,
+    })
+  })
+
+  it('should leave the captains of an auto game out of the update', async () => {
+    vi.mocked(collections.games.find).mockReturnValueOnce({
+      toArray: () =>
+        Promise.resolve([
+          {
+            _id: new ObjectId(),
+            slots: [{ id: 0, player: victim }],
+            events: [{ event: GameEventType.gameCreated, at: new Date() }],
+          },
+        ]),
+    } as unknown as ReturnType<typeof collections.games.find>)
+
+    await deletePlayer(victim)
+
+    const [, update] = vi.mocked(collections.games.updateOne).mock.calls[0]!
+    expect(update as { $set: object }).toEqual({
+      $set: expect.not.objectContaining({ captains: expect.anything() }),
+    })
+  })
+
   it('should scrub the steam id and link from chat mentions', async () => {
     const _id = new ObjectId()
     vi.mocked(collections.chatMessages.find).mockReturnValueOnce({
