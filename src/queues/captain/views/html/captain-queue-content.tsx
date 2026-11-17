@@ -35,7 +35,7 @@ export async function CaptainQueueContent(props: { queue: QueueModel }) {
         <IsInQueue queue={queue._id} actor={steamId} />
         <QueueSwitcher active={queue} actor={steamId} />
         <div class="queue-state">
-          <div class="queue-state-form">
+          <div class="queue-state-form flex-wrap">
             <CaptainCounters queue={queue} view={view} />
             <form ws-send class="queue-state-actions">
               <PreReadyUpButton actor={steamId} />

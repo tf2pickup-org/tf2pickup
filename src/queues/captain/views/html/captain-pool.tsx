@@ -8,6 +8,7 @@ import { joinBlocker, type JoinBlockerPlayer } from '../../../auto/join-blocker'
 import { captainRoles } from '../../captain-roles'
 import type { PoolView } from '../../types/pool-view'
 import { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
+import { CaptainCheckbox } from './captain-checkbox'
 import { roleKey } from '../../role-key'
 import { roleLabel } from '../../role-label'
 import type { CaptainRole } from '../../types/captain-role'
@@ -33,10 +34,7 @@ export function CaptainPool(props: PoolProps) {
     <form id="captain-pool" class="flex flex-col gap-4" ws-send data-disable-when-offline>
       <CaptainVolunteers {...props} />
       <CaptainBottleneck view={props.view} />
-      <div
-        class="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:[grid-template-columns:repeat(var(--columns),minmax(0,1fr))]"
-        style={`--columns: ${roles.length}`}
-      >
+      <div class="grid grid-cols-2 gap-4 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
         {roles.map(role => (
           <CaptainRoleColumn {...props} role={role} />
         ))}
@@ -76,7 +74,7 @@ function CaptainVolunteers(props: PoolProps) {
 function CaptainBottleneck(props: { view: PoolView }) {
   const { readiness } = props.view
   return (
-    <p id="captain-bottleneck" class="text-sm text-zinc-400" safe>
+    <p id="captain-bottleneck" class="text-sm text-zinc-400 empty:hidden" safe>
       {readiness.full ? '' : (readiness.bottleneck ?? 'missing: captain volunteers')}
     </p>
   )
@@ -114,15 +112,12 @@ function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefine
         ) ?? undefined)
   return (
     <label class="relative flex items-center" aria-label="Volunteer as captain">
-      <input
-        type="checkbox"
-        class="size-6 accent-zinc-200"
+      <CaptainCheckbox
+        label="Volunteer as captain"
         checked={props.own?.volunteer ?? false}
         disabled={!!disabled}
-        ws-send
-        hx-vals={JSON.stringify({ togglevolunteer: '' })}
-        hx-trigger="change"
-        data-umami-event="captain-volunteer"
+        vals={{ togglevolunteer: '' }}
+        event="captain-volunteer"
       />
       <span class="sr-only">Volunteer as captain</span>
       {!!disabled && (
@@ -157,7 +152,7 @@ function RoleColumn(props: {
     </>
   )
   const headerClass =
-    'flex h-[54px] items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-[15px]'
+    'flex h-[54px] items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-[15px] has-checked:border-zinc-600'
   return (
     <div id={props.id} class="flex min-w-0 flex-col gap-2" data-role={key}>
       {interactive ? (
@@ -214,17 +209,13 @@ function RoleCheckbox(props: {
     : (joinBlocker(actor, role, { ...props.queue, skillThreshold: null }, undefined) ?? undefined)
   return (
     <>
-      <input
-        type="checkbox"
-        class="size-6 accent-zinc-200"
-        aria-label={`Sign up as ${roleLabel(role)}`}
+      <CaptainCheckbox
+        label={`Sign up as ${roleLabel(role)}`}
         checked={own?.roles.includes(key) ?? false}
         disabled={!!blocker}
-        ws-send
-        hx-vals={JSON.stringify({ togglerole: key })}
-        hx-trigger="change"
-        data-umami-event="captain-toggle-role"
-        data-umami-event-role={key}
+        vals={{ togglerole: key }}
+        event="captain-toggle-role"
+        eventRole={key}
       />
       {!!blocker && (
         <>
