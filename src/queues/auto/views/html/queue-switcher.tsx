@@ -12,7 +12,7 @@ export async function QueueSwitcher(props: {
   actor?: SteamId64 | undefined
 }) {
   const enabled = await queues.listEnabled()
-  if (enabled.length < 2) {
+  if (!isShown(enabled)) {
     return <></>
   }
 
@@ -58,4 +58,17 @@ export async function QueueSwitcher(props: {
       </div>
     </nav>
   )
+}
+
+QueueSwitcher.count = async (props: { queue: QueueModel }) => {
+  if (!isShown(await queues.listEnabled())) {
+    return <></>
+  }
+
+  const { current, required } = await playerCounts(props.queue)
+  return <QueueSwitcherCount slug={props.queue.slug} current={current} required={required} />
+}
+
+function isShown(enabled: QueueModel[]) {
+  return enabled.length >= 2
 }
