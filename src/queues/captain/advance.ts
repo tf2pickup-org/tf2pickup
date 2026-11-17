@@ -1,38 +1,38 @@
-import type { Gamemode } from '../../shared/types/gamemode'
-import { collections } from '../../database/collections'
-import type { QueueId } from '../../database/models/queue.model'
+import type { QueueId, QueueModel } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
-import { logger } from '../../logger'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 import type { Emit } from '../auto/queue-command'
 import { get } from '../get'
 import { getState } from '../get-state'
+import { assertCaptainQueue } from './assert-captain-queue'
 import { captainRoles } from './captain-roles'
 import { decideCaptain } from './decide-captain'
+import { enterState } from './enter-state'
 import { getPool } from './get-pool'
 import { poolReadiness } from './pool-readiness'
 
-// must run inside queueCommand(); re-evaluates the pool after it changed
+// Must run inside queueCommand(). Reuses reads from the calling command; the
+// boolean says whether its actor was auto-readied by filling the pool.
 export async function advance(
   queue: QueueId,
   emit: Emit,
-  // what the calling command already loaded; the command doesn't change the state itself
-  known?: { state: QueueState; gamemode: Gamemode },
-) {
-  const [state, { gamemode }, pool] = await Promise.all([
+  known?: { state: QueueState; settings: QueueModel; last?: SteamId64 },
+): Promise<boolean> {
+  const [state, settings, initialPool] = await Promise.all([
     known?.state ?? getState(queue),
-    known ?? get(queue),
+    known?.settings ?? get(queue),
     getPool(queue),
   ])
-  const { full } = poolReadiness(captainRoles(gamemode), pool)
-  const next = decideCaptain(state, { full })
-  if (next === null) {
-    return
-  }
+  assertCaptainQueue(settings)
+  const { full } = poolReadiness(captainRoles(settings.gamemode), initialPool)
+  const next = decideCaptain(state, { full, allReady: initialPool.every(member => member.ready) })
+  if (next === null) return false
 
-  logger.info({ queue, state: next }, 'queue state changed')
-  await collections.queueState.updateOne({ queue }, { $set: { state: next } })
-  if (next === QueueState.waiting) {
-    await collections.captainPool.updateMany({ queue }, { $set: { ready: false } })
+  const pool = await enterState(settings, next, emit, initialPool, known?.last)
+  if (next === QueueState.ready && pool.every(member => member.ready)) {
+    await enterState(settings, QueueState.drafting, emit, pool)
   }
-  emit('queue/state:updated', { queue, state: next })
+  // Readiness was cleared when the pool ceased to be full.
+  if (next === QueueState.waiting) return false
+  return next === QueueState.ready && pool.some(member => member.player.steamId === known?.last)
 }

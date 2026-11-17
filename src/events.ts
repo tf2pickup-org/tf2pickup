@@ -232,6 +232,13 @@ export interface Events {
   'queue/captainPool:updated': {
     queue: QueueId
   }
+  'queue/captainPool:left': {
+    queue: QueueId
+    player: SteamId64
+  }
+  'queue/captainDraft:starting': {
+    queue: QueueId
+  }
   'queue/state:updated': {
     queue: QueueId
     state: QueueState

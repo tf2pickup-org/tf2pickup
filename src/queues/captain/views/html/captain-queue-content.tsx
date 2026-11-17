@@ -8,6 +8,7 @@ import { StreamList } from '../../../auto/views/html/stream-list'
 import { getPoolView } from '../../get-pool-view'
 import { CaptainCounters } from './captain-counters'
 import { CaptainPool } from './captain-pool'
+import { CaptainReadyStatus } from './captain-ready-status'
 
 // The captain queue's page frame: the same toolbar and sidebar as an auto queue, without
 // Clear queue and the map vote.
@@ -45,6 +46,7 @@ export async function CaptainQueueContent(props: { queue: QueueModel }) {
       </div>
       <div class="queue-content">
         <CaptainPool queue={queue} view={view} actor={actor} />
+        <CaptainReadyStatus view={view} />
         <StreamList />
       </div>
     </div>

@@ -86,7 +86,13 @@ function flush(pending: PendingEvent[]) {
     }
   }
 
+  const captainPools = new Set<string>()
   for (const [event, params] of pending) {
+    if (event === 'queue/captainPool:updated') {
+      const key = params.queue.toHexString()
+      if (captainPools.has(key)) continue
+      captainPools.add(key)
+    }
     if (event !== 'queue/slots:updated') {
       events.emit(event, params)
       continue

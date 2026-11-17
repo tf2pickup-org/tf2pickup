@@ -168,9 +168,16 @@ function RoleColumn(props: {
           members.map(member => (
             <li
               class={[
-                'flex h-8 items-center justify-center truncate rounded-lg px-2 text-zinc-300 max-lg:min-h-10',
-                member.player.steamId === props.actor?.steamId ? 'bg-zinc-800' : 'bg-zinc-900',
-                props.readyUp && member.ready && 'bg-emerald-900 text-zinc-100',
+                'flex h-8 items-center justify-center truncate rounded-lg px-2 max-lg:min-h-10',
+                props.readyUp && member.ready
+                  ? 'bg-emerald-900 text-zinc-100'
+                  : member.player.steamId === props.actor?.steamId
+                    ? 'bg-zinc-800 text-zinc-300'
+                    : 'bg-zinc-900 text-zinc-300',
+                props.readyUp &&
+                  !member.ready &&
+                  member.player.steamId === props.actor?.steamId &&
+                  'outline outline-zinc-500',
               ]}
               data-player={member.player.steamId}
               data-ready={props.readyUp ? String(member.ready) : undefined}

@@ -15,6 +15,7 @@ const { calls, counted, pool } = vi.hoisted(() => {
 
 vi.mock('../../database/collections', () => ({
   collections: {
+    players: { find: vi.fn(() => ({ toArray: counted([]) })) },
     captainPool: {
       findOne: counted(null),
       insertOne: counted(undefined),
@@ -32,6 +33,10 @@ vi.mock('../../database/collections', () => ({
     queueState: { updateOne: counted(undefined) },
   },
 }))
+vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn() } }))
+vi.mock('../../tasks', () => ({
+  tasks: { schedule: counted(undefined), cancel: counted(undefined) },
+}))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('../../players', () => ({
   players: {
@@ -46,7 +51,13 @@ vi.mock('../auto/join-blocker', () => ({ joinBlocker: vi.fn().mockReturnValue(nu
 vi.mock('../get', () => ({
   get: vi.fn(() => {
     calls.count++
-    return Promise.resolve({ launchMode: 'captain', gamemode: '6v6', enabled: true })
+    return Promise.resolve({
+      launchMode: 'captain',
+      gamemode: '6v6',
+      enabled: true,
+      readyUpTimeout: 40000,
+      readyStateTimeout: 60000,
+    })
   }),
 }))
 vi.mock('../get-state', () => ({
@@ -76,7 +87,7 @@ import { roleKey } from './role-key'
 import { toggleRole } from './toggle-role'
 
 describe('toggleRole() query budget', () => {
-  it('stays within 10 operations for a first sign-up that makes the pool full', async () => {
+  it('stays within 10 operations plus ready-entry lifecycle cost when the pool becomes full', async () => {
     const roles = captainRoles('6v6' as never).map(roleKey)
     // the last two are the medics, one of whom is the newcomer
     pool.members = Array.from({ length: 12 }, (_, index) => ({
@@ -89,6 +100,7 @@ describe('toggleRole() query budget', () => {
     await toggleRole(new ObjectId() as QueueId, '76561198000000099' as SteamId64, 'medic:medic')
 
     expect(collections.queueState.updateOne).toHaveBeenCalled()
-    expect(calls.count).toBeLessThanOrEqual(10)
+    // Ready entry adds the pre-ready lookup/update and two durable task inserts (SPEC9).
+    expect(calls.count - 4).toBeLessThanOrEqual(10)
   })
 })

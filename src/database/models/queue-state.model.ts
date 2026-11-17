@@ -1,5 +1,6 @@
 import type { QueueId } from './queue.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import type { ReadyPhase } from '../../queues/captain/types/ready-phase'
 
 export enum QueueState {
   // waiting for players to join the queue
@@ -22,4 +23,5 @@ export interface QueueStateModel {
   queue: QueueId
   state: QueueState
   last?: SteamId64
+  captainReady?: ReadyPhase
 }
