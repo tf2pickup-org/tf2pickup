@@ -22,9 +22,7 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
 
   const fragments = await queueParts(queue, { slots: 'all', counts: true })
   // a preloaded queue page may be stale on who is in the queue
-  if (queue.launchMode === 'auto') {
-    fragments.push(({ steamId }) => IsInQueue({ queue: queue._id, actor: steamId }))
-  }
+  fragments.push(({ steamId }) => IsInQueue({ queue: queue._id, actor: steamId }))
   if (!(await byPageUrl(previousUrl))) {
     fragments.push(
       ...sharedParts({

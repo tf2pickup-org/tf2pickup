@@ -4,9 +4,12 @@ import { gamemodeConfigs } from '../gamemodes/configs'
 
 export async function playerCounts(queue: Pick<QueueModel, '_id' | 'gamemode' | 'launchMode'>) {
   if (queue.launchMode === 'captain') {
-    // ponytail: the captain pool is not built yet, so nobody is signed up
+    // the pool members who are not in the running draft: the next game's players
     const roles = gamemodeConfigs[queue.gamemode].captainRoles ?? []
-    return { current: 0, required: roles.length * 2 }
+    return {
+      current: await collections.captainPool.countDocuments({ queue: queue._id, locked: false }),
+      required: roles.length * 2,
+    }
   }
 
   const [current, required] = await Promise.all([

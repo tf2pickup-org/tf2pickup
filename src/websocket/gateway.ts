@@ -20,6 +20,8 @@ export interface ClientToServerEvents {
   'queue:votemap': (mapName: string) => void
   'queue:readyup': () => void
   'queue:markasfriend': (steamId: SteamId64 | null) => void
+  'queue:togglerole': (role: string) => void
+  'queue:togglevolunteer': () => void
   'queue:togglepreready': () => void
   'queue:audiostatus': (audioReady: boolean) => void
 }
@@ -60,6 +62,16 @@ const markAsFriend = z.object({
   HEADERS: htmxHeaders,
 })
 
+const toggleRole = z.object({
+  togglerole: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const toggleVolunteer = z.object({
+  togglevolunteer: z.literal(''),
+  HEADERS: htmxHeaders,
+})
+
 const preReadyToggle = z.object({
   prereadytoggle: z.string(),
   HEADERS: htmxHeaders,
@@ -82,6 +94,8 @@ const clientMessage = z.union([
   readyUp,
   voteMap,
   markAsFriend,
+  toggleRole,
+  toggleVolunteer,
   preReadyToggle,
   navigated,
   audioStatus,
@@ -301,6 +315,10 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:votemap', socket, parsed.votemap)
       } else if ('markasfriend' in parsed) {
         this.emit('queue:markasfriend', socket, parsed.markasfriend)
+      } else if ('togglerole' in parsed) {
+        this.emit('queue:togglerole', socket, parsed.togglerole)
+      } else if ('togglevolunteer' in parsed) {
+        this.emit('queue:togglevolunteer', socket)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
       } else if ('audioReady' in parsed) {

@@ -229,6 +229,9 @@ export interface Events {
     queue: QueueId
     slots: QueueSlotModel[]
   }
+  'queue/captainPool:updated': {
+    queue: QueueId
+  }
   'queue/state:updated': {
     queue: QueueId
     state: QueueState

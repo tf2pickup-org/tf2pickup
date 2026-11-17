@@ -35,6 +35,7 @@ vi.mock('../database/collections', () => ({
   },
 }))
 vi.mock('../queues/auto', () => ({ queueEngine: { removePlayer: vi.fn() } }))
+vi.mock('../queues/captain', () => ({ captainEngine: { kickFromPools: vi.fn() } }))
 
 beforeEach(() => {
   vi.clearAllMocks()
