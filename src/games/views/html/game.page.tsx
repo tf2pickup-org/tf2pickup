@@ -21,6 +21,8 @@ export async function GamePage(props: { number: GameNumber }) {
   const game = await findOne({ number: props.number }, [
     'number',
     'gamemode',
+    'launchMode',
+    'captains',
     'map',
     'state',
     'slots',
