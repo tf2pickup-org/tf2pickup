@@ -3,11 +3,14 @@ import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
 import { queueCommand } from './queue-command'
+import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 import { reset } from './reset'
 import { takeLaunchSnapshot } from './take-launch-snapshot'
 
 // brings a queue back after the app (re)starts
 export async function recover(queue: QueueId) {
+  assertAutoQueue(await get(queue))
   const [state, slots] = await Promise.all([
     collections.queueState.findOne({ queue }),
     collections.queueSlots.countDocuments({ queue }),

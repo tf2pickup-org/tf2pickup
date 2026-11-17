@@ -8,6 +8,8 @@ import { withLogLevel } from '../../utils/with-log-level'
 import { getState } from '../get-state'
 import { getMapVoteResults } from './get-map-vote-results'
 import type { Emit } from './queue-command'
+import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 
 // must run inside queueCommand()
 export async function vacateSlot(steamId: SteamId64, emit: Emit): Promise<QueueSlotModel> {
@@ -17,6 +19,7 @@ export async function vacateSlot(steamId: SteamId64, emit: Emit): Promise<QueueS
   }
 
   const { queue } = current
+  assertAutoQueue(await get(queue))
   logger.trace({ queue, steamId }, 'queue.vacateSlot()')
   if ((await getState(queue)) === QueueState.launching) {
     throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')

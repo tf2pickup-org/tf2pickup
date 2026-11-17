@@ -55,15 +55,20 @@ export default routes(async app => {
             slug: z.string(),
             name: z.string(),
             gamemode: z.enum(Gamemode),
+            launchMode: z.enum(['auto', 'captain']).default('auto'),
           }),
         },
       },
       async (request, reply) => {
-        const { template, slug, name, gamemode } = request.body
+        const { template, slug, name, gamemode, launchMode } = request.body
         await act(request, reply, '/admin/queues', async () => {
           const preset = queuePresets.find(p => p.slug === template)
-          const { maps, ...base } = preset ?? { gamemode, launchMode: 'auto' as const, maps: [] }
-          await queues.create({ ...base, slug, name }, maps, request.user!.player.steamId)
+          const { maps, ...base } = preset ?? { gamemode, maps: [] }
+          await queues.create(
+            { ...base, launchMode, slug, name },
+            maps,
+            request.user!.player.steamId,
+          )
           return `Queue ${slug} added`
         })
       },
@@ -86,6 +91,7 @@ export default routes(async app => {
             skillThreshold: z.coerce.number().optional(),
             readyUpTimeout: z.coerce.number(),
             readyStateTimeout: z.coerce.number(),
+            pickTimeout: z.coerce.number().optional(),
             mapCooldown: z.coerce.number(),
             whitelistId: z.string().default(''),
           }),
@@ -103,6 +109,9 @@ export default routes(async app => {
               skillThreshold: body.skillThresholdEnabled ? (body.skillThreshold ?? 0) : null,
               readyUpTimeout: secondsToMilliseconds(body.readyUpTimeout),
               readyStateTimeout: secondsToMilliseconds(body.readyStateTimeout),
+              ...(body.pickTimeout === undefined
+                ? {}
+                : { pickTimeout: secondsToMilliseconds(body.pickTimeout) }),
               mapCooldown: body.mapCooldown,
               whitelistId: body.whitelistId.trim() || null,
             },

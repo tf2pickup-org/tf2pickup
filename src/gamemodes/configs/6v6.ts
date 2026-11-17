@@ -4,6 +4,14 @@ import type { GamemodeConfig } from '../types/gamemode-config'
 export const _6v6: GamemodeConfig = {
   teamCount: 2,
   autoBalance: true,
+  captainRoles: [
+    { name: 'pocket', gameClass: Tf2ClassName.scout },
+    { name: 'flank', gameClass: Tf2ClassName.scout },
+    { name: 'pocket', gameClass: Tf2ClassName.soldier },
+    { name: 'roamer', gameClass: Tf2ClassName.soldier },
+    { name: 'demoman', gameClass: Tf2ClassName.demoman },
+    { name: 'medic', gameClass: Tf2ClassName.medic },
+  ],
   classes: [
     {
       name: Tf2ClassName.scout,

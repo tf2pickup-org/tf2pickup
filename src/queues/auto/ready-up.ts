@@ -7,6 +7,8 @@ import { getState } from '../get-state'
 import { queueCommand } from './queue-command'
 import { preReady } from '../../pre-ready'
 import { errors } from '../../errors'
+import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 
 export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
   return await queueCommand('ready-up', async emit => {
@@ -16,6 +18,7 @@ export async function readyUp(steamId: SteamId64): Promise<QueueSlotModel> {
     }
 
     const { queue } = current
+    assertAutoQueue(await get(queue))
     logger.trace({ queue, steamId }, 'queue.readyUp()')
     const state = await getState(queue)
     if (state !== QueueState.ready) {

@@ -10,6 +10,12 @@ export enum QueueState {
 
   // everybody has readied up, the game is being launched
   launching = 'launching',
+
+  // captain queues only: the captains are picking teams
+  drafting = 'drafting',
+
+  // captain queues only: the captains are banning maps
+  banningMaps = 'banningMaps',
 }
 
 export interface QueueStateModel {

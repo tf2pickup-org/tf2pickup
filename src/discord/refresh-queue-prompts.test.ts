@@ -40,8 +40,20 @@ vi.mock('./for-each-enabled-channel', () => ({
   }),
 }))
 
-const sixes = { _id: new ObjectId(), slug: 'auto-6v6', name: '6v6', gamemode: '6v6' }
-const ultiduo = { _id: new ObjectId(), slug: 'duo', name: 'Ultiduo', gamemode: 'ultiduo' }
+const sixes = {
+  _id: new ObjectId(),
+  slug: 'auto-6v6',
+  name: '6v6',
+  gamemode: '6v6',
+  launchMode: 'auto',
+}
+const ultiduo = {
+  _id: new ObjectId(),
+  slug: 'duo',
+  name: 'Ultiduo',
+  gamemode: 'ultiduo',
+  launchMode: 'auto',
+}
 
 function slots(taken: number, total: number) {
   return Array.from({ length: total }, (_, i) => ({

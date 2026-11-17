@@ -19,6 +19,8 @@ export function decide(
       }
       return ready === slots ? QueueState.launching : null
     case QueueState.launching:
+    case QueueState.drafting:
+    case QueueState.banningMaps:
       return null
   }
 }

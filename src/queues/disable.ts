@@ -6,6 +6,7 @@ import { errors } from '../errors'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { queueEngine } from './auto'
+import { captainEngine } from './captain'
 import { get } from './get'
 
 export async function disable(id: QueueId, actor: SteamId64) {
@@ -23,6 +24,21 @@ export async function disable(id: QueueId, actor: SteamId64) {
   }
 
   await collections.queues.updateOne({ _id: id }, { $set: { enabled: false } })
+  if (queue.launchMode === 'captain') {
+    await captainEngine.teardown(id)
+  } else {
+    await kickAndTeardown(id)
+  }
+
+  await activityLog.record({
+    type: 'configuration change',
+    key: `queues.${queue.slug}.enabled`,
+    actor,
+  })
+  events.emit('queue:updated', { queue: id })
+}
+
+async function kickAndTeardown(id: QueueId) {
   const players = (
     await collections.queueSlots.find({ queue: id, player: { $ne: null } }).toArray()
   ).map(({ player }) => player!.steamId)
@@ -35,11 +51,4 @@ export async function disable(id: QueueId, actor: SteamId64) {
   }
 
   await queueEngine.teardown(id)
-
-  await activityLog.record({
-    type: 'configuration change',
-    key: `queues.${queue.slug}.enabled`,
-    actor,
-  })
-  events.emit('queue:updated', { queue: id })
 }

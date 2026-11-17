@@ -18,7 +18,7 @@ export async function update(
   const queue = await get(queueId)
   sendToPages(gateway, [queuePageUrl(queue.slug)], await queueParts(queue, parts), options.players)
 
-  if (parts.counts) {
+  if (parts.counts && queue.launchMode === 'auto') {
     // every queue page shows this queue's count in the switcher
     const count = QueueSwitcher.count({ queue })
     sendToPages(gateway, await pageUrls(), [() => count], options.players)

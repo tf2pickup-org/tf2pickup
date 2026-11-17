@@ -12,6 +12,7 @@ vi.mock('../../database/collections', () => {
     },
   }
 })
+vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'auto' }) }))
 vi.mock('../../events', () => ({ events: { emit: vi.fn() } }))
 const emit = vi.hoisted(() => vi.fn())
 vi.mock('./queue-command', () => ({

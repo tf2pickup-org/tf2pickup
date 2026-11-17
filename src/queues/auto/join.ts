@@ -16,6 +16,7 @@ import type { QueueSlotId } from '../types/queue-slot-id'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 import { get } from '../get'
 import { vacateSlot } from './vacate-slot'
+import { assertAutoQueue } from './assert-auto-queue'
 
 export async function join(
   queue: QueueId,
@@ -24,6 +25,7 @@ export async function join(
 ): Promise<QueueSlotModel[]> {
   logger.trace({ queue, steamId, slotId }, `queue.join()`)
   const settings = await get(queue)
+  assertAutoQueue(settings)
   const player = await players.bySteamId(steamId, [
     'hasAcceptedRules',
     'bans',

@@ -28,6 +28,9 @@ export interface QueueParts {
 // What belongs to one queue on its page; the rest of the page is shared by every queue.
 export async function queueParts(queue: QueueModel, parts: QueueParts): Promise<Fragment[]> {
   const fragments: Fragment[] = []
+  if (queue.launchMode !== 'auto') {
+    return fragments
+  }
 
   const slots = await pickSlots(queue, parts)
   if (slots.length > 0) {

@@ -4,6 +4,17 @@ import type { GamemodeConfig } from '../types/gamemode-config'
 export const _9v9: GamemodeConfig = {
   teamCount: 2,
   autoBalance: true,
+  captainRoles: [
+    Tf2ClassName.scout,
+    Tf2ClassName.soldier,
+    Tf2ClassName.pyro,
+    Tf2ClassName.demoman,
+    Tf2ClassName.heavy,
+    Tf2ClassName.engineer,
+    Tf2ClassName.medic,
+    Tf2ClassName.sniper,
+    Tf2ClassName.spy,
+  ].map(gameClass => ({ name: gameClass, gameClass })),
   classes: [
     {
       name: Tf2ClassName.scout,

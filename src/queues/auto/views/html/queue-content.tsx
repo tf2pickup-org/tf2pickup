@@ -12,6 +12,7 @@ import { players } from '../../../../players'
 import { PreReadyUpButton } from '../../../../pre-ready/views/html/pre-ready-up-button'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import { queues } from '../../..'
+import { CaptainQueueContent } from '../../../captain/views/html/captain-queue-content'
 import { CurrentPlayerCount } from './current-player-count'
 import { IsInQueue } from './is-in-queue'
 import { MapVote } from './map-vote'
@@ -27,6 +28,10 @@ import { teamSlots } from './team-slots'
 // page's grid.
 export async function QueueContent(props: { queue: QueueModel }) {
   const { queue } = props
+  if (queue.launchMode === 'captain') {
+    return <CaptainQueueContent queue={queue} />
+  }
+
   const slots = await collections.queueSlots.find({ queue: queue._id }).toArray()
   const required = slots.length
   const user = requestContext.get('user')

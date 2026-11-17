@@ -10,6 +10,7 @@ import { get } from './get'
 import { move } from './move'
 import { remove } from './remove'
 import { queueEngine } from './auto'
+import { captainEngine } from './captain'
 import { QueueState } from '../database/models/queue-state.model'
 
 vi.mock('../database/collections', () => {
@@ -36,6 +37,7 @@ vi.mock('../database/collections', () => {
 vi.mock('../activity-log', () => ({ activityLog: { record: vi.fn() } }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
 vi.mock('./get', () => ({ get: vi.fn() }))
+vi.mock('./captain', () => ({ captainEngine: { reset: vi.fn(), teardown: vi.fn() } }))
 vi.mock('./auto', () => ({
   queueEngine: { kick: vi.fn(), reset: vi.fn(), teardown: vi.fn() },
 }))
@@ -67,6 +69,36 @@ describe('create()', () => {
     expect(collections.queues.insertOne).toHaveBeenCalledWith(queue)
   })
 
+  it('creates a captain queue without a skill threshold', async () => {
+    vi.mocked(collections.queues.countDocuments).mockResolvedValue(0)
+    vi.mocked(collections.queues.findOne).mockResolvedValue(null)
+
+    const queue = await create(
+      {
+        slug: 'captain-6v6',
+        name: 'Captains',
+        gamemode: '6v6' as never,
+        launchMode: 'captain',
+        skillThreshold: 2,
+      },
+      maps,
+      actor,
+    )
+
+    expect(queue).toMatchObject({ launchMode: 'captain', skillThreshold: null, pickTimeout: 10000 })
+  })
+
+  it('refuses a captain queue for a gamemode without captain roles', async () => {
+    await expect(
+      create(
+        { slug: 'duo', name: 'x', gamemode: 'ultiduo' as never, launchMode: 'captain' },
+        [],
+        actor,
+      ),
+    ).rejects.toThrow('cannot use captain mode')
+    expect(collections.queues.insertOne).not.toHaveBeenCalled()
+  })
+
   it('rejects a slug that is taken', async () => {
     vi.mocked(collections.queues.countDocuments).mockResolvedValue(1)
     await expect(
@@ -95,6 +127,13 @@ describe('enable()', () => {
       { $set: { enabled: true } },
     )
     expect(queueEngine.reset).toHaveBeenCalledWith(id)
+  })
+
+  it('sets up a captain queue through the captain engine only', async () => {
+    withQueue({ enabled: false, launchMode: 'captain' })
+    await enable(id, actor)
+    expect(captainEngine.reset).toHaveBeenCalledWith(id)
+    expect(queueEngine.reset).not.toHaveBeenCalled()
   })
 
   it('refuses a queue with fewer than 3 maps', async () => {

@@ -7,7 +7,13 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { QueueState } from '../../database/models/queue-state.model'
 
 const db = vi.hoisted(() => ({
-  queues: [] as { _id: unknown; slug: string; gamemode: string; enabled: boolean }[],
+  queues: [] as {
+    _id: unknown
+    slug: string
+    gamemode: string
+    launchMode: string
+    enabled: boolean
+  }[],
   slots: [] as {
     id: string
     queue: unknown
@@ -122,8 +128,20 @@ import { queuePage } from '.'
 
 const alice = '76561198000000001' as SteamId64
 const bob = '76561198000000002' as SteamId64
-const sixes = { _id: new ObjectId(), slug: '6v6', gamemode: '6v6', enabled: true }
-const ultiduo = { _id: new ObjectId(), slug: 'ultiduo', gamemode: 'ultiduo', enabled: true }
+const sixes = {
+  _id: new ObjectId(),
+  slug: '6v6',
+  gamemode: '6v6',
+  launchMode: 'auto',
+  enabled: true,
+}
+const ultiduo = {
+  _id: new ObjectId(),
+  slug: 'ultiduo',
+  gamemode: 'ultiduo',
+  launchMode: 'auto',
+  enabled: true,
+}
 
 function connect(currentUrl: string, steamId?: SteamId64) {
   const socket = {

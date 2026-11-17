@@ -63,6 +63,8 @@ export interface GameModel {
   gamemode: Gamemode
   // the queue the game was launched from; for reference only
   queue?: QueueId
+  // absent means the game came from an auto queue
+  launchMode?: 'captain'
   map: string
   // resolved when the game is launched, so the game server is configured the same way for the
   // whole game
