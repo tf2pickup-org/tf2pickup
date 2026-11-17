@@ -317,7 +317,9 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
           </p>
         </div>
       ) : (
-        <></>
+        <h2 id="captain-next-game-title" class="sr-only">
+          Sign-up pool
+        </h2>
       )}
     </div>
   )

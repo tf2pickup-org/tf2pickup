@@ -1,18 +1,17 @@
-// The websocket gives no response to wait for, so a picked row is disabled and dimmed at once. The
-// draft's next update replaces it; if the pick was refused, the row comes back after a moment.
-const pendingMs = 3000
+import { markPickPending } from './mark-pick-pending'
 
-document.addEventListener('click', event => {
-  const button = (event.target as Element).closest<HTMLButtonElement>('[data-pick-button]')
-  if (!button || button.disabled) return
-  button.classList.add('opacity-60')
-  // after htmx has read the button, so the click still sends
-  setTimeout(() => {
-    button.disabled = true
-  })
-  setTimeout(() => {
-    if (!button.isConnected) return
-    button.disabled = false
-    button.classList.remove('opacity-60')
-  }, pendingMs)
-})
+// Captured before htmx sees the click, so a pending row sends nothing, not even from the keyboard.
+document.addEventListener(
+  'click',
+  event => {
+    const button = (event.target as Element).closest<HTMLElement>('[data-pick-button]')
+    if (!button) return
+    if ('pending' in button.dataset) {
+      event.stopImmediatePropagation()
+      event.preventDefault()
+      return
+    }
+    markPickPending(button)
+  },
+  true,
+)

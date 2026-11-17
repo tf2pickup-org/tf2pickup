@@ -273,12 +273,17 @@ describe('turnTimeout()', () => {
     await startDraft(settings, pool(), emit)
     const { red, blu } = draft()
     await pick(queueId, red, pool()[5]!.player.steamId, roles[0]!)
-    const before = draft() as unknown as { turnDeadline: string; turnStartedAt: string }
+    const snapshot = () => {
+      const { turnDeadline, turnStartedAt } = draft() as unknown as {
+        turnDeadline: Date
+        turnStartedAt: Date
+      }
+      return { deadline: turnDeadline.getTime(), startedAt: turnStartedAt.getTime() }
+    }
+    const before = snapshot()
 
     await pick(queueId, blu, pool()[6]!.player.steamId, roles[1]!)
-    const after = draft() as unknown as { turnDeadline: string; turnStartedAt: string }
-    expect(after.turnDeadline).toEqual(before.turnDeadline)
-    expect(after.turnStartedAt).toEqual(before.turnStartedAt)
+    expect(snapshot()).toEqual(before)
     expect(store.scheduled).toEqual([
       expect.objectContaining({ args: expect.objectContaining({ turn: 1 }) }),
     ])

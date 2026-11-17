@@ -2,7 +2,7 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import type { Tf2Team } from '../../shared/types/tf2-team'
 import type { QueueId } from './queue.model'
 
-export interface CaptainDraftPickModel {
+interface CaptainDraftPickModel {
   team: Tf2Team
   player: SteamId64
   // role key, see roleKey()
