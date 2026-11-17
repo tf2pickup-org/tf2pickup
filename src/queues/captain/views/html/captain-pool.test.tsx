@@ -60,6 +60,11 @@ describe('CaptainPool', () => {
     expect(html.querySelectorAll('input[type=checkbox]').length).toBeGreaterThan(6)
   })
 
+  it('labels the volunteer toggle once', () => {
+    const html = parse(String(CaptainPool({ queue, view: view([member(false)]), actor })))
+    expect(html.querySelectorAll('[aria-label="Volunteer as captain"]')).toHaveLength(1)
+  })
+
   it('hides every checkbox from a viewer locked into the draft', () => {
     const html = parse(String(CaptainPool({ queue, view: view([member(true)]), actor })))
     expect(html.querySelectorAll('input[type=checkbox]')).toHaveLength(0)

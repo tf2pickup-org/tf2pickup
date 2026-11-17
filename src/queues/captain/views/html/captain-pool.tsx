@@ -111,7 +111,7 @@ function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefine
           undefined,
         ) ?? undefined)
   return (
-    <label class="relative flex items-center" aria-label="Volunteer as captain">
+    <label class="relative flex items-center">
       <CaptainCheckbox
         label="Volunteer as captain"
         checked={props.own?.volunteer ?? false}
@@ -119,7 +119,6 @@ function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefine
         vals={{ togglevolunteer: '' }}
         event="captain-volunteer"
       />
-      <span class="sr-only">Volunteer as captain</span>
       {!!disabled && (
         <span class="tooltip whitespace-nowrap" safe>
           {disabled}
