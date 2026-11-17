@@ -7,6 +7,7 @@ import { IconCrown, IconLock } from '../../../../html/components/icons'
 import { joinBlocker, type JoinBlockerPlayer } from '../../../auto/join-blocker'
 import { captainRoles } from '../../captain-roles'
 import type { PoolView } from '../../types/pool-view'
+import { Tf2ClassName } from '../../../../shared/types/tf2-class-name'
 import { roleKey } from '../../role-key'
 import { roleLabel } from '../../role-label'
 import type { CaptainRole } from '../../types/captain-role'
@@ -31,7 +32,7 @@ export function CaptainPool(props: { queue: Queue; view: PoolView; actor?: Actor
         class="flex min-h-11 flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 p-3"
         aria-label="Captain volunteers"
       >
-        <VolunteerToggle own={own} actor={actor} />
+        <VolunteerToggle queue={queue} own={own} actor={actor} />
         <IconCrown size={20} />
         <span class="font-bold">Captain {volunteers.length}/2</span>
         {volunteers.map(member => (
@@ -75,12 +76,21 @@ export function CaptainPool(props: { queue: Queue; view: PoolView; actor?: Actor
   )
 }
 
-function VolunteerToggle(props: { own: CaptainPoolModel | undefined; actor: Actor }) {
+function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefined; actor: Actor }) {
   if (!props.actor || props.own?.locked) {
     return <></>
   }
 
-  const disabled = props.own ? undefined : 'Sign up for a role first'
+  const disabled = !props.own
+    ? 'Sign up for a role first'
+    : props.own.volunteer
+      ? undefined
+      : (joinBlocker(
+          props.actor,
+          { gameClass: Tf2ClassName.medic },
+          { ...props.queue, skillThreshold: null },
+          undefined,
+        ) ?? undefined)
   return (
     <label class="relative flex items-center" aria-label="Volunteer as captain">
       <input
@@ -94,7 +104,11 @@ function VolunteerToggle(props: { own: CaptainPoolModel | undefined; actor: Acto
         data-umami-event="captain-volunteer"
       />
       <span class="sr-only">Volunteer as captain</span>
-      {!!disabled && <span class="tooltip whitespace-nowrap">{disabled}</span>}
+      {!!disabled && (
+        <span class="tooltip whitespace-nowrap" safe>
+          {disabled}
+        </span>
+      )}
     </label>
   )
 }

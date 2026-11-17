@@ -101,28 +101,29 @@ test.describe('captain sign-up pool @multi-queue', () => {
   }) => {
     const viewer = await users.byName('Shadowhunter').page()
     const autoSlug = defaultQueueSlug()
-    const snapshot = async (slug: string) => {
+    // the queue's own content; the shared switcher legitimately shows the other queue's count
+    const snapshot = async (slug: string, selector: string) => {
       await viewer.goto(`/q/${slug}`)
-      const dto = (await (await viewer.request.get(`/api/v1/queues/${slug}`)).json()) as {
-        slots: unknown
-      }
-      return { dto, html: await viewer.locator('#queue-content').innerHTML() }
+      const dto = (await (await viewer.request.get(`/api/v1/queues/${slug}`)).json()) as unknown
+      return { dto, html: await viewer.locator(selector).innerHTML() }
     }
 
-    const autoBefore = await snapshot(autoSlug)
+    const autoBefore = await snapshot(autoSlug, '#queue')
     const player = await users.byName('Polemic').page()
     await player.goto(`/q/${captain}`)
     await toggle(player, 'medic:medic').check()
     await player.getByLabel('Volunteer as captain').check()
     await expect(role(player, 'medic:medic')).toContainText('Polemic')
-    expect(await snapshot(autoSlug)).toEqual(autoBefore)
+    expect(await snapshot(autoSlug, '#queue')).toEqual(autoBefore)
+    await expect(viewer.locator(`#queue-switcher-count-${captain}`)).toHaveText('1/12')
 
-    const captainBefore = await snapshot(captain)
+    const captainBefore = await snapshot(captain, '#captain-pool')
     const other = await users.byName('MoonMan').queuePage(autoSlug)
     await other.goto()
     await other.joinQueue('medic-1')
+    expect(await snapshot(captain, '#captain-pool')).toEqual(captainBefore)
     await other.leaveQueue()
-    expect(await snapshot(captain)).toEqual(captainBefore)
+    expect(await snapshot(captain, '#captain-pool')).toEqual(captainBefore)
   })
 
   test('joining a captain queue leaves the auto queue and vice versa', async ({
