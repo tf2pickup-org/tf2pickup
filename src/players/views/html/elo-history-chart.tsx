@@ -14,7 +14,9 @@ export async function EloHistoryChart(props: { steamId: SteamId64; gamemode: Gam
 
   const classes = gamemodeConfigs[props.gamemode].classes.map(c => c.name)
   const data = buildChartData(
-    player.eloHistory?.filter(({ gamemode }) => gamemode === props.gamemode) ?? [],
+    player.eloHistory?.filter(
+      ({ gamemode, launchMode }) => gamemode === props.gamemode && launchMode !== 'captain',
+    ) ?? [],
   )
   const skillData = buildSkillData(
     data,

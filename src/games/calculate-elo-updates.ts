@@ -41,6 +41,7 @@ export function calculateEloUpdates(
   game: GameModel,
   getElo: (steamId: SteamId64, gameClass: Tf2ClassName) => number,
   getGamesPlayed: (steamId: SteamId64, gameClass: Tf2ClassName) => number,
+  options: { comparison?: 'all'; ignorePlayTime?: boolean } = {},
 ): EloUpdate[] {
   if (game.state !== GameState.ended || !game.score) {
     return []
@@ -75,7 +76,9 @@ export function calculateEloUpdates(
   }
 
   const eligibleSlots = game.slots.filter(
-    slot => timePlayedMs(slot.player, slot.status) / gameDurationMs > playTimeThreshold,
+    slot =>
+      options.ignorePlayTime === true ||
+      timePlayedMs(slot.player, slot.status) / gameDurationMs > playTimeThreshold,
   )
 
   const score = game.score
@@ -87,7 +90,8 @@ export function calculateEloUpdates(
 
     const enemies = eligibleSlots.filter(s => s.team !== slot.team)
     const sameClassEnemies = enemies.filter(s => s.gameClass === slot.gameClass)
-    const comparison = sameClassEnemies.length > 0 ? sameClassEnemies : enemies
+    const comparison =
+      options.comparison !== 'all' && sameClassEnemies.length > 0 ? sameClassEnemies : enemies
 
     if (comparison.length === 0) continue
 
