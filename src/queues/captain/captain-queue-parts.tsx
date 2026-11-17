@@ -9,6 +9,7 @@ import { getPoolView } from './get-pool-view'
 import { CaptainCounters } from './views/html/captain-counters'
 import { captainRoles } from './captain-roles'
 import { CaptainPool } from './views/html/captain-pool'
+import { CaptainReadyStatus } from './views/html/captain-ready-status'
 
 // What a captain queue contributes to its page; slots, friends and the map vote don't exist here.
 export async function captainQueueParts(queue: QueueModel, parts: QueueParts): Promise<Fragment[]> {
@@ -18,6 +19,7 @@ export async function captainQueueParts(queue: QueueModel, parts: QueueParts): P
     const view = await getPoolView(queue)
     fragments.push(
       () => CaptainCounters({ queue, view }),
+      () => CaptainReadyStatus({ view }),
       async ({ actor }) => CaptainPool.volunteers({ queue, view, actor: await actor() }),
       () => CaptainPool.bottleneck({ view }),
       ...captainRoles(queue.gamemode).map(

@@ -1,12 +1,7 @@
 import fp from 'fastify-plugin'
 import { join } from '../join'
-import { leave } from '../leave'
-import { readyUp } from '../ready-up'
-import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { voteMap } from '../vote-map'
 import { markAsFriend } from '../mark-as-friend'
-import { getState } from '../../get-state'
-import { QueueState } from '../../../database/models/queue-state.model'
 import { preReady } from '../../../pre-ready'
 import { errors } from '../../../errors'
 import { wsSafe } from '../../ws-safe'
@@ -34,41 +29,6 @@ export default fp(
         }
 
         await queuePage.updateAll(app.gateway, { membership: true }, { players: [actor] })
-      }),
-    )
-
-    app.gateway.on(
-      'queue:leave',
-      wsSafe('leave', async socket => {
-        if (!socket.player) {
-          throw errors.unauthorized('unauthorized')
-        }
-
-        const actor = socket.player.steamId
-        const slot = await leave(actor)
-        if (slot.canMakeFriendsWith?.length) {
-          await queuePage.update(app.gateway, slot.queue, { slots: 'taken' }, { players: [actor] })
-        }
-
-        await queuePage.updateAll(app.gateway, { membership: true }, { players: [actor] })
-
-        const queueState = await getState(slot.queue)
-        if (queueState === QueueState.ready) {
-          const close = await ReadyUpDialog.close()
-          app.gateway.to({ player: socket.player.steamId }).send(() => close)
-        }
-      }),
-    )
-
-    app.gateway.on(
-      'queue:readyup',
-      wsSafe('readyup', async socket => {
-        if (!socket.player) {
-          throw errors.unauthorized('unauthorized')
-        }
-
-        const [, close] = await Promise.all([readyUp(socket.player.steamId), ReadyUpDialog.close()])
-        app.gateway.to({ player: socket.player.steamId }).send(() => close)
       }),
     )
 

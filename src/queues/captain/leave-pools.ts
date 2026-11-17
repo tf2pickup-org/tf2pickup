@@ -23,6 +23,7 @@ export async function leavePools(steamId: SteamId64, emit: Emit, except?: QueueI
   for (const { queue } of entries) {
     await collections.captainPool.deleteOne({ queue, 'player.steamId': steamId })
     emit('queue/captainPool:updated', { queue })
+    emit('queue/captainPool:left', { queue, player: steamId })
     await advance(queue, emit)
   }
 }

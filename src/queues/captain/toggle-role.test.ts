@@ -11,6 +11,7 @@ vi.mock('../../database/collections', () => ({
     queueSlots: { findOne: vi.fn().mockResolvedValue(null) },
   },
 }))
+vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn() } }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('../../players', () => ({
   players: {

@@ -4,6 +4,7 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { errors } from '../../errors'
 import { logger } from '../../logger'
 import { players } from '../../players'
+import { preReady } from '../../pre-ready'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
@@ -38,7 +39,7 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
     'verified',
   ])
 
-  await queueCommand('captain-toggle-role', async emit => {
+  const readied = await queueCommand('captain-toggle-role', async emit => {
     const state = await getState(queue)
     if (state === QueueState.launching) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
@@ -61,6 +62,7 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
       if (roles.length === 0) {
         await collections.captainPool.deleteOne({ queue, 'player.steamId': steamId })
         logger.info({ queue, steamId }, 'captain pool left')
+        emit('queue/captainPool:left', { queue, player: steamId })
       } else {
         await collections.captainPool.updateOne(
           { queue, 'player.steamId': steamId },
@@ -99,6 +101,11 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
     }
 
     emit('queue/captainPool:updated', { queue })
-    await advance(queue, emit, { state, gamemode: settings.gamemode })
+    const filled = await advance(queue, emit, { state, settings, last: steamId })
+    return (
+      filled ||
+      (state === QueueState.ready && (member?.roles.length !== 1 || !member.roles.includes(role)))
+    )
   })
+  if (readied) await preReady.start(steamId)
 }

@@ -70,6 +70,28 @@ describe('CaptainPool', () => {
     expect(html.querySelectorAll('input[type=checkbox]')).toHaveLength(0)
   })
 
+  it('shows a readied player green in every signed-up column with no competing background', () => {
+    const ready = { ...member(false), roles: ['medic:medic', 'demoman:demoman'], ready: true }
+    const model = { ...view([ready]), state: QueueState.ready }
+    const html = parse(String(CaptainPool({ queue, view: model, actor })))
+    const rows = html.querySelectorAll(`[data-player="${steamId}"]`)
+    expect(rows).toHaveLength(2)
+    for (const row of rows) {
+      expect(row.classNames).toContain('bg-emerald-900')
+      expect(row.classNames).not.toContain('bg-zinc-800')
+      expect(row.classNames).toContain('text-zinc-100')
+    }
+    expect(html.querySelectorAll('input[disabled]')).toHaveLength(0)
+  })
+
+  it('outlines my unready row during ready-up', () => {
+    const model = { ...view([member(false)]), state: QueueState.ready }
+    const html = parse(String(CaptainPool({ queue, view: model, actor })))
+    expect(html.querySelector(`[data-player="${steamId}"]`)?.classNames).toContain(
+      'outline-zinc-500',
+    )
+  })
+
   it('keeps every live fragment of a 40-player all-role 9v9 pool under 50KB', () => {
     const roles = captainRoles(Gamemode.highlander).map(role => `${role.gameClass}:${role.name}`)
     const members = Array.from({ length: 40 }, (_, index) => ({

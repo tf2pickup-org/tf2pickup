@@ -5,6 +5,7 @@ import { queuePage } from '../../page'
 import { wsSafe } from '../../ws-safe'
 import { toggleRole } from '../toggle-role'
 import { toggleVolunteer } from '../toggle-volunteer'
+import { ReadyUpDialog } from '../../auto/views/html/ready-up-dialog'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -23,6 +24,8 @@ export default fp(
 
         const actor = socket.player.steamId
         await toggleRole(queue._id, actor, role)
+        const close = await ReadyUpDialog.close()
+        app.gateway.to({ player: actor }).send(() => close, { key: 'ready-up-dialog' })
         await queuePage.updateAll(app.gateway, { membership: true }, { players: [actor] })
       }),
     )
@@ -40,6 +43,10 @@ export default fp(
         }
 
         await toggleVolunteer(queue._id, socket.player.steamId)
+        const close = await ReadyUpDialog.close()
+        app.gateway
+          .to({ player: socket.player.steamId })
+          .send(() => close, { key: 'ready-up-dialog' })
       }),
     )
   },

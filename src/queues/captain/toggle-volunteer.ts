@@ -6,6 +6,7 @@ import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
 import { players } from '../../players'
+import { preReady } from '../../pre-ready'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { joinBlocker } from '../auto/join-blocker'
 import { queueCommand } from '../auto/queue-command'
@@ -18,7 +19,7 @@ import { assertCaptainQueue } from './assert-captain-queue'
 export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
   const settings = await get(queue)
   assertCaptainQueue(settings)
-  await queueCommand('captain-toggle-volunteer', async emit => {
+  const readied = await queueCommand('captain-toggle-volunteer', async emit => {
     const state = await getState(queue)
     if (state === QueueState.launching) {
       throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
@@ -56,6 +57,8 @@ export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
     )
     logger.info({ queue, steamId, volunteer }, 'captain volunteer toggled')
     emit('queue/captainPool:updated', { queue })
-    await advance(queue, emit, { state, gamemode: settings.gamemode })
+    const filled = await advance(queue, emit, { state, settings, last: steamId })
+    return filled || state === QueueState.ready
   })
+  if (readied) await preReady.start(steamId)
 }

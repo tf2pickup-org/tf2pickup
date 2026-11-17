@@ -96,6 +96,22 @@ describe('queueCommand()', () => {
     ])
   })
 
+  it('coalesces captain pool updates without advancing the auto engine', async () => {
+    await queueCommand('captain-change', async emit => {
+      emit('queue/captainPool:updated', { queue })
+      emit('queue/captainPool:updated', { queue: other })
+      emit('queue/state:updated', { queue, state: QueueState.ready })
+      emit('queue/captainPool:updated', { queue })
+    })
+    expect(vi.mocked(events.emit).mock.calls).toEqual([
+      ['queue/captainPool:updated', { queue }],
+      ['queue/captainPool:updated', { queue: other }],
+      ['queue/state:updated', { queue, state: QueueState.ready }],
+    ])
+    expect(enterState).not.toHaveBeenCalled()
+    expect(collections.queueSlots.countDocuments).not.toHaveBeenCalled()
+  })
+
   it('enters the next state when a slot change fills the queue', async () => {
     givenQueue(QueueState.waiting, 12, 0)
     vi.mocked(enterState).mockImplementation(async () => {
