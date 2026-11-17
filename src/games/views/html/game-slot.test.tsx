@@ -61,7 +61,9 @@ describe('GameSlot', () => {
 
     it('crowns a drafted captain', async () => {
       const root = await render({ launchMode: 'captain', captains }, {})
-      expect(root.querySelector('[aria-label="Captain"] .icon-tabler-crown')).not.toBeNull()
+      expect(
+        root.querySelector('[role="img"][aria-label="Captain"] .icon-tabler-crown'),
+      ).not.toBeNull()
       expect(root.querySelector('.player-link > .player-name + [title="Captain"]')).not.toBeNull()
     })
 
