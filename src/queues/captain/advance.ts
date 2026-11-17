@@ -1,3 +1,4 @@
+import type { Gamemode } from '../../shared/types/gamemode'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
@@ -11,10 +12,15 @@ import { getPool } from './get-pool'
 import { poolReadiness } from './pool-readiness'
 
 // must run inside queueCommand(); re-evaluates the pool after it changed
-export async function advance(queue: QueueId, emit: Emit) {
+export async function advance(
+  queue: QueueId,
+  emit: Emit,
+  // what the calling command already loaded; the command doesn't change the state itself
+  known?: { state: QueueState; gamemode: Gamemode },
+) {
   const [state, { gamemode }, pool] = await Promise.all([
-    getState(queue),
-    get(queue),
+    known?.state ?? getState(queue),
+    known ?? get(queue),
     getPool(queue),
   ])
   const { full } = poolReadiness(captainRoles(gamemode), pool)

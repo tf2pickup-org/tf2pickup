@@ -8,7 +8,7 @@ vi.mock('../../database/collections', () => ({
       updateOne: vi.fn(),
       deleteOne: vi.fn(),
     },
-    queueSlots: { countDocuments: vi.fn().mockResolvedValue(0) },
+    queueSlots: { findOne: vi.fn().mockResolvedValue(null) },
   },
 }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
@@ -54,7 +54,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   vi.mocked(getState).mockResolvedValue(QueueState.waiting)
   vi.mocked(collections.captainPool.findOne).mockResolvedValue(null)
-  vi.mocked(collections.queueSlots.countDocuments).mockResolvedValue(0)
+  vi.mocked(collections.queueSlots.findOne).mockResolvedValue(null)
   vi.mocked(joinBlocker).mockReturnValue(null)
   vi.mocked(get).mockResolvedValue({ launchMode: 'captain', gamemode: '6v6' } as never)
 })
@@ -76,9 +76,17 @@ describe('toggleRole()', () => {
   })
 
   it('leaves an auto queue when joining the pool', async () => {
-    vi.mocked(collections.queueSlots.countDocuments).mockResolvedValue(1)
+    vi.mocked(collections.queueSlots.findOne).mockResolvedValue({ queue, ready: false } as never)
     await toggleRole(queue, steamId, medic)
     expect(vacateSlot).toHaveBeenCalledWith(steamId, emit)
+  })
+
+  it('refuses a player readied up in an auto queue', async () => {
+    vi.mocked(collections.queueSlots.findOne).mockResolvedValue({ queue, ready: true } as never)
+    vi.mocked(getState).mockResolvedValue(QueueState.ready)
+    await expect(toggleRole(queue, steamId, medic)).rejects.toThrow('locked into another queue')
+    expect(vacateSlot).not.toHaveBeenCalled()
+    expect(collections.captainPool.insertOne).not.toHaveBeenCalled()
   })
 
   it('marks a player who signs up during ready-up as ready', async () => {

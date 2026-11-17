@@ -95,6 +95,36 @@ test.describe('captain sign-up pool @multi-queue', () => {
     await expect(admin.getByLabel('Mark as friend')).toHaveCount(0)
   })
 
+  test('captain sign-up leaves the auto queue untouched, and the reverse', async ({
+    users,
+    captain,
+  }) => {
+    const viewer = await users.byName('Shadowhunter').page()
+    const autoSlug = defaultQueueSlug()
+    const snapshot = async (slug: string) => {
+      await viewer.goto(`/q/${slug}`)
+      const dto = (await (await viewer.request.get(`/api/v1/queues/${slug}`)).json()) as {
+        slots: unknown
+      }
+      return { dto, html: await viewer.locator('#queue-content').innerHTML() }
+    }
+
+    const autoBefore = await snapshot(autoSlug)
+    const player = await users.byName('Polemic').page()
+    await player.goto(`/q/${captain}`)
+    await toggle(player, 'medic:medic').check()
+    await player.getByLabel('Volunteer as captain').check()
+    await expect(role(player, 'medic:medic')).toContainText('Polemic')
+    expect(await snapshot(autoSlug)).toEqual(autoBefore)
+
+    const captainBefore = await snapshot(captain)
+    const other = await users.byName('MoonMan').queuePage(autoSlug)
+    await other.goto()
+    await other.joinQueue('medic-1')
+    await other.leaveQueue()
+    expect(await snapshot(captain)).toEqual(captainBefore)
+  })
+
   test('joining a captain queue leaves the auto queue and vice versa', async ({
     users,
     captain,

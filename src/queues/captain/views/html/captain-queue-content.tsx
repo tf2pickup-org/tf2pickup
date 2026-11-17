@@ -5,7 +5,7 @@ import { PreReadyUpButton } from '../../../../pre-ready/views/html/pre-ready-up-
 import { IsInQueue } from '../../../auto/views/html/is-in-queue'
 import { QueueSwitcher } from '../../../auto/views/html/queue-switcher'
 import { StreamList } from '../../../auto/views/html/stream-list'
-import { getPoolView } from '../../pool-view'
+import { getPoolView } from '../../get-pool-view'
 import { CaptainCounters } from './captain-counters'
 import { CaptainPool } from './captain-pool'
 

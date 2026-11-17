@@ -49,7 +49,12 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
       throw withLogLevel(errors.badRequest('you are locked into the current draft'), 'debug')
     }
 
+    const blocker = joinBlocker(player, target, { ...settings, skillThreshold: null }, undefined)
     if (member) {
+      const adding = !member.roles.includes(role)
+      if (adding && blocker) {
+        throw errors.badRequest(blocker)
+      }
       const roles = member.roles.includes(role)
         ? member.roles.filter(current => current !== role)
         : [...member.roles, role]
@@ -63,13 +68,16 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
         )
       }
     } else {
-      const blocker = joinBlocker(player, target, { ...settings, skillThreshold: null }, undefined)
       if (blocker) {
         throw errors.badRequest(blocker)
       }
 
-      // a player is in at most one queue at a time
-      if (await collections.queueSlots.countDocuments({ 'player.steamId': steamId })) {
+      // a player is in at most one queue at a time; one who readied up for a game is locked in
+      const slot = await collections.queueSlots.findOne({ 'player.steamId': steamId })
+      if (slot) {
+        if (slot.ready && (await getState(slot.queue)) === QueueState.ready) {
+          throw withLogLevel(errors.badRequest('you are locked into another queue'), 'debug')
+        }
         await vacateSlot(steamId, emit)
       }
       await leavePools(steamId, emit, queue)
@@ -91,6 +99,6 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
     }
 
     emit('queue/captainPool:updated', { queue })
-    await advance(queue, emit)
+    await advance(queue, emit, { state, gamemode: settings.gamemode })
   })
 }

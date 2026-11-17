@@ -6,8 +6,9 @@ import { GameClassIcon } from '../../../../html/components/game-class-icon'
 import { IconCrown, IconLock } from '../../../../html/components/icons'
 import { joinBlocker, type JoinBlockerPlayer } from '../../../auto/join-blocker'
 import { captainRoles } from '../../captain-roles'
-import type { PoolView } from '../../pool-view'
+import type { PoolView } from '../../types/pool-view'
 import { roleKey } from '../../role-key'
+import { roleLabel } from '../../role-label'
 import type { CaptainRole } from '../../types/captain-role'
 
 type Actor = (JoinBlockerPlayer & Pick<PlayerModel, 'steamId'>) | undefined
@@ -18,7 +19,9 @@ type Queue = Pick<QueueModel, 'enabled' | 'requireVerification' | 'skillThreshol
 export function CaptainPool(props: { queue: Queue; view: PoolView; actor?: Actor }) {
   const { queue, view, actor } = props
   const roles = captainRoles(queue.gamemode)
-  const own = actor ? view.pool.find(member => member.player.steamId === actor.steamId) : undefined
+  const own = actor
+    ? view.members.find(member => member.player.steamId === actor.steamId)
+    : undefined
   const volunteers = view.pool.filter(member => member.volunteer)
   const readyUp = view.state === QueueState.ready
 
@@ -106,16 +109,26 @@ function RoleColumn(props: {
 }) {
   const { role, members } = props
   const key = roleKey(role)
+  const interactive = !!props.actor && !props.own?.locked
+  const header = (
+    <>
+      <RoleCheckbox {...props} />
+      <GameClassIcon gameClass={role.gameClass} size={18} />
+      <h2 class="min-w-0 flex-1 truncate font-bold text-white" safe>
+        {role.name}
+      </h2>
+      <span class="text-zinc-500">{members.length}/2</span>
+    </>
+  )
+  const headerClass =
+    'flex h-[54px] items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-[15px]'
   return (
     <div class="flex min-w-0 flex-col gap-2" data-role={key}>
-      <div class="flex h-[54px] items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-[15px]">
-        <RoleCheckbox {...props} />
-        <GameClassIcon gameClass={role.gameClass} size={18} />
-        <h2 class="min-w-0 flex-1 truncate font-bold text-white" safe>
-          {role.name}
-        </h2>
-        <span class="text-zinc-500">{members.length}/2</span>
-      </div>
+      {interactive ? (
+        <label class={[headerClass, 'relative cursor-pointer']}>{header}</label>
+      ) : (
+        <div class={headerClass}>{header}</div>
+      )}
       <ul class="flex flex-col gap-0.5">
         {members.length === 0 ? (
           <li class="flex h-8 items-center justify-center rounded-lg border border-dashed border-zinc-800 text-zinc-500">
@@ -132,7 +145,12 @@ function RoleColumn(props: {
               data-player={member.player.steamId}
               data-ready={props.readyUp ? String(member.ready) : undefined}
             >
-              <a href={`/players/${member.player.steamId}`} class="truncate" safe>
+              <a
+                href={`/players/${member.player.steamId}`}
+                class="truncate"
+                title={member.player.name}
+                safe
+              >
                 {member.player.name}
               </a>
             </li>
@@ -155,14 +173,15 @@ function RoleCheckbox(props: {
   }
 
   const key = roleKey(role)
-  const blocker = own
+  const blocker = own?.roles.includes(key)
     ? undefined
     : (joinBlocker(actor, role, { ...props.queue, skillThreshold: null }, undefined) ?? undefined)
   return (
-    <label class="relative flex items-center">
+    <>
       <input
         type="checkbox"
         class="size-6 accent-zinc-200"
+        aria-label={`Sign up as ${roleLabel(role)}`}
         checked={own?.roles.includes(key) ?? false}
         disabled={!!blocker}
         ws-send
@@ -171,9 +190,6 @@ function RoleCheckbox(props: {
         data-umami-event="captain-toggle-role"
         data-umami-event-role={key}
       />
-      <span class="sr-only" safe>
-        Sign up as {role.name}
-      </span>
       {!!blocker && (
         <>
           <IconLock size={14} />
@@ -182,6 +198,6 @@ function RoleCheckbox(props: {
           </span>
         </>
       )}
-    </label>
+    </>
   )
 }

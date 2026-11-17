@@ -5,6 +5,9 @@ import { errors } from '../../errors'
 import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
+import { players } from '../../players'
+import { Tf2ClassName } from '../../shared/types/tf2-class-name'
+import { joinBlocker } from '../auto/join-blocker'
 import { queueCommand } from '../auto/queue-command'
 import { get } from '../get'
 import { getState } from '../get-state'
@@ -13,7 +16,8 @@ import { assertCaptainQueue } from './assert-captain-queue'
 
 // Only a player in the pool can volunteer; leaving the pool clears the flag.
 export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
-  assertCaptainQueue(await get(queue))
+  const settings = await get(queue)
+  assertCaptainQueue(settings)
   await queueCommand('captain-toggle-volunteer', async emit => {
     const state = await getState(queue)
     if (state === QueueState.launching) {
@@ -29,12 +33,29 @@ export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
     }
 
     const volunteer = !member.volunteer
+    if (volunteer) {
+      const blocker = joinBlocker(
+        await players.bySteamId(steamId, [
+          'hasAcceptedRules',
+          'bans',
+          'activeGame',
+          'skill',
+          'verified',
+        ]),
+        { gameClass: Tf2ClassName.medic },
+        { ...settings, skillThreshold: null },
+        undefined,
+      )
+      if (blocker) {
+        throw errors.badRequest(blocker)
+      }
+    }
     await collections.captainPool.updateOne(
       { queue, 'player.steamId': steamId },
       { $set: { volunteer, ...(state === QueueState.ready ? { ready: true } : {}) } },
     )
     logger.info({ queue, steamId, volunteer }, 'captain volunteer toggled')
     emit('queue/captainPool:updated', { queue })
-    await advance(queue, emit)
+    await advance(queue, emit, { state, gamemode: settings.gamemode })
   })
 }

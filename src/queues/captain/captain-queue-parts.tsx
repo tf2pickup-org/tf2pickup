@@ -5,7 +5,7 @@ import { SetTitle } from '../auto/views/html/set-title'
 import { playerCounts } from '../player-counts'
 import type { QueueParts } from '../page/queue-parts'
 import type { Fragment } from '../page/send-to-pages'
-import { getPoolView } from './pool-view'
+import { getPoolView } from './get-pool-view'
 import { CaptainCounters } from './views/html/captain-counters'
 import { CaptainPool } from './views/html/captain-pool'
 

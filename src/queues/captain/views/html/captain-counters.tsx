@@ -1,6 +1,6 @@
 import { QueueState } from '../../../../database/models/queue-state.model'
 import { captainRoles } from '../../captain-roles'
-import type { PoolView } from '../../pool-view'
+import type { PoolView } from '../../types/pool-view'
 import type { QueueModel } from '../../../../database/models/queue.model'
 
 export function CaptainCounters(props: { queue: Pick<QueueModel, 'gamemode'>; view: PoolView }) {
