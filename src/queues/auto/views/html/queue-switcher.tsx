@@ -18,7 +18,7 @@ export async function QueueSwitcher(props: {
 
   const [counts, joined] = await Promise.all([
     Promise.all(enabled.map(playerCounts)),
-    props.actor ? collections.queueSlots.distinct('queue', { 'player.steamId': props.actor }) : [],
+    props.actor ? joinedQueues(props.actor) : [],
   ])
 
   // the indicator comes first, so a view transition always keeps it under the labels
@@ -71,4 +71,11 @@ QueueSwitcher.count = async (props: { queue: QueueModel }) => {
 
 function isShown(enabled: QueueModel[]) {
   return enabled.length >= 2
+}
+
+async function joinedQueues(steamId: SteamId64) {
+  return [
+    ...(await collections.queueSlots.distinct('queue', { 'player.steamId': steamId })),
+    ...(await collections.captainPool.distinct('queue', { 'player.steamId': steamId })),
+  ]
 }

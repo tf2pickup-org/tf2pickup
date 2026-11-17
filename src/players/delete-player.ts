@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import type { GameEventModel } from '../database/models/game-event.model'
 import { PlayerRole } from '../database/models/player.model'
 import { errors } from '../errors'
+import { captainEngine } from '../queues/captain'
 import { queueEngine } from '../queues/auto'
 import { deletedUserSteamId, type SteamId64 } from '../shared/types/steam-id-64'
 import { forPlayer } from './mutex'
@@ -16,6 +17,7 @@ export async function deletePlayer(steamId: SteamId64): Promise<void> {
   await assertDeletable(steamId)
   // outside forPlayer(): kicking cancels pre-ready, which updates the player under that lock
   await queueEngine.removePlayer(steamId)
+  await captainEngine.kickFromPools(steamId)
 
   await forPlayer(steamId).runExclusive(async () => {
     // the player may have been promoted while we were removing them from the queue

@@ -46,6 +46,10 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
     { spec: { 'player.steamId': 1 }, options: { sparse: true } },
     { spec: { queue: 1, id: 1 }, options: { unique: true } },
   ],
+  captainPool: [
+    { spec: { queue: 1, 'player.steamId': 1 }, options: { unique: true } },
+    { spec: { 'player.steamId': 1 } },
+  ],
   queueState: [{ spec: { queue: 1 }, options: { unique: true } }],
   queueFriends: [{ spec: { queue: 1, source: 1 }, options: { unique: true } }],
   queueMapVotes: [{ spec: { queue: 1, player: 1 }, options: { unique: true } }],

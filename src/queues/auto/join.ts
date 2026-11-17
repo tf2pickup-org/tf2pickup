@@ -16,6 +16,7 @@ import type { QueueSlotId } from '../types/queue-slot-id'
 import { playerAvatarUrl } from '../../shared/player-avatar-url'
 import { get } from '../get'
 import { vacateSlot } from './vacate-slot'
+import { leavePools } from '../captain/leave-pools'
 import { assertAutoQueue } from './assert-auto-queue'
 
 export async function join(
@@ -68,6 +69,7 @@ export async function join(
     ) {
       await vacateSlot(steamId, emit)
     }
+    await leavePools(steamId, emit)
 
     const targetSlot = await collections.queueSlots.findOneAndUpdate(
       { _id: slot._id, player: null },

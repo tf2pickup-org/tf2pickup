@@ -4,7 +4,10 @@ import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 
 export async function IsInQueue(props: { queue: QueueId; actor?: SteamId64 | undefined }) {
   const queues = props.actor
-    ? await collections.queueSlots.distinct('queue', { 'player.steamId': props.actor })
+    ? [
+        ...(await collections.queueSlots.distinct('queue', { 'player.steamId': props.actor })),
+        ...(await collections.captainPool.distinct('queue', { 'player.steamId': props.actor })),
+      ]
     : []
   const isInCurrentQueue = queues.some(queue => queue.equals(props.queue))
   return (
