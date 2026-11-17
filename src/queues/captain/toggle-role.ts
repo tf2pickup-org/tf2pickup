@@ -41,10 +41,6 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
 
   const readied = await queueCommand('captain-toggle-role', async emit => {
     const state = await getState(queue)
-    if (state === QueueState.launching) {
-      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
-    }
-
     const member = await collections.captainPool.findOne({ queue, 'player.steamId': steamId })
     if (member?.locked) {
       throw withLogLevel(errors.badRequest('you are locked into the current draft'), 'debug')

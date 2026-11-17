@@ -21,10 +21,6 @@ export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
   assertCaptainQueue(settings)
   const readied = await queueCommand('captain-toggle-volunteer', async emit => {
     const state = await getState(queue)
-    if (state === QueueState.launching) {
-      throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
-    }
-
     const member = await collections.captainPool.findOne({ queue, 'player.steamId': steamId })
     if (!member) {
       throw withLogLevel(errors.badRequest('you are not in the pool'), 'debug')

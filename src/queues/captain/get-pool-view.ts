@@ -15,7 +15,10 @@ export async function getPoolView(queue: Pick<QueueModel, '_id' | 'gamemode'>): 
     collections.captainDrafts.findOne({ queue: queue._id }),
   ])
   if (!runtime) throw errors.internalServerError('queue state unavailable')
-  const drafting = runtime.state === QueueState.drafting || runtime.state === QueueState.banningMaps
+  const drafting =
+    runtime.state === QueueState.drafting ||
+    runtime.state === QueueState.banningMaps ||
+    runtime.state === QueueState.launching
   const pool = all.filter(member => !member.locked)
   return {
     state: runtime.state,

@@ -5,8 +5,8 @@ import { turnTimeout } from '../turn-timeout'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
-    tasks.register('queue/captain:turnTimeout', async ({ queue, token, turn }) => {
-      await turnTimeout(queue, token, turn)
+    tasks.register('queue/captain:turnTimeout', async ({ queue, token, turn, phase }) => {
+      await turnTimeout(queue, token, turn, phase)
     })
   },
   { name: 'captain draft timeouts' },

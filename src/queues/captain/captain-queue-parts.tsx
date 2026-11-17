@@ -8,6 +8,7 @@ import type { Fragment } from '../page/send-to-pages'
 import { getPoolView } from './get-pool-view'
 import { CaptainCounters } from './views/html/captain-counters'
 import { captainRoles } from './captain-roles'
+import { CaptainMapBans } from './views/html/captain-map-bans'
 import { CaptainDraft } from './views/html/captain-draft'
 import { CaptainPool } from './views/html/captain-pool'
 import { CaptainReadyStatus } from './views/html/captain-ready-status'
@@ -42,6 +43,7 @@ export async function captainQueueParts(queue: QueueModel, parts: QueueParts): P
       if (view.draft) {
         fragments.push(
           ({ steamId }) => CaptainDraft.status({ queue, view, viewer: steamId }),
+          ({ steamId }) => CaptainMapBans({ view, viewer: steamId }),
           ({ steamId }) => CaptainDraft.board({ queue, view, viewer: steamId }),
           ...captainRoles(queue.gamemode).map(
             (role): Fragment =>

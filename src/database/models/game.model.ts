@@ -67,6 +67,8 @@ export interface GameModel {
   // absent means the game came from an auto queue
   launchMode?: 'captain'
   captains?: { red: SteamId64; blu: SteamId64 }
+  // Correlates a retried captain launch with the game already created from that draft.
+  captainDraftToken?: string
   map: string
   // resolved when the game is launched, so the game server is configured the same way for the
   // whole game

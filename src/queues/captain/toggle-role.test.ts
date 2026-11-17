@@ -61,6 +61,14 @@ beforeEach(() => {
 })
 
 describe('toggleRole()', () => {
+  it('allows an unlocked next-game signup during launching', async () => {
+    vi.mocked(getState).mockResolvedValue(QueueState.launching)
+    await toggleRole(queue, steamId, medic)
+    expect(collections.captainPool.insertOne).toHaveBeenCalledWith(
+      expect.objectContaining({ ready: false, locked: false }),
+    )
+  })
+
   it('joins the pool with the first role', async () => {
     await toggleRole(queue, steamId, medic)
     expect(collections.captainPool.insertOne).toHaveBeenCalledWith(
@@ -157,6 +165,16 @@ describe('toggleVolunteer()', () => {
     } as never)
     await expect(toggleVolunteer(queue, steamId)).rejects.toThrow('locked')
     expect(collections.captainPool.updateOne).not.toHaveBeenCalled()
+  })
+
+  it('allows an unlocked next-game volunteer during launching', async () => {
+    vi.mocked(getState).mockResolvedValue(QueueState.launching)
+    vi.mocked(collections.captainPool.findOne).mockResolvedValue({
+      volunteer: false,
+      locked: false,
+    } as never)
+    await toggleVolunteer(queue, steamId)
+    expect(collections.captainPool.updateOne).toHaveBeenCalled()
   })
 
   it('toggles the flag', async () => {
