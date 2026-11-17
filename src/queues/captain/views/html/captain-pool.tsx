@@ -45,7 +45,7 @@ export function CaptainPool(props: PoolProps) {
   )
 }
 
-export function CaptainVolunteers(props: PoolProps) {
+function CaptainVolunteers(props: PoolProps) {
   const { queue, view, actor } = props
   const volunteers = view.pool.filter(member => member.volunteer)
   return (
@@ -73,7 +73,7 @@ export function CaptainVolunteers(props: PoolProps) {
   )
 }
 
-export function CaptainBottleneck(props: { view: PoolView }) {
+function CaptainBottleneck(props: { view: PoolView }) {
   const { readiness } = props.view
   return (
     <p id="captain-bottleneck" class="text-sm text-zinc-400" safe>
@@ -82,7 +82,7 @@ export function CaptainBottleneck(props: { view: PoolView }) {
   )
 }
 
-export function CaptainRoleColumn(props: PoolProps & { role: CaptainRole }) {
+function CaptainRoleColumn(props: PoolProps & { role: CaptainRole }) {
   const { view, role } = props
   return (
     <RoleColumn
@@ -237,3 +237,7 @@ function RoleCheckbox(props: {
     </>
   )
 }
+
+CaptainPool.volunteers = CaptainVolunteers
+CaptainPool.bottleneck = CaptainBottleneck
+CaptainPool.roleColumn = CaptainRoleColumn

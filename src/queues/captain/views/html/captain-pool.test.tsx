@@ -8,12 +8,7 @@ import { Gamemode } from '../../../../shared/types/gamemode'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import type { PoolView } from '../../types/pool-view'
 import { captainRoles } from '../../captain-roles'
-import {
-  CaptainBottleneck,
-  CaptainPool,
-  CaptainRoleColumn,
-  CaptainVolunteers,
-} from './captain-pool'
+import { CaptainPool } from './captain-pool'
 
 const steamId = '76561198000000001' as SteamId64
 const queue = {
@@ -84,11 +79,12 @@ describe('CaptainPool', () => {
     }))
     const props = { queue: { ...queue, gamemode: Gamemode.highlander }, view: view(members) }
     const fragments = [
-      CaptainVolunteers(props),
-      CaptainBottleneck(props),
-      ...captainRoles(Gamemode.highlander).map(role => CaptainRoleColumn({ ...props, role })),
+      CaptainPool.volunteers(props),
+      CaptainPool.bottleneck(props),
+      ...captainRoles(Gamemode.highlander).map(role => CaptainPool.roleColumn({ ...props, role })),
     ].map(fragment => Buffer.byteLength(String(fragment)))
 
+    process.stderr.write(`SIZES ${JSON.stringify(fragments)}\n`)
     expect(Math.max(...fragments)).toBeLessThan(50 * 1024)
   })
 })
