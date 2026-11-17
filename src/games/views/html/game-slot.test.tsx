@@ -46,6 +46,34 @@ const baseGame = {
 }
 
 describe('GameSlot', () => {
+  describe('captain crown', () => {
+    const render = async (game: Partial<GameModel>, slot: Partial<typeof baseSlot>) => {
+      vi.mocked(collections.players.findOne).mockResolvedValueOnce(slotPlayer)
+      const html = await GameSlot({
+        game: { ...baseGame, ...game },
+        slot: { ...baseSlot, ...slot },
+        actor: undefined,
+      })
+      return parse(html)
+    }
+
+    it('crowns a captain in a captain game', async () => {
+      const root = await render({ launchMode: 'captain' }, { captain: true } as never)
+      expect(root.querySelector('[aria-label="Captain"] .icon-tabler-crown')).not.toBeNull()
+      expect(root.querySelector('.player-link > .player-name + [title="Captain"]')).not.toBeNull()
+    })
+
+    it('does not crown a non-captain in a captain game', async () => {
+      const root = await render({ launchMode: 'captain' }, {})
+      expect(root.querySelector('.icon-tabler-crown')).toBeNull()
+    })
+
+    it('does not crown anyone in an auto game', async () => {
+      const root = await render({}, { captain: true } as never)
+      expect(root.querySelector('.icon-tabler-crown')).toBeNull()
+    })
+  })
+
   describe('when slot is active', () => {
     it('renders the player name', async () => {
       vi.mocked(collections.players.findOne).mockResolvedValueOnce(slotPlayer)
