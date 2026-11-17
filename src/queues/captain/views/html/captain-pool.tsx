@@ -15,64 +15,85 @@ import type { CaptainRole } from '../../types/captain-role'
 type Actor = (JoinBlockerPlayer & Pick<PlayerModel, 'steamId'>) | undefined
 type Queue = Pick<QueueModel, 'enabled' | 'requireVerification' | 'skillThreshold' | 'gamemode'>
 
-// The volunteers and the role columns, the part of the captain queue page that depends on who is
-// looking.
-export function CaptainPool(props: { queue: Queue; view: PoolView; actor?: Actor }) {
-  const { queue, view, actor } = props
-  const roles = captainRoles(queue.gamemode)
-  const own = actor
-    ? view.members.find(member => member.player.steamId === actor.steamId)
-    : undefined
-  const volunteers = view.pool.filter(member => member.volunteer)
-  const readyUp = view.state === QueueState.ready
+interface PoolProps {
+  queue: Queue
+  view: PoolView
+  actor?: Actor
+}
 
+function ownMembership({ view, actor }: PoolProps) {
+  return actor ? view.members.find(member => member.player.steamId === actor.steamId) : undefined
+}
+
+// The volunteers and the role columns, the part of the captain queue page that depends on who is
+// looking. A live update sends the parts below one by one, so no single message gets large.
+export function CaptainPool(props: PoolProps) {
+  const roles = captainRoles(props.queue.gamemode)
   return (
     <form id="captain-pool" class="flex flex-col gap-4" ws-send data-disable-when-offline>
-      <section
-        class="flex min-h-11 flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 p-3"
-        aria-label="Captain volunteers"
-      >
-        <VolunteerToggle queue={queue} own={own} actor={actor} />
-        <IconCrown size={20} />
-        <span class="font-bold">Captain {volunteers.length}/2</span>
-        {volunteers.map(member => (
-          <a
-            href={`/players/${member.player.steamId}`}
-            class={[
-              'rounded-sm px-2 py-0.5 text-zinc-300',
-              member.player.steamId === actor?.steamId ? 'bg-zinc-700' : 'bg-zinc-800',
-            ]}
-            safe
-          >
-            {member.player.name}
-          </a>
-        ))}
-      </section>
-
-      {view.readiness.full ? (
-        <></>
-      ) : (
-        <p id="captain-bottleneck" class="text-sm text-zinc-400" safe>
-          {view.readiness.bottleneck ?? 'missing: captain volunteers'}
-        </p>
-      )}
-
+      <CaptainVolunteers {...props} />
+      <CaptainBottleneck view={props.view} />
       <div
         class="grid grid-cols-2 gap-4 lg:grid-cols-3 xl:[grid-template-columns:repeat(var(--columns),minmax(0,1fr))]"
         style={`--columns: ${roles.length}`}
       >
         {roles.map(role => (
-          <RoleColumn
-            queue={queue}
-            role={role}
-            members={view.pool.filter(member => member.roles.includes(roleKey(role)))}
-            own={own}
-            actor={actor}
-            readyUp={readyUp}
-          />
+          <CaptainRoleColumn {...props} role={role} />
         ))}
       </div>
     </form>
+  )
+}
+
+export function CaptainVolunteers(props: PoolProps) {
+  const { queue, view, actor } = props
+  const volunteers = view.pool.filter(member => member.volunteer)
+  return (
+    <section
+      id="captain-volunteers"
+      class="flex min-h-11 flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 p-3"
+      aria-label="Captain volunteers"
+    >
+      <VolunteerToggle queue={queue} own={ownMembership(props)} actor={actor} />
+      <IconCrown size={20} />
+      <span class="font-bold">Captain {volunteers.length}/2</span>
+      {volunteers.map(member => (
+        <a
+          href={`/players/${member.player.steamId}`}
+          class={[
+            'rounded-sm px-2 py-0.5 text-zinc-300',
+            member.player.steamId === actor?.steamId ? 'bg-zinc-700' : 'bg-zinc-800',
+          ]}
+          safe
+        >
+          {member.player.name}
+        </a>
+      ))}
+    </section>
+  )
+}
+
+export function CaptainBottleneck(props: { view: PoolView }) {
+  const { readiness } = props.view
+  return (
+    <p id="captain-bottleneck" class="text-sm text-zinc-400" safe>
+      {readiness.full ? '' : (readiness.bottleneck ?? 'missing: captain volunteers')}
+    </p>
+  )
+}
+
+export function CaptainRoleColumn(props: PoolProps & { role: CaptainRole }) {
+  const { view, role } = props
+  return (
+    <RoleColumn
+      id={`captain-role-${role.gameClass}-${role.name}`}
+      queue={props.queue}
+      role={role}
+      members={view.pool.filter(member => member.roles.includes(roleKey(role)))}
+      own={ownMembership(props)}
+      actor={props.actor}
+      readyUp={view.state === QueueState.ready}
+    />
   )
 }
 
@@ -114,6 +135,7 @@ function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefine
 }
 
 function RoleColumn(props: {
+  id: string
   queue: Queue
   role: CaptainRole
   members: CaptainPoolModel[]
@@ -137,7 +159,7 @@ function RoleColumn(props: {
   const headerClass =
     'flex h-[54px] items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-[15px]'
   return (
-    <div class="flex min-w-0 flex-col gap-2" data-role={key}>
+    <div id={props.id} class="flex min-w-0 flex-col gap-2" data-role={key}>
       {interactive ? (
         <label class={[headerClass, 'relative cursor-pointer']}>{header}</label>
       ) : (
