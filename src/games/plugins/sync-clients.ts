@@ -28,7 +28,7 @@ export default fp(async app => {
         .send(async () => await GameStateIndicator({ game: after }))
       app.gateway
         .to({ url: `/games/${after.number}` })
-        .send(async actor => await ConnectInfo({ game: after, actor }))
+        .send(async actor => await ConnectInfo({ game: after, actor }), { key: 'connect-info' })
 
       if ([GameState.launching, GameState.ended, GameState.interrupted].includes(after.state)) {
         app.gateway
@@ -69,7 +69,7 @@ export default fp(async app => {
     ) {
       app.gateway
         .to({ url: `/games/${after.number}` })
-        .send(async actor => await ConnectInfo({ game: after, actor }))
+        .send(async actor => await ConnectInfo({ game: after, actor }), { key: 'connect-info' })
     }
 
     if (after.connectString !== undefined && before.connectString !== after.connectString) {
@@ -107,13 +107,13 @@ export default fp(async app => {
       }
 
       if (
-        beforeSlot.shouldJoinBy !== slot.shouldJoinBy ||
+        beforeSlot.shouldJoinBy?.getTime() !== slot.shouldJoinBy?.getTime() ||
         beforeSlot.voiceServerUrl !== slot.voiceServerUrl
       ) {
         app.gateway
           .to({ url: `/games/${after.number}` })
           .to({ player: slot.player })
-          .send(async actor => await ConnectInfo({ game: after, actor }))
+          .send(async actor => await ConnectInfo({ game: after, actor }), { key: 'connect-info' })
       }
     }
   })
@@ -142,7 +142,7 @@ export default fp(async app => {
     app.gateway
       .to({ url: `/games/${game.number}` })
       .to({ player })
-      .send(async actor => await ConnectInfo({ game, actor }))
+      .send(async actor => await ConnectInfo({ game, actor }), { key: 'connect-info' })
   })
 
   events.on('game:substituteRequested', ({ game, slotId }) => {
