@@ -282,8 +282,12 @@ describe('turnTimeout()', () => {
     }
     const before = snapshot()
 
+    // a reset deadline can't hide within the same millisecond
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime(Date.now() + secondsToMilliseconds(2))
     await pick(queueId, blu, pool()[6]!.player.steamId, roles[1]!)
     expect(snapshot()).toEqual(before)
+    vi.useRealTimers()
     expect(store.scheduled).toEqual([
       expect.objectContaining({ args: expect.objectContaining({ turn: 1 }) }),
     ])
