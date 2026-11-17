@@ -7,6 +7,7 @@ import { QueueSwitcher } from '../../../auto/views/html/queue-switcher'
 import { StreamList } from '../../../auto/views/html/stream-list'
 import { getPoolView } from '../../get-pool-view'
 import { CaptainCounters } from './captain-counters'
+import { CaptainDraft } from './captain-draft'
 import { CaptainPool } from './captain-pool'
 import { CaptainReadyStatus } from './captain-ready-status'
 
@@ -44,7 +45,9 @@ export async function CaptainQueueContent(props: { queue: QueueModel }) {
           </div>
         </div>
       </div>
-      <div class="queue-content">
+      <div class="queue-content flex flex-col gap-4 [&:has(#captain-draft[data-active])_#stream-list]:hidden">
+        <CaptainDraft queue={queue} view={view} viewer={steamId} />
+        <CaptainDraft.nextGame view={view} viewer={steamId} />
         <CaptainPool queue={queue} view={view} actor={actor} />
         <CaptainReadyStatus view={view} />
         <StreamList />

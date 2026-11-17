@@ -9,6 +9,7 @@ import { tasks } from '../../tasks'
 import type { Emit } from '../auto/queue-command'
 import { assertCaptainQueue } from './assert-captain-queue'
 import { cancelReadyTimeouts } from './cancel-ready-timeouts'
+import { startDraft } from './start-draft'
 
 // The caller holds queueCommand's lock and supplies its existing pool/settings snapshot.
 export async function enterState(
@@ -79,6 +80,11 @@ export async function enterState(
   emit('queue/state:updated', { queue: queue._id, state })
   if (state === QueueState.drafting) {
     emit('queue/captainDraft:starting', { queue: queue._id })
+    await startDraft(
+      queue,
+      pool.map(member => ({ ...member, locked: true })),
+      emit,
+    )
   }
   return pool
 }

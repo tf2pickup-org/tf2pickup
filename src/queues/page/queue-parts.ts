@@ -26,6 +26,9 @@ export interface QueueParts {
   mapResults?: Record<string, number>
   // captain queues: the sign-up pool and its counters
   captainPool?: boolean
+  // captain queues: the draft's frame, and the draft's parts
+  captainStage?: boolean
+  captainDraft?: boolean
 }
 
 // What belongs to one queue on its page; the rest of the page is shared by every queue.

@@ -9,6 +9,10 @@ let api: {
 }
 
 function maybeShowNotification(element: Element) {
+  if (element.hasAttribute('data-when-unfocused') && document.hasFocus()) {
+    return
+  }
+
   const title =
     element.getAttribute('data-notification-title') ?? element.getAttribute('notification-title')
   if (!title) {

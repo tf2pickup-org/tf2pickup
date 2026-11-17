@@ -45,6 +45,7 @@ export function stopSound(element: Element | null) {
 }
 
 function maybePlaySound(element: Element) {
+  if (element.hasAttribute('data-when-unfocused') && document.hasFocus()) return
   const targetId = element.getAttribute('data-sound-play')
   if (!targetId) return
   const volumeAttr = element.getAttribute('data-sound-volume')

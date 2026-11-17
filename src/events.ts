@@ -239,6 +239,15 @@ export interface Events {
   'queue/captainDraft:starting': {
     queue: QueueId
   }
+  'queue/captainDraft:updated': {
+    queue: QueueId
+  }
+  'queue/captainDraft:turn': {
+    queue: QueueId
+    captain: SteamId64
+    picks: number[]
+    deadline: Date
+  }
   'queue/state:updated': {
     queue: QueueId
     state: QueueState
