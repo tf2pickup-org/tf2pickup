@@ -39,3 +39,13 @@ How a queue turns a full set of players into a game. Only _auto_ (automatic team
 **Gamemode**:
 A TF2 competitive format (6v6, 9v9, ultiduo, bball, …) defining the classes and team size. Player skill, elo and stats are kept per gamemode.
 _Avoid_: format, game type
+
+## Pages
+
+**Page**:
+A screen a player has open at one URL (a queue's page, a game's page), which the server keeps up to date while it stays open.
+_Avoid_: view, screen
+
+**Page part**:
+One region of a page that the server can bring up to date on its own (a queue's slots, its player counts, the chat), shown only where that page renders it.
+_Avoid_: fragment, widget
