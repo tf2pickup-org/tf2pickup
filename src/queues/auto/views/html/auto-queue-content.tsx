@@ -70,6 +70,8 @@ const gridColsByGamemode: Record<Gamemode, string> = {
   [Gamemode.highlander]: 'xl:grid-cols-3',
   [Gamemode.ultiduo]: 'xl:grid-cols-2',
   [Gamemode.bball]: 'xl:grid-cols-2',
+  [Gamemode.fours]: 'xl:grid-cols-4',
+  [Gamemode.ultitrio]: 'xl:grid-cols-3',
 }
 
 async function Queue(props: {
