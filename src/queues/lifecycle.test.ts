@@ -67,6 +67,36 @@ describe('create()', () => {
     expect(collections.queues.insertOne).toHaveBeenCalledWith(queue)
   })
 
+  it('creates a captain queue without a skill threshold', async () => {
+    vi.mocked(collections.queues.countDocuments).mockResolvedValue(0)
+    vi.mocked(collections.queues.findOne).mockResolvedValue(null)
+
+    const queue = await create(
+      {
+        slug: 'captain-6v6',
+        name: 'Captains',
+        gamemode: '6v6' as never,
+        launchMode: 'captain',
+        skillThreshold: 2,
+      },
+      maps,
+      actor,
+    )
+
+    expect(queue).toMatchObject({ launchMode: 'captain', skillThreshold: null, pickTimeout: 10000 })
+  })
+
+  it('refuses a captain queue for a gamemode without captain roles', async () => {
+    await expect(
+      create(
+        { slug: 'duo', name: 'x', gamemode: 'ultiduo' as never, launchMode: 'captain' },
+        [],
+        actor,
+      ),
+    ).rejects.toThrow('cannot use captain mode')
+    expect(collections.queues.insertOne).not.toHaveBeenCalled()
+  })
+
   it('rejects a slug that is taken', async () => {
     vi.mocked(collections.queues.countDocuments).mockResolvedValue(1)
     await expect(

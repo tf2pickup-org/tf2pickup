@@ -8,12 +8,15 @@ import { logger } from '../../logger'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { get } from '../get'
 import { getSlots } from './get-slots'
+import { assertAutoQueue } from './assert-auto-queue'
 import { queueCommand } from './queue-command'
 import { resetMapOptions } from './reset-map-options'
 
 export async function reset(queue: QueueId) {
   logger.trace({ queue }, 'queue.reset()')
-  const { gamemode } = await get(queue)
+  const settings = await get(queue)
+  assertAutoQueue(settings)
+  const { gamemode } = settings
   await queueCommand('reset', async emit => {
     await collections.queueSlots.deleteMany({ queue })
     await collections.queueSlots.insertMany(generateEmptyQueue(queue, gamemodeConfigs[gamemode]))

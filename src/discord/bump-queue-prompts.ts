@@ -9,7 +9,7 @@ import { queuePromptMutex } from './queue-prompt-mutex'
 // prompts that are due share the bottom of the channel, so they don't keep leapfrogging each other.
 export async function bumpQueuePrompts() {
   await queuePromptMutex.runExclusive(async () => {
-    const enabled = await queues.listEnabled()
+    const enabled = (await queues.listEnabled()).filter(({ launchMode }) => launchMode === 'auto')
     const fillRatios = new Map(
       await Promise.all(
         enabled.map(async queue => {

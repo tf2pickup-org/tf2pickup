@@ -8,7 +8,7 @@ export async function ScrambleMaps(props: { queue: QueueModel }) {
   return (
     <Admin activePage="scramble-maps">
       <QueueTabs
-        queues={await queues.listEnabled()}
+        queues={(await queues.listEnabled()).filter(({ launchMode }) => launchMode === 'auto')}
         active={props.queue.slug}
         href={slug => `/admin/scramble-maps?queue=${slug}`}
       />

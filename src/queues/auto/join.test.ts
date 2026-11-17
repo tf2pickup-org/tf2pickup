@@ -59,6 +59,7 @@ describe('join()', () => {
       enabled: true,
       requireVerification: false,
       gamemode: '6v6',
+      launchMode: 'auto',
     } as never)
     vi.mocked(joinBlocker).mockReturnValue(null)
     vi.mocked(players.bySteamId).mockImplementation((async (_: SteamId64, keys: string[]) =>

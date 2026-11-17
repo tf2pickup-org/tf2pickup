@@ -30,6 +30,11 @@ export const queueConfigurationSchema = z.object({
     .nonnegative()
     .default(2)
     .describe('How many times the last played map cannot be an option to vote for'),
+  pickTimeout: z
+    .number()
+    .positive()
+    .default(secondsToMilliseconds(10))
+    .describe('Time a captain has for one turn of a draft; auto queues ignore it'),
   // null inherits the gamemode's whitelist, then the global one
   whitelistId: z.string().trim().min(1).nullable().default(null),
 })
@@ -40,7 +45,7 @@ export type QueueConfiguration = z.infer<typeof queueConfigurationSchema>
 export const createQueueSchema = queueConfigurationSchema.extend({
   slug: z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/),
   gamemode: z.enum(Gamemode),
-  launchMode: z.literal('auto'),
+  launchMode: z.enum(['auto', 'captain']),
 })
 
 export interface QueueModel extends z.infer<typeof createQueueSchema> {

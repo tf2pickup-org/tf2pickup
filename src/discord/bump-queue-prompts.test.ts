@@ -26,9 +26,9 @@ vi.mock('./for-each-enabled-channel', () => ({
   ),
 }))
 
-const sixes = { _id: new ObjectId() }
-const ultiduo = { _id: new ObjectId() }
-const bball = { _id: new ObjectId() }
+const sixes = { _id: new ObjectId(), launchMode: 'auto' }
+const ultiduo = { _id: new ObjectId(), launchMode: 'auto' }
+const bball = { _id: new ObjectId(), launchMode: 'auto' }
 
 function message(id: string) {
   return { id, content: '', embeds: [id], delete: vi.fn() }

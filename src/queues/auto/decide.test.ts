@@ -12,6 +12,8 @@ describe('decide()', () => {
     [QueueState.ready, { players: 0, ready: 0, slots: 12 }, QueueState.waiting],
     [QueueState.launching, { players: 12, ready: 12, slots: 12 }, null],
     [QueueState.launching, { players: 0, ready: 0, slots: 12 }, null],
+    [QueueState.drafting, { players: 12, ready: 12, slots: 12 }, null],
+    [QueueState.banningMaps, { players: 0, ready: 0, slots: 12 }, null],
   ])('%s with %o → %s', (state, counts, expected) => {
     expect(decide(state, counts)).toBe(expected)
   })

@@ -23,7 +23,9 @@ export default fp(
             { error, queue: snapshot.queue._id },
             'failed to launch game; reverting queue',
           )
-          await queueEngine.launchFailed(snapshot.queue._id)
+          if (snapshot.queue.launchMode === 'auto') {
+            await queueEngine.launchFailed(snapshot.queue._id)
+          }
         }
       }),
     )

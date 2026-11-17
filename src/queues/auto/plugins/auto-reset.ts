@@ -10,15 +10,17 @@ export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
     app.addHook('onReady', async () => {
-      for (const { _id: queue } of await queues.listEnabled()) {
-        await recover(queue)
+      for (const { _id: queue, launchMode } of await queues.listEnabled()) {
+        if (launchMode === 'auto') {
+          await recover(queue)
+        }
       }
     })
 
     events.on(
       'game:created',
       safe(async ({ game }) => {
-        if (!game.queue) {
+        if (!game.queue || game.launchMode === 'captain') {
           return
         }
 

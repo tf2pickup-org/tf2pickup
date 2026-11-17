@@ -7,6 +7,7 @@ import { ReadyUpDialog } from '../views/html/ready-up-dialog'
 import { QueueState } from '../../../database/models/queue-state.model'
 import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { queuePage } from '../../page'
+import { get } from '../../get'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import type { QueueId } from '../../../database/models/queue.model'
 
@@ -78,7 +79,7 @@ export default fp(
     events.on(
       'queue/state:updated',
       safe(async ({ queue, state }) => {
-        if (state === QueueState.ready) {
+        if (state === QueueState.ready && (await get(queue)).launchMode === 'auto') {
           const players = (
             await collections.queueSlots
               .find({ queue, player: { $ne: null }, ready: { $eq: false } })

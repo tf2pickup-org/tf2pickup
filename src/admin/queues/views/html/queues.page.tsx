@@ -30,6 +30,7 @@ export async function QueuesPage() {
               <th>Name</th>
               <th>Slug</th>
               <th>Gamemode</th>
+              <th>Launch mode</th>
               <th>Players</th>
               <th>Enabled</th>
               <th></th>
@@ -49,6 +50,7 @@ export async function QueuesPage() {
                 </td>
                 <td safe>{queue.slug}</td>
                 <td>{queue.gamemode}</td>
+                <td>{queue.launchMode}</td>
                 <td>
                   {playerCounts.get(queue._id.toHexString()) ?? 0}/
                   {gamemodeConfigs[queue.gamemode].classes.reduce(
@@ -103,6 +105,11 @@ export async function QueuesPage() {
         <input id="slug" name="slug" type="text" required pattern="[a-z0-9]+(-[a-z0-9]+)*" />
         <label for="name">Name</label>
         <input id="name" name="name" type="text" required />
+        <label for="launchMode">Launch mode</label>
+        <select id="launchMode" name="launchMode">
+          <option value="auto">auto</option>
+          <option value="captain">captain (6v6 and 9v9 only)</option>
+        </select>
         <label for="gamemode">Gamemode (blank queues only)</label>
         <select id="gamemode" name="gamemode">
           {Object.values(Gamemode).map(gamemode => (

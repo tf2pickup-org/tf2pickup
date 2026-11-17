@@ -22,6 +22,7 @@ export interface GameSlotModel {
   status: SlotStatus
   connectionStatus: PlayerConnectionStatus
   skill?: number
+  captain?: true
   shouldJoinBy?: Date
   voiceServerUrl?: string
   // players replaced in this slot who keep Mumble access until the replacement is in game and in

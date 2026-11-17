@@ -24,7 +24,7 @@ const iconUrl = `${environment.WEBSITE_URL}/favicon.png`
 // Prompts of queues that are no longer enabled are deleted.
 export async function refreshQueuePrompts() {
   await queuePromptMutex.runExclusive(async () => {
-    const enabled = await queues.listEnabled()
+    const enabled = (await queues.listEnabled()).filter(({ launchMode }) => launchMode === 'auto')
     for (const queue of enabled) {
       await refreshPrompt(queue, enabled.length > 1)
     }

@@ -5,6 +5,7 @@ import type { AppWebSocket } from '../../../websocket/types'
 import { events } from '../../../events'
 import { collections } from '../../../database/collections'
 import { QueueState } from '../../../database/models/queue-state.model'
+import { get } from '../../get'
 import { safe } from '../../../utils/safe'
 
 export default fp(
@@ -36,8 +37,8 @@ export default fp(
     })
     events.on(
       'queue/state:updated',
-      safe(async ({ state }) => {
-        if (state !== QueueState.ready) {
+      safe(async ({ queue, state }) => {
+        if (state !== QueueState.ready || (await get(queue)).launchMode !== 'auto') {
           return
         }
 
