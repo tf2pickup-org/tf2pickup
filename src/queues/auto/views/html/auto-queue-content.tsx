@@ -100,13 +100,19 @@ async function Queue(props: {
     : undefined
   const defaultSkill = (await configuration.get('games.default_player_skill'))[props.queue.gamemode]
 
-  // a team of two fits in rows, one per team
+  // fixed teams fit in rows, one per team
   const teams = teamSlots(props.queue.gamemode, props.slots)
   if (teams.length > 0) {
     const teamNames = ['BLU', 'RED'] as const
 
     return (
-      <form id="queue" class="queue-compact-grid" ws-send data-disable-when-offline>
+      <form
+        id="queue"
+        class="queue-compact-grid"
+        style={`--team-size: ${positions.length.toString()}`}
+        ws-send
+        data-disable-when-offline
+      >
         <div class="queue-team-heading-spacer" aria-hidden="true"></div>
         {positions.map(position => (
           <h2 class="queue-class-heading">

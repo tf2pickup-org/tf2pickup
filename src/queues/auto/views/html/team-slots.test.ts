@@ -29,6 +29,21 @@ describe('teamSlots()', () => {
     ])
   })
 
+  it('splits ultitrio slots into two teams', () => {
+    const slots = [
+      slot(0, Tf2ClassName.scout),
+      slot(1, Tf2ClassName.scout),
+      slot(2, Tf2ClassName.soldier),
+      slot(3, Tf2ClassName.soldier),
+      slot(4, Tf2ClassName.medic),
+      slot(5, Tf2ClassName.medic),
+    ]
+    expect(teamSlots(Gamemode.ultitrio, slots).map(team => team.map(s => s.id))).toEqual([
+      [0, 2, 4],
+      [1, 3, 5],
+    ])
+  })
+
   it('returns no teams for 6v6', () => {
     expect(teamSlots(Gamemode.sixes, [])).toEqual([])
   })
