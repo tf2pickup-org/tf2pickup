@@ -6,11 +6,16 @@ import type { PoolView } from '../../types/pool-view'
 // two captains.
 export async function CaptainActions(props: { view: PoolView; viewer?: SteamId64 | undefined }) {
   const { draft } = props.view
+  const view = props.view
   const isCaptain =
     !!props.viewer && !!draft && [draft.draft.red, draft.draft.blu].includes(props.viewer)
+  // pre-ready is for the next game; the players in the running draft have nothing to ready up for
+  const locked = view.members.some(
+    member => member.locked && member.player.steamId === props.viewer,
+  )
   return (
     <form id="captain-actions" ws-send class="queue-state-actions">
-      <PreReadyUpButton actor={props.viewer} />
+      {locked ? <></> : <PreReadyUpButton actor={props.viewer} />}
       {isCaptain ? (
         <button
           type="button"
