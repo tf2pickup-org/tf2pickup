@@ -7,7 +7,8 @@ import { captainRoles } from './captain-roles'
 import { currentTurn } from './current-turn'
 import { getDraftPosition } from './get-draft-position'
 import { getPool } from './get-pool'
-import { applyPick, settleDraft } from './settle-draft'
+import { applyPick } from './apply-pick'
+import { settleDraft } from './settle-draft'
 import { timeoutPick } from './timeout-pick'
 
 // The captain ran out of time: the rest of the turn is picked for them, longest-waiting first.

@@ -1,4 +1,5 @@
 import htmx from './htmx.js'
+import { suppressedWhileFocused } from './suppressed-while-focused'
 
 interface HtmxNodeInternalData {
   notification?: Notification
@@ -9,7 +10,7 @@ let api: {
 }
 
 function maybeShowNotification(element: Element) {
-  if (element.hasAttribute('data-when-unfocused') && document.hasFocus()) {
+  if (suppressedWhileFocused(element.hasAttribute('data-when-unfocused'), document.hasFocus())) {
     return
   }
 

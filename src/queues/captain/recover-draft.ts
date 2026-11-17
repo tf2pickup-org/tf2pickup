@@ -4,11 +4,13 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
 import { tasks } from '../../tasks'
 import { queueCommand } from '../auto/queue-command'
-import { scheduleTurnTimeout } from './settle-draft'
+import { assertCaptainQueue } from './assert-captain-queue'
+import { scheduleTurnTimeout } from './schedule-turn-timeout'
 
 // Brings a draft back after the app (re)starts: the turn timer is scheduled again from the saved
 // deadline, which fires at once when it has already passed.
 export async function recoverDraft(queue: QueueModel) {
+  assertCaptainQueue(queue)
   await queueCommand('captain-recover-draft', async () => {
     const [state, draft] = await Promise.all([
       collections.queueState.findOne({ queue: queue._id }),

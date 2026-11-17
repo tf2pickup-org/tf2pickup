@@ -1,4 +1,3 @@
-import { nanoid } from 'nanoid'
 import { collections } from '../../database/collections'
 import type { CaptainDraftModel } from '../../database/models/captain-draft.model'
 import type { CaptainPoolModel } from '../../database/models/captain-pool.model'
@@ -10,26 +9,9 @@ import type { Emit } from '../auto/queue-command'
 import { captainRoles } from './captain-roles'
 import { currentTurn } from './current-turn'
 import { getDraftPosition } from './get-draft-position'
-import { legalPicks } from './legal-picks'
-import { draftDecisionCount } from './metrics'
-import type { DraftPick } from './types/draft-pick'
-
-// Applies a pick to the draft held in memory; settleDraft() persists it.
-export function applyPick(
-  draft: CaptainDraftModel,
-  pick: DraftPick,
-  how: CaptainDraftModel['picks'][number]['how'],
-) {
-  draft.picks.push({ ...pick, at: new Date(), how })
-  draftDecisionCount.add(1, {
-    phase: 'pick',
-    how: how === 'timedOut' ? 'timed_out' : how,
-  })
-  logger.info(
-    { queue: draft.queue, team: pick.team, steamId: pick.player, role: pick.role, how },
-    'captain draft pick',
-  )
-}
+import { cachedLegalPicks } from './cached-legal-picks'
+import { applyPick } from './apply-pick'
+import { scheduleTurnTimeout } from './schedule-turn-timeout'
 
 // Must run inside queueCommand(). Starts the clock of a new turn, commits the picks that have a
 // single option, and moves on to the map bans after the last pick; then persists the draft.
@@ -56,7 +38,7 @@ export async function settleDraft(
       turnChanged = true
     }
 
-    const legal = legalPicks(getDraftPosition(roles, draft, members))
+    const legal = cachedLegalPicks(draft, getDraftPosition(roles, draft, members))
     if (legal.length !== 1) {
       if (legal.length === 0) {
         logger.error({ queue: queue._id }, 'captain draft has no legal pick')
@@ -100,16 +82,4 @@ export async function settleDraft(
     }
   }
   emit('queue/captainDraft:updated', { queue: queue._id })
-}
-
-export async function scheduleTurnTimeout(queue: QueueModel, draft: CaptainDraftModel) {
-  await tasks.schedule(
-    'queue/captain:turnTimeout',
-    Math.max(0, draft.turnDeadline.getTime() - Date.now()),
-    { queue: queue._id, token: draft.token, turn: draft.turn },
-  )
-}
-
-export function newDraftToken() {
-  return nanoid()
 }

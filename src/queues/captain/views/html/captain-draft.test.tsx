@@ -60,6 +60,7 @@ describe('CaptainDraft', () => {
     )
     expect(column.querySelectorAll('button')).toHaveLength(12)
     expect(column.querySelector('button')?.getAttribute('aria-label')).toContain('as medic')
+    expect(column.querySelector('button')?.hasAttribute('data-pick-button')).toBe(true)
   })
 
   it('shows everyone else the same pool without buttons', () => {
@@ -94,5 +95,13 @@ describe('CaptainDraft', () => {
   it('stops offering picks once the maps are being banned', () => {
     const view = poolView(QueueState.banningMaps)
     expect(String(CaptainDraft.status({ queue, view, viewer: id(0) }))).toContain('map bans')
+  })
+
+  it('disables its pick buttons while the socket is down', () => {
+    const view = poolView(QueueState.drafting)
+    const html = parse(String(CaptainDraft({ queue, view, viewer: id(0) })))
+    expect(html.querySelector('#captain-draft')?.hasAttribute('data-disable-when-offline')).toBe(
+      true,
+    )
   })
 })

@@ -62,7 +62,7 @@ describe('CaptainPool', () => {
 
   it('labels the volunteer toggle once', () => {
     const html = parse(String(CaptainPool({ queue, view: view([member(false)]), actor })))
-    expect(html.querySelectorAll('[aria-label="Volunteer as captain"]')).toHaveLength(1)
+    expect(html.querySelectorAll('[aria-label^="Volunteer as captain"]')).toHaveLength(1)
   })
 
   it('hides every checkbox from a viewer locked into the draft', () => {
@@ -112,5 +112,16 @@ describe('CaptainPool', () => {
     ].map(fragment => Buffer.byteLength(String(fragment)))
 
     expect(Math.max(...fragments)).toBeLessThan(50 * 1024)
+  })
+
+  it('names the controls for the next game while a draft runs', () => {
+    const drafting = { ...view([]), state: QueueState.drafting }
+    const html = parse(String(CaptainPool({ queue, view: drafting, actor })))
+    const labels = html
+      .querySelectorAll('input[type=checkbox]')
+      .map(input => input.getAttribute('aria-label'))
+    expect(labels).toContain('Volunteer as captain for the next game')
+    expect(labels).toContain('Sign up as medic for the next game')
+    expect(labels.every(label => label?.endsWith('for the next game'))).toBe(true)
   })
 })

@@ -47,8 +47,10 @@ export async function CaptainQueueContent(props: { queue: QueueModel }) {
       </div>
       <div class="queue-content flex flex-col gap-4 [&:has(#captain-draft[data-active])_#stream-list]:hidden">
         <CaptainDraft queue={queue} view={view} viewer={steamId} />
-        <CaptainDraft.nextGame view={view} viewer={steamId} />
-        <CaptainPool queue={queue} view={view} actor={actor} />
+        <section aria-labelledby="captain-next-game-title" class="flex flex-col gap-4">
+          <CaptainDraft.nextGame view={view} viewer={steamId} />
+          <CaptainPool queue={queue} view={view} actor={actor} />
+        </section>
         <CaptainReadyStatus view={view} />
         <StreamList />
       </div>

@@ -63,6 +63,7 @@ function CaptainDraftFrame(props: { active: boolean; children?: Children }) {
       id="captain-draft"
       class="flex flex-col gap-4 empty:hidden"
       data-active={props.active ? '' : undefined}
+      data-disable-when-offline
     >
       {props.children}
     </div>
@@ -268,7 +269,7 @@ function CaptainDraftRoleColumn(props: DraftProps & { role: CaptainRole }) {
                   ws-send
                   hx-trigger="click"
                   hx-vals={JSON.stringify({ pickplayer: steamId, pickrole: key })}
-                  hx-disabled-elt="this"
+                  data-pick-button
                   data-umami-event="captain-pick"
                   safe
                 >
@@ -303,8 +304,8 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
   )
   const active = view.state === QueueState.drafting || view.state === QueueState.banningMaps
   return (
-    <section id="captain-next-game" class="empty:hidden" aria-labelledby="captain-next-game-title">
-      {active && (
+    <div id="captain-next-game" class="empty:hidden">
+      {active ? (
         <div class="flex flex-col gap-1 border-t border-zinc-800 pt-6">
           <h2 id="captain-next-game-title" class="text-xl font-bold text-zinc-50">
             Next game
@@ -315,7 +316,9 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
               : "Sign up now — you'll be in the queue as soon as this draft ends."}
           </p>
         </div>
+      ) : (
+        <></>
       )}
-    </section>
+    </div>
   )
 }

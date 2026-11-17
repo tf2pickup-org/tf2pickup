@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+const metrics = vi.hoisted(() => ({ poolSize: { record: vi.fn() }, decisions: { add: vi.fn() } }))
+const log = vi.hoisted(() => ({ info: vi.fn(), error: vi.fn() }))
+
 const store = vi.hoisted(() => ({
   draft: undefined as Record<string, unknown> | undefined,
   state: 'drafting',
@@ -15,10 +18,17 @@ vi.mock('../../database/collections', () => ({
         return Promise.resolve()
       }),
       insertOne: vi.fn((draft: Record<string, unknown>) => {
-        store.draft = structuredClone(draft)
+        store.draft = { ...structuredClone({ ...draft, queue: undefined }), queue: draft.queue }
         return Promise.resolve()
       }),
-      findOne: vi.fn(() => Promise.resolve(store.draft && structuredClone(store.draft))),
+      findOne: vi.fn(() =>
+        Promise.resolve(
+          store.draft && {
+            ...structuredClone({ ...store.draft, queue: undefined }),
+            queue: store.draft.queue,
+          },
+        ),
+      ),
       updateOne: vi.fn((_filter: unknown, update: { $set: Record<string, unknown> }) => {
         Object.assign(store.draft!, structuredClone(update.$set))
         return Promise.resolve()
@@ -36,7 +46,7 @@ vi.mock('../../database/collections', () => ({
     },
   },
 }))
-vi.mock('../../logger', () => ({ logger: { info: vi.fn(), error: vi.fn() } }))
+vi.mock('../../logger', () => ({ logger: log }))
 vi.mock('../../tasks', () => ({
   tasks: {
     cancel: vi.fn(() => {
@@ -49,10 +59,7 @@ vi.mock('../../tasks', () => ({
     }),
   },
 }))
-vi.mock('./metrics', () => ({
-  draftPoolSize: { record: vi.fn() },
-  draftDecisionCount: { add: vi.fn() },
-}))
+vi.mock('./metrics', () => ({ captainDraftMetrics: metrics }))
 vi.mock('../get', () => ({ get: vi.fn() }))
 vi.mock('../get-state', () => ({ getState: vi.fn(() => Promise.resolve(store.state)) }))
 vi.mock('../auto/queue-command', () => ({
@@ -61,6 +68,7 @@ vi.mock('../auto/queue-command', () => ({
 
 const emit = vi.fn()
 
+import { secondsToMilliseconds } from 'date-fns'
 import { ObjectId } from 'mongodb'
 import type { CaptainPoolModel } from '../../database/models/captain-pool.model'
 import type { QueueId, QueueModel } from '../../database/models/queue.model'
@@ -81,7 +89,7 @@ const settings = {
   _id: queueId,
   launchMode: 'captain',
   gamemode: Gamemode.sixes,
-  pickTimeout: 10_000,
+  pickTimeout: secondsToMilliseconds(10),
 } as QueueModel
 const roles = captainRoles(Gamemode.sixes).map(roleKey)
 
@@ -139,6 +147,17 @@ describe('startDraft()', () => {
       'queue/captainDraft:turn',
       expect.objectContaining({ captain: red, picks: [1] }),
     )
+  })
+})
+
+describe('startDraft() observability', () => {
+  it('logs the draft and records its pool size', async () => {
+    await startDraft(settings, pool(), emit)
+    expect(log.info).toHaveBeenCalledWith(
+      expect.objectContaining({ queue: queueId, pool: 14 }),
+      'captain draft started',
+    )
+    expect(metrics.poolSize.record).toHaveBeenCalledWith(14)
   })
 })
 
@@ -225,6 +244,44 @@ describe('turnTimeout()', () => {
     expect(picked).not.toContain(red)
     expect(picked).not.toContain(blu)
     expect(picks[0]!.team).toBe('red')
+  })
+
+  it('counts every decision, forcing the ones with a single option, and logs each pick', async () => {
+    // two players per role, so the last pick has a single option
+    const exact = pool()
+      .slice(0, 12)
+      .map((member, index) => ({ ...member, roles: [roles[index % roles.length]!] }))
+    store.members = exact
+    await startDraft(settings, exact, emit)
+    for (let turns = 0; turns < 20 && store.state === 'drafting'; turns++) {
+      await turnTimeout(queueId, draft().token, draft().turn)
+    }
+
+    const hows = vi.mocked(metrics.decisions.add).mock.calls.map(([, attributes]) => attributes)
+    expect(hows).toHaveLength(10)
+    expect(hows.every(attributes => (attributes as { phase: string }).phase === 'pick')).toBe(true)
+    expect(hows).toContainEqual({ phase: 'pick', how: 'timed_out' })
+    expect(hows).toContainEqual({ phase: 'pick', how: 'forced' })
+    expect(draft().picks.at(-1)!.how).toBe('forced')
+    expect(log.info).toHaveBeenCalledWith(
+      expect.objectContaining({ how: 'forced', role: expect.any(String) }),
+      'captain draft pick',
+    )
+  })
+
+  it('keeps the deadline of a double turn when its first pick is made', async () => {
+    await startDraft(settings, pool(), emit)
+    const { red, blu } = draft()
+    await pick(queueId, red, pool()[5]!.player.steamId, roles[0]!)
+    const before = draft() as unknown as { turnDeadline: string; turnStartedAt: string }
+
+    await pick(queueId, blu, pool()[6]!.player.steamId, roles[1]!)
+    const after = draft() as unknown as { turnDeadline: string; turnStartedAt: string }
+    expect(after.turnDeadline).toEqual(before.turnDeadline)
+    expect(after.turnStartedAt).toEqual(before.turnStartedAt)
+    expect(store.scheduled).toEqual([
+      expect.objectContaining({ args: expect.objectContaining({ turn: 1 }) }),
+    ])
   })
 
   it('ignores a timer of an earlier turn or draft', async () => {

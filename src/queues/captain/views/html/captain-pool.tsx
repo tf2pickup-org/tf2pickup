@@ -22,6 +22,11 @@ interface PoolProps {
   actor?: Actor
 }
 
+// while a draft runs, the pool being signed up for is the next game's
+function isNextGame(view: PoolView) {
+  return view.state === QueueState.drafting || view.state === QueueState.banningMaps
+}
+
 function ownMembership({ view, actor }: PoolProps) {
   return actor ? view.members.find(member => member.player.steamId === actor.steamId) : undefined
 }
@@ -52,7 +57,12 @@ function CaptainVolunteers(props: PoolProps) {
       class="flex min-h-11 flex-wrap items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 p-3"
       aria-label="Captain volunteers"
     >
-      <VolunteerToggle queue={queue} own={ownMembership(props)} actor={actor} />
+      <VolunteerToggle
+        queue={queue}
+        own={ownMembership(props)}
+        actor={actor}
+        nextGame={isNextGame(view)}
+      />
       <IconCrown size={20} />
       <span class="font-bold">Captain {volunteers.length}/2</span>
       {volunteers.map(member => (
@@ -91,11 +101,17 @@ function CaptainRoleColumn(props: PoolProps & { role: CaptainRole }) {
       own={ownMembership(props)}
       actor={props.actor}
       readyUp={view.state === QueueState.ready}
+      nextGame={isNextGame(view)}
     />
   )
 }
 
-function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefined; actor: Actor }) {
+function VolunteerToggle(props: {
+  queue: Queue
+  own: CaptainPoolModel | undefined
+  actor: Actor
+  nextGame: boolean
+}) {
   if (!props.actor || props.own?.locked) {
     return <></>
   }
@@ -113,7 +129,7 @@ function VolunteerToggle(props: { queue: Queue; own: CaptainPoolModel | undefine
   return (
     <label class="relative flex items-center">
       <CaptainCheckbox
-        label="Volunteer as captain"
+        label={`Volunteer as captain${props.nextGame ? ' for the next game' : ''}`}
         checked={props.own?.volunteer ?? false}
         disabled={!!disabled}
         vals={{ togglevolunteer: '' }}
@@ -136,6 +152,7 @@ function RoleColumn(props: {
   own: CaptainPoolModel | undefined
   actor: Actor
   readyUp: boolean
+  nextGame: boolean
 }) {
   const { role, members } = props
   const key = roleKey(role)
@@ -203,6 +220,7 @@ function RoleCheckbox(props: {
   role: CaptainRole
   own: CaptainPoolModel | undefined
   actor: Actor
+  nextGame: boolean
 }) {
   const { actor, own, role } = props
   if (!actor || own?.locked) {
@@ -216,7 +234,7 @@ function RoleCheckbox(props: {
   return (
     <>
       <CaptainCheckbox
-        label={`Sign up as ${roleLabel(role)}`}
+        label={`Sign up as ${roleLabel(role)}${props.nextGame ? ' for the next game' : ''}`}
         checked={own?.roles.includes(key) ?? false}
         disabled={!!blocker}
         vals={{ togglerole: key }}
