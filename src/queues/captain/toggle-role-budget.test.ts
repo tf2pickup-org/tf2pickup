@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+import { secondsToMilliseconds } from 'date-fns'
 
 const { calls, counted, pool } = vi.hoisted(() => {
   const calls = { count: 0 }
@@ -55,8 +56,8 @@ vi.mock('../get', () => ({
       launchMode: 'captain',
       gamemode: '6v6',
       enabled: true,
-      readyUpTimeout: 40000,
-      readyStateTimeout: 60000,
+      readyUpTimeout: secondsToMilliseconds(40),
+      readyStateTimeout: secondsToMilliseconds(60),
     })
   }),
 }))

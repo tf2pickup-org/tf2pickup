@@ -37,7 +37,7 @@ beforeEach(async () => {
   vi.mocked(autoLeave).mockResolvedValue({ queue } as never)
   await (plugin as unknown as (app: unknown) => Promise<void>)({
     gateway: {
-      on: (name: string, run: (socket: typeof socket) => Promise<void>) => handlers.set(name, run),
+      on: (name: string, run: (client: typeof socket) => Promise<void>) => handlers.set(name, run),
       to: () => ({ send }),
     },
   })

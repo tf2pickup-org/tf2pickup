@@ -6,10 +6,12 @@ export function CaptainReadyStatus(props: { view: PoolView }) {
   const { state, readyPhase } = props.view
   return (
     <div id="captain-ready-status">
-      {state === QueueState.ready && readyPhase && (
+      {state === QueueState.ready && readyPhase ? (
         <PhaseTimer startedAt={readyPhase.startedAt} deadline={readyPhase.deadline}>
           READY UP!
         </PhaseTimer>
+      ) : (
+        <></>
       )}
     </div>
   )

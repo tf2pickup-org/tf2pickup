@@ -21,6 +21,12 @@ const db = vi.hoisted(() => ({
     ready?: boolean
   }[],
   players: [] as { steamId: string; activeGame?: number }[],
+  captainMembers: [] as {
+    queue: unknown
+    player: { steamId: string }
+    ready: boolean
+    locked: boolean
+  }[],
   mapOptions: [] as { queue: unknown; name: string }[],
   state: 'waiting',
 }))
@@ -79,6 +85,7 @@ vi.mock('../../database/collections', () => {
   return {
     collections: {
       queues: collection(() => db.queues),
+      captainPool: collection(() => db.captainMembers),
       queueSlots: collection(() => db.slots),
       players: collection(() => db.players),
       queueMapOptions: collection(() => db.mapOptions),
@@ -86,6 +93,7 @@ vi.mock('../../database/collections', () => {
   }
 })
 
+vi.mock('../captain/captain-queue-parts', () => ({ captainQueueParts: () => Promise.resolve([]) }))
 vi.mock('../auto/views/html/queue-slot', () => ({
   QueueSlot: (props: { slot: { id: string }; actor?: { steamId: string } }) =>
     tag(`queue-slot-${props.slot.id}`)({ actor: props.actor?.steamId }),
@@ -170,6 +178,7 @@ beforeEach(() => {
   clients = new Set()
   gateway = new Gateway({ websocketServer: { clients } } as unknown as FastifyInstance)
   db.queues = [sixes]
+  db.captainMembers = []
   db.slots = [
     { id: 'soldier-0', queue: sixes._id, player: { steamId: alice } },
     { id: 'soldier-1', queue: sixes._id, player: null },
@@ -313,6 +322,20 @@ describe('queuePage.render', () => {
 
     expect(await received(socket)).toContain('ready-up-dialog')
   })
+
+  it.each([false, true])(
+    'reconnects a captain member with ready=%s using captain membership only',
+    async ready => {
+      const captain = { ...sixes, _id: new ObjectId(), slug: 'captain', launchMode: 'captain' }
+      db.queues.push(captain)
+      db.state = QueueState.ready
+      db.captainMembers = [{ queue: captain._id, player: { steamId: alice }, ready, locked: false }]
+      db.slots[0]!.ready = false
+      const socket = connect('/q/captain', alice)
+      await queuePage.render(socket)
+      expect((await received(socket)).includes('ready-up-dialog')).toBe(!ready)
+    },
+  )
 
   it('tags its updates with the page they were rendered for', async () => {
     const socket = connect('/q/6v6')

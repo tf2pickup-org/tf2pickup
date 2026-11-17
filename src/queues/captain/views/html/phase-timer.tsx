@@ -5,6 +5,7 @@ export function PhaseTimer(props: { startedAt: Date; deadline: Date; children: C
   const remaining = Math.max(0, props.deadline.getTime() - Date.now())
   const minutes = Math.floor(remaining / minutesToMilliseconds(1))
   const seconds = Math.floor((remaining % minutesToMilliseconds(1)) / secondsToMilliseconds(1))
+  const countdown = [minutes, String(seconds).padStart(2, '0')].join(':')
   return (
     <div
       class="flex flex-col gap-2 text-sm text-zinc-200"
@@ -16,8 +17,13 @@ export function PhaseTimer(props: { startedAt: Date; deadline: Date; children: C
       style={`--deadline: ${props.deadline.getTime()}`}
     >
       <div class="flex items-center gap-2">
-        <span class="text-crimson-600 tabular-nums" data-countdown={remaining} aria-hidden="true">
-          {minutes}:{String(seconds).padStart(2, '0')}
+        <span
+          class="text-crimson-600 tabular-nums"
+          data-countdown={remaining}
+          aria-hidden="true"
+          safe
+        >
+          {countdown}
         </span>
         <span class="font-medium">{props.children}</span>
       </div>
