@@ -1,4 +1,3 @@
-import type { Children } from '@kitajs/html'
 import { QueueState } from '../../../../database/models/queue-state.model'
 import { MapThumbnail } from '../../../../html/components/map-thumbnail'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
@@ -32,7 +31,7 @@ export function CaptainMapBans(props: { view: PoolView; viewer?: SteamId64 | und
             banned && 'bg-zinc-900 text-zinc-400 before:bg-none',
             onClock && !banned && 'cursor-pointer hover:border-2 hover:border-zinc-300',
           ]
-          const content: Children = (
+          const content = (
             <>
               <div class={['map-vote-thumbnail', banned && 'opacity-50 grayscale']}>
                 <MapThumbnail map={map} />

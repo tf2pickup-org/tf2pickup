@@ -6,6 +6,7 @@ import { collections } from '../../database/collections'
 import { applyMapCooldown } from '../../maps/apply-cooldown'
 import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
+import { get } from '../get'
 import { advance } from './advance'
 import { captainDraftMetrics } from './metrics'
 import { completeLaunch } from './complete-launch'
@@ -83,6 +84,16 @@ describe('captain launch lifecycle', () => {
       1.5,
     )
   })
+  it('re-evaluates an immediately full next pool with the newly applied map cooldown', async () => {
+    const before = { _id: queue, launchMode: 'captain', maps: [{ name: 'cp_a', cooldown: 0 }] }
+    const after = { ...before, maps: [{ name: 'cp_a', cooldown: 2 }] }
+    vi.mocked(get)
+      .mockResolvedValueOnce(before as never)
+      .mockResolvedValueOnce(after as never)
+    await completeLaunch(game)
+    expect(advance).toHaveBeenCalledWith(queue, emit, { state: 'waiting', settings: after })
+  })
+
   it('returns everybody after creation failure without applying map cooldown', async () => {
     await launchFailed(queue, 't')
     expect(collections.captainPool.deleteMany).not.toHaveBeenCalled()

@@ -26,7 +26,7 @@ export async function completeLaunch(game: GameModel) {
     await applyMapCooldown(queue, game.map)
     logger.info({ queue, gameNumber: game.number }, 'captain game launched')
     await returnDraftToPool(
-      settings,
+      await get(queue),
       draft,
       emit,
       game.slots.map(slot => slot.player),
