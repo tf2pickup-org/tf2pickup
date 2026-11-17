@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
+import { QueueState } from '../../../../database/models/queue-state.model'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import type { PoolView } from '../../types/pool-view'
 
@@ -12,6 +13,7 @@ import { CaptainActions } from './captain-actions'
 const red = '76561198000000001' as SteamId64
 const blu = '76561198000000002' as SteamId64
 const view = {
+  state: QueueState.drafting,
   draft: { draft: { red, blu } },
   members: [
     { locked: true, player: { steamId: red } },
@@ -20,7 +22,10 @@ const view = {
     { locked: false, player: { steamId: '76561198000000005' } },
   ],
 } as unknown as PoolView
-const noDraft = { members: [] } as unknown as PoolView
+const noDraft = {
+  state: QueueState.waiting,
+  members: [],
+} as unknown as PoolView
 
 async function html(poolView: PoolView, viewer?: SteamId64) {
   return parse(String(await CaptainActions({ view: poolView, viewer })))
@@ -53,5 +58,10 @@ describe('CaptainActions', () => {
     ['a spectator', '76561198000000006' as SteamId64, true],
   ])('shows %s the pre-ready button: %s', async (_name, viewer, shown) => {
     expect((await html(view, viewer)).querySelector('#pre-ready-up-button') !== null).toBe(shown)
+  })
+
+  it('shows no cancel button once the game is launching', async () => {
+    const launching = { ...view, state: QueueState.launching } as PoolView
+    expect((await html(launching, red)).querySelector('[name=canceldraft]')).toBeNull()
   })
 })

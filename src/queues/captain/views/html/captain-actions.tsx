@@ -1,3 +1,4 @@
+import { QueueState } from '../../../../database/models/queue-state.model'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import { PreReadyUpButton } from '../../../../pre-ready/views/html/pre-ready-up-button'
 import type { PoolView } from '../../types/pool-view'
@@ -7,8 +8,14 @@ import type { PoolView } from '../../types/pool-view'
 export async function CaptainActions(props: { view: PoolView; viewer?: SteamId64 | undefined }) {
   const { draft } = props.view
   const view = props.view
+  // only a draft that is picking or banning can be cancelled; the view keeps a launching one too
+  const cancellable =
+    props.view.state === QueueState.drafting || props.view.state === QueueState.banningMaps
   const isCaptain =
-    !!props.viewer && !!draft && [draft.draft.red, draft.draft.blu].includes(props.viewer)
+    cancellable &&
+    !!props.viewer &&
+    !!draft &&
+    [draft.draft.red, draft.draft.blu].includes(props.viewer)
   // pre-ready is for the next game; the players in the running draft have nothing to ready up for
   const locked = view.members.some(
     member => member.locked && member.player.steamId === props.viewer,
