@@ -236,10 +236,16 @@ function CaptainDraftRoleColumn(props: DraftProps & { role: CaptainRole }) {
       !captains.has(member.player.steamId),
   )
   const onClock = !!view.turn && props.viewer === view.draft[view.turn.team]
+  const isLegal = (steamId: SteamId64) =>
+    !filled && view.legal.some(pick => pick.player === steamId && pick.role === key)
+  // the captain on the clock sees what they can't pick fade out; spectators see everything alike
+  const dimmed = filled || (onClock && !members.some(member => isLegal(member.player.steamId)))
+  const rowClass =
+    'flex h-8 w-full items-center justify-center rounded-lg border border-transparent bg-zinc-900 px-2 text-zinc-300 max-lg:min-h-10 data-highlight:border-zinc-500 data-highlight:bg-zinc-800'
   return (
     <div
       id={columnId(role)}
-      class={['flex min-w-0 flex-col gap-2', filled && 'opacity-40']}
+      class={['flex min-w-0 flex-col gap-2', dimmed && 'opacity-40']}
       data-role={key}
     >
       <div class="flex h-10 items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-3">
@@ -249,40 +255,47 @@ function CaptainDraftRoleColumn(props: DraftProps & { role: CaptainRole }) {
         </h2>
       </div>
       <ul class="flex flex-col gap-0.5">
-        {members.map(member => {
-          const steamId = member.player.steamId
-          const pickable =
-            onClock &&
-            !filled &&
-            view.legal.some(pick => pick.player === steamId && pick.role === key)
-          const rowClass =
-            'flex h-8 w-full items-center justify-center truncate rounded-lg border border-transparent bg-zinc-900 px-2 text-zinc-300 max-lg:min-h-10 data-highlight:border-zinc-500 data-highlight:bg-zinc-800'
-          return (
-            <li>
-              {pickable ? (
-                <button
-                  type="button"
-                  class={[rowClass, 'cursor-pointer hover:border-zinc-500 hover:bg-zinc-800']}
-                  aria-label={`Pick ${member.player.name} as ${roleLabel(role)}`}
-                  title={member.player.name}
-                  data-draft-player={steamId}
-                  ws-send
-                  hx-trigger="click"
-                  hx-vals={JSON.stringify({ pickplayer: steamId, pickrole: key })}
-                  data-pick-button
-                  data-umami-event="captain-pick"
-                  safe
-                >
-                  {member.player.name}
-                </button>
-              ) : (
-                <div class={rowClass} title={member.player.name} data-draft-player={steamId} safe>
-                  {member.player.name}
-                </div>
-              )}
-            </li>
-          )
-        })}
+        {members.length === 0 ? (
+          <li class="flex h-8 items-center justify-center rounded-lg border border-dashed border-zinc-800 text-zinc-500">
+            No one left
+          </li>
+        ) : (
+          members.map(member => {
+            const steamId = member.player.steamId
+            return (
+              <li>
+                {onClock && isLegal(steamId) ? (
+                  <button
+                    type="button"
+                    class={[rowClass, 'cursor-pointer hover:border-zinc-500 hover:bg-zinc-800']}
+                    aria-label={`Pick ${member.player.name} as ${roleLabel(role)}`}
+                    title={member.player.name}
+                    data-draft-player={steamId}
+                    ws-send
+                    hx-trigger="click"
+                    hx-vals={JSON.stringify({ pickplayer: steamId, pickrole: key })}
+                    data-pick-button
+                    data-umami-event="captain-pick"
+                  >
+                    <span class="min-w-0 truncate" safe>
+                      {member.player.name}
+                    </span>
+                  </button>
+                ) : (
+                  <div
+                    class={[rowClass, onClock && 'cursor-default opacity-40']}
+                    title={member.player.name}
+                    data-draft-player={steamId}
+                  >
+                    <span class="min-w-0 truncate" safe>
+                      {member.player.name}
+                    </span>
+                  </div>
+                )}
+              </li>
+            )
+          })
+        )}
       </ul>
     </div>
   )

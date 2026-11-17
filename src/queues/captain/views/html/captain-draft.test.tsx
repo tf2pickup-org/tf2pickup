@@ -104,4 +104,35 @@ describe('CaptainDraft', () => {
       true,
     )
   })
+
+  it('fades what the captain on the clock cannot pick, and a column with nothing to pick', () => {
+    const view = poolView(QueueState.drafting)
+    // only 12 of the 14 players can play pocket scout, two of whom are the captains
+    const picked = { ...view.draft!, draft: { ...view.draft!.draft } }
+    const captainView = {
+      ...view,
+      draft: { ...picked, legal: picked.legal.filter(pick => pick.role !== roleKey(roles[0]!)) },
+    }
+    const column = parse(
+      String(CaptainDraft.roleColumn({ queue, view: captainView, role: roles[0]!, viewer: id(0) })),
+    )
+    expect(column.querySelectorAll('button')).toHaveLength(0)
+    expect(column.querySelector('[data-role]')?.classList.contains('opacity-40')).toBe(true)
+    expect(column.querySelectorAll('[data-draft-player].opacity-40').length).toBeGreaterThan(0)
+
+    const spectator = parse(
+      String(CaptainDraft.roleColumn({ queue, view: captainView, role: roles[0]!, viewer: id(5) })),
+    )
+    expect(spectator.querySelector('[data-role]')?.classList.contains('opacity-40')).toBe(false)
+    expect(spectator.querySelectorAll('.opacity-40')).toHaveLength(0)
+  })
+
+  it('says when no one is left in a column', () => {
+    const view = poolView(QueueState.drafting)
+    const empty = { ...view, draft: { ...view.draft!, members: [] } }
+    const column = String(
+      CaptainDraft.roleColumn({ queue, view: empty, role: roles[5]!, viewer: undefined }),
+    )
+    expect(column).toContain('No one left')
+  })
 })

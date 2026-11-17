@@ -185,7 +185,7 @@ function RoleColumn(props: {
           members.map(member => (
             <li
               class={[
-                'flex h-8 items-center justify-center truncate rounded-lg px-2 max-lg:min-h-10',
+                'flex h-8 items-center justify-center rounded-lg px-2 max-lg:min-h-10',
                 props.readyUp && member.ready
                   ? 'bg-emerald-900 text-zinc-100'
                   : member.player.steamId === props.actor?.steamId
@@ -201,7 +201,7 @@ function RoleColumn(props: {
             >
               <a
                 href={`/players/${member.player.steamId}`}
-                class="truncate"
+                class="min-w-0 truncate"
                 title={member.player.name}
                 safe
               >
