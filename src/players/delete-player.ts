@@ -61,6 +61,8 @@ async function anonymizeGames(steamId: SteamId64): Promise<void> {
     .find({
       $or: [
         { 'slots.player': steamId },
+        { 'captains.red': steamId },
+        { 'captains.blu': steamId },
         { 'events.player': steamId },
         { 'events.actor': steamId },
         { 'events.replacee': steamId },
@@ -75,7 +77,14 @@ async function anonymizeGames(steamId: SteamId64): Promise<void> {
     )
     const events = game.events.map(event => anonymizeEvent(event, steamId)) as typeof game.events
 
-    await collections.games.updateOne({ _id: game._id }, { $set: { slots, events } })
+    const captains = game.captains && {
+      red: game.captains.red === steamId ? deletedUserSteamId : game.captains.red,
+      blu: game.captains.blu === steamId ? deletedUserSteamId : game.captains.blu,
+    }
+    await collections.games.updateOne(
+      { _id: game._id },
+      { $set: { slots, events, ...(captains ? { captains } : {}) } },
+    )
   }
 }
 
