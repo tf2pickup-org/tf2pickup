@@ -1,5 +1,6 @@
 import { matchRoleSlots } from './match-role-slots'
 import { roleKey } from './role-key'
+import { roleLabel } from './role-label'
 import { roleSlots } from './role-slots'
 import type { CaptainRole } from './types/captain-role'
 import type { PoolPlayer } from './types/pool-player'
@@ -16,7 +17,7 @@ export function poolReadiness(roles: readonly CaptainRole[], pool: readonly Pool
   const seated = new Set(matching.map(({ player }) => player))
   const missing = roles.flatMap(role => {
     const count = 2 - matching.filter(slot => slot.role === roleKey(role)).length
-    return count > 0 ? [{ role: roleKey(role), name: role.name, count }] : []
+    return count > 0 ? [{ role: roleKey(role), name: roleLabel(role), count }] : []
   })
   return {
     full:
