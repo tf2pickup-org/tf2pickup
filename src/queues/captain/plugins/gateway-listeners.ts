@@ -4,6 +4,7 @@ import { byPageUrl } from '../../page/by-page-url'
 import { queuePage } from '../../page'
 import { wsSafe } from '../../ws-safe'
 import { banMap } from '../ban-map'
+import { cancelDraft } from '../cancel-draft'
 import { pick } from '../pick'
 import { toggleRole } from '../toggle-role'
 import { toggleVolunteer } from '../toggle-volunteer'
@@ -75,6 +76,22 @@ export default fp(
         }
 
         await pick(queue._id, socket.player.steamId, player, role)
+      }),
+    )
+
+    app.gateway.on(
+      'queue:canceldraft',
+      wsSafe('canceldraft', async socket => {
+        if (!socket.player) {
+          throw errors.unauthorized('unauthorized')
+        }
+
+        const queue = await byPageUrl(socket.currentUrl)
+        if (!queue) {
+          throw errors.badRequest('not on a queue page')
+        }
+
+        await cancelDraft(queue._id, socket.player.steamId)
       }),
     )
   },

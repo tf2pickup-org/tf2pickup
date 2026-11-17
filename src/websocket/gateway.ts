@@ -24,6 +24,7 @@ export interface ClientToServerEvents {
   'queue:togglevolunteer': () => void
   'queue:banmap': (map: string) => void
   'queue:pick': (player: SteamId64, role: string) => void
+  'queue:canceldraft': () => void
   'queue:togglepreready': () => void
   'queue:audiostatus': (audioReady: boolean) => void
 }
@@ -81,6 +82,10 @@ const pick = z.object({
 })
 
 const banMap = z.object({ banmap: z.string().min(1), HEADERS: htmxHeaders })
+const cancelDraft = z.object({
+  canceldraft: z.literal(''),
+  HEADERS: htmxHeaders,
+})
 
 const preReadyToggle = z.object({
   prereadytoggle: z.string(),
@@ -108,6 +113,7 @@ const clientMessage = z.union([
   toggleVolunteer,
   pick,
   banMap,
+  cancelDraft,
   preReadyToggle,
   navigated,
   audioStatus,
@@ -335,6 +341,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:banmap', socket, parsed.banmap)
       } else if ('pickplayer' in parsed) {
         this.emit('queue:pick', socket, parsed.pickplayer, parsed.pickrole)
+      } else if ('canceldraft' in parsed) {
+        this.emit('queue:canceldraft', socket)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
       } else if ('audioReady' in parsed) {
