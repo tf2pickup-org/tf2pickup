@@ -36,13 +36,8 @@ queues(
 )
 
 queues(
-  'a captain queue page has no Clear queue and leaves the auto queue alone @multi-queue',
+  'a captain queue page has no Clear queue and ignores the auto queue @multi-queue',
   async ({ queues, users }) => {
-    const auto = await users.byName('Polemic').page()
-    await auto.goto(`/q/${defaultQueueSlug()}`)
-    await expect(auto.locator('#queue')).toBeVisible()
-    const before = await auto.locator('#queue').innerHTML()
-
     const { slug } = await queues.create({
       template: 'auto-6v6',
       launchMode: 'captain',
@@ -54,8 +49,18 @@ queues(
     await expect(admin.getByRole('button', { name: 'Clear queue' })).toHaveCount(0)
     await expect(admin.getByLabel(/^Queue slot /)).toHaveCount(0)
 
-    await auto.reload()
-    expect(await auto.locator('#queue').innerHTML()).toBe(before)
-    await expect(auto.getByLabel(/^Queue slot /)).toHaveCount(12)
+    const content = () => admin.locator('#queue-content').innerHTML()
+    const dto = async () => (await admin.request.get(`/api/v1/queues/${slug}`)).json() as unknown
+    const htmlBefore = await content()
+    const dtoBefore = await dto()
+    expect(dtoBefore).toMatchObject({ launchMode: 'captain', slots: [], mapVoteResults: {} })
+
+    const player = await users.byName('Shadowhunter').queuePage(defaultQueueSlug())
+    await player.goto()
+    await player.joinQueue('medic-1')
+    await player.leaveQueue()
+
+    expect(await dto()).toEqual(dtoBefore)
+    expect(await content()).toBe(htmlBefore)
   },
 )
