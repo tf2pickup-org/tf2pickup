@@ -3,7 +3,7 @@ import { gamemodeConfigs } from '../../../gamemodes/configs'
 import { getMapVoteResults } from '../../auto/get-map-vote-results'
 import { getSlots } from '../../auto/get-slots'
 import { getState } from '../../get-state'
-import { queuePageUrl } from '../../queue-page-url'
+import { queuePageUrl } from '../../page/queue-page-url'
 
 export async function queueToDto(queue: QueueModel, selfHref = `/api/v1/queues/${queue.slug}`) {
   const [state, slots, mapVoteResults] = await Promise.all([

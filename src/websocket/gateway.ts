@@ -9,6 +9,7 @@ import type { QueueSlotId } from '../queues/types/queue-slot-id'
 import { meter } from '../otel'
 import { ValueType } from '@opentelemetry/api'
 import type { AppWebSocket } from './types'
+import { pageTag } from './page-tag'
 
 export interface ClientToServerEvents {
   connected: (ipAddress: string, userAgent?: string) => void
@@ -209,36 +210,37 @@ class BroadcastOperator {
   }
 
   send(message: MessageFn, options: { key?: string } = {}) {
-    let recipients = 0
-    this.app.websocketServer.clients.forEach(async client => {
-      const socket = client as AppWebSocket
-      if ('authenticated' in this.filters) {
-        if (Boolean(socket.player) !== this.filters.authenticated) {
-          return
-        }
-      }
-
-      if (this.filters.players) {
-        if (!socket.player || !this.filters.players.has(socket.player.steamId)) {
-          return
-        }
-      }
-
-      if (this.filters.urls) {
-        if (!socket.currentUrl || !this.filters.urls.has(socket.currentUrl)) {
-          return
-        }
-      }
-      recipients++
+    const recipients = this.sockets()
+    for (const socket of recipients) {
       // lets the client drop messages addressed to a page it has already left
-      await send(
-        socket,
-        message,
-        this.filters.urls ? `<!--page:${socket.page}-->` : '',
-        options.key,
-      )
+      void send(socket, message, this.filters.urls ? pageTag(socket) : '', options.key)
+    }
+    broadcastRecipients.record(recipients.length)
+  }
+
+  // the signed-in players this broadcast would reach
+  players(): SteamId64[] {
+    return this.sockets().flatMap(socket => (socket.player ? [socket.player.steamId] : []))
+  }
+
+  private sockets() {
+    return [...(this.app.websocketServer.clients as Set<AppWebSocket>)].filter(socket => {
+      if (
+        'authenticated' in this.filters &&
+        Boolean(socket.player) !== this.filters.authenticated
+      ) {
+        return false
+      }
+
+      if (
+        this.filters.players &&
+        (!socket.player || !this.filters.players.has(socket.player.steamId))
+      ) {
+        return false
+      }
+
+      return !this.filters.urls || (!!socket.currentUrl && this.filters.urls.has(socket.currentUrl))
     })
-    broadcastRecipients.record(recipients)
   }
 }
 
