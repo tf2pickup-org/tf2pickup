@@ -7,11 +7,13 @@ import { logger } from '../../logger'
 import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
 import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 import type { Emit } from './queue-command'
 import { takeLaunchSnapshot } from './take-launch-snapshot'
 
 // must run inside queueCommand()
 export async function enterState(queue: QueueId, state: QueueState, emit: Emit) {
+  assertAutoQueue(await get(queue))
   logger.info({ queue, state }, 'queue state changed')
   await collections.queueState.updateOne({ queue }, { $set: { state } })
 

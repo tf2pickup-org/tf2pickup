@@ -6,6 +6,8 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { getMapVoteResults } from './get-map-vote-results'
 import { queueCommand } from './queue-command'
 import { withLogLevel } from '../../utils/with-log-level'
+import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 
 export async function voteMap(
   steamId: SteamId64,
@@ -18,6 +20,7 @@ export async function voteMap(
     }
 
     const { queue } = slot
+    assertAutoQueue(await get(queue))
     logger.trace({ queue, steamId, map }, 'queue.voteMap()')
     const mapCount = await collections.queueMapOptions.countDocuments({ queue, name: map })
     if (mapCount === 0) {

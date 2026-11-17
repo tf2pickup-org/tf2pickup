@@ -18,7 +18,9 @@ vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } })
 vi.mock('./take-launch-snapshot', () => ({
   takeLaunchSnapshot: vi.fn().mockResolvedValue('snapshot'),
 }))
-vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ readyUpTimeout: 40_000 }) }))
+vi.mock('../get', () => ({
+  get: vi.fn().mockResolvedValue({ readyUpTimeout: 40_000, launchMode: 'auto' }),
+}))
 
 import { ObjectId } from 'mongodb'
 import { collections } from '../../database/collections'

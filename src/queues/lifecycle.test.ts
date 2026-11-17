@@ -10,6 +10,7 @@ import { get } from './get'
 import { move } from './move'
 import { remove } from './remove'
 import { queueEngine } from './auto'
+import { captainEngine } from './captain'
 import { QueueState } from '../database/models/queue-state.model'
 
 vi.mock('../database/collections', () => {
@@ -36,6 +37,7 @@ vi.mock('../database/collections', () => {
 vi.mock('../activity-log', () => ({ activityLog: { record: vi.fn() } }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
 vi.mock('./get', () => ({ get: vi.fn() }))
+vi.mock('./captain', () => ({ captainEngine: { reset: vi.fn(), teardown: vi.fn() } }))
 vi.mock('./auto', () => ({
   queueEngine: { kick: vi.fn(), reset: vi.fn(), teardown: vi.fn() },
 }))
@@ -125,6 +127,13 @@ describe('enable()', () => {
       { $set: { enabled: true } },
     )
     expect(queueEngine.reset).toHaveBeenCalledWith(id)
+  })
+
+  it('sets up a captain queue through the captain engine only', async () => {
+    withQueue({ enabled: false, launchMode: 'captain' })
+    await enable(id, actor)
+    expect(captainEngine.reset).toHaveBeenCalledWith(id)
+    expect(queueEngine.reset).not.toHaveBeenCalled()
   })
 
   it('refuses a queue with fewer than 3 maps', async () => {

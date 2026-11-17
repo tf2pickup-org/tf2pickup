@@ -14,6 +14,10 @@ export default fp(
   async () => {
     tasks.register('queue:readyUpTimeout', async ({ queue }) => {
       await queueCommand('ready-up-timeout', async emit => {
+        if ((await get(queue)).launchMode !== 'auto') {
+          return
+        }
+
         if ((await getState(queue)) !== QueueState.ready) {
           return
         }
@@ -38,6 +42,10 @@ export default fp(
 
     tasks.register('queue:unready', async ({ queue }) => {
       await queueCommand('unready-timeout', async emit => {
+        if ((await get(queue)).launchMode !== 'auto') {
+          return
+        }
+
         if ((await getState(queue)) === QueueState.ready) {
           await enterState(queue, QueueState.waiting, emit)
         }

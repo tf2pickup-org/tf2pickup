@@ -8,6 +8,8 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
 import { getState } from '../get-state'
 import { getMapVoteResults } from './get-map-vote-results'
+import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 import type { Emit } from './queue-command'
 
 // must run inside queueCommand()
@@ -16,6 +18,7 @@ export async function kickFromQueue(
   steamIds: SteamId64[],
   emit: Emit,
 ): Promise<QueueSlotModel[]> {
+  assertAutoQueue(await get(queue))
   const state = await getState(queue)
   if (state === QueueState.launching) {
     throw withLogLevel(errors.badRequest('invalid queue state'), 'debug')
