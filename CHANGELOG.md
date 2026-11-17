@@ -1,5 +1,37 @@
 # Changelog
 
+# [5.0.0-alpha.2](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.1...5.0.0-alpha.2) (2026-11-17)
+
+### Bug Fixes
+
+* **admin:** return reply from skill export route so it is sent once ([#975](https://github.com/tf2pickup-org/tf2pickup/issues/975)) ([9810409](https://github.com/tf2pickup-org/tf2pickup/commit/981040907e65755021b6d803393b74ac93ffb479))
+* **chat:** stop logging oobErrorNoTarget when a new chat day starts ([#980](https://github.com/tf2pickup-org/tf2pickup/issues/980)) ([800c77d](https://github.com/tf2pickup-org/tf2pickup/commit/800c77d91431101089c17a214ab31ab0c2e1acfb)), closes [#968](https://github.com/tf2pickup-org/tf2pickup/issues/968)
+* **games:** explain cooldown bans in plain language ([#982](https://github.com/tf2pickup-org/tf2pickup/issues/982)) ([b370cc6](https://github.com/tf2pickup-org/tf2pickup/commit/b370cc62e53166dd237bb011318c41e9780bdfc1)), closes [#18](https://github.com/tf2pickup-org/tf2pickup/issues/18)
+* **games:** keep the connect info hidden once a game ends ([#984](https://github.com/tf2pickup-org/tf2pickup/issues/984)) ([001c88c](https://github.com/tf2pickup-org/tf2pickup/commit/001c88c987dbdccedaa9643020ea85831ea3108f))
+* **games:** let the event list grow to fit its events on mobile ([#974](https://github.com/tf2pickup-org/tf2pickup/issues/974)) ([094f8a8](https://github.com/tf2pickup-org/tf2pickup/commit/094f8a893487b91d451aa48f5c2b79a9bf0abb21))
+* **games:** only push connection status for slots that render it ([#983](https://github.com/tf2pickup-org/tf2pickup/issues/983)) ([788d6b6](https://github.com/tf2pickup-org/tf2pickup/commit/788d6b620aeb5abc7a2624630390feb081a7c6d4))
+* **queue:** add a skip link past the chat and online player list ([#973](https://github.com/tf2pickup-org/tf2pickup/issues/973)) ([02585e1](https://github.com/tf2pickup-org/tf2pickup/commit/02585e14dd928d70342b60a2f7226725efd8355e))
+* **queue:** don't apply a stale queue title after leaving the queue page ([#985](https://github.com/tf2pickup-org/tf2pickup/issues/985)) ([7cdc75c](https://github.com/tf2pickup-org/tf2pickup/commit/7cdc75c15d6bab5e7c4b62b3954070d00dc7650b))
+* **queue:** make the queue engine the sole writer of queue collections ([#989](https://github.com/tf2pickup-org/tf2pickup/issues/989)) ([9b17f93](https://github.com/tf2pickup-org/tf2pickup/commit/9b17f934a1f63234a254d3251dd972fad828143f))
+* **queue:** skip the queue switcher count update when there is no switcher ([#972](https://github.com/tf2pickup-org/tf2pickup/issues/972)) ([f88c6b1](https://github.com/tf2pickup-org/tf2pickup/commit/f88c6b168f8c48545c06edb0eca7eb02e22db0fa))
+* **websocket:** drop page-scoped swaps that race a navigation ([#986](https://github.com/tf2pickup-org/tf2pickup/issues/986)) ([3eb0a83](https://github.com/tf2pickup-org/tf2pickup/commit/3eb0a83e3e700fe3721a24acef343f7e14238048))
+
+### Features
+
+* **auth:** let test auth reset a player's rules acceptance ([#981](https://github.com/tf2pickup-org/tf2pickup/issues/981)) ([b04b629](https://github.com/tf2pickup-org/tf2pickup/commit/b04b629b0914477aa02e587e07fc30a988c537b8))
+* **etf2l:** sync ETF2L.org bans ([#988](https://github.com/tf2pickup-org/tf2pickup/issues/988)) ([64a0d68](https://github.com/tf2pickup-org/tf2pickup/commit/64a0d68d6da63f724e20eb09dc5846a6110475a0))
+
+### Dependencies
+
+* @napi-rs/canvas to v1.1.1 ([1505d6c](https://github.com/tf2pickup-org/tf2pickup/commit/1505d6cc18e0858ce7f7e1f394535511460758a3))
+* discord.js to v14.28.1 ([95fde60](https://github.com/tf2pickup-org/tf2pickup/commit/95fde603d23d13adebdc72ae7f0afb634bedc656))
+* marked to v18.2.0 ([e2be9e9](https://github.com/tf2pickup-org/tf2pickup/commit/e2be9e97e9f3f9b1e8f7e589ebe3f37665b55bb0))
+* mongodb to v7.9.0 ([7fbfdd7](https://github.com/tf2pickup-org/tf2pickup/commit/7fbfdd7751c987d5e1b46a90ed5b27e01b3d9f16))
+* openid to v2.0.19 ([a1b4cc0](https://github.com/tf2pickup-org/tf2pickup/commit/a1b4cc0367dd06e72cb318105bbacaac50c0aa9a))
+* sanitize-html to v2.18.2 ([fea8bd4](https://github.com/tf2pickup-org/tf2pickup/commit/fea8bd4dedc30472c6429527892f54550bf24a92))
+* tailwindcss monorepo to v4.3.5 ([b28589b](https://github.com/tf2pickup-org/tf2pickup/commit/b28589bd772e932760ee8630da3ec996f231a285))
+* ws to v8.22.2 ([a2f93c1](https://github.com/tf2pickup-org/tf2pickup/commit/a2f93c1a0f86e358fa780048d53c58eb78ef6da3))
+
 # [5.0.0-alpha.1](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.0...5.0.0-alpha.1) (2026-11-13)
 
 ### Bug Fixes
