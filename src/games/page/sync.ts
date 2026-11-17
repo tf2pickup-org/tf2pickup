@@ -14,7 +14,6 @@ import { GameScore } from '../views/html/game-score'
 import { GameSlot } from '../views/html/game-slot'
 import { GameStateIndicator } from '../views/html/game-state-indicator'
 import { LogsLink } from '../views/html/logs-link'
-import { PlayerConnectionStatusIndicator } from '../views/html/player-connection-status-indicator'
 import { gamePageUrl } from './game-page-url'
 
 // Brings the clients on a game's page up to date with a change to the game. Each part is keyed, so
@@ -65,12 +64,9 @@ export function sync(gateway: Gateway, before: GameModel, after: GameModel) {
 
   for (const slot of after.slots) {
     const beforeSlot = before.slots.find(({ id }) => id === slot.id)
+    // the whole slot, even for a connection status change, so the newest render of it always wins
     if (before.state !== after.state || slotChanged(beforeSlot, slot)) {
       page.send(actor => GameSlot({ game: after, slot, actor }), { key: `slot-${slot.id}` })
-    } else if (beforeSlot?.connectionStatus !== slot.connectionStatus) {
-      page.send(() => PlayerConnectionStatusIndicator({ game: after, slot }), {
-        key: `slot-${slot.id}-connection`,
-      })
     }
 
     if (
@@ -108,5 +104,9 @@ export function sync(gateway: Gateway, before: GameModel, after: GameModel) {
 }
 
 function slotChanged(before: GameSlotModel | undefined, after: GameSlotModel) {
-  return before?.player !== after.player || before.status !== after.status
+  return (
+    before?.player !== after.player ||
+    before.status !== after.status ||
+    before.connectionStatus !== after.connectionStatus
+  )
 }

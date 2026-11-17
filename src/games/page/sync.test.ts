@@ -132,13 +132,10 @@ describe('gamePage.sync', () => {
     expect(await received(elsewhere)).toEqual([])
   })
 
-  it.each([
-    ['an active slot in a live game', GameState.started, SlotStatus.active, true],
-    ['a slot waiting for a substitute', GameState.started, SlotStatus.waitingForSubstitute, false],
-    ['an active slot in an ended game', GameState.ended, SlotStatus.active, false],
-  ])('shows a connection status change for %s', async (_, state, status, shown) => {
-    const viewer = connect('/games/10')
-    const before = withSlot(game({ state }), 0, { status })
+  it('re-renders the whole slot and its connect info on a connection status change', async () => {
+    const aliceViewer = connect('/games/10', alice)
+    const bobViewer = connect('/games/10', bob)
+    const before = game()
 
     gamePage.sync(
       gateway,
@@ -146,7 +143,8 @@ describe('gamePage.sync', () => {
       withSlot(before, 0, { connectionStatus: PlayerConnectionStatus.connected }),
     )
 
-    expect((await received(viewer)).includes(`player-${alice}-connection-status`)).toBe(shown)
+    expect(await received(aliceViewer)).toEqual(['game-slot-blu-soldier-0', 'connect-info'])
+    expect(await received(bobViewer)).toEqual(['game-slot-blu-soldier-0'])
   })
 
   it('re-renders the connect info for the player whose slot changed only', async () => {
