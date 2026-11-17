@@ -10,7 +10,7 @@ import { Tf2Team } from '../../../shared/types/tf2-team'
 import { Gamemode } from '../../../shared/types/gamemode'
 import { PlayerRole } from '../../../database/models/player.model'
 import { collections } from '../../../database/collections'
-import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { deletedUserSteamId, type SteamId64 } from '../../../shared/types/steam-id-64'
 
 vi.mock('../../../database/collections', () => ({
   collections: {
@@ -69,6 +69,22 @@ describe('GameSlot', () => {
 
     it('does not crown a substitute of a captain', async () => {
       const root = await render({ launchMode: 'captain', captains }, { player: otherId })
+      expect(root.querySelector('.icon-tabler-crown')).toBeNull()
+    })
+
+    it('does not crown deleted users when a deleted captain shares their sentinel id', async () => {
+      const root = parse(
+        await GameSlot({
+          game: {
+            ...baseGame,
+            launchMode: 'captain',
+            captains: { ...captains, red: deletedUserSteamId },
+          },
+          slot: { ...baseSlot, player: deletedUserSteamId },
+          actor: undefined,
+        }),
+      )
+      expect(root.querySelector('[aria-label="deleted user\'s slot"]')).not.toBeNull()
       expect(root.querySelector('.icon-tabler-crown')).toBeNull()
     })
 
