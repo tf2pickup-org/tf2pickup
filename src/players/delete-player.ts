@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import type { GameEventModel } from '../database/models/game-event.model'
 import { PlayerRole } from '../database/models/player.model'
 import { errors } from '../errors'
+import { queueEngine } from '../queues/auto'
 import { deletedUserSteamId, type SteamId64 } from '../shared/types/steam-id-64'
 import { forPlayer } from './mutex'
 
@@ -12,15 +13,13 @@ import { forPlayer } from './mutex'
 // replaced with a sentinel so it renders as "deleted user". Player action logs
 // intentionally keep the real steam id for auditing.
 export async function deletePlayer(steamId: SteamId64): Promise<void> {
-  await forPlayer(steamId).runExclusive(async () => {
-    const player = await collections.players.findOne({ steamId }, { projection: { roles: 1 } })
-    if (!player) {
-      throw errors.notFound(`Player with steamId ${steamId} does not exist`)
-    }
-    if (player.roles.includes(PlayerRole.superUser)) {
-      throw errors.forbidden('Super-users cannot be deleted')
-    }
+  await assertDeletable(steamId)
+  // outside forPlayer(): kicking cancels pre-ready, which updates the player under that lock
+  await queueEngine.removePlayer(steamId)
 
+  await forPlayer(steamId).runExclusive(async () => {
+    // the player may have been promoted while we were removing them from the queue
+    await assertDeletable(steamId)
     await anonymizeGames(steamId)
 
     await collections.chatMessages.updateMany(
@@ -38,18 +37,21 @@ export async function deletePlayer(steamId: SteamId64): Promise<void> {
       { $set: { actor: deletedUserSteamId } },
     )
 
-    // Remove any live presence so dangling references don't break queue/online views.
+    // Remove any live presence so dangling references don't break online views.
     await collections.onlinePlayers.deleteMany({ steamId })
-    await collections.queueSlots.updateMany(
-      { 'player.steamId': steamId },
-      { $set: { player: null, ready: false } },
-    )
-    await collections.queueFriends.deleteMany({
-      $or: [{ source: steamId }, { target: steamId }],
-    })
 
     await collections.players.deleteOne({ steamId })
   })
+}
+
+async function assertDeletable(steamId: SteamId64): Promise<void> {
+  const player = await collections.players.findOne({ steamId }, { projection: { roles: 1 } })
+  if (!player) {
+    throw errors.notFound(`Player with steamId ${steamId} does not exist`)
+  }
+  if (player.roles.includes(PlayerRole.superUser)) {
+    throw errors.forbidden('Super-users cannot be deleted')
+  }
 }
 
 async function anonymizeGames(steamId: SteamId64): Promise<void> {
