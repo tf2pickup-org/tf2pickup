@@ -11,7 +11,7 @@ import { captainRoles } from './captain-roles'
 import { currentTurn } from './current-turn'
 import { getDraftPosition } from './get-draft-position'
 import { legalPicks } from './legal-picks'
-import { draftTurnCount } from './metrics'
+import { draftDecisionCount } from './metrics'
 import type { DraftPick } from './types/draft-pick'
 
 // Applies a pick to the draft held in memory; settleDraft() persists it.
@@ -21,7 +21,7 @@ export function applyPick(
   how: CaptainDraftModel['picks'][number]['how'],
 ) {
   draft.picks.push({ ...pick, at: new Date(), how })
-  draftTurnCount.add(1, {
+  draftDecisionCount.add(1, {
     phase: 'pick',
     how: how === 'timedOut' ? 'timed_out' : how,
   })

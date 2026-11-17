@@ -51,7 +51,7 @@ vi.mock('../../tasks', () => ({
 }))
 vi.mock('./metrics', () => ({
   draftPoolSize: { record: vi.fn() },
-  draftTurnCount: { add: vi.fn() },
+  draftDecisionCount: { add: vi.fn() },
 }))
 vi.mock('../get', () => ({ get: vi.fn() }))
 vi.mock('../get-state', () => ({ getState: vi.fn(() => Promise.resolve(store.state)) }))

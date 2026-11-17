@@ -8,6 +8,7 @@ import { Tf2Team } from '../../shared/types/tf2-team'
 import type { Emit } from '../auto/queue-command'
 import { captainRoles } from './captain-roles'
 import { chooseCaptainPair } from './choose-captain-pair'
+import { legalPicksCache } from './legal-picks-cache'
 import { draftPoolSize } from './metrics'
 import { newDraftToken, settleDraft } from './settle-draft'
 
@@ -40,6 +41,7 @@ export async function startDraft(
     mapOptions: [],
     bans: [],
   }
+  legalPicksCache.delete(queue._id.toHexString())
   await collections.captainDrafts.deleteMany({ queue: queue._id })
   await collections.captainDrafts.insertOne(draft)
   draftPoolSize.record(locked.length)

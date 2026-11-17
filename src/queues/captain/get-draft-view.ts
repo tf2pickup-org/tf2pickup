@@ -6,7 +6,7 @@ import { captainRoles } from './captain-roles'
 import { currentTurn } from './current-turn'
 import { finalCaptainRoles } from './final-captain-roles'
 import { getDraftPosition } from './get-draft-position'
-import { legalPicks } from './legal-picks'
+import { cachedLegalPicks } from './cached-legal-picks'
 import type { DraftView } from './types/draft-view'
 
 export function getDraftView(
@@ -23,7 +23,7 @@ export function getDraftView(
     draft,
     members: position.pool as CaptainPoolModel[],
     turn,
-    legal: turn ? legalPicks(position) : [],
+    legal: turn ? cachedLegalPicks(draft, position) : [],
     finalRoles: turn ? [] : (finalCaptainRoles(position) ?? []),
   }
 }

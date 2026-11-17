@@ -5,7 +5,7 @@ export const draftPoolSize = meter.createHistogram('tf2pickup.captains.draft.poo
   unit: '{players}',
 })
 
-export const draftTurnCount = meter.createCounter('tf2pickup.captains.draft.turn.count', {
-  description: 'Captain draft turns by phase and how they were decided',
+export const draftDecisionCount = meter.createCounter('tf2pickup.captains.draft.decision.count', {
+  description: 'Captain draft decisions (picks and bans) by phase and how they were made',
   unit: '1',
 })

@@ -96,7 +96,7 @@ test.describe('captain draft @multi-queue', () => {
 
     await red.locator('#captain-draft button').first().click()
     await expect(other.locator('#captain-draft-status')).toContainText('Your pick — pick 2 & 3')
-    await expect(pages[5]!.locator('#captain-draft-board')).toContainText('Pick 2')
+    await expect(pages[5]!.locator('#captain-draft-board [aria-label="Pick 2"]')).toBeVisible()
     await expect(red.locator('#captain-draft button')).toHaveCount(0)
     expect(await autoSnapshot(page)).toEqual(autoBefore)
   })
