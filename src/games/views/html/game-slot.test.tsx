@@ -47,6 +47,8 @@ const baseGame = {
 
 describe('GameSlot', () => {
   describe('captain crown', () => {
+    const otherId = '76561198000000003' as SteamId64
+    const captains = { red: playerSteamId, blu: actorSteamId }
     const render = async (game: Partial<GameModel>, slot: Partial<typeof baseSlot>) => {
       vi.mocked(collections.players.findOne).mockResolvedValueOnce(slotPlayer)
       const html = await GameSlot({
@@ -57,19 +59,19 @@ describe('GameSlot', () => {
       return parse(html)
     }
 
-    it('crowns a captain in a captain game', async () => {
-      const root = await render({ launchMode: 'captain' }, { captain: true } as never)
+    it('crowns a drafted captain', async () => {
+      const root = await render({ captains }, {})
       expect(root.querySelector('[aria-label="Captain"] .icon-tabler-crown')).not.toBeNull()
       expect(root.querySelector('.player-link > .player-name + [title="Captain"]')).not.toBeNull()
     })
 
-    it('does not crown a non-captain in a captain game', async () => {
-      const root = await render({ launchMode: 'captain' }, {})
+    it('does not crown a substitute of a captain', async () => {
+      const root = await render({ captains }, { player: otherId })
       expect(root.querySelector('.icon-tabler-crown')).toBeNull()
     })
 
     it('does not crown anyone in an auto game', async () => {
-      const root = await render({}, { captain: true } as never)
+      const root = await render({}, {})
       expect(root.querySelector('.icon-tabler-crown')).toBeNull()
     })
   })
