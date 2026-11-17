@@ -92,7 +92,8 @@ async function GameSlotContent(props: {
               {props.player.name}
             </span>
 
-            {props.game.captains &&
+            {props.game.launchMode === 'captain' &&
+            props.game.captains &&
             [props.game.captains.red, props.game.captains.blu].includes(props.slot.player) ? (
               <span class="shrink-0 self-center text-zinc-200" aria-label="Captain" title="Captain">
                 <IconCrown size={16} />

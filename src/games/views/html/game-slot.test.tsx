@@ -60,18 +60,18 @@ describe('GameSlot', () => {
     }
 
     it('crowns a drafted captain', async () => {
-      const root = await render({ captains }, {})
+      const root = await render({ launchMode: 'captain', captains }, {})
       expect(root.querySelector('[aria-label="Captain"] .icon-tabler-crown')).not.toBeNull()
       expect(root.querySelector('.player-link > .player-name + [title="Captain"]')).not.toBeNull()
     })
 
     it('does not crown a substitute of a captain', async () => {
-      const root = await render({ captains }, { player: otherId })
+      const root = await render({ launchMode: 'captain', captains }, { player: otherId })
       expect(root.querySelector('.icon-tabler-crown')).toBeNull()
     })
 
     it('does not crown anyone in an auto game', async () => {
-      const root = await render({}, {})
+      const root = await render({ captains }, {})
       expect(root.querySelector('.icon-tabler-crown')).toBeNull()
     })
   })
