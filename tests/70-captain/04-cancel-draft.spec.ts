@@ -21,11 +21,14 @@ async function startDraft(users: UserManager, slug: string): Promise<Page[]> {
   await Promise.all(pages.map(page => page.goto(`/q/${slug}`)))
   for (const [index, page] of pages.entries()) {
     await page.locator(`[data-role="${roles[index % roles.length]!}"] input`).check()
-    const preReady = page.getByRole('button', { name: 'Pre-ready up' })
-    await expect(preReady).toBeEnabled()
-    if ((await preReady.getAttribute('aria-pressed')) !== 'true') {
-      await preReady.click()
-      await expect(preReady).toHaveAttribute('aria-pressed', 'true')
+    // the last sign-up fills the pool, readies its player and starts the draft: no button is left
+    if (index < pages.length - 1) {
+      const preReady = page.getByRole('button', { name: 'Pre-ready up' })
+      await expect(preReady).toBeEnabled()
+      if ((await preReady.getAttribute('aria-pressed')) !== 'true') {
+        await preReady.click()
+        await expect(preReady).toHaveAttribute('aria-pressed', 'true')
+      }
     }
     if (index < 2) {
       await page.getByLabel('Volunteer as captain').check()
@@ -158,7 +161,9 @@ test.describe('cancelling a captain draft @multi-queue', () => {
       .poll(
         async () => {
           for (const captain of pages.slice(0, 2)) {
-            const row = captain.locator('#captain-draft button[data-pick-button]').first()
+            const row = captain
+              .locator('#captain-draft button[data-pick-button][data-draft-player]')
+              .first()
             if (await row.isVisible()) {
               await row.click().catch(() => undefined)
             }
