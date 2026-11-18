@@ -30,6 +30,7 @@ test('map bans launch the drafted teams, show crowns, and rate captain ladders o
   let gameNumber: number | undefined
   const admin = await users.getAdmin().adminPage()
   try {
+    await gameServer.sendHeartbeat()
     const { slug } = await queues.create({
       template: 'auto-6v6',
       launchMode: 'captain',
