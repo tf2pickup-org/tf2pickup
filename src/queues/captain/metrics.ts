@@ -13,10 +13,6 @@ export const captainDraftMetrics = {
     description: 'Players in a captain draft pool when it starts',
     unit: '{players}',
   }),
-  aborted: meter.createCounter('tf2pickup.captains.draft.aborted', {
-    description: 'Captain drafts that ended without a game, by reason',
-    unit: '1',
-  }),
   decisions: meter.createCounter('tf2pickup.captains.draft.decision.count', {
     description: 'Captain draft decisions (picks and bans) by phase and how they were made',
     unit: '1',

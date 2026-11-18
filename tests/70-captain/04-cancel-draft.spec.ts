@@ -124,4 +124,61 @@ test.describe('cancelling a captain draft @multi-queue', () => {
     await expect(pages[5]!.locator('#captain-draft')).toHaveAttribute('data-active')
     await expect(pages[0]!.getByText('Cancelled a captain draft')).toHaveCount(0)
   })
+
+  test('a captain can also cancel while the maps are being banned', async ({
+    queues,
+    users,
+    page,
+  }) => {
+    const { slug } = await queues.create({
+      template: 'auto-6v6',
+      launchMode: 'captain',
+      enable: true,
+    })
+    const admin = await users.getAdmin().page()
+    await admin.request.post(`/admin/queues/${slug}`, {
+      form: {
+        name: slug,
+        readyUpTimeout: '40',
+        readyStateTimeout: '60',
+        pickTimeout: '60',
+        mapCooldown: '2',
+      },
+    })
+    const members = [...users].slice(0, 12)
+    const cooldowns = await users.getAdmin().adminPage()
+    for (const member of members.slice(0, 2)) {
+      await cooldowns.setPlayerCooldown(member.steamId, 0)
+    }
+    const pages = await startDraft(users, slug)
+    await expect.poll(() => state(page, slug)).toBe('drafting')
+
+    // the captains pick for themselves until the picks are done
+    await expect
+      .poll(
+        async () => {
+          for (const captain of pages.slice(0, 2)) {
+            const row = captain.locator('#captain-draft button[data-pick-button]').first()
+            if (await row.isVisible()) {
+              await row.click().catch(() => undefined)
+            }
+          }
+          return await state(page, slug)
+        },
+        { timeout: minutesToMilliseconds(1) },
+      )
+      .toBe('banningMaps')
+
+    pages[0]!.once('dialog', dialog => void dialog.accept())
+    await pages[0]!.getByRole('button', { name: 'Cancel draft' }).click()
+    await expect.poll(() => state(page, slug)).toBe('waiting')
+    await expect(pages[5]!.locator('#captain-draft')).not.toHaveAttribute('data-active')
+    await expect(pages[5]!.getByText('Players 11/12')).toBeVisible()
+    await expect(pages[5]!.getByText(/Draft cancelled by/)).toBeVisible()
+
+    for (const member of members.slice(0, 2)) {
+      await cooldowns.setPlayerCooldown(member.steamId, 0)
+      await cooldowns.revokeAllBans(member.steamId)
+    }
+  })
 })

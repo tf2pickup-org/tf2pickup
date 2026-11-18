@@ -1,3 +1,4 @@
+import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
@@ -44,6 +45,9 @@ export async function cancelDraft(queue: QueueId, actor: SteamId64) {
     await enterState(settings, QueueState.waiting, emit)
     emit('queue/captainPool:left', { queue, player: actor })
     captainDraftMetrics.aborted.add(1, { reason: 'cancelled' })
+    captainDraftMetrics.duration.record(
+      Math.max(0, Date.now() - draft.startedAt.getTime()) / secondsToMilliseconds(1),
+    )
     logger.info({ queue, steamId: actor }, 'captain draft cancelled')
     emit('queue/captainDraft:cancelled', {
       queue,

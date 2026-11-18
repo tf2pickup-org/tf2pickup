@@ -2,10 +2,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const state = vi.hoisted(() => ({
   queueState: 'drafting' as string,
-  draft: { red: '76561198000000001', blu: '76561198000000002' } as unknown,
+  draft: {
+    red: '76561198000000001',
+    blu: '76561198000000002',
+    startedAt: new Date(Date.now() - 20_000),
+  } as unknown,
 }))
 const log = vi.hoisted(() => ({ info: vi.fn() }))
 const metric = vi.hoisted(() => ({ add: vi.fn() }))
+const duration = vi.hoisted(() => ({ record: vi.fn() }))
 
 vi.mock('../../database/collections', () => ({
   collections: {
@@ -24,7 +29,7 @@ vi.mock('../../database/collections', () => ({
 vi.mock('../../logger', () => ({ logger: log }))
 vi.mock('../../pre-ready', () => ({ preReady: { cancel: vi.fn() } }))
 vi.mock('../../games/apply-escalating-cooldown', () => ({ applyEscalatingCooldown: vi.fn() }))
-vi.mock('./metrics', () => ({ captainDraftMetrics: { aborted: metric } }))
+vi.mock('./metrics', () => ({ captainDraftMetrics: { aborted: metric, duration } }))
 vi.mock('./enter-state', () => ({ enterState: vi.fn() }))
 vi.mock('./advance', () => ({ advance: vi.fn() }))
 vi.mock('./cancel-draft-timeouts', () => ({ cancelDraftTimeouts: vi.fn() }))
@@ -35,6 +40,7 @@ vi.mock('../auto/queue-command', () => ({
 
 const emit = vi.fn()
 
+import { secondsToMilliseconds } from 'date-fns'
 import { ObjectId } from 'mongodb'
 import { collections } from '../../database/collections'
 import type { QueueId, QueueModel } from '../../database/models/queue.model'
@@ -56,7 +62,7 @@ const settings = { _id: queue, launchMode: 'captain' } as QueueModel
 beforeEach(() => {
   vi.clearAllMocks()
   state.queueState = 'drafting'
-  state.draft = { red, blu }
+  state.draft = { red, blu, startedAt: new Date(Date.now() - secondsToMilliseconds(20)) }
   vi.mocked(get).mockResolvedValue(settings)
 })
 
@@ -86,6 +92,9 @@ describe('cancelDraft()', () => {
       })
       expect(applyEscalatingCooldown).toHaveBeenCalledWith(red, 'Cancelled a captain draft')
       expect(metric.add).toHaveBeenCalledWith(1, { reason: 'cancelled' })
+      const [seconds] = duration.record.mock.calls[0]!
+      expect(seconds).toBeGreaterThanOrEqual(20)
+      expect(seconds).toBeLessThan(25)
       expect(log.info).toHaveBeenCalledWith({ queue, steamId: red }, 'captain draft cancelled')
     },
   )
