@@ -191,8 +191,8 @@ importers:
         specifier: 6.0.6
         version: 6.0.6
       '@fastify/formbody':
-        specifier: 9.0.1
-        version: 9.0.1
+        specifier: 9.0.2
+        version: 9.0.2
       '@fastify/helmet':
         specifier: 13.2.0
         version: 13.2.0
@@ -821,8 +821,8 @@ packages:
   '@fastify/flash@6.0.6':
     resolution: {integrity: sha512-U5XULQoE9x8MZ9gmgn3FpuE23kfrsz8rJVLREjwbux6JfRV05kdoac01yC12grUBbNRPAE4a2Tl5oKvzH8Pq9w==}
 
-  '@fastify/formbody@9.0.1':
-    resolution: {integrity: sha512-QaUet4NQavwnl6iPYMaf5hJC2N7kRPOmC58RhDiFThfg7Hcc8X2LdpcEfmaOEBimq5z7yZLy1e1q+PIv3o3tFQ==}
+  '@fastify/formbody@9.0.2':
+    resolution: {integrity: sha512-VJdbcbFlsp7xTAY5/Qrc8SZPyuke0YymWCe11INALPTQfRh2+0y1lnaosJwWIN7GtFfcBa+RBo4VnhxjW2kDNQ==}
 
   '@fastify/forwarded@3.0.1':
     resolution: {integrity: sha512-JqDochHFqXs3C3Ml3gOY58zM7OqO9ENqPo0UqAjAjH8L01fRZqwX9iLeX34//kiJubF7r2ZQHtBRU36vONbLlw==}
@@ -4686,7 +4686,7 @@ snapshots:
     dependencies:
       fastify-plugin: 6.0.1
 
-  '@fastify/formbody@9.0.1':
+  '@fastify/formbody@9.0.2':
     dependencies:
       fast-querystring: 1.1.2
       fastify-plugin: 6.0.1
