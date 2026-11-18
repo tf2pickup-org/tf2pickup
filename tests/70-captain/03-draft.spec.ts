@@ -1,6 +1,7 @@
-import type { Page } from '@playwright/test'
+import { mergeTests, type Page } from '@playwright/test'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
 import { expect, queues } from '../fixtures/queues'
+import { simulateGameServer } from '../fixtures/simulate-game-server'
 import { defaultQueueSlug } from '../queue-slots'
 import type { UserManager } from '../user-manager'
 
@@ -12,7 +13,7 @@ const roles = [
   'demoman:demoman',
   'medic:medic',
 ]
-const test = queues
+const test = mergeTests(queues, simulateGameServer)
 
 async function configure(users: UserManager, slug: string, pickTimeout: number) {
   const admin = await users.getAdmin().page()
@@ -105,7 +106,9 @@ test.describe('captain draft @multi-queue', () => {
     queues,
     users,
     page,
+    gameServer,
   }) => {
+    await gameServer.sendHeartbeat()
     const { slug } = await queues.create({
       template: 'auto-6v6',
       launchMode: 'captain',
@@ -113,14 +116,60 @@ test.describe('captain draft @multi-queue', () => {
     })
     await configure(users, slug, 1)
     const before = await autoSnapshot(page)
-    const pages = await startDraft(users, slug)
+    const members = [...users].slice(0, 12)
+    let gameNumber: number | undefined
+    const activeGame = async (steamId: string) => {
+      const player = (await (await page.request.get(`/api/v1/players/${steamId}`)).json()) as {
+        activeGame: number | null
+      }
+      return player.activeGame
+    }
+    try {
+      const pages = await startDraft(users, slug)
+      await expect
+        .poll(async () => (await dto(page, slug)).state, { timeout: secondsToMilliseconds(60) })
+        .toBe('banningMaps')
+      await expect(pages[5]!.locator('#captain-draft-status')).toContainText(
+        /\((BLU|RED)\) bans map [12]/,
+      )
+      await expect(pages[5]!.locator('#captain-draft-board [aria-label^="Pick "]')).toHaveCount(0)
+      expect(await autoSnapshot(page)).toEqual(before)
 
-    await expect
-      .poll(async () => (await dto(page, slug)).state, { timeout: secondsToMilliseconds(60) })
-      .toBe('banningMaps')
-    await expect(pages[5]!.locator('#captain-draft-status')).toContainText('map bans')
-    await expect(pages[5]!.locator('#captain-draft-board [aria-label^="Pick "]')).toHaveCount(0)
-    expect(await autoSnapshot(page)).toEqual(before)
+      // The same one-second timer now bans the maps and launches a real game.
+      await expect(pages[0]!).toHaveURL(/\/games\/\d+/)
+      gameNumber = Number(/games\/(\d+)/.exec(pages[0]!.url())![1])
+    } finally {
+      // Also clean up if an assertion failed after the game was created but before its redirect.
+      gameNumber ??= (await activeGame(members[0]!.steamId)) ?? undefined
+      if (
+        gameNumber === undefined &&
+        ['drafting', 'banningMaps', 'launching'].includes((await dto(page, slug)).state)
+      ) {
+        await expect
+          .poll(
+            async () => {
+              gameNumber = (await activeGame(members[0]!.steamId)) ?? undefined
+              return gameNumber
+            },
+            { timeout: secondsToMilliseconds(30) },
+          )
+          .toEqual(expect.any(Number))
+      }
+      if (gameNumber !== undefined) {
+        const gamePage = await users.getAdmin().gamePage(gameNumber)
+        if (await gamePage.isLive()) await gamePage.forceEnd()
+        await expect
+          .poll(() => gameServer.logAddresses.size, { timeout: secondsToMilliseconds(40) })
+          .toBe(0)
+        const admin = await users.getAdmin().adminPage()
+        await admin.freeStaticGameServer()
+        await expect
+          .poll(async () => await Promise.all(members.map(member => activeGame(member.steamId))), {
+            timeout: secondsToMilliseconds(40),
+          })
+          .toEqual(members.map(() => null))
+      }
+    }
   })
 
   test('sign-up for the next game stays open during a draft', async ({ queues, users }) => {
