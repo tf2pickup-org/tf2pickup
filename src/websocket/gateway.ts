@@ -22,6 +22,7 @@ export interface ClientToServerEvents {
   'queue:markasfriend': (steamId: SteamId64 | null) => void
   'queue:togglerole': (role: string) => void
   'queue:togglevolunteer': () => void
+  'queue:banmap': (map: string) => void
   'queue:pick': (player: SteamId64, role: string) => void
   'queue:togglepreready': () => void
   'queue:audiostatus': (audioReady: boolean) => void
@@ -79,6 +80,8 @@ const pick = z.object({
   HEADERS: htmxHeaders,
 })
 
+const banMap = z.object({ banmap: z.string().min(1), HEADERS: htmxHeaders })
+
 const preReadyToggle = z.object({
   prereadytoggle: z.string(),
   HEADERS: htmxHeaders,
@@ -104,6 +107,7 @@ const clientMessage = z.union([
   toggleRole,
   toggleVolunteer,
   pick,
+  banMap,
   preReadyToggle,
   navigated,
   audioStatus,
@@ -327,6 +331,8 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:togglerole', socket, parsed.togglerole)
       } else if ('togglevolunteer' in parsed) {
         this.emit('queue:togglevolunteer', socket)
+      } else if ('banmap' in parsed) {
+        this.emit('queue:banmap', socket, parsed.banmap)
       } else if ('pickplayer' in parsed) {
         this.emit('queue:pick', socket, parsed.pickplayer, parsed.pickrole)
       } else if ('prereadytoggle' in parsed) {

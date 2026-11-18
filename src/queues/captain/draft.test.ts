@@ -46,6 +46,7 @@ vi.mock('../../database/collections', () => ({
     },
   },
 }))
+vi.mock('../../pre-ready', () => ({ preReady: { cancel: vi.fn() } }))
 vi.mock('../../logger', () => ({ logger: log }))
 vi.mock('../../tasks', () => ({
   tasks: {
@@ -79,6 +80,9 @@ import { tasks } from '../../tasks'
 import { get } from '../get'
 import { getState } from '../get-state'
 import { captainRoles } from './captain-roles'
+import { banMap } from './ban-map'
+import { buildLaunchSnapshot } from './build-launch-snapshot'
+import type { CaptainDraftModel } from '../../database/models/captain-draft.model'
 import { pick } from './pick'
 import { roleKey } from './role-key'
 import { startDraft } from './start-draft'
@@ -90,6 +94,7 @@ const settings = {
   launchMode: 'captain',
   gamemode: Gamemode.sixes,
   pickTimeout: secondsToMilliseconds(10),
+  maps: [{ name: 'cp_a' }, { name: 'cp_b' }, { name: 'cp_c' }],
 } as QueueModel
 const roles = captainRoles(Gamemode.sixes).map(roleKey)
 
@@ -299,5 +304,90 @@ describe('turnTimeout()', () => {
     await turnTimeout(queueId, token, 3)
     await turnTimeout(queueId, 'another-draft', 0)
     expect(draft().picks).toEqual([])
+  })
+})
+
+describe('map bans after drafting', () => {
+  beforeEach(async () => {
+    await startDraft(settings, pool(), emit)
+    for (let i = 0; i < 20 && store.state === 'drafting'; i++) {
+      await turnTimeout(queueId, draft().token, draft().turn)
+    }
+    emit.mockClear()
+  })
+
+  it('lets BLU ban first, then RED, and launches the exact drafted teams with the survivor', async () => {
+    const { red, blu } = draft()
+    expect(store.scheduled[0]?.args).toEqual(expect.objectContaining({ phase: 'ban', turn: 0 }))
+    await expect(banMap(queueId, red, 'cp_a')).rejects.toThrow('not your ban')
+    await expect(banMap(queueId, pool()[5]!.player.steamId, 'cp_a')).rejects.toThrow('not your ban')
+    await expect(banMap(queueId, blu, 'cp_unknown')).rejects.toThrow()
+    await banMap(queueId, blu, 'cp_a')
+    expect(store.state).toBe('banningMaps')
+    await expect(banMap(queueId, red, 'cp_a')).rejects.toThrow()
+    await banMap(queueId, red, 'cp_b')
+    expect(store.state).toBe('launching')
+    expect(store.scheduled).toEqual([])
+    const snapshot = buildLaunchSnapshot(
+      settings,
+      store.draft as unknown as CaptainDraftModel,
+      store.members as CaptainPoolModel[],
+    )
+    expect(snapshot.map).toBe('cp_c')
+    expect(snapshot.captains).toEqual({ red, blu })
+    expect(snapshot.slots).toHaveLength(12)
+    expect(new Set(snapshot.slots.map(slot => slot.player)).size).toBe(12)
+    for (const pick of draft().picks) {
+      expect(snapshot.slots).toContainEqual(
+        expect.objectContaining({
+          player: pick.player,
+          team: pick.team,
+          gameClass: pick.role.split(':')[0],
+        }),
+      )
+    }
+    expect(snapshot.slots.every(slot => !('skill' in slot))).toBe(true)
+    expect(emit).toHaveBeenCalledWith('queue/captain:launching', snapshot)
+    expect(metrics.decisions.add).toHaveBeenCalledWith(1, { phase: 'ban', how: 'chosen' })
+  })
+
+  it('ignores stale pick-phase timers and times out one random remaining map per ban', async () => {
+    const { token } = draft()
+    await turnTimeout(queueId, token, 0)
+    await turnTimeout(queueId, 'stale', 0, 'ban')
+    expect(draft().turn).toBe(0)
+    expect(store.state).toBe('banningMaps')
+    await turnTimeout(queueId, token, 0, 'ban')
+    expect(draft().turn).toBe(1)
+    await turnTimeout(queueId, token, 0, 'ban')
+    expect(draft().turn).toBe(1)
+    await turnTimeout(queueId, token, 1, 'ban')
+    expect(store.state).toBe('launching')
+    expect(metrics.decisions.add).toHaveBeenCalledWith(1, { phase: 'ban', how: 'timed_out' })
+    const bans = store.draft!['bans'] as { map: string }[]
+    expect(new Set(bans.map(ban => ban.map)).size).toBe(2)
+  })
+})
+
+describe('few eligible maps', () => {
+  it.each([1, 2])('needs only options minus one bans for %i eligible maps', async count => {
+    const queue = {
+      ...settings,
+      maps: [...settings.maps.slice(0, count), { name: 'cp_cooling', cooldown: 2 }],
+    }
+    vi.mocked(get).mockResolvedValue(queue)
+    await startDraft(queue, pool(), emit)
+    for (let i = 0; i < 20 && store.state === 'drafting'; i++)
+      await turnTimeout(queueId, draft().token, draft().turn)
+    if (count === 1) expect(store.state).toBe('launching')
+    else {
+      expect(store.state).toBe('banningMaps')
+      await turnTimeout(queueId, draft().token, 0, 'ban')
+      expect(store.state).toBe('launching')
+    }
+    const saved = store.draft as unknown as CaptainDraftModel
+    expect(saved.mapOptions).toHaveLength(count)
+    expect(saved.bans).toHaveLength(count - 1)
+    expect(saved.mapOptions).not.toContain('cp_cooling')
   })
 })

@@ -21,6 +21,7 @@ import type { WithId } from 'mongodb'
 import type { User } from '@tf2pickup-org/mumble-client'
 import type { QueueId } from './database/models/queue.model'
 import type { LaunchSnapshot } from './queues/types/launch-snapshot'
+import type { CaptainLaunchSnapshot } from './queues/captain/types/captain-launch-snapshot'
 
 export interface Events {
   'chat:messageDeleted': {
@@ -210,6 +211,9 @@ export interface Events {
   }
 
   'queue:launching': LaunchSnapshot
+  'queue/captain:launching': CaptainLaunchSnapshot
+  'queue/captainGame:created': { game: GameModel }
+  'queue/captainDraft:failed': { queue: QueueId; message: string }
   'queue:playerKicked': {
     player: SteamId64
   }
@@ -243,6 +247,7 @@ export interface Events {
     queue: QueueId
   }
   'queue/captainDraft:turn': {
+    phase?: 'pick' | 'ban'
     queue: QueueId
     captain: SteamId64
     picks: number[]

@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
 import type { CaptainPoolModel } from '../../../../database/models/captain-pool.model'
@@ -12,6 +12,8 @@ import { getDraftView } from '../../get-draft-view'
 import { roleKey } from '../../role-key'
 import type { PoolView } from '../../types/pool-view'
 import { CaptainDraft } from './captain-draft'
+
+vi.mock('../../../../html/components/map-thumbnail', () => ({ MapThumbnail: () => <div></div> }))
 
 const queue = { gamemode: Gamemode.sixes }
 const roles = captainRoles(Gamemode.sixes)
@@ -94,7 +96,7 @@ describe('CaptainDraft', () => {
 
   it('stops offering picks once the maps are being banned', () => {
     const view = poolView(QueueState.banningMaps)
-    expect(String(CaptainDraft.status({ queue, view, viewer: id(0) }))).toContain('map bans')
+    expect(String(CaptainDraft.status({ queue, view, viewer: id(0) }))).toContain('bans map 1')
   })
 
   it('disables its pick buttons while the socket is down', () => {

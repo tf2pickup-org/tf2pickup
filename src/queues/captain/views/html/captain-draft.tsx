@@ -12,6 +12,8 @@ import { roleLabel } from '../../role-label'
 import type { CaptainRole } from '../../types/captain-role'
 import type { DraftView } from '../../types/draft-view'
 import type { PoolView } from '../../types/pool-view'
+import { banTurn } from '../../ban-turn'
+import { CaptainMapBans } from './captain-map-bans'
 import { PhaseTimer } from './phase-timer'
 
 type Queue = Pick<QueueModel, 'gamemode'>
@@ -44,7 +46,13 @@ export function CaptainDraft(props: DraftProps) {
         <>
           <CaptainDraftStatus {...props} />
           <CaptainDraftBoard {...props} />
-          <div class="grid grid-cols-2 gap-4 max-lg:order-2 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+          <CaptainMapBans view={props.view} viewer={props.viewer} />
+          <div
+            class={[
+              'grid grid-cols-2 gap-4 max-lg:order-2 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]',
+              props.view.state !== QueueState.drafting && 'hidden',
+            ]}
+          >
             {roles.map(role => (
               <CaptainDraftRoleColumn {...props} role={role} />
             ))}
@@ -79,7 +87,13 @@ function CaptainDraftSkeleton(props: DraftProps) {
         <>
           <div id="captain-draft-status"></div>
           <div id="captain-draft-board"></div>
-          <div class="grid grid-cols-2 gap-4 max-lg:order-2 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+          <div id="captain-map-bans"></div>
+          <div
+            class={[
+              'grid grid-cols-2 gap-4 max-lg:order-2 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]',
+              props.view.state !== QueueState.drafting && 'hidden',
+            ]}
+          >
             {roles.map(role => (
               <div id={columnId(role)}></div>
             ))}
@@ -95,9 +109,22 @@ function CaptainDraftSkeleton(props: DraftProps) {
 function CaptainDraftStatus(props: DraftProps) {
   const { draft, turn } = props.view.draft!
   if (!turn) {
+    const ban = banTurn(draft)
+    const text =
+      props.view.state === QueueState.launching
+        ? 'Game is launching'
+        : `${nameOf(props.view.draft!, draft[ban.team])} (${teamName[ban.team]}) bans map ${ban.index + 1}`
     return (
-      <div id="captain-draft-status" role="status" aria-live="polite" class="text-sm text-zinc-200">
-        <span class="font-medium">Teams are set, map bans are next</span>
+      <div id="captain-draft-status" class="text-sm text-zinc-200">
+        {props.view.state === QueueState.launching ? (
+          <span class="font-medium" role="status" aria-live="polite" safe>
+            {text}
+          </span>
+        ) : (
+          <PhaseTimer startedAt={draft.turnStartedAt} deadline={draft.turnDeadline}>
+            <span safe>{text}</span>
+          </PhaseTimer>
+        )}
       </div>
     )
   }
@@ -224,6 +251,7 @@ function roleName(roles: readonly CaptainRole[], key: string) {
 
 function CaptainDraftRoleColumn(props: DraftProps & { role: CaptainRole }) {
   const view = props.view.draft!
+  if (props.view.state !== QueueState.drafting) return <div id={columnId(props.role)}></div>
   const { role } = props
   const key = roleKey(role)
   const picked = new Set(view.draft.picks.map(pick => pick.player))
@@ -315,7 +343,10 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
   const lockedViewer = view.members.some(
     member => member.locked && member.player.steamId === props.viewer,
   )
-  const active = view.state === QueueState.drafting || view.state === QueueState.banningMaps
+  const active =
+    view.state === QueueState.drafting ||
+    view.state === QueueState.banningMaps ||
+    view.state === QueueState.launching
   return (
     <div id="captain-next-game" class="empty:hidden">
       {active ? (

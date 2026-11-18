@@ -2,7 +2,6 @@ import { collections } from '../../database/collections'
 import type { CaptainDraftModel } from '../../database/models/captain-draft.model'
 import type { CaptainPoolModel } from '../../database/models/captain-pool.model'
 import type { QueueModel } from '../../database/models/queue.model'
-import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
 import { tasks } from '../../tasks'
 import type { Emit } from '../auto/queue-command'
@@ -11,6 +10,7 @@ import { currentTurn } from './current-turn'
 import { getDraftPosition } from './get-draft-position'
 import { cachedLegalPicks } from './cached-legal-picks'
 import { applyPick } from './apply-pick'
+import { beginMapBans } from './begin-map-bans'
 import { scheduleTurnTimeout } from './schedule-turn-timeout'
 
 // Must run inside queueCommand(). Starts the clock of a new turn, commits the picks that have a
@@ -63,12 +63,7 @@ export async function settleDraft(
 
   await tasks.cancel('queue/captain:turnTimeout', { queue: queue._id })
   if (finished) {
-    await collections.queueState.updateOne(
-      { queue: queue._id },
-      { $set: { state: QueueState.banningMaps } },
-    )
-    logger.info({ queue: queue._id }, 'captain queue state changed')
-    emit('queue/state:updated', { queue: queue._id, state: QueueState.banningMaps })
+    await beginMapBans(queue, draft, members, emit)
   } else {
     await scheduleTurnTimeout(queue, draft)
     const turn = currentTurn(roles.length, draft.picks.length)!

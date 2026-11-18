@@ -3,6 +3,7 @@ import { errors } from '../../../errors'
 import { byPageUrl } from '../../page/by-page-url'
 import { queuePage } from '../../page'
 import { wsSafe } from '../../ws-safe'
+import { banMap } from '../ban-map'
 import { pick } from '../pick'
 import { toggleRole } from '../toggle-role'
 import { toggleVolunteer } from '../toggle-volunteer'
@@ -11,6 +12,16 @@ import { ReadyUpDialog } from '../../auto/views/html/ready-up-dialog'
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async app => {
+    app.gateway.on(
+      'queue:banmap',
+      wsSafe('banmap', async (socket, map) => {
+        if (!socket.player) throw errors.unauthorized('unauthorized')
+        const queue = await byPageUrl(socket.currentUrl)
+        if (!queue) throw errors.badRequest('not on a queue page')
+        await banMap(queue._id, socket.player.steamId, map)
+      }),
+    )
+
     app.gateway.on(
       'queue:togglerole',
       wsSafe('togglerole', async (socket, role) => {

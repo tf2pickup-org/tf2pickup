@@ -24,7 +24,11 @@ interface PoolProps {
 
 // while a draft runs, the pool being signed up for is the next game's
 function isNextGame(view: PoolView) {
-  return view.state === QueueState.drafting || view.state === QueueState.banningMaps
+  return (
+    view.state === QueueState.drafting ||
+    view.state === QueueState.banningMaps ||
+    view.state === QueueState.launching
+  )
 }
 
 function ownMembership({ view, actor }: PoolProps) {

@@ -59,7 +59,12 @@ export const tasksSchema = z.discriminatedUnion('name', [
   }),
   z.object({
     name: z.literal('queue/captain:turnTimeout'),
-    args: z.object({ queue: queueId, token: z.string(), turn: z.number().int() }),
+    args: z.object({
+      queue: queueId,
+      token: z.string(),
+      turn: z.number().int(),
+      phase: z.enum(['pick', 'ban']).optional(),
+    }),
   }),
   z.object({
     name: z.literal('staticGameServers:free'),
