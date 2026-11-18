@@ -8,6 +8,7 @@ import type { GameNumberRemapModel } from './models/game-number-remap.model'
 import type { KeyModel } from './models/key.model'
 import type { OnlinePlayerModel } from './models/online-player.model'
 import type { PlayerModel } from './models/player.model'
+import type { CaptainDraftModel } from './models/captain-draft.model'
 import type { CaptainPoolModel } from './models/captain-pool.model'
 import type { QueueFriendshipModel } from './models/queue-friendship.model'
 import type { QueueMapOptionModel } from './models/queue-map-option.model'
@@ -63,6 +64,7 @@ export const collections = {
   pendingImports: database.collection<PendingImportModel>('pendingimports'),
   playerActions: database.collection<PlayerActionEntryModel>('playeractions'),
   players: database.collection<PlayerModel>('players'),
+  captainDrafts: database.collection<CaptainDraftModel>('captain.drafts'),
   captainPool: database.collection<CaptainPoolModel>('captain.pool'),
   queues: database.collection<QueueModel>('queues'),
   queueFriends: database.collection<QueueFriendshipModel>('queue.friends'),

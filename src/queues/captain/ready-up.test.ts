@@ -73,6 +73,7 @@ vi.mock('../../database/collections', () => ({
   },
 }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
+vi.mock('./start-draft', () => ({ startDraft: vi.fn() }))
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn(), cancel: vi.fn() } }))
 vi.mock('../auto/queue-command', () => ({
