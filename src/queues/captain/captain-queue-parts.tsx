@@ -9,6 +9,7 @@ import { getPoolView } from './get-pool-view'
 import { CaptainCounters } from './views/html/captain-counters'
 import { captainRoles } from './captain-roles'
 import { CaptainMapBans } from './views/html/captain-map-bans'
+import { CaptainActions } from './views/html/captain-actions'
 import { CaptainDraft } from './views/html/captain-draft'
 import { CaptainPool } from './views/html/captain-pool'
 import { CaptainReadyStatus } from './views/html/captain-ready-status'
@@ -36,7 +37,10 @@ export async function captainQueueParts(queue: QueueModel, parts: QueueParts): P
     }
 
     if (stage) {
-      fragments.push(({ steamId }) => CaptainDraft.skeleton({ queue, view, viewer: steamId }))
+      fragments.push(
+        ({ steamId }) => CaptainActions({ view, viewer: steamId }),
+        ({ steamId }) => CaptainDraft.skeleton({ queue, view, viewer: steamId }),
+      )
     }
     if (draft) {
       fragments.push(({ steamId }) => CaptainDraft.nextGame({ view, viewer: steamId }))

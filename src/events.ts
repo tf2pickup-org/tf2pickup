@@ -246,6 +246,11 @@ export interface Events {
   'queue/captainDraft:updated': {
     queue: QueueId
   }
+  'queue/captainDraft:cancelled': {
+    queue: QueueId
+    captain: SteamId64
+    name: string
+  }
   'queue/captainDraft:turn': {
     phase?: 'pick' | 'ban'
     queue: QueueId

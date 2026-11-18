@@ -50,6 +50,15 @@ export default fp(
         app.gateway.to({ player: captain }).send(() => notice)
       }),
     )
+
+    events.on(
+      'queue/captainDraft:cancelled',
+      safe(async ({ queue, name }) => {
+        const { slug } = await get(queue)
+        const flash = await FlashMessage({ type: 'info', message: `Draft cancelled by ${name}` })
+        app.gateway.to({ urls: [queuePageUrl(slug)] }).send(() => flash)
+      }),
+    )
   },
   { name: 'captain draft update clients' },
 )

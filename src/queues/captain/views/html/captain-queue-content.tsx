@@ -1,11 +1,11 @@
 import { requestContext } from '@fastify/request-context'
 import type { QueueModel } from '../../../../database/models/queue.model'
 import { players } from '../../../../players'
-import { PreReadyUpButton } from '../../../../pre-ready/views/html/pre-ready-up-button'
 import { IsInQueue } from '../../../auto/views/html/is-in-queue'
 import { QueueSwitcher } from '../../../auto/views/html/queue-switcher'
 import { StreamList } from '../../../auto/views/html/stream-list'
 import { getPoolView } from '../../get-pool-view'
+import { CaptainActions } from './captain-actions'
 import { CaptainCounters } from './captain-counters'
 import { CaptainDraft } from './captain-draft'
 import { CaptainPool } from './captain-pool'
@@ -39,9 +39,7 @@ export async function CaptainQueueContent(props: { queue: QueueModel }) {
         <div class="queue-state">
           <div class="queue-state-form flex-wrap">
             <CaptainCounters queue={queue} view={view} />
-            <form ws-send class="queue-state-actions">
-              <PreReadyUpButton actor={steamId} />
-            </form>
+            <CaptainActions view={view} viewer={steamId} />
           </div>
         </div>
       </div>
