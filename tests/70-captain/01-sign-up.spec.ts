@@ -151,7 +151,7 @@ test.describe('captain sign-up pool @multi-queue', () => {
     captain,
   }) => {
     const admin = await users.getAdmin().page()
-    await admin.request.post(`/admin/queues/${captain}`, {
+    const response = await admin.request.post(`/admin/queues/${captain}`, {
       form: {
         name: captain,
         requireVerification: 'true',
@@ -161,8 +161,10 @@ test.describe('captain sign-up pool @multi-queue', () => {
         mapCooldown: '2',
       },
     })
+    expect(response.ok()).toBe(true)
 
-    const player = await users.byName('GhostWalker').page()
+    // IronViper only plays 9v9 games, so they are never auto-verified in the 6v6 run.
+    const player = await users.byName('IronViper').page()
     await player.goto(`/q/${captain}`)
     await expect(toggle(player, 'medic:medic')).toBeDisabled()
     await expect(player.getByText('You are not verified to join the queue').first()).toBeAttached()
