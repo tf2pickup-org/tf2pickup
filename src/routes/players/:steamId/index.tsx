@@ -8,6 +8,7 @@ import { shouldSyncEtf2lProfile } from '../../../etf2l/should-sync-etf2l-profile
 import { collections } from '../../../database/collections'
 import { Gamemode } from '../../../shared/types/gamemode'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { queuePage } from '../../../queues/page'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -81,6 +82,14 @@ export default routes(async app => {
           { steamId: request.params.steamId },
           { $set: { hasAcceptedRules: true } },
         )
+        if (request.isHtmx()) {
+          await queuePage.updateAll(
+            app.gateway,
+            { slots: 'all', captainPool: true },
+            { players: [request.params.steamId] },
+          )
+          return await reply.send('')
+        }
         await reply.redirect('/')
       },
     )
