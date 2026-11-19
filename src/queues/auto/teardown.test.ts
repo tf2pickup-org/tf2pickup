@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('../../database/collections', () => {
-  const collection = () => ({ deleteMany: vi.fn() })
+  const collection = () => ({
+    deleteMany: vi.fn(),
+    find: vi.fn(() => ({ toArray: vi.fn().mockResolvedValue([]) })),
+  })
   return {
     collections: {
       queueSlots: collection(),
@@ -14,6 +17,7 @@ vi.mock('../../database/collections', () => {
 })
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn() } }))
 vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'auto' }) }))
+vi.mock('./kick', () => ({ kick: vi.fn() }))
 vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: () => unknown) => await fn()),
 }))
@@ -21,7 +25,9 @@ vi.mock('../queue-command', () => ({
 import { ObjectId } from 'mongodb'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { tasks } from '../../tasks'
+import { kick } from './kick'
 import { teardown } from './teardown'
 
 describe('teardown()', () => {
@@ -41,5 +47,25 @@ describe('teardown()', () => {
     ]) {
       expect(collection.deleteMany).toHaveBeenCalledWith({ queue })
     }
+  })
+
+  it('kicks the players before clearing the slots', async () => {
+    const queue = new ObjectId() as QueueId
+    const steamId = '76561198000000001' as SteamId64
+    vi.mocked(collections.queueSlots.find).mockReturnValueOnce({
+      toArray: vi.fn().mockResolvedValue([{ player: { steamId } }]),
+    } as never)
+
+    await teardown(queue)
+
+    expect(kick).toHaveBeenCalledWith(steamId)
+  })
+
+  it('leaves the queue in place when the kick fails', async () => {
+    vi.mocked(kick).mockRejectedValueOnce(new Error('invalid queue state'))
+    vi.mocked(collections.queueSlots.deleteMany).mockClear()
+
+    await expect(teardown(new ObjectId() as QueueId)).rejects.toThrow('invalid queue state')
+    expect(collections.queueSlots.deleteMany).not.toHaveBeenCalled()
   })
 })

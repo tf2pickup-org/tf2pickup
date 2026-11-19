@@ -10,7 +10,7 @@ vi.mock('../auto/leave', () => ({ leave: vi.fn() }))
 vi.mock('../auto/ready-up', () => ({ readyUp: vi.fn() }))
 vi.mock('../captain/leave', () => ({ leave: vi.fn() }))
 vi.mock('../captain/ready-up', () => ({ readyUp: vi.fn() }))
-vi.mock('../auto/views/html/ready-up-dialog', () => ({
+vi.mock('../views/html/ready-up-dialog', () => ({
   ReadyUpDialog: { close: vi.fn().mockReturnValue('close') },
 }))
 vi.mock('../get-state', () => ({ getState: vi.fn().mockResolvedValue('waiting') }))

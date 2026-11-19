@@ -9,8 +9,7 @@ import { GameEventType } from '../database/models/game-event.model'
 import { events } from '../events'
 import { applyCooldown } from './apply-cooldown'
 import { players } from '../players'
-import { queueEngine } from '../queues/auto'
-import { captainEngine } from '../queues/captain'
+import { queues } from '../queues'
 import { calculateJoinGameserverTimeout } from './calculate-join-gameserver-timeout'
 import { logError } from '../utils/log-error'
 
@@ -109,13 +108,7 @@ export async function replacePlayer({
     }
 
     try {
-      await queueEngine.kick(replacement)
-    } catch (error) {
-      logError(error)
-    }
-
-    try {
-      await captainEngine.kickFromPools(replacement)
+      await queues.kick(replacement)
     } catch (error) {
       logError(error)
     }

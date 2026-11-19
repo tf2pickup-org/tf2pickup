@@ -5,8 +5,7 @@ import { QueueState } from '../database/models/queue-state.model'
 import { errors } from '../errors'
 import { events } from '../events'
 import type { SteamId64 } from '../shared/types/steam-id-64'
-import { queueEngine } from './auto'
-import { captainEngine } from './captain'
+import { engines } from './engines'
 import { get } from './get'
 
 export async function disable(id: QueueId, actor: SteamId64) {
@@ -24,10 +23,12 @@ export async function disable(id: QueueId, actor: SteamId64) {
   }
 
   await collections.queues.updateOne({ _id: id }, { $set: { enabled: false } })
-  if (queue.launchMode === 'captain') {
-    await captainEngine.teardown(id)
-  } else {
-    await kickAndTeardown(id)
+  try {
+    await engines[queue.launchMode].teardown(id)
+  } catch (error) {
+    // a launch started after the check above
+    await collections.queues.updateOne({ _id: id }, { $set: { enabled: true } })
+    throw error
   }
 
   await activityLog.record({
@@ -36,19 +37,4 @@ export async function disable(id: QueueId, actor: SteamId64) {
     actor,
   })
   events.emit('queue:updated', { queue: id })
-}
-
-async function kickAndTeardown(id: QueueId) {
-  const players = (
-    await collections.queueSlots.find({ queue: id, player: { $ne: null } }).toArray()
-  ).map(({ player }) => player!.steamId)
-  try {
-    await queueEngine.kick(...players)
-  } catch (error) {
-    // a launch started after the check above
-    await collections.queues.updateOne({ _id: id }, { $set: { enabled: true } })
-    throw error
-  }
-
-  await queueEngine.teardown(id)
 }

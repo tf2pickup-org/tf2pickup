@@ -12,7 +12,7 @@ vi.mock('../../page', () => ({ queuePage: { update: vi.fn() } }))
 vi.mock('../../get', () => ({ get: vi.fn() }))
 vi.mock('../../get-state', () => ({ getState: vi.fn() }))
 vi.mock('../get-pool', () => ({ getPool: vi.fn() }))
-vi.mock('../../auto/views/html/ready-up-dialog', () => ({
+vi.mock('../../views/html/ready-up-dialog', () => ({
   ReadyUpDialog: { show: vi.fn().mockReturnValue('show'), close: vi.fn().mockReturnValue('close') },
 }))
 
@@ -20,7 +20,7 @@ import { get } from '../../get'
 import { getState } from '../../get-state'
 import { getPool } from '../get-pool'
 import { queuePage } from '../../page'
-import { ReadyUpDialog } from '../../auto/views/html/ready-up-dialog'
+import { ReadyUpDialog } from '../../views/html/ready-up-dialog'
 import plugin from './sync-clients'
 
 const queue = new ObjectId()

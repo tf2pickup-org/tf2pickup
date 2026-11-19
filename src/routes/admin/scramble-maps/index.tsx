@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { PlayerRole } from '../../../database/models/player.model'
 import { ScrambleMaps } from '../../../admin/scramble-maps/views/html/scramble-maps.page'
 import { queues } from '../../../queues'
-import { queueEngine } from '../../../queues/auto'
+import { autoEngine } from '../../../queues/auto'
 import { MapVoteOptions } from '../../../admin/scramble-maps/views/html/map-vote-options'
 import { routes } from '../../../utils/routes'
 import { FlashMessage } from '../../../html/components/flash-message'
@@ -31,7 +31,7 @@ export default routes(async app => {
       { config: { authorize: [PlayerRole.admin] }, schema: { querystring: queueQuery } },
       async (request, reply) => {
         const queue = (await queues.bySlugOrDefault(request.query.queue))._id
-        await queueEngine.scrambleMaps(queue)
+        await autoEngine.scrambleMaps(queue)
         const newMaps = await collections.queueMapOptions
           .find({ queue }, { projection: { name: 1 } })
           .toArray()

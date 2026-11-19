@@ -6,7 +6,7 @@ import { get } from '../../get'
 import { getState } from '../../get-state'
 import { getPool } from '../get-pool'
 import { QueueState } from '../../../database/models/queue-state.model'
-import { ReadyUpDialog } from '../../auto/views/html/ready-up-dialog'
+import { ReadyUpDialog } from '../../views/html/ready-up-dialog'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
