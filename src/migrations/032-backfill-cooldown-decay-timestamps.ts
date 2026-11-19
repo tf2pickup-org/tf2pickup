@@ -2,8 +2,9 @@ import { collections } from '../database/collections'
 import { isBot } from '../shared/types/bot'
 
 // Cooldown levels now decay one level per period, which needs a starting point. Players who
-// reached a level before this change have no recorded timestamp, so the most recent cooldown ban
-// (always issued by the bot) is used; otherwise the moment they joined.
+// reached a level before this change have no recorded timestamp, so the most recent cooldown ban is
+// used; those are always issued by the bot, unlike the mirrored ETF2L ones. Otherwise the moment
+// they joined.
 export async function up() {
   const players = await collections.players
     .find(
@@ -21,7 +22,7 @@ export async function up() {
         update: {
           $set: {
             cooldownLevelUpdatedAt: (player.bans ?? [])
-              .filter(ban => isBot(ban.actor))
+              .filter(ban => isBot(ban.actor) && ban.source !== 'etf2l')
               .reduce((latest, ban) => (ban.start > latest ? ban.start : latest), player.joinedAt),
           },
         },
