@@ -611,6 +611,9 @@ async function CooldownLevelInput(props: {
         id="cooldown-level"
         min="0"
       />
+      {/* the hidden value is the level as it was rendered, so the route can tell an untouched
+        field from an edited one even if the level decayed in the meantime */}
+      <input type="hidden" name="cooldownLevelAsShown" value={level.toString()} />
       <p class="text-sm text-zinc-200">
         {props.player.cooldownLevelUpdatedAt
           ? `Last changed ${format(props.player.cooldownLevelUpdatedAt, 'MMMM dd, yyyy, HH:mm')}`

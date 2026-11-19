@@ -41,12 +41,13 @@ export default routes(async app => {
           body: z.object({
             name: z.string(),
             cooldownLevel: z.coerce.number().min(0),
+            cooldownLevelAsShown: z.coerce.number().min(0).optional(),
           }),
         },
       },
       async (req, reply) => {
         const { steamId } = req.params
-        const { name, cooldownLevel } = req.body
+        const { name, cooldownLevel, cooldownLevelAsShown } = req.body
         const decayPeriodMs = await configuration.get('games.cooldown_decay_period')
 
         let oldName: string | undefined
@@ -54,7 +55,11 @@ export default routes(async app => {
           steamId,
           before => {
             oldName = before.name
-            return buildProfileUpdate(before, { name, cooldownLevel }, decayPeriodMs)
+            return buildProfileUpdate(
+              before,
+              { name, cooldownLevel, cooldownLevelAsShown },
+              decayPeriodMs,
+            )
           },
           {},
           req.user!.player.steamId,

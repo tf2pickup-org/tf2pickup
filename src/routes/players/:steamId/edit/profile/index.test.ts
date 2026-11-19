@@ -52,4 +52,35 @@ describe('buildProfileUpdate', () => {
     )
     expect(result.$set).toEqual({ name: 'Name' })
   })
+
+  it('keeps the decay when the level decayed after the form was rendered', () => {
+    // the form showed the level as it was a month ago, and it has decayed since then
+    const result = buildProfileUpdate(
+      {
+        name: 'Name',
+        cooldownLevel: 3,
+        cooldownLevelUpdatedAt: new Date(Date.now() - 2 * month),
+      },
+      { name: 'Name', cooldownLevel: 2, cooldownLevelAsShown: 2 },
+      month,
+    )
+    expect(result.$set).toEqual({ name: 'Name' })
+  })
+
+  it('records the level the admin typed even when it matches the stored one', () => {
+    const result = buildProfileUpdate(
+      {
+        name: 'Name',
+        cooldownLevel: 3,
+        cooldownLevelUpdatedAt: new Date(Date.now() - 2 * month),
+      },
+      { name: 'Name', cooldownLevel: 3, cooldownLevelAsShown: 1 },
+      month,
+    )
+    expect(result.$set).toEqual({
+      name: 'Name',
+      cooldownLevel: 3,
+      cooldownLevelUpdatedAt: expect.any(Date),
+    })
+  })
 })
