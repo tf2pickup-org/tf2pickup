@@ -2,11 +2,9 @@ import z from 'zod'
 import { games } from '../../../../games'
 import { buildGameOgImage } from '../../../../games/build-game-og-image'
 import { ogImage } from '../../../../og-image'
-import { GameState } from '../../../../database/models/game.model'
 import { routes } from '../../../../utils/routes'
 import { logger } from '../../../../logger'
-
-const finalStates = [GameState.ended, GameState.interrupted]
+import { isRunning } from '../../../../games/lifecycle/is-running'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -27,7 +25,7 @@ export default routes(async app => {
 
       try {
         const image = await buildGameOgImage(game)
-        const cacheControl = finalStates.includes(game.state)
+        const cacheControl = !isRunning(game)
           ? 'public, max-age=31536000, immutable'
           : 'public, max-age=300'
         return await reply.type('image/png').header('cache-control', cacheControl).send(image)

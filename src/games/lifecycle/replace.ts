@@ -1,21 +1,21 @@
-import { Mutex } from 'async-mutex'
-import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
-import type { SteamId64 } from '../shared/types/steam-id-64'
-import { logger } from '../logger'
-import { collections } from '../database/collections'
-import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
-import { update } from './update'
-import { GameEventType } from '../database/models/game-event.model'
-import { events } from '../events'
-import { applyCooldown } from './apply-cooldown'
-import { players } from '../players'
-import { queues } from '../queues'
-import { calculateJoinGameserverTimeout } from './calculate-join-gameserver-timeout'
-import { logError } from '../utils/log-error'
+import type { GameNumber } from '../../database/models/game.model'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { logger } from '../../logger'
+import { collections } from '../../database/collections'
+import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
+import { GameEventType } from '../../database/models/game-event.model'
+import { events } from '../../events'
+import { players } from '../../players'
+import { queues } from '../../queues'
+import { logError } from '../../utils/log-error'
+import { applyCooldown } from '../apply-cooldown'
+import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
+import { mutex } from '../mutex'
+import { update } from '../update'
+import { applyTransition } from './apply-transition'
+import { runningGameStates } from './running-game-states'
 
-const replacePlayerMutex = new Mutex()
-
-export async function replacePlayer({
+export async function replace({
   number,
   replacee,
   replacement,
@@ -23,17 +23,13 @@ export async function replacePlayer({
   number: GameNumber
   replacee: SteamId64
   replacement: SteamId64
-}): Promise<GameModel> {
-  return await replacePlayerMutex.runExclusive(async () => {
-    logger.trace({ number, replacee, replacement }, 'games.replacePlayer()')
+}) {
+  logger.trace({ number, replacee, replacement }, 'games.replacePlayer()')
 
+  const result = await mutex.runExclusive(async () => {
     const game = await collections.games.findOne({ number })
     if (game === null) {
       throw new Error(`game not found: ${number}`)
-    }
-
-    if ([GameState.ended, GameState.interrupted].includes(game.state)) {
-      throw new Error(`game ${game.number} in wrong state: ${game.state}`)
     }
 
     const slot = game.slots.find(({ player }) => player === replacee)
@@ -56,10 +52,10 @@ export async function replacePlayer({
       }
     }
 
-    const shouldApplyCooldown = slot.applyCooldown && replacee !== replacement
-
-    const newGame = await update(
-      { number },
+    const newGame = await applyTransition(
+      'replace',
+      number,
+      runningGameStates,
       {
         $set: {
           'slots.$[slot].status': SlotStatus.active,
@@ -85,6 +81,9 @@ export async function replacePlayer({
         arrayFilters: [{ 'slot.id': { $eq: slot.id } }],
       },
     )
+    if (!newGame) {
+      return undefined
+    }
 
     await collections.gamesSubstituteRequests.deleteOne({
       gameNumber: newGame.number,
@@ -107,37 +106,43 @@ export async function replacePlayer({
       logError(error)
     }
 
-    try {
-      await queues.kick(replacement)
-    } catch (error) {
-      logError(error)
-    }
-
-    let updatedGame = newGame
-    try {
-      const shouldJoinBy = await calculateJoinGameserverTimeout(newGame, replacement)
-      if (shouldJoinBy) {
-        updatedGame = await update(
-          newGame.number,
-          { $set: { 'slots.$[slot].shouldJoinBy': shouldJoinBy } },
-          { arrayFilters: [{ 'slot.player': replacement }] },
-        )
-      }
-    } catch (error) {
-      logError(error)
-    }
-
-    events.emit('game:playerReplaced', {
-      game: updatedGame,
-      replacee,
-      replacement,
-      slotId: slot.id,
-    })
-
-    if (shouldApplyCooldown) {
-      await applyCooldown(replacee, newGame.number)
-    }
-
-    return updatedGame
+    return { newGame, slot }
   })
+  if (!result) {
+    return undefined
+  }
+
+  const { newGame, slot } = result
+  try {
+    await queues.kick(replacement)
+  } catch (error) {
+    logError(error)
+  }
+
+  let updatedGame = newGame
+  try {
+    const shouldJoinBy = await calculateJoinGameserverTimeout(newGame, replacement)
+    if (shouldJoinBy) {
+      updatedGame = await update(
+        newGame.number,
+        { $set: { 'slots.$[slot].shouldJoinBy': shouldJoinBy } },
+        { arrayFilters: [{ 'slot.player': replacement }] },
+      )
+    }
+  } catch (error) {
+    logError(error)
+  }
+
+  events.emit('game:playerReplaced', {
+    game: updatedGame,
+    replacee,
+    replacement,
+    slotId: slot.id,
+  })
+
+  if (slot.applyCooldown && replacee !== replacement) {
+    await applyCooldown(replacee, newGame.number)
+  }
+
+  return updatedGame
 }

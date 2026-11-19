@@ -19,6 +19,7 @@ vi.mock('es-toolkit', () => ({
   delay: vi.fn().mockResolvedValue(undefined),
 }))
 
+import { runningGameStates } from '../games/lifecycle/running-game-states'
 import { waitForStv } from './wait-for-stv'
 import { collections } from '../database/collections'
 import { delay } from 'es-toolkit'
@@ -75,14 +76,14 @@ describe('waitForStv()', () => {
     expect(waitedMs).toBeLessThanOrEqual(secondsToMilliseconds(60))
   })
 
-  it('queries for the most recent ended/interrupted game for the given server', async () => {
+  it('queries for the most recent finished game for the given server', async () => {
     vi.mocked(collections.games.findOne).mockResolvedValue(null)
     await waitForStv('server-xyz')
     expect(collections.games.findOne).toHaveBeenCalledWith(
       {
         'gameServer.id': 'server-xyz',
         'gameServer.provider': GameServerProvider.tf2QuickServer,
-        state: { $in: [GameState.ended, GameState.interrupted] },
+        state: { $nin: runningGameStates },
       },
       { sort: { number: -1 }, projection: { events: 1 } },
     )

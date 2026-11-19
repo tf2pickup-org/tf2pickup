@@ -22,14 +22,9 @@ vi.mock('./rcon/parse-status', () => ({
   parseStatus: mockParseStatus,
 }))
 
-const mockUpdate = vi.hoisted(() => vi.fn())
-vi.mock('./update', () => ({
-  update: mockUpdate,
-}))
-
-const mockEmit = vi.hoisted(() => vi.fn())
-vi.mock('../events', () => ({
-  events: { emit: mockEmit },
+const mockSetConnection = vi.hoisted(() => vi.fn())
+vi.mock('./lifecycle', () => ({
+  gameLifecycle: { setConnection: mockSetConnection },
 }))
 
 vi.mock('../logger', () => ({
@@ -59,7 +54,6 @@ beforeEach(() => {
   )
   mockSend.mockResolvedValue('FAKE_STATUS')
   mockParseStatus.mockReturnValue([])
-  mockUpdate.mockResolvedValue({ number: 0 })
 })
 
 afterEach(() => {
@@ -77,18 +71,7 @@ it('marks a player as connected when on the server but not yet marked connected'
 
   await syncPlayerConnectionStatus(number)
 
-  expect(mockUpdate).toHaveBeenCalledWith(
-    number,
-    { $set: { 'slots.$[element].connectionStatus': PlayerConnectionStatus.connected } },
-    { arrayFilters: [{ 'element.player': { $eq: player1 } }] },
-  )
-  expect(mockEmit).toHaveBeenCalledWith(
-    'game:playerConnectionStatusUpdated',
-    expect.objectContaining({
-      player: player1,
-      playerConnectionStatus: PlayerConnectionStatus.connected,
-    }),
-  )
+  expect(mockSetConnection).toHaveBeenCalledWith(number, player1, PlayerConnectionStatus.connected)
 })
 
 it('marks a player as offline when not on the server but not yet marked offline', async () => {
@@ -102,18 +85,7 @@ it('marks a player as offline when not on the server but not yet marked offline'
 
   await syncPlayerConnectionStatus(number)
 
-  expect(mockUpdate).toHaveBeenCalledWith(
-    number,
-    { $set: { 'slots.$[element].connectionStatus': PlayerConnectionStatus.offline } },
-    { arrayFilters: [{ 'element.player': { $eq: player1 } }] },
-  )
-  expect(mockEmit).toHaveBeenCalledWith(
-    'game:playerConnectionStatusUpdated',
-    expect.objectContaining({
-      player: player1,
-      playerConnectionStatus: PlayerConnectionStatus.offline,
-    }),
-  )
+  expect(mockSetConnection).toHaveBeenCalledWith(number, player1, PlayerConnectionStatus.offline)
 })
 
 it('does nothing when the stored status already matches the server', async () => {
@@ -130,8 +102,7 @@ it('does nothing when the stored status already matches the server', async () =>
 
   await syncPlayerConnectionStatus(number)
 
-  expect(mockUpdate).not.toHaveBeenCalled()
-  expect(mockEmit).not.toHaveBeenCalled()
+  expect(mockSetConnection).not.toHaveBeenCalled()
 })
 
 it('reconciles multiple slots with mixed states in a single call', async () => {
@@ -148,21 +119,9 @@ it('reconciles multiple slots with mixed states in a single call', async () => {
 
   await syncPlayerConnectionStatus(number)
 
-  expect(mockUpdate).toHaveBeenCalledTimes(2)
-  expect(mockEmit).toHaveBeenCalledWith(
-    'game:playerConnectionStatusUpdated',
-    expect.objectContaining({
-      player: player1,
-      playerConnectionStatus: PlayerConnectionStatus.connected,
-    }),
-  )
-  expect(mockEmit).toHaveBeenCalledWith(
-    'game:playerConnectionStatusUpdated',
-    expect.objectContaining({
-      player: player2,
-      playerConnectionStatus: PlayerConnectionStatus.offline,
-    }),
-  )
+  expect(mockSetConnection).toHaveBeenCalledTimes(2)
+  expect(mockSetConnection).toHaveBeenCalledWith(number, player1, PlayerConnectionStatus.connected)
+  expect(mockSetConnection).toHaveBeenCalledWith(number, player2, PlayerConnectionStatus.offline)
 })
 
 it('swallows rcon failures without throwing', async () => {
@@ -175,7 +134,7 @@ it('swallows rcon failures without throwing', async () => {
   mockWithRcon.mockRejectedValue(new Error('rcon unreachable'))
 
   await expect(syncPlayerConnectionStatus(number)).resolves.toBeUndefined()
-  expect(mockUpdate).not.toHaveBeenCalled()
+  expect(mockSetConnection).not.toHaveBeenCalled()
 })
 
 it('throttles repeated syncs of the same game and runs again after the window elapses', async () => {

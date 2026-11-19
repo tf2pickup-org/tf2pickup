@@ -1,12 +1,13 @@
 import type { AclEntry } from '@tf2pickup-org/mumble-client'
 import { collections } from '../../database/collections'
 import { SlotStatus } from '../../database/models/game-slot.model'
-import { GameState, type GameModel } from '../../database/models/game.model'
+import { type GameModel } from '../../database/models/game.model'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { isVerificationEnabled } from '../is-verification-enabled'
 import { mumblePermission } from '../mumble-permission'
 import { findGameChannels } from './find-game-channels'
 import type { VoiceChannel } from './voice-server'
+import { isRunning } from '../../games/lifecycle/is-running'
 
 // Rewrites the game's channel ACLs from scratch: the game channel lets in all of its players, each
 // team channel only that team, including replaced players until the handover settles. Once the game
@@ -21,7 +22,7 @@ export async function syncGameAcl(game: Pick<GameModel, 'number' | 'state' | 'sl
     return
   }
 
-  if ([GameState.ended, GameState.interrupted].includes(game.state)) {
+  if (!isRunning(game)) {
     await save(channels.game, [{ group: 'all', applySubs: true }])
     await save(channels[Tf2Team.blu], [])
     await save(channels[Tf2Team.red], [])

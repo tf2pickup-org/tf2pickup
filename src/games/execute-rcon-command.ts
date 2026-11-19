@@ -1,11 +1,12 @@
 import { activityLog } from '../activity-log'
 import { collections } from '../database/collections'
-import { GameState, type GameNumber } from '../database/models/game.model'
+import { type GameNumber } from '../database/models/game.model'
 import { errors } from '../errors'
 import { logger } from '../logger'
 import type { RconCommand } from '../shared/types/rcon-command'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import { withRcon } from './rcon/with-rcon'
+import { isRunning } from './lifecycle/is-running'
 
 export async function executeRconCommand(
   gameNumber: GameNumber,
@@ -18,7 +19,7 @@ export async function executeRconCommand(
     throw errors.notFound(`game #${gameNumber} not found`)
   }
 
-  if ([GameState.ended, GameState.interrupted].includes(game.state)) {
+  if (!isRunning(game)) {
     throw errors.badRequest(`game #${gameNumber} is over`)
   }
 

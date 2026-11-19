@@ -1,14 +1,10 @@
 import { type GameModel, GameState } from '../../../database/models/game.model'
 import { GameLiveIndicator } from '../../../html/components/game-live-indicator'
 import { IconX } from '../../../html/components/icons'
+import { isRunning } from '../../lifecycle/is-running'
 
 export function GameStateIndicator(props: { game: Pick<GameModel, 'state' | 'number'> }) {
-  const gameIsLive = [
-    GameState.created,
-    GameState.configuring,
-    GameState.launching,
-    GameState.started,
-  ].includes(props.game.state)
+  const gameIsLive = isRunning(props.game)
 
   let indicator = <></>
   if (gameIsLive) {

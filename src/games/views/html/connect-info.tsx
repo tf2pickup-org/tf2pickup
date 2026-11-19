@@ -5,6 +5,7 @@ import { shouldHideServerInfo } from '../../should-hide-server-info'
 import { ConnectString } from './connect-string'
 import { JoinGameButton } from './join-game-button'
 import { JoinVoiceButton } from './join-voice-button'
+import { isRunning } from '../../lifecycle/is-running'
 
 export function ConnectInfo(props: {
   game: Pick<
@@ -13,12 +14,7 @@ export function ConnectInfo(props: {
   >
   actor: SteamId64 | undefined
 }) {
-  const connectInfoVisible = [
-    GameState.created,
-    GameState.configuring,
-    GameState.launching,
-    GameState.started,
-  ].includes(props.game.state)
+  const connectInfoVisible = isRunning(props.game)
 
   let connectInfo = <></>
   if (connectInfoVisible) {

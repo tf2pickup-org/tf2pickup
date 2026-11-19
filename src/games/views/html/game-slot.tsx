@@ -13,6 +13,7 @@ import type { PickDeep } from 'type-fest'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { isDeletedUser } from '../../../shared/types/steam-id-64'
 import { DeletedUser } from '../../../html/components/deleted-user'
+import { isRunning } from '../../lifecycle/is-running'
 
 export async function GameSlot(props: {
   game: GameModel
@@ -68,11 +69,7 @@ async function GameSlotContent(props: {
   const isAdmin = actor?.roles.includes(PlayerRole.admin)
 
   const showConnectionState = [GameState.launching, GameState.started].includes(props.game.state)
-  const showRequestSubstituteButton =
-    isAdmin &&
-    [GameState.created, GameState.configuring, GameState.launching, GameState.started].includes(
-      props.game.state,
-    )
+  const showRequestSubstituteButton = isAdmin && isRunning(props.game)
 
   switch (props.slot.status) {
     case SlotStatus.active:

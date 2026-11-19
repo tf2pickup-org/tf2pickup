@@ -6,6 +6,7 @@ import { MapThumbnail } from '../../../html/components/map-thumbnail'
 import type { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 import type { PickDeep } from 'type-fest'
 import type { GameResult } from '../../game-result'
+import { isRunning } from '../../lifecycle/is-running'
 
 const resultLetters: Record<GameResult, string> = {
   win: 'W',
@@ -21,12 +22,7 @@ export function GameListItem(props: {
   result?: GameResult | undefined
 }) {
   const { game } = props
-  const isRunning = [
-    GameState.created,
-    GameState.configuring,
-    GameState.launching,
-    GameState.started,
-  ].includes(game.state)
+  const running = isRunning(game)
   const isCancelled = game.state === GameState.interrupted
 
   return (
@@ -34,7 +30,7 @@ export function GameListItem(props: {
       class="game-list-item"
       href={`/games/${game.number}`}
       preload="mousedown"
-      data-live={isRunning ? 'true' : undefined}
+      data-live={running ? 'true' : undefined}
       data-result={props.result}
     >
       <div class="game-list-thumbnail">
@@ -48,7 +44,7 @@ export function GameListItem(props: {
       )}
 
       <span class="game-number">
-        <span class="live-indicator">{isRunning ? <GameLiveIndicator /> : <></>}</span>
+        <span class="live-indicator">{running ? <GameLiveIndicator /> : <></>}</span>
         <span class="tabular-nums" safe>
           #{game.number}
         </span>

@@ -4,6 +4,7 @@ import { GamePage } from '../../../games/views/html/game.page'
 import { RconConsoleDialog } from '../../../games/views/html/rcon-console-dialog'
 import { games } from '../../../games'
 import { assertIsError } from '../../../utils/assert-is-error'
+import { errors } from '../../../errors'
 import { gameServerSelection } from '../../../games/schemas/game-server-selection'
 import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
@@ -63,7 +64,14 @@ export default routes(async app => {
         const number = request.params.number
         const replacee = request.body.player
 
-        await games.requestSubstitute({ number, replacee, actor: request.user!.player.steamId })
+        const game = await games.lifecycle.requestSubstitute({
+          number,
+          replacee,
+          actor: request.user!.player.steamId,
+        })
+        if (!game) {
+          throw errors.badRequest(`game ${number} is not running`)
+        }
         await reply.status(204).send()
       },
     )
@@ -87,7 +95,10 @@ export default routes(async app => {
         const replacee = request.body.player
         const replacement = request.user!.player.steamId
 
-        await games.replacePlayer({ number, replacee, replacement })
+        const game = await games.lifecycle.replace({ number, replacee, replacement })
+        if (!game) {
+          throw errors.badRequest(`game ${number} is not running`)
+        }
         await reply.status(204).send()
       },
     )
@@ -104,7 +115,13 @@ export default routes(async app => {
         },
       },
       async (request, reply) => {
-        await games.forceEnd(request.params.number, request.user!.player.steamId)
+        const game = await games.lifecycle.interrupt(
+          request.params.number,
+          request.user!.player.steamId,
+        )
+        if (!game) {
+          throw errors.badRequest(`game ${request.params.number} is not running`)
+        }
         await reply.status(204).send()
       },
     )

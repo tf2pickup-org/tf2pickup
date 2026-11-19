@@ -15,7 +15,7 @@
  */
 import { omit } from 'es-toolkit'
 import { MongoClient, type Db, type Document, type WithId } from 'mongodb'
-import { GameState, type GameModel } from '../database/models/game.model'
+import { type GameModel } from '../database/models/game.model'
 import type { GameNumberRemapModel } from '../database/models/game-number-remap.model'
 import type { PlayerModel } from '../database/models/player.model'
 import type { QueueModel } from '../database/models/queue.model'
@@ -25,6 +25,7 @@ import { mergeGamemodeConfiguration } from './merge-gamemode-configuration'
 import { mergePlayers } from './merge-players'
 import { planQueues } from './plan-queues'
 import { renumberIncomingGames } from './renumber-incoming-games'
+import { runningGameStates } from '../games/lifecycle/running-game-states'
 
 // Collections referencing a game by its number.
 const gameNumberCollections = [
@@ -220,7 +221,7 @@ async function assertCanMerge(primary: Db, incoming: Db, sourceHost: string) {
   for (const db of [primary, incoming]) {
     const live = await db
       .collection<GameModel>('games')
-      .countDocuments({ state: { $nin: [GameState.ended, GameState.interrupted] } })
+      .countDocuments({ state: { $in: runningGameStates } })
     if (live > 0) {
       throw new Error(`${db.databaseName} has ${live} games in progress`)
     }

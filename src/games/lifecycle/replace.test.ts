@@ -1,13 +1,14 @@
 import { beforeEach, expect, it, vi } from 'vitest'
-import { GameState, type GameModel, type GameNumber } from '../database/models/game.model'
-import { SlotStatus } from '../database/models/game-slot.model'
-import type { SteamId64 } from '../shared/types/steam-id-64'
-import { replacePlayer } from './replace-player'
+import { GameState, type GameModel, type GameNumber } from '../../database/models/game.model'
+import { SlotStatus } from '../../database/models/game-slot.model'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { replace } from './replace'
+import { runningGameStates } from './running-game-states'
 
 const mockGamesFindOne = vi.hoisted(() => vi.fn())
 const mockPlayersFindOne = vi.hoisted(() => vi.fn())
 const mockDeleteOne = vi.hoisted(() => vi.fn())
-vi.mock('../database/collections', () => ({
+vi.mock('../../database/collections', () => ({
   collections: {
     games: { findOne: mockGamesFindOne },
     players: { findOne: mockPlayersFindOne },
@@ -15,33 +16,36 @@ vi.mock('../database/collections', () => ({
   },
 }))
 
+const mockApplyTransition = vi.hoisted(() => vi.fn())
+vi.mock('./apply-transition', () => ({ applyTransition: mockApplyTransition }))
+
 const mockUpdate = vi.hoisted(() => vi.fn())
-vi.mock('./update', () => ({ update: mockUpdate }))
+vi.mock('../update', () => ({ update: mockUpdate }))
 
 const mockEmit = vi.hoisted(() => vi.fn())
-vi.mock('../events', () => ({ events: { emit: mockEmit } }))
+vi.mock('../../events', () => ({ events: { emit: mockEmit } }))
 
 const mockPlayersUpdate = vi.hoisted(() => vi.fn())
 const mockHasActiveBan = vi.hoisted(() => vi.fn())
-vi.mock('../players', () => ({
+vi.mock('../../players', () => ({
   players: { update: mockPlayersUpdate, hasActiveBan: mockHasActiveBan },
 }))
 
 const mockKick = vi.hoisted(() => vi.fn())
-vi.mock('../queues', () => ({ queues: { kick: mockKick } }))
+vi.mock('../../queues', () => ({ queues: { kick: mockKick } }))
 
 const mockApplyCooldown = vi.hoisted(() => vi.fn())
-vi.mock('./apply-cooldown', () => ({ applyCooldown: mockApplyCooldown }))
+vi.mock('../apply-cooldown', () => ({ applyCooldown: mockApplyCooldown }))
 
 const mockCalculateJoinGameserverTimeout = vi.hoisted(() => vi.fn())
-vi.mock('./calculate-join-gameserver-timeout', () => ({
+vi.mock('../calculate-join-gameserver-timeout', () => ({
   calculateJoinGameserverTimeout: mockCalculateJoinGameserverTimeout,
 }))
 
 const mockLogError = vi.hoisted(() => vi.fn())
-vi.mock('../utils/log-error', () => ({ logError: mockLogError }))
+vi.mock('../../utils/log-error', () => ({ logError: mockLogError }))
 
-vi.mock('../logger', () => ({ logger: { trace: vi.fn() } }))
+vi.mock('../../logger', () => ({ logger: { trace: vi.fn() } }))
 
 const number = 42 as GameNumber
 const replacee = 'REPLACEE' as SteamId64
@@ -65,17 +69,19 @@ beforeEach(() => {
   mockGamesFindOne.mockResolvedValue(game())
   mockPlayersFindOne.mockResolvedValue({ steamId: replacement, activeGame: undefined, bans: [] })
   mockHasActiveBan.mockReturnValue(false)
-  mockUpdate.mockResolvedValueOnce(newGame).mockResolvedValueOnce(updatedGame)
+  mockApplyTransition.mockResolvedValue(newGame)
+  mockUpdate.mockResolvedValue(updatedGame)
   mockCalculateJoinGameserverTimeout.mockResolvedValue(new Date('2026-01-01T00:00:00Z'))
 })
 
 it('commits the whole substitution transition and returns the updated game', async () => {
-  const result = await replacePlayer({ number, replacee, replacement })
+  const result = await replace({ number, replacee, replacement })
 
   // the replacement itself
-  expect(mockUpdate).toHaveBeenNthCalledWith(
-    1,
-    { number },
+  expect(mockApplyTransition).toHaveBeenCalledWith(
+    'replace',
+    number,
+    runningGameStates,
     expect.objectContaining({
       $set: expect.objectContaining({ 'slots.$[slot].player': replacement }),
     }),
@@ -91,8 +97,7 @@ it('commits the whole substitution transition and returns the updated game', asy
   expect(mockKick).toHaveBeenCalledWith(replacement)
 
   // shouldJoinBy written on the replacement's slot
-  expect(mockUpdate).toHaveBeenNthCalledWith(
-    2,
+  expect(mockUpdate).toHaveBeenCalledWith(
     number,
     expect.objectContaining({
       $set: expect.objectContaining({ 'slots.$[slot].shouldJoinBy': expect.any(Date) }),
@@ -116,7 +121,7 @@ it('commits the whole substitution transition and returns the updated game', asy
 })
 
 it('kicks the substitute from whatever queue they are in', async () => {
-  await replacePlayer({ number, replacee, replacement })
+  await replace({ number, replacee, replacement })
 
   expect(mockKick).toHaveBeenCalledWith(replacement)
 })
@@ -124,7 +129,7 @@ it('kicks the substitute from whatever queue they are in', async () => {
 it('completes the substitution even when kicking from the queue fails', async () => {
   mockKick.mockRejectedValueOnce(new Error('invalid queue state'))
 
-  const result = await replacePlayer({ number, replacee, replacement })
+  const result = await replace({ number, replacee, replacement })
 
   expect(mockLogError).toHaveBeenCalled()
   expect(mockEmit).toHaveBeenCalledWith(
@@ -135,15 +140,26 @@ it('completes the substitution even when kicking from the queue fails', async ()
 })
 
 it('skips the shouldJoinBy write when no timeout applies', async () => {
-  mockUpdate.mockReset().mockResolvedValueOnce(newGame)
   mockCalculateJoinGameserverTimeout.mockResolvedValue(undefined)
 
-  const result = await replacePlayer({ number, replacee, replacement })
+  const result = await replace({ number, replacee, replacement })
 
-  expect(mockUpdate).toHaveBeenCalledTimes(1)
+  expect(mockUpdate).not.toHaveBeenCalled()
   expect(mockEmit).toHaveBeenCalledWith(
     'game:playerReplaced',
     expect.objectContaining({ game: newGame }),
   )
   expect(result).toBe(newGame)
+})
+
+it('leaves players and the queue alone when the game is no longer running', async () => {
+  mockApplyTransition.mockResolvedValue(undefined)
+
+  const result = await replace({ number, replacee, replacement })
+
+  expect(result).toBeUndefined()
+  expect(mockDeleteOne).not.toHaveBeenCalled()
+  expect(mockPlayersUpdate).not.toHaveBeenCalled()
+  expect(mockKick).not.toHaveBeenCalled()
+  expect(mockEmit).not.toHaveBeenCalled()
 })
