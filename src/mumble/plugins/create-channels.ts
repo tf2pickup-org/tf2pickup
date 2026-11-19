@@ -5,7 +5,6 @@ import { setupGameChannels } from '../setup-game-channels'
 import { logger } from '../../logger'
 import { games } from '../../games'
 import { mumbleDirectUrl } from '../mumble-direct-url'
-import { collections } from '../../database/collections'
 import { client } from '../client'
 import { isVerificationEnabled } from '../is-verification-enabled'
 import { syncGameAcl } from '../sync-game-acl'
@@ -28,14 +27,9 @@ export default fp(
 
     events.on(
       'game:playerReplaced',
-      safe(async ({ game, replacement }) => {
+      safe(async ({ game, replacement, slotId }) => {
         if (!client) {
           return
-        }
-
-        const r = await collections.players.findOne({ steamId: replacement })
-        if (!r) {
-          throw new Error(`replacee player not found: ${r}`)
         }
 
         await games.update(
@@ -45,13 +39,7 @@ export default fp(
               'slots.$[slot].voiceServerUrl': (await mumbleDirectUrl(game, replacement)).toString(),
             },
           },
-          {
-            arrayFilters: [
-              {
-                'slot.player': { $eq: r._id },
-              },
-            ],
-          },
+          { arrayFilters: [{ 'slot.id': slotId }] },
         )
       }),
     )
