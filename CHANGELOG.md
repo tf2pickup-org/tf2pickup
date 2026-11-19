@@ -1,5 +1,26 @@
 # Changelog
 
+# [5.0.0-alpha.3](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.2...5.0.0-alpha.3) (2026-11-19)
+
+### Bug Fixes
+
+* **a11y:** mark the profile avatar as decorative ([#1004](https://github.com/tf2pickup-org/tf2pickup/issues/1004)) ([018e090](https://github.com/tf2pickup-org/tf2pickup/commit/018e090069030996025a8aaad00524e459c98a28))
+* **games:** drop substitutes from captain pools ([#999](https://github.com/tf2pickup-org/tf2pickup/issues/999)) ([78979c5](https://github.com/tf2pickup-org/tf2pickup/commit/78979c5695e108c9f40e49e06ea0b698ac3845ed))
+* **mumble:** give substitutes their voice server link ([#998](https://github.com/tf2pickup-org/tf2pickup/issues/998)) ([a02bdae](https://github.com/tf2pickup-org/tf2pickup/commit/a02bdae9a05d5779b06410a20f52d4875cd52508))
+* **queues:** count captain queue players in the admin panel and atlas heartbeat ([#996](https://github.com/tf2pickup-org/tf2pickup/issues/996)) ([de83411](https://github.com/tf2pickup-org/tf2pickup/commit/de8341178f6f1804908b22ba14d50fe36e00ae4d))
+
+### Features
+
+* **queues:** captain mode ([#992](https://github.com/tf2pickup-org/tf2pickup/issues/992)) ([ec21c32](https://github.com/tf2pickup-org/tf2pickup/commit/ec21c32643b65a70d830f8f65e6ede38352f506d)), closes [#788](https://github.com/tf2pickup-org/tf2pickup/issues/788) [#991](https://github.com/tf2pickup-org/tf2pickup/issues/991) [#308](https://github.com/tf2pickup-org/tf2pickup/issues/308)
+* **queues:** redesign the ready-up dialog to match v5 ([#997](https://github.com/tf2pickup-org/tf2pickup/issues/997)) ([5046df0](https://github.com/tf2pickup-org/tf2pickup/commit/5046df0ff0aeafecde6dfc82732ec9f1b4089cc5))
+
+### Dependencies
+
+* @fastify/formbody to v9.0.2 ([fed0705](https://github.com/tf2pickup-org/tf2pickup/commit/fed070531d5364fcd441e6a247d6d215a7a93b44))
+* @fastify/proxy-addr to v5.1.3 ([c1ab500](https://github.com/tf2pickup-org/tf2pickup/commit/c1ab5009ca0dba2ebba9bc8e1428133814a48d1f))
+* @fastify/sensible to v6.0.8 ([8ba33c5](https://github.com/tf2pickup-org/tf2pickup/commit/8ba33c53c71dd308e15eb5eca2b759278382797c))
+* @fastify/static to v10.1.11 ([2aeaeae](https://github.com/tf2pickup-org/tf2pickup/commit/2aeaeae0d01e33b9c0e20acb51e44965df96df39))
+
 # [5.0.0-alpha.2](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.1...5.0.0-alpha.2) (2026-11-17)
 
 ### Bug Fixes
