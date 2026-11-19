@@ -11,8 +11,12 @@ export const mumbleVoiceServer: VoiceServer = {
   },
   users() {
     return (client?.users.findAll(() => true) ?? []).map(user => ({
-      hash: user.hash,
-      channelId: user.channelId,
+      get hash() {
+        return user.hash
+      },
+      get channelId() {
+        return user.channelId
+      },
       async moveToChannel(channelId: number) {
         await runInCommandQueue(async () => await user.moveToChannel(channelId))
       },

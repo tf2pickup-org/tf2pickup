@@ -63,9 +63,12 @@ export async function settle(gameNumber: GameNumber) {
     .toArray()
   const hashes = outgoing.flatMap(({ mumbleCertificate }) => mumbleCertificate?.hash ?? [])
   const gameChannelIds = [channels.game, ...channels.game.subChannels].map(({ id }) => id)
-  for (const user of users.filter(
-    ({ hash, channelId }) => !!hash && hashes.includes(hash) && gameChannelIds.includes(channelId),
-  )) {
+  for (const user of mumbleVoiceServer
+    .users()
+    .filter(
+      ({ hash, channelId }) =>
+        !!hash && hashes.includes(hash) && gameChannelIds.includes(channelId),
+    )) {
     await user.moveToChannel(gamesChannel.id)
   }
 }
