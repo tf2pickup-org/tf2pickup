@@ -1,5 +1,4 @@
 import fp from 'fastify-plugin'
-import { collections } from '../../database/collections'
 import { QueueState } from '../../database/models/queue-state.model'
 import { errors } from '../../errors'
 import { leave as autoLeave } from '../auto/leave'
@@ -8,6 +7,7 @@ import { ReadyUpDialog } from '../auto/views/html/ready-up-dialog'
 import { leave as captainLeave } from '../captain/leave'
 import { readyUp as captainReadyUp } from '../captain/ready-up'
 import { getState } from '../get-state'
+import { membership } from '../membership'
 import { queuePage } from '../page'
 import { wsSafe } from '../ws-safe'
 
@@ -21,8 +21,8 @@ export default fp(
       wsSafe('readyup', async socket => {
         if (!socket.player) throw errors.unauthorized('unauthorized')
         const actor = socket.player.steamId
-        const member = await collections.captainPool.findOne({ 'player.steamId': actor })
-        if (member) await captainReadyUp(member.queue, actor)
+        const member = await membership(actor)
+        if (member?.launchMode === 'captain') await captainReadyUp(member.queue, actor)
         else await autoReadyUp(actor)
         const close = await ReadyUpDialog.close()
         app.gateway.to({ player: actor }).send(() => close, { key: 'ready-up-dialog' })
@@ -34,8 +34,8 @@ export default fp(
       wsSafe('leave', async socket => {
         if (!socket.player) throw errors.unauthorized('unauthorized')
         const actor = socket.player.steamId
-        const member = await collections.captainPool.findOne({ 'player.steamId': actor })
-        if (member) {
+        const member = await membership(actor)
+        if (member?.launchMode === 'captain') {
           await captainLeave(member.queue, actor)
           const close = await ReadyUpDialog.close()
           app.gateway.to({ player: actor }).send(() => close, { key: 'ready-up-dialog' })

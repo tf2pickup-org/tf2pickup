@@ -323,19 +323,16 @@ describe('queuePage.render', () => {
     expect(await received(socket)).toContain('ready-up-dialog')
   })
 
-  it.each([false, true])(
-    'reconnects a captain member with ready=%s using captain membership only',
-    async ready => {
-      const captain = { ...sixes, _id: new ObjectId(), slug: 'captain', launchMode: 'captain' }
-      db.queues.push(captain)
-      db.state = QueueState.ready
-      db.captainMembers = [{ queue: captain._id, player: { steamId: alice }, ready, locked: false }]
-      db.slots[0]!.ready = false
-      const socket = connect('/q/captain', alice)
-      await queuePage.render(socket)
-      expect((await received(socket)).includes('ready-up-dialog')).toBe(!ready)
-    },
-  )
+  it.each([false, true])('reconnects a captain member with ready=%s', async ready => {
+    const captain = { ...sixes, _id: new ObjectId(), slug: 'captain', launchMode: 'captain' }
+    db.queues.push(captain)
+    db.state = QueueState.ready
+    db.captainMembers = [{ queue: captain._id, player: { steamId: alice }, ready, locked: false }]
+    db.slots[0]!.player = null
+    const socket = connect('/q/captain', alice)
+    await queuePage.render(socket)
+    expect((await received(socket)).includes('ready-up-dialog')).toBe(!ready)
+  })
 
   it('tags its updates with the page they were rendered for', async () => {
     const socket = connect('/q/6v6')

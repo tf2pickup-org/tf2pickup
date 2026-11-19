@@ -13,9 +13,8 @@ export async function sendHeartbeat() {
 
   // ponytail: atlas knows one queue per instance, so it gets the default one
   const queue = await queues.getDefault()
-  const [occupied, capacity, onlinePlayers, liveGames] = await Promise.all([
-    collections.queueSlots.countDocuments({ queue: queue._id, player: { $ne: null } }),
-    collections.queueSlots.countDocuments({ queue: queue._id }),
+  const [{ current: occupied, required: capacity }, onlinePlayers, liveGames] = await Promise.all([
+    queues.playerCounts(queue),
     collections.onlinePlayers.countDocuments(),
     collections.games.countDocuments({
       state: {

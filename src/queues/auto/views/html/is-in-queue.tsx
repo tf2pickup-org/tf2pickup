@@ -1,19 +1,14 @@
-import { collections } from '../../../../database/collections'
 import type { QueueId } from '../../../../database/models/queue.model'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import { membership } from '../../../membership'
 
 export async function IsInQueue(props: { queue: QueueId; actor?: SteamId64 | undefined }) {
-  const queues = props.actor
-    ? [
-        ...(await collections.queueSlots.distinct('queue', { 'player.steamId': props.actor })),
-        ...(await collections.captainPool.distinct('queue', { 'player.steamId': props.actor })),
-      ]
-    : []
-  const isInCurrentQueue = queues.some(queue => queue.equals(props.queue))
+  const current = props.actor ? await membership(props.actor) : null
+  const isInCurrentQueue = current?.queue.equals(props.queue) ?? false
   return (
     <>
       <input type="hidden" id="isInCurrentQueue" value={isInCurrentQueue.toString()} />
-      <input type="hidden" id="isInAnyQueue" value={(queues.length > 0).toString()} />
+      <input type="hidden" id="isInAnyQueue" value={(current !== null).toString()} />
     </>
   )
 }

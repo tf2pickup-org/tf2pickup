@@ -10,8 +10,10 @@ import { get } from './get'
 import { getDefault } from './get-default'
 import { list } from './list'
 import { listEnabled } from './list-enabled'
+import { membership } from './membership'
 import { move } from './move'
 import { pageUrls } from './page/page-urls'
+import { playerCounts } from './player-counts'
 import { queuePageUrl } from './page/queue-page-url'
 import { remove } from './remove'
 import { resolveWhitelistId } from './resolve-whitelist-id'
@@ -30,8 +32,10 @@ export const queues = {
   getDefault,
   list,
   listEnabled,
+  membership,
   move,
   pageUrls,
+  playerCounts,
   queuePageUrl,
   remove,
   resolveWhitelistId,

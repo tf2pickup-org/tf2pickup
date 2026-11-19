@@ -1,8 +1,8 @@
-import { collections } from '../../database/collections'
 import { QueueState } from '../../database/models/queue-state.model'
 import type { AppWebSocket } from '../../websocket/types'
 import { pageTag } from '../../websocket/page-tag'
 import { getState } from '../get-state'
+import { membership } from '../membership'
 import { ReadyUpDialog } from '../auto/views/html/ready-up-dialog'
 import { IsInQueue } from '../auto/views/html/is-in-queue'
 import { byPageUrl } from './by-page-url'
@@ -46,27 +46,9 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
     socket.send(tag + html)
   }
 
-  if (
-    queue.launchMode === 'captain' &&
-    steamId &&
-    (await getState(queue._id)) === QueueState.ready
-  ) {
-    const unready = await collections.captainPool.findOne({
-      queue: queue._id,
-      'player.steamId': steamId,
-      ready: false,
-      locked: false,
-    })
-    if (unready) socket.send(await ReadyUpDialog.show(steamId))
-  }
-
-  if (queue.launchMode === 'auto' && steamId && (await getState(queue._id)) === QueueState.ready) {
-    const unready = await collections.queueSlots.findOne({
-      queue: queue._id,
-      'player.steamId': steamId,
-      ready: false,
-    })
-    if (unready) {
+  if (steamId && (await getState(queue._id)) === QueueState.ready) {
+    const member = await membership(steamId)
+    if (member?.queue.equals(queue._id) && !member.ready) {
       socket.send(await ReadyUpDialog.show(steamId))
     }
   }
