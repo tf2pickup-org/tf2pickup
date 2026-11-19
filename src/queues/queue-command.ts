@@ -1,10 +1,9 @@
 import { Mutex } from 'async-mutex'
 import { performance } from 'node:perf_hooks'
-import type { QueueId, QueueModel } from '../database/models/queue.model'
+import type { QueueId } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events, type Events } from '../events'
-import { step as autoStep } from './auto/step'
-import { step as captainStep } from './captain/step'
+import { engines } from './engines'
 import { get } from './get'
 import { queueMutexHoldDuration, queueMutexWaitDuration } from './metrics'
 
@@ -13,12 +12,6 @@ type PendingEvent = { [K in keyof Events]: [K, Events[K]] }[keyof Events]
 
 // ponytail: one lock for every queue (ADR-0002); per-queue locks if the wait metric climbs
 const mutex = new Mutex()
-
-const steps: Record<QueueModel['launchMode'], (queue: QueueModel, emit: Emit) => Promise<boolean>> =
-  {
-    auto: autoStep,
-    captain: captainStep,
-  }
 
 // Runs fn in the queue engine's critical section; fn must not call queueCommand() itself. Every
 // queue fn touched (its slots, captain pool or state) is stepped through its launch mode's
@@ -46,7 +39,7 @@ export async function queueCommand<T>(
         if (reevaluate) {
           for (const id of touchedQueues(pending)) {
             const queue = await get(id)
-            while (await steps[queue.launchMode](queue, emit));
+            while (await engines[queue.launchMode].step(queue, emit));
           }
         }
         queueMutexHoldDuration.record(performance.now() - holdStart, { operation })

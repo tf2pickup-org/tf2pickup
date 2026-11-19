@@ -28,10 +28,7 @@ vi.mock('../players', () => ({
 }))
 
 const mockKick = vi.hoisted(() => vi.fn())
-vi.mock('../queues/auto', () => ({ queueEngine: { kick: mockKick } }))
-
-const mockKickFromPools = vi.hoisted(() => vi.fn())
-vi.mock('../queues/captain', () => ({ captainEngine: { kickFromPools: mockKickFromPools } }))
+vi.mock('../queues', () => ({ queues: { kick: mockKick } }))
 
 const mockApplyCooldown = vi.hoisted(() => vi.fn())
 vi.mock('./apply-cooldown', () => ({ applyCooldown: mockApplyCooldown }))
@@ -118,11 +115,10 @@ it('commits the whole substitution transition and returns the updated game', asy
   expect(result).toBe(updatedGame)
 })
 
-it('kicks the substitute from the queues and captain pools', async () => {
+it('kicks the substitute from whatever queue they are in', async () => {
   await replacePlayer({ number, replacee, replacement })
 
   expect(mockKick).toHaveBeenCalledWith(replacement)
-  expect(mockKickFromPools).toHaveBeenCalledWith(replacement)
 })
 
 it('completes the substitution even when kicking from the queue fails', async () => {

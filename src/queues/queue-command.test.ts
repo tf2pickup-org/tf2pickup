@@ -6,20 +6,22 @@ vi.mock('./metrics', () => ({
   queueMutexHoldDuration: { record: vi.fn() },
 }))
 vi.mock('./get', () => ({ get: vi.fn() }))
-vi.mock('./auto/step', () => ({ step: vi.fn() }))
-vi.mock('./captain/step', () => ({ step: vi.fn() }))
+vi.mock('./engines', () => ({
+  engines: { auto: { step: vi.fn() }, captain: { step: vi.fn() } },
+}))
 
 import { ObjectId } from 'mongodb'
 import type { QueueId, QueueModel } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { QueueState } from '../database/models/queue-state.model'
 import { events } from '../events'
-import { step as autoStep } from './auto/step'
-import { step as captainStep } from './captain/step'
+import { engines } from './engines'
 import { get } from './get'
 import { queueMutexHoldDuration, queueMutexWaitDuration } from './metrics'
 import { queueCommand, type Emit } from './queue-command'
 
+const autoStep = engines.auto.step
+const captainStep = engines.captain.step
 const queue = new ObjectId() as QueueId
 const other = new ObjectId() as QueueId
 const captain = new ObjectId() as QueueId

@@ -13,7 +13,7 @@ vi.mock('../../../../database/collections', () => ({
   },
 }))
 
-const queue = { _id: new ObjectId(), slug: '6v6' } as QueueModel
+const queue = { _id: new ObjectId(), slug: '6v6', launchMode: 'auto' } as QueueModel
 
 async function run() {
   const script = parse(await SetTitle({ queue })).querySelector('script')!.text

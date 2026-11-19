@@ -1,11 +1,17 @@
 import fp from 'fastify-plugin'
-import { events } from '../../../events'
-import { safe } from '../../../utils/safe'
+import { events } from '../../events'
+import { safe } from '../../utils/safe'
 import { kick } from '../kick'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    events.on(
+      'player:disconnected',
+      safe(async ({ steamId }) => {
+        await kick(steamId)
+      }),
+    )
     events.on(
       'player/ban:added',
       safe(async ({ player }) => {
@@ -13,7 +19,5 @@ export default fp(
       }),
     )
   },
-  {
-    name: 'kick banned players',
-  },
+  { name: 'kick players' },
 )

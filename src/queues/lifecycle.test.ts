@@ -9,8 +9,7 @@ import { enable } from './enable'
 import { get } from './get'
 import { move } from './move'
 import { remove } from './remove'
-import { queueEngine } from './auto'
-import { captainEngine } from './captain'
+import { engines } from './engines'
 import { QueueState } from '../database/models/queue-state.model'
 
 vi.mock('../database/collections', () => {
@@ -37,9 +36,11 @@ vi.mock('../database/collections', () => {
 vi.mock('../activity-log', () => ({ activityLog: { record: vi.fn() } }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
 vi.mock('./get', () => ({ get: vi.fn() }))
-vi.mock('./captain', () => ({ captainEngine: { reset: vi.fn(), teardown: vi.fn() } }))
-vi.mock('./auto', () => ({
-  queueEngine: { kick: vi.fn(), reset: vi.fn(), teardown: vi.fn() },
+vi.mock('./engines', () => ({
+  engines: {
+    auto: { reset: vi.fn(), teardown: vi.fn() },
+    captain: { reset: vi.fn(), teardown: vi.fn() },
+  },
 }))
 
 const id = new ObjectId() as QueueId
@@ -47,7 +48,14 @@ const actor = '76561198000000001' as SteamId64
 const maps = [{ name: 'a' }, { name: 'b' }, { name: 'c' }]
 
 function withQueue(queue: object) {
-  vi.mocked(get).mockResolvedValue({ _id: id, slug: 'q', position: 3, maps, ...queue } as never)
+  vi.mocked(get).mockResolvedValue({
+    _id: id,
+    slug: 'q',
+    position: 3,
+    maps,
+    launchMode: 'auto',
+    ...queue,
+  } as never)
 }
 
 beforeEach(() => {
@@ -126,20 +134,20 @@ describe('enable()', () => {
       { _id: id },
       { $set: { enabled: true } },
     )
-    expect(queueEngine.reset).toHaveBeenCalledWith(id)
+    expect(engines.auto.reset).toHaveBeenCalledWith(id)
   })
 
   it('sets up a captain queue through the captain engine only', async () => {
     withQueue({ enabled: false, launchMode: 'captain' })
     await enable(id, actor)
-    expect(captainEngine.reset).toHaveBeenCalledWith(id)
-    expect(queueEngine.reset).not.toHaveBeenCalled()
+    expect(engines.captain.reset).toHaveBeenCalledWith(id)
+    expect(engines.auto.reset).not.toHaveBeenCalled()
   })
 
   it('refuses a queue with fewer than 3 maps', async () => {
     withQueue({ enabled: false, maps: [{ name: 'a' }] })
     await expect(enable(id, actor)).rejects.toThrow('at least 3 maps')
-    expect(queueEngine.reset).not.toHaveBeenCalled()
+    expect(engines.auto.reset).not.toHaveBeenCalled()
   })
 })
 
@@ -151,12 +159,9 @@ describe('disable()', () => {
     expect(collections.queues.updateOne).not.toHaveBeenCalled()
   })
 
-  it('kicks the players and clears the runtime state', async () => {
-    withQueue({ enabled: true })
+  it("tears the queue down through its launch mode's engine", async () => {
+    withQueue({ enabled: true, launchMode: 'captain' })
     vi.mocked(collections.queues.countDocuments).mockResolvedValue(2)
-    vi.mocked(collections.queueSlots.find).mockReturnValue({
-      toArray: vi.fn().mockResolvedValue([{ player: { steamId: actor } }]),
-    } as never)
 
     await disable(id, actor)
 
@@ -164,8 +169,8 @@ describe('disable()', () => {
       { _id: id },
       { $set: { enabled: false } },
     )
-    expect(queueEngine.kick).toHaveBeenCalledWith(actor)
-    expect(queueEngine.teardown).toHaveBeenCalledWith(id)
+    expect(engines.captain.teardown).toHaveBeenCalledWith(id)
+    expect(engines.auto.teardown).not.toHaveBeenCalled()
   })
 
   it('refuses a queue that is launching a game', async () => {
@@ -178,16 +183,15 @@ describe('disable()', () => {
     expect(collections.queues.updateOne).not.toHaveBeenCalled()
   })
 
-  it('re-enables the queue when the kick fails', async () => {
-    withQueue({ enabled: true })
+  it('re-enables the queue when the teardown fails', async () => {
+    withQueue({ enabled: true, launchMode: 'auto' })
     vi.mocked(collections.queues.countDocuments).mockResolvedValue(2)
-    vi.mocked(queueEngine.kick).mockRejectedValueOnce(new Error('invalid queue state'))
+    vi.mocked(engines.auto.teardown).mockRejectedValueOnce(new Error('invalid queue state'))
     await expect(disable(id, actor)).rejects.toThrow('invalid queue state')
     expect(collections.queues.updateOne).toHaveBeenLastCalledWith(
       { _id: id },
       { $set: { enabled: true } },
     )
-    expect(queueEngine.teardown).not.toHaveBeenCalled()
   })
 })
 
