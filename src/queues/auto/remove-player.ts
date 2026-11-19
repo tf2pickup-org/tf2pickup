@@ -2,7 +2,7 @@ import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { kickFromQueue } from './kick-from-queue'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 
 // forgets a player for good: frees their slot and drops friendships on both sides
 export async function removePlayer(steamId: SteamId64) {

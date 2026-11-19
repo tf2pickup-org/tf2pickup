@@ -8,9 +8,8 @@ import { logger } from '../../logger'
 import { preReady } from '../../pre-ready'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
-import { queueCommand } from '../auto/queue-command'
+import { queueCommand } from '../queue-command'
 import { get } from '../get'
-import { advance } from './advance'
 import { assertCaptainQueue } from './assert-captain-queue'
 import { cancelDraftTimeouts } from './cancel-draft-timeouts'
 import { enterState } from './enter-state'
@@ -54,7 +53,6 @@ export async function cancelDraft(queue: QueueId, actor: SteamId64) {
       captain: actor,
       name: captain?.player.name ?? actor,
     })
-    await advance(queue, emit, { state: QueueState.waiting, settings })
   })
 
   await preReady.cancel(actor)

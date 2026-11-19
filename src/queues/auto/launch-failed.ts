@@ -6,7 +6,7 @@ import { getState } from '../get-state'
 import { get } from '../get'
 import { assertAutoQueue } from './assert-auto-queue'
 import { enterState } from './enter-state'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 
 export async function launchFailed(queue: QueueId) {
   assertAutoQueue(await get(queue))

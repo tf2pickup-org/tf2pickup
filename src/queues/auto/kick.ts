@@ -4,7 +4,7 @@ import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { kickFromQueue } from './kick-from-queue'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 
 export async function kick(...steamIds: SteamId64[]): Promise<QueueSlotModel[]> {
   logger.trace({ steamIds }, 'queue.kick()')

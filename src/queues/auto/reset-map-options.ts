@@ -2,7 +2,7 @@ import { sampleSize } from 'es-toolkit'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { get } from '../get'
-import type { Emit } from './queue-command'
+import type { Emit } from '../queue-command'
 
 // must run inside queueCommand()
 export async function resetMapOptions(queue: QueueId, emit: Emit) {

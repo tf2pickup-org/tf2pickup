@@ -2,7 +2,7 @@ import type { CaptainDraftModel } from '../../database/models/captain-draft.mode
 import type { CaptainPoolModel } from '../../database/models/captain-pool.model'
 import type { QueueModel } from '../../database/models/queue.model'
 import { logger } from '../../logger'
-import type { Emit } from '../auto/queue-command'
+import type { Emit } from '../queue-command'
 import { mapOptions } from './map-options'
 import { captainDraftMetrics } from './metrics'
 import { returnDraftToPool } from './return-draft-to-pool'

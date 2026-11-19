@@ -6,8 +6,7 @@ import { QueueState } from '../../database/models/queue-state.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
-import type { Emit } from '../auto/queue-command'
-import { advance } from './advance'
+import type { Emit } from '../queue-command'
 import { legalPicksCache } from './legal-picks-cache'
 import { captainDraftMetrics } from './metrics'
 
@@ -41,7 +40,7 @@ export async function returnDraftToPool(
   await collections.captainDrafts.deleteOne({ queue: queue._id, token: draft.token })
   await collections.queueState.updateOne(
     { queue: queue._id },
-    { $set: { state: QueueState.waiting }, $unset: { captainReady: 1 } },
+    { $set: { state: QueueState.waiting }, $unset: { captainReady: 1, last: 1 } },
   )
   legalPicksCache.delete(queue._id.toHexString())
   captainDraftMetrics.duration.record(
@@ -49,5 +48,4 @@ export async function returnDraftToPool(
   )
   emit('queue/captainPool:updated', { queue: queue._id })
   emit('queue/state:updated', { queue: queue._id, state: QueueState.waiting })
-  await advance(queue._id, emit, { state: QueueState.waiting, settings: queue })
 }

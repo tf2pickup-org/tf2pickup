@@ -9,7 +9,7 @@ vi.mock('../../database/collections', () => ({
 vi.mock('../../logger', () => ({ logger: { trace: vi.fn() } }))
 vi.mock('./kick-from-queue', () => ({ kickFromQueue: vi.fn() }))
 const emit = vi.hoisted(() => vi.fn())
-vi.mock('./queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(
     async (_operation: string, fn: (e: typeof emit) => unknown) => await fn(emit),
   ),
@@ -20,7 +20,7 @@ import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { kickFromQueue } from './kick-from-queue'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 import { removePlayer } from './remove-player'
 
 const queue = new ObjectId() as QueueId

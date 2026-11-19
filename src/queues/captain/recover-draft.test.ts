@@ -30,7 +30,7 @@ vi.mock('./build-launch-snapshot', () => ({
 }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 

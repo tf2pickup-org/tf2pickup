@@ -3,7 +3,7 @@ import type { GameModel } from '../../database/models/game.model'
 import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
 import { applyMapCooldown } from '../../maps/apply-cooldown'
-import { queueCommand } from '../auto/queue-command'
+import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { returnDraftToPool } from './return-draft-to-pool'
 

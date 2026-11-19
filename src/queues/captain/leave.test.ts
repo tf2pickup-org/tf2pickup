@@ -9,10 +9,8 @@ vi.mock('../../database/collections', () => ({
 }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { cancel: vi.fn() } }))
-vi.mock('./advance', () => ({ advance: vi.fn() }))
 vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'captain' }) }))
-vi.mock('../get-state', () => ({ getState: vi.fn().mockResolvedValue('drafting') }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(
     async (_operation: string, fn: (emit: unknown) => unknown) => await fn(vi.fn()),
   ),

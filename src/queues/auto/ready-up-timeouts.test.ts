@@ -18,7 +18,7 @@ vi.mock('./kick-from-queue', () => ({ kickFromQueue: vi.fn() }))
 vi.mock('../../database/collections', () => ({
   collections: { queueSlots: { find: vi.fn(() => ({ toArray: () => Promise.resolve([]) })) } },
 }))
-vi.mock('./queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(
     async (_operation: string, fn: (emit: unknown) => unknown) => await fn(vi.fn()),
   ),

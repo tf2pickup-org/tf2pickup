@@ -9,7 +9,7 @@ import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { get } from '../get'
 import { getSlots } from './get-slots'
 import { assertAutoQueue } from './assert-auto-queue'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 import { resetMapOptions } from './reset-map-options'
 
 export async function reset(queue: QueueId) {

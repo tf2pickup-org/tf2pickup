@@ -3,7 +3,7 @@ import type { QueueId } from '../../database/models/queue.model'
 import { tasks } from '../../tasks'
 import { get } from '../get'
 import { assertAutoQueue } from './assert-auto-queue'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 
 // drops a disabled queue's runtime state
 export async function teardown(queue: QueueId) {

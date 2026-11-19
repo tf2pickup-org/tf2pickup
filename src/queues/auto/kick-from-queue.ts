@@ -10,7 +10,7 @@ import { getState } from '../get-state'
 import { getMapVoteResults } from './get-map-vote-results'
 import { get } from '../get'
 import { assertAutoQueue } from './assert-auto-queue'
-import type { Emit } from './queue-command'
+import type { Emit } from '../queue-command'
 
 // must run inside queueCommand()
 export async function kickFromQueue(

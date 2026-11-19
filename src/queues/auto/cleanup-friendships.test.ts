@@ -15,7 +15,7 @@ vi.mock('../../database/collections', () => {
 vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'auto' }) }))
 vi.mock('../../events', () => ({ events: { emit: vi.fn() } }))
 const emit = vi.hoisted(() => vi.fn())
-vi.mock('./queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(
     async (_operation: string, fn: (e: typeof emit) => unknown) => await fn(emit),
   ),
@@ -26,7 +26,7 @@ import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { events } from '../../events'
 import { cleanupFriendships } from './cleanup-friendships'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 
 describe('cleanupFriendships()', () => {
   it('drops friendships of sources no longer queued as medics, inside a queue command', async () => {

@@ -5,7 +5,7 @@ import { errors } from '../../errors'
 import { logger } from '../../logger'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { getState } from '../get-state'
-import { queueCommand } from './queue-command'
+import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { assertAutoQueue } from './assert-auto-queue'
 
