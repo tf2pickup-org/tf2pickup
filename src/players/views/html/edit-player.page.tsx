@@ -599,7 +599,6 @@ async function CooldownLevelInput(props: {
   const decayPeriodMs = await configuration.get('games.cooldown_decay_period')
   const now = new Date()
   const { level, decayedLevels, nextDecayAt } = decayCooldownLevel(props.player, now, decayPeriodMs)
-  const { value, unit } = durationUnit.split(decayPeriodMs)
 
   return (
     <>
@@ -617,7 +616,7 @@ async function CooldownLevelInput(props: {
         {decayPeriodMs > 0 && level > 0 && nextDecayAt && (
           <>
             {' · decays by one level every '}
-            {value} {unit}
+            {durationUnit.label(decayPeriodMs)}
             {decayedLevels > 0 && `, already down from ${props.player.cooldownLevel}`}
             {', next on'}
             <strong safe> {format(nextDecayAt, 'MMMM dd, yyyy, HH:mm')}</strong>

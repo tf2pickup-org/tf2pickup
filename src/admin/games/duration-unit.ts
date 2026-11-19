@@ -36,4 +36,10 @@ export const durationUnit = {
     }
     return { value: Math.round(ms / unitMs.minutes), unit: 'minutes' }
   },
+
+  // A duration spelled out for prose, e.g. "1 month" rather than "1 months".
+  label(ms: number): string {
+    const { value, unit } = durationUnit.split(ms)
+    return `${value} ${value === 1 ? unit.slice(0, -1) : unit}`
+  },
 }

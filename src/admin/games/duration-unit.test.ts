@@ -43,3 +43,11 @@ describe('durationUnit.split', () => {
     expect(durationUnit.split(0)).toEqual({ value: 0, unit: 'minutes' })
   })
 })
+
+describe('durationUnit.label', () => {
+  it('spells out a duration, singular for one', () => {
+    expect(durationUnit.label(milliseconds({ months: 1 }))).toBe('1 month')
+    expect(durationUnit.label(milliseconds({ months: 2 }))).toBe('2 months')
+    expect(durationUnit.label(milliseconds({ minutes: 90 }))).toBe('90 minutes')
+  })
+})
