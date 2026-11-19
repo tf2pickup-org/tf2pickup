@@ -137,7 +137,7 @@ test.describe('captain ready-up @multi-queue', () => {
     const before = await autoSnapshot(page)
     const pages = await createPool(users, slug)
     await volunteer(pages)
-    await pages[2]!.getByRole('button', { name: "No, I can't play now", exact: true }).click()
+    await pages[2]!.getByRole('button', { name: "Can't play right now", exact: true }).click()
     await expect.poll(() => state(page, slug)).toBe('waiting')
     await expect(pages[0]!.getByText('Players 11/12')).toBeVisible()
     await expect(pages[0]!.locator('[data-ready="true"]')).toHaveCount(0)
