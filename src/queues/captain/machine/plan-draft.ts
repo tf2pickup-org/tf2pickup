@@ -18,7 +18,8 @@ export type DraftPlan =
 
 // Decides where a draft goes after a pick or a ban was applied to it in memory, and brings the
 // draft there: commits the picks that have a single option, starts the clock of a new turn and
-// draws the map options once the last pick is made. Touches nothing but the draft.
+// draws the map options once the last pick is made. Persists nothing; it does log and count the
+// forced picks (applyPick) and fill the legal picks cache, so plan a draft only once.
 export function planDraft(
   queue: Pick<QueueModel, 'gamemode' | 'pickTimeout' | 'maps'>,
   draft: CaptainDraftModel,
