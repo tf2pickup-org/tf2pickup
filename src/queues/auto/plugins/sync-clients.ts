@@ -86,7 +86,7 @@ export default fp(
               .toArray()
           ).map(s => s.player!.steamId)
 
-          app.gateway.to({ players }).send(actor => ReadyUpDialog.show(actor!))
+          app.gateway.to({ players }).send(actor => ReadyUpDialog.show(actor!, queue))
         }
       }),
     )
