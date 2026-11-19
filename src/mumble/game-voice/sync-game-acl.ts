@@ -1,15 +1,21 @@
-import { collections } from '../database/collections'
-import { SlotStatus } from '../database/models/game-slot.model'
-import { GameState, type GameModel } from '../database/models/game.model'
-import { Tf2Team } from '../shared/types/tf2-team'
+import type { AclEntry } from '@tf2pickup-org/mumble-client'
+import { collections } from '../../database/collections'
+import { SlotStatus } from '../../database/models/game-slot.model'
+import { GameState, type GameModel } from '../../database/models/game.model'
+import { Tf2Team } from '../../shared/types/tf2-team'
+import { isVerificationEnabled } from '../is-verification-enabled'
+import { mumblePermission } from '../mumble-permission'
 import { findGameChannels } from './find-game-channels'
-import { mumblePermission } from './mumble-permission'
-import { runInCommandQueue } from './run-in-command-queue'
+import type { VoiceChannel } from './voice-server'
 
 // Rewrites the game's channel ACLs from scratch: the game channel lets in all of its players, each
 // team channel only that team, including replaced players until the handover settles. Once the game
 // is over, everyone can enter. Idempotent, so it's safe to rerun after a restart or a failure.
 export async function syncGameAcl(game: Pick<GameModel, 'number' | 'state' | 'slots'>) {
+  if (!(await isVerificationEnabled())) {
+    return
+  }
+
   const channels = await findGameChannels(game.number)
   if (!channels) {
     return
@@ -48,21 +54,16 @@ export async function syncGameAcl(game: Pick<GameModel, 'number' | 'state' | 'sl
   await save(channels[Tf2Team.red], entriesFor(Tf2Team.red))
 }
 
-async function save(
-  channel: NonNullable<Awaited<ReturnType<typeof findGameChannels>>>['game'],
-  entries: { group: string; applySubs: boolean }[],
-) {
-  await runInCommandQueue(async () => {
-    await channel.saveAcl({
-      inheritAcls: true,
-      groups: [],
-      entries: entries.map(entry => ({
-        ...entry,
-        applyHere: true,
-        inherited: false,
-        grant: mumblePermission.voice,
-        deny: 0,
-      })),
-    })
-  }, 2) // the update and the query that confirms it
+async function save(channel: VoiceChannel, entries: Pick<AclEntry, 'group' | 'applySubs'>[]) {
+  await channel.saveAcl({
+    inheritAcls: true,
+    groups: [],
+    entries: entries.map(entry => ({
+      ...entry,
+      applyHere: true,
+      inherited: false,
+      grant: mumblePermission.voice,
+      deny: 0,
+    })),
+  })
 }
