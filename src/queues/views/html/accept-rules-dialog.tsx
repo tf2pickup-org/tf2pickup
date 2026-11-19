@@ -35,7 +35,13 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
           </div>
 
           <div class="flex flex-row justify-center">
-            <form action={`/players/${props.actor.player.steamId}/accept-rules`} method="post">
+            <form
+              action={`/players/${props.actor.player.steamId}/accept-rules`}
+              method="post"
+              hx-post={`/players/${props.actor.player.steamId}/accept-rules`}
+              hx-target="closest dialog"
+              hx-swap="delete"
+            >
               <button
                 type="submit"
                 class="button"

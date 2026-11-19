@@ -81,6 +81,9 @@ export default routes(async app => {
           { steamId: request.params.steamId },
           { $set: { hasAcceptedRules: true } },
         )
+        if (request.isHtmx()) {
+          return await reply.send('')
+        }
         await reply.redirect('/')
       },
     )
