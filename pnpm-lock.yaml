@@ -300,7 +300,7 @@ importers:
         version: 1.6.20
       cssnano:
         specifier: 9.9.0
-        version: 9.9.0(postcss@8.5.32)
+        version: 9.9.0(postcss@8.5.33)
       csv-parse:
         specifier: 7.0.3
         version: 7.0.3
@@ -392,11 +392,11 @@ importers:
         specifier: 10.4.0
         version: 10.4.0
       postcss:
-        specifier: 8.5.32
-        version: 8.5.32
+        specifier: 8.5.33
+        version: 8.5.33
       postcss-nested:
         specifier: 9.0.1
-        version: 9.0.1(postcss@8.5.32)
+        version: 9.0.1(postcss@8.5.33)
       rcon-client:
         specifier: 4.2.5
         version: 4.2.5
@@ -3637,8 +3637,8 @@ packages:
     resolution: {integrity: sha512-GwxlMgTTXwIom+ebC7an3k6RaJDwklRQQnfiXsLPGicu8FYV/k/+1/9YY2OU2+r938H2t4X0TDxoif+HP2rjzQ==}
     engines: {node: '>=4'}
 
-  postcss@8.5.32:
-    resolution: {integrity: sha512-LJlKCCAUFKOuZxipUdYw1NzIITEsPcgyOG9LkvRJvuKj/bRzbuRY0ARXvL0pWGpsZvn8jku+LMep2eU0seHp8g==}
+  postcss@8.5.33:
+    resolution: {integrity: sha512-RVHEU9/Pp1Fnjr/MpAJsZoADukCKhfIi15OunEYiGktIkYLkPVvC1sioWolGDS7XByMTx9m/IGbro0Js13zhnQ==}
     engines: {node: ^10 || ^12 || >=14}
 
   powershell-utils@0.1.0:
@@ -5560,7 +5560,7 @@ snapshots:
       '@alloc/quick-lru': 5.2.0
       '@tailwindcss/node': 4.3.5
       '@tailwindcss/oxide': 4.3.5
-      postcss: 8.5.32
+      postcss: 8.5.33
       tailwindcss: 4.3.5
 
   '@tailwindcss/typography@0.5.20(tailwindcss@4.3.5)':
@@ -6132,14 +6132,14 @@ snapshots:
 
   cssesc@3.0.0: {}
 
-  cssnano@9.9.0(postcss@8.5.32):
+  cssnano@9.9.0(postcss@8.5.33):
     dependencies:
       '@colordx/core': 7.3.0
       '@csstools/css-tokenizer': 4.0.2
       browserslist: 4.29.3
       caniuse-api: 4.0.0
-      postcss: 8.5.32
-      postcss-calc: 11.2.2(postcss@8.5.32)
+      postcss: 8.5.33
+      postcss-calc: 11.2.2(postcss@8.5.33)
 
   csstype@3.2.3: {}
 
@@ -7461,14 +7461,14 @@ snapshots:
 
   pony-cause@2.1.11: {}
 
-  postcss-calc@11.2.2(postcss@8.5.32):
+  postcss-calc@11.2.2(postcss@8.5.33):
     dependencies:
       '@csstools/css-tokenizer': 4.0.2
-      postcss: 8.5.32
+      postcss: 8.5.33
 
-  postcss-nested@9.0.1(postcss@8.5.32):
+  postcss-nested@9.0.1(postcss@8.5.33):
     dependencies:
-      postcss: 8.5.32
+      postcss: 8.5.33
       postcss-selector-parser: 7.1.7
 
   postcss-selector-parser@7.1.7:
@@ -7480,7 +7480,7 @@ snapshots:
     dependencies:
       util-deprecate: 1.0.2
 
-  postcss@8.5.32:
+  postcss@8.5.33:
     dependencies:
       nanoid: 3.3.20
       picocolors: 1.1.1
@@ -7708,7 +7708,7 @@ snapshots:
       is-plain-object: 5.1.0
       launder: 1.7.2
       parse-srcset: 1.0.2
-      postcss: 8.5.32
+      postcss: 8.5.33
 
   secure-json-parse@4.1.0: {}
 
@@ -8025,7 +8025,7 @@ snapshots:
       esbuild: 0.28.2
       fdir: 6.5.0(picomatch@4.0.7)
       picomatch: 4.0.7
-      postcss: 8.5.32
+      postcss: 8.5.33
       rollup: 4.60.4
       tinyglobby: 0.2.17
     optionalDependencies:
