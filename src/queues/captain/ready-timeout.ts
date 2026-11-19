@@ -6,7 +6,7 @@ import { preReady } from '../../pre-ready'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { queueCommand } from '../queue-command'
 import { get } from '../get'
-import { enterState } from './enter-state'
+import { captainMachine } from './machine'
 
 // An expired ready state leaves the queue waiting, even with a full pool: reopening ready-up there
 // would loop without ever kicking the unready players.
@@ -28,7 +28,7 @@ export async function readyTimeout(queue: QueueId, token: string, phase: 'readyU
         return [] as SteamId64[]
 
       if (phase === 'state') {
-        await enterState(settings, QueueState.waiting, emit)
+        await captainMachine.toWaiting(settings, emit)
         return [] as SteamId64[]
       }
 

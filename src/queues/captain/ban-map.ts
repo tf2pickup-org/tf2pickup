@@ -9,7 +9,7 @@ import { getState } from '../get-state'
 import { applyMapBan } from './apply-map-ban'
 import { assertCaptainQueue } from './assert-captain-queue'
 import { banTurn } from './ban-turn'
-import { settleMapBans } from './settle-map-bans'
+import { captainMachine } from './machine'
 
 export async function banMap(queue: QueueId, actor: SteamId64, map: string) {
   const settings = await get(queue)
@@ -24,6 +24,6 @@ export async function banMap(queue: QueueId, actor: SteamId64, map: string) {
     if (draft[turn.team] !== actor) throw errors.forbidden('it is not your ban')
     if (!turn.remaining.includes(map)) throw errors.badRequest('that map cannot be banned')
     applyMapBan(draft, map, 'chosen')
-    await settleMapBans(settings, draft, emit)
+    await captainMachine.advanceDraft(settings, draft, emit)
   })
 }

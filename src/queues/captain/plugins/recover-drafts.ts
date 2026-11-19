@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin'
 import { queues } from '../..'
-import { recoverDraft } from '../recover-draft'
+import { captainMachine } from '../machine'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -8,7 +8,7 @@ export default fp(
     app.addHook('onReady', async () => {
       for (const queue of await queues.listEnabled()) {
         if (queue.launchMode === 'captain') {
-          await recoverDraft(queue)
+          await captainMachine.recover(queue)
         }
       }
     })

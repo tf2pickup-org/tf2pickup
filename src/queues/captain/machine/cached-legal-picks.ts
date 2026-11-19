@@ -1,7 +1,7 @@
-import type { CaptainDraftModel } from '../../database/models/captain-draft.model'
-import { legalPicks } from './legal-picks'
+import type { CaptainDraftModel } from '../../../database/models/captain-draft.model'
+import { legalPicks } from '../legal-picks'
 import { legalPicksCache } from './legal-picks-cache'
-import type { DraftPosition } from './types/draft-position'
+import type { DraftPosition } from '../types/draft-position'
 
 // computed once per position, then shared by every viewer and request
 export function cachedLegalPicks(draft: CaptainDraftModel, position: DraftPosition) {

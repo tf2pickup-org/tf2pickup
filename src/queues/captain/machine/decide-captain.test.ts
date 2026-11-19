@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { QueueState } from '../../database/models/queue-state.model'
+import { QueueState } from '../../../database/models/queue-state.model'
 import { decideCaptain } from './decide-captain'
 
 describe('decideCaptain()', () => {

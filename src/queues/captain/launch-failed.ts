@@ -4,7 +4,7 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { captainDraftMetrics } from './metrics'
-import { returnDraftToPool } from './return-draft-to-pool'
+import { captainMachine } from './machine'
 
 export async function launchFailed(queue: QueueId, token: string) {
   await queueCommand('captain-launch-failed', async emit => {
@@ -20,7 +20,7 @@ export async function launchFailed(queue: QueueId, token: string) {
     )
       return
     captainDraftMetrics.aborted.add(1, { reason: 'launch_failed' })
-    await returnDraftToPool(settings, draft, emit, [], true)
+    await captainMachine.toWaiting(settings, emit, { draft, failed: true })
     emit('queue/captainDraft:failed', { queue, message: 'Failed to launch game' })
   })
 }

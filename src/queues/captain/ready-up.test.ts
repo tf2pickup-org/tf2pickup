@@ -48,6 +48,7 @@ vi.mock('../../database/collections', () => ({
           ),
       })),
     },
+    captainDrafts: { deleteMany: vi.fn(), insertOne: vi.fn() },
     captainPool: {
       find: vi.fn(filter => ({
         toArray: async () =>
@@ -74,7 +75,8 @@ vi.mock('../../database/collections', () => ({
   },
 }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
-vi.mock('./start-draft', () => ({ startDraft: vi.fn() }))
+vi.mock('./machine/advance-draft', () => ({ advanceDraft: vi.fn() }))
+vi.mock('./metrics', () => ({ captainDraftMetrics: { poolSize: { record: vi.fn() } } }))
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn(), cancel: vi.fn() } }))
 vi.mock('../queue-command', () => ({
@@ -88,7 +90,7 @@ vi.mock('../queue-command', () => ({
 import { collections } from '../../database/collections'
 import { tasks } from '../../tasks'
 import { preReady } from '../../pre-ready'
-import { step } from './step'
+import { step } from './machine/step'
 import { captainRoles } from './captain-roles'
 import { roleKey } from './role-key'
 import { leave } from './leave'

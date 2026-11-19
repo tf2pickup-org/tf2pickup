@@ -43,6 +43,7 @@ vi.mock('../../database/collections', () => ({
     },
     captainPool: {
       find: vi.fn(() => ({ toArray: () => Promise.resolve(structuredClone(store.members)) })),
+      updateMany: vi.fn(),
     },
   },
 }))
@@ -85,7 +86,7 @@ import { buildLaunchSnapshot } from './build-launch-snapshot'
 import type { CaptainDraftModel } from '../../database/models/captain-draft.model'
 import { pick } from './pick'
 import { roleKey } from './role-key'
-import { startDraft } from './start-draft'
+import { toDrafting } from './machine/to-drafting'
 import { turnTimeout } from './turn-timeout'
 
 const queueId = new ObjectId() as QueueId
@@ -134,9 +135,9 @@ beforeEach(() => {
   vi.mocked(get).mockResolvedValue(settings)
 })
 
-describe('startDraft()', () => {
+describe('toDrafting()', () => {
   it('draws the two volunteers as captains and starts RED’s turn', async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
 
     const { red, blu, picks, turn } = draft()
     expect([red, blu].sort()).toEqual([pool()[0]!.player.steamId, pool()[1]!.player.steamId].sort())
@@ -155,9 +156,9 @@ describe('startDraft()', () => {
   })
 })
 
-describe('startDraft() observability', () => {
+describe('toDrafting() observability', () => {
   it('logs the draft and records its pool size', async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
     expect(log.info).toHaveBeenCalledWith(
       expect.objectContaining({ queue: queueId, pool: 14 }),
       'captain draft started',
@@ -168,7 +169,7 @@ describe('startDraft() observability', () => {
 
 describe('pick()', () => {
   beforeEach(async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
     emit.mockClear()
   })
 
@@ -233,7 +234,7 @@ describe('pick()', () => {
 
 describe('turnTimeout()', () => {
   it('picks the longest-waiting players for the whole turn, and plays a full draft out', async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
 
     for (let turns = 0; turns < 20 && store.state === 'drafting'; turns++) {
       const { token, turn } = draft()
@@ -257,7 +258,7 @@ describe('turnTimeout()', () => {
       .slice(0, 12)
       .map((member, index) => ({ ...member, roles: [roles[index % roles.length]!] }))
     store.members = exact
-    await startDraft(settings, exact, emit)
+    await toDrafting(settings, emit, exact)
     for (let turns = 0; turns < 20 && store.state === 'drafting'; turns++) {
       await turnTimeout(queueId, draft().token, draft().turn)
     }
@@ -275,7 +276,7 @@ describe('turnTimeout()', () => {
   })
 
   it('keeps the deadline of a double turn when its first pick is made', async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
     const { red, blu } = draft()
     await pick(queueId, red, pool()[5]!.player.steamId, roles[0]!)
     const snapshot = () => {
@@ -299,7 +300,7 @@ describe('turnTimeout()', () => {
   })
 
   it('ignores a timer of an earlier turn or draft', async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
     const { token } = draft()
     await turnTimeout(queueId, token, 3)
     await turnTimeout(queueId, 'another-draft', 0)
@@ -309,7 +310,7 @@ describe('turnTimeout()', () => {
 
 describe('map bans after drafting', () => {
   beforeEach(async () => {
-    await startDraft(settings, pool(), emit)
+    await toDrafting(settings, emit, pool())
     for (let i = 0; i < 20 && store.state === 'drafting'; i++) {
       await turnTimeout(queueId, draft().token, draft().turn)
     }
@@ -376,7 +377,7 @@ describe('few eligible maps', () => {
       maps: [...settings.maps.slice(0, count), { name: 'cp_cooling', cooldown: 2 }],
     }
     vi.mocked(get).mockResolvedValue(queue)
-    await startDraft(queue, pool(), emit)
+    await toDrafting(queue, emit, pool())
     for (let i = 0; i < 20 && store.state === 'drafting'; i++)
       await turnTimeout(queueId, draft().token, draft().turn)
     if (count === 1) expect(store.state).toBe('launching')

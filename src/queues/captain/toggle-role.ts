@@ -14,6 +14,7 @@ import { vacateSlot } from '../auto/vacate-slot'
 import { get } from '../get'
 import { getState } from '../get-state'
 import { assertCaptainQueue } from './assert-captain-queue'
+import { captainMachine } from './machine'
 import { captainRoles } from './captain-roles'
 import { leavePools } from './leave-pools'
 import { roleKey } from './role-key'
@@ -95,7 +96,7 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
       logger.info({ queue, steamId, role }, 'captain pool joined')
     }
 
-    await collections.queueState.updateOne({ queue }, { $set: { last: steamId } })
+    await captainMachine.recordLast(queue, steamId)
     emit('queue/captainPool:updated', { queue })
     return (
       state === QueueState.ready && (member?.roles.length !== 1 || !member.roles.includes(role))

@@ -5,7 +5,7 @@ import { logger } from '../../logger'
 import { applyMapCooldown } from '../../maps/apply-cooldown'
 import { queueCommand } from '../queue-command'
 import { get } from '../get'
-import { returnDraftToPool } from './return-draft-to-pool'
+import { captainMachine } from './machine'
 
 export async function completeLaunch(game: GameModel) {
   if (game.launchMode !== 'captain' || !game.captainDraftToken || !game.queue) return
@@ -25,11 +25,9 @@ export async function completeLaunch(game: GameModel) {
       return
     await applyMapCooldown(queue, game.map)
     logger.info({ queue, gameNumber: game.number }, 'captain game launched')
-    await returnDraftToPool(
-      await get(queue),
+    await captainMachine.toWaiting(settings, emit, {
       draft,
-      emit,
-      game.slots.map(slot => slot.player),
-    )
+      remove: game.slots.map(slot => slot.player),
+    })
   })
 }
