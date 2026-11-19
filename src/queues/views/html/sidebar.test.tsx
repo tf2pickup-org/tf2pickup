@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
-import type { QueueId } from '../../../../database/models/queue.model'
+import type { QueueId } from '../../../database/models/queue.model'
 
 vi.mock('./chat', () => ({ Chat: () => '<a href="/players/1">chat author</a>' }))
 vi.mock('./online-player-list', () => ({ OnlinePlayerList: () => '<a href="/players/1">p</a>' }))

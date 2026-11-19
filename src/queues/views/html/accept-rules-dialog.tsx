@@ -1,7 +1,7 @@
 import { parse } from 'marked'
-import type { User } from '../../../../auth/types/user'
-import { collections } from '../../../../database/collections'
-import { logger } from '../../../../logger'
+import type { User } from '../../../auth/types/user'
+import { collections } from '../../../database/collections'
+import { logger } from '../../../logger'
 import { nanoid } from 'nanoid'
 
 export async function AcceptRulesDialog(props: { actor?: User | undefined }) {

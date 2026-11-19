@@ -8,7 +8,7 @@ import { cancelDraft } from '../cancel-draft'
 import { pick } from '../pick'
 import { toggleRole } from '../toggle-role'
 import { toggleVolunteer } from '../toggle-volunteer'
-import { ReadyUpDialog } from '../../auto/views/html/ready-up-dialog'
+import { ReadyUpDialog } from '../../views/html/ready-up-dialog'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

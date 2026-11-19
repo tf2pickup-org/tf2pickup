@@ -1,5 +1,5 @@
-import { collections } from '../../../../database/collections'
-import type { QueueId } from '../../../../database/models/queue.model'
+import { collections } from '../../../database/collections'
+import type { QueueId } from '../../../database/models/queue.model'
 
 export async function CurrentPlayerCount(props: { queue: QueueId }) {
   const current = await collections.queueSlots.countDocuments({

@@ -1,6 +1,6 @@
-import { collections } from '../../../../database/collections'
-import type { StreamModel } from '../../../../database/models/stream.model'
-import { IconEye } from '../../../../html/components/icons'
+import { collections } from '../../../database/collections'
+import type { StreamModel } from '../../../database/models/stream.model'
+import { IconEye } from '../../../html/components/icons'
 
 const featuredCount = 3
 

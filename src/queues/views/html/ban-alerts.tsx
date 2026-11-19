@@ -1,10 +1,10 @@
 import { formatDistanceToNow } from 'date-fns'
-import { collections } from '../../../../database/collections'
-import type { PlayerBan, PlayerModel } from '../../../../database/models/player.model'
-import { environment } from '../../../../environment'
-import { players } from '../../../../players'
-import { isBot } from '../../../../shared/types/bot'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import { collections } from '../../../database/collections'
+import type { PlayerBan, PlayerModel } from '../../../database/models/player.model'
+import { environment } from '../../../environment'
+import { players } from '../../../players'
+import { isBot } from '../../../shared/types/bot'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function BanAlerts(props: { actor?: SteamId64 | undefined }) {
   return (

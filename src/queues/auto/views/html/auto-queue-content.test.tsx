@@ -35,7 +35,7 @@ vi.mock('../../../../players', () => ({
 }))
 
 import { parse } from 'node-html-parser'
-import { ClearQueueButton } from './queue-content'
+import { ClearQueueButton } from './auto-queue-content'
 import { PlayerRole } from '../../../../database/models/player.model'
 import type { User } from '../../../../auth/types/user'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'

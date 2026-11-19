@@ -1,5 +1,5 @@
-import type { GameNumber } from '../../../../database/models/game.model'
-import { Snackbar } from '../../../../html/components/snackbar'
+import type { GameNumber } from '../../../database/models/game.model'
+import { Snackbar } from '../../../html/components/snackbar'
 
 export function RunningGameSnackbar(props: { gameNumber?: GameNumber | undefined }) {
   return (

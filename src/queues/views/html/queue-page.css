@@ -1,4 +1,4 @@
-@reference '../../../../html/styles/main.css';
+@reference '../../../html/styles/main.css';
 
 @layer components {
   .queue-page {

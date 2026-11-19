@@ -1,14 +1,14 @@
 import Html from '@kitajs/html'
 import { format, isSameDay, isToday, isYesterday } from 'date-fns'
 import type { WithId } from 'mongodb'
-import { chat } from '../../../../chat'
-import type { ChatMessageModel } from '../../../../database/models/chat-message.model'
-import { IconLoader3, IconSend2, IconX } from '../../../../html/components/icons'
-import { players } from '../../../../players'
-import type { User } from '../../../../auth/types/user'
-import { PlayerRole } from '../../../../database/models/player.model'
-import { DeletedUser } from '../../../../html/components/deleted-user'
-import { isDeletedUser, type SteamId64 } from '../../../../shared/types/steam-id-64'
+import { chat } from '../../../chat'
+import type { ChatMessageModel } from '../../../database/models/chat-message.model'
+import { IconLoader3, IconSend2, IconX } from '../../../html/components/icons'
+import { players } from '../../../players'
+import type { User } from '../../../auth/types/user'
+import { PlayerRole } from '../../../database/models/player.model'
+import { DeletedUser } from '../../../html/components/deleted-user'
+import { isDeletedUser, type SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function Chat(props: { user?: User | undefined }) {
   const isAdmin = props.user?.player.roles.includes(PlayerRole.admin) ?? false

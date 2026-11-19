@@ -1,7 +1,7 @@
 import disableCache from 'fastify-disablecache'
 import { z } from 'zod'
-import { QueueContentSwap } from '../../../queues/auto/views/html/queue-content-swap'
-import { QueuePage } from '../../../queues/auto/views/html/queue.page'
+import { QueueContentSwap } from '../../../queues/views/html/queue-content-swap'
+import { QueuePage } from '../../../queues/views/html/queue.page'
 import { queues } from '../../../queues'
 import { routes } from '../../../utils/routes'
 

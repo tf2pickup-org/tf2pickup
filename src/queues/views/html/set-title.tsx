@@ -1,6 +1,6 @@
-import type { QueueModel } from '../../../../database/models/queue.model'
-import { environment } from '../../../../environment'
-import { playerCounts } from '../../../player-counts'
+import type { QueueModel } from '../../../database/models/queue.model'
+import { environment } from '../../../environment'
+import { playerCounts } from '../../player-counts'
 
 export async function SetTitle(props: { queue: QueueModel }) {
   const { current, required } = await playerCounts(props.queue)

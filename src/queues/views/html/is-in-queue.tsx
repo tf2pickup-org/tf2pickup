@@ -1,6 +1,6 @@
-import type { QueueId } from '../../../../database/models/queue.model'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
-import { membership } from '../../../membership'
+import type { QueueId } from '../../../database/models/queue.model'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { membership } from '../../membership'
 
 export async function IsInQueue(props: { queue: QueueId; actor?: SteamId64 | undefined }) {
   const current = props.actor ? await membership(props.actor) : null

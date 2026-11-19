@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
 import { ChatMessageList, ChatMessages } from './chat'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
-vi.mock('../../../../chat', () => ({ chat: {} }))
-vi.mock('../../../../players', () => ({
+vi.mock('../../../chat', () => ({ chat: {} }))
+vi.mock('../../../players', () => ({
   players: {
     bySteamId: vi
       .fn()

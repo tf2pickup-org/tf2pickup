@@ -1,4 +1,4 @@
-import { collections } from '../../../../database/collections'
+import { collections } from '../../../database/collections'
 
 export async function OnlinePlayerCount() {
   const onlinePlayers = await collections.onlinePlayers.countDocuments()

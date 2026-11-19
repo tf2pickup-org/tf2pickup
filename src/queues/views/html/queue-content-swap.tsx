@@ -1,6 +1,6 @@
-import type { QueueModel } from '../../../../database/models/queue.model'
-import { environment } from '../../../../environment'
-import { playerCounts } from '../../../player-counts'
+import type { QueueModel } from '../../../database/models/queue.model'
+import { environment } from '../../../environment'
+import { playerCounts } from '../../player-counts'
 import { QueueContent } from './queue-content'
 import { RequiredPlayerCount } from './required-player-count'
 

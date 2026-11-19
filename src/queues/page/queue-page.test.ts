@@ -98,8 +98,8 @@ vi.mock('../auto/views/html/queue-slot', () => ({
   QueueSlot: (props: { slot: { id: string }; actor?: { steamId: string } }) =>
     tag(`queue-slot-${props.slot.id}`)({ actor: props.actor?.steamId }),
 }))
-vi.mock('../auto/views/html/set-title', () => ({ SetTitle: () => tag('set-title')() }))
-vi.mock('../auto/views/html/is-in-queue', () => ({ IsInQueue: tag('is-in-queue') }))
+vi.mock('../views/html/set-title', () => ({ SetTitle: () => tag('set-title')() }))
+vi.mock('../views/html/is-in-queue', () => ({ IsInQueue: tag('is-in-queue') }))
 vi.mock('../auto/views/html/map-vote-selection', () => ({
   MapVoteSelection: tag('map-vote-selection'),
 }))
@@ -107,27 +107,27 @@ vi.mock('../auto/views/html/map-vote', () => ({
   MapVote: tag('map-vote'),
   MapResult: (props: { map: string }) => tag(`map-result-${props.map}`)(),
 }))
-vi.mock('../auto/views/html/online-player-list', () => ({
+vi.mock('../views/html/online-player-list', () => ({
   OnlinePlayerList: () => tag('online-player-list')(),
 }))
-vi.mock('../auto/views/html/online-player-count', () => ({
+vi.mock('../views/html/online-player-count', () => ({
   OnlinePlayerCount: () => tag('online-player-count')(),
 }))
-vi.mock('../auto/views/html/stream-list', () => ({ StreamList: () => tag('stream-list')() }))
-vi.mock('../auto/views/html/substitution-requests', () => ({
+vi.mock('../views/html/stream-list', () => ({ StreamList: () => tag('stream-list')() }))
+vi.mock('../views/html/substitution-requests', () => ({
   SubstitutionRequests: () => tag('substitution-requests')(),
 }))
-vi.mock('../auto/views/html/chat', () => ({
+vi.mock('../views/html/chat', () => ({
   ChatMessages: Object.assign(() => tag('chat-messages')(), {
     append: () => tag('chat-message')(),
     remove: () => tag('chat-message-removed')(),
   }),
 }))
-vi.mock('../auto/views/html/ban-alerts', () => ({ BanAlerts: tag('ban-alerts') }))
+vi.mock('../views/html/ban-alerts', () => ({ BanAlerts: tag('ban-alerts') }))
 vi.mock('../../pre-ready/views/html/pre-ready-up-button', () => ({
   PreReadyUpButton: tag('pre-ready-up-button'),
 }))
-vi.mock('../auto/views/html/ready-up-dialog', () => ({
+vi.mock('../views/html/ready-up-dialog', () => ({
   ReadyUpDialog: { show: () => tag('ready-up-dialog')() },
 }))
 

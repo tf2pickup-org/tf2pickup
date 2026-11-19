@@ -1,9 +1,9 @@
-import type { QueueModel } from '../../../../database/models/queue.model'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import type { QueueModel } from '../../../database/models/queue.model'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { QueueSwitcherCount } from './queue-switcher-count'
-import { queues } from '../../..'
-import { membership } from '../../../membership'
-import { playerCounts } from '../../../player-counts'
+import { queues } from '../..'
+import { membership } from '../../membership'
+import { playerCounts } from '../../player-counts'
 
 // Links to the other enabled queues; the content is swapped in place, and preloaded on hover.
 // The dot marks the queue the actor is in.

@@ -1,10 +1,10 @@
 import { nanoid } from 'nanoid'
 import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
-import type { QueueId } from '../../../../database/models/queue.model'
-import { collections } from '../../../../database/collections'
-import { players } from '../../../../players'
-import { get } from '../../../get'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import type { QueueId } from '../../../database/models/queue.model'
+import { collections } from '../../../database/collections'
+import { players } from '../../../players'
+import { get } from '../../get'
 
 const dialogId = 'ready-up-dialog'
 

@@ -1,8 +1,8 @@
-import { collections } from '../../../../database/collections'
-import type { GameModel } from '../../../../database/models/game.model'
-import { GameClassIcon } from '../../../../html/components/game-class-icon'
-import { players } from '../../../../players'
-import type { SteamId64 } from '../../../../shared/types/steam-id-64'
+import { collections } from '../../../database/collections'
+import type { GameModel } from '../../../database/models/game.model'
+import { GameClassIcon } from '../../../html/components/game-class-icon'
+import { players } from '../../../players'
+import type { SteamId64 } from '../../../shared/types/steam-id-64'
 
 export async function SubstitutionRequests() {
   const requests = await collections.gamesSubstituteRequests.find().toArray()

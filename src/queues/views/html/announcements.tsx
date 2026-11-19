@@ -1,4 +1,4 @@
-import { collections } from '../../../../database/collections'
+import { collections } from '../../../database/collections'
 
 export async function Announcements() {
   const announcements = await collections.announcements

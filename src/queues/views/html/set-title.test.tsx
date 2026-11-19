@@ -2,10 +2,10 @@ import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
 import { SetTitle } from './set-title'
-import type { QueueModel } from '../../../../database/models/queue.model'
+import type { QueueModel } from '../../../database/models/queue.model'
 
-vi.mock('../../../../environment', () => ({ environment: { WEBSITE_NAME: 'tf2pickup.org' } }))
-vi.mock('../../../../database/collections', () => ({
+vi.mock('../../../environment', () => ({ environment: { WEBSITE_NAME: 'tf2pickup.org' } }))
+vi.mock('../../../database/collections', () => ({
   collections: {
     queueSlots: {
       countDocuments: vi.fn((filter: object) => Promise.resolve('player' in filter ? 3 : 12)),

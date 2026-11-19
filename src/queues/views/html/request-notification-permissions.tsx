@@ -1,6 +1,6 @@
 import { resolve } from 'node:path'
-import { bundle } from '../../../../html/bundle'
-import { IconX } from '../../../../html/components/icons'
+import { bundle } from '../../../html/bundle'
+import { IconX } from '../../../html/components/icons'
 
 export async function RequestNotificationPermissions() {
   const scriptJs = await bundle(

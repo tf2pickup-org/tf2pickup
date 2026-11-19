@@ -12,26 +12,18 @@ import { players } from '../../../../players'
 import { PreReadyUpButton } from '../../../../pre-ready/views/html/pre-ready-up-button'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import { queues } from '../../..'
-import { CaptainQueueContent } from '../../../captain/views/html/captain-queue-content'
-import { CurrentPlayerCount } from './current-player-count'
-import { IsInQueue } from './is-in-queue'
+import { CurrentPlayerCount } from '../../../views/html/current-player-count'
+import { IsInQueue } from '../../../views/html/is-in-queue'
 import { MapVote } from './map-vote'
 import { MapVoteSelection } from './map-vote-selection'
 import { QueueSlot } from './queue-slot'
-import { QueueSwitcher } from './queue-switcher'
-import { StreamList } from './stream-list'
+import { QueueSwitcher } from '../../../views/html/queue-switcher'
+import { StreamList } from '../../../views/html/stream-list'
 import { TeamPlayerCount } from './team-player-count'
 import { teamSlots } from './team-slots'
 
-// The part of the queue page that belongs to one queue; the rest (chat, online players…) is
-// shared by all of them and stays in place when switching queues. Its children are laid out by the
-// page's grid.
-export async function QueueContent(props: { queue: QueueModel }) {
+export async function AutoQueueContent(props: { queue: QueueModel }) {
   const { queue } = props
-  if (queue.launchMode === 'captain') {
-    return <CaptainQueueContent queue={queue} />
-  }
-
   const slots = await collections.queueSlots.find({ queue: queue._id }).toArray()
   const required = slots.length
   const user = requestContext.get('user')
