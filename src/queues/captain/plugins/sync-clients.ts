@@ -30,7 +30,7 @@ export default fp(
           const players = pool.filter(member => !member.ready).map(member => member.player.steamId)
           app.gateway
             .to({ players })
-            .send(actor => ReadyUpDialog.show(actor!), { key: 'ready-up-dialog' })
+            .send(actor => ReadyUpDialog.show(actor!, queue), { key: 'ready-up-dialog' })
         } else {
           const close = await ReadyUpDialog.close()
           app.gateway

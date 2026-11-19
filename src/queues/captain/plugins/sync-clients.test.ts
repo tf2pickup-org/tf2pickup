@@ -57,7 +57,7 @@ it('sends the unchanged ready dialog only to unready captain members, with stale
   expect(sends[0]!.filter).toEqual({ players: [unready] })
   expect(sends[0]!.options).toEqual({ key: 'ready-up-dialog' })
   expect(await sends[0]!.render(unready)).toBe('show')
-  expect(ReadyUpDialog.show).toHaveBeenCalledWith(unready)
+  expect(ReadyUpDialog.show).toHaveBeenCalledWith(unready, expect.anything())
 })
 
 it('ignores auto queue state changes without fetching captain membership', async () => {

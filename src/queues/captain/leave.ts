@@ -8,7 +8,7 @@ import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { assertCaptainQueue } from './assert-captain-queue'
 
-// Used by the unchanged ready-up dialog's "No, I can't play now" action.
+// Used by the ready-up dialog's "Can't play right now" action.
 export async function leave(queue: QueueId, steamId: SteamId64) {
   const settings = await get(queue)
   assertCaptainQueue(settings)

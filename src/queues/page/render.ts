@@ -49,7 +49,7 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
   if (steamId && (await getState(queue._id)) === QueueState.ready) {
     const member = await membership(steamId)
     if (member?.queue.equals(queue._id) && !member.ready) {
-      socket.send(await ReadyUpDialog.show(steamId))
+      socket.send(await ReadyUpDialog.show(steamId, queue._id))
     }
   }
 }

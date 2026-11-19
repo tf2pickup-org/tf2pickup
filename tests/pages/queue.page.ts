@@ -57,7 +57,7 @@ class ReadyUpDialog {
   }
 
   notReadyButton() {
-    return this.page.getByRole('button', { name: `No, I can't play now` })
+    return this.page.getByRole('button', { name: `Can't play right now` })
   }
 
   async notReady() {
