@@ -1,10 +1,10 @@
-import { configuration } from '../configuration'
-import type { GameModel } from '../database/models/game.model'
-import { errors } from '../errors'
-import { players } from '../players'
-import type { SteamId64 } from '../shared/types/steam-id-64'
+import { configuration } from '../../configuration'
+import type { GameModel } from '../../database/models/game.model'
+import { errors } from '../../errors'
+import { players } from '../../players'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 
-export async function mumbleDirectUrl(game: GameModel, steamId: SteamId64): Promise<URL> {
+export async function voiceUrl(game: GameModel, steamId: SteamId64): Promise<string> {
   const player = await players.bySteamId(steamId, ['name'])
   const slot = game.slots.find(s => s.player === steamId)
   if (!slot) {
@@ -26,5 +26,5 @@ export async function mumbleDirectUrl(game: GameModel, steamId: SteamId64): Prom
   }
   url.protocol = 'mumble:'
   url.port = `${port}`
-  return url
+  return url.toString()
 }

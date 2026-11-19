@@ -1,25 +1,14 @@
 import fp from 'fastify-plugin'
 import { collections } from '../../database/collections'
-import { SlotStatus } from '../../database/models/game-slot.model'
-import { GameState, type GameModel } from '../../database/models/game.model'
 import { PlayerRole } from '../../database/models/player.model'
 import { events } from '../../events'
-import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { client } from '../client'
 import { safe } from '../../utils/safe'
+import { gameVoice } from '../game-voice'
 import { gamesRootAcl } from '../games-root-acl'
 import { isVerificationEnabled } from '../is-verification-enabled'
-import { moveToTeamChannel } from '../move-to-team-channel'
 import { registerAdmin } from '../register-admin'
 import { MumbleClientStatus } from '../status'
-import { syncGameAcl } from '../sync-game-acl'
-
-const liveStates = [
-  GameState.created,
-  GameState.configuring,
-  GameState.launching,
-  GameState.started,
-]
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -44,24 +33,6 @@ export default fp(
     )
 
     events.on(
-      'game:updated',
-      safe(async ({ before, after }) => {
-        if (occupancy(before) !== occupancy(after) && (await isVerificationEnabled())) {
-          await syncGameAcl(after)
-        }
-      }),
-    )
-
-    events.on(
-      'game:ended',
-      safe(async ({ game }) => {
-        if (await isVerificationEnabled()) {
-          await syncGameAcl(game)
-        }
-      }),
-    )
-
-    events.on(
       'player:updated',
       safe(async ({ before, after }) => {
         const hash = after.mumbleCertificate?.hash
@@ -73,7 +44,7 @@ export default fp(
         }
 
         if (bound || unlinked) {
-          await syncGamesOf(after.steamId)
+          await gameVoice.syncPlayer(after.steamId)
         }
 
         if (unlinked) {
@@ -84,7 +55,7 @@ export default fp(
         }
 
         if (bound) {
-          await moveToTeamChannel(after.steamId, hash)
+          await gameVoice.seat(after.steamId, hash)
         }
 
         if ((await registerAdmin(after.steamId)) || rolesChanged) {
@@ -124,20 +95,7 @@ async function reconcile() {
     return
   }
 
-  const games = await collections.games
-    .find({ state: { $in: liveStates } }, { projection: { number: 1, state: 1, slots: 1 } })
-    .toArray()
-  for (const game of games) {
-    await syncGameAcl(game)
-  }
-}
-
-function occupancy({ slots }: Pick<GameModel, 'slots'>) {
-  return slots
-    .filter(({ status }) => [SlotStatus.active, SlotStatus.waitingForSubstitute].includes(status))
-    .map(({ player, team, voiceOutgoing }) => `${player}:${team}:${voiceOutgoing?.join('+')}`)
-    .sort()
-    .join()
+  await gameVoice.syncLive()
 }
 
 // users already on the server when the bot connects never trigger mumble/userJoined
@@ -154,18 +112,5 @@ async function registerConnectedAdmins() {
     .toArray()
   for (const { steamId } of admins) {
     await registerAdmin(steamId)
-  }
-}
-
-// a replaced player is only in voiceOutgoing, and may be playing another game by now
-async function syncGamesOf(player: SteamId64) {
-  const games = await collections.games
-    .find({
-      state: { $in: liveStates },
-      $or: [{ 'slots.player': player }, { 'slots.voiceOutgoing': player }],
-    })
-    .toArray()
-  for (const game of games) {
-    await syncGameAcl(game)
   }
 }

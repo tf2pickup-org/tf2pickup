@@ -19,6 +19,7 @@ const reconnectDelay = secondsToMilliseconds(1)
 
 export async function tryConnect() {
   client?.disconnect()
+  client = undefined
   setStatus(MumbleClientStatus.disconnected)
 
   const type = await configuration.get('games.voice_server_type')
