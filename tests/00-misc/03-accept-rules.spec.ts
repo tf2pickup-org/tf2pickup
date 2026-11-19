@@ -23,7 +23,7 @@ test('accept rules @6v6 @9v9', async ({ page }) => {
 
   await expect(page.getByTitle('Accept rules dialog')).not.toBeVisible()
   await expect(banner).toBeVisible()
-  expect(await originalBanner!.evaluate(element => element.isConnected)).toBe(true)
+  expect(await originalBanner.evaluate(element => element.isConnected)).toBe(true)
   expect(page.url()).toBe(queueUrl)
   expect(await page.evaluate(() => Notification.permission)).toBe('default')
   await page.reload()

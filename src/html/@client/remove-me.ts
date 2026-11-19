@@ -4,7 +4,7 @@ const timers = new WeakMap<Element, ReturnType<typeof setTimeout>>()
 
 function scheduleRemoval(element: Element) {
   if (timers.has(element)) return
-  const timing = element.getAttribute('remove-me') || element.getAttribute('data-remove-me')
+  const timing = element.getAttribute('remove-me') ?? element.getAttribute('data-remove-me')
   if (!timing) return
 
   timers.set(
@@ -23,7 +23,7 @@ htmx.defineExtension('remove-me', {
     if (name === 'htmx:afterProcessNode') {
       scheduleRemoval(element)
       element.querySelectorAll('[remove-me], [data-remove-me]').forEach(scheduleRemoval)
-    } else if (name === 'htmx:beforeCleanupElement') {
+    } else {
       clearTimeout(timers.get(element))
       timers.delete(element)
     }
