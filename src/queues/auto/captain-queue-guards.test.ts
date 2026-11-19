@@ -17,7 +17,7 @@ vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn(), cancel: vi.fn() 
 vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'captain' }) }))
 vi.mock('../get-state', () => ({ getState: vi.fn().mockResolvedValue('ready') }))
 vi.mock('./get-map-vote-results', () => ({ getMapVoteResults: vi.fn() }))
-vi.mock('./queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(
     async (_operation: string, fn: (emit: unknown) => unknown) => await fn(vi.fn()),
   ),

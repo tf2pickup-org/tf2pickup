@@ -73,7 +73,7 @@ vi.mock('./leave-pools', () => ({
     return Promise.resolve()
   }),
 }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(
     async (_operation: string, fn: (emit: unknown) => unknown) => await fn(vi.fn()),
   ),

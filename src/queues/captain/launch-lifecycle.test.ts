@@ -6,8 +6,6 @@ import { collections } from '../../database/collections'
 import { applyMapCooldown } from '../../maps/apply-cooldown'
 import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
-import { get } from '../get'
-import { advance } from './advance'
 import { captainDraftMetrics } from './metrics'
 import { completeLaunch } from './complete-launch'
 import { launchFailed } from './launch-failed'
@@ -37,14 +35,13 @@ vi.mock('../../database/collections', () => ({
 vi.mock('../get', () => ({
   get: vi.fn((queue: unknown) => Promise.resolve({ _id: queue, launchMode: store.mode })),
 }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 vi.mock('../../pre-ready', () => ({ preReady: { cancel: vi.fn() } }))
 vi.mock('../../maps/apply-cooldown', () => ({ applyMapCooldown: vi.fn() }))
 vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn() } }))
-vi.mock('./advance', () => ({ advance: vi.fn() }))
 vi.mock('./metrics', () => ({
   captainDraftMetrics: { duration: { record: vi.fn() }, aborted: { add: vi.fn() } },
 }))
@@ -78,20 +75,11 @@ describe('captain launch lifecycle', () => {
     )
     expect(collections.captainDrafts.deleteOne).toHaveBeenCalledWith({ queue, token: 't' })
     expect(tasks.cancel).toHaveBeenCalledWith('queue/captain:turnTimeout', { queue })
-    expect(advance).toHaveBeenCalledWith(queue, emit, expect.objectContaining({ state: 'waiting' }))
+    expect(emit).toHaveBeenCalledWith('queue/state:updated', { queue, state: 'waiting' })
     expect(captainDraftMetrics.duration.record).toHaveBeenCalledWith(expect.any(Number))
     expect(vi.mocked(captainDraftMetrics.duration.record).mock.calls[0]![0]).toBeGreaterThanOrEqual(
       1.5,
     )
-  })
-  it('re-evaluates an immediately full next pool with the newly applied map cooldown', async () => {
-    const before = { _id: queue, launchMode: 'captain', maps: [{ name: 'cp_a', cooldown: 0 }] }
-    const after = { ...before, maps: [{ name: 'cp_a', cooldown: 2 }] }
-    vi.mocked(get)
-      .mockResolvedValueOnce(before as never)
-      .mockResolvedValueOnce(after as never)
-    await completeLaunch(game)
-    expect(advance).toHaveBeenCalledWith(queue, emit, { state: 'waiting', settings: after })
   })
 
   it('returns everybody after creation failure without applying map cooldown', async () => {
@@ -107,7 +95,7 @@ describe('captain launch lifecycle', () => {
       { $set: { locked: false, ready: false } },
     )
     expect(captainDraftMetrics.aborted.add).toHaveBeenCalledWith(1, { reason: 'launch_failed' })
-    expect(advance).toHaveBeenCalled()
+    expect(emit).toHaveBeenCalledWith('queue/state:updated', { queue, state: 'waiting' })
   })
   it.each(['auto mode', 'stale token', 'stale phase'])(
     'ignores completion/failure for %s',

@@ -4,10 +4,9 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { errors } from '../../errors'
 import { preReady } from '../../pre-ready'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
-import { queueCommand } from '../auto/queue-command'
+import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { getState } from '../get-state'
-import { advance } from './advance'
 import { assertCaptainQueue } from './assert-captain-queue'
 
 export async function readyUp(queue: QueueId, steamId: SteamId64) {
@@ -23,7 +22,6 @@ export async function readyUp(queue: QueueId, steamId: SteamId64) {
     )
     if (!member) throw errors.badRequest('player not in the captain pool')
     emit('queue/captainPool:updated', { queue })
-    await advance(queue, emit, { state, settings })
   })
   await preReady.start(steamId)
 }

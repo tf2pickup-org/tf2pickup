@@ -9,11 +9,10 @@ import { playerAvatarUrl } from '../../shared/player-avatar-url'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
 import { joinBlocker } from '../auto/join-blocker'
-import { queueCommand } from '../auto/queue-command'
+import { queueCommand } from '../queue-command'
 import { vacateSlot } from '../auto/vacate-slot'
 import { get } from '../get'
 import { getState } from '../get-state'
-import { advance } from './advance'
 import { assertCaptainQueue } from './assert-captain-queue'
 import { captainRoles } from './captain-roles'
 import { leavePools } from './leave-pools'
@@ -96,11 +95,10 @@ export async function toggleRole(queue: QueueId, steamId: SteamId64, role: strin
       logger.info({ queue, steamId, role }, 'captain pool joined')
     }
 
+    await collections.queueState.updateOne({ queue }, { $set: { last: steamId } })
     emit('queue/captainPool:updated', { queue })
-    const filled = await advance(queue, emit, { state, settings, last: steamId })
     return (
-      filled ||
-      (state === QueueState.ready && (member?.roles.length !== 1 || !member.roles.includes(role)))
+      state === QueueState.ready && (member?.roles.length !== 1 || !member.roles.includes(role))
     )
   })
   if (readied) await preReady.start(steamId)

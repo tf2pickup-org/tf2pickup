@@ -4,21 +4,21 @@ import type { CaptainPoolModel } from '../../database/models/captain-pool.model'
 import type { QueueModel } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
 import { logger } from '../../logger'
-import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
-import type { Emit } from '../auto/queue-command'
+import type { Emit } from '../queue-command'
 import { assertCaptainQueue } from './assert-captain-queue'
 import { cancelReadyTimeouts } from './cancel-ready-timeouts'
 import { startDraft } from './start-draft'
 
-// The caller holds queueCommand's lock and supplies its existing pool/settings snapshot.
+// The caller holds queueCommand's lock and supplies its existing pool/settings snapshot. The player
+// who filled the pool (queueState.last) is readied along with the pre-readied ones.
 export async function enterState(
   queue: QueueModel,
   state: QueueState.waiting | QueueState.ready | QueueState.drafting,
   emit: Emit,
   pool: CaptainPoolModel[] = [],
-  last?: SteamId64,
-): Promise<CaptainPoolModel[]> {
+) {
   assertCaptainQueue(queue)
   logger.info({ queue: queue._id, state }, 'captain queue state changed')
 
@@ -30,6 +30,7 @@ export async function enterState(
       readyUpDeadline: new Date(startedAt.getTime() + queue.readyUpTimeout),
       deadline: new Date(startedAt.getTime() + queue.readyStateTimeout),
     }
+    const last = (await collections.queueState.findOne({ queue: queue._id }))?.last
     const preReadied = await collections.players
       .find(
         {
@@ -44,11 +45,10 @@ export async function enterState(
       { queue: queue._id, 'player.steamId': { $in: [...ready] } },
       { $set: { ready: true } },
     )
-    pool = pool.map(member => ({
-      ...member,
-      ready: member.ready || ready.has(member.player.steamId),
-    }))
     await collections.queueState.updateOne({ queue: queue._id }, { $set: { state, captainReady } })
+    if (last && pool.some(member => member.player.steamId === last)) {
+      await preReady.start(last)
+    }
     await tasks.schedule(
       'queue/captain:readyUpTimeout',
       Math.max(0, captainReady.readyUpDeadline.getTime() - Date.now()),
@@ -73,7 +73,7 @@ export async function enterState(
     )
     await collections.queueState.updateOne(
       { queue: queue._id },
-      { $set: { state }, $unset: { captainReady: 1 } },
+      { $set: { state }, $unset: { captainReady: 1, last: 1 } },
     )
   }
   emit('queue/captainPool:updated', { queue: queue._id })
@@ -86,5 +86,4 @@ export async function enterState(
       emit,
     )
   }
-  return pool
 }

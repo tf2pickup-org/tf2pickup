@@ -21,7 +21,7 @@ vi.mock('../../configuration', () => ({
 vi.mock('./join-blocker', () => ({ joinBlocker: vi.fn().mockReturnValue(null) }))
 vi.mock('./vacate-slot', () => ({ vacateSlot: vi.fn() }))
 vi.mock('../captain/leave-pools', () => ({ leavePools: vi.fn() }))
-vi.mock('./queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 

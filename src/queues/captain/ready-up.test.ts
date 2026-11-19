@@ -35,6 +35,7 @@ vi.mock('../../database/collections', () => ({
         const state = db.states.find(state => state.queue.equals(queue))!
         Object.assign(state, update.$set)
         if (update.$unset?.captainReady) delete state.captainReady
+        if (update.$unset?.last) delete state.last
       }),
     },
     players: {
@@ -76,14 +77,18 @@ vi.mock('../../logger', () => ({ logger: { info: vi.fn() } }))
 vi.mock('./start-draft', () => ({ startDraft: vi.fn() }))
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn(), cancel: vi.fn() } }))
-vi.mock('../auto/queue-command', () => ({
-  queueCommand: vi.fn(async (_operation, run) => await run(emit)),
+vi.mock('../queue-command', () => ({
+  queueCommand: vi.fn(async (_operation, run, { reevaluate = true } = {}) => {
+    const result = await run(emit)
+    if (reevaluate) await settle()
+    return result
+  }),
 }))
 
 import { collections } from '../../database/collections'
 import { tasks } from '../../tasks'
 import { preReady } from '../../pre-ready'
-import { advance } from './advance'
+import { step } from './step'
 import { captainRoles } from './captain-roles'
 import { roleKey } from './role-key'
 import { leave } from './leave'
@@ -129,8 +134,13 @@ beforeEach(() => {
   db.preReadied = []
 })
 
+async function settle() {
+  while (await step(queue, emit));
+}
+
 async function startReady(last = id(11)) {
-  await advance(queue._id, emit, { settings: queue, state: QueueState.waiting, last })
+  runtime().last = last
+  await settle()
   return runtime().captainReady?.token ?? ''
 }
 
@@ -160,6 +170,7 @@ describe('captain ready-up lifecycle', () => {
       expect.any(Number),
       { queue: queue._id, token: phase.token },
     )
+    expect(preReady.start).toHaveBeenCalledExactlyOnceWith(id(11))
     expect(structuredClone(db.states[1])).toEqual(autoBefore)
   })
 
@@ -177,7 +188,7 @@ describe('captain ready-up lifecycle', () => {
     expect(tasks.cancel).toHaveBeenCalledWith('queue/captain:readyStateTimeout', {
       queue: queue._id,
     })
-    expect(preReady.start).toHaveBeenCalledTimes(11)
+    expect(preReady.start).toHaveBeenCalledTimes(12)
   })
 
   it('goes directly through ready to drafting when the whole pool is pre-readied', async () => {
@@ -235,6 +246,8 @@ describe('captain ready-up lifecycle', () => {
     expect(db.pool).toHaveLength(12)
     expect(db.pool.every(member => !member.ready)).toBe(true)
     expect(runtime().captainReady).toBeUndefined()
+    // a stale filler must not be auto-readied the next time the pool fills
+    expect(runtime().last).toBeUndefined()
   })
 
   it('ignores stale or duplicate timeouts, including a prior ready-up generation', async () => {

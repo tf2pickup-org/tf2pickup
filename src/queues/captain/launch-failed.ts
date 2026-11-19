@@ -1,7 +1,7 @@
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
-import { queueCommand } from '../auto/queue-command'
+import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { captainDraftMetrics } from './metrics'
 import { returnDraftToPool } from './return-draft-to-pool'

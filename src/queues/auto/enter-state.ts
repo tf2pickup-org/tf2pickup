@@ -8,7 +8,7 @@ import { preReady } from '../../pre-ready'
 import { tasks } from '../../tasks'
 import { get } from '../get'
 import { assertAutoQueue } from './assert-auto-queue'
-import type { Emit } from './queue-command'
+import type { Emit } from '../queue-command'
 import { takeLaunchSnapshot } from './take-launch-snapshot'
 
 // must run inside queueCommand()

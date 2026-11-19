@@ -7,7 +7,7 @@ import { get } from '../../get'
 import { getState } from '../../get-state'
 import { enterState } from '../enter-state'
 import { kickFromQueue } from '../kick-from-queue'
-import { queueCommand } from '../queue-command'
+import { queueCommand } from '../../queue-command'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await

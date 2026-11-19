@@ -63,7 +63,7 @@ vi.mock('../../tasks', () => ({
 vi.mock('./metrics', () => ({ captainDraftMetrics: metrics }))
 vi.mock('../get', () => ({ get: vi.fn() }))
 vi.mock('../get-state', () => ({ getState: vi.fn(() => Promise.resolve(store.state)) }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 

@@ -7,7 +7,7 @@ import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { withLogLevel } from '../../utils/with-log-level'
 import { getState } from '../get-state'
 import { getMapVoteResults } from './get-map-vote-results'
-import type { Emit } from './queue-command'
+import type { Emit } from '../queue-command'
 import { get } from '../get'
 import { assertAutoQueue } from './assert-auto-queue'
 

@@ -2,8 +2,7 @@ import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import { preReady } from '../../pre-ready'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
-import { queueCommand } from '../auto/queue-command'
-import { advance } from './advance'
+import { queueCommand } from '../queue-command'
 
 // Drops the given players from every captain pool. Locked draft members stay: nothing but a
 // captain's cancel ends a draft (SPEC 4.7).
@@ -27,7 +26,6 @@ export async function kickFromPools(...steamIds: SteamId64[]) {
       logger.info({ queue, steamId: player.steamId }, 'captain pool kicked')
       emit('queue:playerKicked', { player: player.steamId })
       emit('queue/captainPool:updated', { queue })
-      await advance(queue, emit)
     }
   })
   for (const steamId of steamIds) {

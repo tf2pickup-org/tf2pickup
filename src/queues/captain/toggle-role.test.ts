@@ -9,6 +9,7 @@ vi.mock('../../database/collections', () => ({
       deleteOne: vi.fn(),
     },
     queueSlots: { findOne: vi.fn().mockResolvedValue(null) },
+    queueState: { updateOne: vi.fn() },
   },
 }))
 vi.mock('../../pre-ready', () => ({ preReady: { start: vi.fn() } }))
@@ -25,9 +26,8 @@ vi.mock('../get', () => ({
   get: vi.fn().mockResolvedValue({ launchMode: 'captain', gamemode: '6v6' }),
 }))
 vi.mock('../get-state', () => ({ getState: vi.fn() }))
-vi.mock('./advance', () => ({ advance: vi.fn() }))
 vi.mock('./leave-pools', () => ({ leavePools: vi.fn() }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 
@@ -81,6 +81,10 @@ describe('toggleRole()', () => {
       }),
     )
     expect(leavePools).toHaveBeenCalledWith(steamId, emit, queue)
+    expect(collections.queueState.updateOne).toHaveBeenCalledWith(
+      { queue },
+      { $set: { last: steamId } },
+    )
     expect(emit).toHaveBeenCalledWith('queue/captainPool:updated', { queue })
   })
 

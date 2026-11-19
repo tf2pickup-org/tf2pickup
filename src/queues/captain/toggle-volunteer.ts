@@ -9,10 +9,9 @@ import { players } from '../../players'
 import { preReady } from '../../pre-ready'
 import { Tf2ClassName } from '../../shared/types/tf2-class-name'
 import { joinBlocker } from '../auto/join-blocker'
-import { queueCommand } from '../auto/queue-command'
+import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { getState } from '../get-state'
-import { advance } from './advance'
 import { assertCaptainQueue } from './assert-captain-queue'
 
 // Only a player in the pool can volunteer; leaving the pool clears the flag.
@@ -52,9 +51,9 @@ export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
       { $set: { volunteer, ...(state === QueueState.ready ? { ready: true } : {}) } },
     )
     logger.info({ queue, steamId, volunteer }, 'captain volunteer toggled')
+    await collections.queueState.updateOne({ queue }, { $set: { last: steamId } })
     emit('queue/captainPool:updated', { queue })
-    const filled = await advance(queue, emit, { state, settings, last: steamId })
-    return filled || state === QueueState.ready
+    return state === QueueState.ready
   })
   if (readied) await preReady.start(steamId)
 }

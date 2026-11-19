@@ -31,10 +31,9 @@ vi.mock('../../pre-ready', () => ({ preReady: { cancel: vi.fn() } }))
 vi.mock('../../games/apply-escalating-cooldown', () => ({ applyEscalatingCooldown: vi.fn() }))
 vi.mock('./metrics', () => ({ captainDraftMetrics: { aborted: metric, duration } }))
 vi.mock('./enter-state', () => ({ enterState: vi.fn() }))
-vi.mock('./advance', () => ({ advance: vi.fn() }))
 vi.mock('./cancel-draft-timeouts', () => ({ cancelDraftTimeouts: vi.fn() }))
 vi.mock('../get', () => ({ get: vi.fn() }))
-vi.mock('../auto/queue-command', () => ({
+vi.mock('../queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
 
@@ -48,7 +47,6 @@ import { QueueState } from '../../database/models/queue-state.model'
 import { applyEscalatingCooldown } from '../../games/apply-escalating-cooldown'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { get } from '../get'
-import { advance } from './advance'
 import { cancelDraft } from './cancel-draft'
 import { cancelDraftTimeouts } from './cancel-draft-timeouts'
 import { enterState } from './enter-state'
@@ -84,7 +82,6 @@ describe('cancelDraft()', () => {
         { $set: { locked: false } },
       )
       expect(enterState).toHaveBeenCalledWith(settings, QueueState.waiting, emit)
-      expect(advance).toHaveBeenCalledWith(queue, emit, { state: QueueState.waiting, settings })
       expect(emit).toHaveBeenCalledWith('queue/captainDraft:cancelled', {
         queue,
         captain: red,
