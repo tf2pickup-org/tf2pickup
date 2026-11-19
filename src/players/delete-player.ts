@@ -3,6 +3,7 @@ import { collections } from '../database/collections'
 import type { GameEventModel } from '../database/models/game-event.model'
 import { PlayerRole } from '../database/models/player.model'
 import { errors } from '../errors'
+import { captainEngine } from '../queues/captain'
 import { queueEngine } from '../queues/auto'
 import { deletedUserSteamId, type SteamId64 } from '../shared/types/steam-id-64'
 import { forPlayer } from './mutex'
@@ -16,6 +17,7 @@ export async function deletePlayer(steamId: SteamId64): Promise<void> {
   await assertDeletable(steamId)
   // outside forPlayer(): kicking cancels pre-ready, which updates the player under that lock
   await queueEngine.removePlayer(steamId)
+  await captainEngine.kickFromPools(steamId)
 
   await forPlayer(steamId).runExclusive(async () => {
     // the player may have been promoted while we were removing them from the queue
@@ -59,6 +61,8 @@ async function anonymizeGames(steamId: SteamId64): Promise<void> {
     .find({
       $or: [
         { 'slots.player': steamId },
+        { 'captains.red': steamId },
+        { 'captains.blu': steamId },
         { 'events.player': steamId },
         { 'events.actor': steamId },
         { 'events.replacee': steamId },
@@ -73,7 +77,14 @@ async function anonymizeGames(steamId: SteamId64): Promise<void> {
     )
     const events = game.events.map(event => anonymizeEvent(event, steamId)) as typeof game.events
 
-    await collections.games.updateOne({ _id: game._id }, { $set: { slots, events } })
+    const captains = game.captains && {
+      red: game.captains.red === steamId ? deletedUserSteamId : game.captains.red,
+      blu: game.captains.blu === steamId ? deletedUserSteamId : game.captains.blu,
+    }
+    await collections.games.updateOne(
+      { _id: game._id },
+      { $set: { slots, events, ...(captains ? { captains } : {}) } },
+    )
   }
 }
 

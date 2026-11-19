@@ -6,10 +6,11 @@ import { getState } from '../../get-state'
 import { queuePageUrl } from '../../page/queue-page-url'
 
 export async function queueToDto(queue: QueueModel, selfHref = `/api/v1/queues/${queue.slug}`) {
+  const isAuto = queue.launchMode === 'auto'
   const [state, slots, mapVoteResults] = await Promise.all([
     getState(queue._id),
-    getSlots(queue._id),
-    getMapVoteResults(queue._id),
+    isAuto ? getSlots(queue._id) : [],
+    isAuto ? getMapVoteResults(queue._id) : {},
   ])
   const config = gamemodeConfigs[queue.gamemode]
 

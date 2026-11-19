@@ -11,6 +11,7 @@ interface CreateQueueOptions {
   // a preset slug; a blank queue otherwise
   template?: string
   gamemode?: string
+  launchMode?: 'auto' | 'captain'
   enable?: boolean
 }
 
@@ -24,13 +25,13 @@ export const queues = mergeTests(authUsers, waitForEmptyQueue).extend<{
     const created: string[] = []
 
     await use({
-      create: async ({ template, gamemode, enable } = {}) => {
+      create: async ({ template, gamemode, launchMode, enable } = {}) => {
         const slug = `e2e-${testInfo.testId
           .toLowerCase()
           .replace(/[^a-z0-9]/g, '')
           .slice(-8)}-${testInfo.retry}-${created.length}`
         const page = await admin()
-        await page.create({ slug, name: slug, template, gamemode })
+        await page.create({ slug, name: slug, template, gamemode, launchMode })
         await page.expectFlash(`Queue ${slug} added`)
         created.push(slug)
         if (enable) {

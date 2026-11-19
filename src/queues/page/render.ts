@@ -46,7 +46,21 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
     socket.send(tag + html)
   }
 
-  if (steamId && (await getState(queue._id)) === QueueState.ready) {
+  if (
+    queue.launchMode === 'captain' &&
+    steamId &&
+    (await getState(queue._id)) === QueueState.ready
+  ) {
+    const unready = await collections.captainPool.findOne({
+      queue: queue._id,
+      'player.steamId': steamId,
+      ready: false,
+      locked: false,
+    })
+    if (unready) socket.send(await ReadyUpDialog.show(steamId))
+  }
+
+  if (queue.launchMode === 'auto' && steamId && (await getState(queue._id)) === QueueState.ready) {
     const unready = await collections.queueSlots.findOne({
       queue: queue._id,
       'player.steamId': steamId,

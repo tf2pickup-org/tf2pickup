@@ -20,6 +20,11 @@ export interface ClientToServerEvents {
   'queue:votemap': (mapName: string) => void
   'queue:readyup': () => void
   'queue:markasfriend': (steamId: SteamId64 | null) => void
+  'queue:togglerole': (role: string) => void
+  'queue:togglevolunteer': () => void
+  'queue:banmap': (map: string) => void
+  'queue:pick': (player: SteamId64, role: string) => void
+  'queue:canceldraft': () => void
   'queue:togglepreready': () => void
   'queue:audiostatus': (audioReady: boolean) => void
 }
@@ -60,6 +65,28 @@ const markAsFriend = z.object({
   HEADERS: htmxHeaders,
 })
 
+const toggleRole = z.object({
+  togglerole: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const toggleVolunteer = z.object({
+  togglevolunteer: z.literal(''),
+  HEADERS: htmxHeaders,
+})
+
+const pick = z.object({
+  pickplayer: z.string(),
+  pickrole: z.string(),
+  HEADERS: htmxHeaders,
+})
+
+const banMap = z.object({ banmap: z.string().min(1), HEADERS: htmxHeaders })
+const cancelDraft = z.object({
+  canceldraft: z.literal(''),
+  HEADERS: htmxHeaders,
+})
+
 const preReadyToggle = z.object({
   prereadytoggle: z.string(),
   HEADERS: htmxHeaders,
@@ -82,6 +109,11 @@ const clientMessage = z.union([
   readyUp,
   voteMap,
   markAsFriend,
+  toggleRole,
+  toggleVolunteer,
+  pick,
+  banMap,
+  cancelDraft,
   preReadyToggle,
   navigated,
   audioStatus,
@@ -301,6 +333,16 @@ export class Gateway extends EventEmitter implements Broadcaster {
         this.emit('queue:votemap', socket, parsed.votemap)
       } else if ('markasfriend' in parsed) {
         this.emit('queue:markasfriend', socket, parsed.markasfriend)
+      } else if ('togglerole' in parsed) {
+        this.emit('queue:togglerole', socket, parsed.togglerole)
+      } else if ('togglevolunteer' in parsed) {
+        this.emit('queue:togglevolunteer', socket)
+      } else if ('banmap' in parsed) {
+        this.emit('queue:banmap', socket, parsed.banmap)
+      } else if ('pickplayer' in parsed) {
+        this.emit('queue:pick', socket, parsed.pickplayer, parsed.pickrole)
+      } else if ('canceldraft' in parsed) {
+        this.emit('queue:canceldraft', socket)
       } else if ('prereadytoggle' in parsed) {
         this.emit('queue:togglepreready', socket)
       } else if ('audioReady' in parsed) {

@@ -4,7 +4,7 @@ import { SlotStatus, type GameSlotModel } from '../../../database/models/game-sl
 import { GameState, type GameModel, type GameNumber } from '../../../database/models/game.model'
 import { PlayerRole, type PlayerModel } from '../../../database/models/player.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
-import { IconLock, IconPlus, IconReplaceFilled } from '../../../html/components/icons'
+import { IconCrown, IconLock, IconPlus, IconReplaceFilled } from '../../../html/components/icons'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
@@ -91,6 +91,21 @@ async function GameSlotContent(props: {
             <span class="player-name" safe>
               {props.player.name}
             </span>
+
+            {props.game.launchMode === 'captain' &&
+            props.game.captains &&
+            [props.game.captains.red, props.game.captains.blu].includes(props.slot.player) ? (
+              <span
+                class="shrink-0 self-center text-zinc-200"
+                role="img"
+                aria-label="Captain"
+                title="Captain"
+              >
+                <IconCrown size={16} />
+              </span>
+            ) : (
+              <></>
+            )}
 
             {props.slot.skill !== undefined && (
               <span class="player-assigned-skill">{props.slot.skill}</span>

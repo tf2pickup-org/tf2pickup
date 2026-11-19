@@ -59,7 +59,7 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
             />
           </div>
 
-          {gamemodeConfigs[queue.gamemode].autoBalance && (
+          {queue.launchMode === 'auto' && gamemodeConfigs[queue.gamemode].autoBalance && (
             <dl>
               <dt class="group flex flex-row gap-2">
                 <label for="skillThresholdEnabled">Player skill threshold</label>
@@ -110,6 +110,15 @@ export async function QueueSettingsPage(props: { queue: QueueModel }) {
             value={queue.readyStateTimeout}
             description="Time the queue stays in the ready-up state before going back to waiting, unless all players ready up"
           />
+
+          {queue.launchMode === 'captain' && (
+            <SecondsInput
+              id="pickTimeout"
+              label="Pick timeout (seconds)"
+              value={queue.pickTimeout}
+              description="Time a captain has for one turn of the draft"
+            />
+          )}
 
           <dl>
             <dt>

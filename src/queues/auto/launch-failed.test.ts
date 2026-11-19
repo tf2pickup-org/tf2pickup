@@ -13,6 +13,7 @@ vi.mock('../../database/collections', () => ({
 vi.mock('../../pre-ready', () => ({ preReady: { cancel: vi.fn() } }))
 vi.mock('../get-state', () => ({ getState: vi.fn() }))
 vi.mock('./enter-state', () => ({ enterState: vi.fn() }))
+vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'auto' }) }))
 vi.mock('./queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))

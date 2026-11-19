@@ -21,6 +21,7 @@ import type { WithId } from 'mongodb'
 import type { User } from '@tf2pickup-org/mumble-client'
 import type { QueueId } from './database/models/queue.model'
 import type { LaunchSnapshot } from './queues/types/launch-snapshot'
+import type { CaptainLaunchSnapshot } from './queues/captain/types/captain-launch-snapshot'
 
 export interface Events {
   'chat:messageDeleted': {
@@ -210,6 +211,9 @@ export interface Events {
   }
 
   'queue:launching': LaunchSnapshot
+  'queue/captain:launching': CaptainLaunchSnapshot
+  'queue/captainGame:created': { game: GameModel }
+  'queue/captainDraft:failed': { queue: QueueId; message: string }
   'queue:playerKicked': {
     player: SteamId64
   }
@@ -228,6 +232,31 @@ export interface Events {
   'queue/slots:updated': {
     queue: QueueId
     slots: QueueSlotModel[]
+  }
+  'queue/captainPool:updated': {
+    queue: QueueId
+  }
+  'queue/captainPool:left': {
+    queue: QueueId
+    player: SteamId64
+  }
+  'queue/captainDraft:starting': {
+    queue: QueueId
+  }
+  'queue/captainDraft:updated': {
+    queue: QueueId
+  }
+  'queue/captainDraft:cancelled': {
+    queue: QueueId
+    captain: SteamId64
+    name: string
+  }
+  'queue/captainDraft:turn': {
+    phase?: 'pick' | 'ban'
+    queue: QueueId
+    captain: SteamId64
+    picks: number[]
+    deadline: Date
   }
   'queue/state:updated': {
     queue: QueueId

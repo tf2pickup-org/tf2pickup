@@ -16,11 +16,15 @@ export class AdminQueuesPage {
     name: string
     template?: string | undefined
     gamemode?: string | undefined
+    launchMode?: 'auto' | 'captain' | undefined
   }) {
     await this.goto()
     await this.page.getByLabel('Start from').selectOption(props.template ?? '')
     await this.page.getByLabel('Slug').fill(props.slug)
     await this.page.getByLabel('Name', { exact: true }).fill(props.name)
+    if (props.launchMode) {
+      await this.page.getByLabel('Launch mode').selectOption(props.launchMode)
+    }
     if (props.gamemode) {
       await this.page.getByLabel('Gamemode (blank queues only)').selectOption(props.gamemode)
     }

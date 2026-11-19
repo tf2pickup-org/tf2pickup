@@ -3,10 +3,13 @@ import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
 import { preReady } from '../../pre-ready'
 import { getState } from '../get-state'
+import { get } from '../get'
+import { assertAutoQueue } from './assert-auto-queue'
 import { enterState } from './enter-state'
 import { queueCommand } from './queue-command'
 
 export async function launchFailed(queue: QueueId) {
+  assertAutoQueue(await get(queue))
   await queueCommand('launch-failed', async emit => {
     if ((await getState(queue)) !== QueueState.launching) {
       return

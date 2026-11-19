@@ -26,6 +26,9 @@ export async function update(
   >
   const parsed = queueConfigurationSchema.pick(mask).parse(changes) as Partial<QueueConfiguration>
   const before = await get(id)
+  if (before.launchMode === 'captain' && parsed.skillThreshold !== undefined) {
+    parsed.skillThreshold = null
+  }
   if (parsed.skillThreshold !== undefined) {
     assertSkillThresholdAllowed(before.gamemode, parsed.skillThreshold)
   }

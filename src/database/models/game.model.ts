@@ -1,3 +1,4 @@
+import type { SteamId64 } from '../../shared/types/steam-id-64'
 import type { GameSlotModel } from './game-slot.model'
 import type { GameCreated, GameEventModel } from './game-event.model'
 import type { Tf2Team } from '../../shared/types/tf2-team'
@@ -63,6 +64,11 @@ export interface GameModel {
   gamemode: Gamemode
   // the queue the game was launched from; for reference only
   queue?: QueueId
+  // absent means the game came from an auto queue
+  launchMode?: 'captain'
+  captains?: { red: SteamId64; blu: SteamId64 }
+  // Correlates a retried captain launch with the game already created from that draft.
+  captainDraftToken?: string
   map: string
   // resolved when the game is launched, so the game server is configured the same way for the
   // whole game

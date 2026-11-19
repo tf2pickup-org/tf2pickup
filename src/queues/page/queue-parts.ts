@@ -12,6 +12,7 @@ import { IsInQueue } from '../auto/views/html/is-in-queue'
 import { MapVoteSelection } from '../auto/views/html/map-vote-selection'
 import { QueueSwitcher } from '../auto/views/html/queue-switcher'
 import { MapResult, MapVote } from '../auto/views/html/map-vote'
+import { captainQueueParts } from '../captain/captain-queue-parts'
 import type { Fragment } from './send-to-pages'
 
 export interface QueueParts {
@@ -23,10 +24,19 @@ export interface QueueParts {
   membership?: boolean
   mapVote?: boolean
   mapResults?: Record<string, number>
+  // captain queues: the sign-up pool and its counters
+  captainPool?: boolean
+  // captain queues: the draft's frame, and the draft's parts
+  captainStage?: boolean
+  captainDraft?: boolean
 }
 
 // What belongs to one queue on its page; the rest of the page is shared by every queue.
 export async function queueParts(queue: QueueModel, parts: QueueParts): Promise<Fragment[]> {
+  if (queue.launchMode === 'captain') {
+    return captainQueueParts(queue, parts)
+  }
+
   const fragments: Fragment[] = []
 
   const slots = await pickSlots(queue, parts)

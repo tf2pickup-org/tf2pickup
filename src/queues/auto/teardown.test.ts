@@ -13,6 +13,7 @@ vi.mock('../../database/collections', () => {
   }
 })
 vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn() } }))
+vi.mock('../get', () => ({ get: vi.fn().mockResolvedValue({ launchMode: 'auto' }) }))
 vi.mock('./queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: () => unknown) => await fn()),
 }))

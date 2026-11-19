@@ -33,6 +33,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   ],
   games: [
     { spec: { number: 1 }, options: { unique: true } },
+    { spec: { captainDraftToken: 1 }, options: { unique: true, sparse: true } },
     { spec: { logSecret: 1 }, options: { unique: true, sparse: true } },
     { spec: { 'slots.player': 1 } },
     { spec: { 'events.0.at': -1 } },
@@ -45,6 +46,11 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   queueSlots: [
     { spec: { 'player.steamId': 1 }, options: { sparse: true } },
     { spec: { queue: 1, id: 1 }, options: { unique: true } },
+  ],
+  captainDrafts: [{ spec: { queue: 1 }, options: { unique: true } }],
+  captainPool: [
+    { spec: { queue: 1, 'player.steamId': 1 }, options: { unique: true } },
+    { spec: { 'player.steamId': 1 } },
   ],
   queueState: [{ spec: { queue: 1 }, options: { unique: true } }],
   queueFriends: [{ spec: { queue: 1, source: 1 }, options: { unique: true } }],

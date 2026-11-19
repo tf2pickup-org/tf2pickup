@@ -20,6 +20,7 @@ vi.mock('../../configuration', () => ({
 }))
 vi.mock('./join-blocker', () => ({ joinBlocker: vi.fn().mockReturnValue(null) }))
 vi.mock('./vacate-slot', () => ({ vacateSlot: vi.fn() }))
+vi.mock('../captain/leave-pools', () => ({ leavePools: vi.fn() }))
 vi.mock('./queue-command', () => ({
   queueCommand: vi.fn(async (_operation: string, fn: (emit: unknown) => unknown) => await fn(emit)),
 }))
@@ -59,6 +60,7 @@ describe('join()', () => {
       enabled: true,
       requireVerification: false,
       gamemode: '6v6',
+      launchMode: 'auto',
     } as never)
     vi.mocked(joinBlocker).mockReturnValue(null)
     vi.mocked(players.bySteamId).mockImplementation((async (_: SteamId64, keys: string[]) =>

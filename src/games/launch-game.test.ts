@@ -3,6 +3,8 @@ import { ObjectId } from 'mongodb'
 import type { QueueId, QueueModel } from '../database/models/queue.model'
 import type { LaunchSnapshot } from '../queues/types/launch-snapshot'
 
+vi.mock('./create-captain-game', () => ({ createCaptainGame: vi.fn() }))
+
 vi.mock('./create', () => ({
   create: vi.fn(),
 }))
@@ -20,6 +22,8 @@ vi.mock('../logger', () => ({
 }))
 
 import { launchGame } from './launch-game'
+import { createCaptainGame } from './create-captain-game'
+import type { CaptainLaunchSnapshot } from '../queues/captain/types/captain-launch-snapshot'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
 import { configure } from './rcon/configure'
@@ -70,5 +74,24 @@ describe('launchGame()', () => {
     await launchGame(snapshot)
 
     expect(configure).not.toHaveBeenCalled()
+  })
+})
+
+describe('captain launch through shared server assignment', () => {
+  it('routes drafted teams through captain creation and then the existing assignment/configure path', async () => {
+    vi.clearAllMocks()
+    vi.mocked(createCaptainGame).mockResolvedValue({ number: 51 } as never)
+    vi.mocked(assignGameServer).mockResolvedValue(undefined as never)
+    const captain = {
+      ...snapshot,
+      queue: { ...snapshot.queue, launchMode: 'captain' },
+      captains: { red: 'red', blu: 'blu' },
+      token: 't',
+    } as unknown as CaptainLaunchSnapshot
+    await launchGame(captain)
+    expect(createCaptainGame).toHaveBeenCalledWith(captain)
+    expect(create).not.toHaveBeenCalled()
+    expect(assignGameServer).toHaveBeenCalledWith(51, { retries: 3 })
+    expect(configure).toHaveBeenCalledWith(51)
   })
 })

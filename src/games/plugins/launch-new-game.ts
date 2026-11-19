@@ -16,6 +16,10 @@ export default fp(
     events.on(
       'queue:launching',
       safe(async snapshot => {
+        if (snapshot.queue.launchMode !== 'auto') {
+          return
+        }
+
         try {
           await launchGame(snapshot)
         } catch (error) {

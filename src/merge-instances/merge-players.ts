@@ -60,6 +60,9 @@ function mergePlayer(primary: PlayerModel, incoming: PlayerModel): PlayerModel {
     ...((primary.verified === true || incoming.verified === true) && { verified: true }),
     ...((primary.skill ?? incoming.skill) && { skill: { ...incoming.skill, ...primary.skill } }),
     ...((primary.elo ?? incoming.elo) && { elo: { ...incoming.elo, ...primary.elo } }),
+    ...((primary.captainModeElo ?? incoming.captainModeElo) && {
+      captainModeElo: { ...incoming.captainModeElo, ...primary.captainModeElo },
+    }),
     skillHistory: [...(primary.skillHistory ?? []), ...(incoming.skillHistory ?? [])].sort(byAt),
     eloHistory: [...(primary.eloHistory ?? []), ...(incoming.eloHistory ?? [])].sort(byAt),
     bans: [...(primary.bans ?? []), ...(incoming.bans ?? [])],

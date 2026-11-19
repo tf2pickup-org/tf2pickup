@@ -1,6 +1,7 @@
 import htmx from './htmx'
 import { Howl, Howler } from 'howler'
 import { playExclusively } from './play-exclusively'
+import { suppressedWhileFocused } from './suppressed-while-focused'
 
 interface HtmxNodeInternalData {
   sound?: Howl
@@ -45,6 +46,9 @@ export function stopSound(element: Element | null) {
 }
 
 function maybePlaySound(element: Element) {
+  if (suppressedWhileFocused(element.hasAttribute('data-when-unfocused'), document.hasFocus())) {
+    return
+  }
   const targetId = element.getAttribute('data-sound-play')
   if (!targetId) return
   const volumeAttr = element.getAttribute('data-sound-volume')
