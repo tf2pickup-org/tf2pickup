@@ -55,11 +55,11 @@ const number = 1 as GameNumber
 const player = 'PLAYER' as SteamId64
 const replacement = 'REPLACEMENT' as SteamId64
 
-function given(state: GameState) {
+function given(state: GameState, slotStatus = SlotStatus.active) {
   store.game = {
     number,
     state,
-    slots: [{ id: 1, player, status: SlotStatus.active, gameClass: 'scout' }],
+    slots: [{ id: 1, player, status: slotStatus, gameClass: 'scout' }],
   }
 }
 
@@ -165,7 +165,7 @@ describe('substitutes', () => {
   })
 
   it('does not seat a replacement in a game interrupted before the replacement landed', async () => {
-    given(GameState.started)
+    given(GameState.started, SlotStatus.waitingForSubstitute)
     await gameLifecycle.interrupt(number, 'bot')
     mockEmit.mockClear()
 
@@ -179,7 +179,7 @@ describe('substitutes', () => {
 
 describe('locking', () => {
   it('serializes a replacement with a concurrent interrupt', async () => {
-    given(GameState.started)
+    given(GameState.started, SlotStatus.waitingForSubstitute)
 
     const [, replaced] = await Promise.all([
       gameLifecycle.interrupt(number, 'bot'),

@@ -7,6 +7,7 @@ import { GameEventType } from '../../database/models/game-event.model'
 import { events } from '../../events'
 import { players } from '../../players'
 import { queues } from '../../queues'
+import { errors } from '../../errors'
 import { logError } from '../../utils/log-error'
 import { applyCooldown } from '../apply-cooldown'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
@@ -38,6 +39,10 @@ export async function replace({
     }
 
     if (replacee !== replacement) {
+      if (slot.status !== SlotStatus.waitingForSubstitute) {
+        throw errors.badRequest(`no substitute requested for ${replacee}`)
+      }
+
       const rm = await collections.players.findOne({ steamId: replacement })
       if (!rm) {
         throw new Error(`replacement player not found: ${replacement}`)

@@ -56,7 +56,9 @@ function game(overrides: Partial<GameModel> = {}): GameModel {
   return {
     number,
     state: GameState.started,
-    slots: [{ id: slotId, player: replacee, status: SlotStatus.active, gameClass: 'scout' }],
+    slots: [
+      { id: slotId, player: replacee, status: SlotStatus.waitingForSubstitute, gameClass: 'scout' },
+    ],
     ...overrides,
   } as unknown as GameModel
 }
@@ -162,4 +164,17 @@ it('leaves players and the queue alone when the game is no longer running', asyn
   expect(mockPlayersUpdate).not.toHaveBeenCalled()
   expect(mockKick).not.toHaveBeenCalled()
   expect(mockEmit).not.toHaveBeenCalled()
+})
+
+it('refuses to take a slot nobody asked a substitute for', async () => {
+  mockGamesFindOne.mockResolvedValue(
+    game({
+      slots: [{ id: slotId, player: replacee, status: SlotStatus.active, gameClass: 'scout' }],
+    } as Partial<GameModel>),
+  )
+
+  await expect(replace({ number, replacee, replacement })).rejects.toThrow(
+    'no substitute requested',
+  )
+  expect(mockApplyTransition).not.toHaveBeenCalled()
 })
