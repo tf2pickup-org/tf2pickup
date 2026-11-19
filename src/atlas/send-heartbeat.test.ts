@@ -3,6 +3,7 @@ import { sendHeartbeat } from './send-heartbeat'
 import { environment } from '../environment'
 import { collections } from '../database/collections'
 import { logger } from '../logger'
+import { queues } from '../queues'
 
 vi.mock('../environment', () => ({
   environment: {
@@ -14,9 +15,12 @@ vi.mock('../environment', () => ({
   },
 }))
 
-vi.mock('../queues', () => ({
+vi.mock('../queues', async () => ({
   queues: {
-    getDefault: vi.fn().mockResolvedValue({ _id: 'queue-id', gamemode: '6v6' }),
+    getDefault: vi.fn(),
+    playerCounts: (
+      await vi.importActual<typeof import('../queues/player-counts')>('../queues/player-counts')
+    ).playerCounts,
   },
 }))
 
@@ -36,6 +40,9 @@ vi.mock('../database/collections', () => ({
     queueSlots: {
       countDocuments: vi.fn(),
     },
+    captainPool: {
+      countDocuments: vi.fn(),
+    },
     onlinePlayers: {
       countDocuments: vi.fn(),
     },
@@ -50,6 +57,11 @@ const fetchMock = vi.fn()
 beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock)
   fetchMock.mockResolvedValue({ ok: true, status: 204 })
+  vi.mocked(queues.getDefault).mockResolvedValue({
+    _id: 'queue-id',
+    gamemode: '6v6',
+    launchMode: 'auto',
+  } as never)
   vi.mocked(collections.queueSlots.countDocuments).mockImplementation(async (filter?: object) =>
     filter && 'player' in filter ? 7 : 12,
   )
@@ -101,6 +113,20 @@ describe('when ATLAS_SECRET is set', () => {
       onlinePlayers: 23,
       liveGames: 2,
     })
+  })
+
+  it("should count a captain queue's next-game pool", async () => {
+    vi.mocked(queues.getDefault).mockResolvedValue({
+      _id: 'queue-id',
+      gamemode: '6v6',
+      launchMode: 'captain',
+    } as never)
+    vi.mocked(collections.captainPool.countDocuments).mockResolvedValue(5)
+
+    await sendHeartbeat()
+
+    const [, init] = fetchMock.mock.calls[0]
+    expect(JSON.parse(init.body).queue).toEqual({ config: '6v6', occupied: 5, capacity: 12 })
   })
 
   describe('and the heartbeat is rejected', () => {

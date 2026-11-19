@@ -1,8 +1,8 @@
-import { collections } from '../../../../database/collections'
 import type { QueueModel } from '../../../../database/models/queue.model'
 import type { SteamId64 } from '../../../../shared/types/steam-id-64'
 import { QueueSwitcherCount } from './queue-switcher-count'
 import { queues } from '../../..'
+import { membership } from '../../../membership'
 import { playerCounts } from '../../../player-counts'
 
 // Links to the other enabled queues; the content is swapped in place, and preloaded on hover.
@@ -18,7 +18,7 @@ export async function QueueSwitcher(props: {
 
   const [counts, joined] = await Promise.all([
     Promise.all(enabled.map(playerCounts)),
-    props.actor ? joinedQueues(props.actor) : [],
+    props.actor ? membership(props.actor) : null,
   ])
 
   // the indicator comes first, so a view transition always keeps it under the labels
@@ -43,7 +43,7 @@ export async function QueueSwitcher(props: {
               data-umami-event-queue={queue.slug}
               class="queue-switcher-option"
               style={`grid-column: ${i + 1}`}
-              data-joined={joined.some(id => id.equals(queue._id)) ? '' : undefined}
+              data-joined={joined?.queue.equals(queue._id) ? '' : undefined}
             >
               <span
                 class="queue-switcher-label"
@@ -71,11 +71,4 @@ QueueSwitcher.count = async (props: { queue: QueueModel }) => {
 
 function isShown(enabled: QueueModel[]) {
   return enabled.length >= 2
-}
-
-async function joinedQueues(steamId: SteamId64) {
-  return [
-    ...(await collections.queueSlots.distinct('queue', { 'player.steamId': steamId })),
-    ...(await collections.captainPool.distinct('queue', { 'player.steamId': steamId })),
-  ]
 }

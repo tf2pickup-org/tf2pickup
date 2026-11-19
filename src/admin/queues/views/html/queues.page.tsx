@@ -1,4 +1,3 @@
-import { collections } from '../../../../database/collections'
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import { IconPlus, IconTrash } from '../../../../html/components/icons'
 import { queues } from '../../../../queues'
@@ -8,17 +7,7 @@ import { Admin } from '../../../views/html/admin'
 
 export async function QueuesPage() {
   const all = await queues.list()
-  const playerCounts = new Map(
-    await Promise.all(
-      all.map(
-        async ({ _id }) =>
-          [
-            _id.toHexString(),
-            await collections.queueSlots.countDocuments({ queue: _id, player: { $ne: null } }),
-          ] as const,
-      ),
-    ),
-  )
+  const playerCounts = await Promise.all(all.map(queues.playerCounts))
 
   return (
     <Admin activePage="queues">
@@ -52,7 +41,7 @@ export async function QueuesPage() {
                 <td>{queue.gamemode}</td>
                 <td>{queue.launchMode}</td>
                 <td>
-                  {playerCounts.get(queue._id.toHexString()) ?? 0}/
+                  {playerCounts[i]!.current}/
                   {gamemodeConfigs[queue.gamemode].classes.reduce(
                     (sum, { count }) => sum + count * 2,
                     0,
