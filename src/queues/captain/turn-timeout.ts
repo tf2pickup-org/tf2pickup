@@ -1,7 +1,6 @@
 import { sample } from 'es-toolkit'
 import { applyMapBan } from './apply-map-ban'
 import { banTurn } from './ban-turn'
-import { settleMapBans } from './settle-map-bans'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
@@ -12,7 +11,7 @@ import { currentTurn } from './current-turn'
 import { getDraftPosition } from './get-draft-position'
 import { getPool } from './get-pool'
 import { applyPick } from './apply-pick'
-import { settleDraft } from './settle-draft'
+import { captainMachine } from './machine'
 import { timeoutPick } from './timeout-pick'
 
 // The captain ran out of time: the rest of the turn is picked for them, longest-waiting first.
@@ -40,14 +39,12 @@ export async function turnTimeout(
 
     if (phase === 'ban') {
       const remaining = banTurn(draft).remaining
-      if (remaining.length === 1) {
-        await settleMapBans(settings, draft, emit)
-        return
+      if (remaining.length !== 1) {
+        const map = sample(remaining)
+        if (!map) return
+        applyMapBan(draft, map, 'timedOut')
       }
-      const map = sample(remaining)
-      if (!map) return
-      applyMapBan(draft, map, 'timedOut')
-      await settleMapBans(settings, draft, emit)
+      await captainMachine.advanceDraft(settings, draft, emit)
       return
     }
 
@@ -61,6 +58,6 @@ export async function turnTimeout(
       }
       applyPick(draft, pick, 'timedOut')
     }
-    await settleDraft(settings, draft, members, emit)
+    await captainMachine.advanceDraft(settings, draft, emit, members)
   })
 }

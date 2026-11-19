@@ -13,6 +13,7 @@ import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { getState } from '../get-state'
 import { assertCaptainQueue } from './assert-captain-queue'
+import { captainMachine } from './machine'
 
 // Only a player in the pool can volunteer; leaving the pool clears the flag.
 export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
@@ -51,7 +52,7 @@ export async function toggleVolunteer(queue: QueueId, steamId: SteamId64) {
       { $set: { volunteer, ...(state === QueueState.ready ? { ready: true } : {}) } },
     )
     logger.info({ queue, steamId, volunteer }, 'captain volunteer toggled')
-    await collections.queueState.updateOne({ queue }, { $set: { last: steamId } })
+    await captainMachine.recordLast(queue, steamId)
     emit('queue/captainPool:updated', { queue })
     return state === QueueState.ready
   })

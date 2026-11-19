@@ -6,7 +6,7 @@ import { captainRoles } from './captain-roles'
 import { currentTurn } from './current-turn'
 import { finalCaptainRoles } from './final-captain-roles'
 import { getDraftPosition } from './get-draft-position'
-import { cachedLegalPicks } from './cached-legal-picks'
+import { cachedLegalPicks } from './machine/cached-legal-picks'
 import type { DraftView } from './types/draft-view'
 
 export function getDraftView(

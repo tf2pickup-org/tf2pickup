@@ -1,4 +1,4 @@
-import { QueueState } from '../../database/models/queue-state.model'
+import { QueueState } from '../../../database/models/queue-state.model'
 
 // Sign-ups during a running draft never trigger ready-up (SPEC 4.4a).
 export function decideCaptain(

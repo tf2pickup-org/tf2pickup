@@ -3,7 +3,7 @@ import { logger } from '../../logger'
 import { captainDraftMetrics } from './metrics'
 import type { DraftPick } from './types/draft-pick'
 
-// Applies a pick to the draft held in memory; settleDraft() persists it.
+// Applies a pick to the draft held in memory; captainMachine.advanceDraft() persists it.
 export function applyPick(
   draft: CaptainDraftModel,
   pick: DraftPick,

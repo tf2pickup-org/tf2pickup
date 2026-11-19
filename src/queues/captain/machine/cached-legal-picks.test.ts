@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('./legal-picks', () => ({ legalPicks: vi.fn(() => []) }))
+vi.mock('../legal-picks', () => ({ legalPicks: vi.fn(() => []) }))
 
 import { ObjectId } from 'mongodb'
-import type { CaptainDraftModel } from '../../database/models/captain-draft.model'
+import type { CaptainDraftModel } from '../../../database/models/captain-draft.model'
 import { cachedLegalPicks } from './cached-legal-picks'
-import { legalPicks } from './legal-picks'
+import { legalPicks } from '../legal-picks'
 import { legalPicksCache } from './legal-picks-cache'
-import type { DraftPosition } from './types/draft-position'
+import type { DraftPosition } from '../types/draft-position'
 
 const queue = new ObjectId()
 const position = {} as DraftPosition

@@ -16,7 +16,7 @@ vi.mock('../../database/collections', () => ({
       findOne: vi.fn(() =>
         Promise.resolve({ token: store.token, startedAt: new Date(Date.now() - 1500) }),
       ),
-      deleteOne: vi.fn(),
+      deleteMany: vi.fn(),
     },
     captainPool: {
       find: vi.fn(() => ({
@@ -73,7 +73,7 @@ describe('captain launch lifecycle', () => {
       { queue },
       { $set: { locked: false, ready: false } },
     )
-    expect(collections.captainDrafts.deleteOne).toHaveBeenCalledWith({ queue, token: 't' })
+    expect(collections.captainDrafts.deleteMany).toHaveBeenCalledWith({ queue })
     expect(tasks.cancel).toHaveBeenCalledWith('queue/captain:turnTimeout', { queue })
     expect(emit).toHaveBeenCalledWith('queue/state:updated', { queue, state: 'waiting' })
     expect(captainDraftMetrics.duration.record).toHaveBeenCalledWith(expect.any(Number))

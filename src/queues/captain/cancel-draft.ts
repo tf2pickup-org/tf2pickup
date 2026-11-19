@@ -1,4 +1,3 @@
-import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../../database/collections'
 import type { QueueId } from '../../database/models/queue.model'
 import { QueueState } from '../../database/models/queue-state.model'
@@ -11,8 +10,7 @@ import { withLogLevel } from '../../utils/with-log-level'
 import { queueCommand } from '../queue-command'
 import { get } from '../get'
 import { assertCaptainQueue } from './assert-captain-queue'
-import { cancelDraftTimeouts } from './cancel-draft-timeouts'
-import { enterState } from './enter-state'
+import { captainMachine } from './machine'
 import { captainDraftMetrics } from './metrics'
 
 // Either captain can end a running draft, whatever it is doing, at the price of a cooldown. Everyone
@@ -36,17 +34,9 @@ export async function cancelDraft(queue: QueueId, actor: SteamId64) {
     }
 
     const captain = await collections.captainPool.findOne({ queue, 'player.steamId': actor })
-    await cancelDraftTimeouts(queue)
-    await collections.captainDrafts.deleteOne({ queue })
     // the cooldown ban would remove the captain anyway; do it here, inside the lock
-    await collections.captainPool.deleteOne({ queue, 'player.steamId': actor })
-    await collections.captainPool.updateMany({ queue }, { $set: { locked: false } })
-    await enterState(settings, QueueState.waiting, emit)
-    emit('queue/captainPool:left', { queue, player: actor })
+    await captainMachine.toWaiting(settings, emit, { draft, remove: [actor] })
     captainDraftMetrics.aborted.add(1, { reason: 'cancelled' })
-    captainDraftMetrics.duration.record(
-      Math.max(0, Date.now() - draft.startedAt.getTime()) / secondsToMilliseconds(1),
-    )
     logger.info({ queue, steamId: actor }, 'captain draft cancelled')
     emit('queue/captainDraft:cancelled', {
       queue,

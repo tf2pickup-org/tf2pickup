@@ -3,9 +3,7 @@ import type { Emit } from './queue-command'
 import { reset as autoReset } from './auto/reset'
 import { step as autoStep } from './auto/step'
 import { teardown as autoTeardown } from './auto/teardown'
-import { reset as captainReset } from './captain/reset'
-import { step as captainStep } from './captain/step'
-import { teardown as captainTeardown } from './captain/teardown'
+import { captainMachine } from './captain/machine'
 
 interface Engine {
   // one transition of the queue's state machine; true if one applied. Runs inside queueCommand().
@@ -25,8 +23,8 @@ export const engines: Record<QueueModel['launchMode'], Engine> = {
     teardown: autoTeardown,
   },
   captain: {
-    step: captainStep,
-    reset: captainReset,
-    teardown: captainTeardown,
+    step: captainMachine.step,
+    reset: captainMachine.reset,
+    teardown: captainMachine.teardown,
   },
 }

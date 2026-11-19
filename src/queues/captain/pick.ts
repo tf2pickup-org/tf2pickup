@@ -14,7 +14,7 @@ import { getDraftPosition } from './get-draft-position'
 import { getPool } from './get-pool'
 import { isDraftCompletable } from './is-draft-completable'
 import { applyPick } from './apply-pick'
-import { settleDraft } from './settle-draft'
+import { captainMachine } from './machine'
 
 // The captain on the clock picks a player for a role; everything is re-checked under the lock.
 export async function pick(queue: QueueId, actor: SteamId64, player: SteamId64, role: string) {
@@ -44,6 +44,6 @@ export async function pick(queue: QueueId, actor: SteamId64, player: SteamId64, 
     }
 
     applyPick(draft, candidate, 'chosen')
-    await settleDraft(settings, draft, members, emit)
+    await captainMachine.advanceDraft(settings, draft, emit, members)
   })
 }
