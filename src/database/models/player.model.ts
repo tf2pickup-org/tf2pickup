@@ -84,6 +84,8 @@ export interface PlayerModel {
   etf2lProfile?: Etf2lProfile
   etf2lProfileLastSyncedAt?: Date
   cooldownLevel: number
+  // when the cooldown level last changed; the point the decay back down to zero is measured from
+  cooldownLevelUpdatedAt?: Date
   activeGame?: GameNumber
   skill?: PlayerSkillByGamemode
   skillHistory?: {

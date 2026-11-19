@@ -51,6 +51,8 @@ import { players } from '../..'
 import { requestContext } from '@fastify/request-context'
 import { isVerificationEnabled } from '../../../mumble/is-verification-enabled'
 import { MumbleVerificationMethod } from '../../../database/models/player.model'
+import { decayCooldownLevel } from '../../decay-cooldown-level'
+import { durationUnit } from '../../../admin/games/duration-unit'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -67,6 +69,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
     'steamId',
     'avatar.large',
     'cooldownLevel',
+    'cooldownLevelUpdatedAt',
     'nameHistory',
   ])
   return (
@@ -96,13 +99,7 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
               <label class="form-label" for="cooldown-level">
                 Cooldown level
               </label>
-              <input
-                type="number"
-                name="cooldownLevel"
-                value={player.cooldownLevel.toString()}
-                id="cooldown-level"
-                min="0"
-              />
+              <CooldownLevelInput player={player} />
               <CooldownLevelsOverview />
             </div>
 
@@ -593,6 +590,41 @@ export async function ChatMuteDetails(props: {
         </span>
       </form>
     </div>
+  )
+}
+
+async function CooldownLevelInput(props: {
+  player: Pick<PlayerModel, 'cooldownLevel' | 'cooldownLevelUpdatedAt'>
+}) {
+  const decayPeriodMs = await configuration.get('games.cooldown_decay_period')
+  const now = new Date()
+  const { level, decayedLevels, nextDecayAt } = decayCooldownLevel(props.player, now, decayPeriodMs)
+  const { value, unit } = durationUnit.split(decayPeriodMs)
+
+  return (
+    <>
+      <input
+        type="number"
+        name="cooldownLevel"
+        value={level.toString()}
+        id="cooldown-level"
+        min="0"
+      />
+      <p class="text-sm text-zinc-200">
+        {props.player.cooldownLevelUpdatedAt
+          ? `Last changed ${format(props.player.cooldownLevelUpdatedAt, 'MMMM dd, yyyy, HH:mm')}`
+          : 'No recorded change'}
+        {decayPeriodMs > 0 && level > 0 && nextDecayAt && (
+          <>
+            {' · decays by one level every '}
+            {value} {unit}
+            {decayedLevels > 0 && `, already down from ${props.player.cooldownLevel}`}
+            {', next on'}
+            <strong safe> {format(nextDecayAt, 'MMMM dd, yyyy, HH:mm')}</strong>
+          </>
+        )}
+      </p>
+    </>
   )
 }
 

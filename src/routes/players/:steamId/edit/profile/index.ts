@@ -6,6 +6,7 @@ import { EditPlayerProfilePage } from '../../../../../players/views/html/edit-pl
 import { routes } from '../../../../../utils/routes'
 import { buildProfileUpdate } from './build-profile-update'
 import { activityLog } from '../../../../../activity-log'
+import { configuration } from '../../../../../configuration'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -46,13 +47,14 @@ export default routes(async app => {
       async (req, reply) => {
         const { steamId } = req.params
         const { name, cooldownLevel } = req.body
+        const decayPeriodMs = await configuration.get('games.cooldown_decay_period')
 
         let oldName: string | undefined
         await players.update(
           steamId,
           before => {
             oldName = before.name
-            return buildProfileUpdate(before.name, { name, cooldownLevel })
+            return buildProfileUpdate(before, { name, cooldownLevel }, decayPeriodMs)
           },
           {},
           req.user!.player.steamId,

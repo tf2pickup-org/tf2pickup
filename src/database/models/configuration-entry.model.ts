@@ -87,6 +87,17 @@ export const configurationSchema = z.discriminatedUnion('key', [
         },
       ]),
   }),
+  z
+    .object({
+      key: z.literal('games.cooldown_decay_period'),
+      value: z
+        .number()
+        .min(0)
+        .default(milliseconds({ months: 1 })),
+    })
+    .describe(
+      'Time a player has to stay clean for their cooldown level to drop by one (milliseconds). Use 0 to never decay',
+    ),
   z.object({
     key: z.literal('games.default_player_skill'),
     value: z

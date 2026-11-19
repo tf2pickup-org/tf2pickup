@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { milliseconds } from 'date-fns'
 import { buildSnapshot } from './build-snapshot'
 import { configuration } from '../configuration'
 
@@ -102,6 +103,7 @@ const values: Record<string, unknown> = {
   'players.minimum_in_game_hours': 0,
   'serveme_tf.preferred_region': 'eu',
   'games.cooldown_levels': [{ level: 0, banLengthMs: 1 }],
+  'games.cooldown_decay_period': milliseconds({ months: 1 }),
   'games.default_player_skill': { '6v6': { soldier: 5 } },
   'games.execute_extra_commands': [],
 }
@@ -143,6 +145,17 @@ describe('buildSnapshot', () => {
       key: 'players.etf2l_ban_sync',
       label: 'Sync ETF2L.org bans',
       group: 'Players',
+    })
+  })
+
+  it.each([false, true])('reports cooldown decay as %s', async enabled => {
+    values['games.cooldown_decay_period'] = enabled ? milliseconds({ months: 1 }) : 0
+    const snapshot = await buildSnapshot()
+    expect(snapshot.features['games.cooldown_decay_enabled']).toBe(enabled)
+    expect(snapshot.meta.features).toContainEqual({
+      key: 'games.cooldown_decay_enabled',
+      label: 'Cooldown level decay',
+      group: 'Games',
     })
   })
 

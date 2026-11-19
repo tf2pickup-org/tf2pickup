@@ -147,6 +147,7 @@ describe('upsertPlayer()', () => {
       roles: [],
       hasAcceptedRules: false,
       cooldownLevel: 0,
+      cooldownLevelUpdatedAt: now,
       preferences: {},
       stats: {
         totalGames: 0,
@@ -198,6 +199,7 @@ describe('upsertPlayer()', () => {
             roles: [],
             hasAcceptedRules: false,
             cooldownLevel: 0,
+            cooldownLevelUpdatedAt: now,
             preferences: {},
             stats: {
               totalGames: 0,
@@ -230,6 +232,7 @@ describe('upsertPlayer()', () => {
             roles: [PlayerRole.admin, PlayerRole.superUser],
             hasAcceptedRules: false,
             cooldownLevel: 0,
+            cooldownLevelUpdatedAt: now,
             preferences: {},
             stats: {
               totalGames: 0,
@@ -259,6 +262,7 @@ describe('upsertPlayer()', () => {
           roles: [],
           hasAcceptedRules: false,
           cooldownLevel: 0,
+          cooldownLevelUpdatedAt: now,
           preferences: {},
           stats: {
             totalGames: 0,

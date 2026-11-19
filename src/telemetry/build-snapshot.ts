@@ -39,6 +39,7 @@ export async function buildSnapshot() {
     minimumInGameHours,
     servemePreferredRegion,
     cooldownLevels,
+    cooldownDecayPeriod,
     defaultPlayerSkill,
     extraCommands,
   ] = await Promise.all([
@@ -54,6 +55,7 @@ export async function buildSnapshot() {
     configuration.get('players.minimum_in_game_hours'),
     configuration.get('serveme_tf.preferred_region'),
     configuration.get('games.cooldown_levels'),
+    configuration.get('games.cooldown_decay_period'),
     configuration.get('games.default_player_skill'),
     configuration.get('games.execute_extra_commands'),
   ])
@@ -129,6 +131,12 @@ export async function buildSnapshot() {
       key: 'games.auto_force_end_threshold',
       value: autoForceEndThreshold,
       label: 'Auto force-end threshold',
+      group: 'Games',
+    },
+    {
+      key: 'games.cooldown_decay_enabled',
+      value: cooldownDecayPeriod > 0,
+      label: 'Cooldown level decay',
       group: 'Games',
     },
     {

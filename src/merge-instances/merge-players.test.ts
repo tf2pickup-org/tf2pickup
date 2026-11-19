@@ -159,4 +159,23 @@ describe('mergePlayers()', () => {
     expect(merged!.eloHistory![0]!.game).toBe(103)
     expect(merged!.skillHistory![0]!.lastGame).toBe(103)
   })
+
+  it('keeps the decay clock of the instance with the higher cooldown level', () => {
+    const [merged] = mergePlayers(
+      [player({ cooldownLevel: 4, cooldownLevelUpdatedAt: new Date('2024-01-01') })],
+      [player({ cooldownLevel: 2, cooldownLevelUpdatedAt: new Date('2025-06-01') })],
+      numberMap,
+    )
+    expect(merged!.cooldownLevel).toBe(4)
+    expect(merged!.cooldownLevelUpdatedAt).toEqual(new Date('2024-01-01'))
+  })
+
+  it('keeps the later decay clock when both instances have the same cooldown level', () => {
+    const [merged] = mergePlayers(
+      [player({ cooldownLevel: 2, cooldownLevelUpdatedAt: new Date('2024-01-01') })],
+      [player({ cooldownLevel: 2, cooldownLevelUpdatedAt: new Date('2025-06-01') })],
+      numberMap,
+    )
+    expect(merged!.cooldownLevelUpdatedAt).toEqual(new Date('2025-06-01'))
+  })
 })
