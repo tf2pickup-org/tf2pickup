@@ -178,3 +178,28 @@ it('refuses to take a slot nobody asked a substitute for', async () => {
   )
   expect(mockApplyTransition).not.toHaveBeenCalled()
 })
+
+it('finishes one replacement before the next one starts', async () => {
+  let releaseKick!: () => void
+  mockKick.mockImplementationOnce(
+    async () =>
+      await new Promise<void>(resolve => {
+        releaseKick = resolve
+      }),
+  )
+  const next = 'NEXT' as SteamId64
+
+  const first = replace({ number, replacee, replacement })
+  await vi.waitFor(() => expect(mockKick).toHaveBeenCalledTimes(1))
+  const second = replace({ number, replacee, replacement: next })
+  await new Promise(resolve => setImmediate(resolve))
+  expect(mockApplyTransition).toHaveBeenCalledTimes(1)
+
+  releaseKick()
+  await Promise.all([first, second])
+
+  const replaced = mockEmit.mock.calls
+    .filter(([e]: [string, ...unknown[]]) => e === 'game:playerReplaced')
+    .map(([, payload]: [string, { replacement: SteamId64 }]) => payload.replacement)
+  expect(replaced).toEqual([replacement, next])
+})

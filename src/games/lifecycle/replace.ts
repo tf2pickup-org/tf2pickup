@@ -1,3 +1,4 @@
+import { Mutex } from 'async-mutex'
 import type { GameNumber } from '../../database/models/game.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { logger } from '../../logger'
@@ -16,15 +17,21 @@ import { update } from '../update'
 import { applyTransition } from './apply-transition'
 import { runningGameStates } from './running-game-states'
 
-export async function replace({
-  number,
-  replacee,
-  replacement,
-}: {
+// Replacements stay whole through their side effects: a late game:playerReplaced from an older
+// replacement would otherwise overwrite a newer one's server whitelist and deferred kick.
+const replaceMutex = new Mutex()
+
+interface Replacement {
   number: GameNumber
   replacee: SteamId64
   replacement: SteamId64
-}) {
+}
+
+export async function replace(params: Replacement) {
+  return await replaceMutex.runExclusive(async () => await replaceExclusive(params))
+}
+
+async function replaceExclusive({ number, replacee, replacement }: Replacement) {
   logger.trace({ number, replacee, replacement }, 'games.replacePlayer()')
 
   const result = await mutex.runExclusive(async () => {
