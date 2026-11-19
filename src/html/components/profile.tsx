@@ -17,7 +17,7 @@ export async function Profile(player: PickDeep<PlayerModel, 'steamId' | 'name' |
             src={playerAvatarUrl(player.avatar, 'medium')}
             width="64"
             class="h-[42px] w-[42px] rounded-[3px]"
-            alt="{name}'s avatar"
+            alt=""
           />
           <span class="grow overflow-hidden text-2xl text-ellipsis whitespace-nowrap" safe>
             {player.name}
