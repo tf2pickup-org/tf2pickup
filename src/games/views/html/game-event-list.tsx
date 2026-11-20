@@ -7,6 +7,7 @@ import {
 import type { GameModel } from '../../../database/models/game.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { isBot } from '../../../shared/types/bot'
+import { isDeletedUser } from '../../../shared/types/steam-id-64'
 import { PlayerLink } from '../../../html/components/player-link'
 import { isStopwatchGame } from '../../is-stopwatch-game'
 
@@ -227,8 +228,13 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
         </span>
       )
 
-      // a player who was away and took back their own slot, nobody else came in
-      if (props.event.replacee === props.event.replacement) {
+      // a player who was away and took back their own slot, nobody else came in.
+      // deleted users share the "[deleted]" sentinel, so equality there says nothing
+      // about them being the same person.
+      if (
+        props.event.replacee === props.event.replacement &&
+        !isDeletedUser(props.event.replacement)
+      ) {
         return (
           <span>
             <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}

@@ -3,7 +3,7 @@ import { parse } from 'node-html-parser'
 import { GameEventList } from './game-event-list'
 import { GameEventType, type GameEventModel } from '../../../database/models/game-event.model'
 import type { GameModel, GameNumber } from '../../../database/models/game.model'
-import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { deletedUserSteamId, type SteamId64 } from '../../../shared/types/steam-id-64'
 import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
 
 const mockPlayersFindOne = vi.hoisted(() => vi.fn())
@@ -59,5 +59,20 @@ describe('GameEventList', () => {
     ])
 
     expect(text).toBe('05:31:33Alder rejoined on medic')
+  })
+
+  it('still renders "replaced" when both players were deleted and share the sentinel id', async () => {
+    const text = await eventListText([
+      {
+        event: GameEventType.playerReplaced,
+        at,
+        replacee: deletedUserSteamId,
+        replacement: deletedUserSteamId,
+        gameClass: Tf2ClassName.medic,
+      },
+    ])
+
+    expect(text).toContain('replaced')
+    expect(text).not.toContain('rejoined')
   })
 })
