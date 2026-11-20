@@ -68,7 +68,8 @@
 
       .online-player-list,
       .chat {
-        max-height: 60dvh;
+        /* The mobile sidebar sizes to its contents, so use each panel's own size. */
+        flex: none;
       }
     }
   }

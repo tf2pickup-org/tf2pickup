@@ -18,7 +18,11 @@ export async function OnlinePlayerList() {
     .toArray()
 
   return (
-    <ul class="online-player-list fade-scroll" id="online-player-list" data-fade-scroll>
+    <ul
+      class="online-player-list fade-scroll max-lg:max-h-[60dvh]"
+      id="online-player-list"
+      data-fade-scroll
+    >
       {onlinePlayers.map(player => {
         const isAdmin = player.roles?.includes(PlayerRole.admin) ?? false
         return (
