@@ -7,6 +7,7 @@ import {
 import type { GameModel } from '../../../database/models/game.model'
 import { GameClassIcon } from '../../../html/components/game-class-icon'
 import { isBot } from '../../../shared/types/bot'
+import { isDeletedUser } from '../../../shared/types/steam-id-64'
 import { PlayerLink } from '../../../html/components/player-link'
 import { isStopwatchGame } from '../../is-stopwatch-game'
 
@@ -220,15 +221,33 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       }
     }
     case GameEventType.playerReplaced: {
+      const gameClass = (
+        <span class="game-event-chip">
+          <GameClassIcon gameClass={props.event.gameClass} size={20} />
+          {props.event.gameClass}
+        </span>
+      )
+
+      // a player who was away and took back their own slot, nobody else came in.
+      // deleted users share the "[deleted]" sentinel, so equality there says nothing
+      // about them being the same person.
+      if (
+        props.event.replacee === props.event.replacement &&
+        !isDeletedUser(props.event.replacement)
+      ) {
+        return (
+          <span>
+            <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}
+            rejoined on {gameClass}
+          </span>
+        )
+      }
+
       return (
         <span>
           <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}
           replaced <PlayerLink steamId={props.event.replacee} class="font-bold whitespace-nowrap" />{' '}
-          on{' '}
-          <span class="game-event-chip">
-            <GameClassIcon gameClass={props.event.gameClass} size={20} />
-            {props.event.gameClass}
-          </span>
+          on {gameClass}
         </span>
       )
     }
