@@ -28,9 +28,9 @@ test.describe('substitutes @6v6 @9v9', () => {
     await mayflowersPage.replacePlayer('Mayflower')
 
     await expect(adminsPage.playerLink('Mayflower')).toBeVisible()
-    await expect(adminsPage.gameEvent(`Mayflower replaced Mayflower`)).toBeVisible()
+    await expect(adminsPage.gameEvent(`Mayflower rejoined on`)).toBeVisible()
     await expect(mayflowersPage.playerLink('Mayflower')).toBeVisible()
-    await expect(mayflowersPage.gameEvent(`Mayflower replaced Mayflower`)).toBeVisible()
+    await expect(mayflowersPage.gameEvent(`Mayflower rejoined on`)).toBeVisible()
   })
 
   test('substitute other @6v6 @9v9', async ({ gameNumber, users, page, gameServer }) => {

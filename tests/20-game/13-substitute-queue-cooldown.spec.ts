@@ -19,7 +19,7 @@ test('self-substituting players have the same queue cooldown as regular players 
   const mayflower = users.byName('Mayflower')
   const mayflowersGamePage = await mayflower.gamePage(gameNumber)
   await mayflowersGamePage.replacePlayer('Mayflower')
-  await expect(mayflowersGamePage.gameEvent('Mayflower replaced Mayflower')).toBeVisible()
+  await expect(mayflowersGamePage.gameEvent('Mayflower rejoined on')).toBeVisible()
 
   const mayflowersQueuePage = await mayflower.queuePage()
   await mayflowersQueuePage.goto()
