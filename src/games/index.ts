@@ -1,9 +1,7 @@
 import { update } from './update'
 import { findOne } from './find-one'
 import { gameNumber } from './schemas/game-number'
-import { requestSubstitute } from './request-substitute'
-import { replacePlayer } from './replace-player'
-import { forceEnd } from './force-end'
+import { gameLifecycle } from './lifecycle'
 import { requestGameServerReinitialization } from './request-game-server-reinitialization'
 import { assignAndConfigure } from './assign-and-configure'
 import { executeRconCommand } from './execute-rcon-command'
@@ -12,10 +10,8 @@ export const games = {
   assignAndConfigure,
   executeRconCommand,
   findOne,
-  forceEnd,
-  replacePlayer,
+  lifecycle: gameLifecycle,
   requestGameServerReinitialization,
-  requestSubstitute,
   update,
 
   schemas: {

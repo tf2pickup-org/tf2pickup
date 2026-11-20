@@ -1,85 +1,88 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { events } from '../../events'
+import { gameLifecycle } from '../lifecycle'
+import { update } from '../update'
+import { PlayerConnectionStatus } from '../../database/models/game-slot.model'
+import { GameEventType } from '../../database/models/game-event.model'
+import type { GameNumber } from '../../database/models/game.model'
+import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { Tf2Team } from '../../shared/types/tf2-team'
+import plugin from './match-event-handler'
 
 vi.mock('fastify-plugin', () => ({
   default: <T>(fn: T): T => fn,
 }))
 
 vi.mock('../../events', () => ({
-  events: {
-    on: vi.fn(),
-    emit: vi.fn(),
-  },
-}))
-
-vi.mock('../update', () => ({
-  update: vi.fn(),
+  events: { on: vi.fn() },
 }))
 
 vi.mock('../../utils/safe', () => ({
   safe: <T>(fn: T): T => fn,
 }))
 
-vi.mock('../../database/collections', () => ({
-  collections: {
-    games: {
-      findOne: vi.fn(),
-    },
+vi.mock('../update', () => ({ update: vi.fn() }))
+
+vi.mock('../lifecycle', () => ({
+  gameLifecycle: {
+    start: vi.fn(),
+    restart: vi.fn(),
+    end: vi.fn(),
+    setConnection: vi.fn(),
   },
 }))
 
-import { events } from '../../events'
-import { update } from '../update'
-import { collections } from '../../database/collections'
-import { GameState } from '../../database/models/game.model'
-import { GameEventType } from '../../database/models/game-event.model'
-import { Tf2Team } from '../../shared/types/tf2-team'
-import plugin from './match-event-handler'
-import type { GameNumber } from '../../database/models/game.model'
-
 const gameNumber = 7615 as GameNumber
+const steamId = 'PLAYER' as SteamId64
+
+function handler(event: string) {
+  const call = vi.mocked(events.on).mock.calls.find(([e]) => e === event)
+  return call![1] as (params: Record<string, unknown>) => Promise<void>
+}
 
 describe('match-event-handler', () => {
-  let scoreResetHandler: (params: { gameNumber: GameNumber }) => Promise<void>
-
   beforeEach(async () => {
     vi.clearAllMocks()
     await (plugin as unknown as () => Promise<void>)()
-
-    const call = vi
-      .mocked(events.on)
-      .mock.calls.find(([event]: [string, ...unknown[]]) => event === 'match/score:reset')
-    scoreResetHandler = call![1] as typeof scoreResetHandler
   })
 
-  it('zeroes the score and records the restart for a started game', async () => {
-    vi.mocked(collections.games.findOne).mockResolvedValue({
-      state: GameState.started,
-    } as never)
-    const updated = { number: gameNumber } as never
-    vi.mocked(update).mockResolvedValue(updated)
+  it.each([
+    ['match:started', gameLifecycle.start],
+    ['match/score:reset', gameLifecycle.restart],
+    ['match:ended', gameLifecycle.end],
+  ])('hands %s to the game lifecycle', async (event, transition) => {
+    await handler(event)({ gameNumber })
+    expect(transition).toHaveBeenCalledWith(gameNumber)
+  })
 
-    await scoreResetHandler({ gameNumber })
-
-    expect(update).toHaveBeenCalledWith(
-      { number: gameNumber, state: GameState.started },
-      expect.objectContaining({
-        $set: { score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 0 } },
-        $push: {
-          events: expect.objectContaining({ event: GameEventType.gameRestarted }),
-        },
-      }),
+  it.each([
+    [
+      'match/player:connected',
+      PlayerConnectionStatus.joining,
+      { event: GameEventType.playerJoinedGameServer, player: steamId },
+    ],
+    [
+      'match/player:joinedTeam',
+      PlayerConnectionStatus.connected,
+      { event: GameEventType.playerJoinedGameServerTeam, player: steamId, team: Tf2Team.blu },
+    ],
+    [
+      'match/player:disconnected',
+      PlayerConnectionStatus.offline,
+      { event: GameEventType.playerLeftGameServer, player: steamId },
+    ],
+  ])('records %s as a connection status change', async (event, status, logEntry) => {
+    await handler(event)({ gameNumber, steamId, team: Tf2Team.blu })
+    expect(gameLifecycle.setConnection).toHaveBeenCalledWith(
+      gameNumber,
+      steamId,
+      status,
+      expect.objectContaining(logEntry),
     )
-    expect(events.emit).toHaveBeenCalledWith('game:restarted', { game: updated })
   })
 
-  it('ignores the reset when the game is not started', async () => {
-    vi.mocked(collections.games.findOne).mockResolvedValue({
-      state: GameState.launching,
-    } as never)
-
-    await scoreResetHandler({ gameNumber })
-
-    expect(update).not.toHaveBeenCalled()
-    expect(events.emit).not.toHaveBeenCalled()
+  it('stores the logs url even after the game has ended', async () => {
+    await handler('match/logs:uploaded')({ gameNumber, logsUrl: 'https://logs.tf/1' })
+    expect(update).toHaveBeenCalledWith(gameNumber, { $set: { logsUrl: 'https://logs.tf/1' } })
   })
 })

@@ -5,37 +5,22 @@ import type {
   UpdateFilter,
 } from 'mongodb'
 import type { GameModel, GameNumber } from '../database/models/game.model'
-import { collections } from '../database/collections'
-import { events } from '../events'
 import { mutex } from './mutex'
+import { write } from './write'
 
+// field updates only; state, slot status and slot connection status go through gameLifecycle
 export async function update(
   numberOrFilter: GameNumber | StrictFilter<GameModel>,
   update: StrictUpdateFilter<GameModel> | UpdateFilter<GameModel>,
   options?: FindOneAndUpdateOptions,
 ): Promise<GameModel> {
-  return await mutex.runExclusive(async () => {
-    let filter: StrictFilter<GameModel>
-    if (Number.isInteger(numberOrFilter)) {
-      filter = { number: numberOrFilter }
-    } else {
-      filter = numberOrFilter as StrictFilter<GameModel>
-    }
+  const filter: StrictFilter<GameModel> = Number.isInteger(numberOrFilter)
+    ? { number: numberOrFilter as GameNumber }
+    : (numberOrFilter as StrictFilter<GameModel>)
 
-    const before = await collections.games.findOne(filter)
-    if (!before) {
-      throw new Error(`game (${JSON.stringify(filter)}) not found`)
-    }
-
-    const after = await collections.games.findOneAndUpdate(filter, update, {
-      returnDocument: 'after',
-      ...options,
-    })
-    if (!after) {
-      throw new Error(`can't update game ${JSON.stringify(filter)}`)
-    }
-
-    events.emit('game:updated', { before, after })
-    return after
-  })
+  const after = await mutex.runExclusive(async () => await write(filter, update, options))
+  if (!after) {
+    throw new Error(`game (${JSON.stringify(filter)}) not found`)
+  }
+  return after
 }

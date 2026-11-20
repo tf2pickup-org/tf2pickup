@@ -1,6 +1,6 @@
 import { collections } from '../database/collections'
-import { GameState } from '../database/models/game.model'
 import { type Tf2QuickServer, listServers } from './client'
+import { runningGameStates } from '../games/lifecycle/running-game-states'
 
 export async function findFree(): Promise<Tf2QuickServer | null> {
   const servers = await listServers()
@@ -14,7 +14,7 @@ export async function findFree(): Promise<Tf2QuickServer | null> {
   const activeGames = await collections.games
     .find({
       state: {
-        $in: [GameState.created, GameState.configuring, GameState.launching, GameState.started],
+        $in: runningGameStates,
       },
       'gameServer.id': { $in: readyIds },
     })

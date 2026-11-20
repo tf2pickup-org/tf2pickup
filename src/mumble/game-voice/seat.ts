@@ -3,7 +3,7 @@ import { SlotStatus } from '../../database/models/game-slot.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { isVerificationEnabled } from '../is-verification-enabled'
 import { findGameChannels } from './find-game-channels'
-import { liveGameStates } from './live-game-states'
+import { runningGameStates } from '../../games/lifecycle/running-game-states'
 import { mumbleVoiceServer } from './mumble-voice-server'
 
 // moves a just-verified player who's on Mumble into their team channel
@@ -15,7 +15,7 @@ export async function seat(player: SteamId64, hash: string) {
 
   const game = await collections.games.findOne(
     {
-      state: { $in: liveGameStates },
+      state: { $in: runningGameStates },
       slots: {
         $elemMatch: {
           player,

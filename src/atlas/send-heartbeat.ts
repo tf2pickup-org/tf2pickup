@@ -1,10 +1,10 @@
 import { queues } from '../queues'
 import { secondsToMilliseconds } from 'date-fns'
 import { collections } from '../database/collections'
-import { GameState } from '../database/models/game.model'
 import { environment } from '../environment'
 import { logger } from '../logger'
 import { version } from '../version'
+import { runningGameStates } from '../games/lifecycle/running-game-states'
 
 export async function sendHeartbeat() {
   if (!environment.ATLAS_SECRET) {
@@ -18,7 +18,7 @@ export async function sendHeartbeat() {
     collections.onlinePlayers.countDocuments(),
     collections.games.countDocuments({
       state: {
-        $in: [GameState.created, GameState.configuring, GameState.launching, GameState.started],
+        $in: runningGameStates,
       },
     }),
   ])

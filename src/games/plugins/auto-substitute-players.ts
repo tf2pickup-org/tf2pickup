@@ -2,7 +2,7 @@ import fp from 'fastify-plugin'
 import { events } from '../../events'
 import { configuration } from '../../configuration'
 import { tasks } from '../../tasks'
-import { requestSubstitute } from '../request-substitute'
+import { gameLifecycle } from '../lifecycle'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
 import { safe } from '../../utils/safe'
@@ -26,7 +26,7 @@ export default fp(
         return
       }
 
-      await requestSubstitute({
+      await gameLifecycle.requestSubstitute({
         number: gameNumber,
         replacee: player,
         actor: 'bot',

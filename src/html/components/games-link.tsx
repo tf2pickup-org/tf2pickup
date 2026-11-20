@@ -1,12 +1,12 @@
 import { collections } from '../../database/collections'
-import { GameState } from '../../database/models/game.model'
 import { GameLiveIndicator } from './game-live-indicator'
 import { isCurrentPage } from '../is-current-page'
+import { runningGameStates } from '../../games/lifecycle/running-game-states'
 
 export async function GamesLink() {
   const gamesLiveCount = await collections.games.countDocuments({
     state: {
-      $in: [GameState.created, GameState.configuring, GameState.launching, GameState.started],
+      $in: runningGameStates,
     },
   })
   return (

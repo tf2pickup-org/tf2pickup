@@ -1,6 +1,6 @@
 import { GameState } from '../../database/models/game.model'
 
-export const liveGameStates = [
+export const runningGameStates: GameState[] = [
   GameState.created,
   GameState.configuring,
   GameState.launching,

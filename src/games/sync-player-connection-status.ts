@@ -1,11 +1,10 @@
 import { PlayerConnectionStatus } from '../database/models/game-slot.model'
 import type { GameNumber } from '../database/models/game.model'
-import { events } from '../events'
 import { logger } from '../logger'
 import { findOne } from './find-one'
 import { parseStatus } from './rcon/parse-status'
 import { withRcon } from './rcon/with-rcon'
-import { update } from './update'
+import { gameLifecycle } from './lifecycle'
 import { secondsToMilliseconds } from 'date-fns'
 import { asyncThrottle } from '../utils/async-throttle'
 import { memoize } from 'es-toolkit'
@@ -32,41 +31,19 @@ async function syncPlayerConnectionStatusImpl(gameNumber: GameNumber): Promise<v
 
         if (isOnServer && slot.connectionStatus !== PlayerConnectionStatus.connected) {
           // Player is on server but status is not connected - mark as connected
-          const updatedGame = await update(
+          await gameLifecycle.setConnection(
             game.number,
-            {
-              $set: {
-                'slots.$[element].connectionStatus': PlayerConnectionStatus.connected,
-              },
-            },
-            {
-              arrayFilters: [{ 'element.player': { $eq: slot.player } }],
-            },
+            slot.player,
+            PlayerConnectionStatus.connected,
           )
-          events.emit('game:playerConnectionStatusUpdated', {
-            game: updatedGame,
-            player: slot.player,
-            playerConnectionStatus: PlayerConnectionStatus.connected,
-          })
           logger.info(`game #${game.number}: player ${slot.player} synced as connected`)
         } else if (!isOnServer && slot.connectionStatus !== PlayerConnectionStatus.offline) {
           // Player is not on server but status is not offline - mark as offline
-          const updatedGame = await update(
+          await gameLifecycle.setConnection(
             game.number,
-            {
-              $set: {
-                'slots.$[element].connectionStatus': PlayerConnectionStatus.offline,
-              },
-            },
-            {
-              arrayFilters: [{ 'element.player': { $eq: slot.player } }],
-            },
+            slot.player,
+            PlayerConnectionStatus.offline,
           )
-          events.emit('game:playerConnectionStatusUpdated', {
-            game: updatedGame,
-            player: slot.player,
-            playerConnectionStatus: PlayerConnectionStatus.offline,
-          })
           logger.info(`game #${game.number}: player ${slot.player} synced as offline`)
         }
       }

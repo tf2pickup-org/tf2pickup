@@ -2,8 +2,9 @@ import { secondsToMilliseconds } from 'date-fns'
 import { delay } from 'es-toolkit'
 import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
-import { GameServerProvider, GameState } from '../database/models/game.model'
+import { GameServerProvider } from '../database/models/game.model'
 import { logger } from '../logger'
+import { runningGameStates } from '../games/lifecycle/running-game-states'
 
 const stvDelayMs = secondsToMilliseconds(90)
 
@@ -12,7 +13,7 @@ export async function waitForStv(serverId: string): Promise<void> {
     {
       'gameServer.id': serverId,
       'gameServer.provider': GameServerProvider.tf2QuickServer,
-      state: { $in: [GameState.ended, GameState.interrupted] },
+      state: { $nin: runningGameStates },
     },
     { sort: { number: -1 }, projection: { events: 1 } },
   )

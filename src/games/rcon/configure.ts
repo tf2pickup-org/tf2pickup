@@ -7,7 +7,6 @@ import {
   type GameModel,
   type GameNumber,
   GameServerProvider,
-  GameState,
 } from '../../database/models/game.model'
 import { environment } from '../../environment'
 import { logger } from '../../logger'
@@ -18,6 +17,7 @@ import { update } from '../update'
 import { extractConVarValue } from '../extract-con-var-value'
 import { generate } from 'generate-password'
 import { events } from '../../events'
+import { gameLifecycle } from '../lifecycle'
 import { withRcon } from './with-rcon'
 import { verifyLogTransmission } from './verify-log-transmission'
 import { servemeTf } from '../../serveme-tf'
@@ -164,16 +164,11 @@ async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = 
       throw new Error(`${signal.reason}`)
     }
 
-    game = await update(game.number, {
-      $set: {
-        state: GameState.configuring,
-        logSecret,
-      },
-      $unset: {
-        connectString: 1,
-        stvConnectString: 1,
-      },
-    })
+    const configuring = await gameLifecycle.configure(game.number, logSecret)
+    if (!configuring) {
+      throw errors.badRequest(`game #${game.number} is not running`)
+    }
+    game = configuring
 
     for await (const line of compileConfig(game, password)) {
       logger.debug(line)
@@ -205,20 +200,11 @@ async function doConfigure(game: GameModel, options: { signal?: AbortSignal } = 
       throw new Error(`${signal.reason}`)
     }
 
-    game = await update(game.number, {
-      $set: {
-        connectString,
-        stvConnectString,
-        state: GameState.launching,
-      },
-      $push: {
-        events: {
-          event: GameEventType.gameServerInitialized,
-          at: new Date(),
-        },
-      },
-    })
-    events.emit('game:gameServerInitialized', { game })
+    const launching = await gameLifecycle.launch(game.number, { connectString, stvConnectString })
+    if (!launching) {
+      throw errors.badRequest(`game #${game.number} is no longer being configured`)
+    }
+    game = launching
 
     return {
       connectString,

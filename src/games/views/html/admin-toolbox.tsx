@@ -10,6 +10,7 @@ import {
   IconX,
 } from '../../../html/components/icons'
 import { ConnectString } from './connect-string'
+import { isRunning } from '../../lifecycle/is-running'
 
 export function AdminToolbox(props: { game: GameModel }) {
   return (
@@ -146,13 +147,4 @@ AdminToolbox.rconConnect = (props: { game: GameModel }) => {
       </ConnectString>
     </section>
   )
-}
-
-function isRunning(game: Pick<GameModel, 'state'>) {
-  return [
-    GameState.created,
-    GameState.configuring,
-    GameState.launching,
-    GameState.started,
-  ].includes(game.state)
 }
