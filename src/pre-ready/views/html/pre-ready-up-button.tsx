@@ -1,4 +1,5 @@
 import { IconCoffee } from '../../../html/components/icons'
+import { formatCountdown } from '../../../shared/format-countdown'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../../../players'
 
@@ -33,7 +34,7 @@ export async function PreReadyUpButton(props: {
       <div class="flex-1">
         {timeLeft > 0 ? (
           <span class="tabular-nums" data-countdown={timeLeft} safe>
-            {formatTimeout(timeLeft)}
+            {formatCountdown(timeLeft)}
           </span>
         ) : (
           <span>Pre-ready up</span>
@@ -41,12 +42,4 @@ export async function PreReadyUpButton(props: {
       </div>
     </button>
   )
-}
-
-function formatTimeout(ms: number) {
-  const minutes = Math.floor(ms / 60000)
-  const seconds = Math.floor((ms % 60000) / 1000)
-  return seconds === 60
-    ? (minutes + 1).toString() + ':00'
-    : minutes.toString() + ':' + (seconds < 10 ? '0' : '') + seconds.toString()
 }
