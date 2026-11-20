@@ -33,7 +33,7 @@ for (const preset of queuePresets) {
       })
 
       expect(await (await users.getAdmin().adminPage()).mapPool(slug)).toEqual(
-        preset.maps.map(({ name, execConfig }) => ({ name, execConfig })),
+        preset.maps.map(({ name, execConfig }) => ({ name, execConfig: execConfig ?? '' })),
       )
     },
   )
