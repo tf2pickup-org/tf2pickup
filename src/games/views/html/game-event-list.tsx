@@ -220,15 +220,28 @@ async function GameEventInfo(props: { event: GameEventModel; game: GameModel }) 
       }
     }
     case GameEventType.playerReplaced: {
+      const gameClass = (
+        <span class="game-event-chip">
+          <GameClassIcon gameClass={props.event.gameClass} size={20} />
+          {props.event.gameClass}
+        </span>
+      )
+
+      // a player who was away and took back their own slot, nobody else came in
+      if (props.event.replacee === props.event.replacement) {
+        return (
+          <span>
+            <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}
+            rejoined on {gameClass}
+          </span>
+        )
+      }
+
       return (
         <span>
           <PlayerLink steamId={props.event.replacement} class="font-bold whitespace-nowrap" />{' '}
           replaced <PlayerLink steamId={props.event.replacee} class="font-bold whitespace-nowrap" />{' '}
-          on{' '}
-          <span class="game-event-chip">
-            <GameClassIcon gameClass={props.event.gameClass} size={20} />
-            {props.event.gameClass}
-          </span>
+          on {gameClass}
         </span>
       )
     }
