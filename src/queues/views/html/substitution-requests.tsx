@@ -9,8 +9,8 @@ export async function SubstitutionRequests() {
   return (
     <div id="substitution-requests" class="contents">
       {requests.map(request => (
-        <div class="banner flex flex-row items-center" data-tone="alert">
-          <p class="flex-1">
+        <div class="banner flex flex-col gap-y-2 md:flex-row" data-tone="alert">
+          <p class="min-w-0 flex-1">
             Team <strong safe>{request.team.toUpperCase()}</strong> needs a substitute for{' '}
             <strong class="whitespace-nowrap">
               <GameClassIcon gameClass={request.gameClass} size={20} /> {request.gameClass}
