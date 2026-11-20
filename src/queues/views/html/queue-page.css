@@ -182,7 +182,7 @@
   .queue-compact-grid {
     display: grid;
     grid-template-rows: 42px repeat(2, 58px);
-    grid-template-columns: 222px repeat(2, minmax(0, 1fr));
+    grid-template-columns: 222px repeat(var(--team-size), minmax(0, 1fr));
     gap: 16px;
     align-content: start;
     min-height: 331px;
@@ -190,8 +190,16 @@
   }
 
   .queue-compact-grid > .queue-class-heading {
+    container-type: inline-size;
     align-self: start;
+    min-width: 0;
     margin-top: 2px;
+
+    @container (width < 110px) {
+      > span {
+        display: none;
+      }
+    }
   }
 
   .queue-team-row {
@@ -322,7 +330,7 @@
 
     .queue-compact-grid {
       grid-template-rows: 42px repeat(2, 58px);
-      grid-template-columns: 80px repeat(2, minmax(0, 1fr));
+      grid-template-columns: 80px repeat(var(--team-size), minmax(0, 1fr));
       gap: 8px;
       min-height: 257px;
       padding-inline: 0;

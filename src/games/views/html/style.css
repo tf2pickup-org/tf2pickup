@@ -326,6 +326,26 @@
       }
     }
 
+    &.config-4v4 {
+      .team-blu {
+        grid-template-areas: 'bluScout1' 'bluSoldier1' 'bluDemoman1' 'bluMedic1';
+      }
+
+      .team-red {
+        grid-template-areas: 'redScout1' 'redSoldier1' 'redDemoman1' 'redMedic1';
+      }
+    }
+
+    &.config-ultitrio {
+      .team-blu {
+        grid-template-areas: 'bluScout1' 'bluSoldier1' 'bluMedic1';
+      }
+
+      .team-red {
+        grid-template-areas: 'redScout1' 'redSoldier1' 'redMedic1';
+      }
+    }
+
     .slot {
       @apply transition-colors;
       @apply duration-75;

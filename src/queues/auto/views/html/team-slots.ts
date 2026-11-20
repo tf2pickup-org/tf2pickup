@@ -2,7 +2,7 @@ import type { QueueSlotModel } from '../../../../database/models/queue-slot.mode
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import type { Gamemode } from '../../../../shared/types/gamemode'
 
-// Slots grouped by team for gamemodes with a team of two (rendered one row per team), empty otherwise.
+// Slots grouped by team for gamemodes with fixed teams (rendered one row per team), empty otherwise.
 export function teamSlots(gamemode: Gamemode, slots: QueueSlotModel[]): QueueSlotModel[][] {
   const config = gamemodeConfigs[gamemode]
   const positions = config.classes.flatMap(gameClass =>
@@ -11,7 +11,7 @@ export function teamSlots(gamemode: Gamemode, slots: QueueSlotModel[]): QueueSlo
       classIndex,
     })),
   )
-  if (positions.length !== 2) {
+  if (config.autoBalance) {
     return []
   }
 

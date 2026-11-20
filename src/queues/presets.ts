@@ -6,7 +6,8 @@ import { Gamemode } from '../shared/types/gamemode'
 export type QueuePreset = z.input<typeof createQueueSchema> & { maps: MapPoolEntry[] }
 
 // Map pools are the maps most played on live tf2pickup.org instances (and on logs.tf for bball);
-// exec configs come from https://github.com/ETF2L/gameserver-configs.
+// exec configs come from https://github.com/ETF2L/gameserver-configs. ETF2L has no 4v4 or
+// ultitrio configs, so those presets exec none.
 const sixesMaps: MapPoolEntry[] = [
   ...[
     'cp_process_f12',
@@ -58,6 +59,25 @@ const bballMaps: MapPoolEntry[] = [
   'bball_alpine_b4',
 ].map(name => ({ name, execConfig: 'etf2l_bball' }))
 
+const foursMaps: MapPoolEntry[] = [
+  'koth_product_final',
+  'koth_bagel_rc12',
+  'koth_harter_rc1',
+  'koth_maple_ridge_rc2',
+  'koth_badlands',
+  'koth_airfield_b7',
+  'koth_highpass',
+].map(name => ({ name }))
+
+const ultitrioMaps: MapPoolEntry[] = [
+  'ulti_fira_b2a',
+  'ultitrio_caffa_final8',
+  'ultitrio_aesthetic_b9',
+  'ultitrio_eruption_v4',
+  'ultitrio_dockport_final6',
+  'ultitrio_staten_b2',
+].map(name => ({ name }))
+
 // Example restriction for the restricted presets: only players an admin has rated above the
 // default skill can join.
 const restricted = { skillThreshold: 2, requireVerification: true }
@@ -106,5 +126,19 @@ export const queuePresets: QueuePreset[] = [
     gamemode: Gamemode.ultiduo,
     launchMode: 'auto',
     maps: ultiduoMaps,
+  },
+  {
+    slug: 'auto-4v4',
+    name: '4v4',
+    gamemode: Gamemode.fours,
+    launchMode: 'auto',
+    maps: foursMaps,
+  },
+  {
+    slug: 'auto-ultitrio',
+    name: 'Ultitrio',
+    gamemode: Gamemode.ultitrio,
+    launchMode: 'auto',
+    maps: ultitrioMaps,
   },
 ]

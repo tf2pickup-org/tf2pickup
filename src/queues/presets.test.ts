@@ -29,21 +29,25 @@ describe.each(queuePresets)('preset $slug', preset => {
     expect(() => mapPoolSchema.parse(preset.maps)).not.toThrow()
   })
 
-  it('execs an ETF2L config on every map', () => {
+  const gamemodePrefix = {
+    '6v6': 'etf2l_6v6',
+    '9v9': 'etf2l_9v9',
+    ultiduo: 'etf2l_ultiduo',
+    bball: 'etf2l_bball',
+    '4v4': undefined,
+    ultitrio: undefined,
+  }[preset.gamemode]
+
+  it.runIf(gamemodePrefix)('execs an ETF2L config of its own gamemode on every map', () => {
     for (const { execConfig } of preset.maps) {
       expect(etf2lConfigs).toContain(execConfig)
+      expect(execConfig).toMatch(new RegExp(`^${gamemodePrefix}`))
     }
   })
 
-  it('execs a config of its own gamemode', () => {
-    const gamemodePrefix = {
-      '6v6': 'etf2l_6v6',
-      '9v9': 'etf2l_9v9',
-      ultiduo: 'etf2l_ultiduo',
-      bball: 'etf2l_bball',
-    }[preset.gamemode]
+  it.skipIf(gamemodePrefix)('execs no config', () => {
     for (const { execConfig } of preset.maps) {
-      expect(execConfig).toMatch(new RegExp(`^${gamemodePrefix}`))
+      expect(execConfig).toBeUndefined()
     }
   })
 })
