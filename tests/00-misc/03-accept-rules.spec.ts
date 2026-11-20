@@ -14,7 +14,7 @@ test('accept rules @6v6 @9v9', async ({ page }) => {
   await page.goto(`/auth/test?steamId=${newcomer.steamId}&acceptedRules=false`)
   const dialog = page.getByTitle('Accept rules dialog')
   await expect(dialog).toBeVisible()
-  const rules = dialog.locator('.rules-wrapper')
+  const rules = dialog.getByRole('region', { name: 'Rules' })
   await expect(dialog).toHaveJSProperty('scrollTop', 0)
   await expect(rules).toBeFocused()
   await expect(rules).toHaveJSProperty('scrollTop', 0)

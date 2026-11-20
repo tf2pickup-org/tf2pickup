@@ -34,6 +34,8 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
           <div
             class="rules-wrapper fade-scroll"
             data-fade-scroll
+            role="region"
+            aria-label="Rules"
             tabindex="-1"
             {...{ autofocus: true }}
           >
