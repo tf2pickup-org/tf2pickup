@@ -1,3 +1,5 @@
+import { secondsToMilliseconds } from 'date-fns'
+import { formatCountdown } from '../../shared/format-countdown.js'
 import htmx from './htmx.js'
 
 const attrName = 'data-countdown'
@@ -8,14 +10,6 @@ interface HtmxNodeInternalData {
 
 let api: {
   getInternalData: (elt: Element) => HtmxNodeInternalData
-}
-
-function formatTimeout(ms: number) {
-  const minutes = Math.floor(ms / 60000)
-  const seconds = Math.floor((ms % 60000) / 1000)
-  return seconds === 60
-    ? (minutes + 1).toString() + ':00'
-    : minutes.toString() + ':' + (seconds < 10 ? '0' : '') + seconds.toString()
 }
 
 function maybeInit(element: Element) {
@@ -29,12 +23,12 @@ function maybeInit(element: Element) {
   const startedAt = Date.now()
   internalData.countdownInterval = setInterval(() => {
     const ms = Math.max(initialMs - (Date.now() - startedAt), 0)
-    element.textContent = formatTimeout(ms)
+    element.textContent = formatCountdown(ms)
     if (ms <= 0) {
       clearInterval(internalData.countdownInterval)
       delete internalData.countdownInterval
     }
-  }, 1000)
+  }, secondsToMilliseconds(1))
 }
 
 htmx.defineExtension('countdown', {

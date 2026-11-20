@@ -1,11 +1,8 @@
 import type { Children } from '@kitajs/html'
-import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { formatCountdown } from '../../../../shared/format-countdown'
 
 export function PhaseTimer(props: { startedAt: Date; deadline: Date; children: Children }) {
   const remaining = Math.max(0, props.deadline.getTime() - Date.now())
-  const minutes = Math.floor(remaining / minutesToMilliseconds(1))
-  const seconds = Math.floor((remaining % minutesToMilliseconds(1)) / secondsToMilliseconds(1))
-  const countdown = [minutes, String(seconds).padStart(2, '0')].join(':')
   return (
     <div
       class="flex flex-col gap-2 text-sm text-zinc-200"
@@ -23,7 +20,7 @@ export function PhaseTimer(props: { startedAt: Date; deadline: Date; children: C
           aria-hidden="true"
           safe
         >
-          {countdown}
+          {formatCountdown(remaining)}
         </span>
         <span class="font-medium">{props.children}</span>
       </div>

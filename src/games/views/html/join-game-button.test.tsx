@@ -141,8 +141,13 @@ describe('JoinGameButton', () => {
         vi.useRealTimers()
       })
 
-      it('renders a countdown element with the remaining ms', async () => {
-        const shouldJoinBy = new Date('2026-01-01T12:01:30.000Z') // 90 seconds from now
+      it.each([
+        [120_000, '2:00'],
+        [119_600, '1:59'],
+        [59_999, '0:59'],
+        [9_999, '0:09'],
+      ])('renders %i ms remaining as %s', async (remaining, expected) => {
+        const shouldJoinBy = new Date(Date.now() + remaining)
         const offlineSlot = {
           ...activeSlot,
           connectionStatus: PlayerConnectionStatus.offline,
@@ -152,8 +157,8 @@ describe('JoinGameButton', () => {
         const html = await JoinGameButton({ game, actor })
         const root = parse(html)
         const countdown = root.querySelector('[data-countdown]')
-        expect(countdown).not.toBeNull()
-        expect(countdown!.getAttribute('data-countdown')).toBe('90000')
+        expect(countdown?.getAttribute('data-countdown')).toBe(String(remaining))
+        expect(countdown?.textContent.trim()).toBe(expected)
       })
 
       it('renders plain join game button (no countdown) when shouldJoinBy is in the past', async () => {

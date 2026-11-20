@@ -6,6 +6,7 @@ import {
 import { GameState, type GameModel } from '../../../database/models/game.model'
 import { IconEye, IconLoader3, IconPlayerPlayFilled } from '../../../html/components/icons'
 import { players } from '../../../players'
+import { formatCountdown } from '../../../shared/format-countdown'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { connectStringToLink } from '../../connect-string-to-link'
 import { shouldHideServerInfo } from '../../should-hide-server-info'
@@ -79,15 +80,12 @@ async function JoinAsPlayer(props: { slot: GameSlotModel }) {
   }
 
   if (timeLeftMs > 0) {
-    const minutes = Math.floor(timeLeftMs / 60000)
-    const safeSeconds = ((timeLeftMs % 60000) / 1000).toFixed(0)
     return (
       <>
         <IconPlayerPlayFilled size={16} />
         join in{' '}
-        <span class="tabular-nums" data-countdown={timeLeftMs}>
-          {minutes}:{safeSeconds.length === 1 ? '0' : ''}
-          {safeSeconds}
+        <span class="tabular-nums" data-countdown={timeLeftMs} safe>
+          {formatCountdown(timeLeftMs)}
         </span>
       </>
     )

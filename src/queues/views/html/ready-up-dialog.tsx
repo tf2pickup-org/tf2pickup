@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid'
-import { minutesToMilliseconds, secondsToMilliseconds } from 'date-fns'
+import { formatCountdown } from '../../../shared/format-countdown'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import type { QueueId } from '../../../database/models/queue.model'
 import { collections } from '../../../database/collections'
@@ -66,8 +66,6 @@ async function readyUpWindow(queue: QueueId) {
 
 function ReadyUpTimer(props: { startedAt: Date; deadline: Date }) {
   const remaining = Math.max(0, props.deadline.getTime() - Date.now())
-  const minutes = Math.floor(remaining / minutesToMilliseconds(1))
-  const seconds = Math.floor((remaining % minutesToMilliseconds(1)) / secondsToMilliseconds(1))
   return (
     <div
       id="ready-up-timer"
@@ -81,7 +79,7 @@ function ReadyUpTimer(props: { startedAt: Date; deadline: Date }) {
         data-countdown={remaining}
         safe
       >
-        {[minutes, String(seconds).padStart(2, '0')].join(':')}
+        {formatCountdown(remaining)}
       </span>
       <div class="h-1 w-full overflow-hidden rounded-full bg-zinc-800" aria-hidden="true">
         <div class="bg-crimson-800 h-full rounded-full" data-phase-progress></div>
