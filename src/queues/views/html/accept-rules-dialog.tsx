@@ -30,7 +30,13 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
     <>
       <dialog title="Accept rules dialog" class="accept-rules-dialog" id={id}>
         <div class="flex flex-col gap-6">
-          <div class="rules-wrapper fade-scroll" data-fade-scroll>
+          {/* Kita's div type omits the global autofocus attribute. */}
+          <div
+            class="rules-wrapper fade-scroll"
+            data-fade-scroll
+            tabindex="-1"
+            {...{ autofocus: true }}
+          >
             <article class="prose prose-invert mb-16 max-w-none">{safeRules}</article>
           </div>
 
@@ -55,7 +61,10 @@ export async function AcceptRulesDialog(props: { actor?: User | undefined }) {
         </div>
       </dialog>
       <script type="module">{`
-        document.getElementById('${id}').showModal();
+        const dialog = document.getElementById('${id}');
+        dialog.showModal();
+        // Focusing the rules can scroll past the dialog's top padding.
+        dialog.scrollTop = 0;
     `}</script>
     </>
   )
