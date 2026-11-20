@@ -51,11 +51,25 @@ function renumberHistory(player: PlayerModel, numberMap: Map<number, GameNumber>
 // where both instances have them; bans and history from both are kept.
 function mergePlayer(primary: PlayerModel, incoming: PlayerModel): PlayerModel {
   const mumbleCertificate = primary.mumbleCertificate ?? incoming.mumbleCertificate
+  // the cooldown level is the highest of the two, so the decay clock of whichever instance
+  // reached it is the one that has to be kept
+  const cooldownSource =
+    primary.cooldownLevel > incoming.cooldownLevel
+      ? primary
+      : incoming.cooldownLevel > primary.cooldownLevel
+        ? incoming
+        : primary.cooldownLevelUpdatedAt &&
+            primary.cooldownLevelUpdatedAt > (incoming.cooldownLevelUpdatedAt ?? new Date(0))
+          ? primary
+          : incoming
   return {
     ...primary,
     ...(mumbleCertificate && { mumbleCertificate }),
     joinedAt: primary.joinedAt < incoming.joinedAt ? primary.joinedAt : incoming.joinedAt,
     cooldownLevel: Math.max(primary.cooldownLevel, incoming.cooldownLevel),
+    ...(cooldownSource.cooldownLevelUpdatedAt && {
+      cooldownLevelUpdatedAt: cooldownSource.cooldownLevelUpdatedAt,
+    }),
     hasAcceptedRules: primary.hasAcceptedRules || incoming.hasAcceptedRules,
     ...((primary.verified === true || incoming.verified === true) && { verified: true }),
     ...((primary.skill ?? incoming.skill) && { skill: { ...incoming.skill, ...primary.skill } }),

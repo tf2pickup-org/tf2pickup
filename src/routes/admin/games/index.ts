@@ -46,6 +46,8 @@ export default routes(async app => {
               logsTfUploadMethod: z.enum(LogsTfUploadMethod),
               'banLength[]': formArray(z.coerce.number().min(0)),
               'banLengthUnit[]': formArray(z.enum(durationUnit.all)),
+              cooldownDecayPeriod: z.coerce.number().min(0),
+              cooldownDecayPeriodUnit: z.enum(durationUnit.all),
             })
             .refine(
               ({ 'banLength[]': length, 'banLengthUnit[]': unit }) => length.length === unit.length,
@@ -59,6 +61,10 @@ export default routes(async app => {
           level: i,
           banLengthMs: durationUnit.toMs(value, request.body['banLengthUnit[]'][i]!),
         }))
+        const cooldownDecayPeriodMs = durationUnit.toMs(
+          request.body.cooldownDecayPeriod,
+          request.body.cooldownDecayPeriodUnit,
+        )
         const current = await configuration.get('games.gamemode_whitelist_ids')
         const gamemodeWhitelistIds = Object.fromEntries(
           Object.values(Gamemode).flatMap(gamemode => {
@@ -86,6 +92,7 @@ export default routes(async app => {
             actor,
           ),
           configuration.set('games.logs_tf_upload_method', request.body.logsTfUploadMethod, actor),
+          configuration.set('games.cooldown_decay_period', cooldownDecayPeriodMs, actor),
           configuration.set('games.cooldown_levels', cooldownLevels, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })

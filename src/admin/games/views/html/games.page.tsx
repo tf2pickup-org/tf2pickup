@@ -21,6 +21,7 @@ export async function GamesPage() {
   const executeExtraCommands = await configuration.get('games.execute_extra_commands')
   const logsTfUploadMethod = await configuration.get('games.logs_tf_upload_method')
   const cooldownLevels = await configuration.get('games.cooldown_levels')
+  const cooldownDecayPeriod = await configuration.get('games.cooldown_decay_period')
 
   const safeExecuteExtraCommands = executeExtraCommands.join('\n')
 
@@ -187,6 +188,36 @@ export async function GamesPage() {
                 When a player is subbed out of a game, they receive a ban. The ban length grows with
                 each offence, following the levels above. Levels are applied top to bottom; a player
                 past the last level always gets the last ban length.
+              </span>
+            </dd>
+          </dl>
+
+          <dl>
+            <dt>
+              <label for="cooldownDecayPeriod">Cooldown level decay</label>
+            </dt>
+            <dd class="flex flex-col">
+              <div>
+                <input
+                  type="number"
+                  name="cooldownDecayPeriod"
+                  value={durationUnit.split(cooldownDecayPeriod).value.toString()}
+                  id="cooldownDecayPeriod"
+                  min="0"
+                  step="any"
+                  class="col-span-2 me-2"
+                />
+                <select name="cooldownDecayPeriodUnit">
+                  {durationUnit.all.map(u => (
+                    <option value={u} selected={u === durationUnit.split(cooldownDecayPeriod).unit}>
+                      {u}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <span class="text-sm text-zinc-200">
+                Every period without a new offence, a player's cooldown level drops by one, so old
+                offences stop counting. Use 0 to disable decay.
               </span>
             </dd>
           </dl>

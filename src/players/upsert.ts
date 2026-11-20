@@ -145,6 +145,7 @@ export async function create({
     roles,
     hasAcceptedRules: false,
     cooldownLevel: 0,
+    cooldownLevelUpdatedAt: new Date(),
     preferences: {},
     stats: {
       totalGames: 0,
