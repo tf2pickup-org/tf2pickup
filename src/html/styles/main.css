@@ -90,18 +90,21 @@
 
 @layer base {
   body {
-    background:
-      linear-gradient(
-          to bottom,
-          var(--color-zinc-950),
-          transparent 25%,
-          transparent 45%,
-          var(--color-zinc-950)
-        )
-        fixed,
-      url('/bg.webp') center / cover fixed,
-      var(--color-zinc-950);
+    isolation: isolate;
+    background-color: var(--color-zinc-950);
     color: var(--color-zinc-100);
+
+    &::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: url('https://mapthumbnails.tf2pickup.org/unsafe/1920x1080/cp_gullywash.jpg')
+        center / cover;
+      filter: grayscale(1) contrast(0.48) sepia(0.29) hue-rotate(200deg) saturate(2)
+        brightness(0.134);
+    }
   }
 
   table,

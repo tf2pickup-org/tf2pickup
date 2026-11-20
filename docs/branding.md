@@ -1,21 +1,17 @@
 # Branding
 
-Set `WEBSITE_BRANDING=<instance>` to serve files from `public/branding/<instance>/` in place of the same-named files in `public/` (see the `@fastify/static` roots in `src/main.ts`). Common overrides: `logo.png`, `favicon.png`, `favicon.ico`, `og-image.png` and `bg.webp`.
+Set `WEBSITE_BRANDING=<instance>` to serve files from `public/branding/<instance>/` in place of the same-named files in `public/` (see the `@fastify/static` roots in `src/main.ts`). Common overrides: `logo.png`, `favicon.png`, `favicon.ico` and `og-image.png`.
 
 ## Page background
 
-`public/bg.webp` is a map screenshot with the tint, desaturation and blur baked in; the CSS (`body` in `src/html/styles/main.css`) only adds the top/bottom fade. The default is `cp_gullywash`.
+The page background loads a `1920×1080` screenshot of `cp_gullywash` directly from the map thumbnail service. A fixed `body::before` layer in `src/html/styles/main.css` covers the viewport and applies these filters:
 
-To use a different map for your instance, render it from the map thumbnail service with ImageMagick:
-
-```bash
-map=koth_bagel
-curl -sf "https://mapthumbnails.tf2pickup.org/unsafe/1920x1080/$map.jpg" \
-  | magick - -modulate 100,70 -blur 0x2 -fill '#09090b' -colorize 92 -quality 80 \
-    public/branding/<instance>/bg.webp
+```css
+filter: grayscale(1) contrast(0.48) sepia(0.29) hue-rotate(200deg) saturate(2) brightness(0.134);
 ```
 
-- `-colorize 92` is the zinc-950 overlay strength; lower it to show more of the map.
-- `-modulate 100,70` desaturates to 70%; `-blur 0x2` softens the detail so it doesn't compete with the UI.
-- Dark, warm, indoor shots work best (`cp_gullywash`, `cp_metalworks`, `cp_steel`, `koth_bagel`, `koth_clearcut`, `pl_vigil`). Busy or sky-heavy shots (`cp_process`, `cp_reckoner`) show through the empty queue slots.
-- Any map the thumbnail service knows works; check `https://mapthumbnails.tf2pickup.org/unsafe/<map>.jpg` returns an image first.
+The filters affect only the background layer. There are no top or bottom fades. The body's zinc background remains visible if the thumbnail cannot load.
+
+To change the map, edit the background URL in `src/html/styles/main.css`. Any map the thumbnail service knows works; check that `https://mapthumbnails.tf2pickup.org/unsafe/1920x1080/<map>.jpg` returns an image first. This URL is defined in CSS, so `WEBSITE_BRANDING` does not override it.
+
+`public/bg.png` is still used for OpenGraph cards and is separate from the page background.
