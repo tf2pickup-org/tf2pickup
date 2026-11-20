@@ -1,5 +1,24 @@
 # Changelog
 
+# [5.0.0-alpha.4](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.3...5.0.0-alpha.4) (2026-11-20)
+
+### Bug Fixes
+
+* **games:** prevent countdown seconds from rolling over to 60 ([#1009](https://github.com/tf2pickup-org/tf2pickup/issues/1009)) ([d47ee1b](https://github.com/tf2pickup-org/tf2pickup/commit/d47ee1b37479a59d77a5e6329f4b701f20a169bb))
+* **games:** say "rejoined" when a player takes back their own slot ([#1008](https://github.com/tf2pickup-org/tf2pickup/issues/1008)) ([584ee48](https://github.com/tf2pickup-org/tf2pickup/commit/584ee482b2581993220f4f8ac44dd3b44252893a)), closes [#24](https://github.com/tf2pickup-org/tf2pickup/issues/24)
+* **queue:** open the rules dialog at the first rule ([#1010](https://github.com/tf2pickup-org/tf2pickup/issues/1010)) ([8908c1c](https://github.com/tf2pickup-org/tf2pickup/commit/8908c1c867ac446f0d9894254392bc46b5e636f7))
+* **queue:** preserve page state when accepting rules ([#1006](https://github.com/tf2pickup-org/tf2pickup/issues/1006)) ([5869615](https://github.com/tf2pickup-org/tf2pickup/commit/5869615b8882204a774e7abd85507a735f0c6627))
+
+### Features
+
+* bring back the map background ([#979](https://github.com/tf2pickup-org/tf2pickup/issues/979)) ([d529bc1](https://github.com/tf2pickup-org/tf2pickup/commit/d529bc1de3bbab2d0ec98c3f7ff44c34cceb8e9e))
+* **gamemodes:** add 4v4 and ultitrio ([#991](https://github.com/tf2pickup-org/tf2pickup/issues/991)) ([7680343](https://github.com/tf2pickup-org/tf2pickup/commit/768034361ca185557d1cc40af7cff32ad325d609))
+* **games:** cooldown levels decay while a player stays clean ([#1007](https://github.com/tf2pickup-org/tf2pickup/issues/1007)) ([fda8bfb](https://github.com/tf2pickup-org/tf2pickup/commit/fda8bfb13dc7c085c34c6528d3dc33fb8750497d))
+
+### Dependencies
+
+* postcss to v8.5.33 ([42b2920](https://github.com/tf2pickup-org/tf2pickup/commit/42b29209f1195392098f3b7a9a1df523ff77c9e9))
+
 # [5.0.0-alpha.3](https://github.com/tf2pickup-org/tf2pickup/compare/5.0.0-alpha.2...5.0.0-alpha.3) (2026-11-19)
 
 ### Bug Fixes
