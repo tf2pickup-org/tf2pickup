@@ -1,7 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 import { parse } from 'node-html-parser'
-import { ObjectId } from 'mongodb'
+import type { GameNumber } from '../../../database/models/game.model'
 import type { SubstituteRequestModel } from '../../../database/models/substitute-request.model'
+import { Tf2ClassName } from '../../../shared/types/tf2-class-name'
+import { Tf2Team } from '../../../shared/types/tf2-team'
 
 const substituteRequests = vi.hoisted(() => ({ requests: [] as SubstituteRequestModel[] }))
 
@@ -17,19 +19,18 @@ vi.mock('../../../players', () => ({ players: {} }))
 
 import { SubstitutionRequests } from './substitution-requests'
 
-function request(team: string, gameClass: string, gameNumber: number) {
+function request(team: Tf2Team, gameClass: Tf2ClassName, gameNumber: number) {
   return {
-    _id: new ObjectId(),
-    gameNumber,
-    slotId: new ObjectId(),
+    gameNumber: gameNumber as GameNumber,
+    slotId: `${team}-${gameClass}-1`,
     team,
     gameClass,
-  } as SubstituteRequestModel
+  } satisfies SubstituteRequestModel
 }
 
 describe('SubstitutionRequests', () => {
   it('names the class and the game of every open request', async () => {
-    substituteRequests.requests = [request('red', 'demoman', 26)]
+    substituteRequests.requests = [request(Tf2Team.red, Tf2ClassName.demoman, 26)]
 
     const root = parse(await SubstitutionRequests())
     const banner = root.querySelector('#substitution-requests .banner')!
@@ -44,7 +45,7 @@ describe('SubstitutionRequests', () => {
   })
 
   it('stacks the message above the button instead of squeezing it into a narrow column', async () => {
-    substituteRequests.requests = [request('blu', 'medic', 27)]
+    substituteRequests.requests = [request(Tf2Team.blu, Tf2ClassName.medic, 27)]
 
     const root = parse(await SubstitutionRequests())
     const banner = root.querySelector('#substitution-requests .banner')!
@@ -52,6 +53,6 @@ describe('SubstitutionRequests', () => {
 
     // the row layout kicks in only at md and up; below that .banner stacks its children
     expect(classes).toContain('md:flex-row')
-    expect(classes).not.toContain('flex-row')
+    expect(classes.includes('flex-row')).toBe(false)
   })
 })

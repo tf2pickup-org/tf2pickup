@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb'
+import { MongoClient } from 'mongodb'
 import { test } from '@playwright/test'
 import { defaultQueueSlug } from '../queue-slots'
 import { expect } from '../fixtures/expect'
@@ -15,9 +15,10 @@ interface Box {
 test('the substitute banner names the class at phone width @6v6 @9v9', async ({ page }) => {
   const client = await MongoClient.connect(process.env['MONGODB_URI']!)
   const requests = client.db().collection('games.substituterequests')
+  const gameNumber = 9001
   const inserted = await requests.insertOne({
-    gameNumber: 1,
-    slotId: new ObjectId(),
+    gameNumber,
+    slotId: 'red-demoman-1',
     team: 'red',
     gameClass: 'demoman',
   })
@@ -26,16 +27,18 @@ test('the substitute banner names the class at phone width @6v6 @9v9', async ({ 
     await page.setViewportSize({ width: 320, height: 568 })
     await page.goto(`/q/${defaultQueueSlug()}`)
 
-    const banner = page.locator('#substitution-requests .banner')
+    // requests from other tests may still be open, so only ever measure the one seeded here
+    const banner = page
+      .locator('#substitution-requests .banner')
+      .filter({ hasText: new RegExp(`game\\s*#${gameNumber}`) })
     await expect(banner).toBeVisible()
     await expect(banner.getByText('Team RED needs a substitute for demoman')).toBeVisible()
 
-    const boxes = await page.evaluate(() => {
+    const boxes = await banner.evaluate(banner => {
       const box = (element: Element) => {
         const { x, y, width, height } = element.getBoundingClientRect()
         return { x, y, width, height }
       }
-      const banner = document.querySelector('#substitution-requests .banner')!
       return {
         banner: box(banner),
         paragraph: box(banner.querySelector('p')!),
