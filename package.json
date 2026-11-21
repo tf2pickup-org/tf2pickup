@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@fastify/accepts": "5.0.7",
-    "@fastify/autoload": "6.5.1",
+    "@fastify/autoload": "6.6.0",
     "@fastify/etag": "6.2.2",
     "@fastify/flash": "6.0.6",
     "@fastify/formbody": "9.0.2",
