@@ -8,7 +8,7 @@ import { IconCrown, IconLock, IconPlus, IconReplaceFilled } from '../../../html/
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { PlayerConnectionStatusIndicator } from './player-connection-status-indicator'
 import { errors } from '../../../errors'
-import { hasActiveBan } from '../../../players/has-active-ban'
+import { substituteBlocker } from '../../substitute-blocker'
 import type { PickDeep } from 'type-fest'
 import { playerAvatarUrl } from '../../../shared/player-avatar-url'
 import { isDeletedUser } from '../../../shared/types/steam-id-64'
@@ -127,11 +127,9 @@ async function GameSlotContent(props: {
       )
 
     case SlotStatus.waitingForSubstitute: {
-      if (
-        actor &&
-        (props.slot.player === actor.steamId ||
-          (actor.activeGame === undefined && !hasActiveBan(actor)))
-      ) {
+      const blocker = substituteBlocker(props.slot, actor)
+
+      if (!blocker) {
         return (
           <button
             class="flex flex-1 justify-center text-zinc-400 hover:text-zinc-300"
@@ -150,8 +148,17 @@ async function GameSlotContent(props: {
         )
       } else {
         return (
-          <span class="flex flex-1 justify-center text-zinc-400">
+          <span
+            class="flex flex-1 justify-center text-zinc-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+            tabindex="0"
+          >
+            <span class="sr-only" safe>
+              {blocker}
+            </span>
             <IconLock size={32} />
+            <span class="tooltip whitespace-nowrap" safe>
+              {blocker}
+            </span>
           </span>
         )
       }

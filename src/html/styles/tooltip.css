@@ -3,7 +3,8 @@
     *:has(> &) {
       position: relative;
 
-      &:hover .tooltip {
+      &:hover .tooltip,
+      &:focus-within .tooltip {
         visibility: visible;
         opacity: 1;
       }
