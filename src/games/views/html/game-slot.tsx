@@ -148,7 +148,10 @@ async function GameSlotContent(props: {
         )
       } else {
         return (
-          <span class="flex flex-1 justify-center text-zinc-400">
+          <span
+            class="flex flex-1 justify-center text-zinc-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-100"
+            tabindex="0"
+          >
             <span class="sr-only" safe>
               {blocker}
             </span>

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest'
 import { parse } from 'node-html-parser'
 import { GameSlot } from './game-slot'
 import { GameState } from '../../../database/models/game.model'
@@ -151,6 +151,16 @@ describe('GameSlot', () => {
   describe('when slot is waiting for substitute', () => {
     const waitingSlot = { ...baseSlot, status: SlotStatus.waitingForSubstitute }
 
+    // pin the clock so the ban fixtures below stay active regardless of when the suite runs
+    beforeEach(() => {
+      vi.useFakeTimers()
+      vi.setSystemTime(new Date('2026-01-15T12:00:00Z'))
+    })
+
+    afterEach(() => {
+      vi.useRealTimers()
+    })
+
     it('shows the replace button when actor is the replaced player', async () => {
       vi.mocked(collections.players.findOne)
         .mockResolvedValueOnce(slotPlayer)
@@ -187,7 +197,7 @@ describe('GameSlot', () => {
 
     const renderLockedSlot = async (
       actor: SteamId64 | undefined,
-      actorPlayer: Pick<PlayerModel, 'steamId' | 'roles' | 'activeGame' | 'bans'> | undefined,
+      actorPlayer?: Pick<PlayerModel, 'steamId' | 'roles' | 'activeGame' | 'bans'>,
     ) => {
       vi.mocked(collections.players.findOne).mockResolvedValueOnce(slotPlayer)
       if (actorPlayer) {
@@ -213,12 +223,11 @@ describe('GameSlot', () => {
       const root = await renderLockedSlot(bannedActorSteamId, {
         roles: [],
         steamId: bannedActorSteamId,
-        activeGame: undefined,
         bans: [
           {
             actor: '76561198000000003' as SteamId64,
             start: new Date('2026-01-01T00:00:00Z'),
-            end: new Date('2030-01-01T00:00:00Z'),
+            end: new Date('2026-02-01T00:00:00Z'),
             reason: 'griefing',
           },
         ],
@@ -227,14 +236,19 @@ describe('GameSlot', () => {
     })
 
     it('explains that signing in is required to substitute', async () => {
-      const root = await renderLockedSlot(undefined, undefined)
+      const root = await renderLockedSlot(undefined)
       expect(root.querySelector('.slot .tooltip')?.text).toBe('Sign in to substitute')
     })
 
     it('keeps the reason available to screen readers', async () => {
-      const root = await renderLockedSlot(undefined, undefined)
+      const root = await renderLockedSlot(undefined)
       const srOnly = root.querySelectorAll('.sr-only').map(element => element.text)
       expect(srOnly).toContain('Sign in to substitute')
+    })
+
+    it('makes the locked slot focusable so the reason is not mouse-only', async () => {
+      const root = await renderLockedSlot(undefined)
+      expect(root.querySelector('.slot .tooltip')?.parentNode?.getAttribute('tabindex')).toBe('0')
     })
   })
 })
