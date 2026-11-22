@@ -30,7 +30,7 @@
     "@fastify/request-context": "7.0.5",
     "@fastify/secure-session": "8.4.2",
     "@fastify/sensible": "6.0.8",
-    "@fastify/static": "10.1.11",
+    "@fastify/static": "10.1.12",
     "@fastify/websocket": "11.3.7",
     "@kitajs/fastify-html-plugin": "4.2.1",
     "@kitajs/html": "4.2.13",
