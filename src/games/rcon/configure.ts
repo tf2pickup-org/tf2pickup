@@ -272,6 +272,8 @@ async function* compileConfig(game: GameModel, password: string): AsyncGenerator
 
   const extraCommands = await configuration.get('games.execute_extra_commands')
   for (const command of extraCommands) {
-    yield command as RconCommand
+    if (command.trim()) {
+      yield command as RconCommand
+    }
   }
 }
