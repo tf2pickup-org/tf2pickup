@@ -407,8 +407,8 @@ importers:
         specifier: 9.0.1
         version: 9.0.1(postcss@8.5.33)
       rcon-client:
-        specifier: 4.2.5
-        version: 4.2.5
+        specifier: 5.0.0
+        version: 5.0.0
       sanitize-html:
         specifier: 2.18.2
         version: 2.18.2
@@ -3779,8 +3779,9 @@ packages:
   rc9@3.0.1:
     resolution: {integrity: sha512-gMDyleLWVE+i6Sgtc0QbbY6pEKqYs97NGi6isHQPqYlLemPoO8dxQ3uGi0f4NiP98c+jMW6cG1Kx9dDwfvqARQ==}
 
-  rcon-client@4.2.5:
-    resolution: {integrity: sha512-AnX1GU/ZTlwtYup3H6h0J1hwfP3OYltXVe+8ReBzmNEepX3xGH8nDg7gYqT5Y9rpAS/LmQ48h0BKINt1YGd8bA==}
+  rcon-client@5.0.0:
+    resolution: {integrity: sha512-cZgT3EVsiKmQVK88G/5rLF0GyZES8eu93Ke6o2DT8Iq04TnzTS/nAAriMvs3N/45997N5fYaWRi72JvrqBf1Ww==}
+    engines: {node: '>=22.12'}
 
   readable-stream@3.6.2:
     resolution: {integrity: sha512-9u/sniCrY3D5WdsERHzHE4G2YCXqoG5FTHUiCC4SIbr6XcLZBY05ya9EKjYek9O5xOAwjGq+1JdGBAS7Q9ScoA==}
@@ -4148,9 +4149,6 @@ packages:
   type-is@2.0.1:
     resolution: {integrity: sha512-OZs6gsjF4vMp32qrCbiVSkrFmXtG/AZhY3t0iAMrMBiAZyV9oALtXO8hsrHbMXF9x6L3grlFuwW2oAz7cav+Gw==}
     engines: {node: '>= 0.6'}
-
-  typed-emitter@0.1.0:
-    resolution: {integrity: sha512-Tfay0l6gJMP5rkil8CzGbLthukn+9BN/VXWcABVFPjOoelJ+koW8BuPZYk+h/L+lEeIp1fSzVRiWRPIjKVjPdg==}
 
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
@@ -7572,9 +7570,7 @@ snapshots:
       defu: 6.1.7
       destr: 2.0.5
 
-  rcon-client@4.2.5:
-    dependencies:
-      typed-emitter: 0.1.0
+  rcon-client@5.0.0: {}
 
   readable-stream@3.6.2:
     dependencies:
@@ -7959,8 +7955,6 @@ snapshots:
       content-type: 1.0.5
       media-typer: 1.1.0
       mime-types: 3.0.2
-
-  typed-emitter@0.1.0: {}
 
   typedarray@0.0.6: {}
 
