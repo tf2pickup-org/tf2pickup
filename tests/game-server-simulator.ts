@@ -115,9 +115,7 @@ export class GameServerSimulator {
     this.name = name
     this.socket = createSocket('udp4')
     this.server = new Server(socket => {
-      socket.on('data', data => {
-        const packet = new RconPacket(data)
-
+      const handlePacket = (packet: RconPacket) => {
         switch (packet.type) {
           case RconPacketType.SERVERDATA_AUTH: {
             const response1 = new RconPacket()
@@ -230,9 +228,30 @@ export class GameServerSimulator {
             break
           }
 
+          case RconPacketType.SERVERDATA_RESPONSE_VALUE: {
+            socket.write(packet.toBuffer())
+            break
+          }
+
           default: {
             break
           }
+        }
+      }
+
+      let buffer: Buffer = Buffer.alloc(0)
+      socket.on('data', (data: Buffer) => {
+        buffer = buffer.length ? Buffer.concat([buffer, data]) : data
+        while (buffer.length >= 4) {
+          const packetSize = buffer.readInt32LE(0) + 4
+          if (packetSize < 14) {
+            socket.destroy()
+            return
+          }
+          if (buffer.length < packetSize) return
+          const packet = new RconPacket(buffer.subarray(0, packetSize))
+          buffer = buffer.subarray(packetSize)
+          handlePacket(packet)
         }
       })
     })

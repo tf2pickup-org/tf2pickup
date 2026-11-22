@@ -1,6 +1,6 @@
 import { Rcon as RconClient } from 'rcon-client'
+import { secondsToMilliseconds } from 'date-fns'
 import { type GameModel } from '../../database/models/game.model'
-import { assertIsError } from '../../utils/assert-is-error'
 import { logger } from '../../logger'
 import { errors } from '../../errors'
 import type { RconCommand } from '../../shared/types/rcon-command'
@@ -18,33 +18,24 @@ export async function withRcon<T>(
     throw errors.internalServerError(`gameServer is undefined`)
   }
 
-  let rcon: RconClient | undefined
   const { address, port, password } = game.gameServer.rcon
+  const timeout = secondsToMilliseconds(30)
+  const rcon = await RconClient.connect({
+    host: address,
+    port: Number(port),
+    password,
+    timeout,
+    connectTimeout: timeout,
+  })
 
   try {
-    rcon = await RconClient.connect({
-      host: address,
-      port: Number(port),
-      password: password,
-      timeout: 30000,
+    rcon.on('disconnect', error => {
+      if (error) {
+        logger.error(error, `game #${game.number}: rcon error`)
+      }
     })
-    rcon.on('error', error => {
-      assertIsError(error)
-      logger.error(error, `game #${game.number}: rcon error`)
-    })
-
-    return await callback({
-      rcon: {
-        send: async (command: RconCommand) => {
-          const ret = await rcon!.send(command)
-          if (!rcon!.authenticated) {
-            await rcon!.connect()
-          }
-          return ret
-        },
-      },
-    })
+    return await callback({ rcon })
   } finally {
-    await rcon?.end()
+    await rcon.end()
   }
 }

@@ -47,7 +47,7 @@ export function GameServerCommandPreview(props: {
         logstf_autoupload {props.logsTfUploadMethod === LogsTfUploadMethod.gameserver ? '2' : '0'}
       </span>
       {props.executeExtraCommands
-        .filter(command => command.length > 0)
+        .filter(command => command.trim().length > 0)
         .map(command => (
           <span safe>{command}</span>
         ))}
