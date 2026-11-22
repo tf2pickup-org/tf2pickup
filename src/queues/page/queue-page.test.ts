@@ -290,6 +290,7 @@ describe('queuePage.render', () => {
     expect(await received(socket)).toEqual([
       'queue-slot-soldier-0',
       'queue-slot-soldier-1',
+      'pre-ready-up-button',
       'queue-current-player-count',
       'set-title',
       'is-in-queue',
@@ -299,7 +300,6 @@ describe('queuePage.render', () => {
       'stream-list',
       'chat-messages',
       'running-game-snackbar',
-      'pre-ready-up-button',
       'ban-alerts',
     ])
   })

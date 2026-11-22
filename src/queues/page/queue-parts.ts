@@ -12,6 +12,7 @@ import { IsInQueue } from '../views/html/is-in-queue'
 import { MapVoteSelection } from '../auto/views/html/map-vote-selection'
 import { QueueSwitcher } from '../views/html/queue-switcher'
 import { MapResult, MapVote } from '../auto/views/html/map-vote'
+import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 import { captainQueueParts } from '../captain/captain-queue-parts'
 import type { Fragment } from './send-to-pages'
 
@@ -22,6 +23,8 @@ export interface QueueParts {
   counts?: boolean
   // whether the viewer is in this queue, and what they voted for
   membership?: boolean
+  // the toolbar's pre-ready button, which every queue's toolbar holds
+  preReady?: boolean
   mapVote?: boolean
   mapResults?: Record<string, number>
   // captain queues: the sign-up pool and its counters
@@ -49,6 +52,11 @@ export async function queueParts(queue: QueueModel, parts: QueueParts): Promise<
             QueueSlot({ queue, slot, actor: await actor(), defaultSkill }),
       ),
     )
+  }
+
+  // the pre-ready button is part of the queue's own toolbar, so each launch mode renders it there
+  if (parts.preReady) {
+    fragments.push(({ steamId }) => (steamId ? PreReadyUpButton({ actor: steamId }) : undefined))
   }
 
   if (parts.counts) {

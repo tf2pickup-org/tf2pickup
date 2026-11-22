@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { parse } from 'node-html-parser'
+import { parse, type HTMLParser, type HTMLElement } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
 import type { CaptainPoolModel } from '../../../../database/models/captain-pool.model'
 import type { QueueId } from '../../../../database/models/queue.model'
@@ -10,6 +10,7 @@ import { Tf2Team } from '../../../../shared/types/tf2-team'
 import { captainRoles } from '../../captain-roles'
 import { getDraftView } from '../../get-draft-view'
 import { roleKey } from '../../role-key'
+import type { CaptainRole } from '../../types/captain-role'
 import type { PoolView } from '../../types/pool-view'
 import { CaptainDraft } from './captain-draft'
 
@@ -52,39 +53,40 @@ function poolView(state: QueueState): PoolView {
   }
 }
 
+// the whole frame, since that is what a draft update swaps in
+const frame = (view: PoolView, viewer?: SteamId64): HTMLParser =>
+  parse(String(CaptainDraft({ queue, view, viewer })))
+
+const statusOf = (draftFrame: HTMLParser) => draftFrame.querySelector('#captain-draft-status')!.text
+const columnOf = (draftFrame: HTMLParser, role: CaptainRole): HTMLElement =>
+  draftFrame.querySelector(`#captain-draft-role-${role.gameClass}-${role.name}`)!
+
 describe('CaptainDraft', () => {
   it('shows the captain on the clock a bold status and pickable rows', () => {
-    const view = poolView(QueueState.drafting)
-    const status = String(CaptainDraft.status({ queue, view, viewer: id(0) }))
-    expect(status).toContain('Your pick — pick 1')
-    const column = parse(
-      String(CaptainDraft.roleColumn({ queue, view, role: roles[5]!, viewer: id(0) })),
-    )
-    expect(column.querySelectorAll('button')).toHaveLength(12)
-    expect(column.querySelector('button')?.getAttribute('aria-label')).toContain('as medic')
-    expect(column.querySelector('button')?.hasAttribute('data-pick-button')).toBe(true)
+    const view = frame(poolView(QueueState.drafting), id(0))
+    expect(statusOf(view)).toContain('Your pick — pick 1')
+    const medic = columnOf(view, roles[5]!)
+    expect(medic.querySelectorAll('button')).toHaveLength(12)
+    expect(medic.querySelector('button')?.getAttribute('aria-label')).toContain('as medic')
+    expect(medic.querySelector('button')?.hasAttribute('data-pick-button')).toBe(true)
   })
 
   it('shows everyone else the same pool without buttons', () => {
     const view = poolView(QueueState.drafting)
-    const status = String(CaptainDraft.status({ queue, view, viewer: id(5) }))
-    expect(status).toContain('(RED) is first picking')
+    expect(statusOf(frame(view, id(5)))).toContain('(RED) is first picking')
     for (const viewer of [id(1), id(5), undefined]) {
-      const column = parse(
-        String(CaptainDraft.roleColumn({ queue, view, role: roles[5]!, viewer })),
-      )
-      expect(column.querySelectorAll('button')).toHaveLength(0)
-      expect(column.querySelectorAll('[data-draft-player]')).toHaveLength(12)
+      const medic = columnOf(frame(view, viewer), roles[5]!)
+      expect(medic.querySelectorAll('button')).toHaveLength(0)
+      expect(medic.querySelectorAll('[data-draft-player]')).toHaveLength(12)
     }
   })
 
   it('never lists the captains in the pool, and numbers the slots in snake order', () => {
-    const view = poolView(QueueState.drafting)
-    const column = String(
-      CaptainDraft.roleColumn({ queue, view, role: roles[5]!, viewer: undefined }),
-    )
-    expect(column).not.toContain(`data-draft-player="${id(0)}"`)
-    const board = parse(String(CaptainDraft.board({ queue, view, viewer: undefined })))
+    const view = frame(poolView(QueueState.drafting))
+    const medic = columnOf(view, roles[5]!)
+    expect(medic.querySelector(`[data-draft-player="${id(0)}"]`)).toBeNull()
+    expect(medic.querySelector(`[data-draft-player="${id(1)}"]`)).toBeNull()
+    const board = view.querySelector('#captain-draft-board')!
     const teams = board.querySelectorAll('[aria-label$=" team"]')
     const numbers = (team: Tf2Team) =>
       teams[team === Tf2Team.red ? 0 : 1]!.querySelectorAll('[aria-label^="Pick "]').map(slot =>
@@ -95,16 +97,13 @@ describe('CaptainDraft', () => {
   })
 
   it('stops offering picks once the maps are being banned', () => {
-    const view = poolView(QueueState.banningMaps)
-    expect(String(CaptainDraft.status({ queue, view, viewer: id(0) }))).toContain('bans map 1')
+    expect(statusOf(frame(poolView(QueueState.banningMaps), id(0)))).toContain('bans map 1')
   })
 
   it('disables its pick buttons while the socket is down', () => {
-    const view = poolView(QueueState.drafting)
-    const html = parse(String(CaptainDraft({ queue, view, viewer: id(0) })))
-    expect(html.querySelector('#captain-draft')?.hasAttribute('data-disable-when-offline')).toBe(
-      true,
-    )
+    const view = frame(poolView(QueueState.drafting), id(0))
+    const draftFrame = view.querySelector('#captain-draft')
+    expect(draftFrame?.hasAttribute('data-disable-when-offline')).toBe(true)
   })
 
   it('fades what the captain on the clock cannot pick, and a column with nothing to pick', () => {
@@ -115,26 +114,19 @@ describe('CaptainDraft', () => {
       ...view,
       draft: { ...picked, legal: picked.legal.filter(pick => pick.role !== roleKey(roles[0]!)) },
     }
-    const column = parse(
-      String(CaptainDraft.roleColumn({ queue, view: captainView, role: roles[0]!, viewer: id(0) })),
-    )
-    expect(column.querySelectorAll('button')).toHaveLength(0)
-    expect(column.querySelector('[data-role]')?.classList.contains('opacity-40')).toBe(true)
-    expect(column.querySelectorAll('[data-draft-player].opacity-40').length).toBeGreaterThan(0)
+    const scout = columnOf(frame(captainView, id(0)), roles[0]!)
+    expect(scout.querySelectorAll('button')).toHaveLength(0)
+    expect(scout.classList.contains('opacity-40')).toBe(true)
+    expect(scout.querySelectorAll('[data-draft-player].opacity-40').length).toBeGreaterThan(0)
 
-    const spectator = parse(
-      String(CaptainDraft.roleColumn({ queue, view: captainView, role: roles[0]!, viewer: id(5) })),
-    )
-    expect(spectator.querySelector('[data-role]')?.classList.contains('opacity-40')).toBe(false)
+    const spectator = columnOf(frame(captainView, id(5)), roles[0]!)
+    expect(spectator.classList.contains('opacity-40')).toBe(false)
     expect(spectator.querySelectorAll('.opacity-40')).toHaveLength(0)
   })
 
   it('says when no one is left in a column', () => {
     const view = poolView(QueueState.drafting)
     const empty = { ...view, draft: { ...view.draft!, members: [] } }
-    const column = String(
-      CaptainDraft.roleColumn({ queue, view: empty, role: roles[5]!, viewer: undefined }),
-    )
-    expect(column).toContain('No one left')
+    expect(columnOf(frame(empty), roles[5]!).text).toContain('No one left')
   })
 })

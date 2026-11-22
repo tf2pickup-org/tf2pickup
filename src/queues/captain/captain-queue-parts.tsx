@@ -8,7 +8,6 @@ import type { Fragment } from '../page/send-to-pages'
 import { getPoolView } from './get-pool-view'
 import { CaptainCounters } from './views/html/captain-counters'
 import { captainRoles } from './captain-roles'
-import { CaptainMapBans } from './views/html/captain-map-bans'
 import { CaptainActions } from './views/html/captain-actions'
 import { CaptainDraft } from './views/html/captain-draft'
 import { CaptainPool } from './views/html/captain-pool'
@@ -18,11 +17,17 @@ import { CaptainReadyStatus } from './views/html/captain-ready-status'
 export async function captainQueueParts(queue: QueueModel, parts: QueueParts): Promise<Fragment[]> {
   const fragments: Fragment[] = []
 
+  const pool = !!parts.captainPool || !!parts.slots
   const stage = !!parts.captainStage || !!parts.slots
+  // the draft frame holds the places its parts swap into, so it travels as a whole
   const draft = !!parts.captainDraft || stage
-  if (parts.captainPool || parts.slots || draft) {
+  // the toolbar's own controls: the pre-ready button and, while a draft runs, cancel
+  const toolbar = stage || !!parts.preReady
+
+  if (pool || draft || toolbar) {
     const view = await getPoolView(queue)
-    if (parts.captainPool || parts.slots) {
+
+    if (pool) {
       fragments.push(
         () => CaptainCounters({ queue, view }),
         () => CaptainReadyStatus({ view }),
@@ -36,26 +41,16 @@ export async function captainQueueParts(queue: QueueModel, parts: QueueParts): P
       )
     }
 
-    if (stage) {
-      fragments.push(
-        ({ steamId }) => CaptainActions({ view, viewer: steamId }),
-        ({ steamId }) => CaptainDraft.skeleton({ queue, view, viewer: steamId }),
-      )
+    if (toolbar) {
+      // the toolbar holds the pre-ready button, so an update touching it re-renders it whole
+      fragments.push(({ steamId }) => CaptainActions({ view, viewer: steamId }))
     }
+
     if (draft) {
-      fragments.push(({ steamId }) => CaptainDraft.nextGame({ view, viewer: steamId }))
-      if (view.draft) {
-        fragments.push(
-          ({ steamId }) => CaptainDraft.status({ queue, view, viewer: steamId }),
-          ({ steamId }) => CaptainMapBans({ view, viewer: steamId }),
-          ({ steamId }) => CaptainDraft.board({ queue, view, viewer: steamId }),
-          ...captainRoles(queue.gamemode).map(
-            (role): Fragment =>
-              ({ steamId }) =>
-                CaptainDraft.roleColumn({ queue, view, role, viewer: steamId }),
-          ),
-        )
-      }
+      fragments.push(
+        ({ steamId }) => CaptainDraft({ queue, view, viewer: steamId }),
+        ({ steamId }) => CaptainDraft.nextGame({ view, viewer: steamId }),
+      )
     }
   }
 
