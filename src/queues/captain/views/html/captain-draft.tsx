@@ -36,7 +36,8 @@ function nameOf(draft: DraftView, steamId: SteamId64) {
 }
 
 // The draft: the status line, the teams and the pool being picked from, which is made of the
-// locked members. The page swaps in each part on its own, so no single message gets large.
+// locked members. Every draft update swaps in this whole frame, so each part inside it always has
+// a place to go.
 export function CaptainDraft(props: DraftProps) {
   const roles = captainRoles(props.queue.gamemode)
   const { draft } = props.view
@@ -75,34 +76,6 @@ function CaptainDraftFrame(props: { active: boolean; children?: Children }) {
     >
       {props.children}
     </div>
-  )
-}
-
-// What a live update replaces first: the frame holding the places the parts below go to.
-function CaptainDraftSkeleton(props: DraftProps) {
-  const roles = captainRoles(props.queue.gamemode)
-  return (
-    <CaptainDraftFrame active={!!props.view.draft}>
-      {props.view.draft ? (
-        <>
-          <div id="captain-draft-status"></div>
-          <div id="captain-draft-board"></div>
-          <div id="captain-map-bans"></div>
-          <div
-            class={[
-              'grid grid-cols-2 gap-4 max-lg:order-2 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]',
-              props.view.state !== QueueState.drafting && 'hidden',
-            ]}
-          >
-            {roles.map(role => (
-              <div id={columnId(role)}></div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
-    </CaptainDraftFrame>
   )
 }
 
@@ -328,11 +301,6 @@ function CaptainDraftRoleColumn(props: DraftProps & { role: CaptainRole }) {
     </div>
   )
 }
-
-CaptainDraft.skeleton = CaptainDraftSkeleton
-CaptainDraft.status = CaptainDraftStatus
-CaptainDraft.board = CaptainDraftBoard
-CaptainDraft.roleColumn = CaptainDraftRoleColumn
 
 // The sign-up section's heading while a draft runs (D14).
 CaptainDraft.nextGame = function CaptainNextGame(props: {

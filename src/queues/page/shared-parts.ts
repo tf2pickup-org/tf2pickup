@@ -7,7 +7,6 @@ import { SubstitutionRequests } from '../views/html/substitution-requests'
 import { ChatMessages } from '../views/html/chat'
 import { BanAlerts } from '../views/html/ban-alerts'
 import { RunningGameSnackbar } from '../views/html/running-game-snackbar'
-import { PreReadyUpButton } from '../../pre-ready/views/html/pre-ready-up-button'
 import type { Fragment } from './send-to-pages'
 
 export interface SharedParts {
@@ -19,7 +18,6 @@ export interface SharedParts {
     | { append: WithId<ChatMessageModel>; previousMessageAt?: Date | undefined }
     | { remove: string }
   banAlerts?: boolean
-  preReady?: boolean
   runningGame?: boolean
 }
 
@@ -59,10 +57,6 @@ export function sharedParts(parts: SharedParts): Fragment[] {
     fragments.push(async ({ steamId, actor }) =>
       steamId ? RunningGameSnackbar({ gameNumber: (await actor())?.activeGame }) : undefined,
     )
-  }
-
-  if (parts.preReady) {
-    fragments.push(({ steamId }) => (steamId ? PreReadyUpButton({ actor: steamId }) : undefined))
   }
 
   if (parts.banAlerts) {

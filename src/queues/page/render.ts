@@ -20,7 +20,7 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
     return
   }
 
-  const fragments = await queueParts(queue, { slots: 'all', counts: true })
+  const fragments = await queueParts(queue, { slots: 'all', counts: true, preReady: true })
   // a preloaded queue page may be stale on who is in the queue
   fragments.push(({ steamId }) => IsInQueue({ queue: queue._id, actor: steamId }))
   if (!(await byPageUrl(previousUrl))) {
@@ -31,7 +31,6 @@ export async function render(socket: AppWebSocket, previousUrl?: string) {
         streams: true,
         chat: 'all',
         runningGame: true,
-        preReady: true,
         banAlerts: true,
       }),
     )
