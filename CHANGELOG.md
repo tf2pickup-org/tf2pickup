@@ -132,6 +132,12 @@
 
   ---------
 
+## [4.25.7](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.6...4.25.7) (2026-11-22)
+
+### Dependencies
+
+* rcon-client to v5 ([#1016](https://github.com/tf2pickup-org/tf2pickup/issues/1016)) ([17889cd](https://github.com/tf2pickup-org/tf2pickup/commit/17889cd51155294c2ba2f5645e4d1c7be1683f1e))
+
 ## [4.25.6](https://github.com/tf2pickup-org/tf2pickup/compare/4.25.5...4.25.6) (2026-11-12)
 
 ### Dependencies
