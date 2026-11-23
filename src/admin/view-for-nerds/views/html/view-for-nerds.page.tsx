@@ -8,6 +8,7 @@ import {
 } from '../../../../database/models/queue.model'
 import { queues } from '../../../../queues'
 import { queueSettingDefault } from '../../../../queues/queue-setting-default'
+import { settingPage } from '../../../setting-page'
 
 export async function ViewForNerdsPage() {
   const entries = await Promise.all(
@@ -15,7 +16,7 @@ export async function ViewForNerdsPage() {
       const _key = option._zod.def.shape.key._zod.def.values[0]!
       const defaultValue = option._zod.def.shape.value._zod.def.defaultValue
       const value = await configuration.get(_key)
-      return { _key, value, defaultValue }
+      return { _key, value, defaultValue, page: settingPage({ configKey: _key }) }
     }),
   )
   const queueEntries = (await queues.list()).flatMap(queue =>
@@ -27,6 +28,7 @@ export async function ViewForNerdsPage() {
         // a setting without a default can't be reset
         defaultValue: defaultValue === undefined ? queue[field] : defaultValue,
         url: '/admin/view-for-nerds/queues',
+        page: settingPage({ queueSlug: queue.slug, field }),
       }
     }),
   )
@@ -58,6 +60,7 @@ export function ConfigurationEntryEdit(props: {
   value: unknown
   defaultValue: unknown
   url?: string
+  page?: string | null
 }) {
   const url = props.url ?? '/admin/view-for-nerds'
   const valueJson = JSON.stringify(props.value)
@@ -92,6 +95,11 @@ export function ConfigurationEntryEdit(props: {
         <label for={`${props._key}-edit`} class={[isDefault && 'font-normal']} safe>
           {props._key}
         </label>
+        {!!props.page && (
+          <a href={props.page} class="ms-2 text-xs text-zinc-400 underline">
+            edit on its page
+          </a>
+        )}
       </div>
       <div class="table-cell">
         <input
