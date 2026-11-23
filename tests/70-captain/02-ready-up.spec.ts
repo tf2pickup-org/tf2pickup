@@ -48,13 +48,11 @@ async function configure(
   readyStateTimeout: number,
 ) {
   const admin = await users.getAdmin().page()
-  const response = await admin.request.post(`/admin/queues/${slug}`, {
+  const response = await admin.request.post(`/admin/queues/${slug}/timers`, {
     form: {
-      name: slug,
       readyUpTimeout: String(readyUpTimeout),
       readyStateTimeout: String(readyStateTimeout),
       pickTimeout: '10',
-      mapCooldown: '2',
     },
   })
   expect(response.ok()).toBe(true)

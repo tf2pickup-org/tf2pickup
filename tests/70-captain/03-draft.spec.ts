@@ -17,13 +17,11 @@ const test = mergeTests(queues, simulateGameServer)
 
 async function configure(users: UserManager, slug: string, pickTimeout: number) {
   const admin = await users.getAdmin().page()
-  const response = await admin.request.post(`/admin/queues/${slug}`, {
+  const response = await admin.request.post(`/admin/queues/${slug}/timers`, {
     form: {
-      name: slug,
       readyUpTimeout: '40',
       readyStateTimeout: '60',
       pickTimeout: String(pickTimeout),
-      mapCooldown: '2',
     },
   })
   expect(response.ok()).toBe(true)

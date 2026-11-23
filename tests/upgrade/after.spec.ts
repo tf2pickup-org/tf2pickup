@@ -41,10 +41,16 @@ authUsers('player restrictions survive the upgrade', async ({ users }) => {
     playerSkillThreshold.toString(),
   )
   await expect(admin.getByLabel('Require player verification')).toBeChecked()
-  await expect(admin.getByLabel('Ready-up timeout (seconds)')).toHaveValue(
+
+  await admin.goto(`/admin/queues/${defaultQueueSlug()}/timers`)
+  await expect(admin.getByLabel('Ready-up timeout', { exact: true })).toHaveValue(
     readyUpTimeoutSeconds.toString(),
   )
-  await expect(admin.getByLabel('Map cooldown')).toHaveValue(mapCooldown.toString())
+
+  await admin.goto('/admin/view-for-nerds')
+  await expect(
+    admin.getByLabel(`queues.${defaultQueueSlug()}.mapCooldown`, { exact: true }),
+  ).toHaveValue(mapCooldown.toString())
 })
 
 authUsers('every preset is added and only the old queue is enabled', async ({ users }) => {

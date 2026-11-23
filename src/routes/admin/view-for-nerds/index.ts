@@ -1,10 +1,8 @@
 import { errors } from '../../../errors'
+import { parseQueueSettingKey } from '../../../admin/parse-queue-setting-key'
 import { queues } from '../../../queues'
 import { queueSettingDefault } from '../../../queues/queue-setting-default'
-import {
-  queueConfigurationSchema,
-  type QueueConfiguration,
-} from '../../../database/models/queue.model'
+import type { QueueConfiguration } from '../../../database/models/queue.model'
 import { PlayerRole } from '../../../database/models/player.model'
 import {
   ConfigurationEntryEdit,
@@ -96,7 +94,7 @@ export default routes(async app => {
         schema: { body: z.object({ key: z.string(), value: z.string() }) },
       },
       async (request, reply) => {
-        const { queue, field } = await parseQueueKey(request.body.key)
+        const { queue, field } = await parseQueueSettingKey(request.body.key)
         let value: unknown
         try {
           value = JSON.parse(request.body.value)
@@ -118,7 +116,7 @@ export default routes(async app => {
         schema: { querystring: z.object({ key: z.string() }) },
       },
       async (request, reply) => {
-        const { queue, field } = await parseQueueKey(request.query.key)
+        const { queue, field } = await parseQueueSettingKey(request.query.key)
         const defaultValue = queueSettingDefault(field)
         if (defaultValue === undefined) {
           throw errors.badRequest(`${field} has no default`)
@@ -132,15 +130,6 @@ export default routes(async app => {
       },
     )
 })
-
-// queues.<slug>.<field>
-async function parseQueueKey(key: string) {
-  const [, slug, field] = /^queues\.([^.]+)\.([^.]+)$/.exec(key) ?? []
-  if (!slug || !field || !(field in queueConfigurationSchema.shape)) {
-    throw errors.badRequest(`not a queue setting: ${key}`)
-  }
-  return { queue: await queues.bySlug(slug), field: field as keyof QueueConfiguration }
-}
 
 function QueueEntryEdit(key: string, value: unknown, field: keyof QueueConfiguration) {
   const defaultValue = queueSettingDefault(field)
