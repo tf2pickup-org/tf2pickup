@@ -25,6 +25,12 @@ describe.each(queuePresets)('preset $slug', preset => {
     }
   })
 
+  it('uses captain mode only where the gamemode allows it', () => {
+    if (preset.launchMode === 'captain') {
+      expect(gamemodeConfigs[preset.gamemode].captainRoles).toBeTruthy()
+    }
+  })
+
   it('has a valid map pool', () => {
     expect(() => mapPoolSchema.parse(preset.maps)).not.toThrow()
   })

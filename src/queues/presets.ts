@@ -114,6 +114,20 @@ export const queuePresets: QueuePreset[] = [
     maps: highlanderMaps,
   },
   {
+    slug: 'captain-6v6',
+    name: '6v6',
+    gamemode: Gamemode.sixes,
+    launchMode: 'captain',
+    maps: sixesMaps,
+  },
+  {
+    slug: 'captain-9v9',
+    name: '9v9',
+    gamemode: Gamemode.highlander,
+    launchMode: 'captain',
+    maps: highlanderMaps,
+  },
+  {
     slug: 'auto-bball',
     name: 'BBall',
     gamemode: Gamemode.bball,

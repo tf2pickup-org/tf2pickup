@@ -14,11 +14,12 @@ for (const preset of queuePresets) {
       await admin.goto()
       const row = admin.row(slug)
       await expect(row).toContainText(preset.gamemode)
+      await expect(row).toContainText(preset.launchMode)
       await expect(admin.enabledSwitch(slug)).not.toBeChecked()
 
       await page.goto(`/admin/queues/${slug}`)
       const threshold = page.getByLabel('Player skill threshold', { exact: true })
-      if (!gamemodeConfigs[preset.gamemode].autoBalance) {
+      if (preset.launchMode === 'captain' || !gamemodeConfigs[preset.gamemode].autoBalance) {
         await expect(threshold).toHaveCount(0)
       } else {
         await expect(threshold).toBeChecked({ checked: preset.skillThreshold !== undefined })

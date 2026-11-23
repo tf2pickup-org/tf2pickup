@@ -46,10 +46,14 @@ export async function QueuesPage() {
       <form method="post" action="/admin/queues" class="admin-panel-set mt-4 flex flex-col gap-2">
         <h3 class="text-lg font-bold">Add queue</h3>
         <label for="template">Start from</label>
-        <select id="template" name="template">
+        <select
+          id="template"
+          name="template"
+          onchange="this.form.launchMode.value = this.selectedOptions[0].dataset.launchMode ?? 'auto'"
+        >
           <option value="">Blank</option>
           {queuePresets.map(preset => (
-            <option value={preset.slug} safe>
+            <option value={preset.slug} data-launch-mode={preset.launchMode} safe>
               {queues.queueLabel(preset)}
             </option>
           ))}
