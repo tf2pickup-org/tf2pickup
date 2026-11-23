@@ -8,7 +8,7 @@ export class AdminQueuesPage {
   }
 
   row(slug: string) {
-    return this.page.getByRole('row', { name: `Queue ${slug}` })
+    return this.page.getByRole('row', { name: `Queue ${slug}`, exact: true })
   }
 
   async create(props: {
