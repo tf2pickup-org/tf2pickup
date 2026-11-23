@@ -54,7 +54,7 @@ export async function QueuesPage() {
           <option value="">Blank</option>
           {queuePresets.map(preset => (
             <option value={preset.slug} data-launch-mode={preset.launchMode} safe>
-              {queues.queueLabel(preset)}
+              {preset.name}
             </option>
           ))}
         </select>
@@ -160,7 +160,7 @@ async function QueueList() {
                 </td>
                 <td>
                   <a href={`/admin/queues/${queue.slug}`} class="underline" safe>
-                    {queues.queueLabel(queue)}
+                    {queue.name}
                   </a>
                 </td>
                 <td safe>{queue.slug}</td>

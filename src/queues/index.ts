@@ -14,7 +14,6 @@ import { listEnabled } from './list-enabled'
 import { membership } from './membership'
 import { pageUrls } from './page/page-urls'
 import { playerCounts } from './player-counts'
-import { queueLabel } from './queue-label'
 import { queuePageUrl } from './page/queue-page-url'
 import { remove } from './remove'
 import { reorder } from './reorder'
@@ -39,7 +38,6 @@ export const queues = {
   membership,
   pageUrls,
   playerCounts,
-  queueLabel,
   queuePageUrl,
   remove,
   reorder,
