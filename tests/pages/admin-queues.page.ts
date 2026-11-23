@@ -74,13 +74,22 @@ export class AdminQueuesPage {
   }
 
   async dragAbove(slug: string, target: string) {
-    await this.goto()
-    await Promise.all([
-      this.page.waitForResponse('**/admin/all-queues/order'),
-      this.row(slug)
-        .locator('[data-drag-handle]')
-        .dragTo(this.row(target), { targetPosition: { x: 10, y: 2 } }),
-    ])
+    // a drag in Playwright doesn't scroll, so both rows have to be on screen
+    const viewport = this.page.viewportSize()
+    await this.page.setViewportSize({ width: 1280, height: 2000 })
+    try {
+      await this.goto()
+      await Promise.all([
+        this.page.waitForResponse('**/admin/all-queues/order'),
+        this.row(slug)
+          .locator('[data-drag-handle]')
+          .dragTo(this.row(target), { targetPosition: { x: 10, y: 2 } }),
+      ])
+    } finally {
+      if (viewport) {
+        await this.page.setViewportSize(viewport)
+      }
+    }
   }
 
   async moveToTop(slug: string) {
