@@ -327,7 +327,7 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
             Next game
           </h2>
           <p class="text-sm text-zinc-400">
-            {lockedViewer && picksDone && !inGame
+            {lockedViewer && picksDone && draft !== undefined && !inGame
               ? "You weren't picked for this game. Your sign-ups stay for the next one."
               : lockedViewer
                 ? "You're in the current draft."

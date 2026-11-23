@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { parse, type HTMLParser, type HTMLElement } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
+import type { CaptainDraftModel } from '../../../../database/models/captain-draft.model'
 import type { CaptainPoolModel } from '../../../../database/models/captain-pool.model'
 import type { QueueId } from '../../../../database/models/queue.model'
 import { QueueState } from '../../../../database/models/queue-state.model'
@@ -134,7 +135,9 @@ describe('CaptainDraft', () => {
     const picked = id(5)
     const pickedView = (state: QueueState): PoolView => {
       const view = poolView(state)
-      const picks = [{ team: Tf2Team.red, player: picked, role: keys[0]! }]
+      const picks: CaptainDraftModel['picks'] = [
+        { team: Tf2Team.red, player: picked, role: keys[0]!, at: new Date(), how: 'chosen' },
+      ]
       return { ...view, draft: { ...view.draft!, draft: { ...draft, picks } } }
     }
     const nextGame = (state: QueueState, viewer: SteamId64) =>
