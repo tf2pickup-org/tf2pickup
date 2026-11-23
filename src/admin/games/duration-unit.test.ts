@@ -49,8 +49,15 @@ describe('durationUnit.split', () => {
     })
   })
 
+  it('keeps a duration no whole unit fits in fractional seconds', () => {
+    expect(durationUnit.split(milliseconds({ seconds: 10.5 }))).toEqual({
+      value: 10.5,
+      unit: 'seconds',
+    })
+  })
+
   it('handles a zero duration', () => {
-    expect(durationUnit.split(0)).toEqual({ value: 0, unit: 'minutes' })
+    expect(durationUnit.split(0)).toEqual({ value: 0, unit: 'seconds' })
   })
 })
 

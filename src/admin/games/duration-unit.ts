@@ -25,7 +25,8 @@ export const durationUnit = {
   },
 
   // Break a duration in milliseconds into the largest whole unit that divides it evenly,
-  // so it can be shown back to the admin in the friendliest form.
+  // so it can be shown back to the admin in the friendliest form. When none does, it stays
+  // in (fractional) seconds, so saving the form again keeps the exact value.
   split(ms: number): { value: number; unit: Unit } {
     for (let i = units.length - 1; i >= 0; i--) {
       const unit = units[i]!
@@ -34,7 +35,7 @@ export const durationUnit = {
         return { value, unit }
       }
     }
-    return { value: Math.round(ms / unitMs.minutes), unit: 'minutes' }
+    return { value: ms / unitMs.seconds, unit: 'seconds' }
   },
 
   // A duration spelled out for prose, e.g. "1 month" rather than "1 months".
