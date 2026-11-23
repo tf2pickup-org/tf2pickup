@@ -1,5 +1,6 @@
 import type { Configuration } from '../database/models/configuration-entry.model'
-import type { QueueConfiguration } from '../database/models/queue.model'
+import type { QueueConfiguration, QueueModel } from '../database/models/queue.model'
+import { gamemodeConfigs } from '../gamemodes/configs'
 
 // Where each setting can be edited outside View for nerds; null when nowhere else.
 const configurationPages: Record<keyof Configuration, string | null> = {
@@ -52,13 +53,33 @@ const queueTabs: Record<keyof QueueConfiguration, '' | '/timers' | null> = {
   mapCooldown: null,
 }
 
+// keep in sync with what QueueSettingsPage shows for the queue
+function isShownFor(
+  queue: Pick<QueueModel, 'launchMode' | 'gamemode'>,
+  field: keyof QueueConfiguration,
+): boolean {
+  switch (field) {
+    case 'pickTimeout':
+      return queue.launchMode === 'captain'
+    case 'skillThreshold':
+      return queue.launchMode === 'auto' && gamemodeConfigs[queue.gamemode].autoBalance
+    default:
+      return true
+  }
+}
+
 export function settingPage(
   setting:
-    { configKey: keyof Configuration } | { queueSlug: string; field: keyof QueueConfiguration },
+    | { configKey: keyof Configuration }
+    | {
+        queue: Pick<QueueModel, 'slug' | 'launchMode' | 'gamemode'>
+        field: keyof QueueConfiguration
+      },
 ): string | null {
   if ('configKey' in setting) {
     return configurationPages[setting.configKey]
   }
-  const tab = queueTabs[setting.field]
-  return tab === null ? null : `/admin/queues/${setting.queueSlug}${tab}`
+  const { queue, field } = setting
+  const tab = queueTabs[field]
+  return tab === null || !isShownFor(queue, field) ? null : `/admin/queues/${queue.slug}${tab}`
 }

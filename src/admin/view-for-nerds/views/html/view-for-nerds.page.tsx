@@ -28,7 +28,7 @@ export async function ViewForNerdsPage() {
         // a setting without a default can't be reset
         defaultValue: defaultValue === undefined ? queue[field] : defaultValue,
         url: '/admin/view-for-nerds/queues',
-        page: settingPage({ queueSlug: queue.slug, field }),
+        page: settingPage({ queue, field }),
       }
     }),
   )

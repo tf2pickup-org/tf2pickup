@@ -3,7 +3,7 @@ import { parseQueueSettingKey } from '../../../admin/parse-queue-setting-key'
 import { settingPage } from '../../../admin/setting-page'
 import { queues } from '../../../queues'
 import { queueSettingDefault } from '../../../queues/queue-setting-default'
-import type { QueueConfiguration } from '../../../database/models/queue.model'
+import type { QueueConfiguration, QueueModel } from '../../../database/models/queue.model'
 import { PlayerRole } from '../../../database/models/player.model'
 import {
   ConfigurationEntryEdit,
@@ -121,7 +121,7 @@ export default routes(async app => {
           { [field]: value },
           request.user!.player.steamId,
         )
-        await reply.html(QueueEntryEdit(request.body.key, updated[field], field))
+        await reply.html(QueueEntryEdit(request.body.key, updated, field))
       },
     )
     .delete(
@@ -141,18 +141,19 @@ export default routes(async app => {
           { [field]: defaultValue },
           request.user!.player.steamId,
         )
-        await reply.html(QueueEntryEdit(request.query.key, updated[field], field))
+        await reply.html(QueueEntryEdit(request.query.key, updated, field))
       },
     )
 })
 
-function QueueEntryEdit(key: string, value: unknown, field: keyof QueueConfiguration) {
+function QueueEntryEdit(key: string, queue: QueueModel, field: keyof QueueConfiguration) {
+  const value = queue[field]
   const defaultValue = queueSettingDefault(field)
   return ConfigurationEntryEdit({
     _key: key,
     value,
     defaultValue: defaultValue === undefined ? value : defaultValue,
     url: '/admin/view-for-nerds/queues',
-    page: settingPage({ queueSlug: key.split('.')[1]!, field }),
+    page: settingPage({ queue, field }),
   })
 }
