@@ -231,6 +231,16 @@ async function assertCanMerge(primary: Db, incoming: Db, sourceHost: string) {
     throw new Error('both instances must run the same version')
   }
 
+  // this merge expects whitelists on the queues, not per gamemode
+  for (const db of [primary, incoming]) {
+    const migrated = await db
+      .collection<{ migrationName: string }>('migrations2')
+      .countDocuments({ migrationName: /^033-/ })
+    if (migrated === 0) {
+      throw new Error(`${db.databaseName} must be upgraded to this version before merging`)
+    }
+  }
+
   for (const db of [primary, incoming]) {
     const live = await db
       .collection<GameModel>('games')
