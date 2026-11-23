@@ -24,6 +24,7 @@
 
   .queue-toolbar {
     display: flex;
+    flex-wrap: wrap;
     align-items: stretch;
     gap: 16px;
     min-width: 0;
@@ -36,20 +37,24 @@
     min-height: 54px;
     padding: 7px;
     border: 1px solid var(--color-border);
+    display: flex;
     border-radius: 10px;
     background: var(--color-surface);
   }
 
   .queue-switcher {
-    flex: none;
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
   }
 
   .queue-switcher-options {
     display: grid;
     grid-auto-columns: auto;
     align-items: center;
+    flex: 1;
     gap: 7px;
-    height: 100%;
   }
 
   .queue-switcher-option {
@@ -121,7 +126,7 @@
   }
 
   .queue-state {
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
   }
 
@@ -129,8 +134,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex: 1;
     gap: 12px;
-    height: 100%;
   }
 
   .queue-player-count {
@@ -265,10 +270,6 @@
   @media (width < 1280px) {
     .queue-page-layout {
       grid-template-columns: minmax(0, 1fr) 320px;
-    }
-
-    .queue-toolbar {
-      flex-wrap: wrap;
     }
 
     .queue-switcher,

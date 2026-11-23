@@ -25,7 +25,7 @@ export async function QueueSwitcher(props: {
   const activeIndex = enabled.findIndex(queue => queue.slug === props.active.slug)
 
   return (
-    <nav id="queue-switcher" class="queue-switcher" aria-label="Queues">
+    <nav id="queue-switcher" class="queue-switcher" aria-label="Queues" data-reveal-current>
       <div class="queue-switcher-options">
         {activeIndex >= 0 && (
           <span class="queue-switcher-indicator" style={`grid-column: ${activeIndex + 1}`} />
