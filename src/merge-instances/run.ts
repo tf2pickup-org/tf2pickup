@@ -208,8 +208,8 @@ export async function mergeInstances(options: MergeOptions) {
 async function assertCanMerge(primary: Db, incoming: Db, sourceHost: string) {
   const [primaryMigrations, incomingMigrations] = await Promise.all(
     [primary, incoming].map(async db =>
-      (await db.collection<{ name: string }>('migrations2').find().toArray())
-        .map(({ name }) => name)
+      (await db.collection<{ migrationName: string }>('migrations2').find().toArray())
+        .map(({ migrationName }) => migrationName)
         .sort()
         .join(),
     ),
