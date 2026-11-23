@@ -13,28 +13,11 @@ describe('mergeGamemodeConfiguration()', () => {
     ).toEqual({ 'games.default_player_skill': { '6v6': { medic: 2 }, '9v9': { spy: 3 } } })
   })
 
-  it("turns the incoming global whitelist into its gamemode's whitelist", () => {
-    expect(
-      mergeGamemodeConfiguration(
-        { 'games.whitelist_id': 'etf2l_6v6' },
-        { 'games.whitelist_id': 'etf2l_9v9' },
-        [Gamemode.highlander],
-      ),
-    ).toEqual({ 'games.gamemode_whitelist_ids': { '9v9': 'etf2l_9v9' } })
-  })
-
   it('changes nothing the primary already has', () => {
     expect(
       mergeGamemodeConfiguration(
-        { 'games.whitelist_id': 'same', 'games.gamemode_whitelist_ids': { '9v9': 'mine' } },
-        { 'games.whitelist_id': 'same', 'games.gamemode_whitelist_ids': { '9v9': 'theirs' } },
-        [Gamemode.highlander],
-      ),
-    ).toEqual({})
-    expect(
-      mergeGamemodeConfiguration(
-        { 'games.whitelist_id': 'same' },
-        { 'games.whitelist_id': 'same' },
+        { 'games.default_player_skill': { '9v9': { spy: 1 } } },
+        { 'games.default_player_skill': { '9v9': { spy: 3 } } },
         [Gamemode.highlander],
       ),
     ).toEqual({})

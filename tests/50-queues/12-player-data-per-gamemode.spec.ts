@@ -122,8 +122,4 @@ test('the default skill has a row for each gamemode in use @multi-queue', async 
   await page.goto('/admin/player-restrictions')
   await expect(page.getByLabel('Default 6v6 skill on scout')).toBeVisible()
   await expect(page.getByLabel('Default 9v9 skill on sniper')).toBeVisible()
-
-  await page.goto('/admin/games')
-  await expect(page.getByLabel('6v6 whitelist ID')).toBeVisible()
-  await expect(page.getByLabel('9v9 whitelist ID')).toBeVisible()
 })

@@ -117,14 +117,6 @@ export const configurationSchema = z.discriminatedUnion('key', [
   }),
   z
     .object({
-      key: z.literal('games.gamemode_whitelist_ids'),
-      value: z.partialRecord(z.enum(Gamemode), z.string().trim().min(1)).default({}),
-    })
-    .describe(
-      'Whitelist per gamemode, for queues without a whitelist of their own. Falls back to games.whitelist_id',
-    ),
-  z
-    .object({
       key: z.literal('games.join_gameserver_timeout'),
       value: z.number().default(minutesToMilliseconds(5)),
     })

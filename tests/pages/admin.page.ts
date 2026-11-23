@@ -250,13 +250,6 @@ export class AdminPage {
     await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
 
-  async configureGamemodeWhitelistId(gamemode: string, whitelistId: string) {
-    await this.page.goto('/admin/games')
-    await this.page.getByLabel(`${gamemode} whitelist ID`).fill(whitelistId)
-    await this.page.getByRole('button', { name: 'Save' }).click()
-    await expect(this.page.getByText('Configuration saved')).toBeVisible()
-  }
-
   async configureQueueWhitelistId(whitelistId: string, queue = defaultQueueSlug()) {
     await this.page.goto(`/admin/queues/${queue}`)
     await this.page.getByLabel('Whitelist ID', { exact: true }).fill(whitelistId)

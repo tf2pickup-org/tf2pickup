@@ -1,4 +1,3 @@
-import { queues } from '../../../../queues'
 import { configuration } from '../../../../configuration'
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
@@ -12,12 +11,6 @@ import { GameServerCommandPreview } from './game-server-command-preview'
 
 export async function GamesPage() {
   const whitelistId = await configuration.get('games.whitelist_id')
-  const globalWhitelistId = whitelistId
-  const gamemodeWhitelistIds = await configuration.get('games.gamemode_whitelist_ids')
-  const gamemodeWhitelists = (await queues.gamemodesInUse()).map(gamemode => ({
-    gamemode,
-    whitelistId: gamemodeWhitelistIds[gamemode],
-  }))
   const joinGameServerTimeout = await configuration.get('games.join_gameserver_timeout')
   const rejoinGameServerTimeout = await configuration.get('games.rejoin_gameserver_timeout')
   const executeExtraCommands = await configuration.get('games.execute_extra_commands')
@@ -35,26 +28,10 @@ export async function GamesPage() {
             label="Whitelist ID"
             for="whitelistId"
             configKey="games.whitelist_id"
-            description="Used by every queue that has no whitelist of its own."
+            description="Used by every queue that has no whitelist of its own; a queue's whitelist is set on its page."
           >
             <input type="text" name="whitelistId" value={whitelistId ?? ''} id="whitelistId" />
           </SettingRow>
-
-          {gamemodeWhitelists.map(({ gamemode, whitelistId }) => (
-            <SettingRow
-              label={`${gamemode} whitelist ID`}
-              for={`gamemodeWhitelistId-${gamemode}`}
-              description={`For ${gamemode} queues without a whitelist of their own. Leave empty to use the whitelist above.`}
-            >
-              <input
-                type="text"
-                name={`gamemodeWhitelistId.${gamemode}`}
-                value={whitelistId ?? ''}
-                placeholder={globalWhitelistId ?? ''}
-                id={`gamemodeWhitelistId-${gamemode}`}
-              />
-            </SettingRow>
-          ))}
         </SettingCard>
 
         <SettingCard title="Connecting">

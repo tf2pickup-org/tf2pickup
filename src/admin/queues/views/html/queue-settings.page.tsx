@@ -69,7 +69,7 @@ export async function QueueSettingsPage(props: { queue: QueueModel; tab: Tab }) 
 
 async function GeneralTab(props: { queue: QueueModel }) {
   const { queue } = props
-  const inheritedWhitelistId = await queues.resolveWhitelistId({ ...queue, whitelistId: null })
+  const inheritedWhitelistId = await queues.resolveWhitelistId({ whitelistId: null })
 
   return (
     <form
@@ -145,7 +145,7 @@ async function GeneralTab(props: { queue: QueueModel }) {
           label="Whitelist ID"
           for="whitelistId"
           queueSetting={{ queue, field: 'whitelistId' }}
-          description="Leave empty to use the gamemode's or the global whitelist."
+          description="Leave empty to use the global whitelist, set on the Games page."
         >
           <input
             type="text"

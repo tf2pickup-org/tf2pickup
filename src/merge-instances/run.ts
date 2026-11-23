@@ -22,6 +22,8 @@ import type { QueueModel } from '../database/models/queue.model'
 import type { StatsModel } from '../database/models/stats.model'
 import type { Gamemode } from '../shared/types/gamemode'
 import { mergeGamemodeConfiguration } from './merge-gamemode-configuration'
+import { inheritIncomingWhitelist } from './inherit-incoming-whitelist'
+import type { Configuration } from '../database/models/configuration-entry.model'
 import { mergePlayers } from './merge-players'
 import { planQueues } from './plan-queues'
 import { renumberIncomingGames } from './renumber-incoming-games'
@@ -37,11 +39,7 @@ const gameNumberCollections = [
 ]
 // Collections copied over as they are.
 const copiedCollections = ['gamelogs', 'playeractions', 'chat.messages']
-const mergedConfigurationKeys = [
-  'games.default_player_skill',
-  'games.gamemode_whitelist_ids',
-  'games.whitelist_id',
-] as const
+const mergedConfigurationKeys = ['games.default_player_skill', 'games.whitelist_id'] as const
 
 interface MergeOptions {
   primaryUri: string
@@ -74,11 +72,26 @@ export async function mergeInstances(options: MergeOptions) {
       incoming.collection<GameModel>('games').find().toArray(),
     ])
 
-    const queuePlan = planQueues(
+    const [primaryConfiguration, incomingConfiguration] = await Promise.all([
+      readConfiguration(primary),
+      readConfiguration(incoming),
+    ])
+    const plan = planQueues(
       primaryQueues,
       incomingQueues,
       new Set(incomingGames.flatMap(game => (game.queue ? [game.queue.toHexString()] : []))),
     )
+    const inheritWhitelist = <T extends QueueModel>(queues: T[]) =>
+      inheritIncomingWhitelist(
+        queues,
+        incomingConfiguration['games.whitelist_id'] ?? null,
+        primaryConfiguration['games.whitelist_id'] ?? null,
+      )
+    const queuePlan = {
+      ...plan,
+      updates: inheritWhitelist(plan.updates),
+      inserts: inheritWhitelist(plan.inserts),
+    }
     for (const queue of queuePlan.updates) {
       log(`queue ${queue.slug}: takes the incoming settings and maps, and gets enabled`)
     }
@@ -129,8 +142,8 @@ export async function mergeInstances(options: MergeOptions) {
       ...new Set([...queuePlan.updates, ...queuePlan.inserts].map(queue => queue.gamemode)),
     ] as Gamemode[]
     const configuration = mergeGamemodeConfiguration(
-      await readConfiguration(primary),
-      await readConfiguration(incoming),
+      primaryConfiguration,
+      incomingConfiguration,
       incomingGamemodes,
     )
     log(`configuration: ${Object.keys(configuration).join(', ') || 'unchanged'}`)
@@ -237,9 +250,9 @@ async function readConfiguration(db: Db) {
     .collection<{ key: string; value: unknown }>('configuration')
     .find({ key: { $in: [...mergedConfigurationKeys] } })
     .toArray()
-  return Object.fromEntries(entries.map(({ key, value }) => [key, value])) as Parameters<
-    typeof mergeGamemodeConfiguration
-  >[0]
+  return Object.fromEntries(entries.map(({ key, value }) => [key, value])) as Partial<
+    Pick<Configuration, (typeof mergedConfigurationKeys)[number]>
+  >
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
