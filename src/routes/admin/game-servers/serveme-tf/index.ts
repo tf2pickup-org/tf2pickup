@@ -19,27 +19,6 @@ export default routes(async app => {
         return reply.status(200).html(RegionList())
       },
     )
-    .put(
-      '/preferred-region',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-        schema: {
-          body: z.object({
-            servemeTfPreferredRegion: z.string().transform(val => (val === 'none' ? null : val)),
-          }),
-        },
-      },
-      async (request, reply) => {
-        await configuration.set(
-          'serveme_tf.preferred_region',
-          request.body.servemeTfPreferredRegion,
-          request.user!.player.steamId,
-        )
-        return reply.status(200).html(RegionList({ saveResult: { success: true } }))
-      },
-    )
     .post(
       '/ban-gameservers',
       {

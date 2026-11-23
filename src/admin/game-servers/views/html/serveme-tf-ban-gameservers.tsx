@@ -1,45 +1,49 @@
 import { configuration } from '../../../../configuration'
 import { IconPlus, IconX } from '../../../../html/components/icons'
 
+// Lives inside the page's settings form, but adds and removes patterns on its own: its controls
+// belong to the servemeTfBanPatternForm form, declared outside the settings form.
 export function ServemeTfBanGameServers() {
   return (
-    <p class="mt-2">
-      <dl>
-        <dt>
-          <label for="serveme-tf-ban-gameservers-input">Banned game server name patterns</label>
-        </dt>
-        <dd>
-          <div>
-            <BannedGameServersList />
-          </div>
-          <form
-            method="post"
-            action="/admin/game-servers/serveme-tf/ban-gameservers"
-            class="row mt-2 flex items-center gap-2"
-            hx-post="/admin/game-servers/serveme-tf/ban-gameservers"
-            hx-target="#bannedGameServersList"
-            hx-swap="outerHTML"
-            data-reset-on-success
-          >
-            <input
-              type="text"
-              name="pattern"
-              id="serveme-tf-ban-gameservers-input"
-              required
-              placeholder="Server name pattern"
-            />
-            <button type="submit" class="button" data-variant="accent" data-size="dense">
-              <IconPlus size={20} />
-              <span>Add pattern</span>
-            </button>
-          </form>
-          <span class="text-sm text-zinc-200">
-            Game servers whose names contain any of these patterns will be excluded when picking a
-            server.
-          </span>
-        </dd>
-      </dl>
-    </p>
+    <div class="flex flex-col gap-2" data-save-bar-ignore>
+      <BannedGameServersList />
+      <div class="flex flex-row items-center gap-2 max-lg:flex-wrap">
+        <label for="serveme-tf-ban-gameservers-input" class="sr-only">
+          Banned game server name pattern
+        </label>
+        <input
+          type="text"
+          name="pattern"
+          id="serveme-tf-ban-gameservers-input"
+          form="servemeTfBanPatternForm"
+          required
+          placeholder="Server name pattern"
+          class="min-w-0 flex-1"
+        />
+        <button
+          type="submit"
+          form="servemeTfBanPatternForm"
+          class="button"
+          data-variant="accent"
+          data-size="dense"
+        >
+          <IconPlus size={20} />
+          <span>Add pattern</span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export function ServemeTfBanPatternForm() {
+  return (
+    <form
+      id="servemeTfBanPatternForm"
+      hx-post="/admin/game-servers/serveme-tf/ban-gameservers"
+      hx-target="#bannedGameServersList"
+      hx-swap="outerHTML"
+      data-reset-on-success
+    />
   )
 }
 
@@ -47,13 +51,15 @@ export async function BannedGameServersList() {
   const bannedServers = await configuration.get('serveme_tf.ban_gameservers')
 
   return (
-    <div class="my-2 flex flex-col gap-2" id="bannedGameServersList">
+    <div class="flex flex-col gap-2" id="bannedGameServersList">
       {bannedServers.length > 0 ? (
         bannedServers.map(pattern => (
           <div class="flex flex-row items-center gap-2 text-white">
             <p safe>{pattern}</p>
             <button
+              type="button"
               class="text-gray-400"
+              aria-label={`Remove ${pattern}`}
               hx-delete={`/admin/game-servers/serveme-tf/ban-gameservers/${encodeURIComponent(pattern)}`}
               hx-target="#bannedGameServersList"
               hx-swap="outerHTML"

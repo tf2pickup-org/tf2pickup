@@ -133,13 +133,13 @@ export class AdminPage {
 
   async configureHideServerInfo(mode: 'never' | 'auto' | 'always') {
     await this.page.goto('/admin/game-servers')
-    await Promise.all([
-      this.page.waitForResponse(
-        resp =>
-          resp.url().includes('/admin/game-servers/hide-server-info') && resp.status() === 200,
-      ),
-      this.page.getByLabel('Hide server info from spectators').selectOption(mode),
-    ])
+    const radio = this.page.locator(`input[name="hideServerInfoMode"][value="${mode}"]`)
+    if (await radio.isChecked()) {
+      return
+    }
+    await radio.check()
+    await this.page.getByRole('button', { name: 'Save' }).click()
+    await expect(this.page.getByText('Configuration saved')).toBeVisible()
   }
 
   async configurePlayerSkillThreshold(threshold: number | null, queue = defaultQueueSlug()) {
@@ -288,7 +288,7 @@ export class AdminPage {
     joinGameServerTimeout?: number
     rejoinGameServerTimeout?: number
   }) {
-    await this.page.goto('/admin/games')
+    await this.page.goto('/admin/match-rules')
 
     if (config.joinGameServerTimeout) {
       await this.page

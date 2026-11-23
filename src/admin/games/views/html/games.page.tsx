@@ -4,22 +4,32 @@ import { Admin } from '../../../views/html/admin'
 import { SaveBar } from '../../../views/html/save-bar'
 import { SettingCard } from '../../../views/html/setting-card'
 import { SettingRow } from '../../../views/html/setting-row'
-import { DurationInput } from '../../../views/html/duration-input'
-import { durationUnit } from '../../duration-unit'
 import { GameServerCommandPreview } from './game-server-command-preview'
 
-export async function GamesPage() {
-  const whitelistId = await configuration.get('games.whitelist_id')
-  const joinGameServerTimeout = await configuration.get('games.join_gameserver_timeout')
-  const rejoinGameServerTimeout = await configuration.get('games.rejoin_gameserver_timeout')
-  const executeExtraCommands = await configuration.get('games.execute_extra_commands')
-  const logsTfUploadMethod = await configuration.get('games.logs_tf_upload_method')
+const logsTfUploadMethods: { method: LogsTfUploadMethod; label: string; description: string }[] = [
+  { method: LogsTfUploadMethod.off, label: 'Off', description: 'No logs are uploaded to logs.tf.' },
+  {
+    method: LogsTfUploadMethod.backend,
+    label: 'tf2pickup.org uploads',
+    description: 'Logs are uploaded by this server. Recommended.',
+  },
+  {
+    method: LogsTfUploadMethod.gameserver,
+    label: 'Game server uploads',
+    description: 'Logs are uploaded by the logs.tf SourceMod plugin on the game server.',
+  },
+]
 
-  const safeExecuteExtraCommands = executeExtraCommands.join('\n')
+export async function GamesPage() {
+  const [whitelistId, executeExtraCommands, logsTfUploadMethod] = await Promise.all([
+    configuration.get('games.whitelist_id'),
+    configuration.get('games.execute_extra_commands'),
+    configuration.get('games.logs_tf_upload_method'),
+  ])
 
   return (
     <Admin activePage="games">
-      <form action="" method="post" class="flex flex-col gap-4" data-save-bar>
+      <form action="/admin/games" method="post" class="flex flex-col gap-4" data-save-bar>
         <SettingCard title="Whitelist">
           <SettingRow
             label="Whitelist ID"
@@ -31,73 +41,41 @@ export async function GamesPage() {
           </SettingRow>
         </SettingCard>
 
-        <SettingCard title="Connecting">
-          <SettingRow
-            label="Join gameserver timeout"
-            for="joinGameserverTimeout"
-            configKey="games.join_gameserver_timeout"
-            defaultLabel={durationUnit.label(
-              configuration.getDefault('games.join_gameserver_timeout'),
-            )}
-            description="How long a player has to join the gameserver before they are subbed automatically. Use 0 to disable."
-          >
-            <DurationInput
-              id="joinGameserverTimeout"
-              name="joinGameserverTimeout"
-              valueMs={joinGameServerTimeout}
-              units={connectUnits}
-            />
-          </SettingRow>
-
-          <SettingRow
-            label="Rejoin gameserver timeout"
-            for="rejoinGameserverTimeout"
-            configKey="games.rejoin_gameserver_timeout"
-            defaultLabel={durationUnit.label(
-              configuration.getDefault('games.rejoin_gameserver_timeout'),
-            )}
-            description="How long a player has to come back after they go offline during the match. Use 0 to disable."
-          >
-            <DurationInput
-              id="rejoinGameserverTimeout"
-              name="rejoinGameserverTimeout"
-              valueMs={rejoinGameServerTimeout}
-              units={connectUnits}
-            />
-          </SettingRow>
-        </SettingCard>
-
-        <SettingCard title="Server commands">
+        <SettingCard title="Commands">
           <SettingRow
             label="Execute extra commands"
             for="executeExtraCommands"
             configKey="games.execute_extra_commands"
-            description="Extra commands to execute on the gameserver before the match starts. One command per line."
+            description="Run over RCON on the game server before the match starts. One command per line."
           >
-            <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
-              {safeExecuteExtraCommands}
+            <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands" safe>
+              {executeExtraCommands.join('\n')}
             </textarea>
           </SettingRow>
 
-          <SettingRow
-            label="logs.tf upload method"
-            for="logsTfUploadMethod"
-            configKey="games.logs_tf_upload_method"
-          >
-            <select name="logsTfUploadMethod" id="logsTfUploadMethod">
-              <option value="off" selected={logsTfUploadMethod === LogsTfUploadMethod.off}>
-                Off - no logs will be uploaded to logs.tf
-              </option>
-              <option value="backend" selected={logsTfUploadMethod === LogsTfUploadMethod.backend}>
-                Backend - logs will be uploaded by the tf2pickup.org server only
-              </option>
-              <option
-                value="gameserver"
-                selected={logsTfUploadMethod === LogsTfUploadMethod.gameserver}
-              >
-                Gameserver - logs will be uploaded by the logs.tf sourcemod plugin
-              </option>
-            </select>
+          <SettingRow label="logs.tf upload method" configKey="games.logs_tf_upload_method">
+            <fieldset class="flex flex-col gap-2">
+              <legend class="sr-only">logs.tf upload method</legend>
+              {logsTfUploadMethods.map(({ method, label, description }) => (
+                <label class="flex flex-row items-start gap-2">
+                  <input
+                    type="radio"
+                    name="logsTfUploadMethod"
+                    value={method}
+                    checked={method === logsTfUploadMethod}
+                    class="mt-1"
+                  />
+                  <span>
+                    <span class="text-white" safe>
+                      {label}
+                    </span>
+                    <span class="block text-sm text-zinc-400" safe>
+                      {description}
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </fieldset>
           </SettingRow>
 
           <details class="pb-4">
@@ -121,5 +99,3 @@ export async function GamesPage() {
     </Admin>
   )
 }
-
-const connectUnits = ['seconds', 'minutes'] as const

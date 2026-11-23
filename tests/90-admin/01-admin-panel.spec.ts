@@ -36,6 +36,7 @@ test('admin panel is not visible for anonymous users @6v6 @9v9', async ({ page }
   '/admin/skill',
   '/admin/penalties',
   '/admin/games',
+  '/admin/match-rules',
   '/admin/map-pool',
   '/admin/game-servers',
   '/admin/voice-server',
