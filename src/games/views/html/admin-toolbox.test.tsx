@@ -33,10 +33,10 @@ const render = (skill: number | undefined) =>
 
 describe('AdminToolbox', () => {
   it('hides the show skills toggle when no slot has a skill', () => {
-    expect(render(undefined)).not.toContain('show-assigned-skills')
+    expect(render(undefined).includes('show-assigned-skills')).toBe(false)
   })
 
   it('shows the show skills toggle when slots have skills', () => {
-    expect(render(5)).toContain('id="show-assigned-skills"')
+    expect(render(5).includes('id="show-assigned-skills"')).toBe(true)
   })
 })
