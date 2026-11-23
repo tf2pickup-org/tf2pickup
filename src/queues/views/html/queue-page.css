@@ -32,7 +32,6 @@
     grid-row: 1;
   }
 
-  .queue-switcher,
   .queue-state {
     min-height: 54px;
     padding: 7px;
@@ -40,89 +39,6 @@
     display: flex;
     border-radius: 10px;
     background: var(--color-surface);
-  }
-
-  .queue-switcher {
-    flex: 0 1 auto;
-    min-width: 0;
-    overflow-x: auto;
-    scrollbar-width: thin;
-  }
-
-  .queue-switcher-options {
-    display: grid;
-    grid-auto-columns: auto;
-    align-items: center;
-    flex: 1;
-    gap: 7px;
-  }
-
-  .queue-switcher-option {
-    position: relative;
-    grid-row: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    min-height: 38px;
-    padding: 8px 13.5px;
-    border: 1px solid transparent;
-    border-radius: 5px;
-    color: var(--color-text-muted);
-    font-size: 16px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-
-  .queue-switcher-option[data-joined] {
-    padding-inline: 19px 8px;
-    border-color: var(--color-zinc-700);
-  }
-
-  .queue-switcher-label {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  /* the dot lives in the label, so it stays above the indicator while it moves */
-  .queue-switcher-option[data-joined] .queue-switcher-label::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: -11px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #d9d9d9;
-    translate: 0 -50%;
-  }
-
-  .queue-switcher-count {
-    color: var(--color-zinc-500);
-    font-size: 12px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .queue-switcher-option:hover {
-    border-color: transparent;
-    background: var(--color-surface-raised);
-  }
-
-  .queue-switcher-option[aria-current='page'] {
-    border-color: transparent;
-    background: transparent;
-    color: var(--color-zinc-200);
-  }
-
-  /* sits in the active option's grid cell; a view transition glides it to the picked queue */
-  .queue-switcher-indicator {
-    grid-row: 1;
-    align-self: stretch;
-    border-radius: 5px;
-    background: var(--color-zinc-700);
-    view-transition-name: queue-switcher-indicator;
   }
 
   .queue-state {

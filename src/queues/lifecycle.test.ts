@@ -7,9 +7,11 @@ import { create } from './create'
 import { disable } from './disable'
 import { enable } from './enable'
 import { get } from './get'
-import { move } from './move'
+import { list } from './list'
+import { reorder } from './reorder'
 import { remove } from './remove'
 import { engines } from './engines'
+import { events } from '../events'
 import { QueueState } from '../database/models/queue-state.model'
 
 vi.mock('../database/collections', () => {
@@ -21,6 +23,7 @@ vi.mock('../database/collections', () => {
     findOne: vi.fn(),
     insertOne: vi.fn(),
     updateOne: vi.fn(),
+    bulkWrite: vi.fn(),
   })
   return {
     collections: {
@@ -36,6 +39,7 @@ vi.mock('../database/collections', () => {
 vi.mock('../activity-log', () => ({ activityLog: { record: vi.fn() } }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
 vi.mock('./get', () => ({ get: vi.fn() }))
+vi.mock('./list', () => ({ list: vi.fn() }))
 vi.mock('./engines', () => ({
   engines: {
     auto: { reset: vi.fn(), teardown: vi.fn() },
@@ -209,32 +213,32 @@ describe('remove()', () => {
   })
 })
 
-describe('move()', () => {
-  it('swaps positions with the neighbour above', async () => {
-    withQueue({})
-    const neighbour = { _id: new ObjectId(), position: 1 }
-    vi.mocked(collections.queues.findOne).mockResolvedValue(neighbour as never)
+describe('reorder()', () => {
+  const queues = [
+    { _id: new ObjectId(), slug: 'a' },
+    { _id: new ObjectId(), slug: 'b' },
+    { _id: new ObjectId(), slug: 'c' },
+  ]
 
-    await move(id, 'up')
+  it('stores the new positions and announces the queues that moved', async () => {
+    vi.mocked(list).mockResolvedValue(queues as never)
 
-    expect(collections.queues.findOne).toHaveBeenCalledWith(
-      { position: { $lt: 3 } },
-      { sort: { position: -1 } },
-    )
-    expect(collections.queues.updateOne).toHaveBeenCalledWith(
-      { _id: id },
-      { $set: { position: 1 } },
-    )
-    expect(collections.queues.updateOne).toHaveBeenCalledWith(
-      { _id: neighbour._id },
-      { $set: { position: 3 } },
-    )
+    await reorder(['b', 'a', 'c'])
+
+    expect(collections.queues.bulkWrite).toHaveBeenCalledWith([
+      { updateOne: { filter: { slug: 'b' }, update: { $set: { position: 0 } } } },
+      { updateOne: { filter: { slug: 'a' }, update: { $set: { position: 1 } } } },
+      { updateOne: { filter: { slug: 'c' }, update: { $set: { position: 2 } } } },
+    ])
+    expect(events.emit).toHaveBeenCalledTimes(2)
   })
 
-  it('does nothing at the edge', async () => {
-    withQueue({})
-    vi.mocked(collections.queues.findOne).mockResolvedValue(null)
-    await move(id, 'down')
-    expect(collections.queues.updateOne).not.toHaveBeenCalled()
-  })
+  it.each([[['a', 'b']], [['a', 'b', 'b']], [['a', 'b', 'x']]])(
+    'refuses an order that is not every queue once: %j',
+    async slugs => {
+      vi.mocked(list).mockResolvedValue(queues as never)
+      await expect(reorder(slugs)).rejects.toThrow('the new order must list every queue once')
+      expect(collections.queues.bulkWrite).not.toHaveBeenCalled()
+    },
+  )
 })

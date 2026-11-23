@@ -92,7 +92,7 @@ export const queuePresets: QueuePreset[] = [
   },
   {
     slug: 'auto-6v6-restricted',
-    name: '6v6 (restricted)',
+    name: '6v6',
     gamemode: Gamemode.sixes,
     launchMode: 'auto',
     ...restricted,
@@ -107,7 +107,7 @@ export const queuePresets: QueuePreset[] = [
   },
   {
     slug: 'auto-9v9-restricted',
-    name: '9v9 (restricted)',
+    name: '9v9',
     gamemode: Gamemode.highlander,
     launchMode: 'auto',
     ...restricted,

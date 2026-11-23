@@ -11,9 +11,12 @@ queues('cannot enable a queue with fewer than 3 maps @multi-queue', async ({ que
 })
 
 queues('cannot disable the last enabled queue @multi-queue', async ({ users }) => {
-  const admin = new AdminQueuesPage(await users.getAdmin().page())
-  await admin.disable(defaultQueueSlug())
-  await admin.expectFlash('at least one queue must stay enabled')
+  const page = await users.getAdmin().page()
+  const admin = new AdminQueuesPage(page)
+  await admin.goto()
+  await expect(admin.enabledSwitch(defaultQueueSlug())).toBeDisabled()
+
+  await page.request.post(`/admin/queues/${defaultQueueSlug()}/disable`)
   expect(await admin.isEnabled(defaultQueueSlug())).toBe(true)
 })
 

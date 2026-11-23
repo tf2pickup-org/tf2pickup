@@ -3,6 +3,7 @@
 @import '../../auto/views/html/map-vote.css';
 @import './online-player-list.css';
 @import './queue-page.css';
+@import './queue-switcher.css';
 @import '../../auto/views/html/queue-slot.css';
 @import './sidebar.css';
 @import './stream-list.css';

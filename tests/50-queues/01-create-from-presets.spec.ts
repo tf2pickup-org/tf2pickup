@@ -14,7 +14,7 @@ for (const preset of queuePresets) {
       await admin.goto()
       const row = admin.row(slug)
       await expect(row).toContainText(preset.gamemode)
-      await expect(row.getByRole('button', { name: 'Enable' })).toBeVisible()
+      await expect(admin.enabledSwitch(slug)).not.toBeChecked()
 
       await page.goto(`/admin/queues/${slug}`)
       const threshold = page.getByLabel('Player skill threshold', { exact: true })

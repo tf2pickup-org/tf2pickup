@@ -49,7 +49,7 @@ export async function QueueSwitcher(props: {
                 class="queue-switcher-label"
                 style={`view-transition-name: queue-switcher-label-${queue.slug}`}
               >
-                <span safe>{queue.name}</span>
+                <span safe>{queues.queueLabel(queue)}</span>
                 <QueueSwitcherCount slug={queue.slug} current={current} required={required} />
               </span>
             </a>

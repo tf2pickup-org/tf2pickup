@@ -1,6 +1,8 @@
 import { gamemodeConfigs } from '../../../../gamemodes/configs'
 import { IconPlus, IconTrash } from '../../../../html/components/icons'
+import { Switch } from '../../../../html/components/switch'
 import { queues } from '../../../../queues'
+import { QueueSwitcher } from '../../../../queues/views/html/queue-switcher'
 import { queuePresets } from '../../../../queues/presets'
 import { Gamemode } from '../../../../shared/types/gamemode'
 import { Admin } from '../../../views/html/admin'
@@ -10,80 +12,10 @@ import { DurationInput } from '../../../views/html/duration-input'
 import { SaveBar } from '../../../views/html/save-bar'
 import { SettingCard } from '../../../views/html/setting-card'
 import { SettingRow } from '../../../views/html/setting-row'
-
 export async function QueuesPage() {
-  const all = await queues.list()
-  const playerCounts = await Promise.all(all.map(queues.playerCounts))
-
   return (
     <Admin activePage="queues">
-      <div class="admin-panel-set flex flex-col gap-4">
-        <table class="w-full text-left">
-          <thead>
-            <tr>
-              <th>Order</th>
-              <th>Name</th>
-              <th>Slug</th>
-              <th>Gamemode</th>
-              <th>Launch mode</th>
-              <th>Players</th>
-              <th>Enabled</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {all.map((queue, i) => (
-              <tr aria-label={`Queue ${queue.slug}`}>
-                <td class="flex flex-row gap-1">
-                  <MoveButton slug={queue.slug} direction="up" disabled={i === 0} />
-                  <MoveButton slug={queue.slug} direction="down" disabled={i === all.length - 1} />
-                </td>
-                <td>
-                  <a href={`/admin/queues/${queue.slug}`} class="underline" safe>
-                    {queue.name}
-                  </a>
-                </td>
-                <td safe>{queue.slug}</td>
-                <td>{queue.gamemode}</td>
-                <td>{queue.launchMode}</td>
-                <td>
-                  {playerCounts[i]!.current}/
-                  {gamemodeConfigs[queue.gamemode].classes.reduce(
-                    (sum, { count }) => sum + count * 2,
-                    0,
-                  )}
-                </td>
-                <td>
-                  <form
-                    method="post"
-                    action={`/admin/queues/${queue.slug}/${queue.enabled ? 'disable' : 'enable'}`}
-                  >
-                    <button type="submit" class="button" data-size="dense">
-                      {queue.enabled ? 'Disable' : 'Enable'}
-                    </button>
-                  </form>
-                </td>
-                <td>
-                  <form
-                    method="post"
-                    action={`/admin/queues/${queue.slug}/delete`}
-                    hx-confirm={`Delete queue ${queue.name}? This cannot be undone.`}
-                  >
-                    <button
-                      type="submit"
-                      class="text-white disabled:opacity-30"
-                      disabled={queue.enabled}
-                      aria-label={`Delete queue ${queue.slug}`}
-                    >
-                      <IconTrash />
-                    </button>
-                  </form>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <QueueList />
 
       <form method="post" action="/admin/all-queues" class="mt-4" data-save-bar>
         <SettingCard
@@ -116,16 +48,23 @@ export async function QueuesPage() {
         <label for="template">Start from</label>
         <select id="template" name="template">
           <option value="">Blank</option>
-          {queuePresets.map(({ slug, name }) => (
-            <option value={slug} safe>
-              {name}
+          {queuePresets.map(preset => (
+            <option value={preset.slug} safe>
+              {queues.queueLabel(preset)}
             </option>
           ))}
         </select>
-        <label for="slug">Slug</label>
-        <input id="slug" name="slug" type="text" required pattern="[a-z0-9]+(-[a-z0-9]+)*" />
         <label for="name">Name</label>
         <input id="name" name="name" type="text" required />
+        <label for="slug">Slug</label>
+        <input
+          id="slug"
+          name="slug"
+          type="text"
+          required
+          pattern="[a-z0-9]+(-[a-z0-9]+)*"
+          data-slug-from="name"
+        />
         <label for="launchMode">Launch mode</label>
         <select id="launchMode" name="launchMode">
           <option value="auto">auto</option>
@@ -148,17 +87,136 @@ export async function QueuesPage() {
   )
 }
 
+// Swapped as a whole after every change, so the switcher preview follows the list.
+async function QueueList() {
+  const all = await queues.list()
+  const playerCounts = await Promise.all(all.map(queues.playerCounts))
+  const enabled = all.filter(queue => queue.enabled)
+
+  return (
+    <div
+      id="queue-list"
+      class="flex flex-col gap-4"
+      hx-target="this"
+      hx-select="#queue-list"
+      hx-swap="outerHTML"
+      hx-select-oob="#flash-messages"
+    >
+      <SettingCard
+        title="Queue switcher"
+        description="What players see at the top of the queue page. The first enabled queue is the default one, served on the front page."
+      >
+        {enabled.length >= 2 ? (
+          <div inert class="admin-queue-switcher-preview">
+            <QueueSwitcher active={enabled[0]!} />
+          </div>
+        ) : (
+          <p class="setting-card-description">
+            Only one queue is enabled, so the queue page shows no switcher.
+          </p>
+        )}
+      </SettingCard>
+
+      <form id="queue-order" method="post" action="/admin/all-queues/order"></form>
+      <div class="admin-panel-set">
+        <table class="admin-queue-list w-full text-left">
+          <thead>
+            <tr>
+              <th>
+                <span class="sr-only">Order</span>
+              </th>
+              <th>Name</th>
+              <th>Slug</th>
+              <th>Gamemode</th>
+              <th>Launch mode</th>
+              <th>Players</th>
+              <th>Enabled</th>
+              <th>
+                <span class="sr-only">Delete</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody data-queue-order="queue-order">
+            {all.map((queue, i) => (
+              <tr aria-label={`Queue ${queue.slug}`}>
+                <td>
+                  <div class="flex flex-row items-center gap-1">
+                    <span class="admin-queue-drag-handle" data-drag-handle aria-hidden="true">
+                      ⠿
+                    </span>
+                    <MoveButton slug={queue.slug} direction="up" disabled={i === 0} />
+                    <MoveButton
+                      slug={queue.slug}
+                      direction="down"
+                      disabled={i === all.length - 1}
+                    />
+                    <input type="hidden" form="queue-order" name="order[]" value={queue.slug} />
+                  </div>
+                </td>
+                <td>
+                  <a href={`/admin/queues/${queue.slug}`} class="underline" safe>
+                    {queues.queueLabel(queue)}
+                  </a>
+                </td>
+                <td safe>{queue.slug}</td>
+                <td>{queue.gamemode}</td>
+                <td>{queue.launchMode}</td>
+                <td>
+                  {playerCounts[i]!.current}/
+                  {gamemodeConfigs[queue.gamemode].classes.reduce(
+                    (sum, { count }) => sum + count * 2,
+                    0,
+                  )}
+                </td>
+                <td>
+                  <Switch
+                    id={`queue-${queue.slug}-enabled`}
+                    role="switch"
+                    aria-label={`Queue ${queue.slug} enabled`}
+                    checked={queue.enabled}
+                    disabled={queue.enabled && enabled.length === 1}
+                    hx-post={`/admin/queues/${queue.slug}/${queue.enabled ? 'disable' : 'enable'}`}
+                    hx-trigger="change"
+                    data-umami-event="toggle-queue"
+                  />
+                </td>
+                <td>
+                  <form
+                    method="post"
+                    action={`/admin/queues/${queue.slug}/delete`}
+                    hx-confirm={`Delete queue ${queue.name}? This cannot be undone.`}
+                  >
+                    <button
+                      type="submit"
+                      class="text-white disabled:opacity-30"
+                      disabled={queue.enabled}
+                      title={queue.enabled ? 'Disable the queue to delete it' : undefined}
+                      aria-label={`Delete queue ${queue.slug}`}
+                    >
+                      <IconTrash />
+                    </button>
+                  </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 function MoveButton(props: { slug: string; direction: 'up' | 'down'; disabled: boolean }) {
   return (
-    <form method="post" action={`/admin/queues/${props.slug}/move?direction=${props.direction}`}>
-      <button
-        type="submit"
-        class="text-white disabled:opacity-30"
-        disabled={props.disabled}
-        aria-label={`Move queue ${props.slug} ${props.direction}`}
-      >
-        {props.direction === 'up' ? '↑' : '↓'}
-      </button>
-    </form>
+    <button
+      type="button"
+      id={`queue-${props.slug}-${props.direction}`}
+      class="text-white disabled:opacity-30"
+      disabled={props.disabled}
+      aria-label={`Move queue ${props.slug} ${props.direction}`}
+      data-move={props.direction}
+    >
+      {props.direction === 'up' ? '↑' : '↓'}
+    </button>
   )
 }

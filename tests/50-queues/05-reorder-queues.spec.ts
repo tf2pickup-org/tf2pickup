@@ -21,3 +21,13 @@ queues('the first enabled queue is served at / @multi-queue', async ({ queues, u
   await page.goto('/')
   await expect(page.getByLabel(/^Queue slot /)).not.toHaveCount(4)
 })
+
+queues('drags a queue to the top @multi-queue', async ({ queues, users }) => {
+  const { slug } = await queues.create({ template: 'auto-ultiduo', enable: true })
+  const admin = new AdminQueuesPage(await users.getAdmin().page())
+
+  await admin.dragAbove(slug, defaultQueueSlug())
+  await admin.goto()
+  await expect(admin.page.getByRole('row').nth(1)).toHaveAccessibleName(`Queue ${slug}`)
+  await expect(admin.page.locator('#queue-switcher a').first()).toContainText(slug)
+})
