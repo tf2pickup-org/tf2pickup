@@ -64,8 +64,12 @@ export function GameListItem(props: {
         </span>
       ) : game.score ? (
         <span class="game-list-score game-list-status tabular-nums">
-          <span data-team="red">{game.score.red}</span>
-          <span data-team="blu">{game.score.blu}</span>
+          <span data-team="blu" aria-label="BLU score">
+            {game.score.blu}
+          </span>
+          <span data-team="red" aria-label="RED score">
+            {game.score.red}
+          </span>
         </span>
       ) : (
         <></>
