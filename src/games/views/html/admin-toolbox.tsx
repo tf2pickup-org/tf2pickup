@@ -26,17 +26,19 @@ export function AdminToolbox(props: { game: GameModel }) {
       </script>
 
       <div class="game-admin-toolbox admin-area-content">
-        <label class="show-assigned-skills-toggle">
-          <input type="checkbox" class="sr-only" id="show-assigned-skills" />
-          <span class="on">
-            <IconEyeOff />
-            Hide skills
-          </span>
-          <span class="off">
-            <IconEye />
-            Show skills
-          </span>
-        </label>
+        {props.game.slots.some(slot => slot.skill !== undefined) ? (
+          <label class="show-assigned-skills-toggle">
+            <input type="checkbox" class="sr-only" id="show-assigned-skills" />
+            <span class="on">
+              <IconEyeOff />
+              Hide skills
+            </span>
+            <span class="off">
+              <IconEye />
+              Show skills
+            </span>
+          </label>
+        ) : undefined}
 
         <AdminToolbox.rconConnect {...props} />
 
