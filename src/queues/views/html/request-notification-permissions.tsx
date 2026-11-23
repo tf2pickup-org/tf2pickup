@@ -28,7 +28,8 @@ export async function RequestNotificationPermissions() {
         <div class="banner flex flex-row items-start gap-x-3" data-tone="warning">
           <p class="flex-1">
             You have disabled browser notifications. You will not be warned when a game is about to
-            start.
+            start. To turn them back on, allow notifications for this site in your browser's site
+            settings (usually the icon next to the address bar).
           </p>
           <button
             class="self-center opacity-70 transition-opacity hover:opacity-100"
