@@ -22,11 +22,9 @@ describe('GameListItem', () => {
       />
     ) as string
     const scores = parse(html).querySelectorAll('.game-list-score > span')
-    expect(
-      scores.map(s => [s.getAttribute('data-team'), s.text, s.getAttribute('aria-label')]),
-    ).toEqual([
-      ['blu', '3', 'BLU score'],
-      ['red', '1', 'RED score'],
+    expect(scores.map(s => [s.getAttribute('data-team'), s.text.trim()])).toEqual([
+      ['blu', 'BLU 3'],
+      ['red', 'RED 1'],
     ])
   })
 })
