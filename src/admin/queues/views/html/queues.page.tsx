@@ -87,6 +87,14 @@ export async function QueuesPage() {
   )
 }
 
+// Not set on #queue-list itself: its links would inherit it.
+const swapList = {
+  'hx-target': '#queue-list',
+  'hx-select': '#queue-list',
+  'hx-swap': 'outerHTML',
+  'hx-select-oob': '#flash-messages',
+}
+
 // Swapped as a whole after every change, so the switcher preview follows the list.
 async function QueueList() {
   const all = await queues.list()
@@ -94,14 +102,7 @@ async function QueueList() {
   const enabled = all.filter(queue => queue.enabled)
 
   return (
-    <div
-      id="queue-list"
-      class="flex flex-col gap-4"
-      hx-target="this"
-      hx-select="#queue-list"
-      hx-swap="outerHTML"
-      hx-select-oob="#flash-messages"
-    >
+    <div id="queue-list" class="flex flex-col gap-4">
       <SettingCard
         title="Queue switcher"
         description="What players see at the top of the queue page. The first enabled queue is the default one, served on the front page."
@@ -117,7 +118,7 @@ async function QueueList() {
         )}
       </SettingCard>
 
-      <form id="queue-order" method="post" action="/admin/all-queues/order"></form>
+      <form id="queue-order" method="post" action="/admin/all-queues/order" {...swapList}></form>
       <div class="admin-panel-set">
         <table class="admin-queue-list w-full text-left">
           <thead>
@@ -177,6 +178,7 @@ async function QueueList() {
                     disabled={queue.enabled && enabled.length === 1}
                     hx-post={`/admin/queues/${queue.slug}/${queue.enabled ? 'disable' : 'enable'}`}
                     hx-trigger="change"
+                    {...swapList}
                     data-umami-event="toggle-queue"
                   />
                 </td>
@@ -184,6 +186,7 @@ async function QueueList() {
                   <form
                     method="post"
                     action={`/admin/queues/${queue.slug}/delete`}
+                    {...swapList}
                     hx-confirm={`Delete queue ${queue.name}? This cannot be undone.`}
                   >
                     <button
