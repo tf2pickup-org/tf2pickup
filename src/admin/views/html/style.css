@@ -129,6 +129,7 @@
   .save-bar {
     position: sticky;
     bottom: 16px;
+    z-index: 30;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -151,6 +152,13 @@
     form:not([data-dirty]) & :is(.save-bar-status, .save-bar-discard) {
       display: none;
     }
+  }
+
+  .save-bar-status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
   }
 
   .save-bar-dot {

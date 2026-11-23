@@ -5,7 +5,7 @@ import { SaveButton } from './save-button'
 export function SaveBar() {
   return (
     <div class="save-bar" role="region" aria-label="Save changes">
-      <span class="save-bar-status flex flex-row items-center gap-2">
+      <span class="save-bar-status">
         <span class="save-bar-dot" aria-hidden="true" />
         Unsaved changes
       </span>
