@@ -32,7 +32,9 @@ test('admin panel is not visible for anonymous users @6v6 @9v9', async ({ page }
 ;[
   '/admin/queues',
   `/admin/queues/${defaultQueueSlug()}`,
-  '/admin/player-restrictions',
+  '/admin/registration',
+  '/admin/skill',
+  '/admin/penalties',
   '/admin/games',
   '/admin/map-pool',
   '/admin/game-servers',

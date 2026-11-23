@@ -10,7 +10,7 @@ export async function SkillImportExportPage(props: { gamemode: Gamemode }) {
   const gamemodes = (await queues.gamemodesInUse()).filter(tab => gamemodeConfigs[tab].autoBalance)
 
   return (
-    <Admin activePage="skill-import-export">
+    <Admin activePage="skill">
       {gamemodes.length > 1 && (
         <nav class="admin-tabs" aria-label="Gamemodes">
           {gamemodes.map(tab => (

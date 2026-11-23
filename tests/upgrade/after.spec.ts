@@ -27,7 +27,7 @@ authUsers('player skill survives the upgrade', async ({ users }) => {
 
 authUsers('default player skill survives the upgrade', async ({ users }) => {
   const admin = await users.getAdmin().page()
-  await admin.goto('/admin/player-restrictions')
+  await admin.goto('/admin/skill')
   await expect(admin.getByLabel(`Default ${getQueueConfig()} skill on medic`)).toHaveValue(
     defaultPlayerSkill.medic.toString(),
   )

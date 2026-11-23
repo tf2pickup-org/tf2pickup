@@ -1,18 +1,11 @@
 import { PlayerRole } from '../../../database/models/player.model'
-import { CooldownLevelEntry, GamesPage } from '../../../admin/games/views/html/games.page'
+import { GamesPage } from '../../../admin/games/views/html/games.page'
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../../shared/types/logs-tf-upload-method'
 import { requestContext } from '@fastify/request-context'
 import { routes } from '../../../utils/routes'
 import { configuration } from '../../../configuration'
 import { durationUnit } from '../../../admin/games/duration-unit'
-
-// A single form field is submitted as a scalar, multiple as an array; normalize both to an array.
-const formArray = <T extends z.ZodType>(schema: T) =>
-  z.preprocess((value): unknown[] => {
-    if (value === undefined) return []
-    return Array.isArray(value) ? (value as unknown[]) : [value]
-  }, z.array(schema))
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -35,41 +28,24 @@ export default routes(async app => {
           authorize: [PlayerRole.admin],
         },
         schema: {
-          body: z
-            .object({
-              whitelistId: z
-                .string()
-                .trim()
-                .transform(value => value || null),
-              joinGameserverTimeout: z.coerce.number().min(0),
-              joinGameserverTimeoutUnit: z.enum(durationUnit.all),
-              rejoinGameserverTimeout: z.coerce.number().min(0),
-              rejoinGameserverTimeoutUnit: z.enum(durationUnit.all),
-              executeExtraCommands: z
-                .string()
-                .transform(value => value.split('\n').filter(line => line.trim() !== '')),
-              logsTfUploadMethod: z.enum(LogsTfUploadMethod),
-              'banLength[]': formArray(z.coerce.number().min(0)),
-              'banLengthUnit[]': formArray(z.enum(durationUnit.all)),
-              cooldownDecayPeriod: z.coerce.number().min(0),
-              cooldownDecayPeriodUnit: z.enum(durationUnit.all),
-            })
-            .refine(
-              ({ 'banLength[]': length, 'banLengthUnit[]': unit }) => length.length === unit.length,
-              { message: 'banLength[] and banLengthUnit[] must be of the same length' },
-            ),
+          body: z.object({
+            whitelistId: z
+              .string()
+              .trim()
+              .transform(value => value || null),
+            joinGameserverTimeout: z.coerce.number().min(0),
+            joinGameserverTimeoutUnit: z.enum(durationUnit.all),
+            rejoinGameserverTimeout: z.coerce.number().min(0),
+            rejoinGameserverTimeoutUnit: z.enum(durationUnit.all),
+            executeExtraCommands: z
+              .string()
+              .transform(value => value.split('\n').filter(line => line.trim() !== '')),
+            logsTfUploadMethod: z.enum(LogsTfUploadMethod),
+          }),
         },
       },
       async (request, reply) => {
         const actor = request.user!.player.steamId
-        const cooldownLevels = request.body['banLength[]'].map((value, i) => ({
-          level: i,
-          banLengthMs: durationUnit.toMs(value, request.body['banLengthUnit[]'][i]!),
-        }))
-        const cooldownDecayPeriodMs = durationUnit.toMs(
-          request.body.cooldownDecayPeriod,
-          request.body.cooldownDecayPeriodUnit,
-        )
         await Promise.all([
           configuration.set('games.whitelist_id', request.body.whitelistId, actor),
           configuration.set(
@@ -94,22 +70,9 @@ export default routes(async app => {
             actor,
           ),
           configuration.set('games.logs_tf_upload_method', request.body.logsTfUploadMethod, actor),
-          configuration.set('games.cooldown_decay_period', cooldownDecayPeriodMs, actor),
-          configuration.set('games.cooldown_levels', cooldownLevels, actor),
         ])
         requestContext.set('messages', { success: ['Configuration saved'] })
         await reply.status(200).html(GamesPage())
-      },
-    )
-    .post(
-      '/cooldown-level',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        return await reply.send(CooldownLevelEntry({ banLengthMs: 0 }))
       },
     )
 })

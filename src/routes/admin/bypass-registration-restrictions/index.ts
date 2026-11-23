@@ -1,11 +1,9 @@
 import { PlayerRole } from '../../../database/models/player.model'
-import { BypassRegistrationRestrictionsPage } from '../../../admin/bypass-registration-restrictions/views/html/bypass-registration-restrictions.page'
 import { z } from 'zod'
 import { collections } from '../../../database/collections'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import { requestContext } from '@fastify/request-context'
 import { configuration } from '../../../configuration'
-import { BypassedSteamIds } from '../../../admin/bypass-registration-restrictions/views/html/bypassed-steam-ids'
+import { BypassedSteamIds } from '../../../admin/registration/views/html/bypassed-steam-ids'
 import { routes } from '../../../utils/routes'
 
 // eslint-disable-next-line @typescript-eslint/require-await
@@ -19,7 +17,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        return reply.html(BypassRegistrationRestrictionsPage())
+        await reply.redirect('/admin/registration', 301)
       },
     )
     .post(
@@ -37,14 +35,14 @@ export default routes(async app => {
 
         const isRegistered = (await collections.players.countDocuments({ steamId })) > 0
         if (isRegistered) {
-          requestContext.set('messages', { error: ['Player is already registered'] })
-          return reply.html(BypassRegistrationRestrictionsPage())
+          request.flash('error', 'Player is already registered')
+          return reply.redirect('/admin/registration')
         }
 
         const config = await configuration.get('players.bypass_registration_restrictions')
         if (config.some(c => c === steamId)) {
-          requestContext.set('messages', { error: ['This Steam ID is already added'] })
-          return reply.html(BypassRegistrationRestrictionsPage())
+          request.flash('error', 'This Steam ID is already added')
+          return reply.redirect('/admin/registration')
         }
 
         await configuration.set(
@@ -52,8 +50,8 @@ export default routes(async app => {
           [...config, steamId],
           request.user!.player.steamId,
         )
-        requestContext.set('messages', { success: ['Steam ID added'] })
-        return reply.html(BypassRegistrationRestrictionsPage())
+        request.flash('success', 'Steam ID added')
+        return reply.redirect('/admin/registration')
       },
     )
     .delete(
