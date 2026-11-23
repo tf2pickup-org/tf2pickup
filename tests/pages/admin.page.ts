@@ -301,12 +301,14 @@ export class AdminPage {
       await this.page
         .getByLabel('Join gameserver timeout', { exact: true })
         .fill(config.joinGameServerTimeout.toString())
+      await this.page.locator('select[name="joinGameserverTimeoutUnit"]').selectOption('seconds')
     }
 
     if (config.rejoinGameServerTimeout) {
       await this.page
         .getByLabel('Rejoin gameserver timeout')
         .fill(config.rejoinGameServerTimeout.toString())
+      await this.page.locator('select[name="rejoinGameserverTimeoutUnit"]').selectOption('seconds')
     }
 
     await this.page.getByRole('button', { name: 'Save' }).click()

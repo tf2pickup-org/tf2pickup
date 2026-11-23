@@ -1,10 +1,12 @@
 import { queues } from '../../../../queues'
-import { millisecondsToSeconds } from 'date-fns'
 import { configuration } from '../../../../configuration'
 import { IconMinus, IconPlus } from '../../../../html/components/icons'
 import { LogsTfUploadMethod } from '../../../../shared/types/logs-tf-upload-method'
 import { Admin } from '../../../views/html/admin'
-import { SaveButton } from '../../../views/html/save-button'
+import { SaveBar } from '../../../views/html/save-bar'
+import { SettingCard } from '../../../views/html/setting-card'
+import { SettingRow } from '../../../views/html/setting-row'
+import { DurationInput } from '../../../views/html/duration-input'
 import { durationUnit } from '../../duration-unit'
 import { GameServerCommandPreview } from './game-server-command-preview'
 
@@ -27,209 +29,171 @@ export async function GamesPage() {
 
   return (
     <Admin activePage="games">
-      <form action="" method="post">
-        <div class="admin-panel-set flex flex-col gap-4">
-          <dl>
-            <dt>
-              <label for="whitelistId">Whitelist ID</label>
-            </dt>
-            <dd>
-              <input
-                type="text"
-                name="whitelistId"
-                value={whitelistId ?? ''}
-                id="whitelistId"
-                class="col-span-3"
-              />
-            </dd>
-          </dl>
+      <form action="" method="post" class="flex flex-col gap-4" data-save-bar>
+        <SettingCard title="Whitelist">
+          <SettingRow
+            label="Whitelist ID"
+            for="whitelistId"
+            configKey="games.whitelist_id"
+            description="Used by every queue that has no whitelist of its own."
+          >
+            <input type="text" name="whitelistId" value={whitelistId ?? ''} id="whitelistId" />
+          </SettingRow>
 
           {gamemodeWhitelists.map(({ gamemode, whitelistId }) => (
-            <dl>
-              <dt>
-                <label for={`gamemodeWhitelistId-${gamemode}`}>{gamemode} whitelist ID</label>
-              </dt>
-              <dd class="flex flex-col">
-                <input
-                  type="text"
-                  name={`gamemodeWhitelistId.${gamemode}`}
-                  value={whitelistId ?? ''}
-                  placeholder={globalWhitelistId ?? ''}
-                  id={`gamemodeWhitelistId-${gamemode}`}
-                />
-                <p class="text-sm text-zinc-200">
-                  For {gamemode} queues without a whitelist of their own. Leave empty to use the
-                  whitelist above.
-                </p>
-              </dd>
-            </dl>
-          ))}
-
-          <dl>
-            <dt>
-              <label for="joinGameserverTimeout">Join gameserver timeout</label>
-            </dt>
-            <dd class="flex flex-col">
-              <div>
-                <input
-                  type="number"
-                  name="joinGameserverTimeout"
-                  value={millisecondsToSeconds(joinGameServerTimeout).toString()}
-                  id="joinGameserverTimeout"
-                  class="col-span-2 me-2"
-                />
-                <span class="text-white">seconds</span>
-              </div>
-              <span class="text-sm text-zinc-200">
-                The time a player has to join the gameserver before they are getting subbed
-                automatically. Use 0 to disable.
-              </span>
-            </dd>
-          </dl>
-
-          <dl>
-            <dt>
-              <label for="rejoinGameserverTimeout">Rejoin gameserver timeout</label>
-            </dt>
-            <dd class="flex flex-col">
-              <div>
-                <input
-                  type="number"
-                  name="rejoinGameserverTimeout"
-                  value={millisecondsToSeconds(rejoinGameServerTimeout).toString()}
-                  id="rejoinGameserverTimeout"
-                  class="col-span-2 me-2"
-                />
-                <span class="text-white">seconds</span>
-              </div>
-              <span class="text-sm text-zinc-200">
-                The time a player has to come back to the gameserver after they go offline during
-                the match. Use 0 to disable.
-              </span>
-            </dd>
-          </dl>
-
-          <dl>
-            <dt>
-              <label for="executeExtraCommands">Execute extra commands</label>
-            </dt>
-            <dd class="flex flex-col">
-              <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
-                {safeExecuteExtraCommands}
-              </textarea>
-              <span class="text-sm text-zinc-200">
-                Extra commands to execute on the gameserver before the match starts. One command per
-                line.
-              </span>
-            </dd>
-          </dl>
-
-          <dl>
-            <dt>
-              <label for="logsTfUploadMethod">logs.tf upload method</label>
-            </dt>
-            <dd>
-              <select name="logsTfUploadMethod" id="logsTfUploadMethod">
-                <option value="off" selected={logsTfUploadMethod === LogsTfUploadMethod.off}>
-                  Off - no logs will be uploaded to logs.tf
-                </option>
-                <option
-                  value="backend"
-                  selected={logsTfUploadMethod === LogsTfUploadMethod.backend}
-                >
-                  Backend - logs will be uploaded by the tf2pickup.org server only
-                </option>
-                <option
-                  value="gameserver"
-                  selected={logsTfUploadMethod === LogsTfUploadMethod.gameserver}
-                >
-                  Gameserver - logs will be uploaded by the logs.tf sourcemod plugin
-                </option>
-              </select>
-            </dd>
-          </dl>
-
-          <dl>
-            <dt>Game server startup commands</dt>
-            <dd class="flex flex-col">
-              <GameServerCommandPreview
-                whitelistId={whitelistId}
-                executeExtraCommands={executeExtraCommands}
-                logsTfUploadMethod={logsTfUploadMethod}
+            <SettingRow
+              label={`${gamemode} whitelist ID`}
+              for={`gamemodeWhitelistId-${gamemode}`}
+              description={`For ${gamemode} queues without a whitelist of their own. Leave empty to use the whitelist above.`}
+            >
+              <input
+                type="text"
+                name={`gamemodeWhitelistId.${gamemode}`}
+                value={whitelistId ?? ''}
+                placeholder={globalWhitelistId ?? ''}
+                id={`gamemodeWhitelistId-${gamemode}`}
               />
-              <span class="text-sm text-zinc-200">
-                Commands executed on the game server when a game starts, in order. Reflects the
-                saved configuration above.
-              </span>
-            </dd>
-          </dl>
+            </SettingRow>
+          ))}
+        </SettingCard>
 
-          <dl>
-            <dt>Cooldown levels</dt>
-            <dd class="flex flex-col gap-2">
-              <div class="cooldown-levels-list flex flex-col gap-2" id="cooldownLevelsList">
-                {cooldownLevels.map(({ banLengthMs }) => (
-                  <CooldownLevelEntry banLengthMs={banLengthMs} />
-                ))}
-              </div>
-              <button
-                type="button"
-                class="flex w-fit flex-row items-center gap-2 text-white hover:underline"
-                data-umami-event="add-cooldown-level"
-                hx-post="/admin/games/cooldown-level"
-                hx-trigger="click"
-                hx-target="#cooldownLevelsList"
-                hx-swap="beforeend"
+        <SettingCard title="Connecting">
+          <SettingRow
+            label="Join gameserver timeout"
+            for="joinGameserverTimeout"
+            configKey="games.join_gameserver_timeout"
+            defaultLabel={durationUnit.label(
+              configuration.getDefault('games.join_gameserver_timeout'),
+            )}
+            description="How long a player has to join the gameserver before they are subbed automatically. Use 0 to disable."
+          >
+            <DurationInput
+              id="joinGameserverTimeout"
+              name="joinGameserverTimeout"
+              valueMs={joinGameServerTimeout}
+              units={connectUnits}
+            />
+          </SettingRow>
+
+          <SettingRow
+            label="Rejoin gameserver timeout"
+            for="rejoinGameserverTimeout"
+            configKey="games.rejoin_gameserver_timeout"
+            defaultLabel={durationUnit.label(
+              configuration.getDefault('games.rejoin_gameserver_timeout'),
+            )}
+            description="How long a player has to come back after they go offline during the match. Use 0 to disable."
+          >
+            <DurationInput
+              id="rejoinGameserverTimeout"
+              name="rejoinGameserverTimeout"
+              valueMs={rejoinGameServerTimeout}
+              units={connectUnits}
+            />
+          </SettingRow>
+        </SettingCard>
+
+        <SettingCard title="Server commands">
+          <SettingRow
+            label="Execute extra commands"
+            for="executeExtraCommands"
+            configKey="games.execute_extra_commands"
+            description="Extra commands to execute on the gameserver before the match starts. One command per line."
+          >
+            <textarea rows="3" id="executeExtraCommands" name="executeExtraCommands">
+              {safeExecuteExtraCommands}
+            </textarea>
+          </SettingRow>
+
+          <SettingRow
+            label="logs.tf upload method"
+            for="logsTfUploadMethod"
+            configKey="games.logs_tf_upload_method"
+          >
+            <select name="logsTfUploadMethod" id="logsTfUploadMethod">
+              <option value="off" selected={logsTfUploadMethod === LogsTfUploadMethod.off}>
+                Off - no logs will be uploaded to logs.tf
+              </option>
+              <option value="backend" selected={logsTfUploadMethod === LogsTfUploadMethod.backend}>
+                Backend - logs will be uploaded by the tf2pickup.org server only
+              </option>
+              <option
+                value="gameserver"
+                selected={logsTfUploadMethod === LogsTfUploadMethod.gameserver}
               >
-                <IconPlus />
-                Add level
-              </button>
-              <span class="text-sm text-zinc-200">
-                When a player is subbed out of a game, they receive a ban. The ban length grows with
-                each offence, following the levels above. Levels are applied top to bottom; a player
-                past the last level always gets the last ban length.
-              </span>
-            </dd>
-          </dl>
+                Gameserver - logs will be uploaded by the logs.tf sourcemod plugin
+              </option>
+            </select>
+          </SettingRow>
 
-          <dl>
-            <dt>
-              <label for="cooldownDecayPeriod">Cooldown level decay</label>
-            </dt>
-            <dd class="flex flex-col">
-              <div>
-                <input
-                  type="number"
-                  name="cooldownDecayPeriod"
-                  value={durationUnit.split(cooldownDecayPeriod).value.toString()}
-                  id="cooldownDecayPeriod"
-                  min="0"
-                  step="any"
-                  class="col-span-2 me-2"
-                />
-                <select name="cooldownDecayPeriodUnit">
-                  {durationUnit.all.map(u => (
-                    <option value={u} selected={u === durationUnit.split(cooldownDecayPeriod).unit}>
-                      {u}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <span class="text-sm text-zinc-200">
-                Every period without a new offence, a player's cooldown level drops by one, so old
-                offences stop counting. Use 0 to disable decay.
-              </span>
-            </dd>
-          </dl>
+          <details class="pb-4">
+            <summary class="cursor-pointer py-2 text-sm text-zinc-200">
+              Preview: game server startup commands
+            </summary>
+            <GameServerCommandPreview
+              whitelistId={whitelistId}
+              executeExtraCommands={executeExtraCommands}
+              logsTfUploadMethod={logsTfUploadMethod}
+            />
+            <p class="mt-2 text-sm text-zinc-400">
+              Commands executed on the game server when a game starts, in order. Reflects the saved
+              configuration above.
+            </p>
+          </details>
+        </SettingCard>
 
-          <p class="mt-2">
-            <SaveButton />
-          </p>
-        </div>
+        <SettingCard
+          title="Cooldown bans"
+          description="When a player is subbed out of a game, they receive a ban. The ban length grows with each offence, following the levels below."
+        >
+          <SettingRow
+            label="Cooldown levels"
+            configKey="games.cooldown_levels"
+            description="Levels are applied top to bottom; a player past the last level always gets the last ban length."
+          >
+            <div class="cooldown-levels-list flex flex-col gap-2" id="cooldownLevelsList">
+              {cooldownLevels.map(({ banLengthMs }) => (
+                <CooldownLevelEntry banLengthMs={banLengthMs} />
+              ))}
+            </div>
+            <button
+              type="button"
+              class="flex w-fit flex-row items-center gap-2 text-white hover:underline"
+              data-umami-event="add-cooldown-level"
+              hx-post="/admin/games/cooldown-level"
+              hx-trigger="click"
+              hx-target="#cooldownLevelsList"
+              hx-swap="beforeend"
+            >
+              <IconPlus />
+              Add level
+            </button>
+          </SettingRow>
+
+          <SettingRow
+            label="Cooldown level decay"
+            for="cooldownDecayPeriod"
+            configKey="games.cooldown_decay_period"
+            defaultLabel={durationUnit.label(
+              configuration.getDefault('games.cooldown_decay_period'),
+            )}
+            description="Every period without a new offence, a player's cooldown level drops by one, so old offences stop counting. Use 0 to disable decay."
+          >
+            <DurationInput
+              id="cooldownDecayPeriod"
+              name="cooldownDecayPeriod"
+              valueMs={cooldownDecayPeriod}
+            />
+          </SettingRow>
+        </SettingCard>
+
+        <SaveBar />
       </form>
     </Admin>
   )
 }
+
+const connectUnits = ['seconds', 'minutes'] as const
 
 export function CooldownLevelEntry(props: { banLengthMs: number }) {
   const { value, unit } = durationUnit.split(props.banLengthMs)

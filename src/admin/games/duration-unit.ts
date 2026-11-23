@@ -1,14 +1,14 @@
-import { milliseconds, secondsToMilliseconds } from 'date-fns'
+import { milliseconds } from 'date-fns'
 
-const units = ['minutes', 'hours', 'days', 'weeks', 'months', 'years'] as const
+const units = ['seconds', 'minutes', 'hours', 'days', 'weeks', 'months', 'years'] as const
 type Unit = (typeof units)[number]
 
 // date-fns derives months/years from a fractional average day count, so e.g.
 // milliseconds({ months: 6 }) lands 1ms off a whole multiple of milliseconds({ months: 1 }).
-// Allow that slack so such durations still resolve to a friendly unit.
-const tolerance = secondsToMilliseconds(1)
+// The drift is at most ~1ms per unit, so allow that much slack and no more.
 
 const unitMs: Record<Unit, number> = {
+  seconds: milliseconds({ seconds: 1 }),
   minutes: milliseconds({ minutes: 1 }),
   hours: milliseconds({ hours: 1 }),
   days: milliseconds({ days: 1 }),
@@ -21,7 +21,7 @@ export const durationUnit = {
   all: units,
 
   toMs(value: number, unit: Unit): number {
-    return value * unitMs[unit]
+    return milliseconds({ [unit]: value })
   },
 
   // Break a duration in milliseconds into the largest whole unit that divides it evenly,
@@ -30,7 +30,7 @@ export const durationUnit = {
     for (let i = units.length - 1; i >= 0; i--) {
       const unit = units[i]!
       const value = Math.round(ms / unitMs[unit])
-      if (value >= 1 && Math.abs(value * unitMs[unit] - ms) <= tolerance) {
+      if (value >= 1 && Math.abs(value * unitMs[unit] - ms) <= value) {
         return { value, unit }
       }
     }
