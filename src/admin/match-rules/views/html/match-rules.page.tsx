@@ -62,14 +62,14 @@ export async function MatchRulesPage() {
             for="autoForceEndThreshold"
             configKey="games.auto_force_end_threshold"
             defaultLabel={configuration.getDefault('games.auto_force_end_threshold').toString()}
-            description="Once this many substitute requests are open at the same time, the game is force-ended automatically."
+            description="Once this many substitute requests are open at the same time, the game is force-ended automatically. Use 0 to disable."
           >
             <input
               type="number"
               id="autoForceEndThreshold"
               name="autoForceEndThreshold"
               value={autoForceEndThreshold.toString()}
-              min="1"
+              min="0"
               required
             />
           </SettingRow>

@@ -8,7 +8,8 @@ import { DurationInput } from '../../../views/html/duration-input'
 import { SaveBar } from '../../../views/html/save-bar'
 import { SettingCard } from '../../../views/html/setting-card'
 import { SettingRow } from '../../../views/html/setting-row'
-import { ServemeTfBanGameServers, ServemeTfBanPatternForm } from './serveme-tf-ban-gameservers'
+import { ServemeTfBanGameServers } from './serveme-tf-ban-gameservers'
+import { ServemeTfBanPatternForm } from './serveme-tf-ban-pattern-form'
 import { ServemeTfPreferredRegion } from './serveme-tf-preferred-region'
 import { StaticGameServerList } from './static-game-server-list'
 import { Tf2QuickServerRegion } from './tf2-quick-server-region'
@@ -155,6 +156,7 @@ export async function GameServersPage() {
                       name="tf2QuickServerTimeout"
                       valueMs={tf2QuickServerTimeout}
                       units={['seconds', 'minutes']}
+                      min={1}
                     />
                   </SettingRow>
                 </details>

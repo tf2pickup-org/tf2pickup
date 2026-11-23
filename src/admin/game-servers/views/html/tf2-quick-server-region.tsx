@@ -6,6 +6,11 @@ export async function Tf2QuickServerRegion() {
 
   return (
     <select name="tf2QuickServerRegion" id="tf2-quick-server-region-select">
+      {!tf2QuickServerRegions.some(region => region.key === selected) && (
+        <option value={selected} selected safe>
+          {`${selected} (unknown region)`}
+        </option>
+      )}
       {tf2QuickServerRegions.map(region => (
         <option value={region.key} selected={region.key === selected} safe>
           {region.label}

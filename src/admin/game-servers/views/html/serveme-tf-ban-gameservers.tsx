@@ -35,18 +35,6 @@ export function ServemeTfBanGameServers() {
   )
 }
 
-export function ServemeTfBanPatternForm() {
-  return (
-    <form
-      id="servemeTfBanPatternForm"
-      hx-post="/admin/game-servers/serveme-tf/ban-gameservers"
-      hx-target="#bannedGameServersList"
-      hx-swap="outerHTML"
-      data-reset-on-success
-    />
-  )
-}
-
 export async function BannedGameServersList() {
   const bannedServers = await configuration.get('serveme_tf.ban_gameservers')
 

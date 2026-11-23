@@ -22,7 +22,7 @@ export default routes(async app => {
             joinGameserverTimeoutUnit: z.enum(durationUnit.all),
             rejoinGameserverTimeout: z.coerce.number().min(0),
             rejoinGameserverTimeoutUnit: z.enum(durationUnit.all),
-            autoForceEndThreshold: z.coerce.number().int().min(1),
+            autoForceEndThreshold: z.coerce.number().int().min(0),
           }),
         },
       },

@@ -29,6 +29,11 @@ export async function RegionList() {
       <option value="none" selected={selected === null}>
         none
       </option>
+      {selected !== null && !regions.includes(selected) && (
+        <option value={selected} selected safe>
+          {`${selected} (not offered by serveme.tf right now)`}
+        </option>
+      )}
       {regions.map(region => (
         <option value={region} selected={region === selected} safe>
           {getUnicodeFlagIcon(region)} {region}
