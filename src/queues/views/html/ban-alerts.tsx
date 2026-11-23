@@ -42,8 +42,11 @@ export async function BanAlertList(props: { actor?: SteamId64 | undefined }) {
           <span class="font-bold" safe>
             {ban.end.toLocaleString()}
           </span>
-          &nbsp;(<span safe>{formatDistanceToNow(ban.end, { addSuffix: true })}</span>)
-          &nbsp;for&nbsp;
+          &nbsp;(
+          <span data-relative-time={ban.end.toISOString()} safe>
+            {formatDistanceToNow(ban.end, { addSuffix: true })}
+          </span>
+          )&nbsp;for&nbsp;
           <span class="font-bold" safe>
             {ban.reason}
           </span>
