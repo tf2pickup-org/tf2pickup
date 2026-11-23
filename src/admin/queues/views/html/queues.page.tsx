@@ -104,6 +104,7 @@ export async function QueuesPage() {
               name="preReadyUpTimeout"
               valueMs={await configuration.get('queue.pre_ready_up_timeout')}
               units={['seconds', 'minutes']}
+              min={1}
             />
           </SettingRow>
         </SettingCard>

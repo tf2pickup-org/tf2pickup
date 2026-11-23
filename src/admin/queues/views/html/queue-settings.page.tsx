@@ -256,6 +256,7 @@ function TimersTab(props: { queue: QueueModel }) {
             name="readyUpTimeout"
             valueMs={queue.readyUpTimeout}
             units={units}
+            min={1}
           />
         </SettingRow>
 
@@ -271,6 +272,7 @@ function TimersTab(props: { queue: QueueModel }) {
             name="readyStateTimeout"
             valueMs={queue.readyStateTimeout}
             units={units}
+            min={1}
           />
         </SettingRow>
 
@@ -287,6 +289,7 @@ function TimersTab(props: { queue: QueueModel }) {
               name="pickTimeout"
               valueMs={queue.pickTimeout}
               units={units}
+              min={1}
             />
           </SettingRow>
         )}

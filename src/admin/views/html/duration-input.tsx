@@ -5,6 +5,7 @@ export function DurationInput(props: {
   name: string
   valueMs: number
   units?: readonly (typeof durationUnit.all)[number][]
+  min?: number
 }) {
   const { value, unit } = durationUnit.split(props.valueMs)
   const units = props.units ?? durationUnit.all
@@ -15,7 +16,7 @@ export function DurationInput(props: {
         id={props.id}
         name={props.name}
         value={value.toString()}
-        min="0"
+        min={(props.min ?? 0).toString()}
         step="any"
         required
         class="min-w-0 flex-1"

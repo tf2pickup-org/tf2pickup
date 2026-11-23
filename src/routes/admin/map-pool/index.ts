@@ -3,7 +3,7 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { queues } from '../../../queues'
 import { routes } from '../../../utils/routes'
 
-// ponytail: kept for old bookmarks; the map pool lives on the queue page now
+// ponytail: kept for old bookmarks (a temporary redirect: the default queue can change); the map pool lives on the queue page now
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
   app.get(
@@ -14,7 +14,7 @@ export default routes(async app => {
     },
     async (request, reply) => {
       const queue = await queues.bySlugOrDefault(request.query.queue)
-      await reply.redirect(`/admin/queues/${queue.slug}/maps`, 301)
+      await reply.redirect(`/admin/queues/${queue.slug}/maps`)
     },
   )
 })
