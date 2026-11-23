@@ -169,6 +169,11 @@
     background: var(--color-alert);
   }
 
+  /* setting cards leave the bottom padding to their rows */
+  .admin-queue-switcher-preview {
+    margin-block: 12px 16px;
+  }
+
   .admin-queue-switcher-preview .queue-switcher {
     display: inline-block;
   }

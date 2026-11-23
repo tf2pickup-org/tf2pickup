@@ -116,7 +116,7 @@ async function QueueList() {
             <QueueSwitcher active={enabled[0]!} />
           </div>
         ) : (
-          <p class="setting-card-description">
+          <p class="setting-card-description pb-4">
             Only one queue is enabled, so the queue page shows no switcher.
           </p>
         )}
