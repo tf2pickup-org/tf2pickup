@@ -5,6 +5,7 @@ import { steamId64 } from '../../../shared/schemas/steam-id-64'
 import { configuration } from '../../../configuration'
 import { BypassedSteamIds } from '../../../admin/registration/views/html/bypassed-steam-ids'
 import { routes } from '../../../utils/routes'
+import { FlashMessage } from '../../../html/components/flash-message'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -32,17 +33,27 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId } = request.body
-
-        const isRegistered = (await collections.players.countDocuments({ steamId })) > 0
-        if (isRegistered) {
-          request.flash('error', 'Player is already registered')
+        // with htmx only the list is updated, so unsaved edits elsewhere on the page survive
+        const respond = async (type: 'success' | 'error', message: string) => {
+          if (request.isHtmx()) {
+            return reply.html(
+              <>
+                <BypassedSteamIds />
+                <FlashMessage type={type} message={message} />
+              </>,
+            )
+          }
+          request.flash(type, message)
           return reply.redirect('/admin/registration')
+        }
+
+        if ((await collections.players.countDocuments({ steamId })) > 0) {
+          return respond('error', 'Player is already registered')
         }
 
         const config = await configuration.get('players.bypass_registration_restrictions')
         if (config.some(c => c === steamId)) {
-          request.flash('error', 'This Steam ID is already added')
-          return reply.redirect('/admin/registration')
+          return respond('error', 'This Steam ID is already added')
         }
 
         await configuration.set(
@@ -50,8 +61,7 @@ export default routes(async app => {
           [...config, steamId],
           request.user!.player.steamId,
         )
-        request.flash('success', 'Steam ID added')
-        return reply.redirect('/admin/registration')
+        return respond('success', 'Steam ID added')
       },
     )
     .delete(

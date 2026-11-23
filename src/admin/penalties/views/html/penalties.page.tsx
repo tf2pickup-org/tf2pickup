@@ -1,4 +1,4 @@
-import { millisecondsToSeconds } from 'date-fns'
+import { secondsToMilliseconds } from 'date-fns'
 import { configuration } from '../../../../configuration'
 import { GameClassIcon } from '../../../../html/components/game-class-icon'
 import { IconPlus } from '../../../../html/components/icons'
@@ -86,8 +86,9 @@ export async function PenaltiesPage() {
                     type="number"
                     id={`joinQueueCooldown-${gameClass}`}
                     name={`joinQueueCooldown.${gameClass}`}
-                    value={millisecondsToSeconds(joinQueueCooldown[gameClass]).toString()}
+                    value={(joinQueueCooldown[gameClass] / secondsToMilliseconds(1)).toString()}
                     min="0"
+                    step="any"
                     required
                     class="min-w-0 flex-1"
                   />

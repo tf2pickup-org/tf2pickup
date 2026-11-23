@@ -45,6 +45,7 @@ export async function RegistrationPage() {
               <input
                 type="number"
                 min="0"
+                step="any"
                 value={minimumInGameHours.toString()}
                 id="minimumInGameHours"
                 name="minimumInGameHours"
@@ -87,6 +88,10 @@ export async function RegistrationPage() {
           <form
             method="post"
             action="/admin/bypass-registration-restrictions"
+            hx-post="/admin/bypass-registration-restrictions"
+            hx-target="#bypassedSteamIds"
+            hx-swap="outerHTML"
+            data-reset-on-success
             class="flex flex-row items-center gap-2 pb-4 max-lg:flex-wrap"
           >
             <label for="bypassSteamId" class="sr-only">
