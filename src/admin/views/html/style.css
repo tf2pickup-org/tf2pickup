@@ -129,21 +129,27 @@
   .save-bar {
     position: sticky;
     bottom: 16px;
-    display: none;
+    display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 12px;
     margin-top: 16px;
     padding: 12px 16px;
-    border: 1px solid var(--color-zinc-700);
+    border: 1px solid var(--color-zinc-800);
     border-radius: 8px;
-    background: var(--color-zinc-800);
+    background: var(--color-zinc-850);
     color: white;
-    box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
 
     form[data-dirty] & {
-      display: flex;
+      justify-content: space-between;
+      border-color: var(--color-zinc-700);
+      background: var(--color-zinc-800);
+      box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+    }
+
+    form:not([data-dirty]) & :is(.save-bar-status, .save-bar-discard) {
+      display: none;
     }
   }
 
