@@ -37,112 +37,53 @@ import { PlayerRole } from '../../../database/models/player.model'
 import { requestContext } from '@fastify/request-context'
 
 const adminPages = {
-  queues: {
-    title: 'Queues',
-    icon: IconDeviceGamepad,
-    section: 'Configuration',
-  },
+  queues: { title: 'Queues', icon: IconDeviceGamepad, section: 'Queues' },
+  'map-pool': { title: 'Map pool', icon: IconMapPinCog, section: 'Queues' },
+  'scramble-maps': { title: 'Scramble maps', icon: IconArrowsShuffle, section: 'Queues' },
   'player-restrictions': {
     title: 'Player restrictions',
     icon: IconUserExclamation,
-    section: 'Configuration',
-  },
-  games: {
-    title: 'Games',
-    icon: IconAdjustments,
-    section: 'Configuration',
-  },
-  'map-pool': {
-    title: 'Map pool',
-    icon: IconMapPinCog,
-    section: 'Configuration',
-  },
-  'game-servers': {
-    title: 'Game servers',
-    icon: IconServer,
-    section: 'Configuration',
-  },
-  'voice-server': {
-    title: 'Voice server',
-    icon: IconHeadset,
-    section: 'Configuration',
-  },
-  discord: {
-    title: 'Discord',
-    icon: IconBrandDiscord,
-    section: 'Configuration',
-  },
-  announcements: {
-    title: 'Announcements',
-    icon: IconAlertSquareRounded,
-    section: 'Configuration',
-  },
-  miscellaneous: {
-    title: 'Miscellaneous',
-    icon: IconAdjustmentsStar,
-    section: 'Configuration',
-  },
-  'view-for-nerds': {
-    title: 'View for nerds',
-    icon: IconMoodNerd,
-    section: 'Configuration',
-  },
-  'activity-log': {
-    title: 'Activity log',
-    icon: IconHistory,
-    section: 'Configuration',
-  },
-  'scramble-maps': {
-    title: 'Scramble maps',
-    icon: IconArrowsShuffle,
-    section: 'Actions',
+    section: 'Players',
   },
   'bypass-registration-restrictions': {
     title: 'Bypass restrictions',
     icon: IconUserPlus,
-    section: 'Actions',
+    section: 'Players',
   },
-  'skill-import-export': {
-    title: 'Skill import/export',
-    icon: IconTable,
-    section: 'Actions',
-  },
-  rules: {
-    title: 'Rules',
-    icon: IconSectionSign,
-    section: 'Documents',
-  },
-  'privacy-policy': {
-    title: 'Privacy policy',
-    icon: IconSpy,
-    section: 'Documents',
-  },
-} as const
-
-const superUserPages = {
+  'skill-import-export': { title: 'Skill import/export', icon: IconTable, section: 'Players' },
+  games: { title: 'Games', icon: IconAdjustments, section: 'Games' },
+  'game-servers': { title: 'Game servers', icon: IconServer, section: 'Games' },
+  'voice-server': { title: 'Voice server', icon: IconHeadset, section: 'Games' },
+  discord: { title: 'Discord', icon: IconBrandDiscord, section: 'Community' },
+  announcements: { title: 'Announcements', icon: IconAlertSquareRounded, section: 'Community' },
+  miscellaneous: { title: 'Miscellaneous', icon: IconAdjustmentsStar, section: 'Community' },
+  rules: { title: 'Rules', icon: IconSectionSign, section: 'Community' },
+  'privacy-policy': { title: 'Privacy policy', icon: IconSpy, section: 'Community' },
+  'activity-log': { title: 'Activity log', icon: IconHistory, section: 'Logs' },
   'player-action-logs': {
     title: 'Player action logs',
     icon: IconLogs,
-    section: 'Configuration',
+    section: 'Logs',
+    superUserOnly: true,
   },
+  'view-for-nerds': { title: 'View for nerds', icon: IconMoodNerd, section: 'Advanced' },
   'delete-player': {
     title: 'Delete player',
     icon: IconTrash,
-    section: 'Actions',
+    section: 'Advanced',
+    superUserOnly: true,
   },
 } as const
 
 const sections = Array.from(new Set(Object.values(adminPages).map(({ section }) => section)))
 
-export function Admin(props: {
-  activePage: keyof typeof adminPages | keyof typeof superUserPages
-  children: Children
-}) {
+export function Admin(props: { activePage: keyof typeof adminPages; children: Children }) {
   const user = requestContext.get('user')
-  const title =
-    props.activePage in adminPages
-      ? adminPages[props.activePage as keyof typeof adminPages].title
-      : superUserPages[props.activePage as keyof typeof superUserPages].title
+  const isSuperUser = user?.player.roles.includes(PlayerRole.superUser) ?? false
+  const visiblePages = Object.entries(adminPages).filter(
+    ([, page]) => isSuperUser || !('superUserOnly' in page),
+  )
+  const title = adminPages[props.activePage].title
   return (
     <Layout title={makeTitle(title)} embedStyle={resolve(import.meta.dirname, 'style.css')}>
       <NavigationBar wide />
@@ -152,28 +93,16 @@ export function Admin(props: {
             {sections.map(section => (
               <>
                 <AdminPanelSection>{section}</AdminPanelSection>
-                {Object.entries(adminPages)
-                  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                  .filter(([_, value]) => value.section === section)
-                  .map(([key, value]) => (
+                {visiblePages
+                  .filter(([, page]) => page.section === section)
+                  .map(([key, page]) => (
                     <AdminPanelLink href={`/admin/${key}`} active={props.activePage === key}>
-                      {value.icon({})}
-                      {value.title}
+                      {page.icon({})}
+                      {page.title}
                     </AdminPanelLink>
                   ))}
               </>
             ))}
-            {user?.player.roles.includes(PlayerRole.superUser) && (
-              <>
-                <AdminPanelSection>Super-user</AdminPanelSection>
-                {Object.entries(superUserPages).map(([key, value]) => (
-                  <AdminPanelLink href={`/admin/${key}`} active={props.activePage === key}>
-                    {value.icon({})}
-                    {value.title}
-                  </AdminPanelLink>
-                ))}
-              </>
-            )}
           </AdminPanelSidebar>
 
           <AdminPanelBody>
