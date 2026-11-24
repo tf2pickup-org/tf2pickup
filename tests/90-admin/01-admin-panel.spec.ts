@@ -41,6 +41,7 @@ test('admin panel is not visible for anonymous users @6v6 @9v9', async ({ page }
   '/admin/game-servers',
   '/admin/voice-server',
   '/admin/discord',
+  '/admin/streams',
   '/admin/view-for-nerds',
   '/admin/scramble-maps',
   '/admin/bypass-registration-restrictions',

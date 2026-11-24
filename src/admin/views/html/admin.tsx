@@ -9,9 +9,9 @@ import {
 } from '../../../html/components/admin-panel'
 import {
   IconAdjustments,
-  IconAdjustmentsStar,
   IconAlertSquareRounded,
   IconBrandDiscord,
+  IconBrandTwitch,
   IconDeviceGamepad,
   IconHeadset,
   IconHistory,
@@ -20,7 +20,6 @@ import {
   IconSectionSign,
   IconServer,
   IconTerminal2,
-  IconSpy,
   IconBan,
   IconChartArrowsVertical,
   IconTrash,
@@ -46,9 +45,8 @@ const adminPages = {
   'voice-server': { title: 'Voice server', icon: IconHeadset, section: 'Games' },
   discord: { title: 'Discord', icon: IconBrandDiscord, section: 'Community' },
   announcements: { title: 'Announcements', icon: IconAlertSquareRounded, section: 'Community' },
-  miscellaneous: { title: 'Miscellaneous', icon: IconAdjustmentsStar, section: 'Community' },
-  rules: { title: 'Rules', icon: IconSectionSign, section: 'Community' },
-  'privacy-policy': { title: 'Privacy policy', icon: IconSpy, section: 'Community' },
+  streams: { title: 'Streams', icon: IconBrandTwitch, section: 'Community' },
+  rules: { title: 'Rules & privacy policy', icon: IconSectionSign, section: 'Community' },
   'activity-log': { title: 'Activity log', icon: IconHistory, section: 'Logs' },
   'player-action-logs': {
     title: 'Player action logs',

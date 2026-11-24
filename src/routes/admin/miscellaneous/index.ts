@@ -1,50 +1,10 @@
 import { PlayerRole } from '../../../database/models/player.model'
-import { z } from 'zod'
-import { requestContext } from '@fastify/request-context'
-import { MiscellaneousPage } from '../../../admin/miscellaneous/views/html/miscellaneous.page'
 import { routes } from '../../../utils/routes'
-import { configuration } from '../../../configuration'
 
-const emptyString = z
-  .union([z.literal('').transform(() => null), z.string()])
-  .nullable()
-  .default(null)
-
+// ponytail: kept for old bookmarks; the Discord invite link moved to the Discord page
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
-  app
-    .get(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-      },
-      async (_request, reply) => {
-        await reply.status(200).html(MiscellaneousPage())
-      },
-    )
-    .post(
-      '/',
-      {
-        config: {
-          authorize: [PlayerRole.admin],
-        },
-        schema: {
-          body: z.object({
-            discordInviteLink: emptyString,
-          }),
-        },
-      },
-      async (request, reply) => {
-        const { discordInviteLink } = request.body
-        await configuration.set(
-          'misc.discord_invite_link',
-          discordInviteLink,
-          request.user!.player.steamId,
-        )
-        requestContext.set('messages', { success: ['Configuration saved'] })
-        await reply.status(200).html(MiscellaneousPage())
-      },
-    )
+  app.get('/', { config: { authorize: [PlayerRole.admin] } }, async (_request, reply) => {
+    await reply.redirect('/admin/discord', 301)
+  })
 })

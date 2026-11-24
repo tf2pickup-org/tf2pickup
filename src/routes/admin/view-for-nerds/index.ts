@@ -1,8 +1,9 @@
 import { errors } from '../../../errors'
 import { parseQueueSettingKey } from '../../../admin/parse-queue-setting-key'
+import { settingPage } from '../../../admin/setting-page'
 import { queues } from '../../../queues'
 import { queueSettingDefault } from '../../../queues/queue-setting-default'
-import type { QueueConfiguration } from '../../../database/models/queue.model'
+import type { QueueConfiguration, QueueModel } from '../../../database/models/queue.model'
 import { PlayerRole } from '../../../database/models/player.model'
 import {
   ConfigurationEntryEdit,
@@ -61,7 +62,14 @@ export default routes(async app => {
         const { key, value } = request.body
         await configuration.set(key, value, request.user!.player.steamId)
         const defaultValue = configuration.getDefault(key)
-        await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
+        await reply.html(
+          ConfigurationEntryEdit({
+            _key: key,
+            value,
+            defaultValue,
+            page: settingPage({ configKey: key }),
+          }),
+        )
       },
     )
     .delete(
@@ -84,7 +92,14 @@ export default routes(async app => {
         const { key } = request.query
         const value = await configuration.reset(key, request.user!.player.steamId)
         const defaultValue = configuration.getDefault(key)
-        await reply.html(ConfigurationEntryEdit({ _key: key, value, defaultValue }))
+        await reply.html(
+          ConfigurationEntryEdit({
+            _key: key,
+            value,
+            defaultValue,
+            page: settingPage({ configKey: key }),
+          }),
+        )
       },
     )
     .post(
@@ -106,7 +121,7 @@ export default routes(async app => {
           { [field]: value },
           request.user!.player.steamId,
         )
-        await reply.html(QueueEntryEdit(request.body.key, updated[field], field))
+        await reply.html(QueueEntryEdit(request.body.key, updated, field))
       },
     )
     .delete(
@@ -126,17 +141,19 @@ export default routes(async app => {
           { [field]: defaultValue },
           request.user!.player.steamId,
         )
-        await reply.html(QueueEntryEdit(request.query.key, updated[field], field))
+        await reply.html(QueueEntryEdit(request.query.key, updated, field))
       },
     )
 })
 
-function QueueEntryEdit(key: string, value: unknown, field: keyof QueueConfiguration) {
+function QueueEntryEdit(key: string, queue: QueueModel, field: keyof QueueConfiguration) {
+  const value = queue[field]
   const defaultValue = queueSettingDefault(field)
   return ConfigurationEntryEdit({
     _key: key,
     value,
     defaultValue: defaultValue === undefined ? value : defaultValue,
     url: '/admin/view-for-nerds/queues',
+    page: settingPage({ queue, field }),
   })
 }
