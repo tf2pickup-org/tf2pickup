@@ -85,9 +85,11 @@ authUsers("the incoming instance's settings apply to its gamemode", async ({ use
   )
   await expect(admin.getByLabel('Default 6v6 skill on scout')).toHaveValue('1')
 
+  await admin.goto('/admin/queues/auto-9v9')
+  await expect(admin.getByLabel('Whitelist ID', { exact: true })).toHaveValue(incomingWhitelistId)
+  await admin.goto('/admin/queues/auto-6v6')
+  await expect(admin.getByLabel('Whitelist ID', { exact: true })).toHaveValue('')
   await admin.goto('/admin/games')
-  await expect(admin.getByLabel('9v9 whitelist ID')).toHaveValue(incomingWhitelistId)
-  await expect(admin.getByLabel('6v6 whitelist ID')).toHaveValue('')
   await expect(admin.getByLabel('Whitelist ID', { exact: true })).toHaveValue('')
 })
 

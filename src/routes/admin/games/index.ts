@@ -1,4 +1,3 @@
-import { Gamemode } from '../../../shared/types/gamemode'
 import { PlayerRole } from '../../../database/models/player.model'
 import { CooldownLevelEntry, GamesPage } from '../../../admin/games/views/html/games.page'
 import { z } from 'zod'
@@ -37,7 +36,7 @@ export default routes(async app => {
         },
         schema: {
           body: z
-            .looseObject({
+            .object({
               whitelistId: z
                 .string()
                 .trim()
@@ -71,17 +70,8 @@ export default routes(async app => {
           request.body.cooldownDecayPeriod,
           request.body.cooldownDecayPeriodUnit,
         )
-        const current = await configuration.get('games.gamemode_whitelist_ids')
-        const gamemodeWhitelistIds = Object.fromEntries(
-          Object.values(Gamemode).flatMap(gamemode => {
-            const value = request.body[`gamemodeWhitelistId.${gamemode}`]
-            const whitelistId = typeof value === 'string' ? value.trim() : current[gamemode]
-            return whitelistId ? [[gamemode, whitelistId]] : []
-          }),
-        )
         await Promise.all([
           configuration.set('games.whitelist_id', request.body.whitelistId, actor),
-          configuration.set('games.gamemode_whitelist_ids', gamemodeWhitelistIds, actor),
           configuration.set(
             'games.join_gameserver_timeout',
             durationUnit.toMs(
