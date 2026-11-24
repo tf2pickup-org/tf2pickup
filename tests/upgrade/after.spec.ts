@@ -57,9 +57,7 @@ authUsers('every preset is added and only the old queue is enabled', async ({ us
   const admin = new AdminQueuesPage(await users.getAdmin().page())
   await admin.goto()
   for (const { slug } of queuePresets) {
-    await expect(admin.row(slug).getByRole('button', { name: 'Disable' })).toBeVisible({
-      visible: slug === defaultQueueSlug(),
-    })
+    await expect(admin.enabledSwitch(slug)).toBeChecked({ checked: slug === defaultQueueSlug() })
   }
 })
 

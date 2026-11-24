@@ -12,11 +12,11 @@ import { kick } from './kick'
 import { list } from './list'
 import { listEnabled } from './list-enabled'
 import { membership } from './membership'
-import { move } from './move'
 import { pageUrls } from './page/page-urls'
 import { playerCounts } from './player-counts'
 import { queuePageUrl } from './page/queue-page-url'
 import { remove } from './remove'
+import { reorder } from './reorder'
 import { removePlayer } from './remove-player'
 import { resolveWhitelistId } from './resolve-whitelist-id'
 import { update } from './update'
@@ -36,11 +36,11 @@ export const queues = {
   list,
   listEnabled,
   membership,
-  move,
   pageUrls,
   playerCounts,
   queuePageUrl,
   remove,
+  reorder,
   removePlayer,
   resolveWhitelistId,
   update,

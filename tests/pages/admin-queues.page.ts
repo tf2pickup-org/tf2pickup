@@ -8,7 +8,7 @@ export class AdminQueuesPage {
   }
 
   row(slug: string) {
-    return this.page.getByRole('row', { name: `Queue ${slug}` })
+    return this.page.getByRole('row', { name: `Queue ${slug}`, exact: true })
   }
 
   async create(props: {
@@ -20,8 +20,8 @@ export class AdminQueuesPage {
   }) {
     await this.goto()
     await this.page.getByLabel('Start from').selectOption(props.template ?? '')
-    await this.page.getByLabel('Slug').fill(props.slug)
     await this.page.getByLabel('Name', { exact: true }).fill(props.name)
+    await this.page.getByLabel('Slug').fill(props.slug)
     if (props.launchMode) {
       await this.page.getByLabel('Launch mode').selectOption(props.launchMode)
     }
@@ -31,14 +31,25 @@ export class AdminQueuesPage {
     await this.page.getByRole('button', { name: 'Add queue' }).click()
   }
 
+  enabledSwitch(slug: string) {
+    return this.row(slug).getByRole('switch', { name: `Queue ${slug} enabled` })
+  }
+
   async enable(slug: string) {
-    await this.goto()
-    await this.row(slug).getByRole('button', { name: 'Enable' }).click()
+    await this.toggle(slug, 'enable')
   }
 
   async disable(slug: string) {
+    await this.toggle(slug, 'disable')
+  }
+
+  private async toggle(slug: string, action: 'enable' | 'disable') {
     await this.goto()
-    await this.row(slug).getByRole('button', { name: 'Disable' }).click()
+    await Promise.all([
+      this.page.waitForResponse(`**/admin/queues/${slug}/${action}`),
+      // the slider covers the checkbox, as it does for a player
+      this.enabledSwitch(slug).locator('..').click(),
+    ])
   }
 
   async delete(slug: string) {
@@ -53,10 +64,32 @@ export class AdminQueuesPage {
   async move(slug: string, direction: 'up' | 'down') {
     await this.goto()
     const before = await this.index(slug)
-    await this.row(slug)
-      .getByRole('button', { name: `Move queue ${slug} ${direction}` })
-      .click()
+    await Promise.all([
+      this.page.waitForResponse('**/admin/all-queues/order'),
+      this.row(slug)
+        .getByRole('button', { name: `Move queue ${slug} ${direction}` })
+        .click(),
+    ])
     await expect.poll(() => this.index(slug)).toBe(before + (direction === 'up' ? -1 : 1))
+  }
+
+  async dragAbove(slug: string, target: string) {
+    // a drag in Playwright doesn't scroll, so both rows have to be on screen
+    const viewport = this.page.viewportSize()
+    await this.page.setViewportSize({ width: 1280, height: 2000 })
+    try {
+      await this.goto()
+      await Promise.all([
+        this.page.waitForResponse('**/admin/all-queues/order'),
+        this.row(slug)
+          .locator('[data-drag-handle]')
+          .dragTo(this.row(target), { targetPosition: { x: 10, y: 2 } }),
+      ])
+    } finally {
+      if (viewport) {
+        await this.page.setViewportSize(viewport)
+      }
+    }
   }
 
   async moveToTop(slug: string) {
@@ -76,7 +109,7 @@ export class AdminQueuesPage {
 
   async isEnabled(slug: string) {
     await this.goto()
-    return await this.row(slug).getByRole('button', { name: 'Disable' }).isVisible()
+    return await this.enabledSwitch(slug).isChecked()
   }
 
   async expectFlash(message: string | RegExp) {

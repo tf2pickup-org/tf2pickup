@@ -252,19 +252,4 @@ export default routes(async app => {
         return `Queue ${queue.slug} deleted`
       })
     })
-    .post(
-      '/:slug/move',
-      {
-        config,
-        schema: {
-          params: slugParams,
-          querystring: z.object({ direction: z.enum(['up', 'down']) }),
-        },
-      },
-      async (request, reply) => {
-        const queue = await queues.bySlug(request.params.slug)
-        await queues.move(queue._id, request.query.direction)
-        await reply.redirect('/admin/queues')
-      },
-    )
 })
