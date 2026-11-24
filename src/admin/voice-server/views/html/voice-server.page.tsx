@@ -1,7 +1,9 @@
 import { configuration } from '../../../../configuration'
 import { VoiceServerType } from '../../../../shared/types/voice-server-type'
 import { Admin } from '../../../views/html/admin'
-import { SaveButton } from '../../../views/html/save-button'
+import { SaveBar } from '../../../views/html/save-bar'
+import { SettingCard } from '../../../views/html/setting-card'
+import { SettingRow } from '../../../views/html/setting-row'
 import { MumbleClientStatus } from './mumble-client-status'
 import { Switch } from '../../../../html/components/switch'
 
@@ -28,197 +30,202 @@ export async function VoiceServerPage() {
 
   return (
     <Admin activePage="voice-server">
-      <form action="" method="post" id="voiceServerForm" class="group/voice-server">
-        <div class="admin-panel-set">
-          <div class="form-checkbox">
-            <input
-              type="radio"
-              name="type"
-              value={VoiceServerType.none}
-              id="voiceServerNone"
-              aria-describedby="voiceServerNoneDesc"
-              checked={type === VoiceServerType.none}
-            />
-            <label for="voiceServerNone">Disabled</label>
-            <p class="description" id="voiceServerNoneDesc">
-              No voice server will be used.
-            </p>
-          </div>
+      <form
+        action=""
+        method="post"
+        id="voiceServerForm"
+        class="group/voice-server flex flex-col gap-4"
+        data-save-bar
+      >
+        <SettingCard
+          title="Voice server"
+          description="What players are given to talk to their team during a game."
+        >
+          <fieldset class="flex flex-col gap-3 py-4">
+            <legend class="sr-only">Voice server type</legend>
+            <label class="flex flex-row items-start gap-2">
+              <input
+                type="radio"
+                name="type"
+                value={VoiceServerType.none}
+                id="voiceServerNone"
+                checked={type === VoiceServerType.none}
+                class="mt-1"
+              />
+              <span>
+                <span class="text-white">Disabled</span>
+                <span class="block text-sm text-zinc-400">No voice server is used.</span>
+              </span>
+            </label>
+            <div class="flex flex-row flex-wrap items-start gap-2">
+              <label class="flex flex-row items-start gap-2">
+                <input
+                  type="radio"
+                  name="type"
+                  value={VoiceServerType.staticLink}
+                  id="voiceServerStaticLink"
+                  checked={type === VoiceServerType.staticLink}
+                  class="mt-1"
+                />
+                <span>
+                  <span class="text-white">Static link</span>
+                  <span class="block text-sm text-zinc-400">
+                    Every game shows the same link to the voice server.
+                  </span>
+                </span>
+              </label>
+              <label for="static-link" class="sr-only">
+                Static voice server link
+              </label>
+              <input
+                type="text"
+                value={staticLink ?? ''}
+                id="static-link"
+                name="staticLink"
+                placeholder="https://example.com"
+                class="min-w-0 flex-1"
+                disabled={type !== VoiceServerType.staticLink}
+                data-toggle-disabled-form="#voiceServerForm"
+                data-toggle-disabled-control="type"
+                data-toggle-disabled-value={VoiceServerType.staticLink}
+              />
+            </div>
+            <label class="flex flex-row items-start gap-2">
+              <input
+                type="radio"
+                name="type"
+                value={VoiceServerType.mumble}
+                id="voice-server-mumble"
+                checked={type === VoiceServerType.mumble}
+                class="mt-1"
+              />
+              <span>
+                <span class="text-white">Mumble</span>
+                <span class="block text-sm text-zinc-400">
+                  Channels are created and cleaned up for each game automatically.
+                </span>
+              </span>
+            </label>
+          </fieldset>
+        </SettingCard>
 
-          <div class="form-checkbox">
-            <input
-              type="radio"
-              name="type"
-              value={VoiceServerType.staticLink}
-              id="voiceServerStaticLink"
-              aria-describedby="voiceServerStaticLinkDesc"
-              checked={type === VoiceServerType.staticLink}
-            />
-            <label for="voiceServerStaticLink">Static link</label>
-            <input
-              type="text"
-              value={staticLink ?? ''}
-              id="static-link"
-              name="staticLink"
-              placeholder="https://example.com"
-              class="ml-4"
-              disabled={type !== VoiceServerType.staticLink}
-              data-toggle-disabled-form="#voiceServerForm"
-              data-toggle-disabled-control="type"
-              data-toggle-disabled-value={VoiceServerType.staticLink}
-            />
-            <p class="description" id="voiceServerStaticLinkDesc">
-              Players will be handed a static link to connect to the voice server
-            </p>
-          </div>
-
-          <div class="form-checkbox">
-            <input
-              type="radio"
-              name="type"
-              value={VoiceServerType.mumble}
-              id="voice-server-mumble"
-              checked={type === VoiceServerType.mumble}
-            />
-            <label for="voice-server-mumble">Mumble</label>
-            <p class="description" id="voice-server-mumble-desc">
-              A mumble server will be used for the voice during games. Channels will be managed
-              automatically.
-            </p>
-          </div>
-
-          <fieldset
-            class="ml-[22px]"
-            id="mumble-server-data"
-            disabled={type !== VoiceServerType.mumble}
-            data-toggle-disabled-form="#voiceServerForm"
-            data-toggle-disabled-control="type"
-            data-toggle-disabled-value={VoiceServerType.mumble}
-          >
-            <dl>
-              <dt>
-                <label for="mumble-url" class="font-medium">
-                  Server URL
-                </label>
-              </dt>
-              <dd class="flex flex-row gap-2">
+        <fieldset
+          id="mumble-server-data"
+          disabled={type !== VoiceServerType.mumble}
+          data-toggle-disabled-form="#voiceServerForm"
+          data-toggle-disabled-control="type"
+          data-toggle-disabled-value={VoiceServerType.mumble}
+        >
+          <SettingCard title="Mumble">
+            <SettingRow
+              label="Server URL"
+              for="mumble-url"
+              configKey="games.voice_server.mumble.url"
+              description="Address and port players connect to."
+            >
+              <div class="flex flex-row gap-2">
                 <input
                   type="text"
                   name="mumbleUrl"
                   id="mumble-url"
                   value={mumbleUrl ?? ''}
                   placeholder="mumble.tf2pickup.org"
-                  class="max-lg:min-w-0 max-lg:flex-1"
+                  class="min-w-0 flex-1"
                 />
+                <label for="mumble-port" class="sr-only">
+                  Server port
+                </label>
                 <input
                   type="number"
+                  id="mumble-port"
                   name="mumblePort"
                   value={mumblePort.toString()}
-                  class="max-lg:w-24 max-lg:min-w-0"
+                  class="w-24"
                 />
-              </dd>
-            </dl>
+              </div>
+            </SettingRow>
 
-            <dl>
-              <dt>
-                <label for="mumble-internal-url" class="font-medium">
-                  (Optional) Internal server URL
-                </label>
-              </dt>
-              <dd>
+            <SettingRow
+              label="Server password"
+              for="mumble-password"
+              configKey="games.voice_server.mumble.password"
+            >
+              <input
+                type="text"
+                id="mumble-password"
+                name="mumblePassword"
+                value={mumblePassword ?? ''}
+              />
+            </SettingRow>
+
+            <SettingRow
+              label="Channel name"
+              for="mumble-channel-name"
+              configKey="games.voice_server.mumble.channel_name"
+              description="Game channels are created inside this channel."
+            >
+              <input
+                type="text"
+                id="mumble-channel-name"
+                name="mumbleChannelName"
+                value={mumbleChannelName ?? ''}
+              />
+            </SettingRow>
+
+            <SettingRow
+              label="Verify players automatically"
+              for="mumble-player-verification"
+              configKey="games.voice_server.mumble.player_verification"
+              description="Only a game's players can join its channels; they are recognized by their Mumble certificate. When off, who can join is up to the Mumble server's own permissions."
+            >
+              <div class="flex justify-end">
+                <Switch
+                  id="mumble-player-verification"
+                  name="mumblePlayerVerification"
+                  checked={mumblePlayerVerification}
+                />
+              </div>
+            </SettingRow>
+
+            <details class="pb-4">
+              <summary class="cursor-pointer py-2 text-sm text-zinc-200">
+                Advanced: internal URL, bot username
+              </summary>
+              <SettingRow
+                label="Internal server URL"
+                for="mumble-internal-url"
+                configKey="games.voice_server.mumble.internal_url"
+                description="Optional. The address the bot uses, when it differs from the public one."
+              >
                 <input
                   type="text"
                   id="mumble-internal-url"
                   name="mumbleInternalUrl"
                   value={mumbleInternalUrl ?? ''}
                 />
-              </dd>
-            </dl>
-
-            <dl>
-              <dt>
-                <label for="mumble-password" class="font-medium">
-                  Server password
-                </label>
-              </dt>
-              <dd>
-                <input
-                  type="text"
-                  id="mumble-password"
-                  name="mumblePassword"
-                  value={mumblePassword ?? ''}
-                />
-              </dd>
-            </dl>
-
-            <dl>
-              <dt>
-                <label for="mumble-channel-name" class="font-medium">
-                  Channel name
-                </label>
-              </dt>
-              <dd>
-                <input
-                  type="text"
-                  id="mumble-channel-name"
-                  name="mumbleChannelName"
-                  value={mumbleChannelName ?? ''}
-                />
-              </dd>
-            </dl>
-
-            <dl>
-              <dt>
-                <label for="mumble-username" class="font-medium">
-                  Bot username
-                </label>
-              </dt>
-              <dd>
+              </SettingRow>
+              <SettingRow
+                label="Bot username"
+                for="mumble-username"
+                configKey="games.voice_server.mumble.username"
+                description="Name the bot uses when connecting to the Mumble server."
+              >
                 <input
                   type="text"
                   id="mumble-username"
                   name="mumbleUsername"
                   value={mumbleUsername}
-                  aria-describedby="mumble-username-desc"
                 />
-                <p class="description" id="mumble-username-desc">
-                  Name the bot uses when connecting to the mumble server
-                </p>
-              </dd>
-            </dl>
+              </SettingRow>
+            </details>
 
-            <div class="group my-4 flex flex-row items-center justify-between">
-              <dl>
-                <dt>
-                  <label class="font-medium" for="mumble-player-verification">
-                    Verify players automatically
-                  </label>
-                </dt>
-                <dd class="text-zinc-200">
-                  <span class="hidden group-has-checked:inline-block">
-                    Only a game's players can join its channels. Players are recognized by their
-                    Mumble certificate.
-                  </span>
-                  <span class="group-has-checked:hidden">
-                    The bot only creates the channels. Who can join them is up to the Mumble
-                    server's own permissions.
-                  </span>
-                </dd>
-              </dl>
-              <Switch
-                id="mumble-player-verification"
-                name="mumblePlayerVerification"
-                checked={mumblePlayerVerification}
-              />
+            <div class="pb-4">
+              <MumbleClientStatus />
             </div>
+          </SettingCard>
+        </fieldset>
 
-            <MumbleClientStatus />
-          </fieldset>
-
-          <p class="mt-8">
-            <SaveButton />
-          </p>
-        </div>
+        <SaveBar />
       </form>
     </Admin>
   )

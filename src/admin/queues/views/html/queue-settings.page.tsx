@@ -145,7 +145,7 @@ async function GeneralTab(props: { queue: QueueModel }) {
           label="Whitelist ID"
           for="whitelistId"
           queueSetting={{ queue, field: 'whitelistId' }}
-          description="Leave empty to use the global whitelist, set on the Games page."
+          description="Leave empty to use the global whitelist, set on the Server configuration page."
         >
           <input
             type="text"

@@ -15,6 +15,7 @@ export default fp(
         ![
           'games.voice_server_type',
           'games.voice_server.mumble.url',
+          'games.voice_server.mumble.internal_url',
           'games.voice_server.mumble.port',
           'games.voice_server.mumble.channel_name',
           'games.voice_server.mumble.password',
