@@ -48,8 +48,6 @@ function view(members: CaptainPoolModel[]): PoolView {
       requiredPlayers: 12,
       coveredRoles: 0,
       volunteers: 0,
-      missing: [],
-      bottleneck: 'missing: x',
     },
   }
 }
@@ -107,7 +105,6 @@ describe('CaptainPool', () => {
     const props = { queue: { ...queue, gamemode: Gamemode.highlander }, view: view(members) }
     const fragments = [
       CaptainPool.volunteers(props),
-      CaptainPool.bottleneck(props),
       ...captainRoles(Gamemode.highlander).map(role => CaptainPool.roleColumn({ ...props, role })),
     ].map(fragment => Buffer.byteLength(String(fragment)))
 

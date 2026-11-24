@@ -70,7 +70,10 @@ test.describe('captain sign-up pool @multi-queue', () => {
     await expect(viewer.getByText('Captains 0/2')).toBeVisible()
   })
 
-  test('names the bottleneck of a 13-player pool with one medic', async ({ users, captain }) => {
+  test('counts the medic as uncovered in a 13-player pool with one medic', async ({
+    users,
+    captain,
+  }) => {
     const members = users.getMany(13)
     const pages = await Promise.all(members.map(async member => await member.page()))
     await Promise.all(pages.map(async page => await page.goto(`/q/${captain}`)))
@@ -84,7 +87,6 @@ test.describe('captain sign-up pool @multi-queue', () => {
 
     await expect(pages[0]!.getByText('Players 13/12')).toBeVisible()
     await expect(pages[0]!.getByText('Roles 5/6')).toBeVisible()
-    await expect(pages[0]!.getByText('missing: 1 medic')).toBeVisible()
   })
 
   test('has no map vote, friends or clear queue', async ({ users, captain }) => {
