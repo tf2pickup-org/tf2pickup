@@ -8,12 +8,18 @@ import { makeTitle } from '../../../html/make-title'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
 import { players } from '../..'
 import { getBanExpiryDate } from '../../get-ban-expiry-date'
+import { environment } from '../../../environment'
+import type { RestrictionKind } from '../../restrictions/restriction-kind'
+import { restrictionLabels } from './restriction-labels'
 
-export async function AddChatMutePage(props: { steamId: SteamId64 }) {
+export async function AddRestrictionPage(props: { steamId: SteamId64; kind: RestrictionKind }) {
   const player = await players.bySteamId(props.steamId, ['name'])
+  const labels = restrictionLabels[props.kind]
+  const formId = `add-${labels.idPrefix}-form`
+  const safeWebsiteName = environment.WEBSITE_NAME
   return (
     <Layout
-      title={makeTitle(`Mute ${player.name}`)}
+      title={makeTitle(`${labels.verb} ${player.name}`)}
       embedStyle={resolve(
         import.meta.dirname,
         '..',
@@ -29,12 +35,12 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
       <Page>
         <div class="page-wide max-w-[720px]!">
           <h1 class="page-title">
-            Mute{' '}
+            {labels.verb}{' '}
             <a href={`/players/${props.steamId}`} class="hover:underline" safe>
               {player.name}
             </a>
           </h1>
-          <form action="" method="post" id="addChatMuteForm" class="mt-8">
+          <form action="" method="post" id={formId} class="mt-8">
             <div class="admin-panel-set page-panel">
               <div class="form-checkbox">
                 <input
@@ -49,7 +55,7 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
 
               <fieldset
                 class="mb-2 ml-[22px] flex flex-row gap-2"
-                data-toggle-disabled-form="#addChatMuteForm"
+                data-toggle-disabled-form={`#${formId}`}
                 data-toggle-disabled-control="lengthSelector"
                 data-toggle-disabled-value="duration"
               >
@@ -72,18 +78,18 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
               <fieldset
                 class="mb-2 ml-[22px]"
                 disabled
-                data-toggle-disabled-form="#addChatMuteForm"
+                data-toggle-disabled-form={`#${formId}`}
                 data-toggle-disabled-control="lengthSelector"
                 data-toggle-disabled-value="date"
               >
                 <input
                   type="datetime-local"
                   name="date"
-                  id="muteEndDate"
+                  id="restriction-end-date"
                   value={format(new Date(), `yyyy-MM-dd'T'HH:mm`)}
                 />
-                <label for="muteEndDate" class="sr-only">
-                  Mute end date
+                <label for="restriction-end-date" class="sr-only">
+                  {labels.verb} end date
                 </label>
               </fieldset>
 
@@ -98,13 +104,13 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
               </div>
 
               <p>
-                Mute ends at{' '}
+                {labels.verb} ends at{' '}
                 <span
-                  id="muteEndsAt"
+                  id="restriction-ends-at"
                   hx-get="/players/ban-expiry"
-                  hx-include="#addChatMuteForm"
+                  hx-include={`#${formId}`}
                   hx-params="*"
-                  hx-trigger="change from:#addChatMuteForm delay:1s"
+                  hx-trigger={`change from:#${formId} delay:1s`}
                 >
                   {
                     format(
@@ -120,11 +126,22 @@ export async function AddChatMutePage(props: { steamId: SteamId64 }) {
               </p>
 
               <div class="input-group my-4">
-                <label class="form-label" for="muteReason">
+                <label class="form-label" for="restriction-reason">
                   Reason
                 </label>
-                <input type="text" name="reason" id="muteReason" required />
+                <input type="text" name="reason" id="restriction-reason" required />
               </div>
+
+              {props.kind === 'ban' && (
+                <div class="form-checkbox">
+                  <input type="checkbox" name="anonymous" id="restriction-anonymous" />
+                  <label for="restriction-anonymous">Anonymous</label>
+                  <p class="description">
+                    The banned player will see this ban as issued by {safeWebsiteName} Staff. Admins
+                    will still see who issued it.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div class="page-actions mt-6">

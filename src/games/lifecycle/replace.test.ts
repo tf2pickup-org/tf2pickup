@@ -26,9 +26,9 @@ const mockEmit = vi.hoisted(() => vi.fn())
 vi.mock('../../events', () => ({ events: { emit: mockEmit } }))
 
 const mockPlayersUpdate = vi.hoisted(() => vi.fn())
-const mockHasActiveBan = vi.hoisted(() => vi.fn())
+const mockActiveBans = vi.hoisted(() => vi.fn())
 vi.mock('../../players', () => ({
-  players: { update: mockPlayersUpdate, hasActiveBan: mockHasActiveBan },
+  players: { update: mockPlayersUpdate, restrictions: { active: mockActiveBans } },
 }))
 
 const mockKick = vi.hoisted(() => vi.fn())
@@ -70,7 +70,7 @@ beforeEach(() => {
   vi.clearAllMocks()
   mockGamesFindOne.mockResolvedValue(game())
   mockPlayersFindOne.mockResolvedValue({ steamId: replacement, activeGame: undefined, bans: [] })
-  mockHasActiveBan.mockReturnValue(false)
+  mockActiveBans.mockReturnValue([])
   mockApplyTransition.mockResolvedValue(newGame)
   mockUpdate.mockResolvedValue(updatedGame)
   mockCalculateJoinGameserverTimeout.mockResolvedValue(new Date('2026-01-01T00:00:00Z'))

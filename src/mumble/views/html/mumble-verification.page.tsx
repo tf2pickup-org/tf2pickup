@@ -62,7 +62,7 @@ export async function MumbleVerificationPage(props: { steamId: SteamId64 }) {
               {!!player.mumbleCertificate && (
                 <p>Only needed if you use a new computer or a new certificate.</p>
               )}
-              {players.hasActiveBan(player) ? (
+              {players.restrictions.active(player, 'ban').length > 0 ? (
                 <p>You can't verify while you're banned.</p>
               ) : (
                 <VerificationSteps

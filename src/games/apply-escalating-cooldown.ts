@@ -1,7 +1,7 @@
 import { configuration } from '../configuration'
 import { logger } from '../logger'
 import { players } from '../players'
-import { addBan } from '../players/add-ban'
+import { add } from '../players/restrictions/add'
 import { decayCooldownLevel } from '../players/decay-cooldown-level'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 
@@ -26,9 +26,9 @@ export async function applyEscalatingCooldown(steamId: SteamId64, reason: string
 
   logger.debug({ steamId, level, decayedLevels, cooldown }, 'applying cooldown')
 
-  await addBan({
+  await add('ban', {
     player: player.steamId,
-    admin: 'bot',
+    actor: 'bot',
     end: new Date(now.getTime() + cooldown.banLengthMs),
     reason,
   })

@@ -53,6 +53,10 @@ import { isVerificationEnabled } from '../../../mumble/is-verification-enabled'
 import { MumbleVerificationMethod } from '../../../database/models/player.model'
 import { decayCooldownLevel } from '../../decay-cooldown-level'
 import { durationUnit } from '../../../admin/games/duration-unit'
+import type { RestrictionKind } from '../../restrictions/restriction-kind'
+import { restrictionField } from '../../restrictions/restriction-field'
+import { restrictionLabels } from './restriction-labels'
+import { restrictionActors } from './restriction-actors'
 
 const editPlayerPages = {
   '/profile': 'Profile',
@@ -123,64 +127,50 @@ export async function EditPlayerProfilePage(props: { steamId: SteamId64 }) {
   )
 }
 
-export async function EditPlayerBansPage(props: { steamId: SteamId64 }) {
-  const player = await players.bySteamId(props.steamId, ['bans', 'name', 'steamId'])
-  const bans = player.bans?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
-  return (
-    <EditPlayer
-      player={player}
-      activePage="/bans"
-      action={
-        <a href={`/players/${player.steamId}/edit/bans/add`} class="button" data-variant="accent">
-          <IconPlus />
-          Add ban
-        </a>
-      }
-    >
-      <div class="admin-panel-content">
-        {bans?.length ? (
-          <>
-            <div class="edit-player-ban-list">
-              {bans.map(ban => (
-                <BanDetails player={player} ban={ban} />
-              ))}
-            </div>
-          </>
-        ) : (
-          <span class="text-zinc-200 italic">No bans</span>
-        )}
-      </div>
-    </EditPlayer>
+export async function EditPlayerRestrictionsPage(props: {
+  steamId: SteamId64
+  kind: RestrictionKind
+}) {
+  const player = await players.bySteamId(props.steamId, [
+    restrictionField[props.kind],
+    'name',
+    'steamId',
+    'etf2lProfile',
+  ])
+  const labels = restrictionLabels[props.kind]
+  const list: PlayerBan[] = (player[restrictionField[props.kind]] ?? []).toSorted(
+    (a, b) => b.start.getTime() - a.start.getTime(),
   )
-}
-
-export async function EditPlayerChatMutesPage(props: { steamId: SteamId64 }) {
-  const player = await players.bySteamId(props.steamId, ['chatMutes', 'name', 'steamId'])
-  const chatMutes = player.chatMutes?.toSorted((a, b) => b.start.getTime() - a.start.getTime())
+  const actors = await restrictionActors(list)
   return (
     <EditPlayer
       player={player}
-      activePage="/chat-mutes"
+      activePage={`/${labels.path}`}
       action={
         <a
-          href={`/players/${player.steamId}/edit/chat-mutes/add`}
+          href={`/players/${player.steamId}/edit/${labels.path}/add`}
           class="button"
           data-variant="accent"
         >
           <IconPlus />
-          Add mute
+          Add {labels.shortNoun}
         </a>
       }
     >
       <div class="admin-panel-content">
-        {chatMutes?.length ? (
+        {list.length ? (
           <div class="edit-player-ban-list">
-            {chatMutes.map(chatMute => (
-              <ChatMuteDetails player={player} chatMute={chatMute} />
+            {list.map(restriction => (
+              <RestrictionDetails
+                player={player}
+                kind={props.kind}
+                restriction={restriction}
+                actors={actors}
+              />
             ))}
           </div>
         ) : (
-          <span class="text-zinc-200 italic">No chat mutes</span>
+          <span class="text-zinc-200 italic">No {labels.plural}</span>
         )}
       </div>
     </EditPlayer>
@@ -454,39 +444,39 @@ async function EditPlayer(props: {
   )
 }
 
-export async function BanDetails(props: {
-  player: Pick<PlayerModel, 'name' | 'steamId'>
-  ban: PlayerBan
+export function RestrictionDetails(props: {
+  player: Pick<PlayerModel, 'steamId' | 'etf2lProfile'>
+  kind: RestrictionKind
+  restriction: PlayerBan
+  actors: Map<SteamId64, Pick<PlayerModel, 'name' | 'steamId'>>
 }) {
-  let actorDesc: JSX.Element
-  if (isBot(props.ban.actor)) {
-    actorDesc = <>bot</>
-  } else {
-    const actor = await players.bySteamId(props.ban.actor, ['name', 'steamId'])
-    actorDesc = (
-      <a href={`/players/${actor.steamId}`} safe>
-        {actor.name}
-      </a>
-    )
-  }
-
-  const etf2lProfile =
-    props.ban.source === 'etf2l'
-      ? (await players.bySteamId(props.player.steamId, ['etf2lProfile.id'])).etf2lProfile
-      : undefined
+  const { restriction } = props
+  const labels = restrictionLabels[props.kind]
+  const id = `player-${labels.idPrefix}-${restriction.start.getTime().toString()}`
+  const actor = isBot(restriction.actor) ? undefined : props.actors.get(restriction.actor)
+  const etf2lProfile = props.player.etf2lProfile
 
   return (
-    <div class="ban-item group" id={`player-ban-${props.ban.start.getTime().toString()}`}>
+    <div class="ban-item group" id={id}>
       <form class="contents">
         <div class="col-span-3">
           <span class="me-2 text-2xl font-bold" safe>
-            {props.ban.reason}
+            {restriction.reason}
           </span>
           <span class="text-sm">
-            by {actorDesc}
-            {props.ban.anonymous && <span class="italic"> (anonymous)</span>}
+            by{' '}
+            {actor ? (
+              <a href={`/players/${actor.steamId}`} safe>
+                {actor.name}
+              </a>
+            ) : isBot(restriction.actor) ? (
+              <>bot</>
+            ) : (
+              <span safe>{restriction.actor}</span>
+            )}
+            {restriction.anonymous && <span class="italic"> (anonymous)</span>}
           </span>
-          {props.ban.source === 'etf2l' && (
+          {restriction.source === 'etf2l' && (
             <span class="ms-2 inline-flex rounded bg-zinc-700 px-2 py-1 text-xs">
               {etf2lProfile ? (
                 <a href={`https://etf2l.org/forum/user/${etf2lProfile.id}`}>
@@ -495,25 +485,25 @@ export async function BanDetails(props: {
               ) : (
                 <>synced from ETF2L.org</>
               )}
-              {props.ban.revokedLocally && <span class="ms-1">(revoked locally)</span>}
+              {restriction.revokedLocally && <span class="ms-1">(revoked locally)</span>}
             </span>
           )}
         </div>
 
         <div class="row-span-2 flex items-center">
-          {props.ban.end > new Date() ? (
+          {players.restrictions.isActive(restriction) ? (
             <button
               class="button"
               data-variant="darker"
-              data-umami-event="revoke-ban"
+              data-umami-event={`revoke-${labels.idPrefix}`}
               data-umami-event-player={props.player.steamId}
-              hx-put={`/players/${props.player.steamId}/edit/bans/${props.ban.start.getTime().toString()}/revoke`}
+              hx-put={`/players/${props.player.steamId}/edit/${labels.path}/${restriction.start.getTime().toString()}/revoke`}
               hx-trigger="click"
-              hx-target={`#player-ban-${props.ban.start.getTime().toString()}`}
+              hx-target={`#${id}`}
               hx-swap="outerHTML"
             >
               <IconX />
-              <span class="sr-only">Revoke ban</span>
+              <span class="sr-only">Revoke {labels.shortNoun}</span>
             </button>
           ) : (
             <></>
@@ -521,72 +511,11 @@ export async function BanDetails(props: {
         </div>
 
         <span class="text-base">
-          Starts: <strong safe>{format(props.ban.start, 'MMMM dd, yyyy, HH:mm')}</strong>
+          Starts: <strong safe>{format(restriction.start, 'MMMM dd, yyyy, HH:mm')}</strong>
         </span>
 
         <span class="text-base">
-          Ends: <strong safe>{format(props.ban.end, 'MMMM dd, yyyy, HH:mm')}</strong>
-        </span>
-      </form>
-    </div>
-  )
-}
-
-export async function ChatMuteDetails(props: {
-  player: Pick<PlayerModel, 'name' | 'steamId'>
-  chatMute: PlayerBan
-}) {
-  let actorDesc: JSX.Element
-  if (isBot(props.chatMute.actor)) {
-    actorDesc = <>bot</>
-  } else {
-    const actor = await players.bySteamId(props.chatMute.actor, ['name', 'steamId'])
-    actorDesc = (
-      <a href={`/players/${actor.steamId}`} safe>
-        {actor.name}
-      </a>
-    )
-  }
-
-  return (
-    <div
-      class="ban-item group"
-      id={`player-chat-mute-${props.chatMute.start.getTime().toString()}`}
-    >
-      <form class="contents">
-        <div class="col-span-3">
-          <span class="me-2 text-2xl font-bold" safe>
-            {props.chatMute.reason}
-          </span>
-          <span class="text-sm">by {actorDesc}</span>
-        </div>
-
-        <div class="row-span-2 flex items-center">
-          {props.chatMute.end > new Date() ? (
-            <button
-              class="button"
-              data-variant="darker"
-              data-umami-event="revoke-chat-mute"
-              data-umami-event-player={props.player.steamId}
-              hx-put={`/players/${props.player.steamId}/edit/chat-mutes/${props.chatMute.start.getTime().toString()}/revoke`}
-              hx-trigger="click"
-              hx-target={`#player-chat-mute-${props.chatMute.start.getTime().toString()}`}
-              hx-swap="outerHTML"
-            >
-              <IconX />
-              <span class="sr-only">Revoke mute</span>
-            </button>
-          ) : (
-            <></>
-          )}
-        </div>
-
-        <span class="text-base">
-          Starts: <strong safe>{format(props.chatMute.start, 'MMMM dd, yyyy, HH:mm')}</strong>
-        </span>
-
-        <span class="text-base">
-          Ends: <strong safe>{format(props.chatMute.end, 'MMMM dd, yyyy, HH:mm')}</strong>
+          Ends: <strong safe>{format(restriction.end, 'MMMM dd, yyyy, HH:mm')}</strong>
         </span>
       </form>
     </div>

@@ -59,7 +59,7 @@ async function replaceExclusive({ number, replacee, replacement }: Replacement) 
         throw new Error(`player denied: player has active game`)
       }
 
-      if (players.hasActiveBan(rm)) {
+      if (players.restrictions.active(rm, 'ban').length > 0) {
         throw new Error(`player denied: player is banned`)
       }
     }
