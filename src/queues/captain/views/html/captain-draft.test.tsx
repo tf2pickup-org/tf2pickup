@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 import { parse, type HTMLParser, type HTMLElement } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
+import type { CaptainDraftModel } from '../../../../database/models/captain-draft.model'
 import type { CaptainPoolModel } from '../../../../database/models/captain-pool.model'
 import type { QueueId } from '../../../../database/models/queue.model'
 import { QueueState } from '../../../../database/models/queue-state.model'
@@ -128,5 +129,30 @@ describe('CaptainDraft', () => {
     const view = poolView(QueueState.drafting)
     const empty = { ...view, draft: { ...view.draft!, members: [] } }
     expect(columnOf(frame(empty), roles[5]!).text).toContain('No one left')
+  })
+
+  describe('next game card', () => {
+    const picked = id(5)
+    const pickedView = (state: QueueState): PoolView => {
+      const view = poolView(state)
+      const picks: CaptainDraftModel['picks'] = [
+        { team: Tf2Team.red, player: picked, role: keys[0]!, at: new Date(), how: 'chosen' },
+      ]
+      return { ...view, draft: { ...view.draft!, draft: { ...draft, picks } } }
+    }
+    const nextGame = (state: QueueState, viewer: SteamId64) =>
+      parse(String(CaptainDraft.nextGame({ view: pickedView(state), viewer }))).text
+
+    it("tells a locked player who wasn't picked once the picks are done", () => {
+      for (const state of [QueueState.banningMaps, QueueState.launching]) {
+        expect(nextGame(state, id(9))).toContain("You weren't picked")
+      }
+    })
+
+    it('keeps the draft text for captains, picked players and while picking', () => {
+      expect(nextGame(QueueState.banningMaps, id(0))).toContain("You're in the current draft.")
+      expect(nextGame(QueueState.banningMaps, picked)).toContain("You're in the current draft.")
+      expect(nextGame(QueueState.drafting, id(9))).toContain("You're in the current draft.")
+    })
   })
 })

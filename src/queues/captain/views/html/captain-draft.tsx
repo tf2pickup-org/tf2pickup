@@ -311,10 +311,14 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
   const lockedViewer = view.members.some(
     member => member.locked && member.player.steamId === props.viewer,
   )
-  const active =
-    view.state === QueueState.drafting ||
-    view.state === QueueState.banningMaps ||
-    view.state === QueueState.launching
+  const picksDone = view.state === QueueState.banningMaps || view.state === QueueState.launching
+  const active = view.state === QueueState.drafting || picksDone
+  const draft = view.draft?.draft
+  const inGame =
+    props.viewer !== undefined &&
+    (draft?.red === props.viewer ||
+      draft?.blu === props.viewer ||
+      draft?.picks.some(pick => pick.player === props.viewer) === true)
   return (
     <div id="captain-next-game" class="empty:hidden">
       {active ? (
@@ -323,9 +327,11 @@ CaptainDraft.nextGame = function CaptainNextGame(props: {
             Next game
           </h2>
           <p class="text-sm text-zinc-400">
-            {lockedViewer
-              ? "You're in the current draft."
-              : "Sign up now — you'll be in the queue as soon as this draft ends."}
+            {lockedViewer && picksDone && draft !== undefined && !inGame
+              ? "You weren't picked for this game. Your sign-ups stay for the next one."
+              : lockedViewer
+                ? "You're in the current draft."
+                : "Sign up now — you'll be in the queue as soon as this draft ends."}
           </p>
         </div>
       ) : (
