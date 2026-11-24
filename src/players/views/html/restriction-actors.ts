@@ -9,6 +9,10 @@ export async function restrictionActors(
   const steamIds = [
     ...new Set(restrictions.map(r => r.actor).filter((a): a is SteamId64 => !isBot(a))),
   ]
+  if (steamIds.length === 0) {
+    return new Map()
+  }
+
   const actors = await collections.players
     .find<Pick<PlayerModel, 'name' | 'steamId'>>(
       { steamId: { $in: steamIds } },
