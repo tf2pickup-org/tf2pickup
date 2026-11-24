@@ -27,7 +27,14 @@ export async function mirrorBans(steamId: SteamId64, etf2lBans: NonNullable<Etf2
 
     if (!local) {
       if (end > now && shouldMirrorBan(etf2lBan.reason, reasons)) {
-        await players.addBan({ player: steamId, admin: 'bot', start, end, reason, source: 'etf2l' })
+        await players.restrictions.add('ban', {
+          player: steamId,
+          actor: 'bot',
+          start,
+          end,
+          reason,
+          source: 'etf2l',
+        })
       }
       continue
     }
@@ -44,7 +51,8 @@ export async function mirrorBans(steamId: SteamId64, etf2lBans: NonNullable<Etf2
       steamId,
       before => {
         const current = before.bans?.find(isThisBan)
-        wasActive = !current?.revokedLocally && (current?.end ?? now) > now
+        wasActive =
+          !!current && !current.revokedLocally && players.restrictions.isActive(current, now)
         return { $set: { 'bans.$[ban].end': end, 'bans.$[ban].reason': reason } }
       },
       {

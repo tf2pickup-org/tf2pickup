@@ -10,7 +10,9 @@ const addBan = vi.hoisted(() => vi.fn())
 vi.mock('../configuration', () => ({ configuration: { get } }))
 vi.mock('../logger', () => ({ logger: { debug: vi.fn(), info: vi.fn() } }))
 vi.mock('../players', () => ({ players: { bySteamId, update } }))
-vi.mock('../players/add-ban', () => ({ addBan }))
+vi.mock('../players/restrictions/add', () => ({
+  add: (_kind: string, props: unknown) => addBan(props),
+}))
 
 import { applyEscalatingCooldown } from './apply-escalating-cooldown'
 
@@ -49,7 +51,7 @@ describe('applyEscalatingCooldown()', () => {
     expect(addBan).toHaveBeenCalledWith(
       expect.objectContaining({
         player: steamId,
-        admin: 'bot',
+        actor: 'bot',
         reason: 'Cancelled a captain draft',
       }),
     )

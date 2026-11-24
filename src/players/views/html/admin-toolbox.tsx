@@ -184,13 +184,9 @@ async function SkillForm(props: {
 
 // Active bans and chat mutes, latest ending first.
 function Restrictions(props: { player: Pick<PlayerModel, 'bans' | 'chatMutes'> }) {
-  const now = new Date()
-  const active = (restrictions: PlayerBan[] | undefined) =>
-    (restrictions ?? [])
-      .filter(restriction => restriction.end > now)
-      .sort((a, b) => b.end.getTime() - a.end.getTime())
-  const bans = active(props.player.bans)
-  const chatMutes = active(props.player.chatMutes)
+  const latestEndFirst = (a: PlayerBan, b: PlayerBan) => b.end.getTime() - a.end.getTime()
+  const bans = players.restrictions.active(props.player, 'ban').sort(latestEndFirst)
+  const chatMutes = players.restrictions.active(props.player, 'chatMute').sort(latestEndFirst)
 
   if (bans.length === 0 && chatMutes.length === 0) {
     return <p class="admin-area-muted">No active bans or chat mutes</p>

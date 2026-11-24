@@ -13,7 +13,10 @@ import { isDeletedUser, type SteamId64 } from '../../../shared/types/steam-id-64
 export async function Chat(props: { user?: User | undefined }) {
   const isAdmin = props.user?.player.roles.includes(PlayerRole.admin) ?? false
   const isMuted = props.user
-    ? players.hasActiveChatMute(await players.bySteamId(props.user.player.steamId, ['chatMutes']))
+    ? players.restrictions.active(
+        await players.bySteamId(props.user.player.steamId, ['chatMutes']),
+        'chatMute',
+      ).length > 0
     : false
   return (
     <div class="chat" id="chat" data-is-admin={isAdmin ? '' : undefined}>

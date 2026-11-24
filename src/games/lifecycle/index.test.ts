@@ -47,7 +47,7 @@ vi.mock('../../logger', () => ({ logger: { info: vi.fn(), trace: vi.fn() } }))
 
 const mockPlayersUpdate = vi.hoisted(() => vi.fn())
 vi.mock('../../players', () => ({
-  players: { update: mockPlayersUpdate, hasActiveBan: () => false },
+  players: { update: mockPlayersUpdate, restrictions: { active: () => [] } },
 }))
 vi.mock('../../queues', () => ({ queues: { kick: vi.fn() } }))
 

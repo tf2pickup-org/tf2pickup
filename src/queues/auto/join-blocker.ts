@@ -3,7 +3,7 @@ import type { QueueModel } from '../../database/models/queue.model'
 import type { QueueSlotModel } from '../../database/models/queue-slot.model'
 import { gamemodeConfigs } from '../../gamemodes/configs'
 import { effectiveSkill } from '../../players/effective-skill'
-import { hasActiveBan } from '../../players/has-active-ban'
+import { active } from '../../players/restrictions/active'
 
 export type JoinBlockerPlayer = Pick<
   PlayerModel,
@@ -24,7 +24,7 @@ export function joinBlocker(
     return 'You have not accepted the rules'
   }
 
-  if (hasActiveBan(player)) {
+  if (active(player, 'ban').length > 0) {
     return 'You have active bans'
   }
 

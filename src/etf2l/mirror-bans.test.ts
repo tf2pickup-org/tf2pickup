@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { addDays, getUnixTime, subDays } from 'date-fns'
 import type { PlayerBan } from '../database/models/player.model'
-import { hasActiveBan } from '../players/has-active-ban'
+import { active } from '../players/restrictions/active'
+import { isActive } from '../players/restrictions/is-active'
 
 interface Update {
   $set: Record<string, unknown>
@@ -42,9 +43,12 @@ const { config, store, players, events, activityLog } = vi.hoisted(() => {
         store.afterSnapshot?.()
         return snapshot
       }),
-      addBan: vi.fn(async ({ admin, ...ban }: Omit<PlayerBan, 'actor'> & { admin: 'bot' }) => {
-        store.bans.push({ actor: admin, ...ban })
-      }),
+      restrictions: {
+        add: vi.fn(async (_kind: 'ban', { actor, start, end, reason, source }: PlayerBan) => {
+          store.bans.push({ actor, start, end, reason, ...(source ? { source } : {}) })
+        }),
+        isActive: (ban: PlayerBan, now?: Date) => isActive(ban, now),
+      },
       update: vi.fn(
         async (
           _steamId: string,
@@ -97,9 +101,9 @@ describe('mirrorBans', () => {
     await mirrorBans(steamId, [etf2lBan('Cheating', future)])
     await mirrorBans(steamId, [etf2lBan('Cheating', future)])
 
-    expect(players.addBan).toHaveBeenCalledExactlyOnceWith({
+    expect(players.restrictions.add).toHaveBeenCalledExactlyOnceWith('ban', {
       player: steamId,
-      admin: 'bot',
+      actor: 'bot',
       start,
       end: future,
       reason: 'ETF2L.org: Cheating',
@@ -114,7 +118,7 @@ describe('mirrorBans', () => {
       etf2lBan('Cheating', subDays(new Date(), 1), subDays(new Date(), 10)),
       etf2lBan('Toxicity', future),
     ])
-    expect(players.addBan).not.toHaveBeenCalled()
+    expect(players.restrictions.add).not.toHaveBeenCalled()
     expect(players.update).not.toHaveBeenCalled()
   })
 
@@ -122,7 +126,7 @@ describe('mirrorBans', () => {
     config.set('players.etf2l_ban_sync', false)
     await mirrorBans(steamId, [etf2lBan('Cheating', future)])
     expect(players.bySteamId).not.toHaveBeenCalled()
-    expect(players.addBan).not.toHaveBeenCalled()
+    expect(players.restrictions.add).not.toHaveBeenCalled()
   })
 
   describe('with an existing mirrored ban', () => {
@@ -143,7 +147,7 @@ describe('mirrorBans', () => {
 
       expect(players.update).toHaveBeenCalledOnce()
       expect(store.bans[0]).toMatchObject({ end: revertedEnd, reason: 'ETF2L.org: Reverted' })
-      expect(hasActiveBan(store)).toBe(false)
+      expect(active(store, 'ban')).toHaveLength(0)
       expect(events.emit).toHaveBeenCalledExactlyOnceWith('player/ban:revoked', {
         player: steamId,
         ban: store.bans[0],
@@ -171,7 +175,7 @@ describe('mirrorBans', () => {
       await mirrorBans(steamId, [etf2lBan('Cheating', addDays(future, 10))])
       expect(store.bans[0]!.end).toEqual(revokedAt)
       expect(players.update).not.toHaveBeenCalled()
-      expect(players.addBan).not.toHaveBeenCalled()
+      expect(players.restrictions.add).not.toHaveBeenCalled()
     })
 
     it('does not override an admin revocation that lands after the snapshot', async () => {
@@ -197,6 +201,6 @@ describe('mirrorBans', () => {
     store.bans.push({ actor: 'bot', start, end: future, reason: 'local' })
     await mirrorBans(steamId, [etf2lBan('Reverted', subDays(start, 1))])
     expect(store.bans[0]).toMatchObject({ end: future, reason: 'local' })
-    expect(players.addBan).not.toHaveBeenCalled()
+    expect(players.restrictions.add).not.toHaveBeenCalled()
   })
 })

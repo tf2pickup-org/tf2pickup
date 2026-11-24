@@ -4,12 +4,13 @@ import { collections } from '../database/collections'
 import { events } from '../events'
 import { getStreams } from './get-streams'
 import type { PlayerModel } from '../database/models/player.model'
+import { activeFilter } from '../players/restrictions/active-filter'
 
 export async function refreshStreams() {
   const userIds = (
     await collections.players
       .find<PickDeep<PlayerModel, 'twitchTvProfile.userId'>>(
-        { twitchTvProfile: { $exists: true }, 'bans.end': { $not: { $gt: new Date() } } },
+        { twitchTvProfile: { $exists: true }, $nor: [activeFilter('ban')] },
         { projection: { 'twitchTvProfile.userId': 1 } },
       )
       .toArray()

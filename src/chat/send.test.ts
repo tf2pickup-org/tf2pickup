@@ -12,7 +12,7 @@ vi.mock('../database/collections', () => ({
   },
 }))
 vi.mock('../players', () => ({
-  players: { bySteamId: vi.fn().mockResolvedValue({}), hasActiveChatMute: () => false },
+  players: { bySteamId: vi.fn().mockResolvedValue({}), restrictions: { active: () => [] } },
 }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
 vi.mock('./resolve-mentions', () => ({

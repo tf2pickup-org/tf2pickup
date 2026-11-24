@@ -13,7 +13,9 @@ vi.mock('../logger', () => ({ logger: { trace: vi.fn(), debug: vi.fn(), info: vi
 vi.mock('../players', () => ({
   players: { bySteamId: mockBySteamId, update: mockPlayersUpdate },
 }))
-vi.mock('../players/add-ban', () => ({ addBan: mockAddBan }))
+vi.mock('../players/restrictions/add', () => ({
+  add: (_kind: string, props: unknown) => mockAddBan(props),
+}))
 
 import { applyCooldown } from './apply-cooldown'
 
@@ -32,7 +34,7 @@ describe('applyCooldown()', () => {
     expect(mockAddBan).toHaveBeenCalledWith(
       expect.objectContaining({
         player: steamId,
-        admin: 'bot',
+        actor: 'bot',
         reason: 'Not connecting to game #18 in time',
       }),
     )
