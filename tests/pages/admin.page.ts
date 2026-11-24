@@ -244,7 +244,7 @@ export class AdminPage {
   }
 
   async configureDefaultSkill(gamemode: string, gameClass: string, skill: number) {
-    await this.page.goto('/admin/player-restrictions')
+    await this.page.goto('/admin/skill')
     await this.page.getByLabel(`Default ${gamemode} skill on ${gameClass}`).fill(skill.toString())
     await this.page.getByRole('button', { name: 'Save' }).click()
     await expect(this.page.getByText('Configuration saved')).toBeVisible()

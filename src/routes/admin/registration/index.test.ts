@@ -10,7 +10,7 @@ import { configuration } from '../../../configuration'
 import { getDefault } from '../../../configuration/get-default'
 import { PlayerRole } from '../../../database/models/player.model'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import playerRestrictionsRoutes from './index'
+import registrationRoutes from './index'
 
 const { saved } = vi.hoisted(() => ({ saved: new Map<string, unknown>() }))
 
@@ -21,6 +21,7 @@ vi.mock('../../../configuration', async () => {
       get: vi.fn((key: Parameters<typeof getDefault>[0]) =>
         Promise.resolve(saved.has(key) ? saved.get(key) : getDefault(key)),
       ),
+      getDefault,
       set: vi.fn((key: string, value: unknown) => {
         saved.set(key, value)
         return Promise.resolve()
@@ -38,7 +39,7 @@ vi.mock('@fastify/request-context', () => ({ requestContext: { set: vi.fn() } })
 
 const actor = steamId64.parse('76561198074409147')
 
-describe('player restrictions ETF2L ban sync settings', () => {
+describe('registration ETF2L ban sync settings', () => {
   const app = fastify()
 
   beforeAll(async () => {
@@ -57,7 +58,7 @@ describe('player restrictions ETF2L ban sync settings', () => {
         },
       }
     })
-    await app.register(playerRestrictionsRoutes)
+    await app.register(registrationRoutes)
     await app.ready()
   })
 
@@ -79,7 +80,6 @@ describe('player restrictions ETF2L ban sync settings', () => {
         ...(enabled ? { etf2lBanSync: 'on' } : {}),
         etf2lBanSyncReasons: reasons,
         minimumInGameHours: '0',
-        skillStep: '1',
       }).toString(),
     })
   }

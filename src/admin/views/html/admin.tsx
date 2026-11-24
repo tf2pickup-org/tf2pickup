@@ -20,9 +20,9 @@ import {
   IconSectionSign,
   IconServer,
   IconSpy,
-  IconTable,
+  IconBan,
+  IconChartArrowsVertical,
   IconTrash,
-  IconUserExclamation,
   IconUserPlus,
 } from '../../../html/components/icons'
 import { NavigationBar } from '../../../html/components/navigation-bar'
@@ -36,17 +36,9 @@ import { requestContext } from '@fastify/request-context'
 
 const adminPages = {
   queues: { title: 'Queues', icon: IconDeviceGamepad, section: 'Queues' },
-  'player-restrictions': {
-    title: 'Player restrictions',
-    icon: IconUserExclamation,
-    section: 'Players',
-  },
-  'bypass-registration-restrictions': {
-    title: 'Bypass restrictions',
-    icon: IconUserPlus,
-    section: 'Players',
-  },
-  'skill-import-export': { title: 'Skill import/export', icon: IconTable, section: 'Players' },
+  registration: { title: 'Registration', icon: IconUserPlus, section: 'Players' },
+  skill: { title: 'Skill', icon: IconChartArrowsVertical, section: 'Players' },
+  penalties: { title: 'Penalties', icon: IconBan, section: 'Players' },
   games: { title: 'Games', icon: IconAdjustments, section: 'Games' },
   'game-servers': { title: 'Game servers', icon: IconServer, section: 'Games' },
   'voice-server': { title: 'Voice server', icon: IconHeadset, section: 'Games' },

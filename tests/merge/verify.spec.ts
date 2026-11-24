@@ -79,7 +79,7 @@ authUsers('the incoming queue keeps its map pool', async ({ users }) => {
 
 authUsers("the incoming instance's settings apply to its gamemode", async ({ users }) => {
   const admin = await users.getAdmin().page()
-  await admin.goto('/admin/player-restrictions')
+  await admin.goto('/admin/skill')
   await expect(admin.getByLabel('Default 9v9 skill on spy')).toHaveValue(
     incomingDefaultSpySkill.toString(),
   )

@@ -1,12 +1,11 @@
 import { PlayerRole } from '../../../database/models/player.model'
-import { BypassRegistrationRestrictionsPage } from '../../../admin/bypass-registration-restrictions/views/html/bypass-registration-restrictions.page'
 import { z } from 'zod'
 import { collections } from '../../../database/collections'
 import { steamId64 } from '../../../shared/schemas/steam-id-64'
-import { requestContext } from '@fastify/request-context'
 import { configuration } from '../../../configuration'
-import { BypassedSteamIds } from '../../../admin/bypass-registration-restrictions/views/html/bypassed-steam-ids'
+import { BypassedSteamIds } from '../../../admin/registration/views/html/bypassed-steam-ids'
 import { routes } from '../../../utils/routes'
+import { FlashMessage } from '../../../html/components/flash-message'
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export default routes(async app => {
@@ -19,7 +18,7 @@ export default routes(async app => {
         },
       },
       async (_request, reply) => {
-        return reply.html(BypassRegistrationRestrictionsPage())
+        await reply.redirect('/admin/registration', 301)
       },
     )
     .post(
@@ -34,17 +33,27 @@ export default routes(async app => {
       },
       async (request, reply) => {
         const { steamId } = request.body
+        // with htmx only the list is updated, so unsaved edits elsewhere on the page survive
+        const respond = async (type: 'success' | 'error', message: string) => {
+          if (request.isHtmx()) {
+            return reply.html(
+              <>
+                <BypassedSteamIds />
+                <FlashMessage type={type} message={message} />
+              </>,
+            )
+          }
+          request.flash(type, message)
+          return reply.redirect('/admin/registration')
+        }
 
-        const isRegistered = (await collections.players.countDocuments({ steamId })) > 0
-        if (isRegistered) {
-          requestContext.set('messages', { error: ['Player is already registered'] })
-          return reply.html(BypassRegistrationRestrictionsPage())
+        if ((await collections.players.countDocuments({ steamId })) > 0) {
+          return respond('error', 'Player is already registered')
         }
 
         const config = await configuration.get('players.bypass_registration_restrictions')
         if (config.some(c => c === steamId)) {
-          requestContext.set('messages', { error: ['This Steam ID is already added'] })
-          return reply.html(BypassRegistrationRestrictionsPage())
+          return respond('error', 'This Steam ID is already added')
         }
 
         await configuration.set(
@@ -52,8 +61,7 @@ export default routes(async app => {
           [...config, steamId],
           request.user!.player.steamId,
         )
-        requestContext.set('messages', { success: ['Steam ID added'] })
-        return reply.html(BypassRegistrationRestrictionsPage())
+        return respond('success', 'Steam ID added')
       },
     )
     .delete(

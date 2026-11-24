@@ -119,7 +119,7 @@ test('the elo page switches between gamemodes @multi-queue', async ({ users }) =
 
 test('the default skill has a row for each gamemode in use @multi-queue', async ({ users }) => {
   const page = await users.getAdmin().page()
-  await page.goto('/admin/player-restrictions')
+  await page.goto('/admin/skill')
   await expect(page.getByLabel('Default 6v6 skill on scout')).toBeVisible()
   await expect(page.getByLabel('Default 9v9 skill on sniper')).toBeVisible()
 })

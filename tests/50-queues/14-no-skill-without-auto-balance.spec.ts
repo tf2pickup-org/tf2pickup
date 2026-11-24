@@ -27,7 +27,7 @@ test('players have no ultiduo skill @multi-queue', async ({ users }) => {
   const page = await users.getAdmin().page()
   const player = users.byName('MoonMan')
 
-  await page.goto('/admin/player-restrictions')
+  await page.goto('/admin/skill')
   await expect(page.getByLabel('Default 6v6 skill on scout')).toBeVisible()
   await expect(page.getByLabel(/^Default ultiduo skill on/)).toHaveCount(0)
 

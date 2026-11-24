@@ -16,7 +16,7 @@ export function PreviewPage({ analysis }: PreviewPageProps) {
     analysis.futurePlayers.length
 
   return (
-    <Admin activePage="skill-import-export">
+    <Admin activePage="skill">
       <div class="admin-panel-set flex flex-col gap-6">
         <header class="flex flex-row items-center justify-between">
           <h2 class="text-lg font-bold">Import preview</h2>
