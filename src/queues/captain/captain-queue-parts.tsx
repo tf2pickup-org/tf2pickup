@@ -32,7 +32,6 @@ export async function captainQueueParts(queue: QueueModel, parts: QueueParts): P
         () => CaptainCounters({ queue, view }),
         () => CaptainReadyStatus({ view }),
         async ({ actor }) => CaptainPool.volunteers({ queue, view, actor: await actor() }),
-        () => CaptainPool.bottleneck({ view }),
         ...captainRoles(queue.gamemode).map(
           (role): Fragment =>
             async ({ actor }) =>

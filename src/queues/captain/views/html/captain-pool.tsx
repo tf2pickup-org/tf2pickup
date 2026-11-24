@@ -42,7 +42,6 @@ export function CaptainPool(props: PoolProps) {
   return (
     <form id="captain-pool" class="flex flex-col gap-4" ws-send data-disable-when-offline>
       <CaptainVolunteers {...props} />
-      <CaptainBottleneck view={props.view} />
       <div class="grid grid-cols-2 gap-4 lg:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
         {roles.map(role => (
           <CaptainRoleColumn {...props} role={role} />
@@ -82,15 +81,6 @@ function CaptainVolunteers(props: PoolProps) {
         </a>
       ))}
     </section>
-  )
-}
-
-function CaptainBottleneck(props: { view: PoolView }) {
-  const { readiness } = props.view
-  return (
-    <p id="captain-bottleneck" class="text-sm text-zinc-400 empty:hidden" safe>
-      {readiness.full ? '' : (readiness.bottleneck ?? 'missing: captain volunteers')}
-    </p>
   )
 }
 
@@ -258,5 +248,4 @@ function RoleCheckbox(props: {
 }
 
 CaptainPool.volunteers = CaptainVolunteers
-CaptainPool.bottleneck = CaptainBottleneck
 CaptainPool.roleColumn = CaptainRoleColumn

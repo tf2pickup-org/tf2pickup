@@ -87,7 +87,7 @@ describe('captain pool matching', () => {
     expect(roleKey(sixRoles[2]!)).toBe('soldier:pocket')
   })
 
-  it('reports the missing medic in an oversized 13-player pool', () => {
+  it('leaves the medic uncovered in an oversized 13-player pool', () => {
     const keys = sixRoles.map(roleKey)
     const pool = Array.from({ length: 12 }, (_, id) => member(id, keys.slice(0, -1), id < 2))
     pool.push(member(12, [keys[5]!]))
@@ -97,35 +97,7 @@ describe('captain pool matching', () => {
       requiredPlayers: 12,
       coveredRoles: 5,
       volunteers: 2,
-      missing: [{ role: 'medic:medic', name: 'medic', count: 1 }],
-      bottleneck: 'missing: 1 medic',
     })
-  })
-
-  it('qualifies shared role names by class, even when only one pocket role is missing', () => {
-    const keys = sixRoles.map(roleKey)
-    const pool = keys.flatMap((key, index) =>
-      Array.from({ length: index === 0 ? 1 : index === 2 ? 0 : 2 }, (_, copy) =>
-        member(index * 2 + copy, [key]),
-      ),
-    )
-    expect(poolReadiness(sixRoles, pool).bottleneck).toBe(
-      'missing: 1 pocket scout, 2 pocket soldier',
-    )
-    pool.push(member(99, [keys[0]!]))
-    expect(poolReadiness(sixRoles, pool).bottleneck).toBe('missing: 2 pocket soldier')
-  })
-
-  it('qualifies flank and roamer as well as pocket in 6v6 text', () => {
-    expect(poolReadiness(sixRoles, []).bottleneck).toBe(
-      'missing: 2 pocket scout, 2 flank scout, 2 pocket soldier, 2 roamer soldier, 2 demoman, 2 medic',
-    )
-  })
-
-  it('keeps unique 9v9 class names bare in bottleneck text', () => {
-    expect(poolReadiness(nineRoles, []).bottleneck).toBe(
-      'missing: 2 scout, 2 soldier, 2 pyro, 2 demoman, 2 heavy, 2 engineer, 2 medic, 2 sniper, 2 spy',
-    )
   })
 
   it('requires volunteers who can actually be seated', () => {
@@ -187,7 +159,6 @@ describe('captain pool matching', () => {
     expect(poolReadiness(smallRoles, [])).toMatchObject({
       full: false,
       coveredRoles: 0,
-      bottleneck: 'missing: 2 pocket scout, 2 flank scout',
     })
     expect(poolReadiness([], []).full).toBe(false)
   })

@@ -1,6 +1,5 @@
 import { matchRoleSlots } from './match-role-slots'
 import { roleKey } from './role-key'
-import { roleLabel } from './role-label'
 import { roleSlots } from './role-slots'
 import type { CaptainRole } from './types/captain-role'
 import type { PoolPlayer } from './types/pool-player'
@@ -15,10 +14,9 @@ export function poolReadiness(roles: readonly CaptainRole[], pool: readonly Pool
     ...pool.filter(member => !member.volunteer),
   ])!
   const seated = new Set(matching.map(({ player }) => player))
-  const missing = roles.flatMap(role => {
-    const count = 2 - matching.filter(slot => slot.role === roleKey(role)).length
-    return count > 0 ? [{ role: roleKey(role), name: roleLabel(role), count }] : []
-  })
+  const coveredRoles = roles.filter(
+    role => matching.filter(slot => slot.role === roleKey(role)).length === 2,
+  ).length
   return {
     full:
       roles.length > 0 &&
@@ -26,11 +24,7 @@ export function poolReadiness(roles: readonly CaptainRole[], pool: readonly Pool
       volunteers.filter(member => seated.has(member.player.steamId)).length >= 2,
     players: pool.length,
     requiredPlayers: roles.length * 2,
-    coveredRoles: roles.length - missing.length,
+    coveredRoles,
     volunteers: volunteers.length,
-    missing,
-    bottleneck: missing.length
-      ? `missing: ${missing.map(({ name, count }) => `${count} ${name}`).join(', ')}`
-      : null,
   }
 }

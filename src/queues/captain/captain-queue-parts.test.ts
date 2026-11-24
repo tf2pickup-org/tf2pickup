@@ -27,7 +27,6 @@ vi.mock('../views/html/queue-switcher', () => ({
 vi.mock('./views/html/captain-pool', () => ({
   CaptainPool: Object.assign(() => '<form id="captain-pool"></form>', {
     volunteers: () => '<div id="captain-volunteers"></div>',
-    bottleneck: () => '<div id="captain-bottleneck"></div>',
     roleColumn: (props: { role: { gameClass: string; name: string } }) =>
       `<div id="captain-pool-role-${props.role.gameClass}-${props.role.name}"></div>`,
   }),
