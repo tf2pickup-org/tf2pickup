@@ -15,6 +15,10 @@ describe('durationUnit.split', () => {
       value: 30,
       unit: 'minutes',
     })
+    expect(durationUnit.split(milliseconds({ seconds: 90 }))).toEqual({
+      value: 90,
+      unit: 'seconds',
+    })
     expect(durationUnit.split(milliseconds({ hours: 6 }))).toEqual({ value: 6, unit: 'hours' })
     expect(durationUnit.split(milliseconds({ weeks: 2 }))).toEqual({ value: 2, unit: 'weeks' })
     expect(durationUnit.split(milliseconds({ months: 1 }))).toEqual({ value: 1, unit: 'months' })
@@ -26,21 +30,34 @@ describe('durationUnit.split', () => {
     expect(durationUnit.split(milliseconds({ months: 3 }))).toEqual({ value: 3, unit: 'months' })
   })
 
+  it('round-trips date-fns month durations exactly', () => {
+    const original = milliseconds({ months: 6 })
+    const { value, unit } = durationUnit.split(original)
+    expect(durationUnit.toMs(value, unit)).toBe(original)
+  })
+
   it('round-trips back to the original milliseconds', () => {
     const original = milliseconds({ days: 2 })
     const { value, unit } = durationUnit.split(original)
     expect(durationUnit.toMs(value, unit)).toBe(original)
   })
 
-  it('falls back to minutes when nothing divides evenly', () => {
-    expect(durationUnit.split(milliseconds({ minutes: 90 }))).toEqual({
-      value: 90,
-      unit: 'minutes',
+  it('does not round a few seconds off to a whole minute', () => {
+    expect(durationUnit.split(milliseconds({ seconds: 61 }))).toEqual({
+      value: 61,
+      unit: 'seconds',
+    })
+  })
+
+  it('keeps a duration no whole unit fits in fractional seconds', () => {
+    expect(durationUnit.split(milliseconds({ seconds: 10.5 }))).toEqual({
+      value: 10.5,
+      unit: 'seconds',
     })
   })
 
   it('handles a zero duration', () => {
-    expect(durationUnit.split(0)).toEqual({ value: 0, unit: 'minutes' })
+    expect(durationUnit.split(0)).toEqual({ value: 0, unit: 'seconds' })
   })
 })
 

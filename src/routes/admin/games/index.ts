@@ -4,7 +4,6 @@ import { CooldownLevelEntry, GamesPage } from '../../../admin/games/views/html/g
 import { z } from 'zod'
 import { LogsTfUploadMethod } from '../../../shared/types/logs-tf-upload-method'
 import { requestContext } from '@fastify/request-context'
-import { secondsToMilliseconds } from 'date-fns'
 import { routes } from '../../../utils/routes'
 import { configuration } from '../../../configuration'
 import { durationUnit } from '../../../admin/games/duration-unit'
@@ -39,10 +38,17 @@ export default routes(async app => {
         schema: {
           body: z
             .looseObject({
-              whitelistId: z.string(),
-              joinGameserverTimeout: z.coerce.number(),
-              rejoinGameserverTimeout: z.coerce.number(),
-              executeExtraCommands: z.string().transform(value => value.split('\n')),
+              whitelistId: z
+                .string()
+                .trim()
+                .transform(value => value || null),
+              joinGameserverTimeout: z.coerce.number().min(0),
+              joinGameserverTimeoutUnit: z.enum(durationUnit.all),
+              rejoinGameserverTimeout: z.coerce.number().min(0),
+              rejoinGameserverTimeoutUnit: z.enum(durationUnit.all),
+              executeExtraCommands: z
+                .string()
+                .transform(value => value.split('\n').filter(line => line.trim() !== '')),
               logsTfUploadMethod: z.enum(LogsTfUploadMethod),
               'banLength[]': formArray(z.coerce.number().min(0)),
               'banLengthUnit[]': formArray(z.enum(durationUnit.all)),
@@ -78,12 +84,18 @@ export default routes(async app => {
           configuration.set('games.gamemode_whitelist_ids', gamemodeWhitelistIds, actor),
           configuration.set(
             'games.join_gameserver_timeout',
-            secondsToMilliseconds(request.body.joinGameserverTimeout),
+            durationUnit.toMs(
+              request.body.joinGameserverTimeout,
+              request.body.joinGameserverTimeoutUnit,
+            ),
             actor,
           ),
           configuration.set(
             'games.rejoin_gameserver_timeout',
-            secondsToMilliseconds(request.body.rejoinGameserverTimeout),
+            durationUnit.toMs(
+              request.body.rejoinGameserverTimeout,
+              request.body.rejoinGameserverTimeoutUnit,
+            ),
             actor,
           ),
           configuration.set(
