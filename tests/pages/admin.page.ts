@@ -265,7 +265,7 @@ export class AdminPage {
   }
 
   async mapPool(queue = defaultQueueSlug()): Promise<{ name: string; execConfig: string }[]> {
-    await this.page.goto(`/admin/map-pool?queue=${queue}`)
+    await this.page.goto(`/admin/queues/${queue}/maps`)
     const names = await this.page.getByLabel('Map name').all()
     const configs = await this.page.getByLabel('Map config').all()
     return await Promise.all(
@@ -277,7 +277,7 @@ export class AdminPage {
   }
 
   async setMapPool(maps: { name: string; execConfig: string }[], queue = defaultQueueSlug()) {
-    await this.page.goto(`/admin/map-pool?queue=${queue}`)
+    await this.page.goto(`/admin/queues/${queue}/maps`)
     const removeButtons = this.page.getByRole('button', { name: 'Remove map' })
     while ((await removeButtons.count()) > 0) {
       await removeButtons.first().click()

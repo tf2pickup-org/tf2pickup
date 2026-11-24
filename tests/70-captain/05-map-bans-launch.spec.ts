@@ -39,13 +39,11 @@ test('map bans launch the drafted teams, show crowns, and rate captain ladders o
     const adminPage = await users.getAdmin().page()
     expect(
       (
-        await adminPage.request.post(`/admin/queues/${slug}`, {
+        await adminPage.request.post(`/admin/queues/${slug}/timers`, {
           form: {
-            name: slug,
             readyUpTimeout: '40',
             readyStateTimeout: '60',
             pickTimeout: '40',
-            mapCooldown: '2',
           },
         })
       ).ok(),

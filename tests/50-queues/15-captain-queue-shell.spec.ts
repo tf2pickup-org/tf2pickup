@@ -11,9 +11,11 @@ queues('creates a 6v6 captain queue @multi-queue', async ({ queues, users }) => 
   await expect(admin.row(slug)).toContainText('captain')
 
   await page.goto(`/admin/queues/${slug}`)
-  await expect(page.getByText('Launch mode')).toBeVisible()
-  await expect(page.getByLabel('Pick timeout (seconds)')).toHaveValue('10')
+  await expect(page.getByText('6v6 · captain')).toBeVisible()
   await expect(page.getByLabel('Player skill threshold', { exact: true })).toHaveCount(0)
+
+  await page.goto(`/admin/queues/${slug}/timers`)
+  await expect(page.getByLabel('Pick timeout', { exact: true })).toHaveValue('10')
 })
 
 queues(

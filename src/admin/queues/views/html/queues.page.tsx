@@ -4,6 +4,12 @@ import { queues } from '../../../../queues'
 import { queuePresets } from '../../../../queues/presets'
 import { Gamemode } from '../../../../shared/types/gamemode'
 import { Admin } from '../../../views/html/admin'
+import { configuration } from '../../../../configuration'
+import { durationUnit } from '../../../games/duration-unit'
+import { DurationInput } from '../../../views/html/duration-input'
+import { SaveBar } from '../../../views/html/save-bar'
+import { SettingCard } from '../../../views/html/setting-card'
+import { SettingRow } from '../../../views/html/setting-row'
 
 export async function QueuesPage() {
   const all = await queues.list()
@@ -79,7 +85,33 @@ export async function QueuesPage() {
         </table>
       </div>
 
-      <form method="post" action="/admin/queues" class="admin-panel-set flex flex-col gap-2">
+      <form method="post" action="/admin/all-queues" class="mt-4" data-save-bar>
+        <SettingCard
+          title="All queues"
+          description="Applies to every queue. Anything specific to one queue is on that queue's page."
+        >
+          <SettingRow
+            label="Pre-ready-up duration"
+            for="preReadyUpTimeout"
+            configKey="queue.pre_ready_up_timeout"
+            defaultLabel={durationUnit.label(
+              configuration.getDefault('queue.pre_ready_up_timeout'),
+            )}
+            description="How long a player's pre-ready lasts. Pre-readied players are readied up automatically when the queue fills."
+          >
+            <DurationInput
+              id="preReadyUpTimeout"
+              name="preReadyUpTimeout"
+              valueMs={await configuration.get('queue.pre_ready_up_timeout')}
+              units={['seconds', 'minutes']}
+              min={1}
+            />
+          </SettingRow>
+        </SettingCard>
+        <SaveBar />
+      </form>
+
+      <form method="post" action="/admin/queues" class="admin-panel-set mt-4 flex flex-col gap-2">
         <h3 class="text-lg font-bold">Add queue</h3>
         <label for="template">Start from</label>
         <select id="template" name="template">

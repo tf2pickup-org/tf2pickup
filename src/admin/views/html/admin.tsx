@@ -11,13 +11,11 @@ import {
   IconAdjustments,
   IconAdjustmentsStar,
   IconAlertSquareRounded,
-  IconArrowsShuffle,
   IconBrandDiscord,
   IconDeviceGamepad,
   IconHeadset,
   IconHistory,
   IconLogs,
-  IconMapPinCog,
   IconMoodNerd,
   IconSectionSign,
   IconServer,
@@ -38,8 +36,6 @@ import { requestContext } from '@fastify/request-context'
 
 const adminPages = {
   queues: { title: 'Queues', icon: IconDeviceGamepad, section: 'Queues' },
-  'map-pool': { title: 'Map pool', icon: IconMapPinCog, section: 'Queues' },
-  'scramble-maps': { title: 'Scramble maps', icon: IconArrowsShuffle, section: 'Queues' },
   'player-restrictions': {
     title: 'Player restrictions',
     icon: IconUserExclamation,

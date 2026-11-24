@@ -139,13 +139,11 @@ test.describe('cancelling a captain draft @multi-queue', () => {
       enable: true,
     })
     const admin = await users.getAdmin().page()
-    await admin.request.post(`/admin/queues/${slug}`, {
+    await admin.request.post(`/admin/queues/${slug}/timers`, {
       form: {
-        name: slug,
         readyUpTimeout: '40',
         readyStateTimeout: '60',
         pickTimeout: '60',
-        mapCooldown: '2',
       },
     })
     const members = [...users].slice(0, 12)
