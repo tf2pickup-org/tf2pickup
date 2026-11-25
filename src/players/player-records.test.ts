@@ -60,6 +60,15 @@ it('ranks deathless games as infinite K/D, more kills first', async () => {
   expect(kd).toEqual({ value: Infinity, gameNumber: 3, kills: 12, deaths: 0 })
 })
 
+it('keeps the earlier game when finite K/D ratios tie', async () => {
+  distinct.mockResolvedValue([1, 2])
+  toArray.mockResolvedValue([log(1, { kills: 10, deaths: 5 }), log(2, { kills: 20, deaths: 10 })])
+
+  const { kd } = await playerRecords(steamId, Gamemode.sixes)
+
+  expect(kd).toEqual({ value: 2, gameNumber: 1, kills: 10, deaths: 5 })
+})
+
 it('has no records without stats', async () => {
   distinct.mockResolvedValue([1])
   toArray.mockResolvedValue([log(1, {})])

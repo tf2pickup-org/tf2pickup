@@ -75,7 +75,7 @@ export async function playerRecords(
       stats.kills > 0 &&
       (records.kd === undefined ||
         kd > records.kd.value ||
-        (kd === records.kd.value && stats.kills > records.kd.kills))
+        (kd === Infinity && records.kd.value === Infinity && stats.kills > records.kd.kills))
     ) {
       records.kd = { value: kd, gameNumber, kills: stats.kills, deaths: stats.deaths }
     }
