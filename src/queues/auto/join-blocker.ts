@@ -28,7 +28,7 @@ export function joinBlocker(
     return 'You have active bans'
   }
 
-  if (player.activeGame) {
+  if (player.activeGame !== undefined) {
     return 'You are already in a game'
   }
 

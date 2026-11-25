@@ -13,6 +13,7 @@ import type { Gamemode } from '../shared/types/gamemode'
 import { resolveWhitelistId } from '../queues/resolve-whitelist-id'
 import type { LaunchSnapshot } from '../queues/types/launch-snapshot'
 import { insertGame } from './insert-game'
+import { setActiveGame } from './set-active-game'
 import { pickTeams, type PlayerSlot } from './pick-teams'
 
 export async function create({
@@ -59,6 +60,11 @@ export async function create({
     ],
   })
 
+  await Promise.all(
+    game.slots.map(async ({ player }) => {
+      await setActiveGame(player, game.number)
+    }),
+  )
   if (inserted) events.emit('game:created', { game })
   events.emit('queue/game:created', { game })
   return { game, inserted }

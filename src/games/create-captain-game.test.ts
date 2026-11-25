@@ -4,11 +4,13 @@ import type { LaunchSnapshot } from '../queues/types/launch-snapshot'
 import { events } from '../events'
 import { insertGame } from './insert-game'
 import { createCaptainGame } from './create-captain-game'
+import { setActiveGame } from './set-active-game'
 
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
 vi.mock('../queues/resolve-whitelist-id', () => ({
   resolveWhitelistId: vi.fn().mockResolvedValue('42'),
 }))
+vi.mock('./set-active-game', () => ({ setActiveGame: vi.fn() }))
 vi.mock('./insert-game', () => ({ insertGame: vi.fn() }))
 // Any accidental balancing/skill lookup must fail this test.
 vi.mock('../players', () => ({
@@ -59,12 +61,17 @@ describe('createCaptainGame()', () => {
     expect(inserted.slots[0]).not.toHaveProperty('skill')
     expect(events.emit).toHaveBeenCalledWith('game:created', { game })
     expect(events.emit).toHaveBeenCalledWith('queue/game:created', { game })
+    expect(setActiveGame).toHaveBeenCalledExactlyOnceWith('red', 42)
+    expect(vi.mocked(setActiveGame).mock.invocationCallOrder[0]).toBeLessThan(
+      vi.mocked(events.emit).mock.invocationCallOrder[0]!,
+    )
   })
 
   it('reuses a previously created game without replaying global creation effects', async () => {
     vi.mocked(insertGame).mockResolvedValueOnce({ game, inserted: false } as never)
     expect(await createCaptainGame(snapshot)).toEqual({ game, inserted: false })
     expect(events.emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game })
+    expect(setActiveGame).toHaveBeenCalledExactlyOnceWith('red', 42)
   })
 
   it('propagates creation failures for pool restoration and refuses auto queues', async () => {

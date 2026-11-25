@@ -14,6 +14,7 @@ import { applyCooldown } from '../apply-cooldown'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
 import { mutex } from '../mutex'
 import { substituteBlocker } from '../substitute-blocker'
+import { setActiveGame } from '../set-active-game'
 import { update } from '../update'
 import { applyTransition } from './apply-transition'
 import { runningGameStates } from './running-game-states'
@@ -62,6 +63,12 @@ async function replaceExclusive({ number, replacee, replacement }: Replacement) 
       }
     }
 
+    // games transitions share this lock, so a running game stays running until applyTransition
+    const claimed = replacee !== replacement && runningGameStates.includes(game.state)
+    if (claimed) {
+      await setActiveGame(replacement, number)
+    }
+
     const newGame = await applyTransition(
       'replace',
       number,
@@ -92,6 +99,9 @@ async function replaceExclusive({ number, replacee, replacement }: Replacement) 
       },
     )
     if (!newGame) {
+      if (claimed) {
+        await setActiveGame(replacement, undefined)
+      }
       return undefined
     }
 
@@ -99,21 +109,13 @@ async function replaceExclusive({ number, replacee, replacement }: Replacement) 
       gameNumber: newGame.number,
       slotId: slot.id,
     })
-    // The player has been substituted. The writes below are best-effort side
-    // effects of that fact: a failure here (e.g. the queue is mid-launch) must
-    // not abort the substitution nor suppress the game:playerReplaced event.
-    try {
-      await players.update(replacement, { $set: { activeGame: newGame.number } })
-      events.emit('player/activeGame:updated', {
-        steamId: replacement,
-        activeGame: newGame.number,
-      })
-      if (replacee !== replacement) {
-        await players.update(replacee, { $unset: { activeGame: 1 } })
-        events.emit('player/activeGame:updated', { steamId: replacee, activeGame: undefined })
+    // best-effort: a failure must not undo the substitution; reconcileActiveGames() repairs it
+    if (replacee !== replacement) {
+      try {
+        await setActiveGame(replacee, undefined)
+      } catch (error) {
+        logError(error)
       }
-    } catch (error) {
-      logError(error)
     }
 
     return { newGame, slot }

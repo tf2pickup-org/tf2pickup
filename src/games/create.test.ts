@@ -7,13 +7,15 @@ import { events } from '../events'
 import { players } from '../players'
 import { Gamemode } from '../shared/types/gamemode'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
+import { events } from '../events'
 import { create } from './create'
+import { setActiveGame } from './set-active-game'
 
 vi.mock('../database/collections', () => ({
   collections: {
     games: {
       insertOne: vi.fn().mockResolvedValue({ insertedId: 'id' }),
-      findOne: vi.fn().mockResolvedValue({ number: 1 }),
+      findOne: vi.fn().mockResolvedValue({ number: 1, slots: [] }),
     },
   },
 }))
@@ -25,6 +27,7 @@ vi.mock('../queues/resolve-whitelist-id', () => ({
   resolveWhitelistId: vi.fn().mockResolvedValue(null),
 }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
+vi.mock('./set-active-game', () => ({ setActiveGame: vi.fn() }))
 
 function queueSlots(classes: Tf2ClassName[]) {
   return classes.map((gameClass, i) => ({
@@ -48,6 +51,27 @@ async function createdSlots(queue: QueueModel, slots: QueueSlotModel[], map: str
 afterEach(() => vi.clearAllMocks())
 
 describe('create()', () => {
+  it('seats every player before announcing the game', async () => {
+    vi.mocked(players.bySteamId).mockResolvedValue({ skill: {} } as never)
+    const game = { number: 7, slots: [{ player: 'a' }, { player: 'b' }] }
+    vi.mocked(collections.games.findOne)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(game as never)
+
+    await create(
+      queue(Gamemode.sixes),
+      queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
+      'cp_a',
+    )
+
+    expect(setActiveGame).toHaveBeenCalledWith('a', 7)
+    expect(setActiveGame).toHaveBeenCalledWith('b', 7)
+    expect(events.emit).toHaveBeenCalledWith('game:created', { game })
+    expect(vi.mocked(setActiveGame).mock.invocationCallOrder[1]).toBeLessThan(
+      vi.mocked(events.emit).mock.invocationCallOrder[0]!,
+    )
+  })
+
   it('balances an auto-balanced gamemode by skill', async () => {
     vi.mocked(players.bySteamId).mockImplementation(
       async steamId => ({ skill: { '6v6': { scout: Number(steamId) } } }) as never,

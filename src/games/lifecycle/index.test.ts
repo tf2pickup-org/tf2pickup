@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { GameState, type GameNumber } from '../../database/models/game.model'
 import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-slot.model'
-import { GameEndedReason } from '../../database/models/game-event.model'
+import { GameEndedReason, GameEventType } from '../../database/models/game-event.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { gameLifecycle } from '.'
 
@@ -51,6 +51,15 @@ vi.mock('../../players', () => ({
 }))
 vi.mock('../../queues', () => ({ queues: { kick: vi.fn() } }))
 
+const mockSchedule = vi.hoisted(() => vi.fn())
+vi.mock('../../tasks', () => ({ tasks: { schedule: mockSchedule } }))
+vi.mock('../../configuration', () => ({
+  configuration: { get: vi.fn(async () => ({ scout: 5000 })) },
+}))
+
+const mockLogError = vi.hoisted(() => vi.fn())
+vi.mock('../../utils/log-error', () => ({ logError: mockLogError }))
+
 const number = 1 as GameNumber
 const player = 'PLAYER' as SteamId64
 const replacement = 'REPLACEMENT' as SteamId64
@@ -60,6 +69,7 @@ function given(state: GameState, slotStatus = SlotStatus.active) {
     number,
     state,
     slots: [{ id: 1, player, status: slotStatus, gameClass: 'scout' }],
+    events: [],
   }
 }
 
@@ -102,6 +112,43 @@ describe('end', () => {
     given(GameState.started)
 
     expect((await gameLifecycle.end(number))?.state).toBe(GameState.ended)
+    expect(emitted('game:ended')).toHaveLength(1)
+  })
+
+  it('schedules freeing every player before announcing the end', async () => {
+    given(GameState.started)
+    await gameLifecycle.end(number)
+
+    expect(mockSchedule).toHaveBeenCalledExactlyOnceWith('games.freePlayer', 5000, { player })
+    expect(mockSchedule.mock.invocationCallOrder[0]).toBeLessThan(
+      mockEmit.mock.invocationCallOrder.at(-1)!,
+    )
+    expect(emitted('game:ended')).toHaveLength(1)
+  })
+
+  it('frees a substitute without the join cooldown', async () => {
+    given(GameState.started)
+    store.game!['events'] = [
+      {
+        event: GameEventType.playerReplaced,
+        replacee: 'SOMEONE',
+        replacement: player,
+        gameClass: 'scout',
+      },
+    ]
+
+    await gameLifecycle.end(number)
+
+    expect(mockSchedule).toHaveBeenCalledExactlyOnceWith('games.freePlayer', 0, { player })
+  })
+
+  it('still announces the end when scheduling the release fails', async () => {
+    given(GameState.started)
+    mockSchedule.mockRejectedValueOnce(new Error('db down'))
+
+    await gameLifecycle.end(number)
+
+    expect(mockLogError).toHaveBeenCalled()
     expect(emitted('game:ended')).toHaveLength(1)
   })
 
