@@ -6,6 +6,7 @@ import { assertCaptainQueue } from '../queues/captain/assert-captain-queue'
 import type { LaunchSnapshot } from '../queues/types/launch-snapshot'
 import { resolveWhitelistId } from '../queues/resolve-whitelist-id'
 import { insertGame } from './insert-game'
+import { setActiveGame } from './set-active-game'
 
 // The teams and classes are final: no skill reads and no balance search belong here.
 export async function createCaptainGame(snapshot: Extract<LaunchSnapshot, { captains: unknown }>) {
@@ -33,6 +34,11 @@ export async function createCaptainGame(snapshot: Extract<LaunchSnapshot, { capt
     })),
     events: [{ at: new Date(), event: GameEventType.gameCreated }],
   })
+  await Promise.all(
+    game.slots.map(async ({ player }) => {
+      await setActiveGame(player, game.number)
+    }),
+  )
   if (inserted) events.emit('game:created', { game })
   events.emit('queue/game:created', { game })
   return { game, inserted }

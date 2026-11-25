@@ -90,6 +90,9 @@ it('commits the whole substitution transition and returns the updated game', asy
   // activeGame moved from replacee to replacement
   expect(mockPlayersUpdate).toHaveBeenCalledWith(replacement, { $set: { activeGame: number } })
   expect(mockPlayersUpdate).toHaveBeenCalledWith(replacee, { $unset: { activeGame: 1 } })
+  expect(mockPlayersUpdate.mock.invocationCallOrder[0]).toBeLessThan(
+    mockApplyTransition.mock.invocationCallOrder[0]!,
+  )
 
   // replacement leaves the queue
   expect(mockKick).toHaveBeenCalledWith(replacement)
@@ -150,16 +153,33 @@ it('skips the shouldJoinBy write when no timeout applies', async () => {
   expect(result).toBe(newGame)
 })
 
-it('leaves players and the queue alone when the game is no longer running', async () => {
+it('releases the claimed seat and leaves the queue alone when the game is no longer running', async () => {
   mockApplyTransition.mockResolvedValue(undefined)
 
   const result = await replace({ number, replacee, replacement })
 
   expect(result).toBeUndefined()
   expect(mockDeleteOne).not.toHaveBeenCalled()
-  expect(mockPlayersUpdate).not.toHaveBeenCalled()
+  expect(mockPlayersUpdate.mock.calls).toEqual([
+    [replacement, { $set: { activeGame: number } }],
+    [replacement, { $unset: { activeGame: 1 } }],
+  ])
   expect(mockKick).not.toHaveBeenCalled()
-  expect(mockEmit).not.toHaveBeenCalled()
+  expect(mockEmit).not.toHaveBeenCalledWith('game:playerReplaced', expect.anything())
+})
+
+it('aborts the substitution when the replacement cannot be seated', async () => {
+  mockPlayersUpdate.mockRejectedValueOnce(new Error('db down'))
+
+  await expect(replace({ number, replacee, replacement })).rejects.toThrow('db down')
+  expect(mockApplyTransition).not.toHaveBeenCalled()
+  expect(mockEmit).not.toHaveBeenCalledWith('game:playerReplaced', expect.anything())
+})
+
+it('makes no occupancy writes when a player takes their own slot back', async () => {
+  await replace({ number, replacee, replacement: replacee })
+
+  expect(mockPlayersUpdate).not.toHaveBeenCalled()
 })
 
 it('refuses to take a slot nobody asked a substitute for', async () => {

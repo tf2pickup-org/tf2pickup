@@ -5,8 +5,10 @@ import type { GameNumber, GameState } from '../../database/models/game.model'
 import { events } from '../../events'
 import type { Bot } from '../../shared/types/bot'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
+import { logError } from '../../utils/log-error'
 import { mutex } from '../mutex'
 import { applyTransition } from './apply-transition'
+import { scheduleFreePlayers } from './schedule-free-players'
 
 export async function finish(
   transition: string,
@@ -43,6 +45,12 @@ export async function finish(
     return game
   })
   if (game) {
+    // a crash before this lands is repaired by reconcileActiveGames() on boot
+    try {
+      await scheduleFreePlayers(game)
+    } catch (error) {
+      logError(error)
+    }
     events.emit('game:ended', { game })
   }
   return game

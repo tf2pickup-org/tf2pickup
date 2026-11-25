@@ -8,12 +8,13 @@ import { players } from '../players'
 import { Gamemode } from '../shared/types/gamemode'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
 import { create } from './create'
+import { setActiveGame } from './set-active-game'
 
 vi.mock('../database/collections', () => ({
   collections: {
     games: {
       insertOne: vi.fn().mockResolvedValue({ insertedId: 'id' }),
-      findOne: vi.fn().mockResolvedValue({ number: 1 }),
+      findOne: vi.fn().mockResolvedValue({ number: 1, slots: [] }),
     },
   },
 }))
@@ -25,6 +26,7 @@ vi.mock('../queues/resolve-whitelist-id', () => ({
   resolveWhitelistId: vi.fn().mockResolvedValue(null),
 }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
+vi.mock('./set-active-game', () => ({ setActiveGame: vi.fn() }))
 
 function queueSlots(classes: Tf2ClassName[]) {
   return classes.map((gameClass, i) => ({
@@ -48,6 +50,30 @@ async function createdSlots(queue: QueueModel, slots: QueueSlotModel[], map: str
 afterEach(() => vi.clearAllMocks())
 
 describe('create()', () => {
+  it('seats every player before announcing the game', async () => {
+    vi.mocked(players.bySteamId).mockResolvedValue({ skill: {} } as never)
+    const game = { number: 7, slots: [{ player: 'a' }, { player: 'b' }] }
+    vi.mocked(collections.games.findOne)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(game as never)
+
+    await create({
+      queue: queue(Gamemode.sixes),
+      token: 'launch-token',
+      slots: queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
+      map: 'cp_a',
+      friends: [],
+    })
+
+    expect(setActiveGame).toHaveBeenCalledWith('a', 7)
+    expect(setActiveGame).toHaveBeenCalledWith('b', 7)
+    expect(events.emit).toHaveBeenCalledWith('game:created', { game })
+    expect(vi.mocked(setActiveGame).mock.invocationCallOrder[1]).toBeLessThan(
+      vi.mocked(events.emit).mock.invocationCallOrder[0]!,
+    )
+  })
+
   it('balances an auto-balanced gamemode by skill', async () => {
     vi.mocked(players.bySteamId).mockImplementation(
       async steamId => ({ skill: { '6v6': { scout: Number(steamId) } } }) as never,
@@ -112,12 +138,14 @@ describe('create()', () => {
     )
     const [game] = vi.mocked(collections.games.insertOne).mock.lastCall!
     expect(game.launchToken).toBe('launch-token')
-    expect(events.emit).toHaveBeenCalledWith('game:created', { game: { number: 1 } })
-    expect(events.emit).toHaveBeenCalledWith('queue/game:created', { game: { number: 1 } })
+    expect(events.emit).toHaveBeenCalledWith('game:created', { game: { number: 1, slots: [] } })
+    expect(events.emit).toHaveBeenCalledWith('queue/game:created', {
+      game: { number: 1, slots: [] },
+    })
   })
 
   it('reuses the game of a launch replayed after a crash without replaying global effects', async () => {
-    const existing = { number: 7, launchToken: 'launch-token' }
+    const existing = { number: 7, launchToken: 'launch-token', slots: [{ player: 'a' }] }
     vi.mocked(collections.games.findOne).mockResolvedValueOnce(existing as never)
     expect(
       await create({
@@ -130,6 +158,7 @@ describe('create()', () => {
     ).toEqual({ game: existing, inserted: false })
     expect(collections.games.findOne).toHaveBeenCalledWith({ launchToken: 'launch-token' })
     expect(collections.games.insertOne).not.toHaveBeenCalled()
+    expect(setActiveGame).toHaveBeenCalledExactlyOnceWith('a', 7)
     expect(events.emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game: existing })
   })
 })
