@@ -13,6 +13,7 @@ import { logError } from '../../utils/log-error'
 import { applyCooldown } from '../apply-cooldown'
 import { calculateJoinGameserverTimeout } from '../calculate-join-gameserver-timeout'
 import { mutex } from '../mutex'
+import { substituteBlocker } from '../substitute-blocker'
 import { update } from '../update'
 import { applyTransition } from './apply-transition'
 import { runningGameStates } from './running-game-states'
@@ -55,12 +56,9 @@ async function replaceExclusive({ number, replacee, replacement }: Replacement) 
         throw new Error(`replacement player not found: ${replacement}`)
       }
 
-      if (rm.activeGame !== undefined) {
-        throw new Error(`player denied: player has active game`)
-      }
-
-      if (players.restrictions.active(rm, 'ban').length > 0) {
-        throw new Error(`player denied: player is banned`)
+      const blocker = substituteBlocker(slot, rm)
+      if (blocker) {
+        throw errors.badRequest(blocker)
       }
     }
 
