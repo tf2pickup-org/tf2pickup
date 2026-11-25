@@ -6,9 +6,7 @@ import { LogsTfUploadMethod } from '../../shared/types/logs-tf-upload-method'
 import { VoiceServerType } from '../../shared/types/voice-server-type'
 import { HideServerInfoMode } from '../../shared/types/hide-server-info-mode'
 import { steamId64 } from '../../shared/schemas/steam-id-64'
-
-// Where each setting can be edited outside View for nerds
-export const settingPages = z.registry<{ page: string }>()
+import { settingPages } from '../../configuration/setting-pages'
 
 export const configurationSchema = z.discriminatedUnion('key', [
   z

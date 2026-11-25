@@ -1,6 +1,6 @@
+import { settingPages } from '../configuration/setting-pages'
 import {
   configurationSchema,
-  settingPages,
   type Configuration,
 } from '../database/models/configuration-entry.model'
 import type { QueueConfiguration, QueueModel } from '../database/models/queue.model'
