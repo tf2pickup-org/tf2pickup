@@ -53,7 +53,7 @@ services:
       POSTGRES_USER: umami
       POSTGRES_PASSWORD: umami123
     volumes:
-      - umami-db:/var/lib/postgresql/data
+      - umami-db:/var/lib/postgresql
     restart: always
     profiles: [analytics]
 
