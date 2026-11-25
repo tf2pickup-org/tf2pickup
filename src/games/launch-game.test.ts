@@ -42,7 +42,7 @@ describe('launchGame()', () => {
 
   it('creates the game from the launch snapshot', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: true } as any)
 
     await launchGame(snapshot)
 
@@ -51,7 +51,7 @@ describe('launchGame()', () => {
 
   it('assigns a game server to the created game', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: true } as any)
 
     await launchGame(snapshot)
 
@@ -59,8 +59,8 @@ describe('launchGame()', () => {
     expect(configure).toHaveBeenCalledWith(42)
   })
 
-  it('leaves a replayed launch whose game already has a server alone', async () => {
-    vi.mocked(create).mockResolvedValue({ number: 42, gameServer: {} } as never)
+  it('leaves server assignment of a replayed launch to the orphaned-games scan', async () => {
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: false } as never)
 
     await launchGame(snapshot)
 
@@ -77,7 +77,7 @@ describe('launchGame()', () => {
 
   it('does not throw when the game server cannot be assigned, since the game exists', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: true } as any)
     vi.mocked(assignGameServer).mockRejectedValue(new Error('no free game server'))
 
     await launchGame(snapshot)
@@ -89,7 +89,10 @@ describe('launchGame()', () => {
 describe('captain launch through shared server assignment', () => {
   it('routes drafted teams through captain creation and then the existing assignment/configure path', async () => {
     vi.clearAllMocks()
-    vi.mocked(createCaptainGame).mockResolvedValue({ number: 51 } as never)
+    vi.mocked(createCaptainGame).mockResolvedValue({
+      game: { number: 51 },
+      inserted: true,
+    } as never)
     vi.mocked(assignGameServer).mockResolvedValue(undefined as never)
     const captain = {
       ...snapshot,

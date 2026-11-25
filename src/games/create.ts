@@ -61,7 +61,7 @@ export async function create({
 
   if (inserted) events.emit('game:created', { game })
   events.emit('queue/game:created', { game })
-  return game
+  return { game, inserted }
 }
 
 function toPlayerSlot(queueSlot: QueueSlotModel) {

@@ -127,7 +127,7 @@ describe('create()', () => {
         map: 'cp_process_f12',
         friends: [],
       }),
-    ).toBe(existing)
+    ).toEqual({ game: existing, inserted: false })
     expect(collections.games.findOne).toHaveBeenCalledWith({ launchToken: 'launch-token' })
     expect(collections.games.insertOne).not.toHaveBeenCalled()
     expect(events.emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game: existing })

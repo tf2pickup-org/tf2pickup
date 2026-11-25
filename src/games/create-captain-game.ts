@@ -35,5 +35,5 @@ export async function createCaptainGame(snapshot: Extract<LaunchSnapshot, { capt
   })
   if (inserted) events.emit('game:created', { game })
   events.emit('queue/game:created', { game })
-  return game
+  return { game, inserted }
 }

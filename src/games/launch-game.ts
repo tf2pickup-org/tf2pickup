@@ -8,9 +8,10 @@ import { configure } from './rcon/configure'
 // throws when the game could not be created
 export async function launchGame(snapshot: LaunchSnapshot) {
   logger.info({ queue: snapshot.queue._id, token: snapshot.token }, 'launching game')
-  const game = 'captains' in snapshot ? await createCaptainGame(snapshot) : await create(snapshot)
-  // a replayed launch whose game already got a server
-  if (game.gameServer) return
+  const { game, inserted } =
+    'captains' in snapshot ? await createCaptainGame(snapshot) : await create(snapshot)
+  // a replayed launch only happens on boot, where the orphaned-games scan owns server assignment
+  if (!inserted) return
 
   try {
     await assignGameServer(game.number, { retries: 3 })

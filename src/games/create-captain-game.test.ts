@@ -42,7 +42,7 @@ beforeEach(() => vi.clearAllMocks())
 describe('createCaptainGame()', () => {
   it('preserves drafted teams, records original captains and strips skill without balancing', async () => {
     vi.mocked(insertGame).mockResolvedValueOnce({ game, inserted: true } as never)
-    expect(await createCaptainGame(snapshot)).toBe(game)
+    expect(await createCaptainGame(snapshot)).toEqual({ game, inserted: true })
     expect(insertGame).toHaveBeenCalledWith(
       expect.objectContaining({
         queue: snapshot.queue._id,
@@ -63,7 +63,7 @@ describe('createCaptainGame()', () => {
 
   it('reuses a previously created game without replaying global creation effects', async () => {
     vi.mocked(insertGame).mockResolvedValueOnce({ game, inserted: false } as never)
-    expect(await createCaptainGame(snapshot)).toBe(game)
+    expect(await createCaptainGame(snapshot)).toEqual({ game, inserted: false })
     expect(events.emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game })
   })
 
