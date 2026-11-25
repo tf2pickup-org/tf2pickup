@@ -13,6 +13,11 @@
     {
       "matchPackageNames": ["@tf2pickup-org/mumble-client"],
       "minimumReleaseAge": null
+    },
+    {
+      "matchDepNames": ["undici@6"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
     }
   ],
   "automergeType": "branch",
