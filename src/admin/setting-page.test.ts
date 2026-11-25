@@ -24,3 +24,14 @@ describe('settingPage()', () => {
     expect(settingPage({ queue: auto6v6, field: 'mapCooldown' })).toBeNull()
   })
 })
+
+describe('settingPage() for configuration keys', () => {
+  it.each([
+    ['discord.guilds', '/admin/discord'],
+    ['games.auto_force_end_threshold', '/admin/match-rules'],
+    ['queue.pre_ready_up_timeout', '/admin/queues'],
+    ['twitchtv.promoted_streams', '/admin/streams'],
+  ] as const)('%s → %s', (configKey, page) => {
+    expect(settingPage({ configKey })).toBe(page)
+  })
+})
