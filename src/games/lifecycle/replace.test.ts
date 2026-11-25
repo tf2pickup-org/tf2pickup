@@ -26,10 +26,7 @@ const mockEmit = vi.hoisted(() => vi.fn())
 vi.mock('../../events', () => ({ events: { emit: mockEmit } }))
 
 const mockPlayersUpdate = vi.hoisted(() => vi.fn())
-const mockActiveBans = vi.hoisted(() => vi.fn())
-vi.mock('../../players', () => ({
-  players: { update: mockPlayersUpdate, restrictions: { active: mockActiveBans } },
-}))
+vi.mock('../../players', () => ({ players: { update: mockPlayersUpdate } }))
 
 const mockKick = vi.hoisted(() => vi.fn())
 vi.mock('../../queues', () => ({ queues: { kick: mockKick } }))
@@ -70,7 +67,6 @@ beforeEach(() => {
   vi.clearAllMocks()
   mockGamesFindOne.mockResolvedValue(game())
   mockPlayersFindOne.mockResolvedValue({ steamId: replacement, activeGame: undefined, bans: [] })
-  mockActiveBans.mockReturnValue([])
   mockApplyTransition.mockResolvedValue(newGame)
   mockUpdate.mockResolvedValue(updatedGame)
   mockCalculateJoinGameserverTimeout.mockResolvedValue(new Date('2026-01-01T00:00:00Z'))
@@ -178,6 +174,29 @@ it('refuses to take a slot nobody asked a substitute for', async () => {
   )
   expect(mockApplyTransition).not.toHaveBeenCalled()
 })
+
+it.each([
+  ['already in a game', { activeGame: 7 as GameNumber, bans: [] }, 'You are already in a game'],
+  [
+    'banned',
+    {
+      activeGame: undefined,
+      bans: [{ actor: replacee, start: new Date(0), end: new Date(8.64e15), reason: 'griefing' }],
+    },
+    'You have active bans',
+  ],
+])(
+  'rejects a substitute who is %s with a 400 carrying the slot lock reason',
+  async (_, player, reason) => {
+    mockPlayersFindOne.mockResolvedValue({ steamId: replacement, ...player })
+
+    await expect(replace({ number, replacee, replacement })).rejects.toMatchObject({
+      statusCode: 400,
+      message: reason,
+    })
+    expect(mockApplyTransition).not.toHaveBeenCalled()
+  },
+)
 
 it('finishes one replacement before the next one starts', async () => {
   let releaseKick!: () => void
