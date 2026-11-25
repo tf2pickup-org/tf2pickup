@@ -237,6 +237,123 @@
     }
   }
 
+  .player-stats-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    h2 {
+      color: var(--color-zinc-100);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    h3 {
+      color: var(--color-zinc-100);
+      font-size: 24px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+  }
+
+  .player-stats-section-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+
+    .profile-tabs {
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .profile-tab {
+      white-space: nowrap;
+    }
+  }
+
+  .player-stats-columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+
+    @media (width >= theme(--breakpoint-xl)) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .player-stats-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+    padding: 17px;
+    border: 1px solid var(--color-zinc-700);
+    border-radius: 6px;
+    background: var(--color-zinc-800);
+  }
+
+  .player-stats-card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+
+    span {
+      color: var(--color-zinc-100);
+      font-size: 24px;
+      font-weight: 700;
+    }
+  }
+
+  .player-stats-tiles,
+  .player-stats-records {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+
+  .player-stats-records {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    align-content: start;
+  }
+
+  .player-stats-tile {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border: 1px solid var(--color-zinc-800);
+    border-radius: 6px;
+    background: var(--color-zinc-900);
+
+    &:is(a) {
+      @apply transition-colors;
+      @apply duration-75;
+
+      &:hover {
+        background: var(--color-zinc-800);
+      }
+    }
+  }
+
+  .player-stats-tile-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-zinc-400);
+    line-height: 24px;
+  }
+
+  .player-stats-tile-value {
+    color: var(--color-zinc-100);
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
   .admin-area-switch {
     display: flex;
     align-self: flex-start;

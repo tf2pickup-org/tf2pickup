@@ -1,5 +1,3 @@
-@reference '../../../html/styles/main.css';
-
 @layer components {
   .activity-cells > div {
     @apply bg-zinc-850 size-3 rounded-xs;
