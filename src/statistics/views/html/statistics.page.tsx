@@ -1,4 +1,3 @@
-import { resolve } from 'node:path'
 import { environment } from '../../../environment'
 import { Footer } from '../../../html/components/footer'
 import { NavigationBar } from '../../../html/components/navigation-bar'
@@ -16,7 +15,6 @@ export async function StatisticsPage() {
       title={makeTitle('statistics')}
       description={`${environment.WEBSITE_NAME} statistics`}
       canonical="/statistics"
-      embedStyle={resolve(import.meta.dirname, 'statistics.css')}
     >
       <NavigationBar wide />
       <Page>
