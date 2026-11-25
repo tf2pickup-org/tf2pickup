@@ -21,7 +21,6 @@ import type { WithId } from 'mongodb'
 import type { User } from '@tf2pickup-org/mumble-client'
 import type { QueueId } from './database/models/queue.model'
 import type { LaunchSnapshot } from './queues/types/launch-snapshot'
-import type { CaptainLaunchSnapshot } from './queues/captain/types/captain-launch-snapshot'
 
 export interface Events {
   'chat:messageDeleted': {
@@ -210,9 +209,11 @@ export interface Events {
     admin: SteamId64
   }
 
-  'queue:launching': LaunchSnapshot
-  'queue/captain:launching': CaptainLaunchSnapshot
-  'queue/captainGame:created': { game: GameModel }
+  'queue:launching': Extract<LaunchSnapshot, { friends: unknown }>
+  'queue/captain:launching': Extract<LaunchSnapshot, { captains: unknown }>
+  // emitted for a launched game whether it was just inserted or already existed, so the queue
+  // engine finishes a launch replayed after a crash; global game-created effects are not replayed
+  'queue/game:created': { game: GameModel }
   'queue/captainDraft:failed': { queue: QueueId; message: string }
   'queue:playerKicked': {
     player: SteamId64

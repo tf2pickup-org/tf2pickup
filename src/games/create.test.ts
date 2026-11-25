@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { collections } from '../database/collections'
 import type { QueueModel } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
+import { events } from '../events'
 import { players } from '../players'
 import { Gamemode } from '../shared/types/gamemode'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
@@ -37,9 +38,9 @@ function queue(gamemode: Gamemode) {
   return { _id: new ObjectId(), gamemode, maps: [] } as unknown as QueueModel
 }
 
-async function createdSlots(...args: Parameters<typeof create>) {
+async function createdSlots(queue: QueueModel, slots: QueueSlotModel[], map: string) {
   vi.mocked(collections.games.findOne).mockResolvedValueOnce(null)
-  await create(...args).catch(() => undefined)
+  await create({ queue, token: 'launch-token', slots, map, friends: [] }).catch(() => undefined)
   const [game] = vi.mocked(collections.games.insertOne).mock.lastCall!
   return game.slots
 }
@@ -100,5 +101,35 @@ describe('create()', () => {
       return slots.find(slot => slot.player === '0')!.team
     }
     expect(await teamOfFirst(0)).not.toEqual(await teamOfFirst(0.99))
+  })
+
+  it('stamps the launch token on the game and announces it', async () => {
+    vi.mocked(players.bySteamId).mockResolvedValue({ skill: {} } as never)
+    await createdSlots(
+      queue(Gamemode.sixes),
+      queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
+      'cp_process_f12',
+    )
+    const [game] = vi.mocked(collections.games.insertOne).mock.lastCall!
+    expect(game.launchToken).toBe('launch-token')
+    expect(events.emit).toHaveBeenCalledWith('game:created', { game: { number: 1 } })
+    expect(events.emit).toHaveBeenCalledWith('queue/game:created', { game: { number: 1 } })
+  })
+
+  it('reuses the game of a launch replayed after a crash without replaying global effects', async () => {
+    const existing = { number: 7, launchToken: 'launch-token' }
+    vi.mocked(collections.games.findOne).mockResolvedValueOnce(existing as never)
+    expect(
+      await create({
+        queue: queue(Gamemode.sixes),
+        token: 'launch-token',
+        slots: queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
+        map: 'cp_process_f12',
+        friends: [],
+      }),
+    ).toEqual({ game: existing, inserted: false })
+    expect(collections.games.findOne).toHaveBeenCalledWith({ launchToken: 'launch-token' })
+    expect(collections.games.insertOne).not.toHaveBeenCalled()
+    expect(events.emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game: existing })
   })
 })

@@ -33,7 +33,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   ],
   games: [
     { spec: { number: 1 }, options: { unique: true } },
-    { spec: { captainDraftToken: 1 }, options: { unique: true, sparse: true } },
+    { spec: { launchToken: 1 }, options: { unique: true, sparse: true } },
     { spec: { logSecret: 1 }, options: { unique: true, sparse: true } },
     { spec: { 'slots.player': 1 } },
     { spec: { 'events.0.at': -1 } },

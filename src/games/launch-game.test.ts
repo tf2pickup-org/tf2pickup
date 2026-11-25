@@ -23,13 +23,13 @@ vi.mock('../logger', () => ({
 
 import { launchGame } from './launch-game'
 import { createCaptainGame } from './create-captain-game'
-import type { CaptainLaunchSnapshot } from '../queues/captain/types/captain-launch-snapshot'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
 import { configure } from './rcon/configure'
 
 const snapshot: LaunchSnapshot = {
   queue: { _id: new ObjectId() as QueueId, gamemode: '6v6', maps: [] } as unknown as QueueModel,
+  token: 'launch-token',
   slots: [],
   map: 'cp_badlands',
   friends: [],
@@ -42,21 +42,30 @@ describe('launchGame()', () => {
 
   it('creates the game from the launch snapshot', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: true } as any)
 
     await launchGame(snapshot)
 
-    expect(create).toHaveBeenCalledWith(snapshot.queue, [], 'cp_badlands', [])
+    expect(create).toHaveBeenCalledWith(snapshot)
   })
 
   it('assigns a game server to the created game', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: true } as any)
 
     await launchGame(snapshot)
 
     expect(assignGameServer).toHaveBeenCalledWith(42, { retries: 3 })
     expect(configure).toHaveBeenCalledWith(42)
+  })
+
+  it('leaves server assignment of a replayed launch to the orphaned-games scan', async () => {
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: false } as never)
+
+    await launchGame(snapshot)
+
+    expect(assignGameServer).not.toHaveBeenCalled()
+    expect(configure).not.toHaveBeenCalled()
   })
 
   it('throws when game creation fails', async () => {
@@ -68,7 +77,7 @@ describe('launchGame()', () => {
 
   it('does not throw when the game server cannot be assigned, since the game exists', async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    vi.mocked(create).mockResolvedValue({ number: 42 } as any)
+    vi.mocked(create).mockResolvedValue({ game: { number: 42 }, inserted: true } as any)
     vi.mocked(assignGameServer).mockRejectedValue(new Error('no free game server'))
 
     await launchGame(snapshot)
@@ -80,14 +89,17 @@ describe('launchGame()', () => {
 describe('captain launch through shared server assignment', () => {
   it('routes drafted teams through captain creation and then the existing assignment/configure path', async () => {
     vi.clearAllMocks()
-    vi.mocked(createCaptainGame).mockResolvedValue({ number: 51 } as never)
+    vi.mocked(createCaptainGame).mockResolvedValue({
+      game: { number: 51 },
+      inserted: true,
+    } as never)
     vi.mocked(assignGameServer).mockResolvedValue(undefined as never)
     const captain = {
       ...snapshot,
       queue: { ...snapshot.queue, launchMode: 'captain' },
       captains: { red: 'red', blu: 'blu' },
       token: 't',
-    } as unknown as CaptainLaunchSnapshot
+    } as unknown as LaunchSnapshot
     await launchGame(captain)
     expect(createCaptainGame).toHaveBeenCalledWith(captain)
     expect(create).not.toHaveBeenCalled()

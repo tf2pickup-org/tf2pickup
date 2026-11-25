@@ -18,6 +18,7 @@ vi.mock('../../tasks', () => ({ tasks: { cancel: vi.fn(), schedule: vi.fn() } })
 vi.mock('./take-launch-snapshot', () => ({
   takeLaunchSnapshot: vi.fn().mockResolvedValue('snapshot'),
 }))
+vi.mock('nanoid', () => ({ nanoid: () => 'launch-token' }))
 vi.mock('../get', () => ({
   get: vi.fn().mockResolvedValue({ readyUpTimeout: 40_000, launchMode: 'auto' }),
 }))
@@ -92,6 +93,10 @@ describe('enterState()', () => {
     it('cancels the ready-up timeouts and hands over the launch snapshot', async () => {
       await enterState(queue, QueueState.launching, emit)
 
+      expect(collections.queueState.updateOne).toHaveBeenCalledWith(
+        { queue },
+        { $set: { state: QueueState.launching, launchToken: 'launch-token' } },
+      )
       expect(tasks.cancel).toHaveBeenCalledWith('queue:readyUpTimeout', { queue })
       expect(tasks.cancel).toHaveBeenCalledWith('queue:unready', { queue })
       expect(tasks.schedule).not.toHaveBeenCalled()

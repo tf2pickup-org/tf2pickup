@@ -24,4 +24,6 @@ export interface QueueStateModel {
   state: QueueState
   last?: SteamId64
   captainReady?: ReadyPhase
+  // auto queues only: stamped on entering launching, so a launch replayed on boot finds its game
+  launchToken?: string
 }

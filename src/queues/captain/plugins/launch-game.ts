@@ -29,7 +29,7 @@ export default fp(
       }),
     )
     events.on(
-      'queue/captainGame:created',
+      'queue/game:created',
       safe(async ({ game }) => {
         await completeLaunch(game)
       }),

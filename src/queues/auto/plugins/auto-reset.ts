@@ -18,7 +18,7 @@ export default fp(
     })
 
     events.on(
-      'game:created',
+      'queue/game:created',
       safe(async ({ game }) => {
         if (!game.queue || game.launchMode === 'captain') {
           return

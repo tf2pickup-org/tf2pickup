@@ -8,7 +8,7 @@ import { get } from '../get'
 import { captainMachine } from './machine'
 
 export async function completeLaunch(game: GameModel) {
-  if (game.launchMode !== 'captain' || !game.captainDraftToken || !game.queue) return
+  if (game.launchMode !== 'captain' || !game.launchToken || !game.queue) return
   const queue = game.queue
   await queueCommand('captain-complete-launch', async emit => {
     const [settings, state, draft] = await Promise.all([
@@ -20,7 +20,7 @@ export async function completeLaunch(game: GameModel) {
       !draft ||
       settings.launchMode !== 'captain' ||
       state?.state !== QueueState.launching ||
-      draft.token !== game.captainDraftToken
+      draft.token !== game.launchToken
     )
       return
     await applyMapCooldown(queue, game.map)

@@ -28,8 +28,8 @@ export async function recover(queue: QueueModel) {
     }
 
     if (state.state === QueueState.launching) {
-      const game = await collections.games.findOne({ captainDraftToken: draft.token })
-      if (game) emit('queue/captainGame:created', { game })
+      const game = await collections.games.findOne({ launchToken: draft.token })
+      if (game) emit('queue/game:created', { game })
       else
         emit('queue/captain:launching', buildLaunchSnapshot(queue, draft, await getPool(queue._id)))
       return
