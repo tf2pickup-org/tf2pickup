@@ -7,7 +7,6 @@ import { events } from '../events'
 import { players } from '../players'
 import { Gamemode } from '../shared/types/gamemode'
 import { Tf2ClassName } from '../shared/types/tf2-class-name'
-import { events } from '../events'
 import { create } from './create'
 import { setActiveGame } from './set-active-game'
 
@@ -56,13 +55,16 @@ describe('create()', () => {
     const game = { number: 7, slots: [{ player: 'a' }, { player: 'b' }] }
     vi.mocked(collections.games.findOne)
       .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(null)
       .mockResolvedValueOnce(game as never)
 
-    await create(
-      queue(Gamemode.sixes),
-      queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
-      'cp_a',
-    )
+    await create({
+      queue: queue(Gamemode.sixes),
+      token: 'launch-token',
+      slots: queueSlots([Tf2ClassName.scout, Tf2ClassName.scout]),
+      map: 'cp_a',
+      friends: [],
+    })
 
     expect(setActiveGame).toHaveBeenCalledWith('a', 7)
     expect(setActiveGame).toHaveBeenCalledWith('b', 7)
@@ -136,12 +138,14 @@ describe('create()', () => {
     )
     const [game] = vi.mocked(collections.games.insertOne).mock.lastCall!
     expect(game.launchToken).toBe('launch-token')
-    expect(events.emit).toHaveBeenCalledWith('game:created', { game: { number: 1 } })
-    expect(events.emit).toHaveBeenCalledWith('queue/game:created', { game: { number: 1 } })
+    expect(events.emit).toHaveBeenCalledWith('game:created', { game: { number: 1, slots: [] } })
+    expect(events.emit).toHaveBeenCalledWith('queue/game:created', {
+      game: { number: 1, slots: [] },
+    })
   })
 
   it('reuses the game of a launch replayed after a crash without replaying global effects', async () => {
-    const existing = { number: 7, launchToken: 'launch-token' }
+    const existing = { number: 7, launchToken: 'launch-token', slots: [{ player: 'a' }] }
     vi.mocked(collections.games.findOne).mockResolvedValueOnce(existing as never)
     expect(
       await create({
@@ -154,6 +158,7 @@ describe('create()', () => {
     ).toEqual({ game: existing, inserted: false })
     expect(collections.games.findOne).toHaveBeenCalledWith({ launchToken: 'launch-token' })
     expect(collections.games.insertOne).not.toHaveBeenCalled()
+    expect(setActiveGame).toHaveBeenCalledExactlyOnceWith('a', 7)
     expect(events.emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game: existing })
   })
 })
