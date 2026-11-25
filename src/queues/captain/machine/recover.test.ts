@@ -113,7 +113,7 @@ describe('recover()', () => {
     const game = { number: 42 }
     vi.mocked(collections.games.findOne).mockResolvedValueOnce(game as never)
     await recover(queue)
-    expect(emit).toHaveBeenCalledExactlyOnceWith('queue/captainGame:created', { game })
+    expect(emit).toHaveBeenCalledExactlyOnceWith('queue/game:created', { game })
   })
 
   it('resumes creation when a launch was persisted but the game does not exist', async () => {

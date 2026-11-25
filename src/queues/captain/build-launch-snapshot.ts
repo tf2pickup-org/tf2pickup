@@ -9,13 +9,13 @@ import { captainRoles } from './captain-roles'
 import { finalCaptainRoles } from './final-captain-roles'
 import { getDraftPosition } from './get-draft-position'
 import { roleKey } from './role-key'
-import type { CaptainLaunchSnapshot } from './types/captain-launch-snapshot'
+import type { LaunchSnapshot } from '../types/launch-snapshot'
 
 export function buildLaunchSnapshot(
   queue: QueueModel,
   draft: CaptainDraftModel,
   members: readonly CaptainPoolModel[],
-): CaptainLaunchSnapshot {
+): Extract<LaunchSnapshot, { captains: unknown }> {
   assertCaptainQueue(queue)
   const roles = captainRoles(queue.gamemode)
   const captains = finalCaptainRoles(getDraftPosition(roles, draft, members))

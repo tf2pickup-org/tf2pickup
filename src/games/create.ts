@@ -1,11 +1,9 @@
 import { shuffle } from 'es-toolkit'
 import { configuration } from '../configuration'
-import { collections } from '../database/collections'
 import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus, SlotStatus } from '../database/models/game-slot.model'
 import { GameState } from '../database/models/game.model'
 import type { PlayerSkill } from '../database/models/player.model'
-import type { QueueModel } from '../database/models/queue.model'
 import type { QueueSlotModel } from '../database/models/queue-slot.model'
 import { events } from '../events'
 import { gamemodeConfigs } from '../gamemodes/configs'
@@ -13,16 +11,17 @@ import { players } from '../players'
 import { effectiveSkill } from '../players/effective-skill'
 import type { Gamemode } from '../shared/types/gamemode'
 import { resolveWhitelistId } from '../queues/resolve-whitelist-id'
-import type { SteamId64 } from '../shared/types/steam-id-64'
+import type { LaunchSnapshot } from '../queues/types/launch-snapshot'
 import { insertGame } from './insert-game'
 import { pickTeams, type PlayerSlot } from './pick-teams'
 
-export async function create(
-  queue: QueueModel,
-  queueSlots: QueueSlotModel[],
-  map: string,
-  friends: SteamId64[][] = [],
-) {
+export async function create({
+  queue,
+  token,
+  slots: queueSlots,
+  map,
+  friends,
+}: Extract<LaunchSnapshot, { friends: unknown }>) {
   const { autoBalance } = gamemodeConfigs[queue.gamemode]
   // without balancing, every lineup is as good as any other, so a shuffle picks a random one
   const defaultSkill = (await configuration.get('games.default_player_skill'))[queue.gamemode]
@@ -35,9 +34,10 @@ export async function create(
   const execConfig = queue.maps.find(({ name }) => name === map)?.execConfig
   const whitelistId = await resolveWhitelistId(queue)
 
-  const { insertedId } = await insertGame({
+  const { game, inserted } = await insertGame({
     gamemode: queue.gamemode,
     queue: queue._id,
+    launchToken: token,
     map,
     ...(execConfig ? { execConfig } : {}),
     ...(whitelistId ? { whitelistId } : {}),
@@ -59,12 +59,8 @@ export async function create(
     ],
   })
 
-  const game = await collections.games.findOne({ _id: insertedId })
-  if (!game) {
-    throw new Error('failed creating game')
-  }
-
-  events.emit('game:created', { game })
+  if (inserted) events.emit('game:created', { game })
+  events.emit('queue/game:created', { game })
   return game
 }
 

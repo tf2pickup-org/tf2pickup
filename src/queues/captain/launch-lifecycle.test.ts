@@ -50,7 +50,7 @@ const queue = new ObjectId() as QueueId
 const game = {
   queue,
   launchMode: 'captain',
-  captainDraftToken: 't',
+  launchToken: 't',
   map: 'cp_a',
   slots: [{ player: 'red' }, { player: 'blu' }],
 } as GameModel

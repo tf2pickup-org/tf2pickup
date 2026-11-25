@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { collections } from '../../database/collections'
 import type { PlayerModel } from '../../database/models/player.model'
 import type { QueueId } from '../../database/models/queue.model'
@@ -15,7 +16,10 @@ import { takeLaunchSnapshot } from './take-launch-snapshot'
 export async function enterState(queue: QueueId, state: QueueState, emit: Emit) {
   assertAutoQueue(await get(queue))
   logger.info({ queue, state }, 'queue state changed')
-  await collections.queueState.updateOne({ queue }, { $set: { state } })
+  await collections.queueState.updateOne(
+    { queue },
+    { $set: { state, ...(state === QueueState.launching && { launchToken: nanoid() }) } },
+  )
 
   switch (state) {
     case QueueState.waiting: {

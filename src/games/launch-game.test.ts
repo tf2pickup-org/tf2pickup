@@ -23,13 +23,13 @@ vi.mock('../logger', () => ({
 
 import { launchGame } from './launch-game'
 import { createCaptainGame } from './create-captain-game'
-import type { CaptainLaunchSnapshot } from '../queues/captain/types/captain-launch-snapshot'
 import { create } from './create'
 import { assignGameServer } from './assign-game-server'
 import { configure } from './rcon/configure'
 
 const snapshot: LaunchSnapshot = {
   queue: { _id: new ObjectId() as QueueId, gamemode: '6v6', maps: [] } as unknown as QueueModel,
+  token: 'launch-token',
   slots: [],
   map: 'cp_badlands',
   friends: [],
@@ -46,7 +46,7 @@ describe('launchGame()', () => {
 
     await launchGame(snapshot)
 
-    expect(create).toHaveBeenCalledWith(snapshot.queue, [], 'cp_badlands', [])
+    expect(create).toHaveBeenCalledWith(snapshot)
   })
 
   it('assigns a game server to the created game', async () => {
@@ -57,6 +57,15 @@ describe('launchGame()', () => {
 
     expect(assignGameServer).toHaveBeenCalledWith(42, { retries: 3 })
     expect(configure).toHaveBeenCalledWith(42)
+  })
+
+  it('leaves a replayed launch whose game already has a server alone', async () => {
+    vi.mocked(create).mockResolvedValue({ number: 42, gameServer: {} } as never)
+
+    await launchGame(snapshot)
+
+    expect(assignGameServer).not.toHaveBeenCalled()
+    expect(configure).not.toHaveBeenCalled()
   })
 
   it('throws when game creation fails', async () => {
@@ -87,7 +96,7 @@ describe('captain launch through shared server assignment', () => {
       queue: { ...snapshot.queue, launchMode: 'captain' },
       captains: { red: 'red', blu: 'blu' },
       token: 't',
-    } as unknown as CaptainLaunchSnapshot
+    } as unknown as LaunchSnapshot
     await launchGame(captain)
     expect(createCaptainGame).toHaveBeenCalledWith(captain)
     expect(create).not.toHaveBeenCalled()
