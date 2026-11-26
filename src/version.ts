@@ -1,13 +1,14 @@
-import { readFile } from 'node:fs/promises'
-import { packageUp } from 'package-up'
+import { readFileSync } from 'node:fs'
+import { packageUpSync } from 'package-up'
 import { z } from 'zod'
 
-const packageJsonPath = await packageUp()
+// no top-level await: otel.ts imports this, and awaiting here lets mongodb load before the SDK can patch it
+const packageJsonPath = packageUpSync()
 if (!packageJsonPath) {
   throw new Error(`cannot find package.json in ${import.meta.dirname}`)
 }
 
-const file = await readFile(packageJsonPath)
+const file = readFileSync(packageJsonPath)
 const packageJsonSchema = z.object({ version: z.string() })
 
 const { version: packageVersion } = packageJsonSchema.parse(JSON.parse(file.toString()))
