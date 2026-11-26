@@ -4,8 +4,14 @@ import { PlayerRole, type PlayerModel } from '../../database/models/player.model
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 
 const updateMany = vi.hoisted(() => vi.fn())
+const findOne = vi.hoisted(() => vi.fn())
 const handlers = vi.hoisted(() => new Map<string, (payload: never) => Promise<void>>())
-vi.mock('../../database/collections', () => ({ collections: { chatMessages: { updateMany } } }))
+vi.mock('../../database/collections', () => ({
+  collections: { chatMessages: { updateMany }, players: { findOne } },
+}))
+vi.mock('../../players', () => ({
+  players: { forPlayer: () => ({ runExclusive: (fn: () => unknown) => fn() }) },
+}))
 vi.mock('../../events', () => ({
   events: {
     on: (event: string, handler: (payload: never) => Promise<void>) => handlers.set(event, handler),
@@ -18,8 +24,10 @@ const before = {
   name: 'Birch',
   roles: [] as PlayerRole[],
 } as Events['player:updated']['before']
-const update = (after: Partial<PlayerModel>) =>
-  handlers.get('player:updated')!({ before, after: { ...before, ...after } } as never)
+const update = (after: Partial<PlayerModel>) => {
+  findOne.mockResolvedValue({ ...before, ...after })
+  return handlers.get('player:updated')!({ before, after: { ...before, ...after } } as never)
+}
 
 describe('update chat author on player change', () => {
   beforeAll(async () => {
@@ -43,6 +51,14 @@ describe('update chat author on player change', () => {
     await update({ roles: [PlayerRole.admin] })
     expect(updateMany).toHaveBeenCalledWith(expect.anything(), {
       $set: { author: { steamId: before.steamId, name: 'Birch', admin: true } },
+    })
+  })
+
+  it('writes the player as they are now, not as the event saw them', async () => {
+    findOne.mockResolvedValueOnce({ ...before, name: 'Elm' })
+    await handlers.get('player:updated')!({ before, after: { ...before, name: 'Oak' } } as never)
+    expect(updateMany).toHaveBeenCalledWith(expect.anything(), {
+      $set: { author: { steamId: before.steamId, name: 'Elm', admin: false } },
     })
   })
 

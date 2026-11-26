@@ -21,22 +21,31 @@ const mutex = new Mutex()
 
 export async function send(params: SendParams): Promise<WithId<ChatMessageModel>> {
   return await mutex.runExclusive(async () => {
-    const player = await players.bySteamId(params.author, ['chatMutes', 'steamId', 'name', 'roles'])
-    if (players.restrictions.active(player, 'chatMute').length > 0) {
-      throw errors.forbidden('you are muted')
-    }
+    // under the player's lock, so a rename, role change or deletion can't slip between reading the
+    // author and storing their copy
+    await players.forPlayer(params.author).runExclusive(async () => {
+      const player = await players.bySteamId(params.author, [
+        'chatMutes',
+        'steamId',
+        'name',
+        'roles',
+      ])
+      if (players.restrictions.active(player, 'chatMute').length > 0) {
+        throw errors.forbidden('you are muted')
+      }
 
-    const escaped = escape(params.body)
-    const { body: originalBody, mentions } = await resolveMentions(escaped)
-    const mentionNames = await getMentionNames(mentions)
-    const formattedBody = formatBody(originalBody, mentionNames)
+      const escaped = escape(params.body)
+      const { body: originalBody, mentions } = await resolveMentions(escaped)
+      const mentionNames = await getMentionNames(mentions)
+      const formattedBody = formatBody(originalBody, mentionNames)
 
-    await collections.chatMessages.insertOne({
-      author: chatAuthor(player),
-      originalBody,
-      body: formattedBody,
-      mentions,
-      at: new Date(),
+      await collections.chatMessages.insertOne({
+        author: chatAuthor(player),
+        originalBody,
+        body: formattedBody,
+        mentions,
+        at: new Date(),
+      })
     })
     const message = await collections.chatMessages.findOne({}, { sort: { at: -1 } })
     if (!message) {

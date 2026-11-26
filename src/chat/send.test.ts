@@ -17,6 +17,7 @@ vi.mock('../players', () => ({
       .fn()
       .mockResolvedValue({ steamId: '76561198000000000', name: 'Birch', roles: ['admin'] }),
     restrictions: { active: () => [] },
+    forPlayer: () => ({ runExclusive: (fn: () => unknown) => fn() }),
   },
 }))
 vi.mock('../events', () => ({ events: { emit: vi.fn() } }))
