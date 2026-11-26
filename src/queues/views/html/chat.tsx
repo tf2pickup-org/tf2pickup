@@ -2,13 +2,16 @@ import Html from '@kitajs/html'
 import { format, isSameDay, isToday, isYesterday } from 'date-fns'
 import type { WithId } from 'mongodb'
 import { chat } from '../../../chat'
-import type { ChatMessageModel } from '../../../database/models/chat-message.model'
+import type {
+  ChatMessageAuthor,
+  ChatMessageModel,
+} from '../../../database/models/chat-message.model'
 import { IconLoader3, IconSend2, IconX } from '../../../html/components/icons'
 import { players } from '../../../players'
 import type { User } from '../../../auth/types/user'
 import { PlayerRole } from '../../../database/models/player.model'
 import { DeletedUser } from '../../../html/components/deleted-user'
-import { isDeletedUser, type SteamId64 } from '../../../shared/types/steam-id-64'
+import { isDeletedUser } from '../../../shared/types/steam-id-64'
 
 export async function Chat(props: { user?: User | undefined }) {
   const isAdmin = props.user?.player.roles.includes(PlayerRole.admin) ?? false
@@ -214,7 +217,7 @@ async function ChatMessage(props: { message: WithId<ChatMessageModel> }) {
   return (
     <p class="chat-message" id={`msg-${messageId}`}>
       <span class="message-text">
-        <span class="at">{safeAt}</span> <ChatMessageAuthor steamId={props.message.author} />:{' '}
+        <span class="at">{safeAt}</span> <ChatMessageAuthor author={props.message.author} />:{' '}
         <span class="body">{safeBody}</span>
       </span>
       <button
@@ -232,16 +235,14 @@ async function ChatMessage(props: { message: WithId<ChatMessageModel> }) {
   )
 }
 
-async function ChatMessageAuthor(props: { steamId: SteamId64 }) {
-  if (isDeletedUser(props.steamId)) {
+function ChatMessageAuthor({ author }: { author: ChatMessageAuthor }) {
+  if (isDeletedUser(author.steamId)) {
     return <DeletedUser class="author" />
   }
-  const author = await players.bySteamId(props.steamId, ['name', 'roles', 'steamId'])
-  const isAdmin = author.roles.includes(PlayerRole.admin)
   return (
     <a
       href={`/players/${author.steamId}`}
-      class={`author ${isAdmin ? 'admin' : ''}`}
+      class={`author ${author.admin ? 'admin' : ''}`}
       preload="mousedown"
       safe
     >

@@ -23,8 +23,8 @@ export async function deletePlayer(steamId: SteamId64): Promise<void> {
     await anonymizeGames(steamId)
 
     await collections.chatMessages.updateMany(
-      { author: steamId },
-      { $set: { author: deletedUserSteamId } },
+      { 'author.steamId': steamId },
+      { $set: { author: { steamId: deletedUserSteamId, name: '', admin: false } } },
     )
     await anonymizeChatMentions(steamId)
 

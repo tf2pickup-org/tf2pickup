@@ -61,8 +61,8 @@ describe('deletePlayer()', () => {
   it('should anonymize chat messages and activity log', async () => {
     await deletePlayer(victim)
     expect(collections.chatMessages.updateMany).toHaveBeenCalledWith(
-      { author: victim },
-      { $set: { author: deletedUserSteamId } },
+      { 'author.steamId': victim },
+      { $set: { author: { steamId: deletedUserSteamId, name: '', admin: false } } },
     )
     expect(collections.activityLog.updateMany).toHaveBeenCalledWith(
       { player: victim },

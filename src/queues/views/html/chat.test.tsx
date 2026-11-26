@@ -3,18 +3,20 @@ import { parse } from 'node-html-parser'
 import { ObjectId } from 'mongodb'
 import { ChatMessageList, ChatMessages } from './chat'
 import type { SteamId64 } from '../../../shared/types/steam-id-64'
+import { players } from '../../../players'
 
 vi.mock('../../../chat', () => ({ chat: {} }))
-vi.mock('../../../players', () => ({
-  players: {
-    bySteamId: vi
-      .fn()
-      .mockResolvedValue({ name: 'Birch', roles: [], steamId: '76561198000000000' }),
-  },
-}))
+vi.mock('../../../players', () => ({ players: { bySteamId: vi.fn() } }))
 
 function message(at: Date) {
-  return { _id: new ObjectId(), at, author: '76561198000000000' as SteamId64, body: 'hi' }
+  return {
+    _id: new ObjectId(),
+    at,
+    author: { steamId: '76561198000000000' as SteamId64, name: 'Birch', admin: false },
+    body: 'hi',
+    mentions: [],
+    originalBody: 'hi',
+  }
 }
 
 const today = new Date(2026, 10, 12, 20, 56)
@@ -40,6 +42,15 @@ describe('ChatMessageList', () => {
       'Yesterday',
     ])
     expect(days.map(day => day.querySelectorAll('.chat-message').length)).toEqual([2, 1])
+  })
+
+  it('renders the author stored on the message, without looking the player up', async () => {
+    const admin = { ...message(today), author: { ...message(today).author, admin: true } }
+    const author = parse(await ChatMessageList({ messages: [admin] })).querySelector('.author')!
+    expect(author.text).toBe('Birch')
+    expect(author.getAttribute('href')).toBe('/players/76561198000000000')
+    expect(author.classList.contains('admin')).toBe(true)
+    expect(players.bySteamId).not.toHaveBeenCalled()
   })
 
   it('appends older messages from the day that is already loaded to its group', async () => {

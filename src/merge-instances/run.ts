@@ -25,6 +25,8 @@ import { mergeGamemodeConfiguration } from './merge-gamemode-configuration'
 import { inheritIncomingWhitelist } from './inherit-incoming-whitelist'
 import type { Configuration } from '../database/models/configuration-entry.model'
 import { mergePlayers } from './merge-players'
+import { chatAuthor } from '../chat/chat-author'
+import type { ChatMessageModel } from '../database/models/chat-message.model'
 import { planQueues } from './plan-queues'
 import { renumberIncomingGames } from './renumber-incoming-games'
 import { runningGameStates } from '../games/lifecycle/running-game-states'
@@ -176,6 +178,15 @@ export async function mergeInstances(options: MergeOptions) {
       if (docs.length > 0) {
         await primary.collection(name).insertMany(docs.map(doc => omit(doc, ['_id'])))
       }
+    }
+    // the copied messages carry the incoming instance's name and roles; the merged player's win
+    const authors = new Set(
+      await incoming.collection<ChatMessageModel>('chat.messages').distinct('author.steamId'),
+    )
+    for (const player of players.filter(p => authors.has(p.steamId))) {
+      await primary
+        .collection<ChatMessageModel>('chat.messages')
+        .updateMany({ 'author.steamId': player.steamId }, { $set: { author: chatAuthor(player) } })
     }
 
     // the players came from the database, _id included
