@@ -63,7 +63,7 @@ const definitions: Partial<Record<keyof typeof collections, IndexDefinition[]>> 
   keys: [{ spec: { name: 1 }, options: { unique: true } }],
   secrets: [{ spec: { name: 1 }, options: { unique: true } }],
   telemetryStats: [{ spec: { day: 1 }, options: { unique: true } }],
-  chatMessages: [{ spec: { at: -1 } }],
+  chatMessages: [{ spec: { at: -1 } }, { spec: { 'author.steamId': 1 } }],
   queueMapOptions: [{ spec: { queue: 1, name: 1 }, options: { unique: true } }],
   discordSubstituteNotifications: [
     { spec: { guildId: 1, gameNumber: 1, slotId: 1 }, options: { unique: true } },

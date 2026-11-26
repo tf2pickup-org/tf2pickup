@@ -75,7 +75,7 @@ describe('notify-mentioned-players plugin', () => {
       message: {
         mentions: ['76561198000000001' as SteamId64],
         at: new Date(),
-        author: '76561198000000002' as SteamId64,
+        author: { steamId: '76561198000000002' as SteamId64, name: 'Birch', admin: false },
         body: 'hey @wonszu',
         originalBody: 'hey @wonszu',
       },
@@ -93,7 +93,7 @@ describe('notify-mentioned-players plugin', () => {
       message: {
         mentions: ['76561198000000001' as SteamId64],
         at: new Date(),
-        author: '76561198000000002' as SteamId64,
+        author: { steamId: '76561198000000002' as SteamId64, name: 'Birch', admin: false },
         body: 'hey @wonszu',
         originalBody: 'hey @wonszu',
       },
@@ -108,7 +108,7 @@ describe('notify-mentioned-players plugin', () => {
       message: {
         mentions: [],
         at: new Date(),
-        author: '76561198000000002' as SteamId64,
+        author: { steamId: '76561198000000002' as SteamId64, name: 'Birch', admin: false },
         body: 'hello world',
         originalBody: 'hello world',
       },

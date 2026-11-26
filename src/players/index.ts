@@ -1,6 +1,7 @@
 import { bySteamId } from './by-steam-id'
 import { deletePlayer } from './delete-player'
 import { findByName } from './find-by-name'
+import { forPlayer } from './mutex'
 import { getBanExpiryDate } from './get-ban-expiry-date'
 import { isAdmin } from './is-admin'
 import { restrictions } from './restrictions'
@@ -13,6 +14,7 @@ export const players = {
   bySteamId,
   deletePlayer,
   findByName,
+  forPlayer,
   getBanExpiryDate,
   isAdmin,
   restrictions,
