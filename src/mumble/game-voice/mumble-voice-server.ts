@@ -38,6 +38,34 @@ function wrap(channel: Channel): VoiceChannel {
       return wrap(await channel.createSubChannel(name))
     },
     async saveAcl(acl) {
+      const version: unknown = channel.client.serverVersion
+      if (
+        typeof version === 'object' &&
+        version !== null &&
+        'release' in version &&
+        version.release === '1.6.1001'
+      ) {
+        // This release looks up the certificate hash as a group name when saving.
+        // Empty groups satisfy that lookup while the $ ACL still matches the certificate.
+        const names = new Set(
+          acl.entries.flatMap(({ group }) => (group?.startsWith('$') ? [group.slice(1)] : [])),
+        )
+        acl = {
+          ...acl,
+          groups: [
+            ...acl.groups,
+            ...Array.from(names, name => ({
+              name,
+              inherit: false,
+              inheritable: false,
+              inherited: false,
+              add: [],
+              remove: [],
+              inheritedMembers: [],
+            })),
+          ],
+        }
+      }
       // the update and the query that confirms it
       await runInCommandQueue(async () => {
         await channel.saveAcl(acl)
