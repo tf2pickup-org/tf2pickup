@@ -9,6 +9,7 @@ import { collections } from '../../database/collections'
 import { logger } from '../../logger'
 import { meter } from '../../otel'
 import { ValueType } from '@opentelemetry/api'
+import { keyedMutex } from '../../utils/keyed-mutex'
 
 interface GameEvent {
   /* name of the game event */
@@ -292,8 +293,14 @@ async function testForGameEvent(message: string, logSecret: string): Promise<Eve
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
   async () => {
+    // each line awaits a game lookup before it emits; serialize per log secret
+    // so a game's events are emitted in log line order
+    const exclusive = keyedMutex()
+
     events.on('gamelog:message', async ({ message }) => {
-      const result = await testForGameEvent(message.payload, message.password)
+      const result = await exclusive(message.password, () =>
+        testForGameEvent(message.payload, message.password),
+      )
       eventCounter.add(1, {
         'tf2pickup.games.event.handled': result.handled,
         ...(result.handled ? { 'tf2pickup.game.number': result.gameNumber } : {}),

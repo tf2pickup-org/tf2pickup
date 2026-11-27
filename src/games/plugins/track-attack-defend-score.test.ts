@@ -36,6 +36,7 @@ import { findOne } from '../find-one'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import { GameEventType } from '../../database/models/game-event.model'
 import plugin from './track-attack-defend-score'
+import { matchEventsMutex } from '../match-events-mutex'
 import type { GameModel, GameNumber } from '../../database/models/game.model'
 
 const gameNumber = 2784 as GameNumber
@@ -230,5 +231,23 @@ describe('track-attack-defend-score', () => {
     expect(update).toHaveBeenLastCalledWith(gameNumber, {
       $set: { 'score.blu': 1, 'score.red': 0 },
     })
+  })
+
+  it('waits for earlier match events of the same game before storing the final score', async () => {
+    vi.mocked(findOne).mockResolvedValue({
+      score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 3 },
+      events: [],
+    } as never)
+    let release!: () => void
+    const held = matchEventsMutex(gameNumber, () => new Promise<void>(r => (release = r)))
+
+    const handled = scoreFinalHandler({ gameNumber, team: Tf2Team.red, score: 3 })
+    await new Promise(r => setTimeout(r, 0))
+    expect(update).not.toHaveBeenCalled()
+
+    release()
+    await held
+    await handled
+    expect(update).toHaveBeenCalledWith(gameNumber, { $set: { 'score.red': 3 } })
   })
 })

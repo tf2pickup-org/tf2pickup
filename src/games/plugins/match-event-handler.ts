@@ -5,6 +5,7 @@ import { PlayerConnectionStatus } from '../../database/models/game-slot.model'
 import { update } from '../update'
 import { safe } from '../../utils/safe'
 import { gameLifecycle } from '../lifecycle'
+import { matchEventsMutex } from '../match-events-mutex'
 
 export default fp(
   // eslint-disable-next-line @typescript-eslint/require-await
@@ -32,7 +33,7 @@ export default fp(
     events.on(
       'match:ended',
       safe(async ({ gameNumber }) => {
-        await gameLifecycle.end(gameNumber)
+        await matchEventsMutex(gameNumber, () => gameLifecycle.end(gameNumber))
       }),
     )
 

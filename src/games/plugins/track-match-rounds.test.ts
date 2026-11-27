@@ -83,33 +83,38 @@ const { roundProgressStore, gamesRoundProgress } = vi.hoisted(() => {
   const find = (filter: Doc): Doc | undefined =>
     [...store.values()].find(doc => matches(doc, filter))
 
+  // every operation lands after a macrotask, like a real database round-trip,
+  // so handlers that aren't awaited one after another can interleave
+  const roundTrip = () => new Promise(resolve => setTimeout(resolve, 1))
+
   return {
     roundProgressStore: store,
     gamesRoundProgress: {
-      updateOne: (filter: Doc, update: Doc, options?: { upsert?: boolean }) => {
+      updateOne: async (filter: Doc, update: Doc, options?: { upsert?: boolean }) => {
+        await roundTrip()
         let doc = find(filter)
         if (!doc) {
           if (!options?.upsert) {
-            return Promise.resolve()
+            return
           }
           doc = { gameNumber: filter['gameNumber'] }
           store.set(filter['gameNumber'] as number, doc)
         }
         applyUpdate(doc, update)
-        return Promise.resolve()
       },
-      findOneAndUpdate: (filter: Doc, update: Doc, options?: { returnDocument?: string }) => {
+      findOneAndUpdate: async (filter: Doc, update: Doc, options?: { returnDocument?: string }) => {
+        await roundTrip()
         const doc = find(filter)
         if (!doc) {
-          return Promise.resolve(null)
+          return null
         }
         const before = structuredClone(doc)
         applyUpdate(doc, update)
-        return Promise.resolve(options?.returnDocument === 'before' ? before : doc)
+        return options?.returnDocument === 'before' ? before : doc
       },
-      deleteOne: (filter: Doc) => {
+      deleteOne: async (filter: Doc) => {
+        await roundTrip()
         store.delete(filter['gameNumber'] as number)
-        return Promise.resolve()
       },
     },
   }
@@ -296,6 +301,32 @@ describe('track-match-rounds', () => {
     expect(update).not.toHaveBeenCalledWith(
       { number: gameNumber },
       { $push: { events: { at: expect.any(Date), event: GameEventType.teamsSwapped } } },
+    )
+  })
+
+  it('commits the final round even when the match ends right after it', async () => {
+    // TF2 logs the winning round's lines within milliseconds of Game_Over and
+    // the event emitter doesn't await handlers, so they all run concurrently
+    vi.mocked(findOne).mockResolvedValue({ score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 2 } } as never)
+    await Promise.all([
+      handlerFor('match:roundWon')({ gameNumber, winner: Tf2Team.red } as never),
+      handlerFor('match:roundLength')({ gameNumber, lengthMs: 30_000 } as never),
+      handlerFor('match/score:reported')({ gameNumber, teamName: Tf2Team.red, score: 3 } as never),
+      handlerFor('match/score:reported')({ gameNumber, teamName: Tf2Team.blu, score: 0 } as never),
+      handlerFor('match:ended')({ gameNumber } as never),
+    ])
+
+    expect(update).toHaveBeenCalledWith(
+      { number: gameNumber },
+      expect.objectContaining({
+        $push: {
+          events: expect.objectContaining({
+            event: GameEventType.roundEnded,
+            winner: Tf2Team.red,
+            score: { [Tf2Team.blu]: 0, [Tf2Team.red]: 3 },
+          }),
+        },
+      }),
     )
   })
 })
