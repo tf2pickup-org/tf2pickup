@@ -311,8 +311,8 @@ importers:
         specifier: 0.5.0
         version: 0.5.0
       chart.js:
-        specifier: 4.6.1
-        version: 4.6.1
+        specifier: 4.6.2
+        version: 4.6.2
       country-flag-icons:
         specifier: 1.6.20
         version: 1.6.20
@@ -1120,8 +1120,8 @@ packages:
       '@kitajs/html': ^4.2.10
       typescript: ^5.9.3
 
-  '@kurkle/color@0.3.2':
-    resolution: {integrity: sha512-fuscdXJ9G1qb7W8VdHi+IwRqij3lBkosAm4ydQtEmbY58OzHXqQhvlxqEkoz0yssNVn38bcpRWgA9PP+OGoisw==}
+  '@kurkle/color@0.6.6':
+    resolution: {integrity: sha512-Bd1NjGyoe27ExXRIBu13YymFP6k/wFxpUkX97Z3RlofLFV43nECB2G8vETZzcZzz2Ct2oRzwYElX65lxyi5UNg==}
 
   '@lukeed/ms@2.0.2':
     resolution: {integrity: sha512-9I2Zn6+NJLfaGoz9jN3lpwDgAYvfGeNYdbAIjJOqzs4Tpc+VU3Jqq4IofSUBKajiDS8k9fZIg18/z13mpk1bsA==}
@@ -2111,9 +2111,9 @@ packages:
   charenc@0.0.2:
     resolution: {integrity: sha512-yrLQ/yVUFXkzg7EDQsPieE/53+0RlaWTs+wBrvW36cyilJ2SaDWfl4Yj7MtLTXleV9uEKefbAGUPv2/iWSooRA==}
 
-  chart.js@4.6.1:
-    resolution: {integrity: sha512-hJyniucsFmq//EvXYvJ6c6mahPoI3kaxdjVH8awTaJ/fDNWeSqqqArixMJWkWNN6fcYvPU3HneSANFNYtRi61g==}
-    engines: {pnpm: '>=8'}
+  chart.js@4.6.2:
+    resolution: {integrity: sha512-xachB+pPHjp0syJi7llUBA1w3kMYl6NF3o7eVrvjnWCT+IB2zMaF2pX5UYDiwbbfsioFEIRnAjreNOMsGj5TIA==}
+    engines: {pnpm: '>=12'}
 
   chokidar@3.6.0:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
@@ -5024,7 +5024,7 @@ snapshots:
       typescript: 6.0.3
       yargs: 18.0.0
 
-  '@kurkle/color@0.3.2': {}
+  '@kurkle/color@0.6.6': {}
 
   '@lukeed/ms@2.0.2': {}
 
@@ -5990,9 +5990,9 @@ snapshots:
 
   charenc@0.0.2: {}
 
-  chart.js@4.6.1:
+  chart.js@4.6.2:
     dependencies:
-      '@kurkle/color': 0.3.2
+      '@kurkle/color': 0.6.6
 
   chokidar@3.6.0:
     dependencies:
