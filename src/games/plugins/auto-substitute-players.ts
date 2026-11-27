@@ -28,6 +28,10 @@ export default fp(
 
       const timeout = await calculateJoinGameserverTimeout(game, player)
       if (timeout && timeout.getTime() > Date.now()) {
+        await tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
+          gameNumber,
+          player,
+        })
         return
       }
 

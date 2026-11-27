@@ -11,13 +11,14 @@ vi.mock('../../configuration', () => ({
   configuration: { get: async (key: string) => configuration.get(key) },
 }))
 
+const mockSchedule = vi.hoisted(() => vi.fn())
 const registeredTasks = vi.hoisted(
   () => new Map<string, (args: { gameNumber: GameNumber; player: SteamId64 }) => Promise<void>>(),
 )
 vi.mock('../../tasks', () => ({
   tasks: {
     register: (name: string, task: never) => registeredTasks.set(name, task),
-    schedule: vi.fn(),
+    schedule: mockSchedule,
     cancel: vi.fn(),
   },
 }))
@@ -69,6 +70,25 @@ it('does not request a substitute when the sync just marked the player offline',
   await runTask()
 
   expect(mockRequestSubstitute).toHaveBeenCalledTimes(0)
+})
+
+it('re-schedules itself when it fires just before the rejoin deadline', async () => {
+  mockSync.mockImplementation(async () => {
+    game.current = startedGameWithOfflinePlayerLeftAt(
+      new Date(Date.now() - minutesToMilliseconds(3) + 50),
+    )
+  })
+
+  await runTask()
+
+  expect(mockRequestSubstitute).toHaveBeenCalledTimes(0)
+  expect(mockSchedule).toHaveBeenCalledWith('games:autoSubstitutePlayer', expect.any(Number), {
+    gameNumber,
+    player,
+  })
+  const delay = mockSchedule.mock.calls[0]![1] as number
+  expect(delay).toBeGreaterThan(0)
+  expect(delay).toBeLessThanOrEqual(50)
 })
 
 it('requests a substitute once the rejoin window has passed', async () => {
