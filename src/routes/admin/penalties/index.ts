@@ -48,7 +48,7 @@ export default routes(async app => {
             .and(joinQueueCooldown)
             .refine(
               ({ 'banLength[]': length, 'banLengthUnit[]': unit }) => length.length === unit.length,
-              { message: 'banLength[] and banLengthUnit[] must be of the same length' },
+              { error: 'banLength[] and banLengthUnit[] must be of the same length' },
             ),
         },
       },
