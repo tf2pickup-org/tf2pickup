@@ -8,6 +8,7 @@ import type { GameNumber } from '../../database/models/game.model'
 import type { SteamId64 } from '../../shared/types/steam-id-64'
 import { Tf2Team } from '../../shared/types/tf2-team'
 import plugin from './match-event-handler'
+import { matchEventsMutex } from '../match-events-mutex'
 
 vi.mock('fastify-plugin', () => ({
   default: <T>(fn: T): T => fn,
@@ -84,5 +85,19 @@ describe('match-event-handler', () => {
   it('stores the logs url even after the game has ended', async () => {
     await handler('match/logs:uploaded')({ gameNumber, logsUrl: 'https://logs.tf/1' })
     expect(update).toHaveBeenCalledWith(gameNumber, { $set: { logsUrl: 'https://logs.tf/1' } })
+  })
+
+  it('ends the game only after earlier match events of the same game are handled', async () => {
+    let release!: () => void
+    const held = matchEventsMutex(gameNumber, () => new Promise<void>(r => (release = r)))
+
+    const handled = handler('match:ended')({ gameNumber })
+    await new Promise(r => setTimeout(r, 0))
+    expect(gameLifecycle.end).not.toHaveBeenCalled()
+
+    release()
+    await held
+    await handled
+    expect(gameLifecycle.end).toHaveBeenCalledWith(gameNumber)
   })
 })

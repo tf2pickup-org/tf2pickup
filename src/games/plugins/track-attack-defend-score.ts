@@ -7,6 +7,7 @@ import { findOne } from '../find-one'
 import { safe } from '../../utils/safe'
 import { GameEventType, type RoundEnded } from '../../database/models/game-event.model'
 import { isStopwatchGame } from '../is-stopwatch-game'
+import { matchEventsMutex } from '../match-events-mutex'
 
 type ScoreByTeam = Record<Tf2Team, number>
 
@@ -37,38 +38,40 @@ export default fp(
     events.on(
       'match/score:final',
       safe(async ({ gameNumber, team, score }) => {
-        await update(gameNumber, { $set: { [`score.${team}`]: score } })
+        await matchEventsMutex(gameNumber, async () => {
+          await update(gameNumber, { $set: { [`score.${team}`]: score } })
 
-        const game = await findOne({ number: gameNumber }, ['score', 'events'])
-        if (game.score?.[Tf2Team.blu] !== 0 || game.score[Tf2Team.red] !== 0) {
-          return
-        }
+          const game = await findOne({ number: gameNumber }, ['score', 'events'])
+          if (game.score?.[Tf2Team.blu] !== 0 || game.score[Tf2Team.red] !== 0) {
+            return
+          }
 
-        const rounds = game.events.filter(
-          (event): event is RoundEnded => event.event === GameEventType.roundEnded,
-        )
-        if (rounds.length === 0) {
-          return
-        }
+          const rounds = game.events.filter(
+            (event): event is RoundEnded => event.event === GameEventType.roundEnded,
+          )
+          if (rounds.length === 0) {
+            return
+          }
 
-        // Only attack/defend & payload (stopwatch) maps report a broken 0:0
-        // final score. On symmetric maps (cp/koth) TF2 reports the final score
-        // correctly, so if this isn't a stopwatch game, leave the score
-        // untouched.
-        if (!isStopwatchGame(game.events)) {
-          return
-        }
+          // Only attack/defend & payload (stopwatch) maps report a broken 0:0
+          // final score. On symmetric maps (cp/koth) TF2 reports the final score
+          // correctly, so if this isn't a stopwatch game, leave the score
+          // untouched.
+          if (!isStopwatchGame(game.events)) {
+            return
+          }
 
-        const computedScore = computeAttackDefendScore(rounds)
-        logger.info(
-          { gameNumber, score: computedScore },
-          'final score reported as 0:0, recomputed from the last round winner',
-        )
-        await update(gameNumber, {
-          $set: {
-            'score.blu': computedScore[Tf2Team.blu],
-            'score.red': computedScore[Tf2Team.red],
-          },
+          const computedScore = computeAttackDefendScore(rounds)
+          logger.info(
+            { gameNumber, score: computedScore },
+            'final score reported as 0:0, recomputed from the last round winner',
+          )
+          await update(gameNumber, {
+            $set: {
+              'score.blu': computedScore[Tf2Team.blu],
+              'score.red': computedScore[Tf2Team.red],
+            },
+          })
         })
       }),
     )
