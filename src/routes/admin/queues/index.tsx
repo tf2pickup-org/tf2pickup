@@ -184,7 +184,7 @@ export default routes(async app => {
             })
             .refine(
               ({ 'name[]': name, 'execConfig[]': execConfig }) => name.length === execConfig.length,
-              { message: 'name[] and execConfig[] must be of the same length' },
+              { error: 'name[] and execConfig[] must be of the same length' },
             )
             .transform(({ 'name[]': name, 'execConfig[]': execConfig }) => ({
               maps: name.map((mapName, i): MapPoolEntry => ({

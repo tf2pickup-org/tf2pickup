@@ -150,7 +150,7 @@ export class QueuePage {
 
   async preReadyUp() {
     await expect(this.preReadyUpButton).not.toHaveAttribute('aria-pressed', 'true')
-    await this.preReadyUpButton.click({ noWaitAfter: true })
+    await this.preReadyUpButton.click()
     await expect(this.preReadyUpButton).toHaveAttribute('aria-pressed', 'true')
   }
 
