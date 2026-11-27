@@ -8,6 +8,7 @@ import { PlayerConnectionStatus, SlotStatus } from '../../database/models/game-s
 import { GameEventType } from '../../database/models/game-event.model'
 
 vi.mock('../../logger', () => ({ logger: { error: vi.fn() } }))
+vi.mock('../../database/collections', () => ({ collections: {} }))
 vi.mock('../../otel', () => ({
   meter: {
     createCounter: () => ({ add: vi.fn() }),
