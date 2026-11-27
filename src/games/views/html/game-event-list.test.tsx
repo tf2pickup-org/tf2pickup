@@ -76,3 +76,21 @@ describe('GameEventList', () => {
     expect(text).not.toContain('rejoined')
   })
 })
+
+describe('GameEventList.replace', () => {
+  it('swaps the whole event list out of band, newest event first', async () => {
+    const html = await GameEventList.replace({
+      game: game([
+        { event: GameEventType.gameCreated, at: new Date(1) },
+        { event: GameEventType.gameStarted, at: new Date(2) },
+      ] as GameEventModel[]),
+    })
+
+    const list = parse(html).querySelector('#game-24-event-list')
+    expect(list?.getAttribute('hx-swap-oob')).toBe('outerHTML')
+    expect(list?.querySelectorAll('.game-event > div').map(e => e.text.trim())).toEqual([
+      'Game started',
+      'Game created',
+    ])
+  })
+})

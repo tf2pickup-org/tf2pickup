@@ -32,29 +32,40 @@ const renderedEvents = [
 ]
 
 export async function GameEventList(props: { game: GameModel }) {
-  const events = props.game.events.toSorted((a, b) => b.at.getTime() - a.at.getTime())
-
   return (
     <div class="game-events">
       <span class="game-events-caption">Game events</span>
-      <div
-        class="game-event-list fade-scroll"
-        data-fade-scroll
-        id={`game-${props.game.number}-event-list`}
-        aria-label="Game events"
-      >
-        {events.map(event => (
-          <GameEvent game={props.game} event={event} />
-        ))}
-      </div>
+      <Events game={props.game} />
     </div>
   )
+}
+
+GameEventList.replace = function (props: { game: GameModel }) {
+  return <Events game={props.game} oob />
 }
 
 GameEventList.append = function (props: { game: GameModel; event: GameEventModel }) {
   return (
     <div id={`game-${props.game.number}-event-list`} hx-swap-oob="afterbegin">
       <GameEvent {...props} />
+    </div>
+  )
+}
+
+function Events(props: { game: GameModel; oob?: boolean }) {
+  const events = props.game.events.toSorted((a, b) => b.at.getTime() - a.at.getTime())
+
+  return (
+    <div
+      class="game-event-list fade-scroll"
+      data-fade-scroll
+      id={`game-${props.game.number}-event-list`}
+      aria-label="Game events"
+      {...(props.oob ? { 'hx-swap-oob': 'outerHTML' } : {})}
+    >
+      {events.map(event => (
+        <GameEvent game={props.game} event={event} />
+      ))}
     </div>
   )
 }
