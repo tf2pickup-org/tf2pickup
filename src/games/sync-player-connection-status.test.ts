@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { secondsToMilliseconds } from 'date-fns'
 import type { GameNumber } from '../database/models/game.model'
+import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus } from '../database/models/game-slot.model'
 import type { SteamId64 } from '../shared/types/steam-id-64'
 import type { Rcon } from './rcon/with-rcon'
@@ -85,7 +86,11 @@ it('marks a player as offline when not on the server but not yet marked offline'
 
   await syncPlayerConnectionStatus(number)
 
-  expect(mockSetConnection).toHaveBeenCalledWith(number, player1, PlayerConnectionStatus.offline)
+  expect(mockSetConnection).toHaveBeenCalledWith(number, player1, PlayerConnectionStatus.offline, {
+    at: expect.any(Date),
+    event: GameEventType.playerLeftGameServer,
+    player: player1,
+  })
 })
 
 it('does nothing when the stored status already matches the server', async () => {
@@ -121,7 +126,12 @@ it('reconciles multiple slots with mixed states in a single call', async () => {
 
   expect(mockSetConnection).toHaveBeenCalledTimes(2)
   expect(mockSetConnection).toHaveBeenCalledWith(number, player1, PlayerConnectionStatus.connected)
-  expect(mockSetConnection).toHaveBeenCalledWith(number, player2, PlayerConnectionStatus.offline)
+  expect(mockSetConnection).toHaveBeenCalledWith(
+    number,
+    player2,
+    PlayerConnectionStatus.offline,
+    expect.objectContaining({ event: GameEventType.playerLeftGameServer }),
+  )
 })
 
 it('swallows rcon failures without throwing', async () => {

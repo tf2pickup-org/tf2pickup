@@ -1,3 +1,4 @@
+import { GameEventType } from '../database/models/game-event.model'
 import { PlayerConnectionStatus } from '../database/models/game-slot.model'
 import type { GameNumber } from '../database/models/game.model'
 import { logger } from '../logger'
@@ -43,6 +44,11 @@ async function syncPlayerConnectionStatusImpl(gameNumber: GameNumber): Promise<v
             game.number,
             slot.player,
             PlayerConnectionStatus.offline,
+            {
+              at: new Date(),
+              event: GameEventType.playerLeftGameServer,
+              player: slot.player,
+            },
           )
           logger.info(`game #${game.number}: player ${slot.player} synced as offline`)
         }

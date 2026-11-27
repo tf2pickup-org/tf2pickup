@@ -16,13 +16,22 @@ export default fp(
     tasks.register('games:autoSubstitutePlayer', async ({ gameNumber, player }) => {
       await syncPlayerConnectionStatus(gameNumber)
 
-      const game = await findOne({ number: gameNumber }, ['slots'])
+      const game = await findOne({ number: gameNumber })
       const slot = game.slots.find(slot => slot.player === player)
       if (!slot) {
         throw errors.badRequest(`player is not a member of game ${gameNumber}`)
       }
 
       if (slot.connectionStatus !== PlayerConnectionStatus.offline) {
+        return
+      }
+
+      const timeout = await calculateJoinGameserverTimeout(game, player)
+      if (timeout && timeout.getTime() > Date.now()) {
+        await tasks.schedule('games:autoSubstitutePlayer', timeout.getTime() - Date.now(), {
+          gameNumber,
+          player,
+        })
         return
       }
 
