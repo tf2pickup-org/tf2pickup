@@ -10,6 +10,7 @@ import { GameEventType } from '../../database/models/game-event.model'
 import { findOne } from '../find-one'
 import { isStopwatchRound } from '../is-stopwatch-round'
 import { collections } from '../../database/collections'
+import { keyedMutex } from '../../utils/keyed-mutex'
 
 // Upserting into the progress document races on its unique gameNumber index:
 // when two log lines for a brand-new game arrive near-simultaneously, both
@@ -119,48 +120,69 @@ export default fp(
       )
     }
 
+    // the event emitter doesn't await handlers, and the final round's lines
+    // arrive within milliseconds of Game_Over; without serializing them per game
+    // the match:ended cleanup could drop a round before it's claimed
+    const exclusive = keyedMutex()
+
     events.on('match:roundWon', async ({ gameNumber, winner }) => {
-      await upsertRoundProgress(gameNumber, { $set: { 'round.winner': winner } })
-      await maybeRoundEnded(gameNumber)
+      await exclusive(gameNumber, async () => {
+        await upsertRoundProgress(gameNumber, { $set: { 'round.winner': winner } })
+        await maybeRoundEnded(gameNumber)
+      })
     })
 
     events.on('match:roundLength', async ({ gameNumber, lengthMs }) => {
-      await upsertRoundProgress(gameNumber, { $set: { 'round.lengthMs': lengthMs } })
-      await maybeRoundEnded(gameNumber)
+      await exclusive(gameNumber, async () => {
+        await upsertRoundProgress(gameNumber, { $set: { 'round.lengthMs': lengthMs } })
+        await maybeRoundEnded(gameNumber)
+      })
     })
 
     events.on('match/score:reported', async ({ gameNumber, teamName, score }) => {
-      await upsertRoundProgress(gameNumber, { $set: { [`round.score.${teamName}`]: score } })
-      await maybeRoundEnded(gameNumber)
+      await exclusive(gameNumber, async () => {
+        await upsertRoundProgress(gameNumber, { $set: { [`round.score.${teamName}`]: score } })
+        await maybeRoundEnded(gameNumber)
+      })
     })
 
     events.on('match/controlPoint:captured', async ({ gameNumber, team, controlPoint }) => {
-      await upsertRoundProgress(gameNumber, { $push: { [`round.captures.${team}`]: controlPoint } })
+      await exclusive(gameNumber, async () => {
+        await upsertRoundProgress(gameNumber, {
+          $push: { [`round.captures.${team}`]: controlPoint },
+        })
+      })
     })
 
     events.on('match:started', async ({ gameNumber }) => {
-      const before = await collections.gamesRoundProgress.findOneAndUpdate(
-        { gameNumber, swapPending: true },
-        { $set: { swapPending: false } },
-      )
-      if (!before) {
-        return
-      }
-      logger.info({ gameNumber }, 'teams swapped sides')
-      await update(
-        { number: gameNumber },
-        { $push: { events: { at: new Date(), event: GameEventType.teamsSwapped } } },
-      )
+      await exclusive(gameNumber, async () => {
+        const before = await collections.gamesRoundProgress.findOneAndUpdate(
+          { gameNumber, swapPending: true },
+          { $set: { swapPending: false } },
+        )
+        if (!before) {
+          return
+        }
+        logger.info({ gameNumber }, 'teams swapped sides')
+        await update(
+          { number: gameNumber },
+          { $push: { events: { at: new Date(), event: GameEventType.teamsSwapped } } },
+        )
+      })
     })
 
     events.on('match:ended', async ({ gameNumber }) => {
-      await collections.gamesRoundProgress.deleteOne({ gameNumber })
+      await exclusive(gameNumber, async () => {
+        await collections.gamesRoundProgress.deleteOne({ gameNumber })
+      })
     })
 
     // a match restart aborts the round in progress; drop any partially
     // observed round data so it doesn't leak into the first post-restart round
     events.on('match/score:reset', async ({ gameNumber }) => {
-      await collections.gamesRoundProgress.deleteOne({ gameNumber })
+      await exclusive(gameNumber, async () => {
+        await collections.gamesRoundProgress.deleteOne({ gameNumber })
+      })
     })
   },
   {

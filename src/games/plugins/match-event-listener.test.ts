@@ -138,4 +138,37 @@ describe('match-event-listener', () => {
     await onGameLogMessage(roundStart('06/16/2026 - 10:38:23'))
     expect(events.emit).not.toHaveBeenCalledWith('match/score:reset', { gameNumber })
   })
+
+  it('emits events in log line order even when lookups resolve out of order', async () => {
+    vi.mocked(collections.games.findOne)
+      .mockImplementationOnce(
+        () =>
+          new Promise(resolve =>
+            setTimeout(() => {
+              resolve({ number: gameNumber } as never)
+            }, 10),
+          ) as never,
+      )
+      .mockResolvedValueOnce({ number: gameNumber } as never)
+
+    await Promise.all([
+      onGameLogMessage({
+        message: {
+          payload: '11/26/2026 - 14:04:41: World triggered "Round_Win" (winner "Red")',
+          password: logSecret,
+        },
+      }),
+      onGameLogMessage({
+        message: {
+          payload: '11/26/2026 - 14:04:41: World triggered "Game_Over" reason "Reached Win Limit"',
+          password: logSecret,
+        },
+      }),
+    ])
+
+    expect(vi.mocked(events.emit).mock.calls.map(([event]) => event)).toEqual([
+      'match:roundWon',
+      'match:ended',
+    ])
+  })
 })
