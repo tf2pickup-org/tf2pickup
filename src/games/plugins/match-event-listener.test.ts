@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('fastify-plugin', () => ({
@@ -38,6 +39,7 @@ import plugin from './match-event-listener'
 
 const gameNumber = 7615
 const logSecret = '12345'
+const fixturesDir = new URL('../../../tests/fixtures/logs/', import.meta.url)
 
 describe('match-event-listener', () => {
   let onGameLogMessage: (params: {
@@ -170,5 +172,18 @@ describe('match-event-listener', () => {
       'match:roundWon',
       'match:ended',
     ])
+  })
+
+  describe.each(readdirSync(fixturesDir))('replaying %s', fixture => {
+    it('emits the same events', async () => {
+      const lines = readFileSync(new URL(fixture, fixturesDir), 'utf-8')
+        .split(/\r?\n/)
+        .map(line => line.replace(/^L /, ''))
+        .filter(Boolean)
+      for (const payload of lines) {
+        await onGameLogMessage({ message: { payload, password: logSecret } })
+      }
+      expect(vi.mocked(events.emit).mock.calls).toMatchSnapshot()
+    })
   })
 })
