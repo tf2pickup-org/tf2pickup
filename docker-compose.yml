@@ -7,9 +7,13 @@ services:
       - mongo:/data/db
 
   mumble:
-    image: mumblevoip/mumble-server:latest
-    environment:
-      - MUMBLE_SUPERUSER_PASSWORD=123456
+    image: mumblevoip/mumble-server:v1.6.1001
+    post_start:
+      # Mumble 1.6 rejects the SuperUser password set by the image before its first startup.
+      - command: >-
+          bash -c 'until (exec 3<>/dev/tcp/127.0.0.1/64738) 2>/dev/null; do sleep 1; done;
+          mumble-server --foreground --ini /data/mumble_server_config.ini --set-su-pw 123456 0'
+        user: '10000:10000'
     ports:
       - 64738:64738/tcp
       - 64738:64738/udp
