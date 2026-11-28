@@ -4,6 +4,8 @@ import { findTargetChannel } from '../find-target-channel'
 import { runInCommandQueue } from '../run-in-command-queue'
 import type { VoiceChannel, VoiceServer } from './voice-server'
 
+const mumble161001 = (1n << 48n) | (6n << 32n) | (1001n << 16n)
+
 export const mumbleVoiceServer: VoiceServer = {
   async gamesChannel() {
     const channel = client?.self && (await findTargetChannel(client))
@@ -42,8 +44,8 @@ function wrap(channel: Channel): VoiceChannel {
       if (
         typeof version === 'object' &&
         version !== null &&
-        'release' in version &&
-        version.release === '1.6.1001'
+        'versionV2' in version &&
+        version.versionV2 === mumble161001
       ) {
         // This release looks up the certificate hash as a group name when saving.
         // Empty groups satisfy that lookup while the $ ACL still matches the certificate.
