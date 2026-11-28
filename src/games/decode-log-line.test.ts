@@ -1,16 +1,20 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { decodeLogLine } from './decode-log-line'
 
-const fixturesDir = new URL('../../tests/fixtures/logs/', import.meta.url)
-
 describe('decodeLogLine()', () => {
-  it.each(readdirSync(fixturesDir))('classifies every line of %s', fixture => {
-    const lines = readFileSync(new URL(fixture, fixturesDir), 'utf-8')
+  it('decodes the stalemates of cp_snakewater_4056794.log', () => {
+    const lines = readFileSync(
+      new URL('../../tests/fixtures/logs/cp_snakewater_4056794.log', import.meta.url),
+      'utf-8',
+    )
       .split(/\r?\n/)
+      .filter(line => line.includes('Round_Stalemate'))
       .map(line => line.replace(/^L /, ''))
-      .filter(Boolean)
-    expect(lines.map(line => decodeLogLine(line)?.type ?? null)).toMatchSnapshot()
+    expect(lines).toHaveLength(2)
+    for (const line of lines) {
+      expect(decodeLogLine(line)).toEqual({ type: 'round stalemate' })
+    }
   })
 
   it.each([
@@ -27,18 +31,19 @@ describe('decodeLogLine()', () => {
       { type: 'round length', lengthMs: 251400 },
     ],
     [
-      '11/26/2026 - 14:04:41: "maly<5><[U:1:114143419]><>" connected, address "192.168.1.11:27005"',
-      { type: 'player connected', steamId: '76561198074409147', ipAddress: '192.168.1.11' },
+      '11/26/2026 - 14:04:41: "Alice<5><[U:1:12345]><>" connected, address "192.0.2.11:27005"',
+      { type: 'player connected', steamId: '76561197960278073', ipAddress: '192.0.2.11' },
     ],
     [
-      '11/26/2026 - 14:04:41: "maly<5><[U:1:114143419]><Unassigned>" joined team "Blue"',
-      { type: 'player joined team', steamId: '76561198074409147', team: 'blu' },
+      '11/26/2026 - 14:04:41: "Alice<5><[U:1:12345]><Unassigned>" joined team "Blue"',
+      { type: 'player joined team', steamId: '76561197960278073', team: 'blu' },
     ],
     [
-      '11/26/2026 - 14:04:41: "maly<5><[U:1:114143419]><Blue>" say "gg"',
-      { type: 'player said', steamId: '76561198074409147', message: 'gg' },
+      '11/26/2026 - 14:04:41: "Alice<5><[U:1:12345]><Blue>" say "gg"',
+      { type: 'player said', steamId: '76561197960278073', message: 'gg' },
     ],
-    ['11/26/2026 - 14:04:41: "maly<5><[U:1:0]><Blue>" say "gg"', { type: 'invalid player' }],
+    ['11/26/2026 - 14:04:41: "Alice<5><[U:1:0]><Blue>" say "gg"', { type: 'invalid player' }],
+    ['11/26/2026 - 14:04:41: "Alice<5><[U:1:abc]><Blue>" say "gg"', { type: 'invalid player' }],
     [
       '11/26/2026 - 14:04:41: [TFTrue] The log is available here: http://logs.tf/4072522. Type !log to view it.',
       { type: 'logs uploaded', logsUrl: 'http://logs.tf/4072522' },

@@ -26,8 +26,12 @@ export type LogLineEvent =
 const fixTeamName = (teamName: string): Tf2Team => teamName.toLowerCase().substring(0, 3) as Tf2Team
 
 const toSteamId64 = (steamId: string): SteamId64 | null => {
-  const id = new SteamID(steamId)
-  return id.isValid() ? (id.getSteamID64() as SteamId64) : null
+  try {
+    const id = new SteamID(steamId)
+    return id.isValid() ? (id.getSteamID64() as SteamId64) : null
+  } catch {
+    return null
+  }
 }
 
 const decoders: [RegExp, (matches: RegExpMatchArray) => LogLineEvent | null][] = [
