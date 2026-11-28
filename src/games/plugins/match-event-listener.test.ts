@@ -1,3 +1,5 @@
+import { readdir, readFile } from 'node:fs/promises'
+import { join } from 'node:path'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('fastify-plugin', () => ({
@@ -170,5 +172,21 @@ describe('match-event-listener', () => {
       'match:roundWon',
       'match:ended',
     ])
+  })
+
+  it('classifies the recorded game logs the same way', async () => {
+    const fixtures = join(import.meta.dirname, '../../../tests/fixtures/logs')
+    const emitted: Record<string, unknown[]> = {}
+    for (const file of (await readdir(fixtures)).sort()) {
+      const lines = (await readFile(join(fixtures, file), 'utf-8')).split('\n').filter(Boolean)
+      for (const line of lines) {
+        await onGameLogMessage({
+          message: { payload: line.replace(/^L /, '').trimEnd(), password: logSecret },
+        })
+      }
+      emitted[file] = vi.mocked(events.emit).mock.calls
+      vi.mocked(events.emit).mockClear()
+    }
+    expect(emitted).toMatchSnapshot()
   })
 })

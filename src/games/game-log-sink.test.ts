@@ -6,7 +6,7 @@ import { gameLogSink } from './game-log-sink'
 vi.mock('../database/collections', () => ({
   collections: {
     gameLogs: {
-      findOneAndUpdate: vi.fn(),
+      updateOne: vi.fn(),
       deleteOne: vi.fn(),
     },
   },
@@ -16,9 +16,17 @@ vi.mock('../utils/hide-ip-addresses', () => ({
   hideIpAddresses: (s: string) => s,
 }))
 
+const updateResult = {
+  acknowledged: true,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0,
+  upsertedId: null,
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(collections.gameLogs.findOneAndUpdate).mockResolvedValue(null)
+  vi.mocked(collections.gameLogs.updateOne).mockResolvedValue(updateResult)
   vi.mocked(collections.gameLogs.deleteOne).mockResolvedValue({
     acknowledged: true,
     deletedCount: 1,
@@ -30,7 +38,7 @@ describe('push()', () => {
     gameLogSink.push({ payload: 'hello world', password: 'push-basic' })
     await gameLogSink.waitForCompletion('push-basic')
 
-    expect(collections.gameLogs.findOneAndUpdate).toHaveBeenCalledWith(
+    expect(collections.gameLogs.updateOne).toHaveBeenCalledWith(
       { logSecret: 'push-basic' },
       { $push: { logs: 'hello world' } },
       { upsert: true },
@@ -49,10 +57,10 @@ describe('push()', () => {
       })
       resolvers.push(resolve)
 
-      vi.mocked(collections.gameLogs.findOneAndUpdate).mockImplementationOnce(async () => {
+      vi.mocked(collections.gameLogs.updateOne).mockImplementationOnce(async () => {
         await promise
         results.push(value)
-        return null
+        return updateResult
       })
 
       gameLogSink.push({ payload: `msg${i}`, password: 'push-seq' })
@@ -79,16 +87,16 @@ describe('push()', () => {
       resolveB = r
     })
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
+    vi.mocked(collections.gameLogs.updateOne)
       .mockImplementationOnce(async () => {
         await promiseA
         results.push('A')
-        return null
+        return updateResult
       })
       .mockImplementationOnce(async () => {
         await promiseB
         results.push('B')
-        return null
+        return updateResult
       })
 
     gameLogSink.push({ payload: 'msgA', password: 'push-concurrent-a' })
@@ -107,26 +115,26 @@ describe('push()', () => {
     const dupeError = new MongoError('E11000')
     dupeError.code = 11000
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
+    vi.mocked(collections.gameLogs.updateOne)
       .mockRejectedValueOnce(dupeError)
-      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(updateResult)
 
     gameLogSink.push({ payload: 'hello', password: 'push-retry' })
     await gameLogSink.waitForCompletion('push-retry')
 
-    expect(collections.gameLogs.findOneAndUpdate).toHaveBeenCalledTimes(2)
+    expect(collections.gameLogs.updateOne).toHaveBeenCalledTimes(2)
   })
 
   it('should not retry on MongoError with code other than 11000', async () => {
     const mongoError = new MongoError('some other error')
     mongoError.code = 13
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate).mockRejectedValueOnce(mongoError)
+    vi.mocked(collections.gameLogs.updateOne).mockRejectedValueOnce(mongoError)
 
     gameLogSink.push({ payload: 'hello', password: 'push-no-retry' })
     await gameLogSink.waitForCompletion('push-no-retry')
 
-    expect(collections.gameLogs.findOneAndUpdate).toHaveBeenCalledTimes(1)
+    expect(collections.gameLogs.updateOne).toHaveBeenCalledTimes(1)
   })
 
   it('should continue processing subsequent messages after a DB error', async () => {
@@ -134,11 +142,11 @@ describe('push()', () => {
     const mongoError = new MongoError('unexpected')
     mongoError.code = 99
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
+    vi.mocked(collections.gameLogs.updateOne)
       .mockRejectedValueOnce(mongoError)
       .mockImplementationOnce(async () => {
         results.push('second')
-        return null
+        return updateResult
       })
 
     gameLogSink.push({ payload: 'first', password: 'push-error-recover' })
@@ -174,15 +182,15 @@ describe('clear()', () => {
       resolveFirst = r
     })
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
+    vi.mocked(collections.gameLogs.updateOne)
       .mockImplementationOnce(async () => {
         await promiseFirst
         results.push(1)
-        return null
+        return updateResult
       })
       .mockImplementationOnce(async () => {
         results.push(2)
-        return null
+        return updateResult
       })
     vi.mocked(collections.gameLogs.deleteOne).mockImplementationOnce(async () => {
       results.push(0)

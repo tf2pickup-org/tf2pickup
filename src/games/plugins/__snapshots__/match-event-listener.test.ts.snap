@@ -1,0 +1,2012 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`match-event-listener > classifies the recorded game logs the same way 1`] = `
+{
+  "cp_gullywash_4072522.log": [
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 4,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 704980,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 172840,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 97880,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 136330,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 3,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 4,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 291630,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 3,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 20270,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 3,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:ended",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 3,
+        "team": "red",
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "team": "blu",
+      },
+    ],
+  ],
+  "cp_process_4084159.log": [
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 243810,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 300150,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 80360,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 3,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 83670,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 4,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 4,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 74110,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 4,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 266690,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 5,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:ended",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 5,
+        "team": "red",
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "team": "blu",
+      },
+    ],
+  ],
+  "cp_snakewater_4056794.log": [
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 4,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 113360,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 110820,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 4,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 407400,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 184090,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:ended",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "team": "red",
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "team": "blu",
+      },
+    ],
+  ],
+  "cp_steel_4064166.log": [
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 4,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 356730,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 5,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 356040,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 5,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 4,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:ended",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "team": "red",
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "team": "blu",
+      },
+    ],
+  ],
+  "koth_product_4072544.log": [
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 319120,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 347790,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 315810,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 1,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "red",
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "red",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 313470,
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:ended",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "team": "red",
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 2,
+        "team": "blu",
+      },
+    ],
+  ],
+  "pl_upward_4071167.log": [
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 414990,
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 4,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match:started",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 0,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 1,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 2,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:roundLength",
+      {
+        "gameNumber": 7615,
+        "lengthMs": 346850,
+      },
+    ],
+    [
+      "match:roundWon",
+      {
+        "gameNumber": 7615,
+        "winner": "blu",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 4,
+        "teamName": "red",
+      },
+    ],
+    [
+      "match/score:reported",
+      {
+        "gameNumber": 7615,
+        "score": 4,
+        "teamName": "blu",
+      },
+    ],
+    [
+      "match/controlPoint:captured",
+      {
+        "controlPoint": 3,
+        "gameNumber": 7615,
+        "team": "blu",
+      },
+    ],
+    [
+      "match:ended",
+      {
+        "gameNumber": 7615,
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "team": "red",
+      },
+    ],
+    [
+      "match/score:final",
+      {
+        "gameNumber": 7615,
+        "score": 0,
+        "team": "blu",
+      },
+    ],
+  ],
+}
+`;

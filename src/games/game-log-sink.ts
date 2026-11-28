@@ -42,7 +42,7 @@ class GameLogSink {
     const logLine = redact(message.payload)
 
     try {
-      await this.collection.findOneAndUpdate(
+      await this.collection.updateOne(
         { logSecret: message.password },
         { $push: { logs: logLine } },
         { upsert: true },
@@ -54,7 +54,7 @@ class GameLogSink {
 
       if (error.code === 11000) {
         // Another upsert occurred during the upsert, try again.
-        await this.collection.findOneAndUpdate(
+        await this.collection.updateOne(
           { logSecret: message.password },
           { $push: { logs: logLine } },
           { upsert: true },
