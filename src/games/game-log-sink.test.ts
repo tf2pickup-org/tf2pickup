@@ -6,7 +6,7 @@ import { gameLogSink } from './game-log-sink'
 vi.mock('../database/collections', () => ({
   collections: {
     gameLogs: {
-      findOneAndUpdate: vi.fn(),
+      updateOne: vi.fn(),
       deleteOne: vi.fn(),
     },
   },
@@ -16,9 +16,17 @@ vi.mock('../utils/hide-ip-addresses', () => ({
   hideIpAddresses: (s: string) => s,
 }))
 
+const updateResult = {
+  acknowledged: true,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0,
+  upsertedId: null,
+}
+
 beforeEach(() => {
   vi.clearAllMocks()
-  vi.mocked(collections.gameLogs.findOneAndUpdate).mockResolvedValue(null)
+  vi.mocked(collections.gameLogs.updateOne).mockResolvedValue(updateResult)
   vi.mocked(collections.gameLogs.deleteOne).mockResolvedValue({
     acknowledged: true,
     deletedCount: 1,
@@ -30,7 +38,7 @@ describe('push()', () => {
     gameLogSink.push({ payload: 'hello world', password: 'push-basic' })
     await gameLogSink.waitForCompletion('push-basic')
 
-    expect(collections.gameLogs.findOneAndUpdate).toHaveBeenCalledWith(
+    expect(collections.gameLogs.updateOne).toHaveBeenCalledWith(
       { logSecret: 'push-basic' },
       { $push: { logs: 'hello world' } },
       { upsert: true },
@@ -38,114 +46,99 @@ describe('push()', () => {
   })
 
   it('should process messages for the same key sequentially', async () => {
-    const results: number[] = []
-    const resolvers: (() => void)[] = []
+    const first = deferred()
+    vi.mocked(collections.gameLogs.updateOne).mockImplementationOnce(async () => {
+      await first.promise
+      return updateResult
+    })
 
-    for (let i = 1; i <= 3; i++) {
-      const value = i
-      let resolve!: () => void
-      const promise = new Promise<void>(r => {
-        resolve = r
-      })
-      resolvers.push(resolve)
+    gameLogSink.push({ payload: 'msg1', password: 'push-seq' })
+    gameLogSink.push({ payload: 'msg2', password: 'push-seq' })
+    gameLogSink.push({ payload: 'msg3', password: 'push-seq' })
 
-      vi.mocked(collections.gameLogs.findOneAndUpdate).mockImplementationOnce(async () => {
-        await promise
-        results.push(value)
-        return null
-      })
+    await flush()
+    expect(writes()).toEqual([['push-seq', 'msg1']])
 
-      gameLogSink.push({ payload: `msg${i}`, password: 'push-seq' })
-    }
-
-    // Resolve in reverse order — results should still be sequential
-    resolvers[2]!()
-    resolvers[1]!()
-    resolvers[0]!()
-
+    first.resolve()
     await gameLogSink.waitForCompletion('push-seq')
-    expect(results).toEqual([1, 2, 3])
+    expect(writes()).toEqual([
+      ['push-seq', 'msg1'],
+      ['push-seq', 'msg2'],
+      ['push-seq', 'msg3'],
+    ])
   })
 
   it('should process messages for different keys concurrently', async () => {
-    const results: string[] = []
-    let resolveA!: () => void
-    let resolveB!: () => void
-
-    const promiseA = new Promise<void>(r => {
-      resolveA = r
-    })
-    const promiseB = new Promise<void>(r => {
-      resolveB = r
+    const a = deferred()
+    vi.mocked(collections.gameLogs.updateOne).mockImplementation(async filter => {
+      if (filter.logSecret === 'push-concurrent-a') {
+        await a.promise
+      }
+      return updateResult
     })
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
-      .mockImplementationOnce(async () => {
-        await promiseA
-        results.push('A')
-        return null
-      })
-      .mockImplementationOnce(async () => {
-        await promiseB
-        results.push('B')
-        return null
-      })
-
+    let aDone = false
     gameLogSink.push({ payload: 'msgA', password: 'push-concurrent-a' })
+    void gameLogSink.waitForCompletion('push-concurrent-a').then(() => {
+      aDone = true
+    })
     gameLogSink.push({ payload: 'msgB', password: 'push-concurrent-b' })
 
-    resolveB()
     await gameLogSink.waitForCompletion('push-concurrent-b')
-    expect(results).toEqual(['B'])
+    expect(aDone).toBe(false)
+    expect(writes()).toEqual([
+      ['push-concurrent-a', 'msgA'],
+      ['push-concurrent-b', 'msgB'],
+    ])
 
-    resolveA()
+    a.resolve()
     await gameLogSink.waitForCompletion('push-concurrent-a')
-    expect(results).toEqual(['B', 'A'])
+    expect(aDone).toBe(true)
   })
 
   it('should retry once on MongoDB duplicate key error (11000)', async () => {
     const dupeError = new MongoError('E11000')
     dupeError.code = 11000
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
+    vi.mocked(collections.gameLogs.updateOne)
       .mockRejectedValueOnce(dupeError)
-      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(updateResult)
 
     gameLogSink.push({ payload: 'hello', password: 'push-retry' })
     await gameLogSink.waitForCompletion('push-retry')
 
-    expect(collections.gameLogs.findOneAndUpdate).toHaveBeenCalledTimes(2)
+    expect(writes()).toEqual([
+      ['push-retry', 'hello'],
+      ['push-retry', 'hello'],
+    ])
   })
 
   it('should not retry on MongoError with code other than 11000', async () => {
     const mongoError = new MongoError('some other error')
     mongoError.code = 13
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate).mockRejectedValueOnce(mongoError)
+    vi.mocked(collections.gameLogs.updateOne).mockRejectedValueOnce(mongoError)
 
     gameLogSink.push({ payload: 'hello', password: 'push-no-retry' })
     await gameLogSink.waitForCompletion('push-no-retry')
 
-    expect(collections.gameLogs.findOneAndUpdate).toHaveBeenCalledTimes(1)
+    expect(writes()).toEqual([['push-no-retry', 'hello']])
   })
 
   it('should continue processing subsequent messages after a DB error', async () => {
-    const results: string[] = []
     const mongoError = new MongoError('unexpected')
     mongoError.code = 99
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
-      .mockRejectedValueOnce(mongoError)
-      .mockImplementationOnce(async () => {
-        results.push('second')
-        return null
-      })
+    vi.mocked(collections.gameLogs.updateOne).mockRejectedValueOnce(mongoError)
 
     gameLogSink.push({ payload: 'first', password: 'push-error-recover' })
     gameLogSink.push({ payload: 'second', password: 'push-error-recover' })
 
     await gameLogSink.waitForCompletion('push-error-recover')
-    expect(results).toEqual(['second'])
+    expect(writes()).toEqual([
+      ['push-error-recover', 'first'],
+      ['push-error-recover', 'second'],
+    ])
   })
 })
 
@@ -168,24 +161,15 @@ describe('clear()', () => {
   })
 
   it('should serialize deletion between pre- and post-clear writes', async () => {
-    const results: number[] = []
-    let resolveFirst!: () => void
-    const promiseFirst = new Promise<void>(r => {
-      resolveFirst = r
-    })
+    const first = deferred()
+    const deletion = deferred()
 
-    vi.mocked(collections.gameLogs.findOneAndUpdate)
-      .mockImplementationOnce(async () => {
-        await promiseFirst
-        results.push(1)
-        return null
-      })
-      .mockImplementationOnce(async () => {
-        results.push(2)
-        return null
-      })
+    vi.mocked(collections.gameLogs.updateOne).mockImplementationOnce(async () => {
+      await first.promise
+      return updateResult
+    })
     vi.mocked(collections.gameLogs.deleteOne).mockImplementationOnce(async () => {
-      results.push(0)
+      await deletion.promise
       return { acknowledged: true, deletedCount: 1 }
     })
 
@@ -193,11 +177,44 @@ describe('clear()', () => {
     const clear = gameLogSink.clear('clear-chain')
     gameLogSink.push({ payload: 'second', password: 'clear-chain' })
 
-    resolveFirst()
+    await flush()
+    expect(writes()).toEqual([['clear-chain', 'first']])
+    expect(collections.gameLogs.deleteOne).toHaveBeenCalledTimes(0)
+
+    first.resolve()
+    await flush()
+    expect(collections.gameLogs.deleteOne).toHaveBeenCalledWith({ logSecret: 'clear-chain' })
+    expect(writes()).toEqual([['clear-chain', 'first']])
+
+    deletion.resolve()
     await clear
-
     await gameLogSink.waitForCompletion('clear-chain')
-
-    expect(results).toEqual([1, 0, 2])
+    expect(writes()).toEqual([
+      ['clear-chain', 'first'],
+      ['clear-chain', 'second'],
+    ])
   })
 })
+
+function deferred() {
+  let resolve!: () => void
+  const promise = new Promise<void>(r => {
+    resolve = r
+  })
+  return { promise, resolve }
+}
+
+function flush() {
+  return new Promise<void>(r => setImmediate(r))
+}
+
+function writes() {
+  return vi.mocked(collections.gameLogs.updateOne).mock.calls.map(([filter, update, options]) => {
+    expect(options).toEqual({ upsert: true })
+    return [filter.logSecret, logLine(update)]
+  })
+}
+
+function logLine(update: unknown) {
+  return (update as { $push: { logs: string } }).$push.logs
+}

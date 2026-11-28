@@ -15,6 +15,9 @@ interface GameEvent {
   /* name of the game event */
   name: string
 
+  /* a substring every line matching the regex contains; lines without it skip the regex */
+  keyword: string
+
   /* the event is triggered if a log line matches this regex */
   regex: RegExp
 
@@ -39,6 +42,7 @@ const gameEvents: GameEvent[] = [
   {
     // TODO rename to "round start"
     name: 'match started',
+    keyword: '"Round_Start"',
     // TF2 logs Round_Start once per regular round, but twice within the same
     // second (occasionally straddling a second boundary) when a tournament
     // match (re)starts. A regular round transition always has a Round_Win or a
@@ -73,6 +77,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'round win',
+    keyword: '"Round_Win"',
     // https://regex101.com/r/41LfKS/2
     regex:
       /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Win" \(winner "(.+)"\)$/,
@@ -86,6 +91,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'round stalemate',
+    keyword: '"Round_Stalemate"',
     // a stalemate ends a round with no Round_Win line; clear the remembered
     // Round_Start so the next one is not mistaken for a restart doubling
     regex: /^\d{2}\/\d{2}\/\d{4}\s-\s\d{2}:\d{2}:\d{2}:\sWorld triggered "Round_Stalemate"$/,
@@ -95,6 +101,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'round length',
+    keyword: 'Round_Length"',
     // payload/attack-defend maps emit "Mini_Round_Length" instead of "Round_Length"
     // https://regex101.com/r/mvOYMz/3
     regex:
@@ -109,6 +116,7 @@ const gameEvents: GameEvent[] = [
   {
     // TODO rename to "game over"
     name: 'match ended',
+    keyword: '"Game_Over"',
     regex: /^[\d/\s-:]+World triggered "Game_Over" reason ".*"$/,
     handle: gameNumber => {
       lastRoundStart.delete(gameNumber)
@@ -118,6 +126,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'logs uploaded',
+    keyword: 'logs.tf/',
     regex: /^[\d/\s-:]+\[TFTrue\].+\shttp:\/\/logs\.tf\/(\d+)\..*$/,
     handle: (gameNumber, matches) => {
       const logsUrl = `http://logs.tf/${matches[1]}`
@@ -126,6 +135,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'player connected',
+    keyword: 'connected,',
     // https://regex101.com/r/uyPW8m/5
     regex:
       /^(\d{2}\/\d{2}\/\d{4})\s-\s(\d{2}:\d{2}:\d{2}):\s"(.+)<(\d+)><(\[.[^\]]+\])><>"\sconnected,\saddress\s"(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}):(\d{1,5})"$/,
@@ -145,6 +155,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'player joined team',
+    keyword: 'joined',
     // https://regex101.com/r/yzX9zG/1
     regex:
       /^(\d{2}\/\d{2}\/\d{4})\s-\s(\d{2}:\d{2}:\d{2}):\s"(.+)<(\d+)><(\[.[^\]]+\])><(.+)>"\sjoined\steam\s"(.+)"/,
@@ -164,6 +175,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'player disconnected',
+    keyword: 'disconnected',
     // https://regex101.com/r/x4AMTG/1
     regex:
       /^(\d{2}\/\d{2}\/\d{4})\s-\s(\d{2}:\d{2}:\d{2}):\s"(.+)<(\d+)><(\[.[^\]]+\])><(.[^>]+)>"\sdisconnected\s\(reason\s"(.[^"]+)"\)$/,
@@ -182,6 +194,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'score reported',
+    keyword: 'current score',
     // https://regex101.com/r/ZD6eLb/1
     regex: /^[\d/\s\-:]+Team "(.[^"]+)" current score "(\d)" with "(\d)" players$/,
     handle: (gameNumber, matches) => {
@@ -197,6 +210,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'final score reported',
+    keyword: 'final score',
     // https://regex101.com/r/RAUdTe/1
     regex: /^[\d/\s\-:]+Team "(.[^"]+)" final score "(\d)" with "(\d)" players$/,
     handle: (gameNumber, matches) => {
@@ -212,6 +226,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'point captured',
+    keyword: '"pointcaptured"',
     // https://regex101.com/r/3fJZ4r/1
     regex: /^[\d/\s\-:]+Team "(.[^"]+)" triggered "pointcaptured" \(cp "(\d+)"\)/,
     handle: (gameNumber, matches) => {
@@ -227,6 +242,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'demo uploaded',
+    keyword: '[demos.tf]',
     // https://regex101.com/r/JLGRYa/2
     regex: /^[\d/\s-:]+\[demos\.tf\]:\sSTV\savailable\sat:\s(.+)$/,
     handle: (gameNumber, matches) => {
@@ -238,6 +254,7 @@ const gameEvents: GameEvent[] = [
   },
   {
     name: 'player said',
+    keyword: 'say',
     // https://regex101.com/r/zpFkkA/1
     regex:
       /^(\d{2}\/\d{2}\/\d{4})\s-\s(\d{2}:\d{2}:\d{2}):\s"(.+)<(\d+)><(\[.[^\]]+\])><(.[^>]+)>"\ssay\s"(.+)"$/,
@@ -275,6 +292,9 @@ type EventHandledResult =
 
 async function testForGameEvent(message: string, logSecret: string): Promise<EventHandledResult> {
   for (const gameEvent of gameEvents) {
+    if (!message.includes(gameEvent.keyword)) {
+      continue
+    }
     const matches = message.match(gameEvent.regex)
     if (matches) {
       const game = await collections.games.findOne({ logSecret }, { projection: { number: 1 } })
