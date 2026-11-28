@@ -70,15 +70,22 @@ describe('push()', () => {
 
   it('should process messages for different keys concurrently', async () => {
     const a = deferred()
-    vi.mocked(collections.gameLogs.updateOne).mockImplementationOnce(async () => {
-      await a.promise
+    vi.mocked(collections.gameLogs.updateOne).mockImplementation(async filter => {
+      if (filter.logSecret === 'push-concurrent-a') {
+        await a.promise
+      }
       return updateResult
     })
 
+    let aDone = false
     gameLogSink.push({ payload: 'msgA', password: 'push-concurrent-a' })
+    void gameLogSink.waitForCompletion('push-concurrent-a').then(() => {
+      aDone = true
+    })
     gameLogSink.push({ payload: 'msgB', password: 'push-concurrent-b' })
 
     await gameLogSink.waitForCompletion('push-concurrent-b')
+    expect(aDone).toBe(false)
     expect(writes()).toEqual([
       ['push-concurrent-a', 'msgA'],
       ['push-concurrent-b', 'msgB'],
@@ -86,6 +93,7 @@ describe('push()', () => {
 
     a.resolve()
     await gameLogSink.waitForCompletion('push-concurrent-a')
+    expect(aDone).toBe(true)
   })
 
   it('should retry once on MongoDB duplicate key error (11000)', async () => {
@@ -153,21 +161,15 @@ describe('clear()', () => {
   })
 
   it('should serialize deletion between pre- and post-clear writes', async () => {
-    const events: string[] = []
     const first = deferred()
+    const deletion = deferred()
 
-    vi.mocked(collections.gameLogs.updateOne)
-      .mockImplementationOnce(async (_filter, update) => {
-        await first.promise
-        events.push(`push ${logLine(update)}`)
-        return updateResult
-      })
-      .mockImplementationOnce(async (_filter, update) => {
-        events.push(`push ${logLine(update)}`)
-        return updateResult
-      })
-    vi.mocked(collections.gameLogs.deleteOne).mockImplementationOnce(async filter => {
-      events.push(`delete ${String(filter?.logSecret)}`)
+    vi.mocked(collections.gameLogs.updateOne).mockImplementationOnce(async () => {
+      await first.promise
+      return updateResult
+    })
+    vi.mocked(collections.gameLogs.deleteOne).mockImplementationOnce(async () => {
+      await deletion.promise
       return { acknowledged: true, deletedCount: 1 }
     })
 
@@ -176,13 +178,17 @@ describe('clear()', () => {
     gameLogSink.push({ payload: 'second', password: 'clear-chain' })
 
     await flush()
-    expect(events).toEqual([])
+    expect(writes()).toEqual([['clear-chain', 'first']])
+    expect(collections.gameLogs.deleteOne).toHaveBeenCalledTimes(0)
 
     first.resolve()
+    await flush()
+    expect(collections.gameLogs.deleteOne).toHaveBeenCalledWith({ logSecret: 'clear-chain' })
+    expect(writes()).toEqual([['clear-chain', 'first']])
+
+    deletion.resolve()
     await clear
     await gameLogSink.waitForCompletion('clear-chain')
-
-    expect(events).toEqual(['push first', 'delete clear-chain', 'push second'])
     expect(writes()).toEqual([
       ['clear-chain', 'first'],
       ['clear-chain', 'second'],
