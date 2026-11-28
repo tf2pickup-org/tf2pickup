@@ -118,15 +118,11 @@ jobs:
           - 27017:27017
 
       mumble:
-        # Pinned: mumble-server 1.6.x rejects the SuperUser password login the
-        # e2e suite relies on ("Wrong certificate or password for existing user").
-        # 1.5.915 is the last version known to work. See tests/20-game/10-setup-mumble-server.spec.ts
         image: mumblevoip/mumble-server:v1.6.1001
         ports:
           - 64738:64738/tcp
           - 64738:64738/udp
         env:
-          MUMBLE_SUPERUSER_PASSWORD: ${{ env.MUMBLE_SUPERUSER_PASSWORD }}
           # every test client connects from the same address
           MUMBLE_CONFIG_AUTOBANATTEMPTS: 0
           MUMBLE_CONFIG_MESSAGEBURST: 50
@@ -222,6 +218,18 @@ jobs:
 
       - name: Docker ps
         run: docker ps
+
+      - name: Configure Mumble SuperUser password
+        env:
+          MUMBLE_CONTAINER: ${{ job.services.mumble.id }}
+        run: |
+          # Mumble 1.6.1001 rejects the password set by the image before its first startup.
+          until docker logs "$MUMBLE_CONTAINER" 2>&1 | grep 'Server listening' >/dev/null; do
+            sleep 1
+          done
+          docker exec --user 10000:10000 "$MUMBLE_CONTAINER" \
+            mumble-server --foreground --ini /data/mumble_server_config.ini --set-su-pw "$MUMBLE_SUPERUSER_PASSWORD" 0
+        timeout-minutes: 1
 
       - name: Run Playwright tests
         run: pnpm test:e2e --project=chromium --shard=${{ matrix.shard }}/${{ env.shardTotal }} --grep "${{ matrix.queue-config == '6v6' && '@6v6|@multi-queue' || '@9v9' }}"
